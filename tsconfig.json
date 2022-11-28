@@ -19,9 +19,9 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "strict": false,
-    "target": "ES2021"
+    "strict": true,
+    "target": "esnext"
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["**/*.spec.ts"]
+  "exclude": ["**/*.spec.ts", "node_modules"]
 }

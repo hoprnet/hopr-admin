@@ -1,6 +1,6 @@
 import styles from '../../styles/logo.module.css'
 
-export default function Logo(props) {
+export default function Logo(props: { onClick: () => void }) {
   return (
     <div className={styles.logo} onClick={props.onClick}>
       <svg

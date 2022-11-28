@@ -188,6 +188,9 @@ export abstract class Command {
     }
 
     // invalid
+    if (!result) {
+      result = ["unknown error", ""]
+    }
     return result
   }
 }

@@ -1,4 +1,5 @@
 import type API from '../utils/api'
+import type { Channel } from '../utils/api'
 import { toPaddedString } from '../utils'
 import { Command, type CacheFunctions } from '../utils/command'
 import { utils as ethersUtils } from 'ethers'
@@ -28,7 +29,7 @@ export default class Channels extends Command {
    * Creates the log output for a channel
    * @returns a channel log
    */
-  private getChannelLog(prefix, channel) {
+  private getChannelLog(prefix: string, channel: Channel) {
     return toPaddedString([
       [prefix + ' Channel:', channel.channelId],
       ['To:', channel.peerId],

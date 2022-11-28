@@ -59,7 +59,7 @@ export default class SendMessage extends Command {
 
     if (use === 'manual') {
       const [valid, error, result] = this.parsePathStr(pathOrRecipient)
-      if (!valid) return log(this.invalidParameter(pathOrRecipient, 'path', error))
+      if (!valid || !result) return log(this.invalidParameter(pathOrRecipient, 'path', error))
       path = result.intermediateNodes
       recipient = result.recipient
     }

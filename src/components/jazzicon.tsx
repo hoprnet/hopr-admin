@@ -2,19 +2,24 @@
 // https://github.com/MetaMask/metamask-extension/blob/develop/ui/app/components/ui/jazzicon/jazzicon.component.js
 import React, { createRef, CSSProperties, PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import jazzicon from 'jazzicon'
-import md5 from 'tiny-hashes/md5'
+import md5 from 'md5'
+
+// @ts-ignore
+import jazzicon from '@metamask/jazzicon'
 
 /**
  * Wrapper around the jazzicon library to return a React component, as the library returns an
  * HTMLDivElement which needs to be appended.
  */
-export default class Jazzicon extends PureComponent<{
-  diameter: number
+
+export type Props = {
+  diameter: number | null | undefined
   className?: string
   style?: Partial<CSSProperties>
   address?: string
-}> {
+}
+
+export default class Jazzicon extends PureComponent<Props> {
   static propTypes = {
     address: PropTypes.string.isRequired,
     className: PropTypes.string,
@@ -32,7 +37,7 @@ export default class Jazzicon extends PureComponent<{
     this.appendJazzicon()
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     const { address: prevAddress, diameter: prevDiameter } = prevProps
     const { address, diameter } = this.props
 
@@ -43,10 +48,9 @@ export default class Jazzicon extends PureComponent<{
   }
 
   removeExistingChildren() {
-    const { children } = this.container.current
-
-    for (let i = 0; i < children.length; i++) {
-      this.container.current.removeChild(children[i])
+    // remove icon
+    while (this.container.current?.firstChild) {
+      this.container.current.firstChild.remove();
     }
   }
 
@@ -54,8 +58,8 @@ export default class Jazzicon extends PureComponent<{
     if (typeof window !== 'undefined') {
       const { address, diameter } = this.props
       // NB: 'goodenough' transform between B58 string and js int
-      const image = jazzicon(diameter, parseInt(md5(address).slice(-10), 16))
-      this.container.current.appendChild(image)
+      const image = jazzicon(diameter, md5(address || "default"))
+      this.container.current?.appendChild(image)
     }
   }
 

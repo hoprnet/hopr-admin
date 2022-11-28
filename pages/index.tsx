@@ -6,10 +6,11 @@ import Logs from '../src/components/logs'
 import styles from '../styles/Home.module.css'
 import Commands from '../src/commands'
 import useAppState from '../src/state'
+import { Props as JazziconProps } from '../src/components/jazzicon'
 import { type Log, type Configuration, createLog, HealthStatus } from '../src/utils'
 
 // TODO: fix type in refactor
-const Jazzicon = dynamic(() => import('../src/components/jazzicon'), { ssr: false }) as any
+const Jazzicon = dynamic<JazziconProps>(() => import('../src/components/jazzicon'), { ssr: false })
 const GIT_HASH = process.env.NEXT_PUBLIC_GIT_COMMIT
 
 export default function Home() {
@@ -72,7 +73,7 @@ export default function Home() {
         if (infoResp.ok) {
           const info = await infoResp.json()
           const status = info.connectivityStatus
-          setHealthStatus(HealthStatus[status])
+          setHealthStatus(HealthStatus[status as keyof typeof HealthStatus])
         } else {
           console.error(`failed to get info with HTTP status: ${infoResp.status}`)
         }

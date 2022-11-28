@@ -53,68 +53,68 @@ export default class API {
   }
 
   // account API
-  public async withdraw(amount: string, currency: string, recipient: string): ExpandedJsonResponse {
+  public async withdraw(amount: string, currency: string, recipient: string): Promise<ExpandedJsonResponse> {
     return this.postReq('/api/v2/account/withdraw', { amount, currency: currency.toUpperCase(), recipient })
   }
-  public async getBalances(): ExpandedJsonResponse<Balances> {
+  public async getBalances(): Promise<ExpandedJsonResponse<Balances>> {
     return this.getReq('/api/v2/account/balances')
   }
-  public async getAddresses(): ExpandedJsonResponse<Addresses> {
+  public async getAddresses(): Promise<ExpandedJsonResponse<Addresses>> {
     return this.getReq('/api/v2/account/addresses')
   }
 
   // aliases API
-  public async getAliases(): ExpandedJsonResponse<Aliases> {
+  public async getAliases(): Promise<ExpandedJsonResponse<Aliases>> {
     return this.getReq('/api/v2/aliases')
   }
-  public async setAlias(peerId: string, alias: string): ExpandedJsonResponse {
+  public async setAlias(peerId: string, alias: string): Promise<ExpandedJsonResponse> {
     return this.postReq('/api/v2/aliases', { peerId, alias })
   }
-  public async removeAlias(alias: string): ExpandedJsonResponse {
+  public async removeAlias(alias: string): Promise<ExpandedJsonResponse> {
     return this.delReq(`/api/v2/aliases/${alias}`)
   }
 
   // channels API
-  public async getChannels(): ExpandedJsonResponse<{
+  public async getChannels(): Promise<ExpandedJsonResponse<{
     incoming: Channel[]
     outgoing: Channel[]
-  }> {
+  }>> {
     return this.getReq('/api/v2/channels')
   }
   public async closeChannel(
     peerId: string,
     direction: ChannelDirection
-  ): ExpandedJsonResponse<{
+  ): Promise<ExpandedJsonResponse<{
     receipt: string
     channelStatus: string
-  }> {
+  }>> {
     return this.delReq(`/api/v2/channels/${peerId}/${direction}`)
   }
-  public async openChannel(peerId: string, amount: string): ExpandedJsonResponse {
+  public async openChannel(peerId: string, amount: string): Promise<ExpandedJsonResponse> {
     return this.postReq('/api/v2/channels', { peerId, amount })
   }
 
   // tickets API
-  public async redeemTickets(): ExpandedJsonResponse {
+  public async redeemTickets(): Promise<ExpandedJsonResponse> {
     return this.postReq('/api/v2/tickets/redeem', {})
   }
-  public async getTickets(): ExpandedJsonResponse {
+  public async getTickets(): Promise<ExpandedJsonResponse> {
     return this.getReq('/api/v2/tickets')
   }
-  public async getTicketStats(): ExpandedJsonResponse {
+  public async getTicketStats(): Promise<ExpandedJsonResponse> {
     return this.getReq('/api/v2/tickets/statistics')
   }
 
   // messages API
-  public async signMessage(msg: string): ExpandedJsonResponse {
+  public async signMessage(msg: string): Promise<ExpandedJsonResponse> {
     return this.postReq('/api/v2/messages/sign', { message: msg })
   }
-  public async sendMessage(body: string, recipient: string, path: string[]): ExpandedTextResponse {
-    return this.postReq('/api/v2/messages', { body: body, recipient: recipient, path: path })
+  public async sendMessage(body: string, recipient: string, path?: string[]): Promise<ExpandedTextResponse> {
+    return this.postReq('/api/v2/messages', { body, recipient, path })
   }
 
   // node API
-  public async getInfo(): ExpandedJsonResponse<{
+  public async getInfo(): Promise<ExpandedJsonResponse<{
     announcedAddress: string[]
     channelClosurePeriod: number
     connectivityStatus: string
@@ -125,16 +125,16 @@ export default class API {
     isEligible: string
     listeningAddress: string[]
     network: string
-  }> {
+  }>> {
     return this.getReq('/api/v2/node/info')
   }
-  public async getVersion(): ExpandedTextResponse {
+  public async getVersion(): Promise<ExpandedTextResponse> {
     return this.getReq('/api/v2/node/version')
   }
-  public async ping(peerId: string): ExpandedJsonResponse<{ latency: number }> {
+  public async ping(peerId: string): Promise<ExpandedJsonResponse<{ latency: number }>> {
     return this.postReq('/api/v2/node/ping', { peerId })
   }
-  public async getPeers(): ExpandedJsonResponse<{
+  public async getPeers(): Promise<ExpandedJsonResponse<{
     connected: {
       peerId: string
       quality: number
@@ -143,47 +143,45 @@ export default class API {
       peerId: string
       quality: number
     }[]
-  }> {
+  }>> {
     return this.getReq('/api/v2/node/peers')
   }
-  public async getPeerInfo(peerId: string): ExpandedJsonResponse<{
+  public async getPeerInfo(peerId: string): Promise<ExpandedJsonResponse<{
     announced: string[]
     observed: string[]
-  }> {
+  }>> {
     return this.getReq(`/api/v2/peerInfo/${peerId}`)
   }
 
   // settings API
-  public async getSettings(): ExpandedJsonResponse<{
+  public async getSettings(): Promise<ExpandedJsonResponse<{
     strategy: string
     includeRecipient: boolean
-  }> {
+  }>> {
     return this.getReq('/api/v2/settings')
   }
-  public async setSetting(key: string, value: string | boolean): ExpandedJsonResponse {
+  public async setSetting(key: string, value: string | boolean): Promise<ExpandedJsonResponse> {
     return this.putReq(`/api/v2/settings/${key}`, { settingValue: value })
   }
 
   // entryNodes API
-  public async getEntryNodes(): ExpandedJsonResponse<{
+  public async getEntryNodes(): Promise<ExpandedJsonResponse<{
     [id: string]: {
       multiaddrs: string[]
       isEligible: boolean
     }
-  }> {
+  }>> {
     return this.getReq('/api/v2/node/entryNodes')
   }
 }
 
 // some types
 
-export type ExpandedJsonResponse<R = any> = Promise<
-  {
+export type ExpandedJsonResponse<R = any> = {
     json: () => Promise<R>
   } & Response
->
 
-export type ExpandedTextResponse = Promise<Response>
+export type ExpandedTextResponse = Response
 
 export type Channel = {
   type: string

@@ -1,15 +1,17 @@
 import React from 'react'
 import Cookies from 'js-cookie'
 
-export default class TokenInput extends React.Component {
-  constructor(props) {
+type Props = {}
+
+export default class TokenInput extends React.Component<Props> {
+  constructor(props: Props) {
     super(props)
     this.handleKeyPress = this.handleKeyPress.bind(this)
   }
 
-  handleKeyPress(e) {
+  handleKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key == 'Enter') {
-      var text = e.target.value
+      var text = (e.target as HTMLInputElement).value
       Cookies.set('X-Auth-Token', text)
       // this.props.handleTokenSet()
     }

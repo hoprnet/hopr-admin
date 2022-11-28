@@ -58,6 +58,7 @@ export default function Logs(props: { isConnected: boolean; messages: Log[] }) {
   let container = useRef(null)
 
   useEffect(() => {
+    // @ts-ignore
     container.current.scrollIntoView({ block: 'end', behaviour: 'smooth' })
   })
 
