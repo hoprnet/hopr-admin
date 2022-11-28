@@ -1,0 +1,36 @@
+{
+  "name": "hopr-admin",
+  "version": "1.0.0-next.0",
+  "description": "HOPR Admin app which can be used to manage a HOPRd node via its API",
+  "repository": "https://github.com/hoprnet/hopr-admin",
+  "homepage": "https://admin.hoprnet.org",
+  "license": "Apache-2.0",
+  "scripts": {
+    "prebuild": "next telemetry disable",
+    "dev": "next dev",
+    "build": "HOPR_GIT_COMMIT=$(git rev-parse --short HEAD) next build"
+  },
+  "files": [
+    ".next/**"
+  ],
+  "engines": {
+    "node": ">=16.15"
+  },
+  "module": "commonjs",
+  "type": "module",
+  "dependencies": {
+    "next": "13.0.3"
+  },
+  "devDependencies": {
+    "prettier": "2.7.1",
+    "typescript": "4.8.4"
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 120,
+    "trailingComma": "none"
+  },
+  "packageManager": "yarn@3.2.1"
+}
