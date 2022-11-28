@@ -8,7 +8,9 @@
   "scripts": {
     "prebuild": "next telemetry disable",
     "dev": "next dev",
-    "build": "HOPR_GIT_COMMIT=$(git rev-parse --short HEAD) next build"
+    "build": "HOPR_GIT_COMMIT=$(git rev-parse --short HEAD) next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "files": [
     ".next/**"
@@ -22,7 +24,7 @@
     "@libp2p/interface-peer-id": "^1.0.6",
     "ethers": "^5.7.2",
     "jazzicon": "^1.5.0",
-    "next": "13.0.3",
+    "next": "13.0.5",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
@@ -30,17 +32,10 @@
   "devDependencies": {
     "@types/node": "18.11.9",
     "@types/react": "18.0.25",
+    "@types/react-dom": "18.0.9",
     "eslint": "8.28.0",
     "eslint-config-next": "^13.0.5",
-    "prettier": "2.7.1",
-    "typescript": "4.8.4"
-  },
-  "prettier": {
-    "tabWidth": 2,
-    "semi": false,
-    "singleQuote": true,
-    "printWidth": 120,
-    "trailingComma": "none"
+    "typescript": "4.9.3"
   },
   "packageManager": "yarn@3.2.1"
 }
