@@ -1,0 +1,50 @@
+{
+  "name": "hopr-admin",
+  "version": "3.0.0-next.0",
+  "description": "HOPR Admin app which can be used to manage a HOPRd node via its API",
+  "repository": "https://github.com/hoprnet/hopr-admin",
+  "homepage": "https://admin.hoprnet.org",
+  "license": "Apache-2.0",
+  "scripts": {
+    "prebuild": "next telemetry disable",
+    "dev": "next dev",
+    "build": "HOPR_GIT_COMMIT=$(git rev-parse --short HEAD) next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "files": [
+    ".next/**"
+  ],
+  "engines": {
+    "node": ">=16.15"
+  },
+  "module": "commonjs",
+  "type": "module",
+  "dependencies": {
+    "@libp2p/interface-peer-id": "^1.0.6",
+    "@libp2p/peer-id": "^1.1.16",
+    "@metamask/jazzicon": "^2.0.0",
+    "bn.js": "^5.2.1",
+    "ethers": "^5.7.2",
+    "js-cookie": "^3.0.1",
+    "lodash": "^4.17.21",
+    "md5": "^2.3.0",
+    "next": "13.0.5",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/bn.js": "^5.1.1",
+    "@types/js-cookie": "^3.0.2",
+    "@types/lodash": "^4.14.190",
+    "@types/md5": "^2.3.2",
+    "@types/node": "18.11.9",
+    "@types/react": "18.0.25",
+    "@types/react-dom": "18.0.9",
+    "eslint": "8.28.0",
+    "eslint-config-next": "^13.0.5",
+    "typescript": "4.9.3"
+  },
+  "packageManager": "yarn@3.2.1"
+}
