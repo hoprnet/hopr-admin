@@ -8,7 +8,8 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_GIT_COMMIT: process.env.HOPR_GIT_COMMIT
   },
-  output: 'standalone'
+  output: 'standalone',
+  exportTrailingSlash: true
 }
 
 export default nextConfig
