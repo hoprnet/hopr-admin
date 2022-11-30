@@ -21,7 +21,7 @@ jobs:
       - name: Set Docker image tag
         id: set-docker-tag
         run: |
-          sha_short=$(git rev-parse --short HEAD)
+          sha_short=$(echo "${{ github.sha }}" | cut -c1-8)
           tag=gcr.io/hoprassociation/hopr-admin:${sha_short}
           echo "tag=${tag}" >> $GITHUB_OUTPUT
       - name: Check outputs

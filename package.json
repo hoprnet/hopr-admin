@@ -8,7 +8,7 @@
   "scripts": {
     "prebuild": "next telemetry disable",
     "dev": "next dev",
-    "build": "HOPR_GIT_COMMIT=$(git rev-parse --short HEAD) next build",
+    "build": "next build",
     "start": "next start",
     "export": "next export",
     "lint": "next lint"
