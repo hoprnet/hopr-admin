@@ -43,7 +43,7 @@ export default class CloseChannel extends Command {
       return log(
         await this.failedApiCall(closeChannelRes, `close channel with '${counterparty.toString()}'`, {
           400: `invalid peer ID ${counterparty.toString()}`,
-          422: (v) => v.error
+          422: (v) => v.status
         })
       )
     }
