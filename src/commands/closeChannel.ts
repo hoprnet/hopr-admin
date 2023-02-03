@@ -66,13 +66,18 @@ export default class CloseChannel extends Command {
 
     const { receipt, channelStatus } = await closeChannelRes.json()
 
-    if (channelStatus === 'Open') {
-      return log(
-        `Initiated channel closure, the channel must remain open for at least ${channelClosurePeriod} minutes. Please send the close command again once the cool-off has passed. Receipt: "${receipt}".`
-      )
+    if (direction === 'outgoing') {
+      if (channelStatus === 'Open') {
+        return log(
+          `Initiated channel closure, the channel must remain open for at least ${channelClosurePeriod} minutes. Please send the close command again once the cool-off has passed. Receipt: "${receipt}".`
+        )
+      } else {
+        if (receipt != undefined) return log(`Closed channel. Receipt: ${receipt}`)
+        else return log(`Closing channel, closure window still active.`)
+      }
     } else {
       if (receipt != undefined) return log(`Closed channel. Receipt: ${receipt}`)
-      else return log(`Closing channel, closure window still active.`)
+      else return log(`Closing incoming channel is not supported.`)
     }
   }
 }
