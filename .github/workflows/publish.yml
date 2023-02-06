@@ -1,10 +1,8 @@
 name: Publish Docker Image
-on:
-  pull_request_target:
+on: 
+  push:
     branches:
       - main
-    types:
-      - closed
 jobs:
   build:
     runs-on: ubuntu-latest
