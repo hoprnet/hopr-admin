@@ -9,6 +9,7 @@ import Peers from './peers'
 import Ping from './ping'
 import Channels from './channels'
 import OpenChannel from './openChannel'
+import FundMultiChannels from './fundMultiChannels'
 import CloseChannel from './closeChannel'
 import SendMessage from './sendMessage'
 import Tickets from './tickets'
@@ -35,6 +36,7 @@ export default class Commands {
       new Ping(this.api, this.cache),
       new Channels(this.api, this.cache),
       new OpenChannel(this.api, this.cache),
+      new FundMultiChannels(this.api, this.cache),
       new CloseChannel(this.api, this.cache),
       new SendMessage(this.api, this.cache),
       new Tickets(this.api, this.cache),

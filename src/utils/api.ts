@@ -93,6 +93,9 @@ export default class API {
   public async openChannel(peerId: string, amount: string): Promise<ExpandedJsonResponse> {
     return this.postReq('/api/v2/channels', { peerId, amount })
   }
+  public async fundMultiChannels(peerId: string, outgoingAmount: string, incomingAmount: string): Promise<ExpandedJsonResponse> {
+    return this.postReq(`/api/v2/fundmulti`, { peerId, outgoingAmount, incomingAmount })
+  }
 
   // tickets API
   public async redeemTickets(): Promise<ExpandedJsonResponse> {
