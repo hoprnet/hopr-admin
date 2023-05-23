@@ -64,7 +64,10 @@ export default class Commands {
 
   public async execute(log: (msg: string) => void, userInput: string): Promise<void> {
     const split: string[] = userInput.trim().split(' ')
-    const [cmdName, ...params] = split
+    const [cmdName, ...params] = [
+      split[0].toLowerCase().replace(/^\w/, (c) => c.toLocaleLowerCase()), 
+      ...split.slice(1)
+    ]
     const query = params.join(' ')
 
     if (!cmdName) return log(`Command not provided!`)
