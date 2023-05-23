@@ -1,23 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useAppDispatch } from '../store';
 import { Store } from '../types/index'
-import { authActions } from '../store/slices/auth';
+import { authActions, login } from '../store/slices/auth';
+
+
+// HOPR Components
 import Section from '../future-hopr-lib-components/Section';
 import Select from '../future-hopr-lib-components/Select'
+import Checkbox from '../future-hopr-lib-components/Toggles/Checkbox';
+
+//MUI
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 function Section1() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const nodesSavedLocally = useSelector((store : Store) => store.auth.nodes).map((elem: any, index: number)=>
     {return {name: elem.ip, value: index, ip: elem.ip, apiKey: elem.apiKey}}
   );
+  const connecting = useSelector((store : Store) => store.auth.status.connecting);
+  const connected = useSelector((store : Store) => store.auth.status.connected);
+
   const [ip, set_ip] = useState('');
   const [apiKey, set_apiKey] = useState('');
+  const [saveApiKey, set_saveApiKey] = useState(false);
   const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] = useState('' as number | '');
 
   const useNodeAndSaveIt = () => {
-    console.log({ip, apiKey});
     dispatch(authActions.useNodeData({ip, apiKey}));
-    dispatch(authActions.addNodeData({ip, apiKey}));
+    dispatch(authActions.addNodeData({ip, apiKey: saveApiKey ? apiKey : ''}));
+    dispatch(login({ip, apiKey}))
   };
 
   const clearLocalNodes = () => {
@@ -65,13 +78,23 @@ function Section1() {
         style={{width:'100%'}}
       >
       </input>
-      <br/>
+      <Checkbox 
+        label={'Save API Key locally'}
+        value={saveApiKey}
+        onChange={(event)=>{set_saveApiKey(event.target.checked)}}
+      />
       <button
         onClick={useNodeAndSaveIt}
         disabled={ip.length === 0 || apiKey.length === 0}
       >
         Use node
       </button>
+      {/* TODO: Add 'save' button */}
+      {
+        connecting && 
+        <CircularProgress />
+      }
+
     </Section>
   );
 }
