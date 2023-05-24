@@ -3,7 +3,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
 
 import authSlice from './slices/auth';
-import sdkSlice from './slices/sdk';
+import sdkSlice from './slices/hoprSdk';
 
 
 const store = configureStore({

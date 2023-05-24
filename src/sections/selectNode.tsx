@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useAppDispatch } from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { Store } from '../types/index'
 import { authActions, login } from '../store/slices/auth';
-
+import { sdkActions, getInfo, setNode } from '../store/slices/hoprSdk';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
@@ -16,11 +15,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 function Section1() {
   const dispatch = useAppDispatch();
-  const nodesSavedLocally = useSelector((store : Store) => store.auth.nodes).map((elem: any, index: number)=>
+  const nodesSavedLocally = useAppSelector((store : Store) => store.auth.nodes).map((elem: any, index: number)=>
     {return {name: elem.ip, value: index, ip: elem.ip, apiKey: elem.apiKey}}
   );
-  const connecting = useSelector((store : Store) => store.auth.status.connecting);
-  const connected = useSelector((store : Store) => store.auth.status.connected);
+  const connecting = useAppSelector((store : Store) => store.auth.status.connecting);
+  const connected = useAppSelector((store : Store) => store.auth.status.connected);
 
   const [ip, set_ip] = useState('');
   const [apiKey, set_apiKey] = useState('');
@@ -31,6 +30,7 @@ function Section1() {
     dispatch(authActions.useNodeData({ip, apiKey}));
     dispatch(authActions.addNodeData({ip, apiKey: saveApiKey ? apiKey : ''}));
     dispatch(login({ip, apiKey}))
+    dispatch(getInfo());
   };
 
   const clearLocalNodes = () => {
@@ -79,7 +79,7 @@ function Section1() {
       >
       </input>
       <Checkbox 
-        label={'Save API Key locally'}
+        label={'Save API Key locally (unsafe)'}
         value={saveApiKey}
         onChange={(event)=>{set_saveApiKey(event.target.checked)}}
       />
@@ -88,6 +88,18 @@ function Section1() {
         disabled={ip.length === 0 || apiKey.length === 0}
       >
         Use node
+      </button>
+      <button
+        onClick={()=>{dispatch(setNode({ip, apiKey}))}}
+        disabled={ip.length === 0 || apiKey.length === 0}
+      >
+        Change node
+      </button>
+      <button
+        onClick={()=>{dispatch(getInfo())}}
+        disabled={ip.length === 0 || apiKey.length === 0}
+      >
+        get Info
       </button>
       {/* TODO: Add 'save' button */}
       {

@@ -57,10 +57,11 @@ const authSlice = createSlice({
 });
 
 
-export const login = (loginData: {}) => {
+export const login = (loginData: any) => {
     return async (dispatch:any) => {
-        const info = await getInfo(loginData.ip, loginData.apiKey);
-        if (info) dispatch(authSlice.actions.setConnected())
+       const info = await getInfo({url: loginData.ip, apiKey: loginData.apiKey});
+       console.log({info})
+       if (info) dispatch(authSlice.actions.setConnected())
     };
 };
 
