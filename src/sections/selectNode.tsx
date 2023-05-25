@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../store';
 import { Store } from '../types/index'
-import { authActions, login } from '../store/slices/auth';
-import { sdkActions, getInfo, setNode } from '../store/slices/hoprSdk';
+
+//Stores
+import { authActions, authActionsAsync } from '../store/slices/auth';
+import { nodeActions, nodeActionsAsync } from '../store/slices/node';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
@@ -26,11 +28,18 @@ function Section1() {
   const [saveApiKey, set_saveApiKey] = useState(false);
   const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] = useState('' as number | '');
 
-  const useNodeAndSaveIt = () => {
+  const saveNode = () => {
     dispatch(authActions.useNodeData({ip, apiKey}));
     dispatch(authActions.addNodeData({ip, apiKey: saveApiKey ? apiKey : ''}));
-    dispatch(login({ip, apiKey}))
-    dispatch(getInfo());
+    dispatch(authActionsAsync.login({ip, apiKey}))
+    dispatch(nodeActionsAsync.getInfo());
+  };
+
+  const useNode = () => {
+    dispatch(authActions.useNodeData({ip, apiKey}));
+    dispatch(authActions.addNodeData({ip, apiKey: saveApiKey ? apiKey : ''}));
+    dispatch(authActionsAsync.login({ip, apiKey}))
+    dispatch(nodeActionsAsync.getInfo());
   };
 
   const clearLocalNodes = () => {
@@ -84,22 +93,16 @@ function Section1() {
         onChange={(event)=>{set_saveApiKey(event.target.checked)}}
       />
       <button
-        onClick={useNodeAndSaveIt}
+        onClick={saveNode}
+        disabled={ip.length === 0}
+      >
+        Save node
+      </button>
+      <button
+        onClick={useNode}
         disabled={ip.length === 0 || apiKey.length === 0}
       >
         Use node
-      </button>
-      <button
-        onClick={()=>{dispatch(setNode({ip, apiKey}))}}
-        disabled={ip.length === 0 || apiKey.length === 0}
-      >
-        Change node
-      </button>
-      <button
-        onClick={()=>{dispatch(getInfo())}}
-        disabled={ip.length === 0 || apiKey.length === 0}
-      >
-        get Info
       </button>
       {/* TODO: Add 'save' button */}
       {

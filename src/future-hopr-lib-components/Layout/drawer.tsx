@@ -2,8 +2,8 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-
+import { Link, LinkProps } from 'react-router-dom'
+import { RouterProvider, BrowserRouter } from 'react-router-dom'
 import styled from '@emotion/styled';
 
 import List from '@mui/material/List';
@@ -11,8 +11,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import MailIcon from '@mui/icons-material/Mail';
-import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
@@ -33,9 +31,20 @@ const AppBarFiller = styled(Toolbar)`
   min-height: 59px!important;
 `
 
+interface SLinkProps extends LinkProps {
+  disabled:boolean;
+}
+
+const SLink = styled(Link)<SLinkProps>`
+  ${props => props.disabled &&  `
+    pointer-events: none;
+  `}
+`
+
 
 export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
+ // const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -47,20 +56,32 @@ export default function ResponsiveDrawer(props: Props) {
       <AppBarFiller />
       <Divider />
       {props.drawerItems?.map((group, indexG) => {
+        if (group.drawer === false) return;
+        
         return(
           <List>
             {group.groupName}
                 {
-                  group.items.map((item: any, indexI: number) => {
+                  group.items && group.items.map((item: any, indexI: number) => {
                     return(
-                        <ListItem key={indexI} disablePadding>
-                          <ListItemButton>
+                      <SLink
+                        to={`${group.path}/${item.path}`}
+                        key={indexI}
+                        disabled={!item.element}
+                      >
+                        <ListItem 
+                          disablePadding 
+                        >
+                          <ListItemButton
+                            disabled={!item.element}
+                          >
                             <ListItemIcon>
                               {item.icon}
                             </ListItemIcon>
                             <ListItemText primary={item.name} />
                           </ListItemButton>
                         </ListItem>
+                      </SLink>
                     )
                 })}
           </List>

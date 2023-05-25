@@ -1,28 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { getObjectFromLocalStorage } from '../../utils/functions'
-import { getInfo } from 'hopr-sdk';
-
-const ADMIN_UI_NODE_LIST = getObjectFromLocalStorage("admin-ui-node-list");
-
-const initialState = {
-    status: {
-        connecting: false as boolean,
-        connected: false as boolean,
-    },
-    loginData: {
-        ip: null as string | null,
-        apiKey: null as string | null,
-        peerId: null as string | null,
-    },
-    nodes: ADMIN_UI_NODE_LIST ? ADMIN_UI_NODE_LIST : [] as {}[],
-};
+import { initialState } from './initialState';
+import { actionsAsync } from './actionsAsync'
 
 const authSlice = createSlice({
     name: 'auth',
     initialState,
-    reducers:{
+    reducers: {
         useNodeData(state, action){
-            console.log(action);
             state.loginData.ip = action.payload.ip;
             state.loginData.apiKey = action.payload.apiKey;
             state.status.connecting = true;
@@ -34,7 +18,6 @@ const authSlice = createSlice({
         addNodeData(state, action){
             const newItem = action.payload;
             const existingItem = state.nodes.findIndex((item: { ip: string }) => item.ip === newItem.ip);
-            console.log('existingItem', existingItem)
             if (existingItem === -1) {
                 state.nodes = [
                     {
@@ -56,15 +39,7 @@ const authSlice = createSlice({
     }
 });
 
-
-export const login = (loginData: any) => {
-    return async (dispatch:any) => {
-       const info = await getInfo({url: loginData.ip, apiKey: loginData.apiKey});
-       console.log({info})
-       if (info) dispatch(authSlice.actions.setConnected())
-    };
-};
-
 export const authActions = authSlice.actions;
+export const authActionsAsync = actionsAsync;
 export default authSlice.reducer;
 
