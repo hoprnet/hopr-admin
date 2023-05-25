@@ -5117,9 +5117,9 @@ hoopy@^0.1.4:
   resolved "https://registry.npmjs.org/hoopy/-/hoopy-0.1.4.tgz"
   integrity sha512-HRcs+2mr52W0K+x8RzcLzuPPmVIKMSv97RGHy0Ea9y/mpcaK+xTrjICA04KAHi4GRzxliNqNJEFYWHghy3rSfQ==
 
-"hopr-sdk@git+ssh://git@github.com-iv:hoprnet/hopr-sdk.git#import-through-github-url":
+"hopr-sdk@git+ssh://git@github.com:hoprnet/hopr-sdk.git#import-through-github-url":
   version "0.0.1"
-  resolved "git+ssh://git@github.com-iv:hoprnet/hopr-sdk.git#d9c2306eef6ea2f3bd80e24d72cb96c09800d873"
+  resolved "git+ssh://git@github.com:hoprnet/hopr-sdk.git#d9c2306eef6ea2f3bd80e24d72cb96c09800d873"
   dependencies:
     cross-fetch "^3.1.5"
     isomorphic-ws "^5.0.0"
