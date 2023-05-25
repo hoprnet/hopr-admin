@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled';
 
 const H2 = styled.h2`
   font-family: 'Source Code Pro';
@@ -7,16 +7,15 @@ const H2 = styled.h2`
   font-size: 50px;
   line-height: 1.25;
 
-
   letter-spacing: 0.5px;
 
   color: #414141;
   margin-bottom: 32px;
-  
-  &.typography--center{
+
+  &.typography--center {
     text-align: center;
   }
-  &.typography--fullWidth{
+  &.typography--fullWidth {
     width: 100%;
   }
 
@@ -26,7 +25,7 @@ const H2 = styled.h2`
   @media (max-width: 330px) {
     font-size: 28px;
   }
-`
+`;
 
 const H5 = styled.h5`
   font-family: 'Source Code Pro';
@@ -34,14 +33,14 @@ const H5 = styled.h5`
   font-weight: 400;
   font-size: 28px;
   line-height: 25px;
-  
-  &.typography--center{
+
+  &.typography--center {
     text-align: center;
   }
   letter-spacing: 0.15px;
-  
+
   color: #414141;
-`
+`;
 
 const H6 = styled.h6`
   font-family: 'Source Code Pro';
@@ -50,20 +49,20 @@ const H6 = styled.h6`
   font-weight: 700;
   font-size: 20px;
   line-height: 1.5;
-  
-  &.typography--center{
+
+  &.typography--center {
     text-align: center;
   }
   letter-spacing: 0.15px;
   color: #414141;
   margin: 0;
   &.typography--white {
-    color: #fff
+    color: #fff;
   }
   &.mb32 {
     margin-bottom: 32px;
   }
-`
+`;
 
 const Small1 = styled.div`
   font-family: 'Source Code Pro';
@@ -74,7 +73,7 @@ const Small1 = styled.div`
   /* or 144% */
 
   text-align: left;
-  
+
   &.typography--center {
     text-align: center;
   }
@@ -89,7 +88,7 @@ const Small1 = styled.div`
   &.mb80 {
     margin-bottom: 80px;
   }
-`
+`;
 
 const PlainText = styled.div`
   font-family: 'Source Code Pro';
@@ -100,7 +99,7 @@ const PlainText = styled.div`
   /* or 144% */
 
   text-align: left;
-  
+
   &.typography--center {
     text-align: center;
   }
@@ -118,62 +117,69 @@ const PlainText = styled.div`
   &.mb80 {
     margin-bottom: 80px;
   }
-`
-
+`;
 
 function Typography(props) {
-
-    if (props.type==="h2") {
-        return (
-            <H2 
-              {...props}
-              className={`Typography--h2 ${props.className} ${props.center ? 'typography--center' : ''} ${props.fullWidth ? 'typography--fullWidth' : ''}`} 
-            >
-                {props.children}
-            </H2>
-        );
-    } else if (props.type==="h5") {
-        return (
-            <H5 
-              {...props}
-              className={`Typography--h5 ${props.className} ${props.center ? 'typography--center' : ''} ${props.fullWidth ? 'typography--fullWidth' : ''}`} 
-            >
-                {props.children}
-            </H5>
-        );
-    } else if (props.type==="h6") {
-        return (
-            <H6 
-             {...props}
-              className={`Typography--h5 ${props.className}  ${props.center ? 'typography--center' : ''} ${props.white ? 'typography--white' : ''}`} 
-            >
-                {props.children}
-            </H6>
-        );
-    } else if (props.type==="small1") {
-      return (
-          <Small1 
-            {...props}
-            className={`Typography--small1 ${props.className} ${props.center ? 'typography--center' : ''} ${props.white ? 'typography--white' : ''}`} 
-          >
-              {props.children}
-          </Small1>
-      );
+  if (props.type === 'h2') {
+    return (
+      <H2
+        {...props}
+        className={`Typography--h2 ${props.className} ${
+          props.center ? 'typography--center' : ''
+        } ${props.fullWidth ? 'typography--fullWidth' : ''}`}
+      >
+        {props.children}
+      </H2>
+    );
+  } else if (props.type === 'h5') {
+    return (
+      <H5
+        {...props}
+        className={`Typography--h5 ${props.className} ${
+          props.center ? 'typography--center' : ''
+        } ${props.fullWidth ? 'typography--fullWidth' : ''}`}
+      >
+        {props.children}
+      </H5>
+    );
+  } else if (props.type === 'h6') {
+    return (
+      <H6
+        {...props}
+        className={`Typography--h5 ${props.className}  ${
+          props.center ? 'typography--center' : ''
+        } ${props.white ? 'typography--white' : ''}`}
+      >
+        {props.children}
+      </H6>
+    );
+  } else if (props.type === 'small1') {
+    return (
+      <Small1
+        {...props}
+        className={`Typography--small1 ${props.className} ${
+          props.center ? 'typography--center' : ''
+        } ${props.white ? 'typography--white' : ''}`}
+      >
+        {props.children}
+      </Small1>
+    );
   }
 
-    return (
-        <PlainText
-          {...props}
-          className={`Typography--PlainText ${props.className} ${props.center ? 'typography--center' : ''}`}
-        >
-            {props.children}
-        </PlainText>
-    );
-
+  return (
+    <PlainText
+      {...props}
+      className={`Typography--PlainText ${props.className} ${
+        props.center ? 'typography--center' : ''
+      }`}
+    >
+      {props.children}
+    </PlainText>
+  );
 }
 
 export default Typography;
 
 Typography.defaultProps = {
-    className: '',
-}
+  className: '',
+};

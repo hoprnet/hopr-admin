@@ -1,9 +1,13 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled';
 
 const SSection = styled.section`
   overflow: hidden;
   &.section--gradient {
-    --section-background: linear-gradient(180deg, #0000b4 -110.52%, hsla(0, 0%, 85%, 0) 60.89%);
+    --section-background: linear-gradient(
+      180deg,
+      #0000b4 -110.52%,
+      hsla(0, 0%, 85%, 0) 60.89%
+    );
   }
   &.section--yellow {
     --section-background: #ffffa0;
@@ -13,7 +17,11 @@ const SSection = styled.section`
     color: #fff;
   }
   &.section--light-blue-gradient {
-    --section-background: linear-gradient(180deg, #1ad1ff -110.52%, hsla(0, 0%, 85%, 0) 105%);
+    --section-background: linear-gradient(
+      180deg,
+      #1ad1ff -110.52%,
+      hsla(0, 0%, 85%, 0) 105%
+    );
   }
   &.section--light-blue {
     --section-background: #7ee5ff;
@@ -52,8 +60,7 @@ const SSection = styled.section`
   }
   padding-bottom: 40px;
   padding-top: 40px;
-
-`
+`;
 
 const Content = styled.div`
   max-width: 1098px;
@@ -66,27 +73,27 @@ const Content = styled.div`
   &.content--center {
     align-items: center;
   }
-`
+`;
 
 interface SectionProps {
-  className ?: string,
-  gradient ?: boolean,
-  yellow ?: boolean,
-  darkGradient ?: boolean,
-  lightBlueGradient ?: boolean,
-  lightBlue ?: boolean,
-  gray ?: boolean,
-  darkGray ?: boolean,
-  lightGray ?: boolean,
-  fullHeightMin ?: boolean,
-  fullHeight?: boolean,
-  center ?: boolean,
-  disabled ?: boolean,
-  id ?: string,
-  children ?: any,
+  className?: string;
+  gradient?: boolean;
+  yellow?: boolean;
+  darkGradient?: boolean;
+  lightBlueGradient?: boolean;
+  lightBlue?: boolean;
+  gray?: boolean;
+  darkGray?: boolean;
+  lightGray?: boolean;
+  fullHeightMin?: boolean;
+  fullHeight?: boolean;
+  center?: boolean;
+  disabled?: boolean;
+  id?: string;
+  children?: any;
 }
 
-const Section:React.FC<SectionProps> = (props) => {
+const Section: React.FC<SectionProps> = (props) => {
   return (
     <SSection
       className={[
@@ -103,17 +110,17 @@ const Section:React.FC<SectionProps> = (props) => {
         props.fullHeightMin && 'full-height-min',
         props.fullHeight && 'full-height',
         props.center && 'center',
-        props.disabled && 'section--disabled'
+        props.disabled && 'section--disabled',
       ].join(' ')}
       id={props.id}
     >
-      <Content 
+      <Content
         className={[`Content`, props.center && 'content--center'].join(' ')}
       >
         {props.children}
       </Content>
     </SSection>
   );
-}
+};
 
 export default Section;

@@ -1,6 +1,6 @@
-import React, { useEffect }  from 'react';
-import MuiButton from '@mui/material/Button'
-import styled from '@emotion/styled'
+import React, { useEffect } from 'react';
+import MuiButton from '@mui/material/Button';
+import styled from '@emotion/styled';
 
 const LaunchAppBtn = styled(MuiButton)`
   text-transform: none;
@@ -20,23 +20,19 @@ const LaunchAppBtn = styled(MuiButton)`
     @media screen and (max-width: 680px) {
       display: none;
     }
-
   }
-  &.EnterPlaygroundBtnMobile{
+  &.EnterPlaygroundBtnMobile {
     margin: 8px;
     margin-top: 20px;
     text-align: center;
   }
-`
+`;
 
 const LaunchPlaygroundBtn = (props) => {
   return (
-      <LaunchAppBtn
-        variant="contained"
-        {...props}
-      >
-        {props.children}
-      </LaunchAppBtn>
+    <LaunchAppBtn variant="contained" {...props}>
+      {props.children}
+    </LaunchAppBtn>
   );
 };
 

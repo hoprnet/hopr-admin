@@ -2,8 +2,8 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
-import { Link, LinkProps } from 'react-router-dom'
-import { RouterProvider, BrowserRouter } from 'react-router-dom'
+import { Link, LinkProps } from 'react-router-dom';
+import { RouterProvider, BrowserRouter } from 'react-router-dom';
 import styled from '@emotion/styled';
 
 import List from '@mui/material/List';
@@ -16,35 +16,34 @@ import Typography from '@mui/material/Typography';
 
 const drawerWidth = 240;
 
-
 interface Props {
   /**
    * Injected by the documentation to work in an iframe.
    * You won't need it on your project.
    */
   window?: () => Window;
-  drawerItems?: any[]
+  drawerItems?: any[];
 }
 
-
 const AppBarFiller = styled(Toolbar)`
-  min-height: 59px!important;
-`
+  min-height: 59px !important;
+`;
 
 interface SLinkProps extends LinkProps {
-  disabled:boolean;
+  disabled: boolean;
 }
 
 const SLink = styled(Link)<SLinkProps>`
-  ${props => props.disabled &&  `
+  ${(props) =>
+    props.disabled &&
+    `
     pointer-events: none;
   `}
-`
-
+`;
 
 export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
- // const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -57,41 +56,36 @@ export default function ResponsiveDrawer(props: Props) {
       <Divider />
       {props.drawerItems?.map((group, indexG) => {
         if (group.drawer === false) return;
-        
-        return(
+
+        return (
           <List>
             {group.groupName}
-                {
-                  group.items && group.items.map((item: any, indexI: number) => {
-                    return(
-                      <SLink
-                        to={`${group.path}/${item.path}`}
-                        key={indexI}
-                        disabled={!item.element}
-                      >
-                        <ListItem 
-                          disablePadding 
-                        >
-                          <ListItemButton
-                            disabled={!item.element}
-                          >
-                            <ListItemIcon>
-                              {item.icon}
-                            </ListItemIcon>
-                            <ListItemText primary={item.name} />
-                          </ListItemButton>
-                        </ListItem>
-                      </SLink>
-                    )
-                })}
+            {group.items &&
+              group.items.map((item: any, indexI: number) => {
+                return (
+                  <SLink
+                    to={`${group.path}/${item.path}`}
+                    key={indexI}
+                    disabled={!item.element}
+                  >
+                    <ListItem disablePadding>
+                      <ListItemButton disabled={!item.element}>
+                        <ListItemIcon>{item.icon}</ListItemIcon>
+                        <ListItemText primary={item.name} />
+                      </ListItemButton>
+                    </ListItem>
+                  </SLink>
+                );
+              })}
           </List>
-        )
+        );
       })}
       <Divider />
     </div>
   );
 
-  const container = window !== undefined ? () => window().document.body : undefined;
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -111,7 +105,10 @@ export default function ResponsiveDrawer(props: Props) {
           }}
           sx={{
             display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+            },
           }}
         >
           {drawer}
@@ -120,7 +117,10 @@ export default function ResponsiveDrawer(props: Props) {
           variant="permanent"
           sx={{
             display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+            },
           }}
           open
         >

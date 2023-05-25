@@ -7,7 +7,9 @@ import styled from '@emotion/styled';
 import MuiAppBar from '@mui/material/AppBar';
 import NavBarItems from './navBarItems';
 
-const AppBar = styled(({tallerNavBarOnMobile, ...rest}) => <MuiAppBar  {...rest} />)`
+const AppBar = styled(({ tallerNavBarOnMobile, ...rest }) => (
+  <MuiAppBar {...rest} />
+))`
   background: white;
   height: 60px;
   border-bottom: 1px lightgray solid;
@@ -15,7 +17,9 @@ const AppBar = styled(({tallerNavBarOnMobile, ...rest}) => <MuiAppBar  {...rest}
   padding-left: 16px;
   padding-right: 16px;
 
-  ${props => props.tallerNavBarOnMobile &&  `
+  ${(props) =>
+    props.tallerNavBarOnMobile &&
+    `
     @media screen and (max-width: 520px) {
     //  height: 100px;
       position: static;
@@ -60,7 +64,7 @@ const Logo = styled.div`
 `;
 
 const NavBar = (props) => {
-//  const router = useRouter();
+  //  const router = useRouter();
   const [activaMenu, setActivaMenu] = useState(false);
   const [isScroll, setIsScroll] = useState(false);
   //const showCoinbase = router.pathname === '/' || router.pathname === '/token';
@@ -81,7 +85,7 @@ const NavBar = (props) => {
 
   return (
     <>
-      <AppBar 
+      <AppBar
         className="Hopr-navBar navbar"
         tallerNavBarOnMobile={props.tallerNavBarOnMobile}
       >
@@ -101,19 +105,13 @@ const NavBar = (props) => {
           >
             <span></span>
           </div>
-          <NavBarItems
-            itemsNavbar={props.itemsNavbarCenter}
-            center
-          />
-          <NavBarItems
-            itemsNavbar={props.itemsNavbarRight}
-            right
-          />
+          <NavBarItems itemsNavbar={props.itemsNavbarCenter} center />
+          <NavBarItems itemsNavbar={props.itemsNavbarRight} right />
         </Container>
       </AppBar>
       <div className={`menu mobile ${activaMenu ? ' show-menu' : ''}`}>
         <NavBarItems
-     //     itemsNavbar={[...props.itemsNavbarCenter, ...props.itemsNavbarRight]}
+          //     itemsNavbar={[...props.itemsNavbarCenter, ...props.itemsNavbarRight]}
           onButtonClick={() => {
             setActivaMenu(false);
           }}
@@ -124,11 +122,9 @@ const NavBar = (props) => {
   );
 };
 
-
 NavBar.defaultProps = {
   itemsNavbarCenter: [],
   itemsNavbarRight: [],
 };
 
 export default NavBar;
-

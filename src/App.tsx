@@ -1,10 +1,10 @@
-import { Store } from './types/index'
-import { 
-  RouterProvider, 
-  BrowserRouter, 
+import { Store } from './types/index';
+import {
+  RouterProvider,
+  BrowserRouter,
   Route,
   createRoutesFromElements,
-  createBrowserRouter
+  createBrowserRouter,
 } from 'react-router-dom'
 import store from './store'
 import { Provider } from 'react-redux';
@@ -14,12 +14,8 @@ import router, { applicationMap } from './router';
 
 function App() {
   return (
-    <Provider
-      store={store}
-    >
-      <RouterProvider
-        router={router}
-      />
+    <Provider store={store}>
+      <RouterProvider router={router} />
     </Provider>
   );
 }

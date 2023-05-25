@@ -1,9 +1,8 @@
-import React from "react";
-import styled from "@emotion/styled";
+import React from 'react';
+import styled from '@emotion/styled';
 
-import Typography from '../Typography/index.jsx'
-import Button from '../Button/index.jsx'
-
+import Typography from '../Typography/index.jsx';
+import Button from '../Button/index.jsx';
 
 const SBrick = styled.div`
   display: flex;
@@ -18,7 +17,7 @@ const SBrick = styled.div`
     margin-top: 80px;
     margin-bottom: 80px;
   }
-`
+`;
 
 const TextContainer = styled.div`
   flex: 6;
@@ -28,9 +27,8 @@ const TextContainer = styled.div`
   div {
     text-align: left;
   }
-  ${props => props.centerText ? 'justify-content: center;' : ''}
-  
-`
+  ${(props) => (props.centerText ? 'justify-content: center;' : '')}
+`;
 
 const ImageContainer = styled.div`
   display: flex;
@@ -40,64 +38,53 @@ const ImageContainer = styled.div`
   @media (max-width: 699px) {
     display: none;
   }
-`
+`;
 
 const Image = styled.img`
   height: auto;
   max-width: 100%;
   border-radius: 28px;
-  ${props => props.noShadow ? '' : 'box-shadow: 0px 2px 34px -7px rgb(0 0 0 / 50%);'}
+  ${(props) =>
+    props.noShadow ? '' : 'box-shadow: 0px 2px 34px -7px rgb(0 0 0 / 50%);'}
   &.mobileOnly {
     margin-bottom: 16px;
     @media (min-width: 700px) {
       display: none;
     }
   }
-
-`
+`;
 
 function Brick(props) {
-    return (
-        <SBrick
-            className={`Brick ${props.reverse ? 'Brick--reverse' : ''} ${props.className}`}
-        >
-            <TextContainer centerText={props.centerText}>
-                <Typography type="h5">
-                    {props.title}
-                </Typography>
-                <Image
-                    className='mobileOnly'
-                    src={props.image}
-                    noShadow={props.noShadow}
-                />
-                <Typography>
-                    {props.text}
-                </Typography>
-                {
-                    props.button &&
-                    <Button
-                        hopr
-                        href={props.buttonHref}
-                        target="_blank"
-                    >
-                        {props.button}
-                    </Button>
-                }
-            </TextContainer>
-            <ImageContainer>
-                <Image
-                    src={props.image}
-                    noShadow={props.noShadow}
-                />
-            </ImageContainer>
-
-        </SBrick>
-    );
+  return (
+    <SBrick
+      className={`Brick ${props.reverse ? 'Brick--reverse' : ''} ${
+        props.className
+      }`}
+    >
+      <TextContainer centerText={props.centerText}>
+        <Typography type="h5">{props.title}</Typography>
+        <Image
+          className="mobileOnly"
+          src={props.image}
+          noShadow={props.noShadow}
+        />
+        <Typography>{props.text}</Typography>
+        {props.button && (
+          <Button hopr href={props.buttonHref} target="_blank">
+            {props.button}
+          </Button>
+        )}
+      </TextContainer>
+      <ImageContainer>
+        <Image src={props.image} noShadow={props.noShadow} />
+      </ImageContainer>
+    </SBrick>
+  );
 }
 
 export default Brick;
 
 Brick.defaultProps = {
-    className: '',
-    reverse: false,
-}
+  className: '',
+  reverse: false,
+};

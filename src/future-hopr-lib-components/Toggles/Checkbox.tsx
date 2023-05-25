@@ -1,22 +1,17 @@
 import FormControlLabel from '@mui/material/FormControlLabel';
 import MuiCheckbox, { CheckboxProps } from '@mui/material/Checkbox';
 
-
 interface Props extends CheckboxProps {
-    label ?: string,
+  label?: string;
 }
 
-const Checkbox : React.FC<Props>= (props) => {
+const Checkbox: React.FC<Props> = (props) => {
   return (
-    <FormControlLabel 
-        control={
-            <MuiCheckbox
-                onChange={props.onChange}
-                value={props.value}
-            />} 
-        label={props.label}
+    <FormControlLabel
+      control={<MuiCheckbox onChange={props.onChange} value={props.value} />}
+      label={props.label}
     />
   );
-}
+};
 
-export default Checkbox
+export default Checkbox;

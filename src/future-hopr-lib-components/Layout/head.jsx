@@ -1,5 +1,5 @@
 import React from 'react';
-import NextHead from 'next/head'
+import NextHead from 'next/head';
 import { seasonNumber } from '../../config';
 
 const Head = () => {
@@ -26,5 +26,3 @@ const Head = () => {
 };
 
 export default Head;
-
-

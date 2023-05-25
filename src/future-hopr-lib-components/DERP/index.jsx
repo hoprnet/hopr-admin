@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
 
-import styled from "@emotion/styled";
-import { chains } from "../../shared/chains.js"
+import styled from '@emotion/styled';
+import { chains } from '../../shared/chains.js';
 
 function App() {
   const [log, setLog] = useState([]);
@@ -21,15 +21,15 @@ function App() {
 
   const updateIp = (ip, country) => {
     setIp(ip);
-    setCountry(country)
+    setCountry(country);
   };
 
   const setConnectionStatus = () => {
-    setStatus("connected")
+    setStatus('connected');
   };
 
   const unsetConnectionStatus = () => {
-    setStatus("not connected")
+    setStatus('not connected');
   };
 
   // const getIPInfo=()=>{
@@ -59,9 +59,11 @@ function App() {
 
   const updateInfo = (cf) => {
     setRpcUrl2(cf.originalUrl);
-    setCity(cf.city)
+    setCity(cf.city);
 
-    let chosenChain = chains.filter(chain => cf.originalUrl.includes(chain.derpUrl))[0];
+    let chosenChain = chains.filter((chain) =>
+      cf.originalUrl.includes(chain.derpUrl)
+    )[0];
     if (chosenChain) {
       setChainId(chosenChain.chainId);
       setName('DERP - ' + chosenChain.name);
@@ -91,13 +93,13 @@ function App() {
     //     "postalCode": "00-202",
     //     "originalUrl": "http://localhost:8788/rpc/xdai/mainnet"
     // }
-  }
+  };
 
   const addLogEntry = (entry) => {
-    setLog((prevState)=> {
-      const newState = [entry, ...prevState]
-      console.log(newState)
-      return newState
+    setLog((prevState) => {
+      const newState = [entry, ...prevState];
+      console.log(newState);
+      return newState;
     });
   };
 
@@ -105,34 +107,30 @@ function App() {
     const wsUrl = `wss://${url}/client_logs/websocket`;
     const ws = new WebSocket(wsUrl);
 
-    ws.addEventListener("open", (event) => {
-      console.log("websocket opened");
+    ws.addEventListener('open', (event) => {
+      console.log('websocket opened');
       // currentWebSocket = ws;
       setConnectionStatus();
     });
 
-    ws.addEventListener("message", (event) => {
+    ws.addEventListener('message', (event) => {
       const data = JSON.parse(event.data);
-      console.log("received websocket message", event.data);
+      console.log('received websocket message', event.data);
       addLogEntry(data.log);
       updateIp(data.ip, data.country);
       updateInfo(data.cf);
     });
 
-    ws.addEventListener("close", (event) => {
-      console.log(
-          "websocket closed, reconnecting:",
-          event.code,
-          event.reason
-      );
+    ws.addEventListener('close', (event) => {
+      console.log('websocket closed, reconnecting:', event.code, event.reason);
       unsetConnectionStatus();
       setTimeout(join(), 1000);
     });
 
-    ws.addEventListener("error", (event) => {
-      console.log("websocket error, reconnecting:", event);
+    ws.addEventListener('error', (event) => {
+      console.log('websocket error, reconnecting:', event);
       unsetConnectionStatus();
-   //   setTimeout(join(), 1000);
+      //   setTimeout(join(), 1000);
     });
   };
 
@@ -143,29 +141,28 @@ function App() {
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
   const Location = styled.div`
     width: 100%;
     font-family: 'Source Code Pro';
     font-style: normal;
     font-size: 14px;
-    
+
     th {
       font-size: 16px;
     }
-    th, td {
+    th,
+    td {
       padding: 8px;
     }
     pre {
       max-width: 440px;
     }
-    
+
     .hopr-table-header {
-      background: linear-gradient(180deg, #0000B4 0.5%, #000050 100%);
+      background: linear-gradient(180deg, #0000b4 0.5%, #000050 100%);
       color: white;
 
       @media (min-width: 1040px) {
-
         .hopr-table-header-Location {
           width: 170px;
         }
@@ -199,16 +196,14 @@ function App() {
         }
 
         .hopr-table-header-Params {
-
         }
       }
     }
-    
-    
+
     .hopr-table-content-IP {
       overflow-wrap: anywhere;
     }
-  `
+  `;
 
   return (
     <Fragment>
@@ -219,14 +214,19 @@ function App() {
               <th className={'hopr-table-header-Location'}>Location</th>
               <th className={'hopr-table-header-IP'}>IP</th>
               <th className={'hopr-table-header-Status'}>Status</th>
-              <th className={'hopr-table-header-MetaMask'}>MetaMask Network Settings</th>
+              <th className={'hopr-table-header-MetaMask'}>
+                MetaMask Network Settings
+              </th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>
                 <div>
-                  <div>{country}{city && `, ${city}`}</div>
+                  <div>
+                    {country}
+                    {city && `, ${city}`}
+                  </div>
                   {/*<div>*/}
                   {/*  /!*<iframe*!/*/}
                   {/*  /!*    src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d156350.22604103578!2d19.00260!3d52.24388711124657!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xd0889090081dc01!2zNTLCsDE0JzU0LjIiTiAyMcKwMDAnMDkuNCJF!5e0!3m2!1sen!2spl!4v1655291635152!5m2!1sen!2spl`}*!/*/}
@@ -265,26 +265,21 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {
-              log.map((entry, index)=>{
-                return(
-                  <tr
-                    key={`entry-${index}`}
-                  >
-                    <td>{entry?.timestamp}</td>
-                    <td>{entry?.type}</td>
-                    <td>{entry?.userAgent}</td>
-                    <td>{entry?.method}</td>
-                    <td>
-                      <pre>
-                        { entry.params && JSON.stringify(entry.params, null, 2) }
-                      </pre>
-                    </td>
-                  </tr>
-                )
-                }
-              )
-            }
+            {log.map((entry, index) => {
+              return (
+                <tr key={`entry-${index}`}>
+                  <td>{entry?.timestamp}</td>
+                  <td>{entry?.type}</td>
+                  <td>{entry?.userAgent}</td>
+                  <td>{entry?.method}</td>
+                  <td>
+                    <pre>
+                      {entry.params && JSON.stringify(entry.params, null, 2)}
+                    </pre>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </Location>

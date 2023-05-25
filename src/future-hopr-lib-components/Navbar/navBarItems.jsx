@@ -24,24 +24,23 @@ const NavBarItems = (props) => {
     ? 'mobile'
     : 'poz-undefined';
 
-
-
   return (
     <Content className={['menu', `menu-${poz}`].join(' ')}>
-      { props.itemsNavbar[0]?.label && props.itemsNavbar.map((item, i) => (
-        <NavButton
-          key={`itemsNavbar-${poz}-${i}`}
-          id={`itemsNavbar-${poz}-${i}`}
-          path={item.path}
-          subMenu={item.subMenu}
-          label={item.name}
-          background={item.background}
-          onButtonClick={props.onButtonClick}
-        >
-          {item.name}
-        </NavButton>
-      ))}
-      { props.itemsNavbar }
+      {props.itemsNavbar[0]?.label &&
+        props.itemsNavbar.map((item, i) => (
+          <NavButton
+            key={`itemsNavbar-${poz}-${i}`}
+            id={`itemsNavbar-${poz}-${i}`}
+            path={item.path}
+            subMenu={item.subMenu}
+            label={item.name}
+            background={item.background}
+            onButtonClick={props.onButtonClick}
+          >
+            {item.name}
+          </NavButton>
+        ))}
+      {props.itemsNavbar}
     </Content>
   );
 };

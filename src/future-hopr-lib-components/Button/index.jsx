@@ -1,6 +1,6 @@
 import React from 'react';
-import styled from "@emotion/styled";
-import MuiButton from "@mui/material/Button";
+import styled from '@emotion/styled';
+import MuiButton from '@mui/material/Button';
 import PropTypes from 'prop-types';
 
 const SButton = styled(MuiButton)`
@@ -15,11 +15,11 @@ const SButton = styled(MuiButton)`
   height: unset;
   line-height: 1.5;
   height: 39px;
-  
+
   &.btn-hopr--v2:not(.Mui-disabled) {
-    color: #FFF;
+    color: #fff;
     background: linear-gradient(#000050, #0000b4);
-    color: #FFFFFF;
+    color: #ffffff;
   }
   &.btn-hopr--standardWidth {
     width: 100%;
@@ -43,35 +43,36 @@ const SButton = styled(MuiButton)`
   &.btn-hopr--v2.btn-hopr--fade:not(.Mui-disabled) {
     background: linear-gradient(rgb(0 0 80 / 60%), rgb(0 0 180 / 60%));
   }
-`
+`;
 
 const Button = React.forwardRef((props, ref) => {
-    const {hopr, imageOnly, size70, loading, standardWidth, fade, ...rest} = props;
+  const { hopr, imageOnly, size70, loading, standardWidth, fade, ...rest } =
+    props;
 
-    return (
-        <SButton
-            variant={'contained'}
-            {...rest}
-            ref={ref}
-            className={[
-              props.className,
-              'btn-hopr--v2',
-              props.imageOnly && 'btn-hopr--image-only',
-              props.size70 && 'btn-hopr--size70',
-              props.standardWidth && 'btn-hopr--standardWidth',
-              props.fade && 'btn-hopr--fade',
-            ].join(' ')}
-        >
-            {props.children}
-        </SButton>
-    )
-})
+  return (
+    <SButton
+      variant={'contained'}
+      {...rest}
+      ref={ref}
+      className={[
+        props.className,
+        'btn-hopr--v2',
+        props.imageOnly && 'btn-hopr--image-only',
+        props.size70 && 'btn-hopr--size70',
+        props.standardWidth && 'btn-hopr--standardWidth',
+        props.fade && 'btn-hopr--fade',
+      ].join(' ')}
+    >
+      {props.children}
+    </SButton>
+  );
+});
 
 Button.defaultProps = {
-    hopr: false,
-    imageOnly:  false,
-    size70:  false,
-}
+  hopr: false,
+  imageOnly: false,
+  size70: false,
+};
 
 // Button.propTypes = {
 //     hopr: PropTypes.bool,

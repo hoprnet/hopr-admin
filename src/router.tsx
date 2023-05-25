@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouteObject, Outlet } from 'react-router-dom'
+import { createBrowserRouter, RouteObject, Outlet } from 'react-router-dom';
 import Section1 from './sections/selectNode';
 import SectionInfo from './sections/info';
 
@@ -18,28 +18,28 @@ export const applicationMap = [
     path: 'node',
     items: [
       {
-        name: 'Connect', 
+        name: 'Connect',
         path: 'connect',
         icon: <MenuIcon />,
-        element: <Section1/>,
+        element: <Section1 />,
       },
       {
         name: 'Info',
         path: 'info',
-        icon:  <MailIcon />,
+        icon: <MailIcon />,
         element: <h1>Hellllooooo</h1>,
       },
       {
         name: 'Configuration',
         path: 'configuration',
-        icon:  <MailIcon />
+        icon: <MailIcon />,
       },
       {
         name: 'CLI',
         path: 'cli',
-        icon:  <MailIcon />
+        icon: <MailIcon />,
       },
-    ]
+    ],
   },
   {
     groupName: 'Networking',
@@ -48,47 +48,47 @@ export const applicationMap = [
       {
         name: 'Ping',
         path: 'ping',
-        icon:  <MailIcon />
+        icon: <MailIcon />,
       },
       {
         name: 'Message',
         path: 'message',
-        icon:  <MailIcon />
+        icon: <MailIcon />,
       },
       {
-        name: 'Channels', 
+        name: 'Channels',
         path: 'channels',
-        icon: <InboxIcon />
+        icon: <InboxIcon />,
       },
       {
-        name:  'Aliases',
+        name: 'Aliases',
         path: 'aliases',
-        icon:  <MailIcon />
+        icon: <MailIcon />,
       },
-    ]
-  }
+    ],
+  },
 ];
 
 var routes = [
   {
-      path: '/',
-      element: 
-        <Layout
-          drawer
-          drawerItems={applicationMap}
-        />,
-      children: [] as RouteObject[]
-  }
+    path: '/',
+    element: <Layout drawer drawerItems={applicationMap} />,
+    children: [] as RouteObject[],
+  },
 ];
 
-applicationMap.map(groups => {
+applicationMap.map((groups) => {
   // if(!groups.items) {
   //   routes[0].children.push({ path: groups.path, element: groups.element});
   // } else {
-    groups.items.map(item => {
-      if (item.path && item.element) routes[0].children.push({ path: groups.path + '/' + item.path, element: item.element});
-    })
-//  }
+  groups.items.map((item) => {
+    if (item.path && item.element)
+      routes[0].children.push({
+        path: groups.path + '/' + item.path,
+        element: item.element,
+      });
+  });
+  //  }
 });
 
 console.log('routes', routes);

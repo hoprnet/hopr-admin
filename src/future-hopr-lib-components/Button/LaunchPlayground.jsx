@@ -1,6 +1,6 @@
-import React, { useEffect }  from 'react';
-import MuiButton from '@mui/material/Button'
-import styled from '@emotion/styled'
+import React, { useEffect } from 'react';
+import MuiButton from '@mui/material/Button';
+import styled from '@emotion/styled';
 
 const LaunchAppBtn = styled(MuiButton)`
   text-transform: none;
@@ -31,12 +31,12 @@ const LaunchAppBtn = styled(MuiButton)`
       //}
     }
   }
-  &.EnterPlaygroundBtnMobile{
+  &.EnterPlaygroundBtnMobile {
     margin: 8px;
     margin-top: 20px;
     text-align: center;
   }
-`
+`;
 
 const LaunchPlaygroundBtn = (props) => {
   // useEffect(() => {
@@ -53,21 +53,21 @@ const LaunchPlaygroundBtn = (props) => {
   // }, []);
 
   const variant = () => {
-    if(props.mobile) return 'EnterPlaygroundBtnMobile'
-    if(props.main) return 'EnterPlaygroundBtnMain'
-    return 'EnterPlaygroundBtn'
-  }
+    if (props.mobile) return 'EnterPlaygroundBtnMobile';
+    if (props.main) return 'EnterPlaygroundBtnMain';
+    return 'EnterPlaygroundBtn';
+  };
 
   return (
-      <LaunchAppBtn
-        variant="contained"
-        id={variant()}
-        href="https://playground.hoprnet.org"
-        target="_blank"
-        className={variant()}
-      >
-        Enter Playground
-      </LaunchAppBtn>
+    <LaunchAppBtn
+      variant="contained"
+      id={variant()}
+      href="https://playground.hoprnet.org"
+      target="_blank"
+      className={variant()}
+    >
+      Enter Playground
+    </LaunchAppBtn>
   );
 };
 
