@@ -17,7 +17,7 @@ type InitialState = {
     initiating: boolean;
     initiated: boolean;
   };
-  account: AccountResponseType | null;
+  addresses: AccountResponseType | null;
   aliases: GetAliasesResponseType | null;
   balances: AccountResponseType | null;
   channels: GetChannelsResponseType | null;
@@ -36,7 +36,7 @@ export const initialState: InitialState = {
     initiating: false,
     initiated: false,
   },
-  account: null,
+  addresses: null,
   aliases: null,
   balances: null,
   channels: null,
