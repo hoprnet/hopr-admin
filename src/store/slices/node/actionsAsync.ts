@@ -1,13 +1,7 @@
-import {
-  type AsyncThunk,
-  createAsyncThunk,
-  ActionReducerMapBuilder,
-} from '@reduxjs/toolkit';
-import { nodeActions } from './index';
-import { HoprSdk, api } from 'hopr-sdk';
-import { APIError } from 'hopr-sdk/dist/utils';
+import { createAsyncThunk, ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
-var hoprSdk = new HoprSdk({ url: '', apiToken: '' });
+import { getInfo } from 'hopr-sdk/api';
+import { APIError } from 'hopr-sdk/utils';
 
 const getInfoThunk = createAsyncThunk(
   'node/getInfo',
@@ -16,7 +10,7 @@ const getInfoThunk = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const info = await api.getInfo({ url, apiKey });
+      const info = await getInfo({ url, apiKey });
       return info;
     } catch (e) {
       if (e instanceof APIError) {
@@ -35,24 +29,6 @@ export const createExtraReducers = (
     console.log({ action });
   });
 };
-
-// const setNode = (loginData: any) => {
-//   return async (dispatch: any) => {
-//     dispatch(nodeActions.setInitiating());
-//     hoprSdk = new HoprSdk({ url: loginData.ip, apiToken: loginData.apiKey });
-//     const info = await hoprSdk.api.node.getInfo();
-//     console.log({ info });
-//     if (info) dispatch(nodeActions.setInitiated(info));
-//   };
-// };
-
-// const getInfo = () => {
-//   return async (dispatch: any) => {
-//     const info = await hoprSdk.api.node.getInfo();
-//     console.log({ info });
-//     if (info) dispatch(nodeActions.setInfo(info));
-//   };
-// };
 
 export const actionsAsync = {
   getInfoThunk,
