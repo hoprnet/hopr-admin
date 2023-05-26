@@ -9,6 +9,7 @@ import type {
   GetSettingsResponseType,
   GetTicketsResponseType,
   GetTokenResponseType,
+  GetEntryNodesResponseType,
 } from 'hopr-sdk/types';
 
 type InitialState = {
@@ -24,11 +25,13 @@ type InitialState = {
   // TODO: should this hold sent and received messages?
   messages: unknown[];
   peers: GetPeersResponseType | null;
+  entryNodes: GetEntryNodesResponseType | null;
   peerInfo: GetPeerInfoResponseType | null;
   settings: GetSettingsResponseType | null;
   statistics: GetStatisticsResponseType | null;
   tickets: GetTicketsResponseType | null;
   token: GetTokenResponseType | null;
+  version: string | null;
 };
 
 export const initialState: InitialState = {
@@ -49,9 +52,11 @@ export const initialState: InitialState = {
     announced: [],
     observed: [],
   },
+  entryNodes: null,
   info: null,
   settings: null,
   statistics: null,
   tickets: [],
   token: null,
+  version: null,
 };

@@ -12,6 +12,8 @@ import {
   getStatistics,
   getTickets,
   getToken,
+  getEntryNodes,
+  getVersion,
 } from 'hopr-sdk/api';
 import { APIError } from 'hopr-sdk/utils';
 
@@ -202,6 +204,40 @@ const getTokenThunk = createAsyncThunk(
   }
 );
 
+const getEntryNodesThunk = createAsyncThunk(
+  'node/getEntryNodes',
+  async (
+    { url, apiKey }: { url: string; apiKey: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const entryNodes = await getEntryNodes({ url, apiKey });
+      return entryNodes;
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
+const getVersionThunk = createAsyncThunk(
+  'node/getVersion',
+  async (
+    { url, apiKey }: { url: string; apiKey: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const version = await getVersion({ url, apiKey });
+      return version;
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
 export const createExtraReducers = (
   builder: ActionReducerMapBuilder<typeof initialState>
 ) => {
@@ -260,6 +296,16 @@ export const createExtraReducers = (
       state.token = action.payload;
     }
   });
+  builder.addCase(getEntryNodesThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      state.entryNodes = action.payload;
+    }
+  });
+  builder.addCase(getVersionThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      state.version = action.payload;
+    }
+  });
 };
 
 export const actionsAsync = {
@@ -273,4 +319,6 @@ export const actionsAsync = {
   getStatisticsThunk,
   getTicketsThunk,
   getTokenThunk,
+  getEntryNodesThunk,
+  getVersionThunk,
 };
