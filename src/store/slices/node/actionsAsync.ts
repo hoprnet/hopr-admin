@@ -1,38 +1,36 @@
-import { createAsyncThunk, ActionReducerMapBuilder } from '@reduxjs/toolkit';
-import { initialState } from './initialState';
+import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 import {
-  getInfo,
+  closeChannel,
+  createToken,
+  deleteToken,
+  fundChannels,
   getAddresses,
+  getAlias,
   getAliases,
   getBalances,
+  getChannel,
+  getChannelTickets,
   getChannels,
-  getPeers,
+  getEntryNodes,
+  getInfo,
   getPeerInfo,
+  getPeers,
   getSettings,
   getStatistics,
   getTickets,
   getToken,
-  getEntryNodes,
   getVersion,
-  getAlias,
-  setAlias,
-  removeAlias,
-  withdraw,
-  closeChannel,
-  fundChannels,
-  getChannel,
-  getChannelTickets,
   openChannel,
-  redeemChannelTickets,
-  sendMessage,
-  sign,
   pingNode,
-  setSetting,
+  redeemChannelTickets,
   redeemTickets,
-  createToken,
-  deleteToken,
+  removeAlias,
+  sendMessage,
+  setAlias,
+  setSetting,
+  sign,
+  withdraw,
 } from 'hopr-sdk/api';
-import { APIError } from 'hopr-sdk/utils';
 import {
   AliasPayloadType,
   BasePayloadType,
@@ -52,6 +50,8 @@ import {
   SignPayloadType,
   WithdrawPayloadType,
 } from 'hopr-sdk/types';
+import { APIError } from 'hopr-sdk/utils';
+import { initialState } from './initialState';
 
 const getInfoThunk = createAsyncThunk(
   'node/getInfo',
