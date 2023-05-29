@@ -1,12 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 
-const authSlice = createSlice({
+const safeSlice = createSlice({
   name: 'safe',
   initialState,
-  reducers: {
-  },
+  reducers: {},
 });
 
-export const authActions = authSlice.actions;
-export default authSlice.reducer;
+export const safeActions = safeSlice.actions;
+export default safeSlice.reducer;

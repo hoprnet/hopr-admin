@@ -1,13 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 
-const authSlice = createSlice({
+const web3Slice = createSlice({
   name: 'web3',
   initialState,
-  reducers: {
-
-  },
+  reducers: {},
 });
 
-export const authActions = authSlice.actions;
-export default authSlice.reducer;
+export const web3Actions = web3Slice.actions;
+export default web3Slice.reducer;

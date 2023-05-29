@@ -1,6 +1,8 @@
 import { createBrowserRouter, RouteObject, Outlet } from 'react-router-dom';
 import Section1 from './sections/selectNode';
 import SectionInfo from './sections/info';
+import SectionWeb3 from './sections/web3';
+import SectionSafe from './sections/safe';
 
 import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -54,6 +56,34 @@ export const applicationMap = [
         name: 'Message',
         path: 'message',
         icon: <MailIcon />,
+      },
+      {
+        name: 'Channels',
+        path: 'channels',
+        icon: <InboxIcon />,
+      },
+      {
+        name: 'Aliases',
+        path: 'aliases',
+        icon: <MailIcon />,
+      },
+    ],
+  },
+  {
+    groupName: 'DEVELOP',
+    path: 'networking',
+    items: [
+      {
+        name: 'Web3',
+        path: 'web3',
+        icon: <MailIcon />,
+        element: <SectionWeb3 />,
+      },
+      {
+        name: 'Safe',
+        path: 'safe',
+        icon: <MailIcon />,
+        element: <SectionSafe />,
       },
       {
         name: 'Channels',

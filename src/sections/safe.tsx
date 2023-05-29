@@ -9,16 +9,13 @@ import { nodeActions, nodeActionsAsync } from '../store/slices/node';
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
 
-
-
 function Section_Web3() {
-  const web3 = useAppSelector(
-    (store: Store) => store.safe
-  );
+  const safe = useAppSelector((store: Store) => store.safe);
 
   return (
-    <Section className="Section--web3" id="Section--safe" yellow>
-      {JSON.stringify(safe, null, 4)}
+    <Section className="Section--safe" id="Section--safe" yellow>
+      SAFE REDUX STORE
+      <pre>{JSON.stringify(safe, null, 4)}</pre>
     </Section>
   );
 }

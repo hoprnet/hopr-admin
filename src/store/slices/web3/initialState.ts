@@ -2,7 +2,6 @@ export const initialState = {
   status: {
     connected: false as boolean,
     loading: false as boolean,
-    
   },
   account: '',
   chainId: '',
@@ -10,5 +9,5 @@ export const initialState = {
   balances: {
     xDAI: null,
     xHOPR: null,
-  }
+  },
 };
