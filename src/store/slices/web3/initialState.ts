@@ -3,7 +3,7 @@ export const initialState = {
     connected: false as boolean,
     loading: false as boolean,
   },
-  account: '',
+  account: null as string | null,
   chainId: '',
   blockNumber: '',
   balances: {

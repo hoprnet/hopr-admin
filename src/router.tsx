@@ -1,4 +1,8 @@
 import { createBrowserRouter, RouteObject, Outlet } from 'react-router-dom';
+import ConnectWeb3 from './components/ConnectWeb3';
+
+
+//Sections
 import Section1 from './sections/selectNode';
 import SectionInfo from './sections/info';
 import SectionWeb3 from './sections/web3';
@@ -71,7 +75,7 @@ export const applicationMap = [
   },
   {
     groupName: 'DEVELOP',
-    path: 'networking',
+    path: 'develop',
     items: [
       {
         name: 'Web3',
@@ -102,7 +106,7 @@ export const applicationMap = [
 var routes = [
   {
     path: '/',
-    element: <Layout drawer drawerItems={applicationMap} />,
+    element: <Layout drawer drawerItems={applicationMap} itemsNavbarRight={<ConnectWeb3/>}/>,
     children: [] as RouteObject[],
   },
 ];

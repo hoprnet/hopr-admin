@@ -11,11 +11,14 @@ import { Provider } from 'react-redux';
 import Layout from './future-hopr-lib-components/Layout';
 
 import router, { applicationMap } from './router';
+import WagmiProvider from './providers/Wagmi';
 
 function App() {
   return (
     <Provider store={store}>
-      <RouterProvider router={router} />
+      <WagmiProvider>
+        <RouterProvider router={router} />
+      </WagmiProvider>
     </Provider>
   );
 }

@@ -1,5 +1,5 @@
 export const initialState = {
-  safe: {
+  status: {
     connecting: false as boolean,
     connected: false as boolean,
   },
