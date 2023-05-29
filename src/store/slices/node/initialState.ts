@@ -31,7 +31,7 @@ type InitialState = {
   settings: GetSettingsResponseType | null;
   statistics: GetStatisticsResponseType | null;
   tickets: GetTicketsResponseType | null;
-  token: GetTokenResponseType | null;
+  tokens: GetTokenResponseType[];
   version: string | null;
   transactions: string[];
   pings: (PingNodeResponseType & { peerId: string })[];
@@ -61,7 +61,7 @@ export const initialState: InitialState = {
   settings: null,
   statistics: null,
   tickets: [],
-  token: null,
+  tokens: [],
   version: null,
   transactions: [],
   pings: [],

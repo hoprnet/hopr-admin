@@ -27,12 +27,18 @@ import {
   sendMessage,
   sign,
   pingNode,
+  setSetting,
+  redeemTickets,
+  createToken,
+  deleteToken,
 } from 'hopr-sdk/api';
 import { APIError } from 'hopr-sdk/utils';
 import {
   AliasPayloadType,
   BasePayloadType,
   CloseChannelPayloadType,
+  CreateTokenPayloadType,
+  DeleteTokenPayloadType,
   FundChannelsPayloadType,
   GetChannelPayloadType,
   GetPeerInfoPayloadType,
@@ -42,6 +48,7 @@ import {
   PingNodePayloadType,
   SendMessagePayloadType,
   SetAliasPayloadType,
+  SetSettingPayloadType,
   SignPayloadType,
   WithdrawPayloadType,
 } from 'hopr-sdk/types';
@@ -415,6 +422,62 @@ const pingNodeThunk = createAsyncThunk(
   }
 );
 
+const setSettingThunk = createAsyncThunk(
+  'node/setSetting',
+  async (payload: SetSettingPayloadType, { rejectWithValue }) => {
+    try {
+      const res = await setSetting(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
+const redeemTicketsThunk = createAsyncThunk(
+  'node/redeemTickets',
+  async (payload: BasePayloadType, { rejectWithValue }) => {
+    try {
+      const res = await redeemTickets(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
+const createTokenThunk = createAsyncThunk(
+  'node/createToken',
+  async (payload: CreateTokenPayloadType, { rejectWithValue }) => {
+    try {
+      const res = await createToken(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
+const deleteTokenThunk = createAsyncThunk(
+  'node/deleteToken',
+  async (payload: DeleteTokenPayloadType, { rejectWithValue }) => {
+    try {
+      const res = await deleteToken(payload);
+      return { deleted: res, id: payload.id };
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
 export const createExtraReducers = (
   builder: ActionReducerMapBuilder<typeof initialState>
 ) => {
@@ -470,7 +533,15 @@ export const createExtraReducers = (
   });
   builder.addCase(getTokenThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.token = action.payload;
+      const tokenExists = state.tokens?.findIndex(
+        (token) => token.id === action.payload?.id
+      );
+
+      if (tokenExists) {
+        state.tokens[tokenExists] = action.payload;
+      } else {
+        state.tokens.push(action.payload);
+      }
     }
   });
   builder.addCase(getEntryNodesThunk.fulfilled, (state, action) => {
@@ -612,6 +683,13 @@ export const createExtraReducers = (
       }
     }
   });
+  builder.addCase(deleteTokenThunk.fulfilled, (state, action) => {
+    if (action.payload?.deleted) {
+      state.tokens = state.tokens.filter(
+        (token) => token.id !== action.payload?.id
+      );
+    }
+  });
 };
 
 export const actionsAsync = {
@@ -639,4 +717,8 @@ export const actionsAsync = {
   redeemChannelTicketsThunk,
   sendMessageThunk,
   signThunk,
+  setSettingThunk,
+  redeemTicketsThunk,
+  createTokenThunk,
+  deleteTokenThunk,
 };
