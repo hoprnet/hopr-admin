@@ -1,6 +1,6 @@
 {
   "name": "hopr-admin",
-  "version": "3.0.0-next.0",
+  "version": "3.0.0-next.1",
   "description": "HOPR Admin app which can be used to manage a HOPRd node via its API",
   "repository": "https://github.com/hoprnet/hopr-admin",
   "homepage": "https://admin.hoprnet.org",
