@@ -14,8 +14,13 @@ import {
   getToken,
   getEntryNodes,
   getVersion,
+  getAlias,
+  setAlias,
+  removeAlias,
+  withdraw,
 } from 'hopr-sdk/api';
 import { APIError } from 'hopr-sdk/utils';
+import { WithdrawPayloadType } from 'hopr-sdk/types';
 
 const getInfoThunk = createAsyncThunk(
   'node/getInfo',
@@ -238,6 +243,79 @@ const getVersionThunk = createAsyncThunk(
   }
 );
 
+const withdrawThunk = createAsyncThunk(
+  'node/withdraw',
+  async (payload: WithdrawPayloadType, { rejectWithValue }) => {
+    try {
+      const res = await withdraw(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+const getAliasThunk = createAsyncThunk(
+  'node/getAlias',
+  async (
+    { url, apiKey, alias }: { url: string; apiKey: string; alias: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await getAlias({ url, apiKey, alias });
+      return { peerId: res, alias };
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
+const setAliasThunk = createAsyncThunk(
+  'node/setAlias',
+  async (
+    {
+      url,
+      apiKey,
+      alias,
+      peerId,
+    }: { url: string; apiKey: string; alias: string; peerId: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await setAlias({ url, apiKey, alias, peerId });
+      if (res) {
+        return { peerId, alias };
+      }
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
+const removeAliasThunk = createAsyncThunk(
+  'node/setAlias',
+  async (
+    { url, apiKey, alias }: { url: string; apiKey: string; alias: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await removeAlias({ url, apiKey, alias });
+      if (res) {
+        return { alias };
+      }
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
 export const createExtraReducers = (
   builder: ActionReducerMapBuilder<typeof initialState>
 ) => {
@@ -306,6 +384,36 @@ export const createExtraReducers = (
       state.version = action.payload;
     }
   });
+  builder.addCase(getAliasThunk.fulfilled, (state, action) => {
+    if (action.payload && state.aliases) {
+      if (state.aliases) {
+        state.aliases[action.payload.alias] = action.payload.peerId;
+      } else {
+        state.aliases = { [action.payload.alias]: action.payload.peerId };
+      }
+    }
+  });
+  builder.addCase(setAliasThunk.fulfilled, (state, action) => {
+    if (action.payload && state.aliases) {
+      if (state.aliases) {
+        state.aliases[action.payload.alias] = action.payload.peerId;
+      } else {
+        state.aliases = { [action.payload.alias]: action.payload.peerId };
+      }
+    }
+  });
+  builder.addCase(removeAliasThunk.fulfilled, (state, action) => {
+    if (action.payload && state.aliases) {
+      if (state.aliases) {
+        delete state.aliases[action.payload.alias];
+      }
+    }
+  });
+  builder.addCase(withdrawThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      state.transactions.push(action.payload);
+    }
+  });
 };
 
 export const actionsAsync = {
@@ -321,4 +429,8 @@ export const actionsAsync = {
   getTokenThunk,
   getEntryNodesThunk,
   getVersionThunk,
+  getAliasThunk,
+  setAliasThunk,
+  removeAliasThunk,
+  withdrawThunk,
 };

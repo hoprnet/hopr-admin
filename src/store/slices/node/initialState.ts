@@ -32,6 +32,7 @@ type InitialState = {
   tickets: GetTicketsResponseType | null;
   token: GetTokenResponseType | null;
   version: string | null;
+  transactions: string[];
 };
 
 export const initialState: InitialState = {
@@ -59,4 +60,5 @@ export const initialState: InitialState = {
   tickets: [],
   token: null,
   version: null,
+  transactions: [],
 };

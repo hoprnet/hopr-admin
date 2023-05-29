@@ -16,7 +16,7 @@
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
-    "hopr-sdk": "file:../hopr-sdk/hopr-sdk-0.0.1.tgz",
+    "hopr-sdk": "file:../hopr-sdk/hoprnet-hopr-sdk-0.0.1-alpha.0.tgz",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
