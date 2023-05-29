@@ -10,6 +10,7 @@ import type {
   GetTicketsResponseType,
   GetTokenResponseType,
   GetEntryNodesResponseType,
+  PingNodeResponseType,
 } from 'hopr-sdk/types';
 
 type InitialState = {
@@ -22,8 +23,8 @@ type InitialState = {
   aliases: GetAliasesResponseType | null;
   balances: AccountResponseType | null;
   channels: GetChannelsResponseType | null;
-  // TODO: should this hold sent and received messages?
-  messages: unknown[];
+  messages: { createdAt: number; body: string; challenge?: string }[];
+  signedMessages: { createdAt: number; body: string }[];
   peers: GetPeersResponseType | null;
   entryNodes: GetEntryNodesResponseType | null;
   peerInfo: GetPeerInfoResponseType | null;
@@ -33,6 +34,7 @@ type InitialState = {
   token: GetTokenResponseType | null;
   version: string | null;
   transactions: string[];
+  pings: (PingNodeResponseType & { peerId: string })[];
 };
 
 export const initialState: InitialState = {
@@ -45,6 +47,7 @@ export const initialState: InitialState = {
   balances: null,
   channels: null,
   messages: [],
+  signedMessages: [],
   peers: {
     connected: [],
     announced: [],
@@ -61,4 +64,5 @@ export const initialState: InitialState = {
   token: null,
   version: null,
   transactions: [],
+  pings: [],
 };

@@ -18,14 +18,31 @@ import {
   setAlias,
   removeAlias,
   withdraw,
+  closeChannel,
+  fundChannels,
+  getChannel,
+  getChannelTickets,
+  openChannel,
+  redeemChannelTickets,
+  sendMessage,
+  sign,
+  pingNode,
 } from 'hopr-sdk/api';
 import { APIError } from 'hopr-sdk/utils';
 import {
   AliasPayloadType,
   BasePayloadType,
+  CloseChannelPayloadType,
+  FundChannelsPayloadType,
+  GetChannelPayloadType,
   GetPeerInfoPayloadType,
   GetPeersPayloadType,
+  OpenChannelPayloadType,
+  PeerIdPayloadType,
+  PingNodePayloadType,
+  SendMessagePayloadType,
   SetAliasPayloadType,
+  SignPayloadType,
   WithdrawPayloadType,
 } from 'hopr-sdk/types';
 
@@ -271,6 +288,133 @@ const removeAliasThunk = createAsyncThunk(
   }
 );
 
+const closeChannelThunk = createAsyncThunk(
+  'node/closeChannel',
+  async (payload: CloseChannelPayloadType, { rejectWithValue }) => {
+    try {
+      const res = await closeChannel(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
+const fundChannelsThunk = createAsyncThunk(
+  'node/fundChannels',
+  async (payload: FundChannelsPayloadType, { rejectWithValue }) => {
+    try {
+      const res = await fundChannels(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
+const getChannelThunk = createAsyncThunk(
+  'node/getChannel',
+  async (payload: GetChannelPayloadType, { rejectWithValue }) => {
+    try {
+      const res = await getChannel(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
+const getChannelTicketsThunk = createAsyncThunk(
+  'node/getChannelTickets',
+  async (payload: PeerIdPayloadType, { rejectWithValue }) => {
+    try {
+      const res = await getChannelTickets(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
+const openChannelThunk = createAsyncThunk(
+  'node/openChannel',
+  async (payload: OpenChannelPayloadType, { rejectWithValue }) => {
+    try {
+      const res = await openChannel(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
+const redeemChannelTicketsThunk = createAsyncThunk(
+  'node/redeemChannelTickets',
+  async (payload: PeerIdPayloadType, { rejectWithValue }) => {
+    try {
+      const res = await redeemChannelTickets(payload);
+
+      return res;
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
+const sendMessageThunk = createAsyncThunk(
+  'node/sendMessage',
+  async (payload: SendMessagePayloadType, { rejectWithValue }) => {
+    try {
+      const res = await sendMessage(payload);
+      return { challenge: res, body: payload.body };
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
+const signThunk = createAsyncThunk(
+  'node/sign',
+  async (payload: SignPayloadType, { rejectWithValue }) => {
+    try {
+      const res = await sign(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
+const pingNodeThunk = createAsyncThunk(
+  'node/pingNode',
+  async (payload: PingNodePayloadType, { rejectWithValue }) => {
+    try {
+      const res = await pingNode(payload);
+      return { ...res, peerId: payload.peerId };
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
 export const createExtraReducers = (
   builder: ActionReducerMapBuilder<typeof initialState>
 ) => {
@@ -369,6 +513,105 @@ export const createExtraReducers = (
       state.transactions.push(action.payload);
     }
   });
+  builder.addCase(getChannelThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      const { balance, channelId, peerId, status, type } = action.payload;
+      // find channel if it already exists
+      const channelIndex = state.channels?.[type].findIndex(
+        (channel) => channel.channelId === channelId
+      );
+
+      if (state.channels) {
+        if (channelIndex) {
+          // update channel
+          state.channels[type][channelIndex] = {
+            balance,
+            channelId,
+            peerId,
+            status,
+            type,
+          };
+        } else {
+          // add new channel
+          state.channels[type].push({
+            balance,
+            channelId,
+            peerId,
+            status,
+            type,
+          });
+        }
+      } else {
+        state.channels = {
+          incoming: [],
+          outgoing: [],
+          // overwrite actual type
+          [type]: [{ balance, channelId, peerId, status, type }],
+        };
+      }
+    }
+  });
+  builder.addCase(getChannelTicketsThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      for (const updatedTicket of action.payload) {
+        // using challenge as an id between tickets
+        const uniqueIdentifier = updatedTicket.challenge;
+        const existingIndex = state.tickets?.findIndex(
+          (ticket) => ticket.challenge === uniqueIdentifier
+        );
+
+        if (existingIndex && existingIndex !== -1 && state.tickets) {
+          // Update the existing ticket with the new values
+          state.tickets[existingIndex] = {
+            ...state.tickets[existingIndex],
+            ...updatedTicket,
+          };
+        } else if (state.tickets) {
+          // Add the updated ticket as a new object
+          state.tickets.push(updatedTicket);
+        } else {
+          // initialize tickets array
+          state.tickets = [updatedTicket];
+        }
+      }
+    }
+  });
+  builder.addCase(sendMessageThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      state.messages.push({
+        body: action.payload.body,
+        createdAt: Date.now(),
+        challenge: action.payload.challenge,
+      });
+    }
+  });
+  builder.addCase(signThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      state.signedMessages.push({
+        body: action.payload,
+        createdAt: Date.now(),
+      });
+    }
+  });
+  builder.addCase(pingNodeThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      const pingExists = state.pings.findIndex(
+        (ping) => ping.peerId === action.payload?.peerId
+      );
+
+      if (pingExists) {
+        state.pings[pingExists] = {
+          latency: action.payload.latency,
+          peerId: action.payload.peerId,
+        };
+      } else {
+        state.pings.push({
+          latency: action.payload.latency,
+          peerId: action.payload.peerId,
+        });
+      }
+    }
+  });
 };
 
 export const actionsAsync = {
@@ -388,4 +631,12 @@ export const actionsAsync = {
   setAliasThunk,
   removeAliasThunk,
   withdrawThunk,
+  closeChannelThunk,
+  fundChannelsThunk,
+  getChannelThunk,
+  getChannelTicketsThunk,
+  openChannelThunk,
+  redeemChannelTicketsThunk,
+  sendMessageThunk,
+  signThunk,
 };
