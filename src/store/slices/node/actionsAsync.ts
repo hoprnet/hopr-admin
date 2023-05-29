@@ -20,16 +20,20 @@ import {
   withdraw,
 } from 'hopr-sdk/api';
 import { APIError } from 'hopr-sdk/utils';
-import { WithdrawPayloadType } from 'hopr-sdk/types';
+import {
+  AliasPayloadType,
+  BasePayloadType,
+  GetPeerInfoPayloadType,
+  GetPeersPayloadType,
+  SetAliasPayloadType,
+  WithdrawPayloadType,
+} from 'hopr-sdk/types';
 
 const getInfoThunk = createAsyncThunk(
   'node/getInfo',
-  async (
-    { url, apiKey }: { url: string; apiKey: string },
-    { rejectWithValue }
-  ) => {
+  async (payload: BasePayloadType, { rejectWithValue }) => {
     try {
-      const info = await getInfo({ url, apiKey });
+      const info = await getInfo(payload);
       return info;
     } catch (e) {
       if (e instanceof APIError) {
@@ -41,12 +45,9 @@ const getInfoThunk = createAsyncThunk(
 
 const getAddressesThunk = createAsyncThunk(
   'node/getAccount',
-  async (
-    { url, apiKey }: { url: string; apiKey: string },
-    { rejectWithValue }
-  ) => {
+  async (payload: BasePayloadType, { rejectWithValue }) => {
     try {
-      const addresses = await getAddresses({ url, apiKey });
+      const addresses = await getAddresses(payload);
       return addresses;
     } catch (e) {
       if (e instanceof APIError) {
@@ -58,12 +59,9 @@ const getAddressesThunk = createAsyncThunk(
 
 const getAliasesThunk = createAsyncThunk(
   'node/getAliases',
-  async (
-    { url, apiKey }: { url: string; apiKey: string },
-    { rejectWithValue }
-  ) => {
+  async (payload: BasePayloadType, { rejectWithValue }) => {
     try {
-      const aliases = await getAliases({ url, apiKey });
+      const aliases = await getAliases(payload);
       return aliases;
     } catch (e) {
       if (e instanceof APIError) {
@@ -75,12 +73,9 @@ const getAliasesThunk = createAsyncThunk(
 
 const getBalancesThunk = createAsyncThunk(
   'node/getBalances',
-  async (
-    { url, apiKey }: { url: string; apiKey: string },
-    { rejectWithValue }
-  ) => {
+  async (payload: BasePayloadType, { rejectWithValue }) => {
     try {
-      const balances = await getBalances({ url, apiKey });
+      const balances = await getBalances(payload);
       return balances;
     } catch (e) {
       if (e instanceof APIError) {
@@ -92,12 +87,9 @@ const getBalancesThunk = createAsyncThunk(
 
 const getChannelsThunk = createAsyncThunk(
   'node/getChannels',
-  async (
-    { url, apiKey }: { url: string; apiKey: string },
-    { rejectWithValue }
-  ) => {
+  async (payload: BasePayloadType, { rejectWithValue }) => {
     try {
-      const channels = await getChannels({ url, apiKey });
+      const channels = await getChannels(payload);
       return channels;
     } catch (e) {
       if (e instanceof APIError) {
@@ -109,12 +101,9 @@ const getChannelsThunk = createAsyncThunk(
 
 const getPeersThunk = createAsyncThunk(
   'node/getPeers',
-  async (
-    { url, apiKey }: { url: string; apiKey: string },
-    { rejectWithValue }
-  ) => {
+  async (payload: GetPeersPayloadType, { rejectWithValue }) => {
     try {
-      const peers = await getPeers({ url, apiKey });
+      const peers = await getPeers(payload);
       return peers;
     } catch (e) {
       if (e instanceof APIError) {
@@ -126,12 +115,9 @@ const getPeersThunk = createAsyncThunk(
 
 const getPeerInfoThunk = createAsyncThunk(
   'node/getPeerInfo',
-  async (
-    { url, apiKey, peerId }: { url: string; apiKey: string; peerId: string },
-    { rejectWithValue }
-  ) => {
+  async (payload: GetPeerInfoPayloadType, { rejectWithValue }) => {
     try {
-      const peerInfo = await getPeerInfo({ url, apiKey, peerId });
+      const peerInfo = await getPeerInfo(payload);
       return peerInfo;
     } catch (e) {
       if (e instanceof APIError) {
@@ -143,12 +129,9 @@ const getPeerInfoThunk = createAsyncThunk(
 
 const getSettingsThunk = createAsyncThunk(
   'node/getSettings',
-  async (
-    { url, apiKey }: { url: string; apiKey: string },
-    { rejectWithValue }
-  ) => {
+  async (payload: BasePayloadType, { rejectWithValue }) => {
     try {
-      const settings = await getSettings({ url, apiKey });
+      const settings = await getSettings(payload);
       return settings;
     } catch (e) {
       if (e instanceof APIError) {
@@ -160,12 +143,9 @@ const getSettingsThunk = createAsyncThunk(
 
 const getStatisticsThunk = createAsyncThunk(
   'node/getStatistics',
-  async (
-    { url, apiKey }: { url: string; apiKey: string },
-    { rejectWithValue }
-  ) => {
+  async (payload: BasePayloadType, { rejectWithValue }) => {
     try {
-      const statistics = await getStatistics({ url, apiKey });
+      const statistics = await getStatistics(payload);
       return statistics;
     } catch (e) {
       if (e instanceof APIError) {
@@ -177,12 +157,9 @@ const getStatisticsThunk = createAsyncThunk(
 
 const getTicketsThunk = createAsyncThunk(
   'node/getTickets',
-  async (
-    { url, apiKey }: { url: string; apiKey: string },
-    { rejectWithValue }
-  ) => {
+  async (payload: BasePayloadType, { rejectWithValue }) => {
     try {
-      const tickets = await getTickets({ url, apiKey });
+      const tickets = await getTickets(payload);
       return tickets;
     } catch (e) {
       if (e instanceof APIError) {
@@ -194,12 +171,9 @@ const getTicketsThunk = createAsyncThunk(
 
 const getTokenThunk = createAsyncThunk(
   'node/getToken',
-  async (
-    { url, apiKey }: { url: string; apiKey: string },
-    { rejectWithValue }
-  ) => {
+  async (payload: BasePayloadType, { rejectWithValue }) => {
     try {
-      const token = await getToken({ url, apiKey });
+      const token = await getToken(payload);
       return token;
     } catch (e) {
       if (e instanceof APIError) {
@@ -211,12 +185,9 @@ const getTokenThunk = createAsyncThunk(
 
 const getEntryNodesThunk = createAsyncThunk(
   'node/getEntryNodes',
-  async (
-    { url, apiKey }: { url: string; apiKey: string },
-    { rejectWithValue }
-  ) => {
+  async (payload: BasePayloadType, { rejectWithValue }) => {
     try {
-      const entryNodes = await getEntryNodes({ url, apiKey });
+      const entryNodes = await getEntryNodes(payload);
       return entryNodes;
     } catch (e) {
       if (e instanceof APIError) {
@@ -228,12 +199,9 @@ const getEntryNodesThunk = createAsyncThunk(
 
 const getVersionThunk = createAsyncThunk(
   'node/getVersion',
-  async (
-    { url, apiKey }: { url: string; apiKey: string },
-    { rejectWithValue }
-  ) => {
+  async (payload: BasePayloadType, { rejectWithValue }) => {
     try {
-      const version = await getVersion({ url, apiKey });
+      const version = await getVersion(payload);
       return version;
     } catch (e) {
       if (e instanceof APIError) {
@@ -256,15 +224,13 @@ const withdrawThunk = createAsyncThunk(
     }
   }
 );
+
 const getAliasThunk = createAsyncThunk(
   'node/getAlias',
-  async (
-    { url, apiKey, alias }: { url: string; apiKey: string; alias: string },
-    { rejectWithValue }
-  ) => {
+  async (payload: AliasPayloadType, { rejectWithValue }) => {
     try {
-      const res = await getAlias({ url, apiKey, alias });
-      return { peerId: res, alias };
+      const res = await getAlias(payload);
+      return { peerId: res, alias: payload.alias };
     } catch (e) {
       if (e instanceof APIError) {
         rejectWithValue(e.error);
@@ -275,19 +241,11 @@ const getAliasThunk = createAsyncThunk(
 
 const setAliasThunk = createAsyncThunk(
   'node/setAlias',
-  async (
-    {
-      url,
-      apiKey,
-      alias,
-      peerId,
-    }: { url: string; apiKey: string; alias: string; peerId: string },
-    { rejectWithValue }
-  ) => {
+  async (payload: SetAliasPayloadType, { rejectWithValue }) => {
     try {
-      const res = await setAlias({ url, apiKey, alias, peerId });
+      const res = await setAlias(payload);
       if (res) {
-        return { peerId, alias };
+        return { peerId: payload.peerId, alias: payload.alias };
       }
     } catch (e) {
       if (e instanceof APIError) {
@@ -299,14 +257,11 @@ const setAliasThunk = createAsyncThunk(
 
 const removeAliasThunk = createAsyncThunk(
   'node/setAlias',
-  async (
-    { url, apiKey, alias }: { url: string; apiKey: string; alias: string },
-    { rejectWithValue }
-  ) => {
+  async (payload: AliasPayloadType, { rejectWithValue }) => {
     try {
-      const res = await removeAlias({ url, apiKey, alias });
+      const res = await removeAlias(payload);
       if (res) {
-        return { alias };
+        return { alias: payload.alias };
       }
     } catch (e) {
       if (e instanceof APIError) {
