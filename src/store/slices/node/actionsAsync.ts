@@ -669,6 +669,7 @@ export const createExtraReducers = (
       state.messages.push({
         body: action.payload.body,
         createdAt: Date.now(),
+        seen: false,
         challenge: action.payload.challenge,
       });
     }
