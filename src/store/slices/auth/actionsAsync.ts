@@ -1,11 +1,11 @@
 import { authActions } from './index';
-import { api } from 'hopr-sdk';
+import { getInfo } from '@hoprnet/hopr-sdk/api';
 
 export const login = (loginData: any) => {
   return async (dispatch: any) => {
-    const info = await api.getInfo({
-      url: loginData.ip,
-      apiKey: loginData.apiKey,
+    const info = await getInfo({
+      apiEndpoint: loginData.ip,
+      apiToken: loginData.apiKey,
     });
     console.log({ info });
     if (info) dispatch(authActions.setConnected());
