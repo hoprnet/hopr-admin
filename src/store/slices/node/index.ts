@@ -1,14 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
-import { actionsAsync } from './actionsAsync';
+import { actionsAsync, createExtraReducers } from './actionsAsync';
 // TODO: assign Types from HOPR-SDK
 
 const nodeSlice = createSlice({
   name: 'node',
   initialState,
   reducers: {
-    setIniciating(state) {
-      console.log('SDK setIniciating');
+    setInitiating(state) {
+      console.log('SDK initiating');
       state.status.initiating = true;
     },
     setInitiated(state, action) {
@@ -20,6 +20,7 @@ const nodeSlice = createSlice({
       console.log('SDK getInfo', action);
     },
   },
+  extraReducers: (builder) => createExtraReducers(builder),
 });
 
 export const nodeActions = nodeSlice.actions;
