@@ -35,6 +35,7 @@ type InitialState = {
   version: string | null;
   transactions: string[];
   pings: (PingNodeResponseType & { peerId: string })[];
+  metrics: string | null;
 };
 
 export const initialState: InitialState = {
@@ -65,4 +66,5 @@ export const initialState: InitialState = {
   version: null,
   transactions: [],
   pings: [],
+  metrics: null,
 };

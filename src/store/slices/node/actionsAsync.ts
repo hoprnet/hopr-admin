@@ -13,6 +13,7 @@ import {
   getChannels,
   getEntryNodes,
   getInfo,
+  getMetrics,
   getPeerInfo,
   getPeers,
   getSettings,
@@ -370,7 +371,6 @@ const redeemChannelTicketsThunk = createAsyncThunk(
   async (payload: PeerIdPayloadType, { rejectWithValue }) => {
     try {
       const res = await redeemChannelTickets(payload);
-
       return res;
     } catch (e) {
       if (e instanceof APIError) {
@@ -470,6 +470,20 @@ const deleteTokenThunk = createAsyncThunk(
     try {
       const res = await deleteToken(payload);
       return { deleted: res, id: payload.id };
+    } catch (e) {
+      if (e instanceof APIError) {
+        rejectWithValue(e.error);
+      }
+    }
+  }
+);
+
+const getPrometheusMetricsThunk = createAsyncThunk(
+  'node/getPrometheusMetrics',
+  async (payload: BasePayloadType, { rejectWithValue }) => {
+    try {
+      const res = await getMetrics(payload);
+      return res;
     } catch (e) {
       if (e instanceof APIError) {
         rejectWithValue(e.error);
@@ -690,6 +704,11 @@ export const createExtraReducers = (
       );
     }
   });
+  builder.addCase(getPrometheusMetricsThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      state.metrics = action.payload;
+    }
+  });
 };
 
 export const actionsAsync = {
@@ -721,4 +740,5 @@ export const actionsAsync = {
   redeemTicketsThunk,
   createTokenThunk,
   deleteTokenThunk,
+  getPrometheusMetricsThunk,
 };
