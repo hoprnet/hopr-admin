@@ -105,8 +105,14 @@ const NavBar = (props) => {
           >
             <span></span>
           </div>
-          <NavBarItems itemsNavbar={props.itemsNavbarCenter} center />
-          <NavBarItems itemsNavbar={props.itemsNavbarRight} right />
+          <NavBarItems
+            itemsNavbar={props.itemsNavbarCenter}
+            center
+          />
+          <NavBarItems
+            itemsNavbar={props.itemsNavbarRight}
+            right
+          />
         </Container>
       </AppBar>
       <div className={`menu mobile ${activaMenu ? ' show-menu' : ''}`}>

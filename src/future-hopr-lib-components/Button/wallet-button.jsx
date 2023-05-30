@@ -28,7 +28,10 @@ export default function Button(props) {
   }
 
   return (
-    <SButton className={props.className} {...props}>
+    <SButton
+      className={props.className}
+      {...props}
+    >
       <img src={props.src ? props.src : src()} />
       {props.wallet === 'viewMode' && <Typography>View mode</Typography>}
     </SButton>

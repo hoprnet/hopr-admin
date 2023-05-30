@@ -71,7 +71,11 @@ function Section1(props) {
   }, []);
 
   return (
-    <SSection id={'Section1'} gradient center>
+    <SSection
+      id={'Section1'}
+      gradient
+      center
+    >
       <ImageContainer className="ImageContainer">
         {props.yellowBallBackground && (
           <svg
@@ -80,14 +84,26 @@ function Section1(props) {
             viewBox="0 0 100 50"
             className="yellowBallBackground"
           >
-            <circle cx="50" cy="-8" r="50" fill="#FFFFA0" />
+            <circle
+              cx="50"
+              cy="-8"
+              r="50"
+              fill="#FFFFA0"
+            />
           </svg>
         )}
 
-        <Animation id="derp-animation" animationCss={props.animationCss} />
+        <Animation
+          id="derp-animation"
+          animationCss={props.animationCss}
+        />
       </ImageContainer>
       <div style={{ width: '100%' }}>
-        <Typography type="h2" center fullWidth>
+        <Typography
+          type="h2"
+          center
+          fullWidth
+        >
           {props.title}
         </Typography>
       </div>

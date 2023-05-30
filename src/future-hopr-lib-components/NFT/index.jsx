@@ -58,7 +58,10 @@ const Container = styled.div`
 `;
 
 const CustomWidthTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} classes={{ popper: className }} />
+  <Tooltip
+    {...props}
+    classes={{ popper: className }}
+  />
 ))({
   [`
         color: white;
@@ -102,7 +105,10 @@ export default function Nft(props) {
                 </Button>
               </CustomWidthTooltip>
             ) : (
-              <Button onClick={handleLockNFT} disabled={disableButton}>
+              <Button
+                onClick={handleLockNFT}
+                disabled={disableButton}
+              >
                 Lock NFT
               </Button>
             ))}

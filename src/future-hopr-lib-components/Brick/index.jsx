@@ -70,13 +70,20 @@ function Brick(props) {
         />
         <Typography>{props.text}</Typography>
         {props.button && (
-          <Button hopr href={props.buttonHref} target="_blank">
+          <Button
+            hopr
+            href={props.buttonHref}
+            target="_blank"
+          >
             {props.button}
           </Button>
         )}
       </TextContainer>
       <ImageContainer>
-        <Image src={props.image} noShadow={props.noShadow} />
+        <Image
+          src={props.image}
+          noShadow={props.noShadow}
+        />
       </ImageContainer>
     </SBrick>
   );

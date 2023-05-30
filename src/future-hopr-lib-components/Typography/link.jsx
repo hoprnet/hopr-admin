@@ -26,7 +26,11 @@ function Typography(props) {
     >
       {props.text}
       {props.openIcon && (
-        <svg viewBox="0 0 24 24" focusable="false" className="openIcon">
+        <svg
+          viewBox="0 0 24 24"
+          focusable="false"
+          className="openIcon"
+        >
           <g
             fill="none"
             stroke="currentColor"

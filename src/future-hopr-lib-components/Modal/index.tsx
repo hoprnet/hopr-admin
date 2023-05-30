@@ -36,7 +36,10 @@ const Modal: React.FC<Props> = (props) => {
   };
 
   return (
-    <SDialog onClose={handleClose} open={open}>
+    <SDialog
+      onClose={handleClose}
+      open={open}
+    >
       <Row>
         <div className="modal-title">{title}</div>
         <IconButton

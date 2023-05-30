@@ -198,12 +198,19 @@ export default function NftImageInteractive(props) {
               set_fliped(false);
             })}
           >
-            <Table width1stColumn="65" className="text" noTopBorder>
+            <Table
+              width1stColumn="65"
+              className="text"
+              noTopBorder
+            >
               <tbody>
                 <tr>
                   <th>Image</th>
                   <td>
-                    <img src={props.image} className="nft-image-in-table" />
+                    <img
+                      src={props.image}
+                      className="nft-image-in-table"
+                    />
                   </td>
                 </tr>
                 <tr>
