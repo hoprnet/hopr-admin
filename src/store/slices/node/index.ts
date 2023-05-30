@@ -1,6 +1,6 @@
-import { Action, PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { initialState } from './initialState';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { actionsAsync, createExtraReducers } from './actionsAsync';
+import { initialState } from './initialState';
 
 const nodeSlice = createSlice({
   name: 'node',
