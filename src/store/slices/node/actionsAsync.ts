@@ -30,7 +30,7 @@ import {
   setSetting,
   sign,
   withdraw,
-} from 'hopr-sdk/api';
+} from '@hoprnet/hopr-sdk/api';
 import {
   AliasPayloadType,
   BasePayloadType,
@@ -49,8 +49,8 @@ import {
   SetSettingPayloadType,
   SignPayloadType,
   WithdrawPayloadType,
-} from 'hopr-sdk/types';
-import { APIError } from 'hopr-sdk/utils';
+} from '@hoprnet/hopr-sdk/types';
+import { APIError } from '@hoprnet/hopr-sdk/utils';
 import { initialState } from './initialState';
 
 const getInfoThunk = createAsyncThunk(

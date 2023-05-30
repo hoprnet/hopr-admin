@@ -11,7 +11,7 @@ import type {
   GetTokenResponseType,
   GetEntryNodesResponseType,
   PingNodeResponseType,
-} from 'hopr-sdk/types';
+} from '@hoprnet/hopr-sdk/types';
 
 type InitialState = {
   info: GetInfoResponseType | null;
