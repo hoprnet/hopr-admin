@@ -1,7 +1,6 @@
 import { createBrowserRouter, RouteObject, Outlet } from 'react-router-dom';
 import ConnectWeb3 from './components/ConnectWeb3';
 
-
 //Sections
 import Section1 from './sections/selectNode';
 import SectionInfo from './sections/info';
@@ -106,7 +105,13 @@ export const applicationMap = [
 var routes = [
   {
     path: '/',
-    element: <Layout drawer drawerItems={applicationMap} itemsNavbarRight={<ConnectWeb3/>}/>,
+    element: (
+      <Layout
+        drawer
+        drawerItems={applicationMap}
+        itemsNavbarRight={<ConnectWeb3 />}
+      />
+    ),
     children: [] as RouteObject[],
   },
 ];

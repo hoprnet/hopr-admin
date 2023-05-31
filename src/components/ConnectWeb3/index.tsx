@@ -29,7 +29,6 @@ export default function ConnectWeb3() {
   });
   const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
-  
 
   useEffect(() => {
     if (isConnected) set_chooseWalletModal(false);
@@ -37,8 +36,7 @@ export default function ConnectWeb3() {
 
   return (
     <div>
-      {
-        !isConnected ? 
+      {!isConnected ? (
         <button
           onClick={() => {
             set_chooseWalletModal(true);
@@ -46,13 +44,15 @@ export default function ConnectWeb3() {
         >
           Connect Wallet
         </button>
-        : 
+      ) : (
         <button
-          onClick={()=>{disconnect()}}
+          onClick={() => {
+            disconnect();
+          }}
         >
           Disconnect
         </button>
-      }
+      )}
 
       <Modal
         open={chooseWalletModal}

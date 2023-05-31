@@ -43,14 +43,18 @@ function Section1() {
     dispatch(authActions.useNodeData({ ip, apiKey }));
     dispatch(authActions.addNodeData({ ip, apiKey: saveApiKey ? apiKey : '' }));
     dispatch(authActionsAsync.login({ ip, apiKey }));
-    dispatch(nodeActionsAsync.getInfo());
+    dispatch(
+      nodeActionsAsync.getInfoThunk({ apiToken: apiKey, apiEndpoint: ip })
+    );
   };
 
   const useNode = () => {
     dispatch(authActions.useNodeData({ ip, apiKey }));
     dispatch(authActions.addNodeData({ ip, apiKey: saveApiKey ? apiKey : '' }));
     dispatch(authActionsAsync.login({ ip, apiKey }));
-    dispatch(nodeActionsAsync.getInfo());
+    dispatch(
+      nodeActionsAsync.getInfoThunk({ apiToken: apiKey, apiEndpoint: ip })
+    );
   };
 
   const clearLocalNodes = () => {

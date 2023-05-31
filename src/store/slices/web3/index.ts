@@ -11,7 +11,7 @@ const web3Slice = createSlice({
     },
     setConnected(state, action) {
       state.status.connected = action.payload;
-      if(state.status.connected) state.status.loading = false;
+      if (state.status.connected) state.status.loading = false;
     },
     setAccount(state, action) {
       state.account = action.payload ? action.payload : null;

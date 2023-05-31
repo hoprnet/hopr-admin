@@ -1,5 +1,6 @@
 import { authActions } from './index';
-import { getInfo } from '@hoprnet/hopr-sdk/api';
+import { api } from '@hoprnet/hopr-sdk';
+const { getInfo } = api;
 
 export const login = (loginData: any) => {
   return async (dispatch: any) => {
