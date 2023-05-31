@@ -45,6 +45,7 @@ type InitialState = {
 };
 
 export const initialState: InitialState = {
+  info: null,
   status: {
     initiating: false,
     initiated: false,
@@ -64,7 +65,6 @@ export const initialState: InitialState = {
     observed: [],
   },
   entryNodes: null,
-  info: null,
   settings: null,
   statistics: null,
   tickets: [],
