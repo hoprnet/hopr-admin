@@ -33,7 +33,7 @@ function InfoPage() {
       className="Section--selectNode"
       id="Section--selectNode"
       yellow
-    >login to node</Section>
+    >Login to node</Section>
   }
 
 
@@ -43,19 +43,19 @@ function InfoPage() {
       id="Section--selectNode"
       yellow
     >
-      <h2>balances</h2>
+      <h2>Balances</h2>
       <div id='balances'>
         <div>
-          native: {balances?.native}
+          Native: {balances?.native}
         </div>
         <div>
-          hopr: {balances?.hopr}
+          Hopr: {balances?.hopr}
         </div>
       </div>
-      <h2>info</h2>
+      <h2>Info</h2>
       <div id="info">
         <div id='version'>
-          version: {version}
+          Version: {version}
         </div>
         {!!info && Object.entries(info).map(([key, value]) => {
           if (Array.isArray(value)) {
@@ -71,22 +71,22 @@ function InfoPage() {
           </div>
         })}
       </div>
-      <h2>channels</h2>
+      <h2>Channels</h2>
       <div id='channels'>
         <div>
-          incoming: {channels?.incoming.filter(channel => channel.status === 'Open').length}
+          Incoming: {channels?.incoming.filter(channel => channel.status === 'Open').length}
         </div>
         <div>
-          outgoing: {channels?.outgoing.filter(channel => channel.status === 'Open').length}
+          Outgoing: {channels?.outgoing.filter(channel => channel.status === 'Open').length}
         </div>
       </div>
-      <h2>peers</h2>
+      <h2>Peers</h2>
       <div id='peers'>
         <div>
-          announced: {peers?.announced.length}
+          Announced: {peers?.announced.length}
         </div>
         <div>
-          connected: {peers?.connected.length}
+          Connected: {peers?.connected.length}
         </div>
       </div>
     </Section>
