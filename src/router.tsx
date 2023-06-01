@@ -3,7 +3,6 @@ import ConnectWeb3 from './components/ConnectWeb3';
 
 //Sections
 import Section1 from './sections/selectNode';
-import SectionInfo from './sections/info';
 import SectionWeb3 from './sections/web3';
 import SectionSafe from './sections/safe';
 
@@ -11,6 +10,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import Layout from './future-hopr-lib-components/Layout';
+import InfoPage from './sections/info';
 
 export const applicationMap = [
   // {
@@ -32,7 +32,7 @@ export const applicationMap = [
         name: 'Info',
         path: 'info',
         icon: <MailIcon />,
-        element: <SectionInfo />,
+        element: <InfoPage />,
       },
       {
         name: 'Configuration',
