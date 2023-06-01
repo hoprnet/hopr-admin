@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { Store } from '../../types/index';
 import { web3Actions } from '../../store/slices/web3';
 
-export default function WagmiProvider() {
+export default function WagmiUpdater() {
   const dispatch = useAppDispatch();
   const { address, isConnected } = useAccount();
 

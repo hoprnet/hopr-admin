@@ -4,6 +4,7 @@ export const initialState = {
     loading: false as boolean,
   },
   account: null as string | null,
+  wallet: null as string | null,
   chainId: '',
   blockNumber: '',
   balances: {

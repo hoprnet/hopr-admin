@@ -24,11 +24,8 @@ function Section1() {
       apiKey: elem.apiKey,
     };
   });
-  const connecting = useAppSelector(
-    (store: Store) => store.auth.status.connecting
-  );
-  const connected = useAppSelector(
-    (store: Store) => store.auth.status.connected
+  const sdk = useAppSelector(
+    (store: Store) => store.sdk
   );
 
   return (
@@ -36,7 +33,10 @@ function Section1() {
       className="Section--selectNode"
       id="Section--selectNode"
       yellow
-    ></Section>
+    >
+      Node sdk REDUX STORE
+      <pre>{JSON.stringify(sdk, null, 4)}</pre>
+    </Section>
   );
 }
 
