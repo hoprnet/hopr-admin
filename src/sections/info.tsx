@@ -48,18 +48,8 @@ function InfoPage() {
 
   return (
     <Section className="Section--selectNode" id="Section--selectNode" yellow>
-      <h2>Balances</h2>
-      <div id="balances">
-        <div>Native: {balances?.native}</div>
-        <div>Hopr: {balances?.hopr}</div>
-      </div>
-      <h2>Addresses</h2>
-      <div id="addresses">
-        <div>Native: {addresses?.native}</div>
-        <div>Hopr: {addresses?.hopr}</div>
-      </div>
       <h2>
-        Info <button>refresh</button>{' '}
+        Info <button onClick={fetchInfoData}>refresh</button>{' '}
       </h2>
       <div id="info">
         <div id="version">Version: {version}</div>
@@ -83,6 +73,16 @@ function InfoPage() {
               </div>
             );
           })}
+      </div>
+      <h2>Balances</h2>
+      <div id="balances">
+        <div>Native: {balances?.native}</div>
+        <div>Hopr: {balances?.hopr}</div>
+      </div>
+      <h2>Addresses</h2>
+      <div id="addresses">
+        <div>Native: {addresses?.native}</div>
+        <div>Hopr: {addresses?.hopr}</div>
       </div>
       <h2>Channels</h2>
       <div id="channels">
