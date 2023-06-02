@@ -2,15 +2,28 @@ import { getObjectFromLocalStorage } from '../../../utils/functions';
 
 const ADMIN_UI_NODE_LIST = getObjectFromLocalStorage('admin-ui-node-list');
 
-export const initialState = {
+type InitialState = {
   status: {
-    connecting: false as boolean,
-    connected: false as boolean,
+    connecting: boolean;
+    connected: boolean;
+  };
+  loginData: {
+    apiEndpoint: string | null;
+    apiToken: string | null;
+    peerId: string | null;
+  };
+  nodes: { apiEndpoint: string | null; apiToken: string | null }[];
+};
+
+export const initialState: InitialState = {
+  status: {
+    connecting: false,
+    connected: false,
   },
   loginData: {
-    ip: null as string | null,
-    apiKey: null as string | null,
-    peerId: null as string | null,
+    apiEndpoint: null,
+    apiToken: null,
+    peerId: null,
   },
-  nodes: ADMIN_UI_NODE_LIST ? ADMIN_UI_NODE_LIST : ([] as {}[]),
+  nodes: ADMIN_UI_NODE_LIST ? ADMIN_UI_NODE_LIST : [],
 };
