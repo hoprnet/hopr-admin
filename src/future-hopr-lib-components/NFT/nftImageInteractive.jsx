@@ -167,18 +167,9 @@ export default function NftImageInteractive(props) {
           set_rotated(false);
         }}
       >
-        <div
-          className={[
-            'nft-front',
-            fliped ? 'flip' : '',
-            rotated ? 'rotate' : '',
-          ].join(' ')}
-        >
+        <div className={['nft-front', fliped ? 'flip' : '', rotated ? 'rotate' : ''].join(' ')}>
           <div
-            className={[
-              'nft-image-container',
-              props.ignored ? 'ignored' : '',
-            ].join(' ')}
+            className={['nft-image-container', props.ignored ? 'ignored' : ''].join(' ')}
             onClick={() => {
               set_fliped(true);
             }}
@@ -238,11 +229,7 @@ export default function NftImageInteractive(props) {
                 )}
                 <tr>
                   <th>Boost</th>
-                  {props.ignored ? (
-                    <td>Ignored</td>
-                  ) : (
-                    <td>{(props.nft.boost * 100).toFixed(2)}%</td>
-                  )}
+                  {props.ignored ? <td>Ignored</td> : <td>{(props.nft.boost * 100).toFixed(2)}%</td>}
                 </tr>
               </tbody>
             </Table>

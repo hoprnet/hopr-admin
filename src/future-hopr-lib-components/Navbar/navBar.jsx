@@ -7,9 +7,7 @@ import styled from '@emotion/styled';
 import MuiAppBar from '@mui/material/AppBar';
 import NavBarItems from './navBarItems';
 
-const AppBar = styled(({ tallerNavBarOnMobile, ...rest }) => (
-  <MuiAppBar {...rest} />
-))`
+const AppBar = styled(({ tallerNavBarOnMobile, ...rest }) => <MuiAppBar {...rest} />)`
   background: white;
   height: 60px;
   border-bottom: 1px lightgray solid;

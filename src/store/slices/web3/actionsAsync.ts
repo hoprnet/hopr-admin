@@ -8,9 +8,7 @@ const connect = createAsyncThunk('web3/connect', async () => {
   return '16x';
 });
 
-export const createExtraReducers = (
-  builder: ActionReducerMapBuilder<typeof initialState>
-) => {
+export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   builder.addCase(connect.fulfilled, (state, action) => {
     if (action.payload) {
       state.status.connected = true;

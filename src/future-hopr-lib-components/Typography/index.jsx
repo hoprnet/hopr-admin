@@ -124,9 +124,9 @@ function Typography(props) {
     return (
       <H2
         {...props}
-        className={`Typography--h2 ${props.className} ${
-          props.center ? 'typography--center' : ''
-        } ${props.fullWidth ? 'typography--fullWidth' : ''}`}
+        className={`Typography--h2 ${props.className} ${props.center ? 'typography--center' : ''} ${
+          props.fullWidth ? 'typography--fullWidth' : ''
+        }`}
       >
         {props.children}
       </H2>
@@ -135,9 +135,9 @@ function Typography(props) {
     return (
       <H5
         {...props}
-        className={`Typography--h5 ${props.className} ${
-          props.center ? 'typography--center' : ''
-        } ${props.fullWidth ? 'typography--fullWidth' : ''}`}
+        className={`Typography--h5 ${props.className} ${props.center ? 'typography--center' : ''} ${
+          props.fullWidth ? 'typography--fullWidth' : ''
+        }`}
       >
         {props.children}
       </H5>
@@ -146,9 +146,9 @@ function Typography(props) {
     return (
       <H6
         {...props}
-        className={`Typography--h5 ${props.className}  ${
-          props.center ? 'typography--center' : ''
-        } ${props.white ? 'typography--white' : ''}`}
+        className={`Typography--h5 ${props.className}  ${props.center ? 'typography--center' : ''} ${
+          props.white ? 'typography--white' : ''
+        }`}
       >
         {props.children}
       </H6>
@@ -157,9 +157,9 @@ function Typography(props) {
     return (
       <Small1
         {...props}
-        className={`Typography--small1 ${props.className} ${
-          props.center ? 'typography--center' : ''
-        } ${props.white ? 'typography--white' : ''}`}
+        className={`Typography--small1 ${props.className} ${props.center ? 'typography--center' : ''} ${
+          props.white ? 'typography--white' : ''
+        }`}
       >
         {props.children}
       </Small1>
@@ -169,9 +169,7 @@ function Typography(props) {
   return (
     <PlainText
       {...props}
-      className={`Typography--PlainText ${props.className} ${
-        props.center ? 'typography--center' : ''
-      }`}
+      className={`Typography--PlainText ${props.className} ${props.center ? 'typography--center' : ''}`}
     >
       {props.children}
     </PlainText>

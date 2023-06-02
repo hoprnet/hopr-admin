@@ -16,9 +16,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 function Section1() {
   const dispatch = useAppDispatch();
-  const nodesSavedLocally = useAppSelector(
-    (store: Store) => store.auth.nodes
-  ).map((elem: any, index: number) => {
+  const nodesSavedLocally = useAppSelector((store: Store) => store.auth.nodes).map((elem: any, index: number) => {
     return {
       name: elem.apiEndpoint,
       value: index,
@@ -26,18 +24,13 @@ function Section1() {
       apiToken: elem.apiToken,
     };
   });
-  const connecting = useAppSelector(
-    (store: Store) => store.auth.status.connecting
-  );
-  const connected = useAppSelector(
-    (store: Store) => store.auth.status.connected
-  );
+  const connecting = useAppSelector((store: Store) => store.auth.status.connecting);
+  const connected = useAppSelector((store: Store) => store.auth.status.connected);
 
   const [apiEndpoint, set_apiEndpoint] = useState('');
   const [apiToken, set_apiToken] = useState('');
   const [saveApiToken, set_saveApiToken] = useState(false);
-  const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] =
-    useState('' as number | '');
+  const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] = useState('' as number | '');
 
   const saveNode = () => {
     dispatch(authActions.useNodeData({ apiEndpoint, apiToken }));
@@ -113,7 +106,10 @@ function Section1() {
           set_saveApiToken(event.target.checked);
         }}
       />
-      <button onClick={saveNode} disabled={apiEndpoint.length === 0}>
+      <button
+        onClick={saveNode}
+        disabled={apiEndpoint.length === 0}
+      >
         Save node
       </button>
       <button

@@ -44,8 +44,7 @@ const Image = styled.img`
   height: auto;
   max-width: 100%;
   border-radius: 28px;
-  ${(props) =>
-    props.noShadow ? '' : 'box-shadow: 0px 2px 34px -7px rgb(0 0 0 / 50%);'}
+  ${(props) => (props.noShadow ? '' : 'box-shadow: 0px 2px 34px -7px rgb(0 0 0 / 50%);')}
   &.mobileOnly {
     margin-bottom: 16px;
     @media (min-width: 700px) {
@@ -56,11 +55,7 @@ const Image = styled.img`
 
 function Brick(props) {
   return (
-    <SBrick
-      className={`Brick ${props.reverse ? 'Brick--reverse' : ''} ${
-        props.className
-      }`}
-    >
+    <SBrick className={`Brick ${props.reverse ? 'Brick--reverse' : ''} ${props.className}`}>
       <TextContainer centerText={props.centerText}>
         <Typography type="h5">{props.title}</Typography>
         <Image

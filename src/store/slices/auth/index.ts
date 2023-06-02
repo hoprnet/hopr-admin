@@ -6,10 +6,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    useNodeData(
-      state,
-      action: PayloadAction<{ apiToken: string; apiEndpoint: string }>
-    ) {
+    useNodeData(state, action: PayloadAction<{ apiToken: string; apiEndpoint: string }>) {
       state.loginData.apiEndpoint = action.payload.apiEndpoint;
       state.loginData.apiToken = action.payload.apiToken;
       state.status.connecting = true;
@@ -18,14 +15,9 @@ const authSlice = createSlice({
       state.status.connecting = false;
       state.status.connected = true;
     },
-    addNodeData(
-      state,
-      action: PayloadAction<{ apiToken: string; apiEndpoint: string }>
-    ) {
+    addNodeData(state, action: PayloadAction<{ apiToken: string; apiEndpoint: string }>) {
       const newItem = action.payload;
-      const existingItem = state.nodes.findIndex(
-        (item) => item.apiEndpoint === newItem.apiEndpoint
-      );
+      const existingItem = state.nodes.findIndex((item) => item.apiEndpoint === newItem.apiEndpoint);
       if (existingItem === -1) {
         state.nodes = [
           {

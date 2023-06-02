@@ -37,14 +37,7 @@ const Layout: React.FC<{
   children?: any;
   drawer?: boolean;
   drawerItems?: {}[];
-}> = ({
-  className = '',
-  children,
-  itemsNavbarRight,
-  tallerNavBarOnMobile,
-  drawer,
-  drawerItems,
-}) => {
+}> = ({ className = '', children, itemsNavbarRight, tallerNavBarOnMobile, drawer, drawerItems }) => {
   return (
     <SLayout className="Layout">
       <NavBar

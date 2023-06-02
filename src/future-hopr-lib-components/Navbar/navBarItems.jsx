@@ -16,13 +16,7 @@ const Content = styled.div`
 `;
 
 const NavBarItems = (props) => {
-  const poz = props.center
-    ? 'center'
-    : props.right
-    ? 'right'
-    : props.mobile
-    ? 'mobile'
-    : 'poz-undefined';
+  const poz = props.center ? 'center' : props.right ? 'right' : props.mobile ? 'mobile' : 'poz-undefined';
 
   return (
     <Content className={['menu', `menu-${poz}`].join(' ')}>

@@ -1,9 +1,4 @@
-import {
-  ReactElement,
-  JSXElementConstructor,
-  ReactFragment,
-  ReactPortal,
-} from 'react';
+import { ReactElement, JSXElementConstructor, ReactFragment, ReactPortal } from 'react';
 
 // wagmi
 import { WagmiConfig, createConfig } from 'wagmi';
@@ -21,12 +16,7 @@ const config = createConfig({
 });
 
 export default function WagmiProvider(props: {
-  children:
-    | ReactElement<any, string | JSXElementConstructor<any>>
-    | ReactFragment
-    | ReactPortal
-    | null
-    | undefined;
+  children: ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined;
 }) {
   return (
     <WagmiConfig config={config}>

@@ -13,7 +13,11 @@ function Section_Web3() {
   const safe = useAppSelector((store: Store) => store.safe);
 
   return (
-    <Section className="Section--safe" id="Section--safe" yellow>
+    <Section
+      className="Section--safe"
+      id="Section--safe"
+      yellow
+    >
       SAFE REDUX STORE
       <pre>{JSON.stringify(safe, null, 4)}</pre>
     </Section>

@@ -107,9 +107,7 @@ function Section1(props) {
           {props.title}
         </Typography>
       </div>
-      {props.theGraphBadge && (
-        <Badge src="../assets/icons/Badge_PoweredByTheGraph_white.svg" />
-      )}
+      {props.theGraphBadge && <Badge src="../assets/icons/Badge_PoweredByTheGraph_white.svg" />}
 
       {/* 
             <Subtext center>

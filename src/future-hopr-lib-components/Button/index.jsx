@@ -46,8 +46,7 @@ const SButton = styled(MuiButton)`
 `;
 
 const Button = React.forwardRef((props, ref) => {
-  const { hopr, imageOnly, size70, loading, standardWidth, fade, ...rest } =
-    props;
+  const { hopr, imageOnly, size70, loading, standardWidth, fade, ...rest } = props;
 
   return (
     <SButton
