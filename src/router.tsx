@@ -70,7 +70,7 @@ export const applicationMap = [
         name: 'Aliases',
         path: 'aliases',
         icon: <MailIcon />,
-        element: <AliasesPage />
+        element: <AliasesPage />,
       },
     ],
   },
@@ -99,7 +99,7 @@ export const applicationMap = [
         name: 'Aliases',
         path: 'aliases',
         icon: <MailIcon />,
-        element: <AliasesPage />
+        element: <AliasesPage />,
       },
     ],
   },

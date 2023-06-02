@@ -24,16 +24,10 @@ function Section1() {
       apiKey: elem.apiKey,
     };
   });
-  const sdk = useAppSelector(
-    (store: Store) => store.sdk
-  );
+  const sdk = useAppSelector((store: Store) => store.sdk);
 
   return (
-    <Section
-      className="Section--selectNode"
-      id="Section--selectNode"
-      yellow
-    >
+    <Section className="Section--selectNode" id="Section--selectNode" yellow>
       Node sdk REDUX STORE
       <pre>{JSON.stringify(sdk, null, 4)}</pre>
     </Section>
