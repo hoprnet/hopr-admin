@@ -606,7 +606,7 @@ export const createExtraReducers = (
       const { balance, channelId, peerId, status, type } = action.payload;
       // find channel if it already exists
       const channelIndex = state.channels?.[type].findIndex(
-        (channel: any) => channel.channelId === channelId
+        (channel) => channel.channelId === channelId
       );
 
       if (state.channels) {
@@ -645,7 +645,7 @@ export const createExtraReducers = (
         // using challenge as an id between tickets
         const uniqueIdentifier = updatedTicket.challenge;
         const existingIndex = state.tickets?.findIndex(
-          (ticket: any) => ticket.challenge === uniqueIdentifier
+          (ticket) => ticket.challenge === uniqueIdentifier
         );
 
         if (existingIndex && existingIndex !== -1 && state.tickets) {
