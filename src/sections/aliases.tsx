@@ -4,7 +4,8 @@ import { useAppDispatch, useAppSelector } from "../store";
 import { useEffect, useRef, useState } from "react";
 import { actionsAsync } from "../store/slices/node/actionsAsync";
 import { exportToCsv } from "../utils/helpers";
-import { APIError } from "@hoprnet/hopr-sdk/utils";
+import { utils } from "@hoprnet/hopr-sdk";
+const { APIError } = utils
 
 function AliasesPage() {
   const dispatch = useAppDispatch();
@@ -88,7 +89,7 @@ function AliasesPage() {
   );
 }
 
-function DeleteAliasButton({ alias, onError }: { alias: string, onError: (e: APIError) => void }) {
+function DeleteAliasButton({ alias, onError }: { alias: string, onError: (e: typeof APIError.prototype) => void }) {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector(selector => selector.auth.loginData)
 

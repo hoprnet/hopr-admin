@@ -33,7 +33,7 @@ export const applicationMap = [
         name: 'Info',
         path: 'info',
         icon: <MailIcon />,
-        element: <SectionInfo/>,
+        element: <SectionInfo />,
       },
       {
         name: 'Configuration',
@@ -99,6 +99,7 @@ export const applicationMap = [
         name: 'Aliases',
         path: 'aliases',
         icon: <MailIcon />,
+        element: <AliasesPage />
       },
     ],
   },
