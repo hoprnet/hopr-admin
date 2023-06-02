@@ -47,7 +47,7 @@ function Section1() {
         apiToken: saveApiToken ? apiToken : '',
       })
     );
-    dispatch(authActionsAsync.login({ apiEndpoint, apiToken }));
+    dispatch(authActionsAsync.loginThunk({ apiEndpoint, apiToken }));
     dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }));
   };
 
@@ -59,7 +59,7 @@ function Section1() {
         apiToken: saveApiToken ? apiToken : '',
       })
     );
-    dispatch(authActionsAsync.login({ apiEndpoint, apiToken }));
+    dispatch(authActionsAsync.loginThunk({ apiEndpoint, apiToken }));
     dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }));
   };
 

@@ -32,7 +32,7 @@ export const applicationMap = [
         name: 'Info',
         path: 'info',
         icon: <MailIcon />,
-        element: <SectionInfo/>,
+        element: <SectionInfo />,
       },
       {
         name: 'Configuration',

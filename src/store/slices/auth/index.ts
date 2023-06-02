@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 import { actionsAsync } from './actionsAsync';
 
@@ -6,30 +6,36 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    useNodeData(state, action) {
-      state.loginData.ip = action.payload.ip;
-      state.loginData.apiKey = action.payload.apiKey;
+    useNodeData(
+      state,
+      action: PayloadAction<{ apiToken: string; apiEndpoint: string }>
+    ) {
+      state.loginData.apiEndpoint = action.payload.apiEndpoint;
+      state.loginData.apiToken = action.payload.apiToken;
       state.status.connecting = true;
     },
     setConnected(state) {
       state.status.connecting = false;
       state.status.connected = true;
     },
-    addNodeData(state, action) {
+    addNodeData(
+      state,
+      action: PayloadAction<{ apiToken: string; apiEndpoint: string }>
+    ) {
       const newItem = action.payload;
       const existingItem = state.nodes.findIndex(
-        (item: { ip: string }) => item.ip === newItem.ip
+        (item) => item.apiEndpoint === newItem.apiEndpoint
       );
       if (existingItem === -1) {
         state.nodes = [
           {
-            ip: action.payload.ip,
-            apiKey: action.payload.apiKey,
+            apiEndpoint: action.payload.apiEndpoint,
+            apiToken: action.payload.apiToken,
           },
           ...state.nodes,
         ];
       } else {
-        state.nodes[existingItem].apiKey = action.payload.apiKey;
+        state.nodes[existingItem].apiToken = action.payload.apiToken;
       }
 
       localStorage.setItem('admin-ui-node-list', JSON.stringify(state.nodes));
