@@ -1,5 +1,29 @@
 import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
+import { initialState } from './initialState';
 import {
+  type AliasPayloadType,
+  type BasePayloadType,
+  type CloseChannelPayloadType,
+  type CreateTokenPayloadType,
+  type DeleteTokenPayloadType,
+  type FundChannelsPayloadType,
+  type GetChannelPayloadType,
+  type GetPeerInfoPayloadType,
+  type GetPeersPayloadType,
+  type OpenChannelPayloadType,
+  type PeerIdPayloadType,
+  type PingNodePayloadType,
+  type SendMessagePayloadType,
+  type SetAliasPayloadType,
+  type SetSettingPayloadType,
+  type SignPayloadType,
+  type WithdrawPayloadType,
+  api,
+  utils,
+} from '@hoprnet/hopr-sdk';
+
+const { APIError } = utils;
+const {
   closeChannel,
   createToken,
   deleteToken,
@@ -31,28 +55,7 @@ import {
   setSetting,
   sign,
   withdraw,
-} from '@hoprnet/hopr-sdk/api';
-import {
-  AliasPayloadType,
-  BasePayloadType,
-  CloseChannelPayloadType,
-  CreateTokenPayloadType,
-  DeleteTokenPayloadType,
-  FundChannelsPayloadType,
-  GetChannelPayloadType,
-  GetPeerInfoPayloadType,
-  GetPeersPayloadType,
-  OpenChannelPayloadType,
-  PeerIdPayloadType,
-  PingNodePayloadType,
-  SendMessagePayloadType,
-  SetAliasPayloadType,
-  SetSettingPayloadType,
-  SignPayloadType,
-  WithdrawPayloadType,
-} from '@hoprnet/hopr-sdk/types';
-import { APIError } from '@hoprnet/hopr-sdk/utils';
-import { initialState } from './initialState';
+} = api;
 
 const getInfoThunk = createAsyncThunk(
   'node/getInfo',
@@ -281,7 +284,7 @@ const setAliasThunk = createAsyncThunk(
 );
 
 const removeAliasThunk = createAsyncThunk(
-  'node/setAlias',
+  'node/removeAlias',
   async (payload: AliasPayloadType, { rejectWithValue }) => {
     try {
       const res = await removeAlias(payload);

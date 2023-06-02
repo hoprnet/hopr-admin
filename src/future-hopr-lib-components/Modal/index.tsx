@@ -1,8 +1,7 @@
 import * as React from 'react';
 import styled from '@emotion/styled';
 
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
+import Dialog, { DialogProps } from '@mui/material/Dialog';
 import IconButton from '@mui/material/IconButton';
 
 import { Row } from '../Atoms/row';
@@ -24,11 +23,16 @@ const SDialog = styled(Dialog)`
 
 const Content = styled.div``;
 
-export default function SimpleDialog(props) {
+interface Props extends DialogProps {
+  selectedValue?: any;
+}
+
+const Modal: React.FC<Props> = (props) => {
   const { onClose, selectedValue, open, title, children } = props;
 
-  const handleClose = () => {
-    onClose(selectedValue);
+  const handleClose = (event: {}) => {
+    // @ts-ignore
+    onClose(event, 'escapeKeyDown');
   };
 
   return (
@@ -46,4 +50,6 @@ export default function SimpleDialog(props) {
       <Content>{children}</Content>
     </SDialog>
   );
-}
+};
+
+export default Modal;

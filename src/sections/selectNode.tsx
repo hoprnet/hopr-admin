@@ -20,10 +20,10 @@ function Section1() {
     (store: Store) => store.auth.nodes
   ).map((elem: any, index: number) => {
     return {
-      name: elem.ip,
+      name: elem.apiEndpoint,
       value: index,
-      ip: elem.ip,
-      apiKey: elem.apiKey,
+      apiEndpoint: elem.apiEndpoint,
+      apiToken: elem.apiToken,
     };
   });
   const connecting = useAppSelector(
@@ -33,24 +33,34 @@ function Section1() {
     (store: Store) => store.auth.status.connected
   );
 
-  const [ip, set_ip] = useState('');
-  const [apiKey, set_apiKey] = useState('');
-  const [saveApiKey, set_saveApiKey] = useState(false);
+  const [apiEndpoint, set_apiEndpoint] = useState('');
+  const [apiToken, set_apiToken] = useState('');
+  const [saveApiToken, set_saveApiToken] = useState(false);
   const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] =
     useState('' as number | '');
 
   const saveNode = () => {
-    dispatch(authActions.useNodeData({ ip, apiKey }));
-    dispatch(authActions.addNodeData({ ip, apiKey: saveApiKey ? apiKey : '' }));
-    dispatch(authActionsAsync.login({ ip, apiKey }));
-    dispatch(nodeActionsAsync.getInfo());
+    dispatch(authActions.useNodeData({ apiEndpoint, apiToken }));
+    dispatch(
+      authActions.addNodeData({
+        apiEndpoint,
+        apiToken: saveApiToken ? apiToken : '',
+      })
+    );
+    dispatch(authActionsAsync.login({ apiEndpoint, apiToken }));
+    dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }));
   };
 
   const useNode = () => {
-    dispatch(authActions.useNodeData({ ip, apiKey }));
-    dispatch(authActions.addNodeData({ ip, apiKey: saveApiKey ? apiKey : '' }));
-    dispatch(authActionsAsync.login({ ip, apiKey }));
-    dispatch(nodeActionsAsync.getInfo());
+    dispatch(authActions.useNodeData({ apiEndpoint, apiToken }));
+    dispatch(
+      authActions.addNodeData({
+        apiEndpoint,
+        apiToken: saveApiToken ? apiToken : '',
+      })
+    );
+    dispatch(authActionsAsync.login({ apiEndpoint, apiToken }));
+    dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }));
   };
 
   const clearLocalNodes = () => {
@@ -69,8 +79,8 @@ function Section1() {
           const index = event.target.value as number;
           const chosenNode = nodesSavedLocally[index];
           set_nodesSavedLocallyChosenIndex(index);
-          set_ip(chosenNode.ip);
-          set_apiKey(chosenNode.apiKey);
+          set_apiEndpoint(chosenNode.apiEndpoint);
+          set_apiToken(chosenNode.apiToken);
         }}
         style={{ width: '100%' }}
       />
@@ -80,35 +90,35 @@ function Section1() {
       >
         Clear local nodes
       </button>
-      IP:
+      apiEndpoint:
       <input
-        value={ip}
+        value={apiEndpoint}
         onChange={(event) => {
-          set_ip(event.target.value);
+          set_apiEndpoint(event.target.value);
         }}
         style={{ width: '100%' }}
       ></input>
       API key:
       <input
-        value={apiKey}
+        value={apiToken}
         onChange={(event) => {
-          set_apiKey(event.target.value);
+          set_apiToken(event.target.value);
         }}
         style={{ width: '100%' }}
       ></input>
       <Checkbox
         label={'Save API Key locally (unsafe)'}
-        value={saveApiKey}
+        value={saveApiToken}
         onChange={(event) => {
-          set_saveApiKey(event.target.checked);
+          set_saveApiToken(event.target.checked);
         }}
       />
-      <button onClick={saveNode} disabled={ip.length === 0}>
+      <button onClick={saveNode} disabled={apiEndpoint.length === 0}>
         Save node
       </button>
       <button
         onClick={useNode}
-        disabled={ip.length === 0 || apiKey.length === 0}
+        disabled={apiEndpoint.length === 0 || apiToken.length === 0}
       >
         Use node
       </button>

@@ -1,6 +1,11 @@
 import { createBrowserRouter, RouteObject, Outlet } from 'react-router-dom';
+import ConnectWeb3 from './components/ConnectWeb3';
+
+//Sections
 import Section1 from './sections/selectNode';
 import SectionInfo from './sections/info';
+import SectionWeb3 from './sections/web3';
+import SectionSafe from './sections/safe';
 
 import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -27,7 +32,7 @@ export const applicationMap = [
         name: 'Info',
         path: 'info',
         icon: <MailIcon />,
-        element: <h1>Hellllooooo</h1>,
+        element: <SectionInfo/>,
       },
       {
         name: 'Configuration',
@@ -67,12 +72,46 @@ export const applicationMap = [
       },
     ],
   },
+  {
+    groupName: 'DEVELOP',
+    path: 'develop',
+    items: [
+      {
+        name: 'Web3',
+        path: 'web3',
+        icon: <MailIcon />,
+        element: <SectionWeb3 />,
+      },
+      {
+        name: 'Safe',
+        path: 'safe',
+        icon: <MailIcon />,
+        element: <SectionSafe />,
+      },
+      {
+        name: 'Channels',
+        path: 'channels',
+        icon: <InboxIcon />,
+      },
+      {
+        name: 'Aliases',
+        path: 'aliases',
+        icon: <MailIcon />,
+      },
+    ],
+  },
 ];
 
 var routes = [
   {
     path: '/',
-    element: <Layout drawer drawerItems={applicationMap} />,
+    element: (
+      <Layout
+        drawer
+        drawerItems={applicationMap}
+        itemsNavbarRight={<ConnectWeb3 />}
+      />
+    ),
     children: [] as RouteObject[],
   },
 ];
