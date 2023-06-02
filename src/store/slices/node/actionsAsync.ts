@@ -65,7 +65,7 @@ const getInfoThunk = createAsyncThunk(
       return info;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -79,7 +79,7 @@ const getAddressesThunk = createAsyncThunk(
       return addresses;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -93,7 +93,7 @@ const getAliasesThunk = createAsyncThunk(
       return aliases;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -107,7 +107,7 @@ const getBalancesThunk = createAsyncThunk(
       return balances;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -121,7 +121,7 @@ const getChannelsThunk = createAsyncThunk(
       return channels;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -135,7 +135,7 @@ const getPeersThunk = createAsyncThunk(
       return peers;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -149,7 +149,7 @@ const getPeerInfoThunk = createAsyncThunk(
       return peerInfo;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -163,7 +163,7 @@ const getSettingsThunk = createAsyncThunk(
       return settings;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -177,7 +177,7 @@ const getStatisticsThunk = createAsyncThunk(
       return statistics;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -191,7 +191,7 @@ const getTicketsThunk = createAsyncThunk(
       return tickets;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -205,7 +205,7 @@ const getTokenThunk = createAsyncThunk(
       return token;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -219,7 +219,7 @@ const getEntryNodesThunk = createAsyncThunk(
       return entryNodes;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -233,7 +233,7 @@ const getVersionThunk = createAsyncThunk(
       return version;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -247,7 +247,7 @@ const withdrawThunk = createAsyncThunk(
       return res;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -261,7 +261,7 @@ const getAliasThunk = createAsyncThunk(
       return { peerId: res, alias: payload.alias };
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -277,7 +277,7 @@ const setAliasThunk = createAsyncThunk(
       }
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -293,7 +293,7 @@ const removeAliasThunk = createAsyncThunk(
       }
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -307,7 +307,7 @@ const closeChannelThunk = createAsyncThunk(
       return res;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -321,7 +321,7 @@ const fundChannelsThunk = createAsyncThunk(
       return res;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -335,7 +335,7 @@ const getChannelThunk = createAsyncThunk(
       return res;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -349,7 +349,7 @@ const getChannelTicketsThunk = createAsyncThunk(
       return res;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -363,7 +363,7 @@ const openChannelThunk = createAsyncThunk(
       return res;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -377,7 +377,7 @@ const redeemChannelTicketsThunk = createAsyncThunk(
       return res;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -391,7 +391,7 @@ const sendMessageThunk = createAsyncThunk(
       return { challenge: res, body: payload.body };
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -405,7 +405,7 @@ const signThunk = createAsyncThunk(
       return res;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -419,7 +419,7 @@ const pingNodeThunk = createAsyncThunk(
       return { ...res, peerId: payload.peerId };
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -433,7 +433,7 @@ const setSettingThunk = createAsyncThunk(
       return res;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -447,7 +447,7 @@ const redeemTicketsThunk = createAsyncThunk(
       return res;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -461,7 +461,7 @@ const createTokenThunk = createAsyncThunk(
       return res;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -475,7 +475,7 @@ const deleteTokenThunk = createAsyncThunk(
       return { deleted: res, id: payload.id };
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }
@@ -489,7 +489,7 @@ const getPrometheusMetricsThunk = createAsyncThunk(
       return res;
     } catch (e) {
       if (e instanceof APIError) {
-        rejectWithValue(e.error);
+        return rejectWithValue({ status: e.status, error: e.error });
       }
     }
   }

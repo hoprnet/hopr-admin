@@ -4,11 +4,13 @@ import { useAppDispatch, useAppSelector } from "../store";
 import { useEffect, useRef, useState } from "react";
 import { actionsAsync } from "../store/slices/node/actionsAsync";
 import { exportToCsv } from "../utils/helpers";
+import { APIError } from "@hoprnet/hopr-sdk/utils";
 
 function AliasesPage() {
   const dispatch = useAppDispatch();
   const aliases = useAppSelector(selector => selector.sdk.aliases)
   const loginData = useAppSelector(selector => selector.auth.loginData)
+  const [errors, set_errors] = useState<{ status: string | undefined; error: string | undefined, alias: string }[]>([])
 
   useEffect(() => {
     if (loginData.ip && loginData.apiKey) {
@@ -27,6 +29,12 @@ function AliasesPage() {
       <CreateAliasForm />
       <h2>Aliases table</h2>
       <button onClick={() => {
+        if (loginData.ip && loginData.apiKey) {
+          dispatch(actionsAsync.getAliasesThunk({ apiEndpoint: loginData.ip, apiToken: loginData.apiKey })).unwrap().catch(err => {
+          })
+        }
+      }}>refresh</button>
+      <button onClick={() => {
         if (aliases) {
           exportToCsv(Object.keys(aliases).map(alias => ({
             alias: alias,
@@ -42,7 +50,9 @@ function AliasesPage() {
               peerId: String(data.peerId),
               apiEndpoint: loginData.ip,
               apiToken: loginData.apiKey
-            }))
+            })).catch(e => {
+              set_errors([...errors, { alias: String(data.alias), error: e.error, status: e.status }])
+            })
           }
         }
       }} />
@@ -66,7 +76,9 @@ function AliasesPage() {
                 </TableCell>
                 <TableCell>{peerId}</TableCell>
                 <TableCell>{alias}</TableCell>
-                <TableCell><DeleteAliasButton alias={alias} /></TableCell>
+                <TableCell><DeleteAliasButton onError={(e) => {
+                  set_errors([...errors, { alias: String(alias), error: e.error, status: e.status }])
+                }} alias={alias} /></TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -76,13 +88,13 @@ function AliasesPage() {
   );
 }
 
-function DeleteAliasButton({ alias }: { alias: string }) {
+function DeleteAliasButton({ alias, onError }: { alias: string, onError: (e: APIError) => void }) {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector(selector => selector.auth.loginData)
 
   return <button onClick={() => {
     if (loginData.ip && loginData.apiKey) {
-      dispatch(actionsAsync.removeAliasThunk({ alias, apiEndpoint: loginData.ip, apiToken: loginData.apiKey }))
+      dispatch(actionsAsync.removeAliasThunk({ alias, apiEndpoint: loginData.ip, apiToken: loginData.apiKey })).unwrap().catch(e => onError(e))
     }
   }}>delete</button>
 }
@@ -90,15 +102,16 @@ function DeleteAliasButton({ alias }: { alias: string }) {
 function CreateAliasForm() {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector(selector => selector.auth.loginData)
-
-  const [form, setForm] = useState<{ peerId: string; alias: string }>({
+  const [error, set_error] = useState<{ status: string | undefined; error: string | undefined }>()
+  const [success, set_success] = useState(false)
+  const [form, set_form] = useState<{ peerId: string; alias: string }>({
     alias: '',
     peerId: ''
   })
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
-    setForm({ ...form, [name]: value })
+    set_form({ ...form, [name]: value })
   }
 
   return (
@@ -107,9 +120,17 @@ function CreateAliasForm() {
       <input type="text" name="alias" placeholder="alias" onChange={handleChange} value={form.alias} />
       <button onClick={() => {
         if (loginData.ip && loginData.apiKey) {
-          dispatch(actionsAsync.setAliasThunk({ alias: form.alias, peerId: form.peerId, apiEndpoint: loginData.ip, apiToken: loginData.apiKey }))
+          dispatch(actionsAsync.setAliasThunk({ alias: form.alias, peerId: form.peerId, apiEndpoint: loginData.ip, apiToken: loginData.apiKey })).unwrap().then(() => {
+            set_success(true)
+            set_error(undefined)
+          }).catch(e => {
+            set_error({ error: e.error, status: e.status })
+          })
         }
       }}>add</button>
+      <p>
+        {success ? "created alias!" : error?.status}
+      </p>
     </div>
   )
 
@@ -200,9 +221,15 @@ function CSVUploader<T extends ParsedData>({ onParse }: CSVUploaderProps<T>) {
     }
   };
 
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div>
-      import <input type="file" accept=".csv" ref={fileInputRef} onChange={handleFileUpload} placeholder="import" />
+      <button onClick={handleImportClick}>import</button>
+      {/* hidden import */}
+      <input type="file" accept=".csv" style={{ display: 'none' }} ref={fileInputRef} onChange={handleFileUpload} placeholder="import" />
     </div>
   );
 }
