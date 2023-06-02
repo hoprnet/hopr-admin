@@ -24,11 +24,11 @@ function AliasesPage() {
   >([]);
 
   useEffect(() => {
-    if (loginData.ip && loginData.apiKey) {
+    if (loginData.apiEndpoint && loginData.apiToken) {
       dispatch(
         actionsAsync.getAliasesThunk({
-          apiEndpoint: loginData.ip,
-          apiToken: loginData.apiKey,
+          apiEndpoint: loginData.apiEndpoint,
+          apiToken: loginData.apiToken,
         })
       );
     }
@@ -42,11 +42,11 @@ function AliasesPage() {
       <h2>Aliases table</h2>
       <button
         onClick={() => {
-          if (loginData.ip && loginData.apiKey) {
+          if (loginData.apiEndpoint && loginData.apiToken) {
             dispatch(
               actionsAsync.getAliasesThunk({
-                apiEndpoint: loginData.ip,
-                apiToken: loginData.apiKey,
+                apiEndpoint: loginData.apiEndpoint,
+                apiToken: loginData.apiToken,
               })
             )
               .unwrap()
@@ -74,13 +74,18 @@ function AliasesPage() {
       <CSVUploader
         onParse={(parsedData) => {
           for (const data of parsedData) {
-            if (data.alias && data.peerId && loginData.ip && loginData.apiKey) {
+            if (
+              data.alias &&
+              data.peerId &&
+              loginData.apiEndpoint &&
+              loginData.apiToken
+            ) {
               dispatch(
                 actionsAsync.setAliasThunk({
                   alias: String(data.alias),
                   peerId: String(data.peerId),
-                  apiEndpoint: loginData.ip,
-                  apiToken: loginData.apiKey,
+                  apiEndpoint: loginData.apiEndpoint,
+                  apiToken: loginData.apiToken,
                 })
               ).catch((e) => {
                 set_errors([
@@ -151,12 +156,12 @@ function DeleteAliasButton({
   return (
     <button
       onClick={() => {
-        if (loginData.ip && loginData.apiKey) {
+        if (loginData.apiEndpoint && loginData.apiToken) {
           dispatch(
             actionsAsync.removeAliasThunk({
               alias,
-              apiEndpoint: loginData.ip,
-              apiToken: loginData.apiKey,
+              apiEndpoint: loginData.apiEndpoint,
+              apiToken: loginData.apiToken,
             })
           )
             .unwrap()
@@ -205,13 +210,13 @@ function CreateAliasForm() {
       />
       <button
         onClick={() => {
-          if (loginData.ip && loginData.apiKey) {
+          if (loginData.apiEndpoint && loginData.apiToken) {
             dispatch(
               actionsAsync.setAliasThunk({
                 alias: form.alias,
                 peerId: form.peerId,
-                apiEndpoint: loginData.ip,
-                apiToken: loginData.apiKey,
+                apiEndpoint: loginData.apiEndpoint,
+                apiToken: loginData.apiToken,
               })
             )
               .unwrap()
