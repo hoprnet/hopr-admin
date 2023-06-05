@@ -3,6 +3,7 @@ import ConnectWeb3 from './components/ConnectWeb3';
 
 //Sections
 import Section1 from './sections/selectNode';
+import SectionLogs from './sections/logs';
 import SectionWeb3 from './sections/web3';
 import SectionSafe from './sections/safe';
 
@@ -27,6 +28,12 @@ export const applicationMap = [
         path: 'connect',
         icon: <MenuIcon />,
         element: <Section1 />,
+      },
+      {
+        name: 'Logs',
+        path: 'logs',
+        icon: <MailIcon />,
+        element: <SectionLogs />,
       },
       {
         name: 'Info',
