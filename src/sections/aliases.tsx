@@ -19,7 +19,12 @@ function AliasesPage() {
   const dispatch = useAppDispatch();
   const aliases = useAppSelector((selector) => selector.sdk.aliases);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const [errors, set_errors] = useState<
+  const [importSuccess, set_importSuccess] = useState(false);
+  const [deleteSuccess, set_deleteSuccess] = useState(false);
+  const [importErrors, set_importErrors] = useState<
+    { status: string | undefined; error: string | undefined; alias: string }[]
+  >([]);
+  const [deleteErrors, set_deleteErrors] = useState<
     { status: string | undefined; error: string | undefined; alias: string }[]
   >([]);
 
@@ -48,15 +53,14 @@ function AliasesPage() {
                 apiEndpoint: loginData.apiEndpoint,
                 apiToken: loginData.apiToken,
               })
-            )
-              .unwrap()
-              .catch((err) => {});
+            );
           }
         }}
       >
         refresh
       </button>
       <button
+        disabled={aliases !== null && Object.keys(aliases).length === 0}
         onClick={() => {
           if (aliases) {
             exportToCsv(
@@ -87,16 +91,23 @@ function AliasesPage() {
                   apiEndpoint: loginData.apiEndpoint,
                   apiToken: loginData.apiToken,
                 })
-              ).catch((e) => {
-                set_errors([
-                  ...errors,
-                  {
-                    alias: String(data.alias),
-                    error: e.error,
-                    status: e.status,
-                  },
-                ]);
-              });
+              )
+                .unwrap()
+                .then(() => {
+                  set_importSuccess(true);
+                  set_importErrors([]);
+                })
+                .catch((e) => {
+                  set_importSuccess(false);
+                  set_importErrors([
+                    ...importErrors,
+                    {
+                      alias: String(data.alias),
+                      error: e.error,
+                      status: e.status,
+                    },
+                  ]);
+                });
             }
           }
         }}
@@ -121,9 +132,13 @@ function AliasesPage() {
                 <TableCell>{alias}</TableCell>
                 <TableCell>
                   <DeleteAliasButton
+                    onSuccess={() => {
+                      set_deleteSuccess(true);
+                    }}
                     onError={(e) => {
-                      set_errors([
-                        ...errors,
+                      set_deleteSuccess(false);
+                      set_deleteErrors([
+                        ...deleteErrors,
                         {
                           alias: String(alias),
                           error: e.error,
@@ -139,6 +154,18 @@ function AliasesPage() {
           </TableBody>
         </Table>
       </TableContainer>
+      <p>{!!importSuccess && 'Imported aliases!'}</p>
+      {importErrors.map((error) => (
+        <p>
+          {error.error}: failed to import alias: {error.alias}
+        </p>
+      ))}
+      <p>{!!deleteSuccess && 'Deleted alias!'}</p>
+      {deleteErrors.map((error) => (
+        <p>
+          {error.error}: failed to delete alias: {error.alias}
+        </p>
+      ))}
     </Section>
   );
 }
@@ -146,9 +173,11 @@ function AliasesPage() {
 function DeleteAliasButton({
   alias,
   onError,
+  onSuccess,
 }: {
   alias: string;
   onError: (e: typeof APIError.prototype) => void;
+  onSuccess: () => void;
 }) {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
@@ -165,6 +194,9 @@ function DeleteAliasButton({
             })
           )
             .unwrap()
+            .then(() => {
+              onSuccess();
+            })
             .catch((e) => onError(e));
         }
       }}
@@ -209,6 +241,7 @@ function CreateAliasForm() {
         value={form.alias}
       />
       <button
+        disabled={form.alias.length === 0 || form.peerId.length === 0}
         onClick={() => {
           if (loginData.apiEndpoint && loginData.apiToken) {
             dispatch(
@@ -225,6 +258,7 @@ function CreateAliasForm() {
                 set_error(undefined);
               })
               .catch((e) => {
+                set_success(false);
                 set_error({ error: e.error, status: e.status });
               });
           }
