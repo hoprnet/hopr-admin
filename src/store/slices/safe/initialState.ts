@@ -1,6 +1,13 @@
-export const initialState = {
-  status: {
-    connecting: false as boolean,
-    connected: false as boolean,
-  },
+type InitialState = {
+  connected: boolean;
+  recentlyCreatedSafe: string | null;
+  safesByOwner: unknown[];
+  transactions: unknown[];
+};
+
+export const initialState: InitialState = {
+  connected: false,
+  recentlyCreatedSafe: null,
+  safesByOwner: [],
+  transactions: [],
 };
