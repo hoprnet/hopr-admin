@@ -12,13 +12,13 @@ import { actionsAsync } from '../store/slices/safe/actionsAsync';
 function SafeSection() {
   const dispatch = useAppDispatch();
   const safe = useAppSelector((store: Store) => store.safe);
-  const { signer } = useSigner()
+  const { signer } = useSigner();
 
   useEffect(() => {
     if (signer) {
-      dispatch(actionsAsync.getSafesByOwnerThunk({ signer }))
+      dispatch(actionsAsync.getSafesByOwnerThunk({ signer }));
     }
-  }, [signer])
+  }, [signer]);
   return (
     <Section className="Section--safe" id="Section--safe" yellow>
       SAFE REDUX STORE

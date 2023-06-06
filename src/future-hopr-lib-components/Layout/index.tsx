@@ -46,26 +46,26 @@ const Layout: React.FC<{
   drawer,
   drawerItems,
 }) => {
-    return (
-      <SLayout className="Layout">
-        <NavBar
-          mainLogo={HoprLogo}
-          mainLogoAlt="hopr logo"
-          itemsNavbarRight={itemsNavbarRight}
-          tallerNavBarOnMobile={tallerNavBarOnMobile}
-        />
-        {drawer && <Drawer drawerItems={drawerItems} />}
-        <Content
-          className="Content"
-          drawer={drawer}
+  return (
+    <SLayout className="Layout">
+      <NavBar
+        mainLogo={HoprLogo}
+        mainLogoAlt="hopr logo"
+        itemsNavbarRight={itemsNavbarRight}
+        tallerNavBarOnMobile={tallerNavBarOnMobile}
+      />
+      {drawer && <Drawer drawerItems={drawerItems} />}
+      <Content
+        className="Content"
+        drawer={drawer}
         //       tallerNavBarOnMobile={tallerNavBarOnMobile}
-        >
-          <Outlet />
-          {/* {children}  */}
-        </Content>
-        {/* <Footer /> */}
-      </SLayout>
-    );
-  };
+      >
+        <Outlet />
+        {/* {children}  */}
+      </Content>
+      {/* <Footer /> */}
+    </SLayout>
+  );
+};
 
 export default Layout;
