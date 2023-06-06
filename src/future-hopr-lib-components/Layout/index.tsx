@@ -36,6 +36,7 @@ const Layout: React.FC<{
   tallerNavBarOnMobile?: boolean;
   children?: any;
   drawer?: boolean;
+  webapp?: boolean;
   drawerItems?: {}[];
 }> = ({
   className = '',
@@ -44,6 +45,7 @@ const Layout: React.FC<{
   tallerNavBarOnMobile,
   drawer,
   drawerItems,
+  webapp
 }) => {
   return (
     <SLayout className="Layout">
@@ -52,6 +54,7 @@ const Layout: React.FC<{
         mainLogoAlt="hopr logo"
         itemsNavbarRight={itemsNavbarRight}
         tallerNavBarOnMobile={tallerNavBarOnMobile}
+        webapp={webapp}
       />
       {drawer && <Drawer drawerItems={drawerItems} />}
       <Content

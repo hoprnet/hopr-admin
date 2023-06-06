@@ -1,17 +1,22 @@
-import { createBrowserRouter, RouteObject, Outlet } from 'react-router-dom';
-import ConnectWeb3 from './components/ConnectWeb3';
+import { createBrowserRouter, RouteObject } from 'react-router-dom';
 
-//Sections
+// Sections
 import Section1 from './sections/selectNode';
 import SectionWeb3 from './sections/web3';
 import SectionSafe from './sections/safe';
+import AliasesPage from './sections/aliases';
+import InfoPage from './sections/info';
 
+// Layout
+import Layout from './future-hopr-lib-components/Layout';
+import ConnectWeb3 from './components/ConnectWeb3';
+import ConnectNode from './components/ConnectNode';
+
+// Icons
 import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
-import Layout from './future-hopr-lib-components/Layout';
-import AliasesPage from './sections/aliases';
-import InfoPage from './sections/info';
+
 
 export const applicationMap = [
   // {
@@ -89,18 +94,7 @@ export const applicationMap = [
         path: 'safe',
         icon: <MailIcon />,
         element: <SectionSafe />,
-      },
-      {
-        name: 'Channels',
-        path: 'channels',
-        icon: <InboxIcon />,
-      },
-      {
-        name: 'Aliases',
-        path: 'aliases',
-        icon: <MailIcon />,
-        element: <AliasesPage />,
-      },
+      }
     ],
   },
 ];
@@ -111,8 +105,14 @@ var routes = [
     element: (
       <Layout
         drawer
+        webapp
         drawerItems={applicationMap}
-        itemsNavbarRight={<ConnectWeb3 />}
+        itemsNavbarRight={
+          <>
+            <ConnectWeb3 />
+            <ConnectNode />
+          </>
+        }
       />
     ),
     children: [] as RouteObject[],

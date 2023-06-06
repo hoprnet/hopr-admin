@@ -6,6 +6,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    resetState: () => initialState,
     useNodeData(
       state,
       action: PayloadAction<{ apiToken: string; apiEndpoint: string }>
@@ -20,7 +21,7 @@ const authSlice = createSlice({
     },
     addNodeData(
       state,
-      action: PayloadAction<{ apiToken: string; apiEndpoint: string }>
+      action: PayloadAction<{ apiToken: string; apiEndpoint: string, localName: string }>
     ) {
       const newItem = action.payload;
       const existingItem = state.nodes.findIndex(
@@ -31,11 +32,13 @@ const authSlice = createSlice({
           {
             apiEndpoint: action.payload.apiEndpoint,
             apiToken: action.payload.apiToken,
+            localName: action.payload.localName,
           },
           ...state.nodes,
         ];
       } else {
         state.nodes[existingItem].apiToken = action.payload.apiToken;
+        state.nodes[existingItem].localName = action.payload.localName;
       }
 
       localStorage.setItem('admin-ui-node-list', JSON.stringify(state.nodes));

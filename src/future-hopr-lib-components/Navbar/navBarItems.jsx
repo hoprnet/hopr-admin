@@ -4,7 +4,8 @@ import NavButton from './navButton';
 
 const Content = styled.div`
   gap: 5px;
-  &.menu-right {
+  align-items: center;
+  &.menu-right:not(.menu-webpapp) {
     margin-right: 8px;
   }
   &.menu-mobile {
@@ -25,7 +26,7 @@ const NavBarItems = (props) => {
     : 'poz-undefined';
 
   return (
-    <Content className={['menu', `menu-${poz}`].join(' ')}>
+    <Content className={['menu', `menu-${poz}`, props.webapp ? 'menu-webpapp' : ''].join(' ')}>
       {props.itemsNavbar[0]?.label &&
         props.itemsNavbar.map((item, i) => (
           <NavButton

@@ -7,6 +7,7 @@ const nodeSlice = createSlice({
   name: 'node',
   initialState,
   reducers: {
+    resetState: () => initialState,
     setInitiating(state) {
       console.log('SDK initiating');
       state.status.initiating = true;

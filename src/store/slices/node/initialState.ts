@@ -19,7 +19,10 @@ type InitialState = {
     initiating: boolean;
     initiated: boolean;
   };
-  addresses: AccountResponseType | null;
+  addresses: {
+    hopr: string | null;
+    native: string | null;
+  }
   aliases: GetAliasesResponseType | null;
   balances: AccountResponseType | null;
   channels: GetChannelsResponseType | null;
@@ -43,7 +46,10 @@ export const initialState: InitialState = {
     initiating: false,
     initiated: false,
   },
-  addresses: null,
+  addresses: {
+    hopr: null,
+    native: null,
+  },
   aliases: null,
   balances: null,
   channels: null,

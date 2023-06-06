@@ -20,7 +20,8 @@ function Section1() {
     (store: Store) => store.auth.nodes
   ).map((elem: any, index: number) => {
     return {
-      name: elem.apiEndpoint,
+      name: elem.localName ?  elem.localName : elem.apiEndpoint,
+      localName: elem.localName,
       value: index,
       apiEndpoint: elem.apiEndpoint,
       apiToken: elem.apiToken,
@@ -33,34 +34,36 @@ function Section1() {
     (store: Store) => store.auth.status.connected
   );
 
+  const [localName, set_localName] = useState('');
   const [apiEndpoint, set_apiEndpoint] = useState('');
   const [apiToken, set_apiToken] = useState('');
   const [saveApiToken, set_saveApiToken] = useState(false);
-  const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] =
-    useState('' as number | '');
+  const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] = useState('' as number | '');
 
   const saveNode = () => {
-    dispatch(authActions.useNodeData({ apiEndpoint, apiToken }));
     dispatch(
       authActions.addNodeData({
         apiEndpoint,
         apiToken: saveApiToken ? apiToken : '',
+        localName: localName ? localName : '',
       })
     );
-    dispatch(authActionsAsync.loginThunk({ apiEndpoint, apiToken }));
-    dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }));
   };
 
   const useNode = () => {
+    dispatch(authActions.resetState());
+    dispatch(nodeActions.resetState());
     dispatch(authActions.useNodeData({ apiEndpoint, apiToken }));
     dispatch(
       authActions.addNodeData({
         apiEndpoint,
         apiToken: saveApiToken ? apiToken : '',
+        localName: localName ? localName : '',
       })
     );
     dispatch(authActionsAsync.loginThunk({ apiEndpoint, apiToken }));
     dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }));
+    dispatch(nodeActionsAsync.getAddressesThunk({ apiToken, apiEndpoint }));
   };
 
   const clearLocalNodes = () => {
@@ -81,6 +84,8 @@ function Section1() {
           set_nodesSavedLocallyChosenIndex(index);
           set_apiEndpoint(chosenNode.apiEndpoint);
           set_apiToken(chosenNode.apiToken);
+          set_localName(chosenNode.localName);
+          set_saveApiToken(chosenNode.apiToken && chosenNode.apiToken.length > 0)
         }}
         style={{ width: '100%' }}
       />
@@ -90,7 +95,16 @@ function Section1() {
       >
         Clear local nodes
       </button>
-      apiEndpoint:
+      <br/>
+      Local name:
+      <input
+        value={localName}
+        onChange={(event) => {
+          set_localName(event.target.value);
+        }}
+        style={{ width: '100%' }}
+      ></input>
+      apiEndpoint*:
       <input
         value={apiEndpoint}
         onChange={(event) => {
@@ -98,7 +112,7 @@ function Section1() {
         }}
         style={{ width: '100%' }}
       ></input>
-      API key:
+      apiToken*:
       <input
         value={apiToken}
         onChange={(event) => {
@@ -110,11 +124,13 @@ function Section1() {
         label={'Save API Key locally (unsafe)'}
         value={saveApiToken}
         onChange={(event) => {
+          console.log('onChange')
           set_saveApiToken(event.target.checked);
         }}
       />
+      <br/>
       <button onClick={saveNode} disabled={apiEndpoint.length === 0}>
-        Save node
+        Save node locally
       </button>
       <button
         onClick={useNode}
@@ -122,7 +138,6 @@ function Section1() {
       >
         Use node
       </button>
-      {/* TODO: Add 'save' button */}
       {connecting && <CircularProgress />}
     </Section>
   );
