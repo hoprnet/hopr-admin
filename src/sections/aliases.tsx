@@ -1,12 +1,4 @@
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from '@mui/material';
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
 import { useEffect, useRef, useState } from 'react';
@@ -41,7 +33,11 @@ function AliasesPage() {
   }, [loginData]);
 
   return (
-    <Section className="Section--aliases" id="Section--aliases" yellow>
+    <Section
+      className="Section--aliases"
+      id="Section--aliases"
+      yellow
+    >
       <h2>Add new alias</h2>
       <CreateAliasForm />
       <h2>Aliases table</h2>
@@ -78,12 +74,7 @@ function AliasesPage() {
       <CSVUploader
         onParse={(parsedData) => {
           for (const data of parsedData) {
-            if (
-              data.alias &&
-              data.peerId &&
-              loginData.apiEndpoint &&
-              loginData.apiToken
-            ) {
+            if (data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken) {
               dispatch(
                 actionsAsync.setAliasThunk({
                   alias: String(data.alias),
@@ -113,7 +104,10 @@ function AliasesPage() {
         }}
       />
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="aliases table">
+        <Table
+          sx={{ minWidth: 650 }}
+          aria-label="aliases table"
+        >
           <TableHead>
             <TableRow>
               <TableCell>id</TableCell>
@@ -125,7 +119,10 @@ function AliasesPage() {
           <TableBody>
             {Object.entries(aliases ?? {}).map(([alias, peerId], key) => (
               <TableRow key={key}>
-                <TableCell component="th" scope="row">
+                <TableCell
+                  component="th"
+                  scope="row"
+                >
                   {key}
                 </TableCell>
                 <TableCell>{peerId}</TableCell>

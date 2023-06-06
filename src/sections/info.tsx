@@ -7,9 +7,7 @@ import { actionsAsync } from '../store/slices/node/actionsAsync';
 
 function InfoPage() {
   const dispatch = useAppDispatch();
-  const { apiEndpoint, apiToken } = useAppSelector(
-    (selector) => selector.auth.loginData
-  );
+  const { apiEndpoint, apiToken } = useAppSelector((selector) => selector.auth.loginData);
   const balances = useAppSelector((selector) => selector.sdk.balances);
   const addresses = useAppSelector((selector) => selector.sdk.addresses);
   const channels = useAppSelector((selector) => selector.sdk.channels);
@@ -40,14 +38,22 @@ function InfoPage() {
   // check if user is logged in
   if (!apiEndpoint || !apiToken) {
     return (
-      <Section className="Section--selectNode" id="Section--selectNode" yellow>
+      <Section
+        className="Section--selectNode"
+        id="Section--selectNode"
+        yellow
+      >
         Login to node
       </Section>
     );
   }
 
   return (
-    <Section className="Section--selectNode" id="Section--selectNode" yellow>
+    <Section
+      className="Section--selectNode"
+      id="Section--selectNode"
+      yellow
+    >
       <h2>
         Info <button onClick={fetchInfoData}>refresh</button>{' '}
       </h2>
@@ -86,20 +92,8 @@ function InfoPage() {
       </div>
       <h2>Channels</h2>
       <div id="channels">
-        <div>
-          Incoming:{' '}
-          {
-            channels?.incoming.filter((channel) => channel.status === 'Open')
-              .length
-          }
-        </div>
-        <div>
-          Outgoing:{' '}
-          {
-            channels?.outgoing.filter((channel) => channel.status === 'Open')
-              .length
-          }
-        </div>
+        <div>Incoming: {channels?.incoming.filter((channel) => channel.status === 'Open').length}</div>
+        <div>Outgoing: {channels?.outgoing.filter((channel) => channel.status === 'Open').length}</div>
       </div>
       <h2>Peers</h2>
       <div id="peers">

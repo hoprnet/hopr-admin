@@ -62,7 +62,11 @@ function Section1() {
   };
 
   return (
-    <Section className="Section--selectNode" id="Section--selectNode" yellow>
+    <Section
+      className="Section--selectNode"
+      id="Section--selectNode"
+      yellow
+    >
       <Select
         label={'nodesSavedLocally'}
         values={nodesSavedLocally}
