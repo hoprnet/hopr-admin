@@ -14,11 +14,19 @@ function TicketsPage() {
   const [redeemErrors, set_redeemErrors] = useState<
     { status: string | undefined; error: string | undefined }[]
   >([]);
+  const [showStatistics, set_showStatistics] = useState(false);
+  const [showTickets, set_showTickets] = useState(false);
 
   useEffect(() => {
     if (loginData.apiEndpoint && loginData.apiToken) {
       dispatch(
         actionsAsync.getStatisticsThunk({
+          apiEndpoint: loginData.apiEndpoint,
+          apiToken: loginData.apiToken,
+        })
+      );
+      dispatch(
+        actionsAsync.getTicketsThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
         })
@@ -36,6 +44,12 @@ function TicketsPage() {
             if (loginData.apiEndpoint && loginData.apiToken) {
               dispatch(
                 actionsAsync.getStatisticsThunk({
+                  apiEndpoint: loginData.apiEndpoint,
+                  apiToken: loginData.apiToken,
+                })
+              );
+              dispatch(
+                actionsAsync.getTicketsThunk({
                   apiEndpoint: loginData.apiEndpoint,
                   apiToken: loginData.apiToken,
                 })
@@ -63,6 +77,38 @@ function TicketsPage() {
           ]);
         }}
       />
+      <div>
+        <button
+          onClick={() => {
+            set_showStatistics(!showStatistics);
+          }}
+        >
+          {showStatistics ? 'Hide Statistics' : 'Show Statistics'}
+        </button>
+        {showStatistics && (
+          <pre>
+            {statistics
+              ? JSON.stringify(statistics, null, 2)
+              : 'No statistics available'}
+          </pre>
+        )}
+      </div>
+      <div>
+        <button
+          onClick={() => {
+            set_showTickets(!showTickets);
+          }}
+        >
+          {showTickets ? 'Hide Tickets' : 'Show Tickets'}
+        </button>
+        {showTickets && (
+          <pre>
+            {tickets
+              ? JSON.stringify(tickets, null, 4)
+              : 'No tickets available'}
+          </pre>
+        )}
+      </div>
     </Section>
   );
 }
