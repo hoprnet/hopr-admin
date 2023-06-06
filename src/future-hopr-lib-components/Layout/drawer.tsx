@@ -14,6 +14,9 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
+// Types
+import { ApplicationMapType } from '../../router';
+
 const drawerWidth = 240;
 
 interface Props {
@@ -23,6 +26,7 @@ interface Props {
    */
   window?: () => Window;
   drawerItems?: any[];
+  drawerLoginState?: {};
 }
 
 const AppBarFiller = styled(Toolbar)`
@@ -66,10 +70,20 @@ export default function ResponsiveDrawer(props: Props) {
                   <SLink
                     to={`${group.path}/${item.path}`}
                     key={indexI}
-                    disabled={!item.element}
+                    disabled={
+                      !item.element ||
+                      // @ts-ignore
+                      (item.loginNeeded && props?.drawerLoginState[item.loginNeeded] === false )
+                    }
                   >
                     <ListItem disablePadding>
-                      <ListItemButton disabled={!item.element}>
+                      <ListItemButton 
+                        disabled={
+                          !item.element ||
+                          // @ts-ignore
+                          (item.loginNeeded && props?.drawerLoginState[item.loginNeeded] === false )
+                        }
+                      >
                         <ListItemIcon>{item.icon}</ListItemIcon>
                         <ListItemText primary={item.name} />
                       </ListItemButton>

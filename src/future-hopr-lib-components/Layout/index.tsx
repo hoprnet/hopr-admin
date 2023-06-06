@@ -37,6 +37,7 @@ const Layout: React.FC<{
   children?: any;
   drawer?: boolean;
   webapp?: boolean;
+  drawerLoginState?: {};
   drawerItems?: {}[];
 }> = ({
   className = '',
@@ -45,7 +46,8 @@ const Layout: React.FC<{
   tallerNavBarOnMobile,
   drawer,
   drawerItems,
-  webapp
+  webapp,
+  drawerLoginState
 }) => {
   return (
     <SLayout className="Layout">
@@ -56,7 +58,7 @@ const Layout: React.FC<{
         tallerNavBarOnMobile={tallerNavBarOnMobile}
         webapp={webapp}
       />
-      {drawer && <Drawer drawerItems={drawerItems} />}
+      {drawer && <Drawer drawerItems={drawerItems} drawerLoginState={drawerLoginState} />}
       <Content
         className="Content"
         drawer={drawer}

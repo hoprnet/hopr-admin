@@ -1,5 +1,8 @@
 import { createBrowserRouter, RouteObject } from 'react-router-dom';
 
+// Store
+import { useAppSelector } from './store';
+
 // Sections
 import Section1 from './sections/selectNode';
 import SectionWeb3 from './sections/web3';
@@ -17,6 +20,8 @@ import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 
+// Types
+import { Store } from './types/index';
 
 export const applicationMap = [
   // {
@@ -39,16 +44,19 @@ export const applicationMap = [
         path: 'info',
         icon: <MailIcon />,
         element: <InfoPage />,
+        loginNeeded: 'node',
       },
       {
         name: 'Configuration',
         path: 'configuration',
         icon: <MailIcon />,
+        loginNeeded: 'node',
       },
       {
         name: 'CLI',
         path: 'cli',
         icon: <MailIcon />,
+        loginNeeded: 'node',
       },
     ],
   },
@@ -60,22 +68,26 @@ export const applicationMap = [
         name: 'Ping',
         path: 'ping',
         icon: <MailIcon />,
+        loginNeeded: 'node',
       },
       {
         name: 'Message',
         path: 'message',
         icon: <MailIcon />,
+        loginNeeded: 'node',
       },
       {
         name: 'Channels',
         path: 'channels',
         icon: <InboxIcon />,
+        loginNeeded: 'node',
       },
       {
         name: 'Aliases',
         path: 'aliases',
         icon: <MailIcon />,
         element: <AliasesPage />,
+        loginNeeded: 'node',
       },
     ],
   },
@@ -88,33 +100,45 @@ export const applicationMap = [
         path: 'web3',
         icon: <MailIcon />,
         element: <SectionWeb3 />,
+        loginNeeded: 'web3',
       },
       {
         name: 'Safe',
         path: 'safe',
         icon: <MailIcon />,
         element: <SectionSafe />,
+        loginNeeded: 'web3',
       }
     ],
   },
 ];
 
+const LayoutWithStore = () => {
+  const nodeConnected = useAppSelector((store: Store) => store.auth.status.connected);
+
+  return (
+    <Layout
+      drawer
+      webapp
+      drawerItems={applicationMap}
+      drawerLoginState={{
+        node: nodeConnected,
+        web3: true,
+      }}
+      itemsNavbarRight={
+        <>
+          <ConnectWeb3 />
+          <ConnectNode />
+        </>
+      }
+    />
+  )
+}
+
 var routes = [
   {
     path: '/',
-    element: (
-      <Layout
-        drawer
-        webapp
-        drawerItems={applicationMap}
-        itemsNavbarRight={
-          <>
-            <ConnectWeb3 />
-            <ConnectNode />
-          </>
-        }
-      />
-    ),
+    element: <LayoutWithStore />,
     children: [] as RouteObject[],
   },
 ];
@@ -137,3 +161,4 @@ console.log('routes', routes);
 const router = createBrowserRouter(routes);
 
 export default router;
+export type ApplicationMapType = typeof applicationMap;
