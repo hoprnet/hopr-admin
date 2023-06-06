@@ -33,11 +33,14 @@ function Section1() {
   const connected = useAppSelector(
     (store: Store) => store.auth.status.connected
   );
+  const loginData = useAppSelector(
+    (store: Store) => store.auth.loginData
+  );
 
-  const [localName, set_localName] = useState('');
-  const [apiEndpoint, set_apiEndpoint] = useState('');
-  const [apiToken, set_apiToken] = useState('');
-  const [saveApiToken, set_saveApiToken] = useState(false);
+  const [localName, set_localName] = useState(loginData.localName ? loginData.localName : '');
+  const [apiEndpoint, set_apiEndpoint] = useState(loginData.apiEndpoint ? loginData.apiEndpoint : '');
+  const [apiToken, set_apiToken] = useState(loginData.apiToken ? loginData.apiToken : '');
+  const [saveApiToken, set_saveApiToken] = useState(loginData.apiToken ? true : false);
   const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] = useState('' as number | '');
 
   const saveNode = () => {
@@ -53,7 +56,7 @@ function Section1() {
   const useNode = () => {
     dispatch(authActions.resetState());
     dispatch(nodeActions.resetState());
-    dispatch(authActions.useNodeData({ apiEndpoint, apiToken }));
+    dispatch(authActions.useNodeData({ apiEndpoint, apiToken, localName }));
     dispatch(
       authActions.addNodeData({
         apiEndpoint,

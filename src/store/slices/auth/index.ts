@@ -9,10 +9,11 @@ const authSlice = createSlice({
     resetState: () => initialState,
     useNodeData(
       state,
-      action: PayloadAction<{ apiToken: string; apiEndpoint: string }>
+      action: PayloadAction<{ apiToken: string; apiEndpoint: string, localName: string }>
     ) {
       state.loginData.apiEndpoint = action.payload.apiEndpoint;
       state.loginData.apiToken = action.payload.apiToken;
+      state.loginData.localName = action.payload.localName;
       state.status.connecting = true;
     },
     setConnected(state) {
