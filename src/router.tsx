@@ -11,6 +11,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import Layout from './future-hopr-lib-components/Layout';
+import AliasesPage from './sections/aliases';
 import InfoPage from './sections/info';
 
 export const applicationMap = [
@@ -76,6 +77,7 @@ export const applicationMap = [
         name: 'Aliases',
         path: 'aliases',
         icon: <MailIcon />,
+        element: <AliasesPage />,
       },
     ],
   },
@@ -104,6 +106,7 @@ export const applicationMap = [
         name: 'Aliases',
         path: 'aliases',
         icon: <MailIcon />,
+        element: <AliasesPage />,
       },
     ],
   },
