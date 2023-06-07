@@ -60,9 +60,11 @@ function Section1() {
       })
     );
     dispatch(authActionsAsync.loginThunk({ apiEndpoint, apiToken }));
-    dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint })).unwrap().then(() => {
-      dispatch(nodeActions.initializeWebsocket())
-    });
+    dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }))
+      .unwrap()
+      .then(() => {
+        dispatch(nodeActions.initializeWebsocket());
+      });
   };
 
   const clearLocalNodes = () => {
