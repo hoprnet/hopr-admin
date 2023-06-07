@@ -23,7 +23,12 @@ type InitialState = {
   aliases: GetAliasesResponseType | null;
   balances: AccountResponseType | null;
   channels: GetChannelsResponseType | null;
-  messages: { createdAt: number; body: string; challenge?: string }[];
+  messages: {
+    createdAt: number;
+    seen: boolean;
+    body: string;
+    challenge?: string;
+  }[];
   signedMessages: { createdAt: number; body: string }[];
   peers: GetPeersResponseType | null;
   entryNodes: GetEntryNodesResponseType | null;
@@ -36,9 +41,11 @@ type InitialState = {
   transactions: string[];
   pings: (PingNodeResponseType & { peerId: string })[];
   metrics: string | null;
+  websocketConnected: boolean;
 };
 
 export const initialState: InitialState = {
+  info: null,
   status: {
     initiating: false,
     initiated: false,
@@ -58,7 +65,6 @@ export const initialState: InitialState = {
     observed: [],
   },
   entryNodes: null,
-  info: null,
   settings: null,
   statistics: null,
   tickets: [],
@@ -67,4 +73,5 @@ export const initialState: InitialState = {
   transactions: [],
   pings: [],
   metrics: null,
+  websocketConnected: false,
 };

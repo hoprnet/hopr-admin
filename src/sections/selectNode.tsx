@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store';
 import { Store } from '../types/index';
 
 //Stores
 import { authActions, authActionsAsync } from '../store/slices/auth';
-import { nodeActions, nodeActionsAsync } from '../store/slices/node';
+import node, { nodeActionsAsync, nodeActions } from '../store/slices/node';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
@@ -60,7 +60,11 @@ function Section1() {
       })
     );
     dispatch(authActionsAsync.loginThunk({ apiEndpoint, apiToken }));
-    dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }));
+    dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }))
+      .unwrap()
+      .then(() => {
+        dispatch(nodeActions.initializeWebsocket());
+      });
   };
 
   const clearLocalNodes = () => {
