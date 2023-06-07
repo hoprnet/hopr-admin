@@ -49,7 +49,7 @@ function TicketsPage() {
     );
   };
 
-  const handleRedeemTickets = () => {
+  const handleRedeemAllTickets = () => {
     set_redeeming(true);
     dispatch(
       actionsAsync.redeemTicketsThunk({
