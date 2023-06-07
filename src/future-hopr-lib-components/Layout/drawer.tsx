@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import { Link, LinkProps } from 'react-router-dom';
-import { RouterProvider, BrowserRouter } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import styled from '@emotion/styled';
 
 import List from '@mui/material/List';
@@ -47,7 +47,7 @@ const SLink = styled(Link)<SLinkProps>`
 
 export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
-  // const navigate = useNavigate();
+  let searchParams = useLocation()?.search;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -70,7 +70,7 @@ export default function ResponsiveDrawer(props: Props) {
               group.items.map((item: any, indexI: number) => {
                 return (
                   <SLink
-                    to={`${group.path}/${item.path}`}
+                    to={`${group.path}/${item.path}${searchParams ? searchParams : ''}`}
                     key={indexI}
                     disabled={
                       !item.element ||

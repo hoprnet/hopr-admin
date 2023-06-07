@@ -1,7 +1,9 @@
-import { createBrowserRouter, RouteObject, useParams } from 'react-router-dom';
+import { createBrowserRouter, RouteObject, useSearchParams, useLocation } from 'react-router-dom';
 
 // Store
-import { useAppSelector } from './store';
+import { useAppDispatch, useAppSelector } from './store';
+import { authActions, authActionsAsync } from './store/slices/auth';
+import { nodeActions, nodeActionsAsync } from './store/slices/node';
 
 // Sections
 import Section1 from './sections/selectNode';
@@ -22,6 +24,7 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 
 // Types
 import { Store } from './types/index';
+import { useEffect } from 'react';
 
 export const applicationMap = [
   // {
@@ -114,11 +117,19 @@ export const applicationMap = [
 ];
 
 const LayoutEnhanced = () => {
+  const dispatch = useAppDispatch();
   const nodeConnected = useAppSelector((store: Store) => store.auth.status.connected);
-  let { apiEndpoint, apiToken } = useParams();
-  let params = useParams();
-  console.log(params, apiEndpoint, apiToken)
+  const [searchParams, setSearchParams] = useSearchParams();
+  const apiEndpoint = searchParams.get('apiEndpoint');
+  const apiToken = searchParams.get('apiToken');
 
+  useEffect(()=>{
+    if(!(apiEndpoint && apiToken)) return;
+    dispatch(authActions.useNodeData({ apiEndpoint, apiToken, localName: '' }));
+    dispatch(authActionsAsync.loginThunk({ apiEndpoint, apiToken }));
+    dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }));
+    dispatch(nodeActionsAsync.getAddressesThunk({ apiToken, apiEndpoint }));
+  }, [apiEndpoint, apiToken])
 
   return (
     <Layout

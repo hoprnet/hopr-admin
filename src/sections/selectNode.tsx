@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createBrowserRouter, RouteObject, useSearchParams, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store';
 import { Store } from '../types/index';
 
@@ -27,16 +28,10 @@ function Section1() {
       apiToken: elem.apiToken,
     };
   });
-  const connecting = useAppSelector(
-    (store: Store) => store.auth.status.connecting
-  );
-  const connected = useAppSelector(
-    (store: Store) => store.auth.status.connected
-  );
-  const loginData = useAppSelector(
-    (store: Store) => store.auth.loginData
-  );
-
+  const connecting = useAppSelector((store: Store) => store.auth.status.connecting);
+  const connected = useAppSelector((store: Store) => store.auth.status.connected);
+  const loginData = useAppSelector((store: Store) => store.auth.loginData);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [localName, set_localName] = useState(loginData.localName ? loginData.localName : '');
   const [apiEndpoint, set_apiEndpoint] = useState(loginData.apiEndpoint ? loginData.apiEndpoint : '');
   const [apiToken, set_apiToken] = useState(loginData.apiToken ? loginData.apiToken : '');
@@ -57,16 +52,10 @@ function Section1() {
     dispatch(authActions.resetState());
     dispatch(nodeActions.resetState());
     dispatch(authActions.useNodeData({ apiEndpoint, apiToken, localName }));
-    dispatch(
-      authActions.addNodeData({
-        apiEndpoint,
-        apiToken: saveApiToken ? apiToken : '',
-        localName: localName ? localName : '',
-      })
-    );
     dispatch(authActionsAsync.loginThunk({ apiEndpoint, apiToken }));
     dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }));
     dispatch(nodeActionsAsync.getAddressesThunk({ apiToken, apiEndpoint }));
+    setSearchParams({ apiToken, apiEndpoint });
   };
 
   const clearLocalNodes = () => {
