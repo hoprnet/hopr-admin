@@ -1,6 +1,6 @@
 import { getObjectFromLocalStorage } from '../../../utils/functions';
 
-let ADMIN_UI_NODE_LIST = getObjectFromLocalStorage('admin-ui-node-list');
+const ADMIN_UI_NODE_LIST = getObjectFromLocalStorage('admin-ui-node-list');
 
 type InitialState = {
   status: {

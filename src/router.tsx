@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { createBrowserRouter, RouteObject, useSearchParams, useLocation } from 'react-router-dom';
 
 // Store
@@ -24,7 +25,6 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 
 // Types
 import { Store } from './types/index';
-import { useEffect } from 'react';
 
 export const applicationMap = [
   // {
@@ -118,9 +118,9 @@ export const applicationMap = [
 
 const LayoutEnhanced = () => {
   const dispatch = useAppDispatch();
-  const nodeConnected = useAppSelector((store: Store) => store.auth.status.connected);
-  const loginData = useAppSelector((store: Store) => store.auth.loginData);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const nodeConnected = useAppSelector((store) => store.auth.status.connected);
+  const loginData = useAppSelector((store) => store.auth.loginData);
+  const [searchParams, set_searchParams] = useSearchParams();
   const apiEndpoint = searchParams.get('apiEndpoint');
   const apiToken = searchParams.get('apiToken');
 

@@ -16,7 +16,7 @@ const Content = styled.div`
   }
 `;
 
-const NavBarItems: React.FC<{
+type NavBarItemsProps = {
   className?: string;
   center?: boolean;
   webapp?: boolean;
@@ -24,33 +24,49 @@ const NavBarItems: React.FC<{
   mobile?: boolean;
   itemsNavbar?: any[];
   onButtonClick?: any;
-}> = (props) => {
-  const poz = props.center
+};
+
+const NavBarItems = ({
+  className,
+  center,
+  webapp,
+  right,
+  mobile,
+  itemsNavbar,
+  onButtonClick,
+}: NavBarItemsProps) => {
+  const position = center
     ? 'center'
-    : props.right
+    : right
     ? 'right'
-    : props.mobile
+    : mobile
     ? 'mobile'
-    : 'poz-undefined';
+    : 'position-undefined';
 
   return (
-    <Content className={['menu', `menu-${poz}`, props.webapp ? 'menu-webpapp' : ''].join(' ')}>
+    <Content
+      className={[
+        'menu',
+        `menu-${position}`,
+        webapp ? 'menu-webpapp' : '',
+      ].join(' ')}
+    >
       {/*  @ts-ignore */}
-      {props?.itemsNavbar[0]?.label &&
-        props.itemsNavbar.map((item, i) => (
+      {itemsNavbar && itemsNavbar[0]?.label &&
+        itemsNavbar.map((item, i) => (
           <NavButton
-            key={`itemsNavbar-${poz}-${i}`}
-            id={`itemsNavbar-${poz}-${i}`}
+            key={`itemsNavbar-${position}-${i}`}
+            id={`itemsNavbar-${position}-${i}`}
             path={item.path}
             subMenu={item.subMenu}
             label={item.name}
             background={item.background}
-            onButtonClick={props.onButtonClick}
+            onButtonClick={onButtonClick}
           >
             {item.name}
           </NavButton>
         ))}
-      {props.itemsNavbar}
+      {itemsNavbar}
     </Content>
   );
 };

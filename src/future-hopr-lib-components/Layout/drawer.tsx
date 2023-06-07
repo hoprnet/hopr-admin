@@ -15,7 +15,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
 // Types
-import { ApplicationMapType } from '../../router';
+import type { ApplicationMapType } from '../../router';
 
 const drawerWidth = 240;
 

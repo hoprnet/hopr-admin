@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createBrowserRouter, RouteObject, useSearchParams, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store';
-import { Store } from '../types/index';
 
 //Stores
 import { authActions, authActionsAsync } from '../store/slices/auth';
@@ -18,19 +17,19 @@ import CircularProgress from '@mui/material/CircularProgress';
 function Section1() {
   const dispatch = useAppDispatch();
   const nodesSavedLocally = useAppSelector(
-    (store: Store) => store.auth.nodes
-  ).map((elem: any, index: number) => {
+    (store) => store.auth.nodes
+  ).map((node, index) => {
     return {
-      name: elem.localName ?  `${elem.localName} (${elem.apiEndpoint})` : elem.apiEndpoint,
-      localName: elem.localName,
+      name: node.localName ?  `${node.localName} (${node.apiEndpoint})` : node.apiEndpoint,
+      localName: node.localName,
       value: index,
-      apiEndpoint: elem.apiEndpoint,
-      apiToken: elem.apiToken,
+      apiEndpoint: node.apiEndpoint,
+      apiToken: node.apiToken,
     };
   });
-  const connecting = useAppSelector((store: Store) => store.auth.status.connecting);
-  const connected = useAppSelector((store: Store) => store.auth.status.connected);
-  const loginData = useAppSelector((store: Store) => store.auth.loginData);
+  const connecting = useAppSelector((store) => store.auth.status.connecting);
+  const connected = useAppSelector((store) => store.auth.status.connected);
+  const loginData = useAppSelector((store) => store.auth.loginData);
   
   const [searchParams, setSearchParams] = useSearchParams();
   const [localName, set_localName] = useState(loginData.localName ? loginData.localName : '');
@@ -47,20 +46,40 @@ function Section1() {
     if (existingItem !== -1) set_nodesSavedLocallyChosenIndex(existingItem);
   }, [loginData, nodesSavedLocally]);
 
-  useEffect(()=>{
+  useEffect(() => {
     // Update the TextFields based on loginData from the Store
-    if(loginData.apiEndpoint === apiEndpoint && loginData.apiToken === apiToken) return;
+    if (
+      loginData.apiEndpoint === apiEndpoint &&
+      loginData.apiToken === apiToken
+    )
+      return;
     const apiEndpointSP = searchParams.get('apiEndpoint');
     const apiTokenSP = searchParams.get('apiToken');
-    if(!apiEndpointSP && !apiTokenSP) return;
+    if (!apiEndpointSP && !apiTokenSP) return;
 
-    set_localName(loginData.localName);
-    set_apiEndpoint(loginData.apiEndpoint);
-    set_apiToken(loginData.apiToken);
+    if (loginData.localName) {
+      set_localName(loginData.localName);
+    }
+    if (loginData.apiEndpoint) {
+      set_apiEndpoint(loginData.apiEndpoint);
+    }
+    if (loginData.apiToken) {
+      set_apiToken(loginData.apiToken);
+    }
 
     // If have have saved the node with the same apiToken, we check the saveApiToken checkbox
-    const existingItem = nodesSavedLocally.findIndex((item: any) => (item.apiEndpoint === loginData.apiEndpoint && item.apiToken === loginData.apiToken));
-    if (existingItem !== -1 && nodesSavedLocally[existingItem].apiToken && nodesSavedLocally[existingItem]?.apiToken.length > 0 ) set_saveApiToken(true);
+    const existingItemIndex = nodesSavedLocally.findIndex(
+      (item) =>
+        item.apiEndpoint === loginData.apiEndpoint &&
+        item.apiToken === loginData.apiToken
+    );
+    if (
+      existingItemIndex !== -1 &&
+      nodesSavedLocally[existingItemIndex].apiToken &&
+      (nodesSavedLocally[existingItemIndex].apiToken?.length ?? 0) > 0
+    ) {
+      set_saveApiToken(true);
+    } 
   }, [loginData]);
 
   const saveNode = () => {
@@ -103,10 +122,18 @@ function Section1() {
           const index = event.target.value as number;
           const chosenNode = nodesSavedLocally[index];
           set_nodesSavedLocallyChosenIndex(index);
-          set_apiEndpoint(chosenNode.apiEndpoint);
-          set_apiToken(chosenNode.apiToken);
-          set_localName(chosenNode.localName);
-          set_saveApiToken(chosenNode.apiToken && chosenNode.apiToken.length > 0)
+          if (chosenNode.apiEndpoint) {
+            set_apiEndpoint(chosenNode.apiEndpoint);
+          }
+          if (chosenNode.apiToken) {
+            set_apiToken(chosenNode.apiToken);
+          }
+          if (chosenNode.localName) {
+            set_localName(chosenNode.localName);
+          }
+          if (chosenNode.apiToken) {
+            set_saveApiToken(chosenNode.apiToken?.length > 0);
+          }
         }}
         style={{ width: '100%' }}
       />

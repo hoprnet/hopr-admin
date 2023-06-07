@@ -7,9 +7,6 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { authActions } from '../../store/slices/auth';
 import { nodeActions, } from '../../store/slices/node';
 
-// Types
-import { Store } from '../../types/index';
-
 const Container = styled.div`
   height: 59px;
   width: 160px;
@@ -32,9 +29,9 @@ const SLink = styled(Link)`
 export default function ConnectNode() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const connected = useAppSelector((store: Store) => store.auth.status.connected);
-  const peerId = useAppSelector((store: Store) => store.sdk.addresses.hopr);
-  const localName = useAppSelector((store: Store) => store.auth.loginData.localName);
+  const connected = useAppSelector((store) => store.auth.status.connected);
+  const peerId = useAppSelector((store) => store.sdk.addresses.hopr);
+  const localName = useAppSelector((store) => store.auth.loginData.localName);
 
   const handleLogout = () => {
     dispatch(authActions.resetState());
