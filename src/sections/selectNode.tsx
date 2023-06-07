@@ -5,7 +5,7 @@ import { Store } from '../types/index';
 
 //Stores
 import { authActions, authActionsAsync } from '../store/slices/auth';
-import { nodeActions, nodeActionsAsync } from '../store/slices/node';
+import node, { nodeActionsAsync, nodeActions } from '../store/slices/node';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
@@ -78,8 +78,12 @@ function Section1() {
     dispatch(nodeActions.resetState());
     dispatch(authActions.useNodeData({ apiEndpoint, apiToken, localName }));
     dispatch(authActionsAsync.loginThunk({ apiEndpoint, apiToken }));
-    dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }));
     dispatch(nodeActionsAsync.getAddressesThunk({ apiToken, apiEndpoint }));
+    dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }))
+      .unwrap()
+      .then(() => {
+        dispatch(nodeActions.initializeWebsocket());
+      });
     setSearchParams({ apiToken, apiEndpoint });
   };
 

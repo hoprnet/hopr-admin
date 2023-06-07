@@ -5,6 +5,7 @@ import authSlice from './slices/auth';
 import sdkSlice from './slices/node';
 import safeSlice from './slices/safe';
 import web3Slice from './slices/web3';
+import { websocketMiddleware } from './slices/node/websocketMiddleware';
 
 const store = configureStore({
   reducer: {
@@ -13,6 +14,8 @@ const store = configureStore({
     safe: safeSlice,
     web3: web3Slice,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().prepend(websocketMiddleware),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
