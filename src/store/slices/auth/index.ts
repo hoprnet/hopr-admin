@@ -9,15 +9,15 @@ const authSlice = createSlice({
     resetState: () => initialState,
     useNodeData(
       state,
-      action: PayloadAction<{ apiToken: string; apiEndpoint: string, localName: string }>
+      action: PayloadAction<{ apiToken: string; apiEndpoint: string, localName?: string }>
     ) {
       // Check if we have name saved locally
-      let localName : string | null = action.payload.localName;
+      let localName : string | null  = action.payload.localName ? action.payload.localName : '';
       if(!localName) {
         const existingItem = state.nodes.findIndex((item) => item.apiEndpoint === action.payload.apiEndpoint);
         if (existingItem !== -1) localName = state.nodes[existingItem].localName ? state.nodes[existingItem].localName : '';
       }
-      
+
       state.loginData.apiEndpoint = action.payload.apiEndpoint;
       state.loginData.apiToken = action.payload.apiToken;
       state.loginData.localName = localName;

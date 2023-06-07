@@ -31,12 +31,36 @@ function Section1() {
   const connecting = useAppSelector((store: Store) => store.auth.status.connecting);
   const connected = useAppSelector((store: Store) => store.auth.status.connected);
   const loginData = useAppSelector((store: Store) => store.auth.loginData);
+  
   const [searchParams, setSearchParams] = useSearchParams();
   const [localName, set_localName] = useState(loginData.localName ? loginData.localName : '');
   const [apiEndpoint, set_apiEndpoint] = useState(loginData.apiEndpoint ? loginData.apiEndpoint : '');
   const [apiToken, set_apiToken] = useState(loginData.apiToken ? loginData.apiToken : '');
   const [saveApiToken, set_saveApiToken] = useState(loginData.apiToken ? true : false);
   const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] = useState('' as number | '');
+
+  useEffect(()=>{
+    // Update the Select based on loginData from the Store
+    if(!loginData.apiEndpoint) return;
+    const existingItem = nodesSavedLocally.findIndex((item: any) => (item.apiEndpoint === loginData.apiEndpoint));
+    if (existingItem !== -1) set_nodesSavedLocallyChosenIndex(existingItem);
+  }, [loginData]);
+
+  useEffect(()=>{
+    // Update the TextFields based on loginData from the Store
+    if(loginData.apiEndpoint === apiEndpoint && loginData.apiToken === apiToken) return;
+    const apiEndpointSP = searchParams.get('apiEndpoint');
+    const apiTokenSP = searchParams.get('apiToken');
+    if(!apiEndpointSP && !apiTokenSP) return;
+
+    set_localName(loginData.localName);
+    set_apiEndpoint(loginData.apiEndpoint);
+    set_apiToken(loginData.apiToken);
+
+    // If have have saved the node with the same apiToken, we check the saveApiToken checkbox
+    const existingItem = nodesSavedLocally.findIndex((item: any) => (item.apiEndpoint === loginData.apiEndpoint && item.apiToken === loginData.apiToken));
+    if (existingItem !== -1 && nodesSavedLocally[existingItem].apiToken && nodesSavedLocally[existingItem]?.apiToken.length > 0 ) set_saveApiToken(true);
+  }, [loginData]);
 
   const saveNode = () => {
     dispatch(
@@ -116,7 +140,6 @@ function Section1() {
         label={'Save API Key locally (unsafe)'}
         value={saveApiToken}
         onChange={(event) => {
-          console.log('onChange')
           set_saveApiToken(event.target.checked);
         }}
       />

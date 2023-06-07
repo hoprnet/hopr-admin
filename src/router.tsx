@@ -119,13 +119,15 @@ export const applicationMap = [
 const LayoutEnhanced = () => {
   const dispatch = useAppDispatch();
   const nodeConnected = useAppSelector((store: Store) => store.auth.status.connected);
+  const loginData = useAppSelector((store: Store) => store.auth.loginData);
   const [searchParams, setSearchParams] = useSearchParams();
   const apiEndpoint = searchParams.get('apiEndpoint');
   const apiToken = searchParams.get('apiToken');
 
   useEffect(()=>{
     if(!(apiEndpoint && apiToken)) return;
-    dispatch(authActions.useNodeData({ apiEndpoint, apiToken, localName: '' }));
+    if(loginData.apiEndpoint === apiEndpoint && loginData.apiToken === apiToken) return;
+    dispatch(authActions.useNodeData({ apiEndpoint, apiToken }));
     dispatch(authActionsAsync.loginThunk({ apiEndpoint, apiToken }));
     dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }));
     dispatch(nodeActionsAsync.getAddressesThunk({ apiToken, apiEndpoint }));
