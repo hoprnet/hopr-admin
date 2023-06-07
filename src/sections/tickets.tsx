@@ -1,7 +1,8 @@
 import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { actionsAsync } from '../store/slices/node/actionsAsync';
+import CircularProgress from '@mui/material/CircularProgress';
 import { utils } from '@hoprnet/hopr-sdk';
 const { APIError } = utils;
 
@@ -18,22 +19,34 @@ function TicketsPage() {
   const [showTickets, set_showTickets] = useState(false);
 
   useEffect(() => {
-    if (loginData.apiEndpoint && loginData.apiToken) {
-      dispatch(
-        actionsAsync.getStatisticsThunk({
-          apiEndpoint: loginData.apiEndpoint,
-          apiToken: loginData.apiToken,
-        })
-      );
-      dispatch(
-        actionsAsync.getTicketsThunk({
-          apiEndpoint: loginData.apiEndpoint,
-          apiToken: loginData.apiToken,
-        })
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loginData]);
+    dispatch(
+      actionsAsync.getStatisticsThunk({
+        apiEndpoint: loginData.apiEndpoint!,
+        apiToken: loginData.apiToken!,
+      })
+    );
+    dispatch(
+      actionsAsync.getTicketsThunk({
+        apiEndpoint: loginData.apiEndpoint!,
+        apiToken: loginData.apiToken!,
+      })
+    );
+  }, [loginData, dispatch]);
+
+  const handleRefresh = () => {
+    dispatch(
+      actionsAsync.getStatisticsThunk({
+        apiEndpoint: loginData.apiEndpoint!,
+        apiToken: loginData.apiToken!,
+      })
+    );
+    dispatch(
+      actionsAsync.getTicketsThunk({
+        apiEndpoint: loginData.apiEndpoint!,
+        apiToken: loginData.apiToken!,
+      })
+    );
+  };
 
   return (
     <Section className="Section--tickets" id="Section--tickets" yellow>
@@ -41,20 +54,7 @@ function TicketsPage() {
         Tickets{' '}
         <button
           onClick={() => {
-            if (loginData.apiEndpoint && loginData.apiToken) {
-              dispatch(
-                actionsAsync.getStatisticsThunk({
-                  apiEndpoint: loginData.apiEndpoint,
-                  apiToken: loginData.apiToken,
-                })
-              );
-              dispatch(
-                actionsAsync.getTicketsThunk({
-                  apiEndpoint: loginData.apiEndpoint,
-                  apiToken: loginData.apiToken,
-                })
-              );
-            }
+            handleRefresh();
           }}
         >
           Refresh
@@ -65,6 +65,7 @@ function TicketsPage() {
       <RedeemTickets
         onSuccess={() => {
           set_redeemSuccess(true);
+          handleRefresh();
         }}
         onError={(e) => {
           set_redeemSuccess(false);
@@ -122,27 +123,34 @@ function RedeemTickets({
 }) {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
+  const [redeeming, set_redeeming] = useState(false);
 
   return (
-    <button
-      onClick={() => {
-        if (loginData.apiEndpoint && loginData.apiToken) {
+    <>
+      <button
+        onClick={() => {
+          set_redeeming(true);
           dispatch(
             actionsAsync.redeemTicketsThunk({
-              apiEndpoint: loginData.apiEndpoint,
-              apiToken: loginData.apiToken,
+              apiEndpoint: loginData.apiEndpoint!,
+              apiToken: loginData.apiToken!,
             })
           )
             .unwrap()
             .then(() => {
+              set_redeeming(false);
               onSuccess();
             })
-            .catch((e) => onError(e));
-        }
-      }}
-    >
-      Redeem All
-    </button>
+            .catch((e) => {
+              set_redeeming(false);
+              onError(e);
+            });
+        }}
+      >
+        Redeem All
+      </button>
+      {redeeming && <CircularProgress />}
+    </>
   );
 }
 
