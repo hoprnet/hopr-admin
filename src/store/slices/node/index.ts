@@ -1,7 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { initialState } from './initialState';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { actionsAsync, createExtraReducers } from './actionsAsync';
-// TODO: assign Types from HOPR-SDK
+import { initialState } from './initialState';
 
 const nodeSlice = createSlice({
   name: 'node',
@@ -11,14 +10,24 @@ const nodeSlice = createSlice({
       console.log('SDK initiating');
       state.status.initiating = true;
     },
-    setInitiated(state, action) {
-      console.log('SDK setInitiated', action);
+    setInitiated(state) {
+      console.log('SDK setInitiated');
       state.status.initiating = false;
       state.status.initiated = true;
     },
-    setInfo(state, action) {
-      console.log('SDK getInfo', action);
+    messageReceived(
+      state,
+      action: PayloadAction<(typeof initialState.messages)[0]>
+    ) {
+      state.messages.push(action.payload);
     },
+    // handle ws state
+    updateWebsocketStatus(state, action: PayloadAction<boolean>) {
+      state.websocketConnected = action.payload;
+    },
+    // user actions to open and close ws
+    initializeWebsocket() {},
+    closeWebsocket() {},
   },
   extraReducers: (builder) => createExtraReducers(builder),
 });
