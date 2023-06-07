@@ -17,6 +17,7 @@ function TicketsPage() {
   >([]);
   const [showStatistics, set_showStatistics] = useState(false);
   const [showTickets, set_showTickets] = useState(false);
+  const [redeeming, set_redeeming] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -48,6 +49,33 @@ function TicketsPage() {
     );
   };
 
+  const handleRedeemTickets = () => {
+    set_redeeming(true);
+    dispatch(
+      actionsAsync.redeemTicketsThunk({
+        apiEndpoint: loginData.apiEndpoint!,
+        apiToken: loginData.apiToken!,
+      })
+    )
+      .unwrap()
+      .then(() => {
+        set_redeeming(false);
+        set_redeemSuccess(true);
+        handleRefresh();
+      })
+      .catch((e) => {
+        set_redeeming(false);
+        set_redeemSuccess(false);
+        set_redeemErrors([
+          ...redeemErrors,
+          {
+            error: e.error,
+            status: e.status,
+          },
+        ]);
+      });
+  };
+
   return (
     <Section className="Section--tickets" id="Section--tickets" yellow>
       <h2>
@@ -62,22 +90,14 @@ function TicketsPage() {
       </h2>
       <div>Unredeemed: {statistics?.unredeemed}</div>
       <div>Redeemed: {statistics?.redeemed}</div>
-      <RedeemTickets
-        onSuccess={() => {
-          set_redeemSuccess(true);
-          handleRefresh();
+      <button
+        onClick={() => {
+          handleRedeemTickets();
         }}
-        onError={(e) => {
-          set_redeemSuccess(false);
-          set_redeemErrors([
-            ...redeemErrors,
-            {
-              error: e.error,
-              status: e.status,
-            },
-          ]);
-        }}
-      />
+      >
+        Redeem All
+      </button>
+      {redeeming && <CircularProgress />}
       <div>
         <button
           onClick={() => {
@@ -111,46 +131,6 @@ function TicketsPage() {
         )}
       </div>
     </Section>
-  );
-}
-
-function RedeemTickets({
-  onError,
-  onSuccess,
-}: {
-  onError: (e: typeof APIError.prototype) => void;
-  onSuccess: () => void;
-}) {
-  const dispatch = useAppDispatch();
-  const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const [redeeming, set_redeeming] = useState(false);
-
-  return (
-    <>
-      <button
-        onClick={() => {
-          set_redeeming(true);
-          dispatch(
-            actionsAsync.redeemTicketsThunk({
-              apiEndpoint: loginData.apiEndpoint!,
-              apiToken: loginData.apiToken!,
-            })
-          )
-            .unwrap()
-            .then(() => {
-              set_redeeming(false);
-              onSuccess();
-            })
-            .catch((e) => {
-              set_redeeming(false);
-              onError(e);
-            });
-        }}
-      >
-        Redeem All
-      </button>
-      {redeeming && <CircularProgress />}
-    </>
   );
 }
 
