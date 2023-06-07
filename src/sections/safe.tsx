@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../store';
 import Section from '../future-hopr-lib-components/Section';
 import { useSigner } from '../hooks';
 import { actionsAsync } from '../store/slices/safe/actionsAsync';
+import { useWalletClient } from 'wagmi';
 
 function SafeSection() {
   const dispatch = useAppDispatch();
