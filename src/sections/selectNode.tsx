@@ -43,8 +43,9 @@ function Section1() {
     // Update the Select based on loginData from the Store
     if(!loginData.apiEndpoint) return;
     const existingItem = nodesSavedLocally.findIndex((item: any) => (item.apiEndpoint === loginData.apiEndpoint));
+    console.log(existingItem, nodesSavedLocally[existingItem])
     if (existingItem !== -1) set_nodesSavedLocallyChosenIndex(existingItem);
-  }, [loginData]);
+  }, [loginData, nodesSavedLocally]);
 
   useEffect(()=>{
     // Update the TextFields based on loginData from the Store

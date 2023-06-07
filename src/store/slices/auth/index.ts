@@ -1,12 +1,18 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 import { actionsAsync } from './actionsAsync';
+import { getObjectFromLocalStorage, bubbleSortObject } from '../../../utils/functions';
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    resetState: () => initialState,
+    resetState: () => {
+      let state = JSON.parse(JSON.stringify(initialState));
+      const ADMIN_UI_NODE_LIST = getObjectFromLocalStorage('admin-ui-node-list');
+      if(ADMIN_UI_NODE_LIST) state.nodes = ADMIN_UI_NODE_LIST;
+      return state;
+    },
     useNodeData(
       state,
       action: PayloadAction<{ apiToken: string; apiEndpoint: string, localName?: string }>
@@ -44,6 +50,7 @@ const authSlice = createSlice({
           },
           ...state.nodes,
         ];
+        state.nodes = bubbleSortObject(state.nodes, 'localName');
       } else {
         state.nodes[existingItem].apiToken = action.payload.apiToken;
         state.nodes[existingItem].localName = action.payload.localName;
