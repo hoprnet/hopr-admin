@@ -1,4 +1,4 @@
-import { api, utils } from '@hoprnet/hopr-sdk';
+import { utils } from '@hoprnet/hopr-sdk';
 import { Middleware, PayloadAction } from '@reduxjs/toolkit';
 import { initialState } from '../auth/initialState';
 import { nodeActions } from './index';
@@ -10,7 +10,6 @@ const {
   updateWebsocketStatus,
 } = nodeActions;
 
-const { getWsUrl } = api;
 const { WebsocketHelper } = utils;
 
 type LocalRootState = {
@@ -28,14 +27,10 @@ const websocketMiddleware: Middleware<{}, LocalRootState> = ({
       // start websocket connection
       const { apiEndpoint, apiToken } = getState().auth.loginData;
       if (apiEndpoint && apiToken) {
-        const wsUrl = getWsUrl(
-          apiEndpoint,
-          '/api/v2/messages/websocket/',
-          apiToken
-        );
         try {
           socket = new WebsocketHelper({
-            url: wsUrl,
+            apiEndpoint,
+            apiToken,
             onOpen: () => {
               dispatch(updateWebsocketStatus(true));
             },
