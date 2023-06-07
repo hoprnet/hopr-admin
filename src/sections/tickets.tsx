@@ -92,7 +92,7 @@ function TicketsPage() {
       <div>Redeemed: {statistics?.redeemed}</div>
       <button
         onClick={() => {
-          handleRedeemTickets();
+          handleRedeemAllTickets();
         }}
       >
         Redeem All
