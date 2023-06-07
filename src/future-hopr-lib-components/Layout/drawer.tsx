@@ -62,7 +62,9 @@ export default function ResponsiveDrawer(props: Props) {
         if (group.drawer === false) return;
 
         return (
-          <List>
+          <List
+            key={indexG}
+          >
             {group.groupName}
             {group.items &&
               group.items.map((item: any, indexI: number) => {

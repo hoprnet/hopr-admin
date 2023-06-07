@@ -20,7 +20,7 @@ function Section1() {
     (store: Store) => store.auth.nodes
   ).map((elem: any, index: number) => {
     return {
-      name: elem.localName ?  elem.localName : elem.apiEndpoint,
+      name: elem.localName ?  `${elem.localName} (${elem.apiEndpoint})` : elem.apiEndpoint,
       localName: elem.localName,
       value: index,
       apiEndpoint: elem.apiEndpoint,

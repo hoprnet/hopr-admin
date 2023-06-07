@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouteObject } from 'react-router-dom';
+import { createBrowserRouter, RouteObject, useParams } from 'react-router-dom';
 
 // Store
 import { useAppSelector } from './store';
@@ -113,8 +113,12 @@ export const applicationMap = [
   },
 ];
 
-const LayoutWithStore = () => {
+const LayoutEnhanced = () => {
   const nodeConnected = useAppSelector((store: Store) => store.auth.status.connected);
+  let { apiEndpoint, apiToken } = useParams();
+  let params = useParams();
+  console.log(params, apiEndpoint, apiToken)
+
 
   return (
     <Layout
@@ -138,7 +142,7 @@ const LayoutWithStore = () => {
 var routes = [
   {
     path: '/',
-    element: <LayoutWithStore />,
+    element: <LayoutEnhanced />,
     children: [] as RouteObject[],
   },
 ];

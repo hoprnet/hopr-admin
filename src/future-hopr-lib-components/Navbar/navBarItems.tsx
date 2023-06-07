@@ -16,7 +16,15 @@ const Content = styled.div`
   }
 `;
 
-const NavBarItems = (props) => {
+const NavBarItems: React.FC<{
+  className?: string;
+  center?: boolean;
+  webapp?: boolean;
+  right?: boolean;
+  mobile?: boolean;
+  itemsNavbar?: any[];
+  onButtonClick?: any;
+}> = (props) => {
   const poz = props.center
     ? 'center'
     : props.right
@@ -27,7 +35,8 @@ const NavBarItems = (props) => {
 
   return (
     <Content className={['menu', `menu-${poz}`, props.webapp ? 'menu-webpapp' : ''].join(' ')}>
-      {props.itemsNavbar[0]?.label &&
+      {/*  @ts-ignore */}
+      {props?.itemsNavbar[0]?.label &&
         props.itemsNavbar.map((item, i) => (
           <NavButton
             key={`itemsNavbar-${poz}-${i}`}

@@ -4,10 +4,15 @@ import styled from '@emotion/styled';
 
 //import Sections from '../Sections';
 //import LaunchPlaygroundBtn from '../../future-hopr-lib-components/Button/LaunchPlayground';
-import MuiAppBar from '@mui/material/AppBar';
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import NavBarItems from './navBarItems';
 
-const AppBar = styled(({ tallerNavBarOnMobile, ...rest }) => (
+interface AppBarProps extends MuiAppBarProps {
+  tallerNavBarOnMobile?: boolean;
+  webapp?: boolean;
+}
+
+const AppBar = styled(({ tallerNavBarOnMobile, webapp, ...rest }: AppBarProps) => (
   <MuiAppBar {...rest} />
 ))`
   background: white;
@@ -18,19 +23,16 @@ const AppBar = styled(({ tallerNavBarOnMobile, ...rest }) => (
     padding-left: 16px;
     padding-right: 16px;
   `}
-  ${(props) =>
-    props.tallerNavBarOnMobile &&
+  ${ (props) => props.tallerNavBarOnMobile &&
     `
     @media screen and (max-width: 520px) {
     //  height: 100px;
       position: static;
     }
   `}
-
-
 `;
 
-const Container = styled.div`
+const Container = styled.div<{webapp?:boolean}>`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -43,7 +45,6 @@ const Container = styled.div`
     display: flex;
     flex-direction: row;
   }
-
 `;
 
 const Logo = styled.div`
@@ -67,7 +68,19 @@ const Logo = styled.div`
   }
 `;
 
-const NavBar = (props) => {
+const NavBar: React.FC<{
+  className?: string;
+  center?: boolean;
+  webapp?: boolean;
+  right?: boolean;
+  mobile?: boolean;
+  mainLogo?: string;
+  mainLogoAlt?: string;
+  tallerNavBarOnMobile?: boolean;
+  itemsNavbarCenter?: any[];
+  itemsNavbarRight?: any[];
+  onButtonClick?: ()=>{};
+}> = (props) => {
   //  const router = useRouter();
   const [activaMenu, setActivaMenu] = useState(false);
   const [isScroll, setIsScroll] = useState(false);

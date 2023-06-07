@@ -4,8 +4,8 @@ import styled from '@emotion/styled';
 import { Outlet } from 'react-router-dom';
 
 // Components
-import NavBar from '../Navbar/navBar.jsx';
-import Footer from './footer.jsx';
+import NavBar from '../Navbar/navBar';
+import Footer from './footer';
 import Drawer from './drawer';
 import { PropaneSharp } from '@mui/icons-material';
 import HoprLogo from './logo.svg';
