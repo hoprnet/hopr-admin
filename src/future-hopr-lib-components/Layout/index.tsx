@@ -9,7 +9,7 @@ import NavBar from '../Navbar/navBar';
 import Footer from './footer';
 import Drawer from './drawer';
 import { PropaneSharp } from '@mui/icons-material';
-import HoprLogo from './logo.svg';
+
 
 const SLayout = styled.div``;
 
@@ -53,7 +53,7 @@ const Layout: React.FC<{
   return (
     <SLayout className="Layout">
       <NavBar
-        mainLogo={HoprLogo}
+        mainLogo="/logo.svg"
         mainLogoAlt="hopr logo"
         itemsNavbarRight={itemsNavbarRight}
         tallerNavBarOnMobile={tallerNavBarOnMobile}

@@ -19,6 +19,7 @@ const AppBar = styled(({ tallerNavBarOnMobile, webapp, ...rest }: AppBarProps) =
   height: 60px;
   border-bottom: 1px lightgray solid;
   box-shadow: unset;
+  z-index: 1201;
   ${ (props) => !props.webapp && `
     padding-left: 16px;
     padding-right: 16px;
