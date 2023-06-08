@@ -2,11 +2,11 @@ import { useEffect } from 'react';
 
 //Stores
 import { useAppDispatch, useAppSelector } from '../store';
+import { actionsAsync } from '../store/slices/safe/actionsAsync';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
 import { useSigner } from '../hooks';
-import { actionsAsync } from '../store/slices/safe/actionsAsync';
 import { utils } from 'ethers';
 function SafeSection() {
   const dispatch = useAppDispatch();
@@ -21,7 +21,7 @@ function SafeSection() {
 
   return (
     <Section className="Section--safe" id="Section--safe" yellow>
-      <h1>SAFE REDUX STORE</h1>
+      <h1>Safe redux store</h1>
       <pre>{JSON.stringify(safe, null, 4)}</pre>
       <h1>exiting safes</h1>
       {safe.safesByOwner.map((safeAddress) => (
