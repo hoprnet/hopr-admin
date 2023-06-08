@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { createBrowserRouter, RouteObject, useSearchParams, useLocation } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store';
 
 //Stores
 import { authActions, authActionsAsync } from '../store/slices/auth';
-import node, { nodeActionsAsync, nodeActions } from '../store/slices/node';
+import  { nodeActionsAsync, nodeActions } from '../store/slices/node';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
@@ -16,22 +16,23 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 function Section1() {
   const dispatch = useAppDispatch();
-  const nodesSavedLocally = useAppSelector(
-    (store) => store.auth.nodes
-  ).map((node, index) => {
-    return {
-      name: node.localName ?  `${node.localName} (${node.apiEndpoint})` : node.apiEndpoint,
-      localName: node.localName,
-      value: index,
-      apiEndpoint: node.apiEndpoint,
-      apiToken: node.apiToken,
-    };
-  });
+  const nodesSavedLocally = useAppSelector((store) => store.auth.nodes).map(
+    (node, index) => {
+      return {
+        name: node.localName
+          ? `${node.localName} (${node.apiEndpoint})`
+          : node.apiEndpoint,
+        localName: node.localName,
+        value: index,
+        apiEndpoint: node.apiEndpoint,
+        apiToken: node.apiToken,
+      };
+    }
+  );
   const connecting = useAppSelector((store) => store.auth.status.connecting);
-  const connected = useAppSelector((store) => store.auth.status.connected);
   const loginData = useAppSelector((store) => store.auth.loginData);
   
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, set_searchParams] = useSearchParams();
   const [localName, set_localName] = useState(loginData.localName ? loginData.localName : '');
   const [apiEndpoint, set_apiEndpoint] = useState(loginData.apiEndpoint ? loginData.apiEndpoint : '');
   const [apiToken, set_apiToken] = useState(loginData.apiToken ? loginData.apiToken : '');
@@ -103,7 +104,7 @@ function Section1() {
       .then(() => {
         dispatch(nodeActions.initializeWebsocket());
       });
-    setSearchParams({ apiToken, apiEndpoint });
+    set_searchParams({ apiToken, apiEndpoint });
   };
 
   const clearLocalNodes = () => {
