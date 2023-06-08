@@ -19,18 +19,7 @@ function PeersPage() {
   const aliases = useAppSelector((selector) => selector.sdk.aliases);
 
   useEffect(() => {
-    dispatch(
-      actionsAsync.getPeersThunk({
-        apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
-      })
-    );
-    dispatch(
-      actionsAsync.getAliasesThunk({
-        apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
-      })
-    );
+    handleRefresh();
   }, [loginData, dispatch]);
 
   const handleRefresh = () => {
