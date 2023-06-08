@@ -29,6 +29,11 @@ type InitialState = {
     body: string;
     challenge?: string;
   }[];
+  logs: {
+    id: string;
+    message: string;
+    timestamp: number;
+  }[];
   signedMessages: { createdAt: number; body: string }[];
   peers: GetPeersResponseType | null;
   entryNodes: GetEntryNodesResponseType | null;
@@ -41,7 +46,8 @@ type InitialState = {
   transactions: string[];
   pings: (PingNodeResponseType & { peerId: string })[];
   metrics: string | null;
-  websocketConnected: boolean;
+  messagesWebsocketConnected: boolean;
+  logsWebsocketConnected: boolean;
 };
 
 export const initialState: InitialState = {
@@ -56,6 +62,7 @@ export const initialState: InitialState = {
   channels: null,
   messages: [],
   signedMessages: [],
+  logs: [],
   peers: {
     connected: [],
     announced: [],
@@ -73,5 +80,6 @@ export const initialState: InitialState = {
   transactions: [],
   pings: [],
   metrics: null,
-  websocketConnected: false,
+  messagesWebsocketConnected: false,
+  logsWebsocketConnected: false,
 };

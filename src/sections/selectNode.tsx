@@ -63,7 +63,10 @@ function Section1() {
     dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }))
       .unwrap()
       .then(() => {
-        dispatch(nodeActions.initializeWebsocket());
+        dispatch(nodeActions.initializeMessagesWebsocket());
+      })
+      .then(() => {
+        dispatch(nodeActions.initializeLogsWebsocket());
       });
   };
 
