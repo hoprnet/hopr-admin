@@ -20,18 +20,7 @@ function TicketsPage() {
   const [redeeming, set_redeeming] = useState(false);
 
   useEffect(() => {
-    dispatch(
-      actionsAsync.getStatisticsThunk({
-        apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
-      })
-    );
-    dispatch(
-      actionsAsync.getTicketsThunk({
-        apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
-      })
-    );
+    handleRefresh();
   }, [loginData, dispatch]);
 
   const handleRefresh = () => {
