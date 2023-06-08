@@ -17,7 +17,7 @@ const { APIError } = utils;
 
 function AliasesPage() {
   const dispatch = useAppDispatch();
-  const aliases = useAppSelector((selector) => selector.sdk.aliases);
+  const aliases = useAppSelector((selector) => selector.node.aliases);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const [importSuccess, set_importSuccess] = useState(false);
   const [deleteSuccess, set_deleteSuccess] = useState(false);
