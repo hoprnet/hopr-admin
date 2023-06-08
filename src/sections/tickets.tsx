@@ -68,24 +68,11 @@ function TicketsPage() {
   return (
     <Section className="Section--tickets" id="Section--tickets" yellow>
       <h2>
-        Tickets{' '}
-        <button
-          onClick={() => {
-            handleRefresh();
-          }}
-        >
-          Refresh
-        </button>
+        Tickets <button onClick={handleRefresh}>Refresh</button>
       </h2>
       <div>Unredeemed: {statistics?.unredeemed}</div>
       <div>Redeemed: {statistics?.redeemed}</div>
-      <button
-        onClick={() => {
-          handleRedeemAllTickets();
-        }}
-      >
-        Redeem All
-      </button>
+      <button onClick={handleRedeemAllTickets}>Redeem All</button>
       {redeeming && <CircularProgress />}
       <div>
         <button
