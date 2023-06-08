@@ -8,6 +8,7 @@ import Safe, {
   SafeFactory,
 } from '@safe-global/protocol-kit';
 import {
+  SafeMultisigTransactionResponse,
   SafeTransaction,
   SafeTransactionData,
   SafeTransactionDataPartial,
@@ -329,16 +330,14 @@ const executeTransactionThunk = createAsyncThunk(
     payload: {
       signer: ethers.providers.JsonRpcSigner;
       safeAddress: string;
-      safeTransaction: SafeTransaction;
+      safeTransaction: SafeMultisigTransactionResponse | SafeTransaction;
     },
     { rejectWithValue, dispatch }
   ) => {
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
 
-      const executeTransaction = await safeSDK.executeTransaction(
-        payload.safeTransaction
-      );
+      await safeSDK.executeTransaction(payload.safeTransaction);
       // re fetch all txs
       dispatch(
         getAllSafeTransactionsThunk({
@@ -348,6 +347,7 @@ const executeTransactionThunk = createAsyncThunk(
       );
       return true;
     } catch (e) {
+      console.log(e);
       rejectWithValue(e);
     }
   }
@@ -429,4 +429,5 @@ export const actionsAsync = {
   createSafeRejectionTransactionThunk,
   createSafeTransactionThunk,
   getSafeInfoThunk,
+  executeTransactionThunk,
 };
