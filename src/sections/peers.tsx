@@ -50,13 +50,7 @@ function PeersPage() {
     <Section>
       <h2>
         Peers seen in the network ({peers?.announced?.length || 0}){' '}
-        <button
-          onClick={() => {
-            handleRefresh();
-          }}
-        >
-          Refresh
-        </button>
+        <button onClick={handleRefresh}>Refresh</button>
       </h2>
 
       <TableContainer component={Paper}>
@@ -74,7 +68,7 @@ function PeersPage() {
             {Object.entries(peers?.announced ?? {}).map(([id, peer], key) => (
               <TableRow key={key}>
                 <TableCell component="th" scope="row">
-                  {key}
+                  {id}
                 </TableCell>
                 <TableCell>{peer.peerId}</TableCell>
                 <TableCell>{getAliasByPeerId(peer.peerId)}</TableCell>
