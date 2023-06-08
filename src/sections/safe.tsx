@@ -1,17 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Store } from '../types/index';
 
 //Stores
 import { useAppDispatch, useAppSelector } from '../store';
-import { authActions, authActionsAsync } from '../store/slices/auth';
-import { nodeActions, nodeActionsAsync } from '../store/slices/node';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
+import { useSigner } from '../hooks';
+import { actionsAsync } from '../store/slices/safe/actionsAsync';
 
-function Section_Web3() {
+function SafeSection() {
+  const dispatch = useAppDispatch();
   const safe = useAppSelector((store: Store) => store.safe);
+  const { signer } = useSigner();
 
+  useEffect(() => {
+    if (signer) {
+      dispatch(actionsAsync.getSafesByOwnerThunk({ signer }));
+    }
+  }, [signer]);
   return (
     <Section className="Section--safe" id="Section--safe" yellow>
       SAFE REDUX STORE
@@ -20,4 +27,4 @@ function Section_Web3() {
   );
 }
 
-export default Section_Web3;
+export default SafeSection;

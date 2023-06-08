@@ -1,3 +1,4 @@
+/// <reference types="vite-plugin-svgr/client" />
 // Packages
 import React from 'react';
 import styled from '@emotion/styled';

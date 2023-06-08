@@ -12,6 +12,8 @@ import SectionWeb3 from './sections/web3';
 import SectionSafe from './sections/safe';
 import AliasesPage from './sections/aliases';
 import InfoPage from './sections/info';
+import PeersPage from './sections/peers';
+import TicketsPage from './sections/tickets';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -22,9 +24,6 @@ import ConnectNode from './components/ConnectNode';
 import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
-
-// Types
-import { Store } from './types/index';
 
 export const applicationMap = [
   // {
@@ -47,6 +46,20 @@ export const applicationMap = [
         path: 'info',
         icon: <MailIcon />,
         element: <InfoPage />,
+        loginNeeded: 'node',
+      },
+      {
+        name: 'Peers',
+        path: 'peers',
+        icon: <MailIcon />,
+        element: <PeersPage />,
+        loginNeeded: 'node',
+      },
+      {
+        name: 'Tickets',
+        path: 'tickets',
+        icon: <MailIcon />,
+        element: <TicketsPage />,
         loginNeeded: 'node',
       },
       {
