@@ -2,10 +2,9 @@ import {
   AllTransactionsListResponse,
   SafeInfoResponse,
 } from '@safe-global/api-kit';
-import { SafeTransaction } from '@safe-global/safe-core-sdk-types';
 
 type InitialState = {
-  connected: boolean;
+  selectedSafeAddress: string | null;
   recentlyCreatedSafe: string | null;
   safesByOwner: string[];
   safeTransactions: AllTransactionsListResponse | null;
@@ -13,7 +12,7 @@ type InitialState = {
 };
 
 export const initialState: InitialState = {
-  connected: false,
+  selectedSafeAddress: null,
   recentlyCreatedSafe: null,
   safesByOwner: [],
   safeTransactions: null,

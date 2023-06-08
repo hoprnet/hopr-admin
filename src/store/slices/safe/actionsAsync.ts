@@ -216,8 +216,21 @@ const createSafeTransactionThunk = createAsyncThunk(
   ) => {
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
-      const tx = await safeSDK.createTransaction({
+      // create safe transaction
+      const safeTransaction = await safeSDK.createTransaction({
         safeTransactionData: payload.safeTransactionData,
+      });
+      const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
+      const senderSignature = await safeSDK.signTransactionHash(safeTxHash);
+      const senderAddress = await payload.signer.getAddress();
+      const safeApi = await createSafeApiService(payload.signer);
+      // propose safe transaction
+      await safeApi.proposeTransaction({
+        safeAddress: payload.safeAddress,
+        safeTransactionData: safeTransaction.data,
+        safeTxHash,
+        senderAddress,
+        senderSignature: senderSignature.data,
       });
       // re fetch all txs
       dispatch(
@@ -226,8 +239,9 @@ const createSafeTransactionThunk = createAsyncThunk(
           signer: payload.signer,
         })
       );
-      return tx;
+      return true;
     } catch (e) {
+      console.log(e);
       rejectWithValue(e);
     }
   }
@@ -245,7 +259,22 @@ const createSafeRejectionTransactionThunk = createAsyncThunk(
   ) => {
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
-      const tx = safeSDK.createRejectionTransaction(payload.nonce);
+      // create safe rejection transaction
+      const safeTransaction = await safeSDK.createRejectionTransaction(
+        payload.nonce
+      );
+      const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
+      const senderSignature = await safeSDK.signTransactionHash(safeTxHash);
+      const senderAddress = await payload.signer.getAddress();
+      const safeApi = await createSafeApiService(payload.signer);
+      // propose safe transaction
+      await safeApi.proposeTransaction({
+        safeAddress: payload.safeAddress,
+        safeTransactionData: safeTransaction.data,
+        safeTxHash,
+        senderAddress,
+        senderSignature: senderSignature.data,
+      });
       // re fetch all txs
       dispatch(
         getAllSafeTransactionsThunk({
@@ -253,7 +282,7 @@ const createSafeRejectionTransactionThunk = createAsyncThunk(
           signer: payload.signer,
         })
       );
-      return tx;
+      return true;
     } catch (e) {
       rejectWithValue(e);
     }
@@ -271,12 +300,9 @@ const confirmTransactionThunk = createAsyncThunk(
     { rejectWithValue, dispatch }
   ) => {
     try {
-      const safeAccount = await createSafeSDK(
-        payload.signer,
-        payload.safeAddress
-      );
+      const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       const safeApi = await createSafeApiService(payload.signer);
-      const signature = await safeAccount.signTransactionHash(
+      const signature = await safeSDK.signTransactionHash(
         payload.safeTransactionHash
       );
       const confirmTransaction = await safeApi.confirmTransaction(
@@ -291,6 +317,36 @@ const confirmTransactionThunk = createAsyncThunk(
         })
       );
       return confirmTransaction;
+    } catch (e) {
+      rejectWithValue(e);
+    }
+  }
+);
+
+const executeTransactionThunk = createAsyncThunk(
+  'safe/executeTransactionProposal',
+  async (
+    payload: {
+      signer: ethers.providers.JsonRpcSigner;
+      safeAddress: string;
+      safeTransaction: SafeTransaction;
+    },
+    { rejectWithValue, dispatch }
+  ) => {
+    try {
+      const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
+
+      const executeTransaction = await safeSDK.executeTransaction(
+        payload.safeTransaction
+      );
+      // re fetch all txs
+      dispatch(
+        getAllSafeTransactionsThunk({
+          safeAddress: payload.safeAddress,
+          signer: payload.signer,
+        })
+      );
+      return true;
     } catch (e) {
       rejectWithValue(e);
     }
@@ -313,6 +369,7 @@ const getAllSafeTransactionsThunk = createAsyncThunk(
         payload.safeAddress,
         payload.options
       );
+      console.log(transactions);
       return transactions;
     } catch (e) {
       rejectWithValue(e);
@@ -325,13 +382,13 @@ export const createExtraReducers = (
 ) => {
   builder.addCase(createSafeThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.connected = true;
+      state.selectedSafeAddress = action.payload;
       state.recentlyCreatedSafe = action.payload;
     }
   });
   builder.addCase(createSafeWithConfigThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.connected = true;
+      state.selectedSafeAddress = action.payload;
       state.recentlyCreatedSafe = action.payload;
     }
   });
@@ -342,7 +399,21 @@ export const createExtraReducers = (
   });
   builder.addCase(getSafeInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.safeInfos.push(action.payload);
+      state.selectedSafeAddress = action.payload.address;
+      const existingSafe = state.safeInfos.findIndex(
+        (info) => info.address === action.payload?.address
+      );
+      // safe exists
+      if (existingSafe !== -1) {
+        state.safeInfos[existingSafe] = action.payload;
+      } else {
+        state.safeInfos.push(action.payload);
+      }
+    }
+  });
+  builder.addCase(getAllSafeTransactionsThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      state.safeTransactions = action.payload;
     }
   });
 };
@@ -357,4 +428,5 @@ export const actionsAsync = {
   confirmTransactionThunk,
   createSafeRejectionTransactionThunk,
   createSafeTransactionThunk,
+  getSafeInfoThunk,
 };
