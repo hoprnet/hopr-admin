@@ -5,11 +5,15 @@
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@fontsource/roboto": "^5.0.0",
-    "@hoprnet/hopr-sdk": "^0.0.1-alpha.5",
+    "@hoprnet/hopr-sdk": "^0.0.1-alpha.7",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.0",
     "@reduxjs/toolkit": "^1.9.5",
+    "@safe-global/api-kit": "^1.1.0",
+    "@safe-global/protocol-kit": "^1.0.1",
+    "@safe-global/safe-core-sdk-types": "^2.0.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
@@ -21,7 +25,6 @@
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.11.2",
-    "react-scripts": "5.0.1",
     "redux": "^4.2.1",
     "typescript": "^4.4.2",
     "viem": "^0.3.37",
@@ -29,10 +32,10 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "dev": "vite",
+    "dev:clean": "npm run dev -- --force",
+    "build": "tsc && vite build",
+    "serve": "vite preview --port 3000",
     "format": "yarn prettier --write ./src",
     "prepare": "husky install"
   },
@@ -59,7 +62,11 @@
   },
   "packageManager": "yarn@1.22.19",
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.0",
     "husky": "^8.0.0",
-    "prettier": "^2.8.8"
+    "prettier": "^2.8.8",
+    "vite": "^4.3.9",
+    "vite-plugin-checker": "^0.6.0",
+    "vite-plugin-svgr": "^3.2.0"
   }
 }
