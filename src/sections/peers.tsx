@@ -66,7 +66,7 @@ function PeersPage() {
           </TableHead>
           <TableBody>
             {Object.entries(peers?.announced ?? {}).map(([id, peer], key) => (
-              <TableRow key={key}>
+              <TableRow key={id}>
                 <TableCell component="th" scope="row">
                   {id}
                 </TableCell>
