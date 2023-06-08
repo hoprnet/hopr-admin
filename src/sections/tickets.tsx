@@ -3,8 +3,6 @@ import { useAppDispatch, useAppSelector } from '../store';
 import { useEffect, useState } from 'react';
 import { actionsAsync } from '../store/slices/node/actionsAsync';
 import CircularProgress from '@mui/material/CircularProgress';
-import { utils } from '@hoprnet/hopr-sdk';
-const { APIError } = utils;
 
 function TicketsPage() {
   const dispatch = useAppDispatch();
