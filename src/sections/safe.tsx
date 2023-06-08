@@ -77,26 +77,45 @@ function SafeSection() {
       <h1>transactions actions</h1>
       {safe.safeTransactions?.results.map((transaction, key) => (
         <div key={key}>
-          <p>{transaction.txType} {transaction.to}</p>
-          {transaction.txType === "MULTISIG_TRANSACTION" ?
-            (transaction.confirmationsRequired === transaction.confirmations?.length ?
-              <button onClick={() => {
-                if (signer) {
-                  dispatch(actionsAsync.executeTransactionThunk({
-                    signer,
-                    safeAddress: transaction.safe,
-                    safeTransaction: transaction
-                  }))
-                }
-              }}>execute</button> : <button onClick={() => {
-                if (signer) {
-                  dispatch(actionsAsync.confirmTransactionThunk({
-                    signer,
-                    safeAddress: transaction.safe,
-                    safeTransactionHash: transaction.safeTxHash
-                  }))
-                }
-              }}>confirm</button>) : null}
+          <p>
+            {transaction.txType} {transaction.to}
+          </p>
+          {transaction.txType === 'MULTISIG_TRANSACTION' ? (
+            transaction.confirmationsRequired ===
+            transaction.confirmations?.length ? (
+              <button
+                onClick={() => {
+                  if (signer) {
+                    dispatch(
+                      actionsAsync.executeTransactionThunk({
+                        signer,
+                        safeAddress: transaction.safe,
+                        safeTransaction: transaction,
+                      })
+                    );
+                  }
+                }}
+              >
+                execute
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  if (signer) {
+                    dispatch(
+                      actionsAsync.confirmTransactionThunk({
+                        signer,
+                        safeAddress: transaction.safe,
+                        safeTransactionHash: transaction.safeTxHash,
+                      })
+                    );
+                  }
+                }}
+              >
+                confirm
+              </button>
+            )
+          ) : null}
         </div>
       ))}
     </Section>
