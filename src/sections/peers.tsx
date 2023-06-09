@@ -15,8 +15,8 @@ import { actionsAsync } from '../store/slices/node/actionsAsync';
 function PeersPage() {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const peers = useAppSelector((selector) => selector.sdk.peers);
-  const aliases = useAppSelector((selector) => selector.sdk.aliases);
+  const peers = useAppSelector((selector) => selector.node.peers);
+  const aliases = useAppSelector((selector) => selector.node.aliases);
 
   useEffect(() => {
     handleRefresh();
