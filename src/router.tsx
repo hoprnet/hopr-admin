@@ -12,6 +12,7 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import Layout from './future-hopr-lib-components/Layout';
 import AliasesPage from './sections/aliases';
 import InfoPage from './sections/info';
+import MessagesPage from './sections/messages';
 import PeersPage from './sections/peers';
 import TicketsPage from './sections/tickets';
 
@@ -30,6 +31,12 @@ export const applicationMap = [
         path: 'connect',
         icon: <MenuIcon />,
         element: <Section1 />,
+      },
+      {
+        name: 'Messages',
+        path: 'messages',
+        icon: <MailIcon />,
+        element: <MessagesPage />,
       },
       {
         name: 'Info',
