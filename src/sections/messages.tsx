@@ -49,13 +49,13 @@ const messages = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.entries(messages ?? {}).map(([seen, body], key) => (
+            {messages.map(({ seen, body }, key) => (
               <TableRow key={key}>
                 <TableCell component="th" scope="row">
                   {key}
                 </TableCell>
-                <TableCell>{seen}</TableCell>
-                <TableCell>{body.body}</TableCell>
+                <TableCell>{`${seen}`}</TableCell>
+                <TableCell>{body}</TableCell>
                 <TableCell>
                   <button onClick={() => console.log('seen :)')}>seen</button>
                 </TableCell>
