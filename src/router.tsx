@@ -13,6 +13,8 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import Layout from './future-hopr-lib-components/Layout';
 import AliasesPage from './sections/aliases';
 import InfoPage from './sections/info';
+import PeersPage from './sections/peers';
+import TicketsPage from './sections/tickets';
 
 export const applicationMap = [
   // {
@@ -41,6 +43,18 @@ export const applicationMap = [
         path: 'info',
         icon: <MailIcon />,
         element: <InfoPage />,
+      },
+      {
+        name: 'Peers',
+        path: 'peers',
+        icon: <MailIcon />,
+        element: <PeersPage />,
+      },
+      {
+        name: 'Tickets',
+        path: 'tickets',
+        icon: <MailIcon />,
+        element: <TicketsPage />,
       },
       {
         name: 'Configuration',

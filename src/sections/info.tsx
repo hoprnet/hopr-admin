@@ -21,7 +21,6 @@ function InfoPage() {
 
   useEffect(() => {
     fetchInfoData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchInfoData = () => {
@@ -54,21 +53,21 @@ function InfoPage() {
       <div id="info">
         <div id="version">Version: {version}</div>
         {!!info &&
-          Object.entries(info).map(([key, value]) => {
+          Object.entries(info).map(([key, value], index) => {
             if (Array.isArray(value)) {
               return (
-                <div>
+                <div key={index}>
                   <h3>{key}</h3>
                   <ul>
-                    {value.map((val) => (
-                      <li>{val}</li>
+                    {value.map((val, index) => (
+                      <li key={index}>{val}</li>
                     ))}
                   </ul>
                 </div>
               );
             }
             return (
-              <div>
+              <div key={index}>
                 {key}: {value}
               </div>
             );
@@ -114,9 +113,9 @@ function InfoPage() {
       <div id="statistics">
         <div>
           {!!statistics &&
-            Object.entries(statistics).map(([key, value]) => {
+            Object.entries(statistics).map(([key, value], index) => {
               return (
-                <div>
+                <div key={index}>
                   {key}: {value}
                 </div>
               );

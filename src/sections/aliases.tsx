@@ -37,7 +37,6 @@ function AliasesPage() {
         })
       );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loginData]);
 
   return (
@@ -155,14 +154,14 @@ function AliasesPage() {
         </Table>
       </TableContainer>
       <p>{!!importSuccess && 'Imported aliases!'}</p>
-      {importErrors.map((error) => (
-        <p>
+      {importErrors.map((error, index) => (
+        <p key={index}>
           {error.error}: failed to import alias: {error.alias}
         </p>
       ))}
       <p>{!!deleteSuccess && 'Deleted alias!'}</p>
-      {deleteErrors.map((error) => (
-        <p>
+      {deleteErrors.map((error, index) => (
+        <p key={index}>
           {error.error}: failed to delete alias: {error.alias}
         </p>
       ))}
