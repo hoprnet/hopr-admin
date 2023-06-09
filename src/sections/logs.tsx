@@ -3,10 +3,10 @@ import LogLine from '../components/LogLine';
 import Section from '../future-hopr-lib-components/Section';
 
 function SectionLogs() {
+  const { logs } = useAppSelector((selector) => selector.node);
   const { apiEndpoint, apiToken } = useAppSelector(
     (selector) => selector.auth.loginData
   );
-  const { logs } = useAppSelector((selector) => selector.node);
 
   if (!apiEndpoint || !apiToken) {
     return (
