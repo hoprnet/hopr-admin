@@ -19,11 +19,20 @@ import TicketsPage from './sections/tickets';
 import Layout from './future-hopr-lib-components/Layout';
 import ConnectWeb3 from './components/ConnectWeb3';
 import ConnectNode from './components/ConnectNode';
+import NotificationBar from './components/NotificationBar';
 
 // Icons
+import CableIcon from '@mui/icons-material/Cable';
+import InfoIcon from '@mui/icons-material/Info';
+import LanIcon from '@mui/icons-material/Lan';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import SettingsIcon from '@mui/icons-material/Settings';
+import TerminalIcon from '@mui/icons-material/Terminal';
+import RssFeedIcon from '@mui/icons-material/RssFeed';
 import MailIcon from '@mui/icons-material/Mail';
-import MenuIcon from '@mui/icons-material/Menu';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
+import HubIcon from '@mui/icons-material/Hub';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import LockIcon from '@mui/icons-material/Lock';
 
 export const applicationMap = [
   // {
@@ -38,40 +47,33 @@ export const applicationMap = [
       {
         name: 'Connect',
         path: 'connect',
-        icon: <MenuIcon />,
+        icon: <CableIcon />,
         element: <Section1 />,
       },
       {
         name: 'Info',
         path: 'info',
-        icon: <MailIcon />,
+        icon: <InfoIcon />,
         element: <InfoPage />,
         loginNeeded: 'node',
       },
       {
-        name: 'Peers',
-        path: 'peers',
-        icon: <MailIcon />,
-        element: <PeersPage />,
+        name: 'Logs',
+        path: 'Logs',
+        icon: <TerminalIcon />,
         loginNeeded: 'node',
       },
       {
         name: 'Tickets',
         path: 'tickets',
-        icon: <MailIcon />,
+        icon: <ConfirmationNumberIcon />,
         element: <TicketsPage />,
         loginNeeded: 'node',
       },
       {
         name: 'Configuration',
         path: 'configuration',
-        icon: <MailIcon />,
-        loginNeeded: 'node',
-      },
-      {
-        name: 'CLI',
-        path: 'cli',
-        icon: <MailIcon />,
+        icon: <SettingsIcon />,
         loginNeeded: 'node',
       },
     ],
@@ -83,7 +85,21 @@ export const applicationMap = [
       {
         name: 'Ping',
         path: 'ping',
-        icon: <MailIcon />,
+        icon: <RssFeedIcon />,
+        loginNeeded: 'node',
+      },
+      {
+        name: 'Peers',
+        path: 'peers',
+        icon: <LanIcon />,
+        element: <PeersPage />,
+        loginNeeded: 'node',
+      },
+      {
+        name: 'Aliases',
+        path: 'aliases',
+        icon: <InfoIcon />,
+        element: <AliasesPage />,
         loginNeeded: 'node',
       },
       {
@@ -95,14 +111,7 @@ export const applicationMap = [
       {
         name: 'Channels',
         path: 'channels',
-        icon: <InboxIcon />,
-        loginNeeded: 'node',
-      },
-      {
-        name: 'Aliases',
-        path: 'aliases',
-        icon: <MailIcon />,
-        element: <AliasesPage />,
+        icon: <HubIcon />,
         loginNeeded: 'node',
       },
     ],
@@ -114,14 +123,14 @@ export const applicationMap = [
       {
         name: 'Web3',
         path: 'web3',
-        icon: <MailIcon />,
+        icon: <AccountBalanceWalletIcon />,
         element: <SectionWeb3 />,
         loginNeeded: 'web3',
       },
       {
         name: 'Safe',
         path: 'safe',
-        icon: <MailIcon />,
+        icon: <LockIcon />,
         element: <SectionSafe />,
         loginNeeded: 'web3',
       }
@@ -157,6 +166,7 @@ const LayoutEnhanced = () => {
       }}
       itemsNavbarRight={
         <>
+          <NotificationBar />
           <ConnectWeb3 />
           <ConnectNode />
         </>
