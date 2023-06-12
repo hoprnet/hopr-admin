@@ -10,9 +10,10 @@ type InitialState = {
   loginData: {
     apiEndpoint: string | null;
     apiToken: string | null;
+    localName: string | null;
     peerId: string | null;
   };
-  nodes: { apiEndpoint: string | null; apiToken: string | null }[];
+  nodes: { apiEndpoint: string | null, apiToken: string | null, localName: string | null }[];
 };
 
 export const initialState: InitialState = {
@@ -23,6 +24,7 @@ export const initialState: InitialState = {
   loginData: {
     apiEndpoint: null,
     apiToken: null,
+    localName: null,
     peerId: null,
   },
   nodes: ADMIN_UI_NODE_LIST ? ADMIN_UI_NODE_LIST : [],
