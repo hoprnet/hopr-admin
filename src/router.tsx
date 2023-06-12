@@ -33,6 +33,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import HubIcon from '@mui/icons-material/Hub';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LockIcon from '@mui/icons-material/Lock';
+import ContactPhone from '@mui/icons-material/ContactPhone';
 
 export const applicationMap = [
   // {
@@ -98,7 +99,7 @@ export const applicationMap = [
       {
         name: 'Aliases',
         path: 'aliases',
-        icon: <InfoIcon />,
+        icon: <ContactPhone />,
         element: <AliasesPage />,
         loginNeeded: 'node',
       },
