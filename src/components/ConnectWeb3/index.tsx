@@ -11,6 +11,14 @@ import { web3Actions } from '../../store/slices/web3';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 
+const Container = styled.div`
+  height: 59px;
+  width: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const ConnectWalletContent = styled.div`
   display: flex;
   flex-direction: column;
@@ -35,7 +43,7 @@ export default function ConnectWeb3() {
   }, [isConnected]);
 
   return (
-    <div>
+    <Container>
       {!isConnected ? (
         <button
           onClick={() => {
@@ -76,6 +84,6 @@ export default function ConnectWeb3() {
           </p>
         </ConnectWalletContent>
       </Modal>
-    </div>
+    </Container>
   );
 }

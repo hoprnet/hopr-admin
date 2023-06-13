@@ -13,7 +13,6 @@ export const loginThunk = createAsyncThunk(
       apiEndpoint: loginData.apiEndpoint,
       apiToken: loginData.apiToken,
     });
-    console.log({ info });
     if (info) dispatch(authActions.setConnected());
   }
 );
