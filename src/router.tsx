@@ -62,6 +62,7 @@ export const applicationMap = [
         path: 'logs',
         icon: <MailIcon />,
         element: <SectionLogs />,
+        loginNeeded: 'node',
       },
       {
         name: 'Info',
