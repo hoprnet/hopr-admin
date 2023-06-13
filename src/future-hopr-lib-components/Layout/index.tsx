@@ -5,11 +5,10 @@ import styled from '@emotion/styled';
 import { Outlet } from 'react-router-dom';
 
 // Components
-import NavBar from '../Navbar/navBar.jsx';
-import Footer from './footer.jsx';
+import NavBar from '../Navbar/navBar';
+import Footer from './footer';
 import Drawer from './drawer';
 import { PropaneSharp } from '@mui/icons-material';
-import HoprLogo from './logo.svg';
 
 const SLayout = styled.div``;
 
@@ -37,6 +36,8 @@ const Layout: React.FC<{
   tallerNavBarOnMobile?: boolean;
   children?: any;
   drawer?: boolean;
+  webapp?: boolean;
+  drawerLoginState?: {};
   drawerItems?: {}[];
 }> = ({
   className = '',
@@ -45,16 +46,21 @@ const Layout: React.FC<{
   tallerNavBarOnMobile,
   drawer,
   drawerItems,
+  webapp,
+  drawerLoginState,
 }) => {
   return (
     <SLayout className="Layout">
       <NavBar
-        mainLogo={HoprLogo}
+        mainLogo="/logo.svg"
         mainLogoAlt="hopr logo"
         itemsNavbarRight={itemsNavbarRight}
         tallerNavBarOnMobile={tallerNavBarOnMobile}
+        webapp={webapp}
       />
-      {drawer && <Drawer drawerItems={drawerItems} />}
+      {drawer && (
+        <Drawer drawerItems={drawerItems} drawerLoginState={drawerLoginState} />
+      )}
       <Content
         className="Content"
         drawer={drawer}

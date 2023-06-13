@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import { Link, LinkProps } from 'react-router-dom';
-import { RouterProvider, BrowserRouter } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import styled from '@emotion/styled';
 
 import List from '@mui/material/List';
@@ -14,6 +14,9 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
+// Types
+import type { ApplicationMapType } from '../../router';
+
 const drawerWidth = 240;
 
 interface Props {
@@ -23,6 +26,10 @@ interface Props {
    */
   window?: () => Window;
   drawerItems?: any[];
+  drawerLoginState?: {
+    node?: boolean;
+    web3?: boolean;
+  };
 }
 
 const AppBarFiller = styled(Toolbar)`
@@ -43,7 +50,7 @@ const SLink = styled(Link)<SLinkProps>`
 
 export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
-  // const navigate = useNavigate();
+  let searchParams = useLocation()?.search;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -58,18 +65,36 @@ export default function ResponsiveDrawer(props: Props) {
         if (group.drawer === false) return;
 
         return (
-          <List>
+          <List key={indexG}>
             {group.groupName}
             {group.items &&
               group.items.map((item: any, indexI: number) => {
                 return (
                   <SLink
-                    to={`${group.path}/${item.path}`}
+                    to={`${group.path}/${item.path}${
+                      searchParams ? searchParams : ''
+                    }`}
                     key={indexI}
-                    disabled={!item.element}
+                    disabled={
+                      !item.element ||
+                      // @ts-ignore
+                      (item.loginNeeded &&
+                        props?.drawerLoginState?.[
+                          item.loginNeeded as 'web3' | 'node'
+                        ] === false)
+                    }
                   >
                     <ListItem disablePadding>
-                      <ListItemButton disabled={!item.element}>
+                      <ListItemButton
+                        disabled={
+                          !item.element ||
+                          // @ts-ignore
+                          (item.loginNeeded &&
+                            props?.drawerLoginState?.[
+                              item.loginNeeded as 'web3' | 'node'
+                            ] === false)
+                        }
+                      >
                         <ListItemIcon>{item.icon}</ListItemIcon>
                         <ListItemText primary={item.name} />
                       </ListItemButton>

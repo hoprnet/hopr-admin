@@ -21,7 +21,7 @@ const SFormControl = styled(FormControl)`
 interface Props extends SelectProps {
   values?: {
     value: string | number;
-    name: string | number;
+    name: string | number | null;
   }[];
 }
 
