@@ -10,7 +10,6 @@ import Safe, {
 import {
   SafeMultisigTransactionResponse,
   SafeTransaction,
-  SafeTransactionData,
   SafeTransactionDataPartial,
 } from '@safe-global/safe-core-sdk-types';
 

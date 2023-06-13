@@ -31,7 +31,7 @@ function SafeSection() {
   return (
     <Section className="Section--safe" id="Section--safe" yellow>
       <h1>Safe</h1>
-      <h2>exiting safes</h2>
+      <h2>existing safes</h2>
       {safe.safesByOwner.map((safeAddress) => (
         <button
           key={safeAddress}
@@ -90,7 +90,7 @@ function SafeSection() {
           </p>
           {transaction.txType === 'MULTISIG_TRANSACTION' ? (
             transaction.confirmationsRequired ===
-            transaction.confirmations?.length ? (
+              transaction.confirmations?.length ? (
               <button
                 onClick={() => {
                   if (signer) {
