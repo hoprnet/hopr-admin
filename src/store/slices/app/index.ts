@@ -18,7 +18,7 @@ const appSlice = createSlice({
       const defaultTimeout = 5000;
       state.notifications.push({
         ...action.payload,
-        id: Math.random() * 1e6,
+        id: Math.floor(Math.random() * 1e6),
         seen: false,
         timeout: action.payload.timeout ?? now + defaultTimeout,
       });
