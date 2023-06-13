@@ -12,8 +12,8 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
 import { authActions } from '../../store/slices/auth';
-import { nodeActions, } from '../../store/slices/node';
-
+import { nodeActions } from '../../store/slices/node';
+import { appActions } from '../../store/slices/app';
 
 const Container = styled.div`
   height: 59px;
@@ -41,62 +41,66 @@ const SIconButton = styled(IconButton)`
   }
 `;
 
+const SMenu = styled(Menu)``;
 
-const SMenu = styled(Menu)`
-
-`;
-
-
-const SMenuItem = styled(MenuItem)`
-
-`;
-
-
+const SMenuItem = styled(MenuItem)``;
 
 export default function NotificationBar() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { notifications } = useAppSelector((state) => state.app);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+
+  useEffect(
+    () => {
+      let clearNotificationsTimer = setTimeout(() => dispatch(appActions.clearExpiredNotifications()), 2000);
+      return () => {
+        clearTimeout(clearNotificationsTimer);
+      };
+    },
+  )
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
-  const handleLogout = () => {
-    dispatch(authActions.resetState());
-    dispatch(nodeActions.resetState());
-    navigate('node/connect');
-  }
+  const handleClose = (notification: typeof notifications[0]) => {
+    setAnchorEl(null);
+    dispatch(appActions.readNotification(notification))
+  };
 
 
   return (
     <Container>
-      <SBadge 
-        id="notificaion-menu-button"
-        badgeContent={1} 
+      <SBadge
+        id="notification-menu-button"
+        badgeContent={notifications.filter(notification => !notification.seen).length}
         color="secondary"
         aria-controls={open ? 'basic-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
       >
-        <SIconButton >
+        <SIconButton>
           <NotificationsNoneIcon />
         </SIconButton>
       </SBadge>
       <SMenu
-        id="notificaion-menu"
+        id="notification-menu"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
         MenuListProps={{
-          'aria-labelledby': 'notificaion-menu-button',
+          'aria-labelledby': 'notification-menu-button',
         }}
       >
-        <MenuItem onClick={handleClose}>Notification 1</MenuItem>
+        {notifications.filter(notification => !notification.seen).map((notification) => (
+          <MenuItem key={notification.id} onClick={() => { handleClose(notification) }}>
+            {notification.name}
+          </MenuItem>
+        ))}
       </SMenu>
     </Container>
   );
