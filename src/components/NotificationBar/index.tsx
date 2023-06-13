@@ -11,8 +11,6 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
-import { authActions } from '../../store/slices/auth';
-import { nodeActions } from '../../store/slices/node';
 import { appActions } from '../../store/slices/app';
 
 const Container = styled.div`
