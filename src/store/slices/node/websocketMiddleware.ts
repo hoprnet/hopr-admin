@@ -16,7 +16,7 @@ type LocalRootState = {
   auth: typeof initialState;
 };
 
-const websocketMiddleware: Middleware<{}, LocalRootState> = ({
+const websocketMiddleware: Middleware<object, LocalRootState> = ({
   dispatch,
   getState,
 }) => {
