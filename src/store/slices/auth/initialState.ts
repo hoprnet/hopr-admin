@@ -13,7 +13,11 @@ type InitialState = {
     localName: string | null;
     peerId: string | null;
   };
-  nodes: { apiEndpoint: string | null, apiToken: string | null, localName: string | null }[];
+  nodes: {
+    apiEndpoint: string | null;
+    apiToken: string | null;
+    localName: string | null;
+  }[];
 };
 
 export const initialState: InitialState = {

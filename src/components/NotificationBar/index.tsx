@@ -12,8 +12,7 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
 import { authActions } from '../../store/slices/auth';
-import { nodeActions, } from '../../store/slices/node';
-
+import { nodeActions } from '../../store/slices/node';
 
 const Container = styled.div`
   height: 59px;
@@ -41,17 +40,9 @@ const SIconButton = styled(IconButton)`
   }
 `;
 
+const SMenu = styled(Menu)``;
 
-const SMenu = styled(Menu)`
-
-`;
-
-
-const SMenuItem = styled(MenuItem)`
-
-`;
-
-
+const SMenuItem = styled(MenuItem)``;
 
 export default function NotificationBar() {
   const dispatch = useAppDispatch();
@@ -69,21 +60,20 @@ export default function NotificationBar() {
     dispatch(authActions.resetState());
     dispatch(nodeActions.resetState());
     navigate('node/connect');
-  }
-
+  };
 
   return (
     <Container>
-      <SBadge 
+      <SBadge
         id="notificaion-menu-button"
-        badgeContent={1} 
+        badgeContent={1}
         color="secondary"
         aria-controls={open ? 'basic-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
       >
-        <SIconButton >
+        <SIconButton>
           <NotificationsNoneIcon />
         </SIconButton>
       </SBadge>
