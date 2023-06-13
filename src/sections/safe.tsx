@@ -90,7 +90,7 @@ function SafeSection() {
           </p>
           {transaction.txType === 'MULTISIG_TRANSACTION' ? (
             transaction.confirmationsRequired ===
-              transaction.confirmations?.length ? (
+            transaction.confirmations?.length ? (
               <button
                 onClick={() => {
                   if (signer) {

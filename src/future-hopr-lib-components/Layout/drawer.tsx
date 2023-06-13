@@ -62,28 +62,30 @@ export default function ResponsiveDrawer(props: Props) {
         if (group.drawer === false) return;
 
         return (
-          <List
-            key={indexG}
-          >
+          <List key={indexG}>
             {group.groupName}
             {group.items &&
               group.items.map((item: any, indexI: number) => {
                 return (
                   <SLink
-                    to={`${group.path}/${item.path}${searchParams ? searchParams : ''}`}
+                    to={`${group.path}/${item.path}${
+                      searchParams ? searchParams : ''
+                    }`}
                     key={indexI}
                     disabled={
                       !item.element ||
                       // @ts-ignore
-                      (item.loginNeeded && props?.drawerLoginState[item.loginNeeded] === false )
+                      (item.loginNeeded &&
+                        props?.drawerLoginState[item.loginNeeded] === false)
                     }
                   >
                     <ListItem disablePadding>
-                      <ListItemButton 
+                      <ListItemButton
                         disabled={
                           !item.element ||
                           // @ts-ignore
-                          (item.loginNeeded && props?.drawerLoginState[item.loginNeeded] === false )
+                          (item.loginNeeded &&
+                            props?.drawerLoginState[item.loginNeeded] === false)
                         }
                       >
                         <ListItemIcon>{item.icon}</ListItemIcon>

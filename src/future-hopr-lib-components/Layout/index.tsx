@@ -10,7 +10,6 @@ import Footer from './footer';
 import Drawer from './drawer';
 import { PropaneSharp } from '@mui/icons-material';
 
-
 const SLayout = styled.div``;
 
 const Content = styled.div<any>`
@@ -48,7 +47,7 @@ const Layout: React.FC<{
   drawer,
   drawerItems,
   webapp,
-  drawerLoginState
+  drawerLoginState,
 }) => {
   return (
     <SLayout className="Layout">
@@ -59,7 +58,9 @@ const Layout: React.FC<{
         tallerNavBarOnMobile={tallerNavBarOnMobile}
         webapp={webapp}
       />
-      {drawer && <Drawer drawerItems={drawerItems} drawerLoginState={drawerLoginState} />}
+      {drawer && (
+        <Drawer drawerItems={drawerItems} drawerLoginState={drawerLoginState} />
+      )}
       <Content
         className="Content"
         drawer={drawer}

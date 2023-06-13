@@ -52,7 +52,8 @@ const NavBarItems = ({
       ].join(' ')}
     >
       {/*  @ts-ignore */}
-      {itemsNavbar && itemsNavbar[0]?.label &&
+      {itemsNavbar &&
+        itemsNavbar[0]?.label &&
         itemsNavbar.map((item, i) => (
           <NavButton
             key={`itemsNavbar-${position}-${i}`}

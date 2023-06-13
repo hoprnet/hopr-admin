@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../store';
 
 //Stores
 import { authActions, authActionsAsync } from '../store/slices/auth';
-import  { nodeActionsAsync, nodeActions } from '../store/slices/node';
+import { nodeActionsAsync, nodeActions } from '../store/slices/node';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
@@ -31,19 +31,30 @@ function Section1() {
   );
   const connecting = useAppSelector((store) => store.auth.status.connecting);
   const loginData = useAppSelector((store) => store.auth.loginData);
-  
-  const [searchParams, set_searchParams] = useSearchParams();
-  const [localName, set_localName] = useState(loginData.localName ? loginData.localName : '');
-  const [apiEndpoint, set_apiEndpoint] = useState(loginData.apiEndpoint ? loginData.apiEndpoint : '');
-  const [apiToken, set_apiToken] = useState(loginData.apiToken ? loginData.apiToken : '');
-  const [saveApiToken, set_saveApiToken] = useState(loginData.apiToken ? true : false);
-  const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] = useState('' as number | '');
 
-  useEffect(()=>{
+  const [searchParams, set_searchParams] = useSearchParams();
+  const [localName, set_localName] = useState(
+    loginData.localName ? loginData.localName : ''
+  );
+  const [apiEndpoint, set_apiEndpoint] = useState(
+    loginData.apiEndpoint ? loginData.apiEndpoint : ''
+  );
+  const [apiToken, set_apiToken] = useState(
+    loginData.apiToken ? loginData.apiToken : ''
+  );
+  const [saveApiToken, set_saveApiToken] = useState(
+    loginData.apiToken ? true : false
+  );
+  const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] =
+    useState('' as number | '');
+
+  useEffect(() => {
     // Update the Select based on loginData from the Store
-    if(!loginData.apiEndpoint) return;
-    const existingItem = nodesSavedLocally.findIndex((item: any) => (item.apiEndpoint === loginData.apiEndpoint));
-    console.log(existingItem, nodesSavedLocally[existingItem])
+    if (!loginData.apiEndpoint) return;
+    const existingItem = nodesSavedLocally.findIndex(
+      (item: any) => item.apiEndpoint === loginData.apiEndpoint
+    );
+    console.log(existingItem, nodesSavedLocally[existingItem]);
     if (existingItem !== -1) set_nodesSavedLocallyChosenIndex(existingItem);
   }, [loginData, nodesSavedLocally]);
 
@@ -80,7 +91,7 @@ function Section1() {
       (nodesSavedLocally[existingItemIndex].apiToken?.length ?? 0) > 0
     ) {
       set_saveApiToken(true);
-    } 
+    }
   }, [loginData]);
 
   const saveNode = () => {
@@ -144,7 +155,7 @@ function Section1() {
       >
         Clear local nodes
       </button>
-      <br/>
+      <br />
       Local name:
       <input
         value={localName}
@@ -176,7 +187,7 @@ function Section1() {
           set_saveApiToken(event.target.checked);
         }}
       />
-      <br/>
+      <br />
       <button onClick={saveNode} disabled={apiEndpoint.length === 0}>
         Save node locally
       </button>

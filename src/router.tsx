@@ -1,5 +1,10 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouteObject, useSearchParams, useLocation } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  RouteObject,
+  useSearchParams,
+  useLocation,
+} from 'react-router-dom';
 
 // Store
 import { useAppDispatch, useAppSelector } from './store';
@@ -134,7 +139,7 @@ export const applicationMap = [
         icon: <LockIcon />,
         element: <SectionSafe />,
         loginNeeded: 'web3',
-      }
+      },
     ],
   },
 ];
@@ -147,14 +152,18 @@ const LayoutEnhanced = () => {
   const apiEndpoint = searchParams.get('apiEndpoint');
   const apiToken = searchParams.get('apiToken');
 
-  useEffect(()=>{
-    if(!(apiEndpoint && apiToken)) return;
-    if(loginData.apiEndpoint === apiEndpoint && loginData.apiToken === apiToken) return;
+  useEffect(() => {
+    if (!(apiEndpoint && apiToken)) return;
+    if (
+      loginData.apiEndpoint === apiEndpoint &&
+      loginData.apiToken === apiToken
+    )
+      return;
     dispatch(authActions.useNodeData({ apiEndpoint, apiToken }));
     dispatch(authActionsAsync.loginThunk({ apiEndpoint, apiToken }));
     dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }));
     dispatch(nodeActionsAsync.getAddressesThunk({ apiToken, apiEndpoint }));
-  }, [apiEndpoint, apiToken])
+  }, [apiEndpoint, apiToken]);
 
   return (
     <Layout
@@ -173,8 +182,8 @@ const LayoutEnhanced = () => {
         </>
       }
     />
-  )
-}
+  );
+};
 
 var routes = [
   {
