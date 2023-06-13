@@ -12,19 +12,24 @@ interface AppBarProps extends MuiAppBarProps {
   webapp?: boolean;
 }
 
-const AppBar = styled(({ tallerNavBarOnMobile, webapp, ...rest }: AppBarProps) => (
-  <MuiAppBar {...rest} />
-))`
+const AppBar = styled(
+  ({ tallerNavBarOnMobile, webapp, ...rest }: AppBarProps) => (
+    <MuiAppBar {...rest} />
+  )
+)`
   background: white;
   height: 60px;
   border-bottom: 1px lightgray solid;
   box-shadow: unset;
   z-index: 1201;
-  ${ (props) => !props.webapp && `
+  ${(props) =>
+    !props.webapp &&
+    `
     padding-left: 16px;
     padding-right: 16px;
   `}
-  ${ (props) => props.tallerNavBarOnMobile &&
+  ${(props) =>
+    props.tallerNavBarOnMobile &&
     `
     @media screen and (max-width: 520px) {
     //  height: 100px;
@@ -33,12 +38,12 @@ const AppBar = styled(({ tallerNavBarOnMobile, webapp, ...rest }: AppBarProps) =
   `}
 `;
 
-const Container = styled.div<{webapp?:boolean}>`
+const Container = styled.div<{ webapp?: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  ${ (props) => !props.webapp && 'max-width: 1098px;' }
+  ${(props) => !props.webapp && 'max-width: 1098px;'}
   width: 100%;
   margin: auto;
   position: relative;
@@ -80,7 +85,7 @@ const NavBar: React.FC<{
   tallerNavBarOnMobile?: boolean;
   itemsNavbarCenter?: any[];
   itemsNavbarRight?: any[];
-  onButtonClick?: ()=>{};
+  onButtonClick?: () => {};
 }> = (props) => {
   //  const router = useRouter();
   const [activaMenu, setActivaMenu] = useState(false);
@@ -108,9 +113,7 @@ const NavBar: React.FC<{
         tallerNavBarOnMobile={props.tallerNavBarOnMobile}
         webapp={props.webapp}
       >
-        <Container
-          webapp={props.webapp}
-        >
+        <Container webapp={props.webapp}>
           <Logo className="logo-hopr">
             <a href="/">
               <img
@@ -126,8 +129,16 @@ const NavBar: React.FC<{
           >
             <span></span>
           </div>
-          <NavBarItems itemsNavbar={props.itemsNavbarCenter} center webapp={props.webapp}/>
-          <NavBarItems itemsNavbar={props.itemsNavbarRight} right webapp={props.webapp}/>
+          <NavBarItems
+            itemsNavbar={props.itemsNavbarCenter}
+            center
+            webapp={props.webapp}
+          />
+          <NavBarItems
+            itemsNavbar={props.itemsNavbarRight}
+            right
+            webapp={props.webapp}
+          />
         </Container>
       </AppBar>
       <div className={`menu mobile ${activaMenu ? ' show-menu' : ''}`}>

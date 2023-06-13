@@ -3,7 +3,7 @@ import MuiCheckbox, { CheckboxProps } from '@mui/material/Checkbox';
 
 interface Props extends CheckboxProps {
   label?: string;
-  value?: boolean
+  value?: boolean;
 }
 
 const Checkbox: React.FC<Props> = (props) => {

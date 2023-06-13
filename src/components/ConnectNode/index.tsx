@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
 import { authActions } from '../../store/slices/auth';
-import { nodeActions, } from '../../store/slices/node';
+import { nodeActions } from '../../store/slices/node';
 
 const Container = styled.div`
   height: 59px;
@@ -22,9 +22,7 @@ const Container = styled.div`
   }
 `;
 
-const SLink = styled(Link)`
-`;
-
+const SLink = styled(Link)``;
 
 export default function ConnectNode() {
   const dispatch = useAppDispatch();
@@ -37,29 +35,28 @@ export default function ConnectNode() {
     dispatch(authActions.resetState());
     dispatch(nodeActions.resetState());
     navigate('node/connect');
-  }
-
+  };
 
   return (
     <Container>
-      { connected ?
+      {connected ? (
         <div>
-         { peerId && `${peerId.substr(0,6)}...${peerId.substr(-8)}`}
-         <button
-              onClick={handleLogout}
-            >Logout</button>
+          {peerId && `${peerId.substr(0, 6)}...${peerId.substr(-8)}`}
+          <button onClick={handleLogout}>Logout</button>
         </div>
-        :
-        <SLink
-          to={'node/connect'}
-        >
+      ) : (
+        <SLink to={'node/connect'}>
           <div>
             <button
-              onClick={()=>{navigate('node/connect')}}
-            >Connect to Node</button>
+              onClick={() => {
+                navigate('node/connect');
+              }}
+            >
+              Connect to Node
+            </button>
           </div>
         </SLink>
-      }
+      )}
     </Container>
   );
 }

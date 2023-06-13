@@ -22,7 +22,7 @@ type InitialState = {
   addresses: {
     hopr: string | null;
     native: string | null;
-  }
+  };
   aliases: GetAliasesResponseType | null;
   balances: AccountResponseType | null;
   channels: GetChannelsResponseType | null;
