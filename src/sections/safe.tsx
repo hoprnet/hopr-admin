@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 //Stores
 import { useAppDispatch, useAppSelector } from '../store';
-import { actionsAsync } from '../store/slices/safe/actionsAsync';
+import { safeActionsAsync, safeActions } from '../store/slices/safe';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
@@ -17,10 +17,15 @@ function SafeSection() {
   const [owners, set_owners] = useState('');
 
   useEffect(() => {
-    if (signer) {
-      dispatch(actionsAsync.getSafesByOwnerThunk({ signer }));
-    }
+    fetchInitialStateForSigner()
   }, [signer]);
+
+  const fetchInitialStateForSigner = async () => {
+    if (signer) {
+      dispatch(safeActions.resetState())
+      dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer }));
+    }
+  }
 
   if (!account) {
     return (
@@ -39,9 +44,9 @@ function SafeSection() {
           key={safeAddress}
           onClick={() => {
             if (signer) {
-              dispatch(actionsAsync.getSafeInfoThunk({ signer, safeAddress }));
+              dispatch(safeActionsAsync.getSafeInfoThunk({ signer, safeAddress }));
               dispatch(
-                actionsAsync.getAllSafeTransactionsThunk({
+                safeActionsAsync.getAllSafeTransactionsThunk({
                   signer,
                   safeAddress,
                 })
@@ -74,7 +79,7 @@ function SafeSection() {
         onClick={() => {
           if (signer) {
             dispatch(
-              actionsAsync.createSafeWithConfigThunk({
+              safeActionsAsync.createSafeWithConfigThunk({
                 config: { owners: owners.split(','), threshold },
                 signer,
               })
@@ -87,7 +92,7 @@ function SafeSection() {
       <button
         onClick={() => {
           if (signer) {
-            dispatch(actionsAsync.createSafeThunk({ signer }));
+            dispatch(safeActionsAsync.createSafeThunk({ signer }));
           }
         }}
       >
@@ -100,7 +105,7 @@ function SafeSection() {
           if (safe.selectedSafeAddress && signer) {
             const signerAddress = await signer.getAddress();
             dispatch(
-              actionsAsync.createSafeTransactionThunk({
+              safeActionsAsync.createSafeTransactionThunk({
                 safeAddress: safe.selectedSafeAddress,
                 signer,
                 safeTransactionData: {
@@ -123,12 +128,12 @@ function SafeSection() {
           </p>
           {transaction.txType === 'MULTISIG_TRANSACTION' ? (
             transaction.confirmationsRequired ===
-            transaction.confirmations?.length ? (
+              transaction.confirmations?.length ? (
               <button
                 onClick={() => {
                   if (signer) {
                     dispatch(
-                      actionsAsync.executeTransactionThunk({
+                      safeActionsAsync.executeTransactionThunk({
                         signer,
                         safeAddress: transaction.safe,
                         safeTransaction: transaction,
@@ -144,7 +149,7 @@ function SafeSection() {
                 onClick={() => {
                   if (signer) {
                     dispatch(
-                      actionsAsync.confirmTransactionThunk({
+                      safeActionsAsync.confirmTransactionThunk({
                         signer,
                         safeAddress: transaction.safe,
                         safeTransactionHash: transaction.safeTxHash,
