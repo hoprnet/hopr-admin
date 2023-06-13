@@ -8,11 +8,11 @@ const LogId = styled.span`
 
 const AbbrLogId = LogId.withComponent('abbr');
 
-type AbbreviatedIdProps = {
+type AbbreviatedPeerIdProps = {
   id: string;
 };
 
-const AbbreviatedId = ({ id }: AbbreviatedIdProps) => {
+const AbbreviatedPeerId = ({ id }: AbbreviatedPeerIdProps) => {
   const [isExpanded, set_isExpanded] = useState(false);
 
   const handleClick = () => {
@@ -30,4 +30,4 @@ const AbbreviatedId = ({ id }: AbbreviatedIdProps) => {
   );
 };
 
-export default AbbreviatedId;
+export default AbbreviatedPeerId;

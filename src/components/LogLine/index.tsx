@@ -1,30 +1,30 @@
 import styled from '@emotion/styled';
 import type { Log } from '../../types';
-import AbbreviatedId from '../AbbreviatedId';
-import Jazzicon from '../JazzIcon';
+import AbbreviatedPeerId from '../AbbreviatedPeerId';
+import JazzIcon from '../../future-hopr-lib-components/JazzIcon';
 
 const LogLineContainer = styled.div`
   align-items: center;
   display: flex;
+  gap: 1rem;
   justify-content: space-between;
   width: 100%;
-  gap: 1rem;
 `;
 
 const Time = styled.time`
+  align-self: flex-start;
   display: block;
   font-size: 0.75rem;
   opacity: 0.3;
   text-align: right;
-  align-self: flex-start;
 `;
 
 const Pre = styled.pre`
+  display: flex;
+  gap: 0.5rem;
   margin: 0;
   padding-bottom: 0.5rem;
   white-space: break-spaces;
-  display: flex;
-  gap: 0.5rem;
 `;
 
 type LogLineProps = {
@@ -42,10 +42,10 @@ const LogLine = ({ log }: LogLineProps) => {
       <Pre>
         {peerId ? (
           <>
-            <Jazzicon address={peerId} diameter={16} />
+            <JazzIcon address={peerId} diameter={16} />
             <div>
               {log.message.replace(peerId, '')}
-              <AbbreviatedId id={peerId} />
+              <AbbreviatedPeerId id={peerId} />
             </div>
           </>
         ) : (
