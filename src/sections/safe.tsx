@@ -17,15 +17,15 @@ function SafeSection() {
   const [owners, set_owners] = useState('');
 
   useEffect(() => {
-    fetchInitialStateForSigner()
+    fetchInitialStateForSigner();
   }, [signer]);
 
   const fetchInitialStateForSigner = async () => {
     if (signer) {
-      dispatch(safeActions.resetState())
+      dispatch(safeActions.resetState());
       dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer }));
     }
-  }
+  };
 
   if (!account) {
     return (
@@ -44,7 +44,9 @@ function SafeSection() {
           key={safeAddress}
           onClick={() => {
             if (signer) {
-              dispatch(safeActionsAsync.getSafeInfoThunk({ signer, safeAddress }));
+              dispatch(
+                safeActionsAsync.getSafeInfoThunk({ signer, safeAddress })
+              );
               dispatch(
                 safeActionsAsync.getAllSafeTransactionsThunk({
                   signer,
@@ -128,7 +130,7 @@ function SafeSection() {
           </p>
           {transaction.txType === 'MULTISIG_TRANSACTION' ? (
             transaction.confirmationsRequired ===
-              transaction.confirmations?.length ? (
+            transaction.confirmations?.length ? (
               <button
                 onClick={() => {
                   if (signer) {
