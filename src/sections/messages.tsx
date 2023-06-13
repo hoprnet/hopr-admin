@@ -1,14 +1,18 @@
+import { MouseEvent, useEffect, useState } from 'react';
 import { api } from '@hoprnet/hopr-sdk';
 import Section from '../future-hopr-lib-components/Section';
 import { useAppSelector } from '../store';
 import {
   Paper,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
+  Tooltip,
 } from '@mui/material';
 
 const messages = () => {
@@ -17,20 +21,33 @@ const messages = () => {
   const { apiEndpoint, apiToken } = useAppSelector(
     (selector) => selector.auth.loginData
   );
-  console.log('@messages:', messages);
 
-  if (!apiToken) {
-    return <Section yellow>Login</Section>;
-  }
+  useEffect(() => {
+    console.log('@messages:', messages);
+  }, [messages]);
 
-  const sendMessage = async (body: string, recipient: string) => {
-    if (apiEndpoint && apiToken) {
+  const [message, set_message] = useState<string>('');
+  const [numberOfHops, set_numberOfHops] = useState<number | null>(0);
+  const [receiver, set_receiver] = useState<string>('');
+
+  const maxLength = 500;
+  const remainingChars = maxLength - message.length;
+
+  const sendMessage = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    console.log('@message:', message);
+    console.log('@numberOfHops:', numberOfHops);
+    console.log('@receiver:', receiver);
+
+    if (apiEndpoint && apiToken && numberOfHops) {
       await api.sendMessage({
         apiToken,
         apiEndpoint,
-        body,
-        recipient,
-        hops: 1,
+        body: message,
+        recipient: receiver,
+        hops: numberOfHops,
+        // TODO
+        path: [],
       });
     }
   };
@@ -49,31 +66,67 @@ const messages = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {messages.map(({ seen, body }, key) => (
-              <TableRow key={key}>
-                <TableCell component="th" scope="row">
-                  {key}
-                </TableCell>
-                <TableCell>{`${seen}`}</TableCell>
-                <TableCell>{body}</TableCell>
-                <TableCell>
-                  <button onClick={() => console.log('seen :)')}>seen</button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {messages.map(({ seen, body, createdAt }, key) => {
+              const date = new Date(createdAt).toString();
+              return (
+                <TableRow
+                  key={key}
+                  className={`message-${seen ? 'unseen' : 'seen'}`}
+                >
+                  <TableCell component="th" scope="row">
+                    {key}
+                  </TableCell>
+                  <TableCell>{`${seen}`}</TableCell>
+                  <Tooltip title={date}>
+                    <TableCell>{body}</TableCell>
+                  </Tooltip>
+                  <TableCell>
+                    <button>Mark as {seen ? 'unseen' : 'seen'}</button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
-      <button
-        onClick={() =>
-          sendMessage(
-            'Hello lucho',
-            '16Uiu2HAkvNLCqvcVhmJXz3raeb8UWmGMFNS1cQKkYhncXV5G2RrC'
-          )
-        }
-      >
-        Send message
-      </button>
+      <h2>Send Message</h2>
+      <form>
+        <Stack spacing={3}>
+          <TextField
+            label="Message"
+            placeholder="Hello Node..."
+            multiline
+            maxRows={4}
+            value={message}
+            onChange={(e) => set_message(e.target.value)}
+            inputProps={{ maxLength: maxLength }}
+            helperText={`${remainingChars} characters remaining`}
+            required
+          />
+          {/* TODO: How should we handle number inputs? */}
+          <TextField
+            type="number"
+            label="Number of Hops"
+            placeholder="1"
+            value={numberOfHops}
+            onChange={(e) => set_numberOfHops(parseInt(e.target.value))}
+            inputProps={{ min: 0, max: 10, step: 1 }}
+            required
+          />
+          <TextField
+            label="Reciever"
+            placeholder="16Uiu2..."
+            multiline
+            maxRows={4}
+            value={receiver}
+            onChange={(e) => set_receiver(e.target.value)}
+            required
+          />
+          <button type="submit" onClick={(e) => sendMessage(e)}>
+            Send
+          </button>
+        </Stack>
+      </form>
     </Section>
   );
 };
