@@ -69,9 +69,11 @@ function SafeSection() {
           set_threshold(Number(event.target.value));
         }}
       />
-      <label htmlFor="owners">owners [separated with ,]</label>
+      <label htmlFor="owners">owners</label>
       <input
         id="owners"
+        style={{ width: '100%' }}
+        placeholder="account addresses separated with ,"
         value={owners}
         onChange={(event) => {
           set_owners(event.target.value);
