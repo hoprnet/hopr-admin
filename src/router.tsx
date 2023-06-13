@@ -62,6 +62,7 @@ export const applicationMap = [
         path: 'messages',
         icon: <MailIcon />,
         element: <MessagesPage />,
+        loginNeeded: 'node',
       },
       {
         name: 'Info',
