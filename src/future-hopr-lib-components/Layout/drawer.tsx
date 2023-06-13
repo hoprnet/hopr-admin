@@ -26,7 +26,10 @@ interface Props {
    */
   window?: () => Window;
   drawerItems?: any[];
-  drawerLoginState?: {};
+  drawerLoginState?: {
+    node?: boolean;
+    web3?: boolean;
+  };
 }
 
 const AppBarFiller = styled(Toolbar)`
@@ -76,7 +79,9 @@ export default function ResponsiveDrawer(props: Props) {
                       !item.element ||
                       // @ts-ignore
                       (item.loginNeeded &&
-                        props?.drawerLoginState[item.loginNeeded] === false)
+                        props?.drawerLoginState?.[
+                          item.loginNeeded as 'web3' | 'node'
+                        ] === false)
                     }
                   >
                     <ListItem disablePadding>
@@ -85,7 +90,9 @@ export default function ResponsiveDrawer(props: Props) {
                           !item.element ||
                           // @ts-ignore
                           (item.loginNeeded &&
-                            props?.drawerLoginState[item.loginNeeded] === false)
+                            props?.drawerLoginState?.[
+                              item.loginNeeded as 'web3' | 'node'
+                            ] === false)
                         }
                       >
                         <ListItemIcon>{item.icon}</ListItemIcon>

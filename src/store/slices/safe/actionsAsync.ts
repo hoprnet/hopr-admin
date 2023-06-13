@@ -1,12 +1,17 @@
 import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 import { ethers } from 'ethers';
-import SafeApiKit from '@safe-global/api-kit';
+import SafeApiKit, { AllTransactionsOptions } from '@safe-global/api-kit';
 import Safe, {
   EthersAdapter,
   SafeAccountConfig,
   SafeFactory,
 } from '@safe-global/protocol-kit';
+import {
+  SafeMultisigTransactionResponse,
+  SafeTransaction,
+  SafeTransactionDataPartial,
+} from '@safe-global/safe-core-sdk-types';
 
 const SERVICE_URL = 'https://safe-transaction-gnosis-chain.safe.global/';
 
@@ -36,7 +41,7 @@ const createSafeFactory = async (signer: ethers.providers.JsonRpcSigner) => {
   return safeFactory;
 };
 
-const connectSignerToSafe = async (
+const createSafeSDK = async (
   signer: ethers.providers.JsonRpcSigner,
   safeAddress: string
 ) => {
@@ -127,18 +132,21 @@ const addOwnerToSafeThunk = createAsyncThunk(
       ownerAddress: string;
       threshold?: number;
     },
-    { rejectWithValue }
+    { rejectWithValue, dispatch }
   ) => {
     try {
-      const connectedAccount = await connectSignerToSafe(
-        payload.signer,
-        payload.safeAddress
-      );
-      const addOwnerTx = connectedAccount.createAddOwnerTx({
+      const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
+      const addOwnerTx = safeSDK.createAddOwnerTx({
         ownerAddress: payload.ownerAddress,
         threshold: payload.threshold,
       });
-
+      // re fetch all txs
+      dispatch(
+        getAllSafeTransactionsThunk({
+          safeAddress: payload.safeAddress,
+          signer: payload.signer,
+        })
+      );
       return addOwnerTx;
     } catch (e) {
       rejectWithValue(e);
@@ -155,19 +163,213 @@ const removeOwnerFromSafeThunk = createAsyncThunk(
       ownerAddress: string;
       threshold?: number;
     },
-    { rejectWithValue }
+    { rejectWithValue, dispatch }
   ) => {
     try {
-      const connectedAccount = await connectSignerToSafe(
-        payload.signer,
-        payload.safeAddress
-      );
-      const removeOwnerTx = connectedAccount.createRemoveOwnerTx({
+      const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
+      const removeOwnerTx = safeSDK.createRemoveOwnerTx({
         ownerAddress: payload.ownerAddress,
         threshold: payload.threshold,
       });
-
+      // re fetch all txs
+      dispatch(
+        getAllSafeTransactionsThunk({
+          safeAddress: payload.safeAddress,
+          signer: payload.signer,
+        })
+      );
       return removeOwnerTx;
+    } catch (e) {
+      rejectWithValue(e);
+    }
+  }
+);
+
+const getSafeInfoThunk = createAsyncThunk(
+  'safe/getSafeInfo',
+  async (
+    payload: {
+      signer: ethers.providers.JsonRpcSigner;
+      safeAddress: string;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const safeApi = await createSafeApiService(payload.signer);
+      const safeInfo = await safeApi.getSafeInfo(payload.safeAddress);
+      return safeInfo;
+    } catch (e) {
+      rejectWithValue(e);
+    }
+  }
+);
+
+const createSafeTransactionThunk = createAsyncThunk(
+  'safe/createTransaction',
+  async (
+    payload: {
+      signer: ethers.providers.JsonRpcSigner;
+      safeAddress: string;
+      safeTransactionData: SafeTransactionDataPartial;
+    },
+    { rejectWithValue, dispatch }
+  ) => {
+    try {
+      const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
+      // create safe transaction
+      const safeTransaction = await safeSDK.createTransaction({
+        safeTransactionData: payload.safeTransactionData,
+      });
+      const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
+      const senderSignature = await safeSDK.signTransactionHash(safeTxHash);
+      const senderAddress = await payload.signer.getAddress();
+      const safeApi = await createSafeApiService(payload.signer);
+      // propose safe transaction
+      await safeApi.proposeTransaction({
+        safeAddress: payload.safeAddress,
+        safeTransactionData: safeTransaction.data,
+        safeTxHash,
+        senderAddress,
+        senderSignature: senderSignature.data,
+      });
+      // re fetch all txs
+      dispatch(
+        getAllSafeTransactionsThunk({
+          safeAddress: payload.safeAddress,
+          signer: payload.signer,
+        })
+      );
+      return true;
+    } catch (e) {
+      console.log(e);
+      rejectWithValue(e);
+    }
+  }
+);
+
+const createSafeRejectionTransactionThunk = createAsyncThunk(
+  'safe/rejectTransactionProposal',
+  async (
+    payload: {
+      signer: ethers.providers.JsonRpcSigner;
+      safeAddress: string;
+      nonce: number;
+    },
+    { rejectWithValue, dispatch }
+  ) => {
+    try {
+      const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
+      // create safe rejection transaction
+      const safeTransaction = await safeSDK.createRejectionTransaction(
+        payload.nonce
+      );
+      const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
+      const senderSignature = await safeSDK.signTransactionHash(safeTxHash);
+      const senderAddress = await payload.signer.getAddress();
+      const safeApi = await createSafeApiService(payload.signer);
+      // propose safe transaction
+      await safeApi.proposeTransaction({
+        safeAddress: payload.safeAddress,
+        safeTransactionData: safeTransaction.data,
+        safeTxHash,
+        senderAddress,
+        senderSignature: senderSignature.data,
+      });
+      // re fetch all txs
+      dispatch(
+        getAllSafeTransactionsThunk({
+          safeAddress: payload.safeAddress,
+          signer: payload.signer,
+        })
+      );
+      return true;
+    } catch (e) {
+      rejectWithValue(e);
+    }
+  }
+);
+
+const confirmTransactionThunk = createAsyncThunk(
+  'safe/confirmTransactionProposal',
+  async (
+    payload: {
+      signer: ethers.providers.JsonRpcSigner;
+      safeAddress: string;
+      safeTransactionHash: string;
+    },
+    { rejectWithValue, dispatch }
+  ) => {
+    try {
+      const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
+      const safeApi = await createSafeApiService(payload.signer);
+      const signature = await safeSDK.signTransactionHash(
+        payload.safeTransactionHash
+      );
+      const confirmTransaction = await safeApi.confirmTransaction(
+        payload.safeTransactionHash,
+        signature.data
+      );
+      // re fetch all txs
+      dispatch(
+        getAllSafeTransactionsThunk({
+          safeAddress: payload.safeAddress,
+          signer: payload.signer,
+        })
+      );
+      return confirmTransaction;
+    } catch (e) {
+      rejectWithValue(e);
+    }
+  }
+);
+
+const executeTransactionThunk = createAsyncThunk(
+  'safe/executeTransactionProposal',
+  async (
+    payload: {
+      signer: ethers.providers.JsonRpcSigner;
+      safeAddress: string;
+      safeTransaction: SafeMultisigTransactionResponse | SafeTransaction;
+    },
+    { rejectWithValue, dispatch }
+  ) => {
+    try {
+      const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
+
+      await safeSDK.executeTransaction(payload.safeTransaction);
+      // re fetch all txs
+      dispatch(
+        getAllSafeTransactionsThunk({
+          safeAddress: payload.safeAddress,
+          signer: payload.signer,
+        })
+      );
+      return true;
+    } catch (e) {
+      console.log(e);
+      rejectWithValue(e);
+    }
+  }
+);
+
+const getAllSafeTransactionsThunk = createAsyncThunk(
+  'safe/getAllSafeTransactions',
+  async (
+    payload: {
+      signer: ethers.providers.JsonRpcSigner;
+      safeAddress: string;
+      options?: AllTransactionsOptions;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const safeApi = await createSafeApiService(payload.signer);
+      const transactions = await safeApi.getAllTransactions(
+        payload.safeAddress,
+        payload.options
+      );
+      console.log(transactions);
+      return transactions;
     } catch (e) {
       rejectWithValue(e);
     }
@@ -179,13 +381,13 @@ export const createExtraReducers = (
 ) => {
   builder.addCase(createSafeThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.connected = true;
+      state.selectedSafeAddress = action.payload;
       state.recentlyCreatedSafe = action.payload;
     }
   });
   builder.addCase(createSafeWithConfigThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.connected = true;
+      state.selectedSafeAddress = action.payload;
       state.recentlyCreatedSafe = action.payload;
     }
   });
@@ -194,14 +396,23 @@ export const createExtraReducers = (
       state.safesByOwner = action.payload.safes;
     }
   });
-  builder.addCase(addOwnerToSafeThunk.fulfilled, (state, action) => {
+  builder.addCase(getSafeInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.safeTransactions.push(action.payload);
+      state.selectedSafeAddress = action.payload.address;
+      const existingSafe = state.safeInfos.findIndex(
+        (info) => info.address === action.payload?.address
+      );
+      // safe exists
+      if (existingSafe !== -1) {
+        state.safeInfos[existingSafe] = action.payload;
+      } else {
+        state.safeInfos.push(action.payload);
+      }
     }
   });
-  builder.addCase(removeOwnerFromSafeThunk.fulfilled, (state, action) => {
+  builder.addCase(getAllSafeTransactionsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.safeTransactions.push(action.payload);
+      state.safeTransactions = action.payload;
     }
   });
 };
@@ -212,4 +423,10 @@ export const actionsAsync = {
   getSafesByOwnerThunk,
   addOwnerToSafeThunk,
   removeOwnerFromSafeThunk,
+  getAllSafeTransactionsThunk,
+  confirmTransactionThunk,
+  createSafeRejectionTransactionThunk,
+  createSafeTransactionThunk,
+  getSafeInfoThunk,
+  executeTransactionThunk,
 };
