@@ -58,13 +58,6 @@ export const applicationMap = [
         element: <Section1 />,
       },
       {
-        name: 'Logs',
-        path: 'logs',
-        icon: <MailIcon />,
-        element: <SectionLogs />,
-        loginNeeded: 'node',
-      },
-      {
         name: 'Info',
         path: 'info',
         icon: <InfoIcon />,
@@ -73,8 +66,9 @@ export const applicationMap = [
       },
       {
         name: 'Logs',
-        path: 'Logs',
+        path: 'logs',
         icon: <TerminalIcon />,
+        element: <SectionLogs />,
         loginNeeded: 'node',
       },
       {

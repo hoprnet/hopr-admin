@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import type { Log } from '../../types';
 import AbbreviatedPeerId from '../AbbreviatedPeerId';
 import JazzIcon from '../../future-hopr-lib-components/JazzIcon';
+import { Tooltip } from '@mui/material';
 
 const LogLineContainer = styled.div`
   align-items: center;
@@ -11,7 +12,7 @@ const LogLineContainer = styled.div`
   width: 100%;
 `;
 
-const Time = styled.time`
+const StyledTime = styled.time`
   align-self: flex-start;
   display: block;
   font-size: 0.75rem;
@@ -27,14 +28,28 @@ const Pre = styled.pre`
   white-space: break-spaces;
 `;
 
+const regex = /(\b\w{53})\b/g;
+
+type TimeProps = {
+  timestamp: number;
+};
+
+const Time = ({ timestamp }: TimeProps) => {
+  const formattedDate = new Date(timestamp).toString();
+  const formattedTime = new Date(timestamp).toISOString().slice(11);
+
+  return (
+    <Tooltip title={formattedDate}>
+      <StyledTime>{formattedTime}</StyledTime>
+    </Tooltip>
+  );
+};
+
 type LogLineProps = {
   log: Log;
 };
 
-const regex = /(\b\w{53})\b/g;
-
 const LogLine = ({ log }: LogLineProps) => {
-  const timestamp = new Date(log.timestamp).toISOString().slice(11);
   const peerId = log.message.match(regex)?.[0];
 
   return (
@@ -52,7 +67,7 @@ const LogLine = ({ log }: LogLineProps) => {
           log.message
         )}
       </Pre>
-      <Time>{timestamp}</Time>
+      <Time timestamp={log.timestamp} />
     </LogLineContainer>
   );
 };

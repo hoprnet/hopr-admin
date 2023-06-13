@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import styled from '@emotion/styled';
+import { Tooltip } from '@mui/material';
 
 const LogId = styled.span`
   cursor: pointer;
   font-weight: bold;
 `;
 
-const AbbrLogId = LogId.withComponent('abbr');
+const AbbrLogId = styled(LogId.withComponent('abbr'))`
+  text-decoration: underline dotted;
+`;
 
 type AbbreviatedPeerIdProps = {
   id: string;
@@ -24,9 +27,9 @@ const AbbreviatedPeerId = ({ id }: AbbreviatedPeerIdProps) => {
   }
 
   return (
-    <AbbrLogId title={id} onClick={handleClick}>
-      {id.slice(48)}
-    </AbbrLogId>
+    <Tooltip title={id}>
+      <AbbrLogId onClick={handleClick}>{id.slice(48)}</AbbrLogId>
+    </Tooltip>
   );
 };
 

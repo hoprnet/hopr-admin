@@ -4,17 +4,6 @@ import Section from '../future-hopr-lib-components/Section';
 
 function SectionLogs() {
   const { logs } = useAppSelector((selector) => selector.node);
-  const { apiEndpoint, apiToken } = useAppSelector(
-    (selector) => selector.auth.loginData
-  );
-
-  if (!apiEndpoint || !apiToken) {
-    return (
-      <Section className="Section--logs" id="Section--logs" yellow>
-        Login to node to see logs
-      </Section>
-    );
-  }
 
   return (
     <Section className="Section--logs" id="Section--logs" yellow>
