@@ -92,7 +92,6 @@ const createSafeWithConfigThunk = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      console.log('here');
       const safeFactory = await createSafeFactory(payload.signer);
       const safeAccount = await safeFactory.deploySafe({
         safeAccountConfig: payload.config,
@@ -100,7 +99,6 @@ const createSafeWithConfigThunk = createAsyncThunk(
       const safeAddress = await safeAccount.getAddress();
       return safeAddress;
     } catch (e) {
-      console.log(e);
       rejectWithValue(e);
     }
   }
