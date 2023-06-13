@@ -27,8 +27,8 @@ interface Props {
   window?: () => Window;
   drawerItems?: any[];
   drawerLoginState?: {
-    node?: boolean
-    web3?: boolean
+    node?: boolean;
+    web3?: boolean;
   };
 }
 
@@ -40,7 +40,7 @@ interface SLinkProps extends LinkProps {
   disabled: boolean;
 }
 
-const SLink = styled(Link) <SLinkProps>`
+const SLink = styled(Link)<SLinkProps>`
   ${(props) =>
     props.disabled &&
     `
@@ -71,14 +71,17 @@ export default function ResponsiveDrawer(props: Props) {
               group.items.map((item: any, indexI: number) => {
                 return (
                   <SLink
-                    to={`${group.path}/${item.path}${searchParams ? searchParams : ''
-                      }`}
+                    to={`${group.path}/${item.path}${
+                      searchParams ? searchParams : ''
+                    }`}
                     key={indexI}
                     disabled={
                       !item.element ||
                       // @ts-ignore
                       (item.loginNeeded &&
-                        props?.drawerLoginState?.[(item.loginNeeded as 'web3' | 'node')] === false)
+                        props?.drawerLoginState?.[
+                          item.loginNeeded as 'web3' | 'node'
+                        ] === false)
                     }
                   >
                     <ListItem disablePadding>
@@ -87,7 +90,9 @@ export default function ResponsiveDrawer(props: Props) {
                           !item.element ||
                           // @ts-ignore
                           (item.loginNeeded &&
-                            props?.drawerLoginState?.[(item.loginNeeded as 'web3' | 'node')] === false)
+                            props?.drawerLoginState?.[
+                              item.loginNeeded as 'web3' | 'node'
+                            ] === false)
                         }
                       >
                         <ListItemIcon>{item.icon}</ListItemIcon>

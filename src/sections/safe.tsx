@@ -14,11 +14,10 @@ function SafeSection() {
   const { account } = useAppSelector((store) => store.web3);
   const { signer } = useSigner();
   const [threshold, set_threshold] = useState(1);
-  const [owners, set_owners] = useState("")
+  const [owners, set_owners] = useState('');
 
   useEffect(() => {
     if (signer) {
-
       dispatch(actionsAsync.getSafesByOwnerThunk({ signer }));
     }
   }, [signer]);
@@ -54,22 +53,37 @@ function SafeSection() {
         </button>
       ))}
       <h2>create new safe</h2>
-      <label htmlFor='threshold'>threshold</label>
+      <label htmlFor="threshold">threshold</label>
       <input
-        id='threshold'
+        id="threshold"
         value={threshold}
-        type='number'
-        onChange={(event) => { set_threshold(Number(event.target.value)) }}
+        type="number"
+        onChange={(event) => {
+          set_threshold(Number(event.target.value));
+        }}
       />
-      <label htmlFor='owners'>owners [separated with ,]</label>
+      <label htmlFor="owners">owners [separated with ,]</label>
       <input
-        id='owners'
+        id="owners"
         value={owners}
-        onChange={(event) => { set_owners(event.target.value) }}
+        onChange={(event) => {
+          set_owners(event.target.value);
+        }}
       />
-      <button onClick={() => {
-        if (signer) { dispatch(actionsAsync.createSafeWithConfigThunk({ config: { owners: owners.split(','), threshold }, signer })) }
-      }}>create safe with config</button>
+      <button
+        onClick={() => {
+          if (signer) {
+            dispatch(
+              actionsAsync.createSafeWithConfigThunk({
+                config: { owners: owners.split(','), threshold },
+                signer,
+              })
+            );
+          }
+        }}
+      >
+        create safe with config
+      </button>
       <button
         onClick={() => {
           if (signer) {
@@ -109,7 +123,7 @@ function SafeSection() {
           </p>
           {transaction.txType === 'MULTISIG_TRANSACTION' ? (
             transaction.confirmationsRequired ===
-              transaction.confirmations?.length ? (
+            transaction.confirmations?.length ? (
               <button
                 onClick={() => {
                   if (signer) {
