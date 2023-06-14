@@ -28,7 +28,7 @@ export default function ConnectNode() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const connected = useAppSelector((store) => store.auth.status.connected);
-  const peerId = useAppSelector((store) => store.sdk.addresses.hopr);
+  const peerId = useAppSelector((store) => store.node.addresses.hopr);
   const localName = useAppSelector((store) => store.auth.loginData.localName);
 
   const handleLogout = () => {

@@ -13,6 +13,7 @@ import { nodeActions, nodeActionsAsync } from './store/slices/node';
 
 // Sections
 import Section1 from './sections/selectNode';
+import SectionLogs from './sections/logs';
 import SectionWeb3 from './sections/web3';
 import SectionSafe from './sections/safe';
 import AliasesPage from './sections/aliases';
@@ -73,8 +74,9 @@ export const applicationMap = [
       },
       {
         name: 'Logs',
-        path: 'Logs',
+        path: 'logs',
         icon: <TerminalIcon />,
+        element: <SectionLogs />,
         loginNeeded: 'node',
       },
       {

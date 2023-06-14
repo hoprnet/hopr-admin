@@ -11,8 +11,7 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
-import { authActions } from '../../store/slices/auth';
-import { nodeActions } from '../../store/slices/node';
+import { appActions } from '../../store/slices/app';
 
 const Container = styled.div`
   height: 59px;
@@ -47,26 +46,26 @@ const SMenuItem = styled(MenuItem)``;
 export default function NotificationBar() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { notifications } = useAppSelector((state) => state.app);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
-  const handleLogout = () => {
-    dispatch(authActions.resetState());
-    dispatch(nodeActions.resetState());
-    navigate('node/connect');
+  const handleClose = (notification: (typeof notifications)[0]) => {
+    setAnchorEl(null);
+    dispatch(appActions.seenNotification(notification));
   };
 
   return (
     <Container>
       <SBadge
-        id="notificaion-menu-button"
-        badgeContent={1}
+        id="notification-menu-button"
+        badgeContent={
+          notifications.filter((notification) => !notification.seen).length
+        }
         color="secondary"
         aria-controls={open ? 'basic-menu' : undefined}
         aria-haspopup="true"
@@ -78,15 +77,30 @@ export default function NotificationBar() {
         </SIconButton>
       </SBadge>
       <SMenu
-        id="notificaion-menu"
+        id="notification-menu"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
         MenuListProps={{
-          'aria-labelledby': 'notificaion-menu-button',
+          'aria-labelledby': 'notification-menu-button',
         }}
       >
-        <MenuItem onClick={handleClose}>Notification 1</MenuItem>
+        {notifications.length ? (
+          notifications
+            .filter((notification) => !notification.seen)
+            .map((notification) => (
+              <MenuItem
+                key={notification.id}
+                onClick={() => {
+                  handleClose(notification);
+                }}
+              >
+                {notification.name}
+              </MenuItem>
+            ))
+        ) : (
+          <MenuItem>No notifications</MenuItem>
+        )}
       </SMenu>
     </Container>
   );

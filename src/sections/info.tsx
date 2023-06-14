@@ -10,14 +10,14 @@ function InfoPage() {
   const { apiEndpoint, apiToken } = useAppSelector(
     (selector) => selector.auth.loginData
   );
-  const balances = useAppSelector((selector) => selector.sdk.balances);
-  const addresses = useAppSelector((selector) => selector.sdk.addresses);
-  const channels = useAppSelector((selector) => selector.sdk.channels);
-  const version = useAppSelector((selector) => selector.sdk.version);
-  const info = useAppSelector((selector) => selector.sdk.info);
-  const peers = useAppSelector((selector) => selector.sdk.peers);
-  const aliases = useAppSelector((selector) => selector.sdk.aliases);
-  const statistics = useAppSelector((selector) => selector.sdk.statistics);
+  const balances = useAppSelector((selector) => selector.node.balances);
+  const addresses = useAppSelector((selector) => selector.node.addresses);
+  const channels = useAppSelector((selector) => selector.node.channels);
+  const version = useAppSelector((selector) => selector.node.version);
+  const info = useAppSelector((selector) => selector.node.info);
+  const peers = useAppSelector((selector) => selector.node.peers);
+  const aliases = useAppSelector((selector) => selector.node.aliases);
+  const statistics = useAppSelector((selector) => selector.node.statistics);
 
   useEffect(() => {
     fetchInfoData();
