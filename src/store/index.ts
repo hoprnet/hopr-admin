@@ -5,6 +5,7 @@ import authSlice from './slices/auth';
 import nodeSlice from './slices/node';
 import safeSlice from './slices/safe';
 import web3Slice from './slices/web3';
+import appSlice from './slices/app';
 import { websocketMiddleware } from './slices/node/websocketMiddleware';
 
 const store = configureStore({
@@ -13,6 +14,7 @@ const store = configureStore({
     node: nodeSlice,
     safe: safeSlice,
     web3: web3Slice,
+    app: appSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().prepend(websocketMiddleware),
