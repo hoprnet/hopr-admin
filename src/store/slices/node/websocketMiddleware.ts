@@ -2,12 +2,17 @@ import { utils } from '@hoprnet/hopr-sdk';
 import { Middleware, PayloadAction } from '@reduxjs/toolkit';
 import { initialState } from '../auth/initialState';
 import { nodeActions } from './index';
+import readStreamEvent from '../../../utils/readStreamEvent';
 
 const {
   messageReceived,
-  initializeWebsocket,
-  closeWebsocket,
-  updateWebsocketStatus,
+  initializeMessagesWebsocket,
+  closeMessagesWebsocket,
+  updateMessagesWebsocketStatus,
+  logsReceived,
+  initializeLogsWebsocket,
+  closeLogsWebsocket,
+  updateLogsWebsocketStatus,
 } = nodeActions;
 
 const { WebsocketHelper } = utils;
@@ -20,22 +25,23 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
   dispatch,
   getState,
 }) => {
-  let socket: typeof WebsocketHelper.prototype | null = null;
+  let messagesWebsocket: typeof WebsocketHelper.prototype | null = null;
+  let logsWebsocket: typeof WebsocketHelper.prototype | null = null;
 
   return (next) => (action: PayloadAction) => {
-    if (action.type === initializeWebsocket.type) {
+    if (action.type === initializeMessagesWebsocket.type) {
       // start websocket connection
       const { apiEndpoint, apiToken } = getState().auth.loginData;
       if (apiEndpoint && apiToken) {
         try {
-          socket = new WebsocketHelper({
+          messagesWebsocket = new WebsocketHelper({
             apiEndpoint,
             apiToken,
             onOpen: () => {
-              dispatch(updateWebsocketStatus(true));
+              dispatch(updateMessagesWebsocketStatus(true));
             },
             onClose: () => {
-              dispatch(updateWebsocketStatus(false));
+              dispatch(updateMessagesWebsocketStatus(false));
             },
             onMessage: (message) => {
               dispatch(
@@ -49,13 +55,44 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
           });
         } catch (e) {
           console.log(e);
-          dispatch(updateWebsocketStatus(false));
+          dispatch(updateMessagesWebsocketStatus(false));
         }
       }
-    } else if (action.type === closeWebsocket.type) {
-      // close websocket
-      socket?.close();
-      dispatch(updateWebsocketStatus(false));
+    } else if (action.type === closeMessagesWebsocket.type) {
+      // close messages websocket
+      messagesWebsocket?.close();
+      dispatch(updateMessagesWebsocketStatus(false));
+    } else if (action.type === initializeLogsWebsocket.type) {
+      const { apiEndpoint, apiToken } = getState().auth.loginData;
+      if (apiEndpoint && apiToken) {
+        try {
+          logsWebsocket = new WebsocketHelper({
+            apiEndpoint,
+            apiToken,
+            decodeMessage: false,
+            path: '/api/v2/node/stream/websocket/',
+            onOpen: () => {
+              dispatch(updateLogsWebsocketStatus(true));
+            },
+            onClose: () => {
+              dispatch(updateLogsWebsocketStatus(false));
+            },
+            onMessage: (message) => {
+              const log = readStreamEvent(message);
+              if (log) {
+                dispatch(logsReceived(log));
+              }
+            },
+          });
+        } catch (e) {
+          console.log(e);
+          dispatch(updateLogsWebsocketStatus(false));
+        }
+      }
+    } else if (action.type === closeLogsWebsocket.type) {
+      // close logs websocket
+      logsWebsocket?.close();
+      dispatch(updateLogsWebsocketStatus(false));
     } else {
       return next(action);
     }

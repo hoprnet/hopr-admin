@@ -6,8 +6,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 function TicketsPage() {
   const dispatch = useAppDispatch();
-  const tickets = useAppSelector((selector) => selector.sdk.tickets);
-  const statistics = useAppSelector((selector) => selector.sdk.statistics);
+  const tickets = useAppSelector((selector) => selector.node.tickets);
+  const statistics = useAppSelector((selector) => selector.node.statistics);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const [redeemSuccess, set_redeemSuccess] = useState(false);
   const [redeemErrors, set_redeemErrors] = useState<
