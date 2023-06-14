@@ -373,7 +373,7 @@ function ChannelsPage() {
         </Tabs>
       </Box>
       {exportToCsvButton()}
-      {openChannelPopUp()}
+      {tabIndex === 1 && openChannelPopUp()}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="aliases table">
           <TableHead>
