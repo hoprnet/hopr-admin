@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Mui
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import Badge from '@mui/material/Badge';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Badge from '@mui/material/Badge';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 
 // Store
-import { useAppDispatch, useAppSelector } from '../../store';
+import { useAppDispatch } from '../../store';
 import { authActions } from '../../store/slices/auth';
 import { nodeActions } from '../../store/slices/node';
 
@@ -74,7 +74,7 @@ export default function NotificationBar() {
         onClick={handleClick}
       >
         <SIconButton>
-          <NotificationsNoneIcon />
+          <NotificationsNoneIcon />{' '}
         </SIconButton>
       </SBadge>
       <SMenu
