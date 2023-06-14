@@ -2,7 +2,6 @@ import {
   Box,
   Tabs,
   Tab,
-  Typography,
   TableRow,
   TableCell,
   TableBody,
@@ -10,12 +9,17 @@ import {
   Table,
   TableHead,
   Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
 } from '@mui/material';
 import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { actionsAsync } from '../store/slices/node/actionsAsync';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { exportToCsv } from '../utils/helpers';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -25,10 +29,11 @@ function ChannelsPage() {
   const aliases = useAppSelector((selector) => selector.sdk.aliases);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const [tabIndex, setTabIndex] = useState(0);
-  const [fundingValues, setFundingValues] = useState<
-    Record<string, { incoming: string; outgoing: string }>
+  const [openFundingPopups, set_openFundingPopups] = useState<
+    Record<string, boolean>
   >({});
-  const [fundingStates, setFundingStates] = useState<
+  const [fundingAmount, set_fundingAmount] = useState('');
+  const [fundingStates, set_fundingStates] = useState<
     Record<
       string,
       {
@@ -41,8 +46,7 @@ function ChannelsPage() {
       }
     >
   >({});
-
-  const [closingStates, setClosingStates] = useState<
+  const [closingStates, set_closingStates] = useState<
     Record<
       string,
       {
@@ -55,9 +59,109 @@ function ChannelsPage() {
       }
     >
   >({});
+  const [peerId, set_peerId] = useState('');
+  const [amount, set_amount] = useState('');
+  const [openChannelDialog, set_openChannelDialog] = useState(false);
+  const [channelOpening, set_channelOpening] = useState(false);
+  const [openingErrors, set_openingErrors] = useState<
+    { status: string | undefined; error: string | undefined }[]
+  >([]);
+  const [openingSuccess, set_openingSucess] = useState(false);
 
-  const location = useLocation();
   const navigate = useNavigate();
+
+  const handleOpenFundingPopup = (channelId: string) => {
+    set_openFundingPopups((prevOpenPopups) => ({
+      ...prevOpenPopups,
+      [channelId]: true,
+    }));
+  };
+
+  const closeFundingPopup = (channelId: string) => {
+    set_openFundingPopups((prevOpenPopups) => ({
+      ...prevOpenPopups,
+      [channelId]: false,
+    }));
+    set_fundingAmount('');
+  };
+
+  const handleOpenChannelDialog = () => {
+    set_openChannelDialog(true);
+  };
+
+  const handleCloseChannelDialog = () => {
+    set_openChannelDialog(false);
+  };
+
+  const openChannelPopUp = () => {
+    return (
+      <>
+        <button onClick={handleOpenChannelDialog}>Open Channel</button>
+        <Dialog open={openChannelDialog} onClose={handleCloseChannelDialog}>
+          <DialogTitle>Open Channel</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="Peer ID"
+              value={peerId}
+              onChange={(e) => set_peerId(e.target.value)}
+            />
+            <TextField
+              label="Amount"
+              value={amount}
+              onChange={(e) => set_amount(e.target.value)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <button onClick={handleCloseChannelDialog}>Cancel</button>
+            <button
+              onClick={() => handleOpenChannel(amount, peerId)}
+              disabled={!amount || parseFloat(amount) <= 0 || !peerId}
+            >
+              Open Channel
+            </button>
+          </DialogActions>
+        </Dialog>
+        {channelOpening && <CircularProgress />}
+        {openingSuccess && <div>Opening Channel Success</div>}
+        {openingErrors.map((error, index) => (
+          <div key={index}>{error.error}</div>
+        ))}
+      </>
+    );
+  };
+
+  const handleOpenChannel = (amount: string, peerId: string) => {
+    set_channelOpening(true); // Set loading state
+
+    dispatch(
+      actionsAsync.openChannelThunk({
+        apiEndpoint: loginData.apiEndpoint!,
+        apiToken: loginData.apiToken!,
+        amount: amount,
+        peerId: peerId,
+      })
+    )
+      .unwrap()
+      .then(() => {
+        // handle success opening channel
+        set_channelOpening(false);
+        set_openingSucess(true);
+        set_openingErrors([]);
+        handleRefresh();
+      })
+      .catch((e) => {
+        set_openingSucess(false);
+        set_openingErrors([
+          ...openingErrors,
+          {
+            error: e.error,
+            status: e.status,
+          },
+        ]);
+        set_channelOpening(false);
+        //handle error on opening channel});
+      });
+  };
 
   const handleTabChange = (
     event: React.SyntheticEvent<Element, Event>,
@@ -93,9 +197,11 @@ function ChannelsPage() {
   };
 
   const getAliasByPeerId = (peerId: string): string => {
-    for (const [alias, id] of Object.entries(aliases!)) {
-      if (id === peerId) {
-        return alias;
+    if (aliases) {
+      for (const [alias, id] of Object.entries(aliases)) {
+        if (id === peerId) {
+          return alias;
+        }
       }
     }
     return peerId; // Return the peerId if alias not found for the given peerId
@@ -112,7 +218,7 @@ function ChannelsPage() {
         onClick={() => {
           if (channelsData) {
             exportToCsv(
-              Object.entries(channelsData).map(([id, channel], key) => ({
+              Object.entries(channelsData).map(([, channel]) => ({
                 channelId: channel.channelId,
                 peerId: channel.peerId,
                 status: channel.status,
@@ -133,7 +239,7 @@ function ChannelsPage() {
     peerId: string,
     channelId: string
   ) => {
-    setClosingStates((prevStates) => ({
+    set_closingStates((prevStates) => ({
       ...prevStates,
       [channelId]: {
         closing: true,
@@ -152,7 +258,7 @@ function ChannelsPage() {
     )
       .unwrap()
       .then(() => {
-        setClosingStates((prevStates) => ({
+        set_closingStates((prevStates) => ({
           ...prevStates,
           [channelId]: {
             closing: false,
@@ -163,13 +269,13 @@ function ChannelsPage() {
         handleRefresh();
       })
       .catch((e) => {
-        setClosingStates((prevStates) => ({
+        set_closingStates((prevStates) => ({
           ...prevStates,
           [channelId]: {
             closing: false,
             closeSuccess: false,
             closeErrors: [
-              ...prevStates[channelId]?.closeErrors,
+              ...(prevStates[channelId]?.closeErrors || []),
               {
                 error: e.error,
                 status: e.status,
@@ -183,82 +289,47 @@ function ChannelsPage() {
   const fundChannel = (channelId: string, peerId: string) => {
     return (
       <>
-        <div>
-          Incoming:
-          <input
-            type="number"
-            value={fundingValues[channelId]?.incoming ?? '0'}
-            onChange={(e) => {
-              setFundingValues((prevValues) => ({
-                ...prevValues,
-                [channelId]: {
-                  ...prevValues[channelId],
-                  incoming: e.target.value,
-                },
-              }));
-            }}
-          />
-        </div>
-        <div>
-          Outgoing:
-          <input
-            type="number"
-            value={fundingValues[channelId]?.outgoing ?? '0'}
-            onChange={(e) => {
-              setFundingValues((prevValues) => ({
-                ...prevValues,
-                [channelId]: {
-                  ...prevValues[channelId],
-                  outgoing: e.target.value,
-                },
-              }));
-            }}
-          />
-        </div>
-        <button onClick={() => handleFundChannels(peerId, channelId)}>
-          Fund
-        </button>
-        {fundingStates[channelId]?.funding && <CircularProgress />}
-        {fundingStates[channelId]?.fundingSuccess && <div>Funding Success</div>}
-        {fundingStates[channelId]?.fundingErrors.map((error, index) => (
-          <div key={index}>{error.error}</div>
-        ))}
+        <button onClick={() => handleOpenFundingPopup(channelId)}>Fund</button>
+        <Dialog
+          open={openFundingPopups[channelId] || false}
+          onClose={() => closeFundingPopup(channelId)}
+        >
+          <DialogTitle>Fund Channel</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="Funding Amount"
+              type="number"
+              value={fundingAmount}
+              onChange={(e) => set_fundingAmount(e.target.value)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <button onClick={() => closeFundingPopup(channelId)}>Cancel</button>
+            <button onClick={() => handleFundChannels(peerId, channelId)}>
+              Fund
+            </button>
+          </DialogActions>
+        </Dialog>
       </>
     );
   };
 
   const handleFundChannels = (peerId: string, channelId: string) => {
-    setFundingStates((prevStates) => ({
-      ...prevStates,
-      [channelId]: {
-        funding: true,
-        fundingSuccess: false,
-        fundingErrors: [],
-      },
-    }));
-
-    const parsedIncoming =
-      parseFloat(fundingValues[channelId]?.incoming ?? '0') >= 0
-        ? fundingValues[channelId]?.incoming ?? '0'
-        : '0';
-
     const parsedOutgoing =
-      parseFloat(fundingValues[channelId]?.outgoing ?? '0') >= 0
-        ? fundingValues[channelId]?.outgoing ?? '0'
-        : '0';
+      parseFloat(fundingAmount ?? '0') >= 0 ? fundingAmount ?? '0' : '0';
 
     dispatch(
       actionsAsync.fundChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
         peerId: peerId,
-        incomingAmount: parsedIncoming,
+        incomingAmount: '0',
         outgoingAmount: parsedOutgoing,
       })
     )
       .unwrap()
       .then(() => {
-        setFundingStates((prevStates) => ({
+        set_fundingStates((prevStates) => ({
           ...prevStates,
           [channelId]: {
             funding: false,
@@ -269,13 +340,13 @@ function ChannelsPage() {
         handleRefresh();
       })
       .catch((e) => {
-        setFundingStates((prevStates) => ({
+        set_fundingStates((prevStates) => ({
           ...prevStates,
           [channelId]: {
             funding: false,
             fundingSuccess: false,
             fundingErrors: [
-              ...prevStates[channelId]?.fundingErrors,
+              ...(prevStates[channelId]?.fundingErrors || []),
               {
                 error: e.error,
                 status: e.status,
@@ -285,13 +356,7 @@ function ChannelsPage() {
         }));
       })
       .finally(() => {
-        setFundingValues((prevValues) => ({
-          ...prevValues,
-          [channelId]: {
-            incoming: '0',
-            outgoing: '0',
-          },
-        }));
+        closeFundingPopup(channelId);
       });
   };
 
@@ -308,6 +373,7 @@ function ChannelsPage() {
         </Tabs>
       </Box>
       {exportToCsvButton()}
+      {openChannelPopUp()}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="aliases table">
           <TableHead>
@@ -322,7 +388,7 @@ function ChannelsPage() {
           {tabIndex === 0 && (
             <TableBody>
               {Object.entries(channels?.incoming ?? []).map(
-                ([id, channel], key) => (
+                ([, channel], key) => (
                   <TableRow key={key}>
                     <TableCell component="th" scope="row">
                       {key}
@@ -355,6 +421,17 @@ function ChannelsPage() {
                       )}
                       <hr />
                       {fundChannel(channel.channelId, channel.peerId)}
+                      {fundingStates[channel.channelId]?.funding && (
+                        <CircularProgress />
+                      )}
+                      {fundingStates[channel.channelId]?.fundingSuccess && (
+                        <div>Funding Success</div>
+                      )}
+                      {fundingStates[channel.channelId]?.fundingErrors.map(
+                        (error, index) => (
+                          <div key={index}>{error.error}</div>
+                        )
+                      )}
                     </TableCell>
                   </TableRow>
                 )
@@ -364,7 +441,7 @@ function ChannelsPage() {
           {tabIndex === 1 && (
             <TableBody>
               {Object.entries(channels?.outgoing ?? []).map(
-                ([id, channel], key) => (
+                ([, channel], key) => (
                   <TableRow key={key}>
                     <TableCell component="th" scope="row">
                       {key}
