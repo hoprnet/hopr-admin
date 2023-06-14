@@ -1,6 +1,6 @@
 type InitialState = {
   notifications: {
-    id: number;
+    id: string;
     name: string;
     source: string;
     seen: boolean;

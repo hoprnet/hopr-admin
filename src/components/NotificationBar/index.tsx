@@ -50,23 +50,13 @@ export default function NotificationBar() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  useEffect(() => {
-    let clearNotificationsTimer = setTimeout(
-      () => dispatch(appActions.clearExpiredNotifications()),
-      2000
-    );
-    return () => {
-      clearTimeout(clearNotificationsTimer);
-    };
-  });
-
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = (notification: (typeof notifications)[0]) => {
     setAnchorEl(null);
-    dispatch(appActions.readNotification(notification));
+    dispatch(appActions.seenNotification(notification));
   };
 
   return (
@@ -95,18 +85,22 @@ export default function NotificationBar() {
           'aria-labelledby': 'notification-menu-button',
         }}
       >
-        {notifications
-          .filter((notification) => !notification.seen)
-          .map((notification) => (
-            <MenuItem
-              key={notification.id}
-              onClick={() => {
-                handleClose(notification);
-              }}
-            >
-              {notification.name}
-            </MenuItem>
-          ))}
+        {notifications.length ? (
+          notifications
+            .filter((notification) => !notification.seen)
+            .map((notification) => (
+              <MenuItem
+                key={notification.id}
+                onClick={() => {
+                  handleClose(notification);
+                }}
+              >
+                {notification.name}
+              </MenuItem>
+            ))
+        ) : (
+          <MenuItem>No notifications</MenuItem>
+        )}
       </SMenu>
     </Container>
   );

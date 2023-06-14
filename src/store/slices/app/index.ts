@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice, nanoid } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 
 const appSlice = createSlice({
@@ -18,12 +18,12 @@ const appSlice = createSlice({
       const defaultTimeout = 5000;
       state.notifications.push({
         ...action.payload,
-        id: Math.floor(Math.random() * 1e6),
+        id: nanoid(),
         seen: false,
         timeout: action.payload.timeout ?? now + defaultTimeout,
       });
     },
-    readNotification: (
+    seenNotification: (
       state,
       action: PayloadAction<(typeof initialState)['notifications'][0]>
     ) => {
