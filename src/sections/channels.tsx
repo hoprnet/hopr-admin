@@ -25,8 +25,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 function ChannelsPage() {
   const dispatch = useAppDispatch();
-  const channels = useAppSelector((selector) => selector.sdk.channels);
-  const aliases = useAppSelector((selector) => selector.sdk.aliases);
+  const channels = useAppSelector((selector) => selector.node.channels);
+  const aliases = useAppSelector((selector) => selector.node.aliases);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const [tabIndex, setTabIndex] = useState(0);
   const [openFundingPopups, set_openFundingPopups] = useState<
@@ -305,7 +305,10 @@ function ChannelsPage() {
           </DialogContent>
           <DialogActions>
             <button onClick={() => closeFundingPopup(channelId)}>Cancel</button>
-            <button onClick={() => handleFundChannels(peerId, channelId)}>
+            <button
+              onClick={() => handleFundChannels(peerId, channelId)}
+              disabled={!fundingAmount || parseFloat(fundingAmount) <= 0}
+            >
               Fund
             </button>
           </DialogActions>
