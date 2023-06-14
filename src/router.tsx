@@ -14,6 +14,7 @@ import AliasesPage from './sections/aliases';
 import InfoPage from './sections/info';
 import PeersPage from './sections/peers';
 import TicketsPage from './sections/tickets';
+import ChannelsPage from './sections/channels';
 
 export const applicationMap = [
   // {
@@ -48,6 +49,12 @@ export const applicationMap = [
         path: 'tickets',
         icon: <MailIcon />,
         element: <TicketsPage />,
+      },
+      {
+        name: 'Channels',
+        path: 'channels',
+        icon: <MailIcon />,
+        element: <ChannelsPage />,
       },
       {
         name: 'Configuration',
