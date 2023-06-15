@@ -56,7 +56,6 @@ export default function NotificationBar() {
 
   const handleClose = (notification: (typeof notifications)[0]) => {
     setAnchorEl(null);
-    dispatch(appActions.seenNotification(notification));
   };
 
   return (
@@ -85,14 +84,14 @@ export default function NotificationBar() {
           'aria-labelledby': 'notification-menu-button',
         }}
       >
-        {notifications.length ? (
+        {notifications.filter((notification) => !notification.seen).length ? (
           notifications
             .filter((notification) => !notification.seen)
             .map((notification) => (
               <MenuItem
                 key={notification.id}
                 onClick={() => {
-                  handleClose(notification);
+                  dispatch(appActions.seenNotification(notification));
                 }}
               >
                 {notification.name}
