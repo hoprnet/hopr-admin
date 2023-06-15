@@ -211,8 +211,6 @@ const Watcher = () => {
   };
 
   const watchMessages = () => {
-    console.log({ prevMessages }, { messages });
-
     if (prevMessages && prevMessages.length < messages.length) {
       dispatch(
         appActions.addNotification({
