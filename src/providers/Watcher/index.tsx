@@ -100,10 +100,6 @@ const Watcher = () => {
       if (prevNodeFunds && prevNodeFunds.native !== newNodeFunds.native) {
         const nativeBalanceIsMore =
           BigInt(prevNodeFunds.native) < BigInt(newNodeFunds.native);
-        const difference = formatEther(
-          BigInt(newNodeFunds.native) - BigInt(prevNodeFunds.native)
-        );
-        console.log({ difference });
         if (nativeBalanceIsMore) {
           dispatch(
             appActions.addNotification({
