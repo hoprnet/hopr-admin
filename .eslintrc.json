@@ -16,11 +16,18 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint", "import-newlines"],
+  "plugins": [
+    "react",
+    "@typescript-eslint",
+    "import-newlines",
+    "destructuring-newline"
+  ],
   "rules": {
     "react/react-in-jsx-scope": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".ts", ".tsx"] }],
-    "import-newlines/enforce": "error"
+    "import-newlines/enforce": "error",
+    "object-curly-newline": 2, // recommended
+    "destructuring-newline/object-property-newline": 2
   },
   "settings": {
     "react": {
