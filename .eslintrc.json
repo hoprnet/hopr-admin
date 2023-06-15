@@ -3,11 +3,7 @@
     "browser": true,
     "es2021": true
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended"
-  ],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:@typescript-eslint/recommended"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
@@ -16,18 +12,26 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": [
-    "react",
-    "@typescript-eslint",
-    "import-newlines",
-    "destructuring-newline"
-  ],
+  "plugins": ["react", "@typescript-eslint", "import-newlines", "newline-destructuring"],
   "rules": {
     "react/react-in-jsx-scope": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".ts", ".tsx"] }],
-    "import-newlines/enforce": "error",
-    "object-curly-newline": 2, // recommended
-    "destructuring-newline/object-property-newline": 2
+    "indent": ["error", 2],
+    "object-curly-newline": [
+      "error",
+      {
+        "ObjectExpression": { "minProperties": 2 },
+        "ObjectPattern": { "minProperties": 2 },
+        "ImportDeclaration": { "minProperties": 5 },
+        "ExportDeclaration": { "minProperties": 2 }
+      }
+    ],
+    "import-newlines/enforce": "warn",
+    "newline-destructuring/newline": "warn",
+    "no-duplicate-imports": "warn",
+    "no-console": "warn",
+    "prefer-const": "warn",
+    "no-var": "off"
   },
   "settings": {
     "react": {
