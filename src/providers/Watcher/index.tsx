@@ -18,7 +18,7 @@ const Watcher = () => {
     (store) => store.auth.loginData
   );
   const { connected } = useAppSelector((store) => store.auth.status);
-  const messages = useAppSelector((store) => store.node.messages)
+  const messages = useAppSelector((store) => store.node.messages);
 
   // previous states to compare new states with
   let prevChannels: GetChannelsResponseType | null;
@@ -33,7 +33,7 @@ const Watcher = () => {
     seen: boolean;
     body: string;
     challenge?: string | undefined;
-  }[] = []
+  }[] = [];
   // booleans to stop interval from running in parallel
   let watchChannelsIntervalIsRunning = false;
   let watchNodeFundsIntervalIsRunning = false;
@@ -70,8 +70,8 @@ const Watcher = () => {
 
   // check when redux receives new messages
   useEffect(() => {
-    watchMessages()
-  }, [messages])
+    watchMessages();
+  }, [messages]);
 
   const resetPrevStates = () => {
     prevChannels = null;
@@ -100,8 +100,10 @@ const Watcher = () => {
       if (prevNodeFunds && prevNodeFunds.native !== newNodeFunds.native) {
         const nativeBalanceIsMore =
           BigInt(prevNodeFunds.native) < BigInt(newNodeFunds.native);
-        const difference = formatEther(BigInt(newNodeFunds.native) - BigInt(prevNodeFunds.native));
-        console.log({ difference })
+        const difference = formatEther(
+          BigInt(newNodeFunds.native) - BigInt(prevNodeFunds.native)
+        );
+        console.log({ difference });
         if (nativeBalanceIsMore) {
           dispatch(
             appActions.addNotification({
@@ -213,7 +215,7 @@ const Watcher = () => {
   };
 
   const watchMessages = () => {
-    console.log({ prevMessages }, { messages })
+    console.log({ prevMessages }, { messages });
 
     if (prevMessages && prevMessages.length < messages.length) {
       dispatch(
@@ -226,8 +228,8 @@ const Watcher = () => {
       );
     }
 
-    prevMessages = messages
-  }
+    prevMessages = messages;
+  };
 
   const calculateNotificationTextForChannelStatus = (
     updatedChannel: GetChannelsResponseType['incoming'][0]
@@ -290,9 +292,9 @@ const Watcher = () => {
 
     // check for deleted channels
     for (const oldChannel of allOldChannels ?? []) {
-      const channelWasDeleted = !newChannelsMap.has(oldChannel.channelId)
+      const channelWasDeleted = !newChannelsMap.has(oldChannel.channelId);
       if (channelWasDeleted) {
-        updatedChannels.push({ ...oldChannel, status: 'Closed' })
+        updatedChannels.push({ ...oldChannel, status: 'Closed' });
       }
     }
     return updatedChannels;
