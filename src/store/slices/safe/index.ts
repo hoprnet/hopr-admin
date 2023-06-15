@@ -5,7 +5,15 @@ import { actionsAsync, createExtraReducers } from './actionsAsync';
 const safeSlice = createSlice({
   name: 'safe',
   initialState,
-  reducers: {},
+  reducers: {
+    resetState: (state) => {
+      state.recentlyCreatedSafe = null;
+      state.selectedSafeAddress = null;
+      state.safeInfos = [];
+      state.safeTransactions = null;
+      state.safesByOwner = [];
+    },
+  },
   extraReducers: (builder) => createExtraReducers(builder),
 });
 

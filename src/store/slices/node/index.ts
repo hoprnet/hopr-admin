@@ -6,6 +6,7 @@ const nodeSlice = createSlice({
   name: 'node',
   initialState,
   reducers: {
+    resetState: () => initialState,
     setInitiating(state) {
       console.log('SDK initiating');
       state.status.initiating = true;
@@ -21,13 +22,21 @@ const nodeSlice = createSlice({
     ) {
       state.messages.push(action.payload);
     },
+    logsReceived(state, action: PayloadAction<(typeof initialState.logs)[0]>) {
+      state.logs.push(action.payload);
+    },
     // handle ws state
-    updateWebsocketStatus(state, action: PayloadAction<boolean>) {
-      state.websocketConnected = action.payload;
+    updateMessagesWebsocketStatus(state, action: PayloadAction<boolean>) {
+      state.messagesWebsocketConnected = action.payload;
+    },
+    updateLogsWebsocketStatus(state, action: PayloadAction<boolean>) {
+      state.logsWebsocketConnected = action.payload;
     },
     // user actions to open and close ws
-    initializeWebsocket() {},
-    closeWebsocket() {},
+    initializeMessagesWebsocket() {},
+    initializeLogsWebsocket() {},
+    closeMessagesWebsocket() {},
+    closeLogsWebsocket() {},
   },
   extraReducers: (builder) => createExtraReducers(builder),
 });

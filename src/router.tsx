@@ -1,20 +1,46 @@
-import { createBrowserRouter, RouteObject, Outlet } from 'react-router-dom';
-import ConnectWeb3 from './components/ConnectWeb3';
+import { useEffect } from 'react';
+import {
+  createBrowserRouter,
+  RouteObject,
+  useSearchParams,
+  useLocation,
+} from 'react-router-dom';
 
-//Sections
+// Store
+import { useAppDispatch, useAppSelector } from './store';
+import { authActions, authActionsAsync } from './store/slices/auth';
+import { nodeActions, nodeActionsAsync } from './store/slices/node';
+
+// Sections
 import Section1 from './sections/selectNode';
+import SectionLogs from './sections/logs';
 import SectionWeb3 from './sections/web3';
 import SectionSafe from './sections/safe';
-
-import MailIcon from '@mui/icons-material/Mail';
-import MenuIcon from '@mui/icons-material/Menu';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import Layout from './future-hopr-lib-components/Layout';
 import AliasesPage from './sections/aliases';
 import InfoPage from './sections/info';
 import PeersPage from './sections/peers';
 import TicketsPage from './sections/tickets';
 import ChannelsPage from './sections/channels';
+
+// Layout
+import Layout from './future-hopr-lib-components/Layout';
+import ConnectWeb3 from './components/ConnectWeb3';
+import ConnectNode from './components/ConnectNode';
+import NotificationBar from './components/NotificationBar';
+
+// Icons
+import CableIcon from '@mui/icons-material/Cable';
+import InfoIcon from '@mui/icons-material/Info';
+import LanIcon from '@mui/icons-material/Lan';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import SettingsIcon from '@mui/icons-material/Settings';
+import TerminalIcon from '@mui/icons-material/Terminal';
+import RssFeedIcon from '@mui/icons-material/RssFeed';
+import MailIcon from '@mui/icons-material/Mail';
+import HubIcon from '@mui/icons-material/Hub';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import LockIcon from '@mui/icons-material/Lock';
+import ContactPhone from '@mui/icons-material/ContactPhone';
 
 export const applicationMap = [
   // {
@@ -29,26 +55,29 @@ export const applicationMap = [
       {
         name: 'Connect',
         path: 'connect',
-        icon: <MenuIcon />,
+        icon: <CableIcon />,
         element: <Section1 />,
       },
       {
         name: 'Info',
         path: 'info',
-        icon: <MailIcon />,
+        icon: <InfoIcon />,
         element: <InfoPage />,
+        loginNeeded: 'node',
       },
       {
-        name: 'Peers',
-        path: 'peers',
-        icon: <MailIcon />,
-        element: <PeersPage />,
+        name: 'Logs',
+        path: 'logs',
+        icon: <TerminalIcon />,
+        element: <SectionLogs />,
+        loginNeeded: 'node',
       },
       {
         name: 'Tickets',
         path: 'tickets',
-        icon: <MailIcon />,
+        icon: <ConfirmationNumberIcon />,
         element: <TicketsPage />,
+        loginNeeded: 'node',
       },
       {
         name: 'Channels',
@@ -59,12 +88,8 @@ export const applicationMap = [
       {
         name: 'Configuration',
         path: 'configuration',
-        icon: <MailIcon />,
-      },
-      {
-        name: 'CLI',
-        path: 'cli',
-        icon: <MailIcon />,
+        icon: <SettingsIcon />,
+        loginNeeded: 'node',
       },
     ],
   },
@@ -75,23 +100,34 @@ export const applicationMap = [
       {
         name: 'Ping',
         path: 'ping',
-        icon: <MailIcon />,
+        icon: <RssFeedIcon />,
+        loginNeeded: 'node',
+      },
+      {
+        name: 'Peers',
+        path: 'peers',
+        icon: <LanIcon />,
+        element: <PeersPage />,
+        loginNeeded: 'node',
+      },
+      {
+        name: 'Aliases',
+        path: 'aliases',
+        icon: <ContactPhone />,
+        element: <AliasesPage />,
+        loginNeeded: 'node',
       },
       {
         name: 'Message',
         path: 'message',
         icon: <MailIcon />,
+        loginNeeded: 'node',
       },
       {
         name: 'Channels',
         path: 'channels',
-        icon: <InboxIcon />,
-      },
-      {
-        name: 'Aliases',
-        path: 'aliases',
-        icon: <MailIcon />,
-        element: <AliasesPage />,
+        icon: <HubIcon />,
+        loginNeeded: 'node',
       },
     ],
   },
@@ -102,40 +138,66 @@ export const applicationMap = [
       {
         name: 'Web3',
         path: 'web3',
-        icon: <MailIcon />,
+        icon: <AccountBalanceWalletIcon />,
         element: <SectionWeb3 />,
+        loginNeeded: 'web3',
       },
       {
         name: 'Safe',
         path: 'safe',
-        icon: <MailIcon />,
+        icon: <LockIcon />,
         element: <SectionSafe />,
-      },
-      {
-        name: 'Channels',
-        path: 'channels',
-        icon: <InboxIcon />,
-      },
-      {
-        name: 'Aliases',
-        path: 'aliases',
-        icon: <MailIcon />,
-        element: <AliasesPage />,
+        loginNeeded: 'web3',
       },
     ],
   },
 ];
 
+const LayoutEnhanced = () => {
+  const dispatch = useAppDispatch();
+  const nodeConnected = useAppSelector((store) => store.auth.status.connected);
+  const loginData = useAppSelector((store) => store.auth.loginData);
+  const [searchParams, set_searchParams] = useSearchParams();
+  const apiEndpoint = searchParams.get('apiEndpoint');
+  const apiToken = searchParams.get('apiToken');
+
+  useEffect(() => {
+    if (!(apiEndpoint && apiToken)) return;
+    if (
+      loginData.apiEndpoint === apiEndpoint &&
+      loginData.apiToken === apiToken
+    )
+      return;
+    dispatch(authActions.useNodeData({ apiEndpoint, apiToken }));
+    dispatch(authActionsAsync.loginThunk({ apiEndpoint, apiToken }));
+    dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }));
+    dispatch(nodeActionsAsync.getAddressesThunk({ apiToken, apiEndpoint }));
+  }, [apiEndpoint, apiToken]);
+
+  return (
+    <Layout
+      drawer
+      webapp
+      drawerItems={applicationMap}
+      drawerLoginState={{
+        node: nodeConnected,
+        web3: true,
+      }}
+      itemsNavbarRight={
+        <>
+          <NotificationBar />
+          <ConnectWeb3 />
+          <ConnectNode />
+        </>
+      }
+    />
+  );
+};
+
 var routes = [
   {
     path: '/',
-    element: (
-      <Layout
-        drawer
-        drawerItems={applicationMap}
-        itemsNavbarRight={<ConnectWeb3 />}
-      />
-    ),
+    element: <LayoutEnhanced />,
     children: [] as RouteObject[],
   },
 ];
@@ -158,3 +220,4 @@ console.log('routes', routes);
 const router = createBrowserRouter(routes);
 
 export default router;
+export type ApplicationMapType = typeof applicationMap;
