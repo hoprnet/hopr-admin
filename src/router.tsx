@@ -20,6 +20,7 @@ import AliasesPage from './sections/aliases';
 import InfoPage from './sections/info';
 import PeersPage from './sections/peers';
 import TicketsPage from './sections/tickets';
+import ChannelsPage from './sections/channels';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -120,6 +121,7 @@ export const applicationMap = [
         name: 'Channels',
         path: 'channels',
         icon: <HubIcon />,
+        element: <ChannelsPage />,
         loginNeeded: 'node',
       },
     ],

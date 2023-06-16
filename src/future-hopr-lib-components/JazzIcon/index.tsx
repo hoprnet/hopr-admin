@@ -22,11 +22,7 @@ const JazzIcon = ({ address, diameter, className, ...rest }: JazzIconProps) => {
   }, []);
 
   return (
-    <div
-      className={`JazzIcon ${className}`}
-      ref={containerRef}
-      {...rest}
-    />
+    <div className={`JazzIcon ${className}`} ref={containerRef} {...rest} />
   );
 };
 

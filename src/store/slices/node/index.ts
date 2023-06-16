@@ -33,10 +33,18 @@ const nodeSlice = createSlice({
       state.logsWebsocketConnected = action.payload;
     },
     // user actions to open and close ws
-    initializeMessagesWebsocket() {},
-    initializeLogsWebsocket() {},
-    closeMessagesWebsocket() {},
-    closeLogsWebsocket() {},
+    initializeMessagesWebsocket() {
+      // state changes in node middleware
+    },
+    initializeLogsWebsocket() {
+      // state changes in node middleware
+    },
+    closeMessagesWebsocket() {
+      // state changes in node middleware
+    },
+    closeLogsWebsocket() {
+      // state changes in node middleware
+    },
   },
   extraReducers: (builder) => createExtraReducers(builder),
 });
