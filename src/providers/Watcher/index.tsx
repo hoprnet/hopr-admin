@@ -7,10 +7,22 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { appActions } from '../../store/slices/app';
 import { nodeActionsAsync } from '../../store/slices/node';
-import { formatEther } from 'viem';
 
 const FETCH_CHANNELS_INTERVAL = 10000;
 const FETCH_NODE_INTERVAL = 5000;
+
+// previous states to compare new states with
+let prevChannels: GetChannelsResponseType | null;
+let prevNodeInfo: GetInfoResponseType | null;
+let prevLoginData: {
+  apiEndpoint: string;
+  apiToken: string;
+} | null;
+let prevNodeFunds: AccountResponseType | null;
+let prevLatestMessageTimestamp: {
+  createdAt: number;
+  amountOfTimesRepeated: number;
+} | null;
 
 const Watcher = () => {
   const dispatch = useAppDispatch();
@@ -19,25 +31,6 @@ const Watcher = () => {
   );
   const { connected } = useAppSelector((store) => store.auth.status);
   const messages = useAppSelector((store) => store.node.messages);
-
-  // previous states to compare new states with
-  let prevChannels: GetChannelsResponseType | null;
-  let prevNodeInfo: GetInfoResponseType | null;
-  let prevLoginData: {
-    apiEndpoint: string;
-    apiToken: string;
-  } | null;
-  let prevNodeFunds: AccountResponseType | null;
-  let prevMessages: {
-    createdAt: number;
-    seen: boolean;
-    body: string;
-    challenge?: string | undefined;
-  }[] = [];
-  // booleans to stop interval from running in parallel
-  let watchChannelsIntervalIsRunning = false;
-  let watchNodeFundsIntervalIsRunning = false;
-  let watchNodeInfoIntervalIsRunning = false;
 
   useEffect(() => {
     // reset state on every change of node
@@ -77,6 +70,7 @@ const Watcher = () => {
     prevChannels = null;
     prevLoginData = null;
     prevNodeFunds = null;
+    prevLatestMessageTimestamp = null
     if (apiEndpoint && apiToken) {
       prevLoginData = { apiEndpoint, apiToken };
     }
@@ -86,10 +80,8 @@ const Watcher = () => {
     if (
       apiToken &&
       apiEndpoint &&
-      connected &&
-      !watchNodeFundsIntervalIsRunning
+      connected
     ) {
-      watchNodeFundsIntervalIsRunning = true;
       const newNodeFunds = await dispatch(
         nodeActionsAsync.getBalancesThunk({ apiEndpoint, apiToken })
       ).unwrap();
@@ -130,7 +122,6 @@ const Watcher = () => {
       }
 
       prevNodeFunds = newNodeFunds;
-      watchNodeFundsIntervalIsRunning = false;
     }
   };
 
@@ -138,10 +129,8 @@ const Watcher = () => {
     if (
       apiEndpoint &&
       apiToken &&
-      connected &&
-      !watchNodeInfoIntervalIsRunning
+      connected
     ) {
-      watchNodeInfoIntervalIsRunning = true;
       const newNodeInfo = await dispatch(
         nodeActionsAsync.getInfoThunk({ apiEndpoint, apiToken })
       ).unwrap();
@@ -164,7 +153,6 @@ const Watcher = () => {
       }
 
       prevNodeInfo = newNodeInfo;
-      watchNodeInfoIntervalIsRunning = false;
     }
   };
 
@@ -172,10 +160,8 @@ const Watcher = () => {
     if (
       apiEndpoint &&
       apiToken &&
-      connected &&
-      !watchChannelsIntervalIsRunning
+      connected
     ) {
-      watchChannelsIntervalIsRunning = true;
       // fetch channels and update redux state
       const newChannels = await dispatch(
         nodeActionsAsync.getChannelsThunk({
@@ -206,12 +192,20 @@ const Watcher = () => {
 
       // update previous channels to newly fetched ones
       prevChannels = newChannels;
-      watchChannelsIntervalIsRunning = false;
     }
   };
 
   const watchMessages = () => {
-    if (prevMessages && prevMessages.length < messages.length) {
+    const newMessageTimestamp =
+      getLatestMessageTimestamp(messages);
+
+    if (!newMessageTimestamp) return;
+
+    const newMessageHasArrived = checkForNewMessage(prevLatestMessageTimestamp, newMessageTimestamp);
+
+    if (
+      prevLatestMessageTimestamp &&
+      newMessageHasArrived) {
       dispatch(
         appActions.addNotification({
           source: 'node',
@@ -222,7 +216,7 @@ const Watcher = () => {
       );
     }
 
-    prevMessages = messages;
+    prevLatestMessageTimestamp = newMessageTimestamp
   };
 
   const calculateNotificationTextForChannelStatus = (
@@ -284,10 +278,10 @@ const Watcher = () => {
       }
     }
 
-    // check for deleted channels
+    // check for closed channels
     for (const oldChannel of allOldChannels ?? []) {
-      const channelWasDeleted = !newChannelsMap.has(oldChannel.channelId);
-      if (channelWasDeleted) {
+      const channelWasClosed = !newChannelsMap.has(oldChannel.channelId);
+      if (channelWasClosed) {
         updatedChannels.push({ ...oldChannel, status: 'Closed' });
       }
     }
@@ -302,6 +296,37 @@ const Watcher = () => {
     newChannel: GetChannelsResponseType['incoming'][0]
   ) => {
     return oldChannel.status === newChannel.status;
+  };
+
+  const getLatestMessageTimestamp = (newMessages: { createdAt: number }[]): typeof prevLatestMessageTimestamp => {
+    const sortedMessages = [...newMessages].sort((a, b) => b.createdAt - a.createdAt)
+    const latestTimestamp =
+      sortedMessages?.[0]?.createdAt ?? 0;
+    const amountOfMessagesWithTimestamp = newMessages.filter(
+      (msg) => msg.createdAt === latestTimestamp
+    )?.length;
+
+    return {
+      createdAt: latestTimestamp,
+      amountOfTimesRepeated: amountOfMessagesWithTimestamp,
+    };
+  };
+
+  const checkForNewMessage = (
+    oldMessageTimestamp: { createdAt: number; amountOfTimesRepeated: number } | null,
+    newMessageTimestamp: { createdAt: number; amountOfTimesRepeated: number }
+  ) => {
+    if (!oldMessageTimestamp) return false
+
+    if (oldMessageTimestamp.createdAt < newMessageTimestamp.createdAt) {
+      return true
+    }
+
+    if (oldMessageTimestamp.createdAt === newMessageTimestamp.createdAt) {
+      return oldMessageTimestamp.amountOfTimesRepeated < newMessageTimestamp.amountOfTimesRepeated
+    }
+
+    return false
   };
 
   return <></>;
