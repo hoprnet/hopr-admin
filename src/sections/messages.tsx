@@ -1,7 +1,7 @@
 import { MouseEvent, useEffect, useState } from 'react';
 import { api } from '@hoprnet/hopr-sdk';
 import Section from '../future-hopr-lib-components/Section';
-import { useAppSelector } from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import {
   Paper,
   Stack,
@@ -14,12 +14,14 @@ import {
   TextField,
   Tooltip,
 } from '@mui/material';
+import { nodeActions } from '../store/slices/node';
 
 const messages = () => {
   const { messages, aliases } = useAppSelector((selector) => selector.node);
   const { apiEndpoint, apiToken } = useAppSelector(
     (selector) => selector.auth.loginData
   );
+  const dispatch = useAppDispatch();
 
   const [message, set_message] = useState<string>('');
   const [numberOfHops, set_numberOfHops] = useState<number>(0);
@@ -62,11 +64,6 @@ const messages = () => {
     }
   };
 
-  const toggleSeenStatus = (messageIndex: number) => {
-    // ! Cannot assign to read only property 'seen' of object '#<Object>'
-    messages[messageIndex].seen = !messages[messageIndex].seen;
-  };
-
   return (
     <Section yellow>
       <h2>Messages</h2>
@@ -81,23 +78,27 @@ const messages = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {messages.map(({ seen, body, createdAt }, index) => {
-              const date = new Date(createdAt).toString();
+            {messages.map((message, index) => {
+              const date = new Date(message.createdAt).toString();
               return (
                 <TableRow
-                  key={index}
-                  className={`message-${seen ? 'unseen' : 'seen'}`}
+                  key={message.id}
+                  className={`message-${message.seen ? 'unseen' : 'seen'}`}
                 >
                   <TableCell component="th" scope="row">
                     {index}
                   </TableCell>
-                  <TableCell>{`${seen}`}</TableCell>
+                  <TableCell>{`${message.seen}`}</TableCell>
                   <Tooltip title={date}>
-                    <TableCell>{body}</TableCell>
+                    <TableCell>{message.body}</TableCell>
                   </Tooltip>
                   <TableCell>
-                    <button onClick={() => toggleSeenStatus(index)}>
-                      Mark as {seen ? 'unseen' : 'seen'}
+                    <button
+                      onClick={() =>
+                        dispatch(nodeActions.toggleMessageSeen(message))
+                      }
+                    >
+                      Mark as {message.seen ? 'unseen' : 'seen'}
                     </button>
                   </TableCell>
                 </TableRow>

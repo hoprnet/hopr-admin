@@ -27,6 +27,7 @@ type InitialState = {
   balances: AccountResponseType | null;
   channels: GetChannelsResponseType | null;
   messages: {
+    id: string;
     createdAt: number;
     seen: boolean;
     body: string;
