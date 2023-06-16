@@ -16,40 +16,55 @@ import {
 } from '@mui/material';
 
 const messages = () => {
-  // TODO: Change .sdk to .node
-  const { messages } = useAppSelector((selector) => selector.sdk);
+  const { messages, aliases } = useAppSelector((selector) => selector.node);
   const { apiEndpoint, apiToken } = useAppSelector(
     (selector) => selector.auth.loginData
   );
 
-  useEffect(() => {
-    console.log('@messages:', messages);
-  }, [messages]);
-
   const [message, set_message] = useState<string>('');
-  const [numberOfHops, set_numberOfHops] = useState<number | null>(0);
+  const [numberOfHops, set_numberOfHops] = useState<number>(0);
   const [receiver, set_receiver] = useState<string>('');
 
   const maxLength = 500;
   const remainingChars = maxLength - message.length;
 
+  const isAlias = (alias: string) => {
+    if (aliases) {
+      return !!aliases[alias];
+    } else return false;
+  };
+
+  const validateReceiver = (receiver: string) => {
+    if (isAlias(receiver)) {
+      if (aliases) {
+        return aliases[receiver];
+      } else return receiver;
+    } else return receiver;
+  };
+
   const sendMessage = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    const validatedReceiver = validateReceiver(receiver);
     console.log('@message:', message);
     console.log('@numberOfHops:', numberOfHops);
     console.log('@receiver:', receiver);
+    console.log('@validatedReceiver:', validatedReceiver);
 
-    if (apiEndpoint && apiToken && numberOfHops) {
+    if (apiEndpoint && apiToken) {
       await api.sendMessage({
         apiToken,
         apiEndpoint,
         body: message,
-        recipient: receiver,
+        recipient: validatedReceiver,
         hops: numberOfHops,
-        // TODO
         path: [],
       });
     }
+  };
+
+  const toggleSeenStatus = (messageIndex: number) => {
+    // ! Cannot assign to read only property 'seen' of object '#<Object>'
+    messages[messageIndex].seen = !messages[messageIndex].seen;
   };
 
   return (
@@ -66,22 +81,24 @@ const messages = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {messages.map(({ seen, body, createdAt }, key) => {
+            {messages.map(({ seen, body, createdAt }, index) => {
               const date = new Date(createdAt).toString();
               return (
                 <TableRow
-                  key={key}
+                  key={index}
                   className={`message-${seen ? 'unseen' : 'seen'}`}
                 >
                   <TableCell component="th" scope="row">
-                    {key}
+                    {index}
                   </TableCell>
                   <TableCell>{`${seen}`}</TableCell>
                   <Tooltip title={date}>
                     <TableCell>{body}</TableCell>
                   </Tooltip>
                   <TableCell>
-                    <button>Mark as {seen ? 'unseen' : 'seen'}</button>
+                    <button onClick={() => toggleSeenStatus(index)}>
+                      Mark as {seen ? 'unseen' : 'seen'}
+                    </button>
                   </TableCell>
                 </TableRow>
               );
@@ -103,7 +120,6 @@ const messages = () => {
             helperText={`${remainingChars} characters remaining`}
             required
           />
-          {/* TODO: How should we handle number inputs? */}
           <TextField
             type="number"
             label="Number of Hops"
