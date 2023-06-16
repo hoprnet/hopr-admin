@@ -36,8 +36,7 @@ const BalanceField = (props) => {
           height="18"
         />
         <div className="BalanceFieldLabelText">
-          {props.coin}:{' '}
-          {props.value === '-' ? '______' : balanceFormat(props.value)}
+          {props.coin}: {props.value === '-' ? '______' : balanceFormat(props.value)}
         </div>
       </div>
     </BalanceFieldContent>

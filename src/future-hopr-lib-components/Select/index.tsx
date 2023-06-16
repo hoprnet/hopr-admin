@@ -27,7 +27,10 @@ interface Props extends SelectProps {
 
 const Section: React.FC<Props> = (props) => {
   return (
-    <SFormControl size="small" style={props.style}>
+    <SFormControl
+      size="small"
+      style={props.style}
+    >
       <InputLabel id="select-small">{props.label}</InputLabel>
       <Select
         labelId="select-small"

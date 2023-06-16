@@ -25,7 +25,12 @@ const STextField = styled(MuiTextField)`
 `;
 
 const TextField: React.FC<TextFieldProps> = (props) => {
-  return <STextField {...props} variant="outlined" />;
+  return (
+    <STextField
+      {...props}
+      variant="outlined"
+    />
+  );
 };
 
 export default TextField;

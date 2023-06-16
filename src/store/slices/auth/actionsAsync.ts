@@ -5,10 +5,7 @@ const { getInfo } = api;
 
 export const loginThunk = createAsyncThunk(
   'auth/login',
-  async (
-    loginData: { apiToken: string; apiEndpoint: string },
-    { dispatch }
-  ) => {
+  async (loginData: { apiToken: string; apiEndpoint: string }, { dispatch }) => {
     const info = await getInfo({
       apiEndpoint: loginData.apiEndpoint,
       apiToken: loginData.apiToken,
@@ -17,6 +14,4 @@ export const loginThunk = createAsyncThunk(
   }
 );
 
-export const actionsAsync = {
-  loginThunk,
-};
+export const actionsAsync = {loginThunk,};

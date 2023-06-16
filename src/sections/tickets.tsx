@@ -10,9 +10,7 @@ function TicketsPage() {
   const statistics = useAppSelector((selector) => selector.node.statistics);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const [redeemSuccess, set_redeemSuccess] = useState(false);
-  const [redeemErrors, set_redeemErrors] = useState<
-    { status: string | undefined; error: string | undefined }[]
-  >([]);
+  const [redeemErrors, set_redeemErrors] = useState<{ status: string | undefined; error: string | undefined }[]>([]);
   const [showStatistics, set_showStatistics] = useState(false);
   const [showTickets, set_showTickets] = useState(false);
   const [redeeming, set_redeeming] = useState(false);
@@ -64,7 +62,11 @@ function TicketsPage() {
   };
 
   return (
-    <Section className="Section--tickets" id="Section--tickets" yellow>
+    <Section
+      className="Section--tickets"
+      id="Section--tickets"
+      yellow
+    >
       <h2>
         Tickets <button onClick={handleRefresh}>Refresh</button>
       </h2>
@@ -80,13 +82,7 @@ function TicketsPage() {
         >
           {showStatistics ? 'Hide Statistics' : 'Show Statistics'}
         </button>
-        {showStatistics && (
-          <pre>
-            {statistics
-              ? JSON.stringify(statistics, null, 2)
-              : 'No statistics available'}
-          </pre>
-        )}
+        {showStatistics && <pre>{statistics ? JSON.stringify(statistics, null, 2) : 'No statistics available'}</pre>}
       </div>
       <div>
         <button
@@ -96,13 +92,7 @@ function TicketsPage() {
         >
           {showTickets ? 'Hide Tickets' : 'Show Tickets'}
         </button>
-        {showTickets && (
-          <pre>
-            {tickets
-              ? JSON.stringify(tickets, null, 4)
-              : 'No tickets available'}
-          </pre>
-        )}
+        {showTickets && <pre>{tickets ? JSON.stringify(tickets, null, 4) : 'No tickets available'}</pre>}
       </div>
     </Section>
   );

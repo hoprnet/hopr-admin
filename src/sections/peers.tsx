@@ -5,8 +5,8 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-} from '@mui/material';
+  TableRow
+} from '@mui/material'
 import { useEffect } from 'react';
 import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
@@ -49,12 +49,14 @@ function PeersPage() {
   return (
     <Section>
       <h2>
-        Peers seen in the network ({peers?.announced?.length || 0}){' '}
-        <button onClick={handleRefresh}>Refresh</button>
+        Peers seen in the network ({peers?.announced?.length || 0}) <button onClick={handleRefresh}>Refresh</button>
       </h2>
 
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="aliases table">
+        <Table
+          sx={{ minWidth: 650 }}
+          aria-label="aliases table"
+        >
           <TableHead>
             <TableRow>
               <TableCell>id</TableCell>
@@ -67,17 +69,16 @@ function PeersPage() {
           <TableBody>
             {Object.entries(peers?.announced ?? {}).map(([id, peer], key) => (
               <TableRow key={id}>
-                <TableCell component="th" scope="row">
+                <TableCell
+                  component="th"
+                  scope="row"
+                >
                   {id}
                 </TableCell>
                 <TableCell>{peer.peerId}</TableCell>
                 <TableCell>{getAliasByPeerId(peer.peerId)}</TableCell>
                 <TableCell>
-                  {peers?.connected
-                    .some(
-                      (connectedPeer) => connectedPeer.peerId === peer.peerId
-                    )
-                    .toString()}
+                  {peers?.connected.some((connectedPeer) => connectedPeer.peerId === peer.peerId).toString()}
                 </TableCell>
                 <TableCell>{peer.multiAddr}</TableCell>
               </TableRow>

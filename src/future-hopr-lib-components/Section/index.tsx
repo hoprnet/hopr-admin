@@ -3,11 +3,7 @@ import styled from '@emotion/styled';
 const SSection = styled.section`
   overflow: hidden;
   &.section--gradient {
-    --section-background: linear-gradient(
-      180deg,
-      #0000b4 -110.52%,
-      hsla(0, 0%, 85%, 0) 60.89%
-    );
+    --section-background: linear-gradient(180deg, #0000b4 -110.52%, hsla(0, 0%, 85%, 0) 60.89%);
   }
   &.section--yellow {
     --section-background: #ffffa0;
@@ -17,11 +13,7 @@ const SSection = styled.section`
     color: #fff;
   }
   &.section--light-blue-gradient {
-    --section-background: linear-gradient(
-      180deg,
-      #1ad1ff -110.52%,
-      hsla(0, 0%, 85%, 0) 105%
-    );
+    --section-background: linear-gradient(180deg, #1ad1ff -110.52%, hsla(0, 0%, 85%, 0) 105%);
   }
   &.section--light-blue {
     --section-background: #7ee5ff;
@@ -114,11 +106,7 @@ const Section: React.FC<SectionProps> = (props) => {
       ].join(' ')}
       id={props.id}
     >
-      <Content
-        className={[`Content`, props.center && 'content--center'].join(' ')}
-      >
-        {props.children}
-      </Content>
+      <Content className={[`Content`, props.center && 'content--center'].join(' ')}>{props.children}</Content>
     </SSection>
   );
 };

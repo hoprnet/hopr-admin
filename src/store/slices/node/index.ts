@@ -16,10 +16,7 @@ const nodeSlice = createSlice({
       state.status.initiating = false;
       state.status.initiated = true;
     },
-    messageReceived(
-      state,
-      action: PayloadAction<(typeof initialState.messages)[0]>
-    ) {
+    messageReceived(state, action: PayloadAction<(typeof initialState.messages)[0]>) {
       state.messages.push(action.payload);
     },
     logsReceived(state, action: PayloadAction<(typeof initialState.logs)[0]>) {

@@ -17,7 +17,7 @@ export function bubbleSortObject(arr: any[], key: string | number) {
       if (arr[j][key] > arr[j + 1][key]) {
         // If the condition is true
         // then swap them
-        let temp = arr[j];
+        const temp = arr[j];
         arr[j] = arr[j + 1];
         arr[j + 1] = temp;
       }

@@ -32,9 +32,7 @@ const ConnectWalletContent = styled.div`
 export default function ConnectWeb3() {
   const dispatch = useAppDispatch();
   const [chooseWalletModal, set_chooseWalletModal] = useState(false);
-  const { connect } = useConnect({
-    connector: new InjectedConnector(),
-  });
+  const { connect } = useConnect({connector: new InjectedConnector(),});
   const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
 
@@ -79,8 +77,8 @@ export default function ConnectWeb3() {
             wallet="metamask"
           />
           <p>
-            By connecting a wallet, you agree to HOPR’s Terms of Service and
-            acknowledge that you have read and understand the Disclaimer.
+            By connecting a wallet, you agree to HOPR’s Terms of Service and acknowledge that you have read and
+            understand the Disclaimer.
           </p>
         </ConnectWalletContent>
       </Modal>
