@@ -70,18 +70,14 @@ const Watcher = () => {
     prevChannels = null;
     prevLoginData = null;
     prevNodeFunds = null;
-    prevLatestMessageTimestamp = null
+    prevLatestMessageTimestamp = null;
     if (apiEndpoint && apiToken) {
       prevLoginData = { apiEndpoint, apiToken };
     }
   };
 
   const watchNodeFunds = async () => {
-    if (
-      apiToken &&
-      apiEndpoint &&
-      connected
-    ) {
+    if (apiToken && apiEndpoint && connected) {
       const newNodeFunds = await dispatch(
         nodeActionsAsync.getBalancesThunk({ apiEndpoint, apiToken })
       ).unwrap();
@@ -126,11 +122,7 @@ const Watcher = () => {
   };
 
   const watchNodeInfo = async () => {
-    if (
-      apiEndpoint &&
-      apiToken &&
-      connected
-    ) {
+    if (apiEndpoint && apiToken && connected) {
       const newNodeInfo = await dispatch(
         nodeActionsAsync.getInfoThunk({ apiEndpoint, apiToken })
       ).unwrap();
@@ -157,11 +149,7 @@ const Watcher = () => {
   };
 
   const watchChannels = async () => {
-    if (
-      apiEndpoint &&
-      apiToken &&
-      connected
-    ) {
+    if (apiEndpoint && apiToken && connected) {
       // fetch channels and update redux state
       const newChannels = await dispatch(
         nodeActionsAsync.getChannelsThunk({
@@ -196,16 +184,16 @@ const Watcher = () => {
   };
 
   const watchMessages = () => {
-    const newMessageTimestamp =
-      getLatestMessageTimestamp(messages);
+    const newMessageTimestamp = getLatestMessageTimestamp(messages);
 
     if (!newMessageTimestamp) return;
 
-    const newMessageHasArrived = checkForNewMessage(prevLatestMessageTimestamp, newMessageTimestamp);
+    const newMessageHasArrived = checkForNewMessage(
+      prevLatestMessageTimestamp,
+      newMessageTimestamp
+    );
 
-    if (
-      prevLatestMessageTimestamp &&
-      newMessageHasArrived) {
+    if (prevLatestMessageTimestamp && newMessageHasArrived) {
       dispatch(
         appActions.addNotification({
           source: 'node',
@@ -216,7 +204,7 @@ const Watcher = () => {
       );
     }
 
-    prevLatestMessageTimestamp = newMessageTimestamp
+    prevLatestMessageTimestamp = newMessageTimestamp;
   };
 
   const calculateNotificationTextForChannelStatus = (
@@ -298,10 +286,13 @@ const Watcher = () => {
     return oldChannel.status === newChannel.status;
   };
 
-  const getLatestMessageTimestamp = (newMessages: { createdAt: number }[]): typeof prevLatestMessageTimestamp => {
-    const sortedMessages = [...newMessages].sort((a, b) => b.createdAt - a.createdAt)
-    const latestTimestamp =
-      sortedMessages?.[0]?.createdAt ?? 0;
+  const getLatestMessageTimestamp = (
+    newMessages: { createdAt: number }[]
+  ): typeof prevLatestMessageTimestamp => {
+    const sortedMessages = [...newMessages].sort(
+      (a, b) => b.createdAt - a.createdAt
+    );
+    const latestTimestamp = sortedMessages?.[0]?.createdAt ?? 0;
     const amountOfMessagesWithTimestamp = newMessages.filter(
       (msg) => msg.createdAt === latestTimestamp
     )?.length;
@@ -313,20 +304,26 @@ const Watcher = () => {
   };
 
   const checkForNewMessage = (
-    oldMessageTimestamp: { createdAt: number; amountOfTimesRepeated: number } | null,
+    oldMessageTimestamp: {
+      createdAt: number;
+      amountOfTimesRepeated: number;
+    } | null,
     newMessageTimestamp: { createdAt: number; amountOfTimesRepeated: number }
   ) => {
-    if (!oldMessageTimestamp) return false
+    if (!oldMessageTimestamp) return false;
 
     if (oldMessageTimestamp.createdAt < newMessageTimestamp.createdAt) {
-      return true
+      return true;
     }
 
     if (oldMessageTimestamp.createdAt === newMessageTimestamp.createdAt) {
-      return oldMessageTimestamp.amountOfTimesRepeated < newMessageTimestamp.amountOfTimesRepeated
+      return (
+        oldMessageTimestamp.amountOfTimesRepeated <
+        newMessageTimestamp.amountOfTimesRepeated
+      );
     }
 
-    return false
+    return false;
   };
 
   return <></>;
