@@ -80,12 +80,6 @@ export const applicationMap = [
         loginNeeded: 'node',
       },
       {
-        name: 'Channels',
-        path: 'channels',
-        icon: <MailIcon />,
-        element: <ChannelsPage />,
-      },
-      {
         name: 'Configuration',
         path: 'configuration',
         icon: <SettingsIcon />,
@@ -127,6 +121,7 @@ export const applicationMap = [
         name: 'Channels',
         path: 'channels',
         icon: <HubIcon />,
+        element: <ChannelsPage />,
         loginNeeded: 'node',
       },
     ],

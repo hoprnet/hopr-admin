@@ -22,6 +22,8 @@ import { actionsAsync } from '../store/slices/node/actionsAsync';
 import { useNavigate } from 'react-router-dom';
 import { exportToCsv } from '../utils/helpers';
 import CircularProgress from '@mui/material/CircularProgress';
+import { FundChannelModal } from '../components/FundChannelModal';
+import { ethers } from 'ethers';
 
 function ChannelsPage() {
   const dispatch = useAppDispatch();
@@ -29,23 +31,6 @@ function ChannelsPage() {
   const aliases = useAppSelector((selector) => selector.node.aliases);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const [tabIndex, setTabIndex] = useState(0);
-  const [openFundingPopups, set_openFundingPopups] = useState<
-    Record<string, boolean>
-  >({});
-  const [fundingAmount, set_fundingAmount] = useState('');
-  const [fundingStates, set_fundingStates] = useState<
-    Record<
-      string,
-      {
-        funding: boolean;
-        fundingSuccess: boolean;
-        fundingErrors: {
-          status: string | undefined;
-          error: string | undefined;
-        }[];
-      }
-    >
-  >({});
   const [closingStates, set_closingStates] = useState<
     Record<
       string,
@@ -67,23 +52,9 @@ function ChannelsPage() {
     { status: string | undefined; error: string | undefined }[]
   >([]);
   const [openingSuccess, set_openingSucess] = useState(false);
+  const [queryParams, set_queryParams] = useState('');
 
   const navigate = useNavigate();
-
-  const handleOpenFundingPopup = (channelId: string) => {
-    set_openFundingPopups((prevOpenPopups) => ({
-      ...prevOpenPopups,
-      [channelId]: true,
-    }));
-  };
-
-  const closeFundingPopup = (channelId: string) => {
-    set_openFundingPopups((prevOpenPopups) => ({
-      ...prevOpenPopups,
-      [channelId]: false,
-    }));
-    set_fundingAmount('');
-  };
 
   const handleOpenChannelDialog = () => {
     set_openChannelDialog(true);
@@ -139,6 +110,7 @@ function ChannelsPage() {
         apiToken: loginData.apiToken!,
         amount: amount,
         peerId: peerId,
+        timeout: 60e3,
       })
     )
       .unwrap()
@@ -173,13 +145,24 @@ function ChannelsPage() {
 
   const handleHash = (newTabIndex: number) => {
     const newHash = newTabIndex === 0 ? 'incoming' : 'outgoing';
-    navigate(`#${newHash}`, { replace: true });
+    navigate(`?${queryParams}#${newHash}`, { replace: true });
   };
 
   useEffect(() => {
+    const queryParams = new URLSearchParams({
+      apiToken: loginData.apiToken!,
+      apiEndpoint: loginData.apiEndpoint!,
+    }).toString();
+
+    set_queryParams(queryParams);
+
+    if (queryParams) {
+      console.log(`queryParams: ${queryParams}`);
+      navigate(`?${queryParams}#incoming`, { replace: true });
+    }
+
     handleRefresh();
-    navigate(`#incoming`, { replace: true });
-  }, [loginData]);
+  }, [loginData.apiToken, loginData.apiEndpoint, navigate]);
 
   const handleRefresh = () => {
     dispatch(
@@ -286,83 +269,6 @@ function ChannelsPage() {
       });
   };
 
-  const fundChannel = (channelId: string, peerId: string) => {
-    return (
-      <>
-        <button onClick={() => handleOpenFundingPopup(channelId)}>Fund</button>
-        <Dialog
-          open={openFundingPopups[channelId] || false}
-          onClose={() => closeFundingPopup(channelId)}
-        >
-          <DialogTitle>Fund Channel</DialogTitle>
-          <DialogContent>
-            <TextField
-              label="Funding Amount"
-              type="number"
-              value={fundingAmount}
-              onChange={(e) => set_fundingAmount(e.target.value)}
-            />
-          </DialogContent>
-          <DialogActions>
-            <button onClick={() => closeFundingPopup(channelId)}>Cancel</button>
-            <button
-              onClick={() => handleFundChannels(peerId, channelId)}
-              disabled={!fundingAmount || parseFloat(fundingAmount) <= 0}
-            >
-              Fund
-            </button>
-          </DialogActions>
-        </Dialog>
-      </>
-    );
-  };
-
-  const handleFundChannels = (peerId: string, channelId: string) => {
-    const parsedOutgoing =
-      parseFloat(fundingAmount ?? '0') >= 0 ? fundingAmount ?? '0' : '0';
-
-    dispatch(
-      actionsAsync.fundChannelsThunk({
-        apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
-        peerId: peerId,
-        incomingAmount: '0',
-        outgoingAmount: parsedOutgoing,
-      })
-    )
-      .unwrap()
-      .then(() => {
-        set_fundingStates((prevStates) => ({
-          ...prevStates,
-          [channelId]: {
-            funding: false,
-            fundingSuccess: true,
-            fundingErrors: [],
-          },
-        }));
-        handleRefresh();
-      })
-      .catch((e) => {
-        set_fundingStates((prevStates) => ({
-          ...prevStates,
-          [channelId]: {
-            funding: false,
-            fundingSuccess: false,
-            fundingErrors: [
-              ...(prevStates[channelId]?.fundingErrors || []),
-              {
-                error: e.error,
-                status: e.status,
-              },
-            ],
-          },
-        }));
-      })
-      .finally(() => {
-        closeFundingPopup(channelId);
-      });
-  };
-
   return (
     <Section className="Channels--aliases" id="Channels--aliases" yellow>
       <h2>
@@ -398,7 +304,9 @@ function ChannelsPage() {
                     </TableCell>
                     <TableCell>{getAliasByPeerId(channel.peerId)}</TableCell>
                     <TableCell>{channel.status}</TableCell>
-                    <TableCell>{channel.balance}</TableCell>
+                    <TableCell>
+                      {ethers.utils.formatEther(channel.balance)} mHOPR
+                    </TableCell>
                     <TableCell>
                       <button
                         onClick={() =>
@@ -423,18 +331,12 @@ function ChannelsPage() {
                         )
                       )}
                       <hr />
-                      {fundChannel(channel.channelId, channel.peerId)}
-                      {fundingStates[channel.channelId]?.funding && (
-                        <CircularProgress />
-                      )}
-                      {fundingStates[channel.channelId]?.fundingSuccess && (
-                        <div>Funding Success</div>
-                      )}
-                      {fundingStates[channel.channelId]?.fundingErrors.map(
-                        (error, index) => (
-                          <div key={index}>{error.error}</div>
-                        )
-                      )}
+                      <FundChannelModal
+                        peerId={channel.peerId}
+                        buttonText="Open & Fund"
+                        channelId={channel.channelId}
+                        handleRefresh={handleRefresh}
+                      />
                     </TableCell>
                   </TableRow>
                 )
@@ -451,7 +353,9 @@ function ChannelsPage() {
                     </TableCell>
                     <TableCell>{getAliasByPeerId(channel.peerId)}</TableCell>
                     <TableCell>{channel.status}</TableCell>
-                    <TableCell>{channel.balance}</TableCell>
+                    <TableCell>
+                      {ethers.utils.formatEther(channel.balance)} mHOPR
+                    </TableCell>
                     <TableCell>
                       <button
                         onClick={() =>
@@ -476,7 +380,12 @@ function ChannelsPage() {
                         )
                       )}
                       <hr />
-                      {fundChannel(channel.channelId, channel.peerId)}
+                      <FundChannelModal
+                        peerId={channel.peerId}
+                        buttonText="Fund"
+                        channelId={channel.channelId}
+                        handleRefresh={handleRefresh}
+                      />
                     </TableCell>
                   </TableRow>
                 )
