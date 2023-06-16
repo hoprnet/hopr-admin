@@ -14,6 +14,7 @@ import {
   DialogContent,
   TextField,
   DialogActions,
+  InputAdornment,
 } from '@mui/material';
 import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
@@ -74,12 +75,19 @@ function ChannelsPage() {
             <TextField
               label="Peer ID"
               value={peerId}
+              placeholder="16Eiu2HAm..."
               onChange={(e) => set_peerId(e.target.value)}
             />
             <TextField
               label="Amount"
+              type="string"
               value={amount}
               onChange={(e) => set_amount(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">mHOPR</InputAdornment>
+                ),
+              }}
             />
           </DialogContent>
           <DialogActions>
@@ -308,32 +316,9 @@ function ChannelsPage() {
                       {ethers.utils.formatEther(channel.balance)} mHOPR
                     </TableCell>
                     <TableCell>
-                      <button
-                        onClick={() =>
-                          handleCloseChannels(
-                            'incoming',
-                            channel.peerId,
-                            channel.channelId
-                          )
-                        }
-                      >
-                        Close
-                      </button>
-                      {closingStates[channel.channelId]?.closing && (
-                        <CircularProgress />
-                      )}
-                      {closingStates[channel.channelId]?.closeSuccess && (
-                        <div>Close Success</div>
-                      )}
-                      {closingStates[channel.channelId]?.closeErrors.map(
-                        (error, index) => (
-                          <div key={index}>{error.error}</div>
-                        )
-                      )}
-                      <hr />
                       <FundChannelModal
                         peerId={channel.peerId}
-                        buttonText="Open & Fund"
+                        buttonText="Open Outgoing & Fund"
                         channelId={channel.channelId}
                         handleRefresh={handleRefresh}
                       />
