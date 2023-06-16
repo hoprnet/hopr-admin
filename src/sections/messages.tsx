@@ -3,6 +3,7 @@ import { api } from '@hoprnet/hopr-sdk';
 import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
 import {
+  MenuItem,
   Paper,
   Stack,
   Table,
@@ -24,8 +25,9 @@ const messages = () => {
   const dispatch = useAppDispatch();
 
   const [message, set_message] = useState<string>('');
-  const [numberOfHops, set_numberOfHops] = useState<number>(0);
+  const [numberOfHops, set_numberOfHops] = useState<number>(1);
   const [receiver, set_receiver] = useState<string>('');
+  const [path, set_path] = useState<string>('');
 
   const maxLength = 500;
   const remainingChars = maxLength - message.length;
@@ -44,11 +46,24 @@ const messages = () => {
     } else return receiver;
   };
 
+  const getPathValue = (path: string) => {
+    if (path === '[]') {
+      return [];
+    } else if (path === 'undefined') {
+      return undefined;
+    } else return;
+  };
+
   const sendMessage = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const validatedReceiver = validateReceiver(receiver);
+
+    const pathValue = getPathValue(path);
+
     console.log('@message:', message);
     console.log('@numberOfHops:', numberOfHops);
+    console.log('@path:', path);
+    console.log('@pathValue:', pathValue);
     console.log('@receiver:', receiver);
     console.log('@validatedReceiver:', validatedReceiver);
 
@@ -59,7 +74,7 @@ const messages = () => {
         body: message,
         recipient: validatedReceiver,
         hops: numberOfHops,
-        path: [],
+        path: pathValue,
       });
     }
   };
@@ -126,10 +141,20 @@ const messages = () => {
             label="Number of Hops"
             placeholder="1"
             value={numberOfHops}
-            onChange={(e) => set_numberOfHops(parseInt(e.target.value))}
+            onChange={(e) => set_numberOfHops(Number(e.target.value))}
             inputProps={{ min: 0, max: 10, step: 1 }}
             required
           />
+          <TextField
+            select
+            label="Path"
+            value={path}
+            required
+            onChange={(e) => set_path(e.target.value)}
+          >
+            <MenuItem value={'[]'}>[]</MenuItem>
+            <MenuItem value={'undefined'}>undefined</MenuItem>
+          </TextField>
           <TextField
             label="Reciever"
             placeholder="16Uiu2..."
