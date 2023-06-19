@@ -1,8 +1,11 @@
 import { MouseEvent, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { api, SendMessagePayloadType } from '@hoprnet/hopr-sdk';
-import { EventType } from '@testing-library/react';
+import { SendMessagePayloadType } from '@hoprnet/hopr-sdk';
+
+// Store
 import { useAppDispatch, useAppSelector } from '../store';
+import { nodeActions } from '../store/slices/node';
+import { actionsAsync } from '../store/slices/node/actionsAsync';
 
 // mui
 import {
@@ -18,11 +21,9 @@ import {
   Tooltip,
   CircularProgress,
 } from '@mui/material';
-import { nodeActions } from '../store/slices/node';
 
 // HOPR components
 import Checkbox from '../future-hopr-lib-components/Toggles/Checkbox';
-
 import Section from '../future-hopr-lib-components/Section';
 
 const PathOrHops = styled.div`
@@ -52,9 +53,7 @@ const messages = () => {
   const [sendMode, set_sendMode] = useState<
     'path' | 'automaticPath' | 'numberOfHops'
   >('automaticPath');
-  const [receiver, set_receiver] = useState<string>(
-    '16Uiu2HAmGeGVWvTr8bQseCarpp1FMiDnCPbFmutuzLvE9cTYntS3'
-  );
+  const [receiver, set_receiver] = useState<string>('');
   const [loader, set_loader] = useState<boolean>(false);
   const [status, set_status] = useState<string>('');
 
@@ -62,7 +61,6 @@ const messages = () => {
   const remainingChars = maxLength - message.length;
 
   useEffect(() => {
-    console.log({ path, automaticPath, numberOfHops });
     switch (sendMode) {
       case 'path':
         set_automaticPath(false);
@@ -106,12 +104,15 @@ const messages = () => {
       recipient: validatedReceiver,
     };
     if(numberOfHops !== '') {object.hops = numberOfHops}
-    else if (path !== '') {object.path = path.split(',')}
+    else if (path !== '') {object.path = path.replace(/(\r\n|\n|\r| )/gm, "").split(',')}
 
     console.log('@message:', object);
     let resp;
     try {
-      resp = await api.sendMessage(object);
+      resp = await dispatch(
+        actionsAsync.sendMessageThunk(object)
+      ).unwrap();
+
       console.log('@message resp:', resp);
       if (typeof resp === 'string') set_status('Message sent');
     } catch (err: any) {
