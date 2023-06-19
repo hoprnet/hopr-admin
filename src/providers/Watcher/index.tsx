@@ -196,7 +196,7 @@ const Watcher = () => {
     if (prevLatestMessageTimestamp && newMessageHasArrived) {
       dispatch(
         appActions.addNotification({
-          source: 'node',
+          source: 'node/message',
           name: 'Received new message',
           timeout: null,
           url: null,

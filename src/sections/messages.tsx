@@ -1,7 +1,7 @@
 import { MouseEvent, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { api } from '@hoprnet/hopr-sdk';
-import Section from '../future-hopr-lib-components/Section';
+import { api, SendMessagePayloadType } from '@hoprnet/hopr-sdk';
+import { EventType } from '@testing-library/react';
 import { useAppDispatch, useAppSelector } from '../store';
 
 // mui
@@ -22,7 +22,8 @@ import { nodeActions } from '../store/slices/node';
 
 // HOPR components
 import Checkbox from '../future-hopr-lib-components/Toggles/Checkbox';
-import { EventType } from '@testing-library/react';
+
+import Section from '../future-hopr-lib-components/Section';
 
 const PathOrHops = styled.div`
   display: flex;
@@ -34,6 +35,8 @@ const PathOrHops = styled.div`
 const StatusContainer = styled.div`
   height: 32px;
 `;
+
+const nonAutomaticPathTooltip = 'Disable `automatic path` to enable `Number of hops`';
 
 const messages = () => {
   const { messages, aliases } = useAppSelector((selector) => selector.node);
@@ -96,12 +99,15 @@ const messages = () => {
     set_loader(true);
     const validatedReceiver = validateReceiver(receiver);
 
-    let object = {
+    let object:SendMessagePayloadType = {
       apiToken,
       apiEndpoint,
       body: message,
       recipient: validatedReceiver,
     };
+    if(numberOfHops !== '') {object.hops = numberOfHops}
+    else if (path !== '') {object.path = path.split(',')}
+
     console.log('@message:', object);
     let resp;
     try {
@@ -159,6 +165,7 @@ const messages = () => {
             helperText={`${remainingChars} characters remaining`}
             required
           />
+          <span style={{ margin: '13px 0 -20px 0' }}>Send mode:</span>
           <PathOrHops>
             <Checkbox
               label="Automatic path"
@@ -166,29 +173,55 @@ const messages = () => {
               onChange={handleAutomaticPath}
             />
             <span>or</span>
-            <TextField
-              style={{ width: '180px' }}
-              type="number"
-              label="Number of Hops"
-              placeholder="1"
-              value={numberOfHops}
-              onChange={handleNumberOfHops}
-              inputProps={{ min: 0, max: 10, step: 1 }}
-              disabled={automaticPath}
-            />
+            <Tooltip 
+              title={nonAutomaticPathTooltip}
+              disableHoverListener={!automaticPath}
+            >
+              <span>
+                <TextField
+                  style={{ width: '180px' }}
+                  type="number"
+                  label="Number of Hops"
+                  placeholder="1"
+                  value={numberOfHops}
+                  onChange={handleNumberOfHops}
+                  inputProps={{ min: 0, max: 10, step: 1 }}
+                  disabled={automaticPath}
+                />
+              </span>
+            </Tooltip>
             <span>or</span>
-            <TextField
-              style={{ width: '100%' }}
-              label="Path"
-              placeholder="16Uiu2...9cTYntS3, 16Uiu2...9cDFSAa"
-              value={path}
-              onChange={handlePath}
-              disabled={automaticPath}
-            />
+            <Tooltip 
+              title={nonAutomaticPathTooltip}
+              disableHoverListener={!automaticPath}
+            >
+              <span style={{ width: '100%' }}>
+                <TextField
+                  style={{ width: '100%' }}
+                  label="Path"
+                  placeholder="16Uiu2...9cTYntS3, 16Uiu2...9cDFSAa"
+                  value={path}
+                  onChange={handlePath}
+                  disabled={automaticPath}
+                />
+              </span>
+            </Tooltip>
           </PathOrHops>
-          <button type="submit" onClick={handleSendMessage}>
-            Send
-          </button>
+          <Tooltip 
+            title={'Choose `Automatic path` or set other sending mode'}
+            disableHoverListener={!(!automaticPath && numberOfHops === '' && path === '')}
+          >
+            <span style={{ width: '100%' }}>
+              <button 
+                style={{ width: '100%' }}
+                type="submit" 
+                onClick={handleSendMessage}
+                disabled={!automaticPath && numberOfHops === '' && path === ''}
+              >
+                Send
+              </button>
+            </span>
+          </Tooltip>
           <StatusContainer>
             {loader && <CircularProgress />}
             {status}
@@ -201,7 +234,6 @@ const messages = () => {
           <TableHead>
             <TableRow>
               <TableCell>id</TableCell>
-              <TableCell>seen</TableCell>
               <TableCell>message</TableCell>
               <TableCell>actions</TableCell>
             </TableRow>
@@ -217,10 +249,15 @@ const messages = () => {
                   <TableCell component="th" scope="row">
                     {index}
                   </TableCell>
-                  <TableCell>{`${message.seen}`}</TableCell>
-                  <Tooltip title={date}>
-                    <TableCell>{message.body}</TableCell>
-                  </Tooltip>
+                  <TableCell
+                    style={{overflowWrap: 'anywhere'}}
+                  >
+                    <Tooltip title={date}>
+                      <span>
+                        {message.body}
+                      </span>
+                    </Tooltip>
+                  </TableCell>
                   <TableCell>
                     <button
                       onClick={() =>
