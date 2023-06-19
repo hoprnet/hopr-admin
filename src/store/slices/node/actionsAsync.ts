@@ -1,4 +1,8 @@
-import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  ActionReducerMapBuilder,
+  createAsyncThunk,
+  nanoid,
+} from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 import {
   type AliasPayloadType,
@@ -667,6 +671,7 @@ export const createExtraReducers = (
   builder.addCase(sendMessageThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.messages.push({
+        id: nanoid(),
         body: action.payload.body,
         createdAt: Date.now(),
         seen: false,

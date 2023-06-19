@@ -59,13 +59,6 @@ export const applicationMap = [
         element: <Section1 />,
       },
       {
-        name: 'Messages',
-        path: 'messages',
-        icon: <MailIcon />,
-        element: <MessagesPage />,
-        loginNeeded: 'node',
-      },
-      {
         name: 'Info',
         path: 'info',
         icon: <InfoIcon />,
@@ -119,9 +112,10 @@ export const applicationMap = [
         loginNeeded: 'node',
       },
       {
-        name: 'Message',
-        path: 'message',
+        name: 'Messages',
+        path: 'messages',
         icon: <MailIcon />,
+        element: <MessagesPage />,
         loginNeeded: 'node',
       },
       {
