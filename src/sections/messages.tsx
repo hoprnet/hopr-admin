@@ -37,6 +37,15 @@ const StatusContainer = styled.div`
   height: 32px;
 `;
 
+const StyledTable = styled(Table)`
+  td {
+    overflow-wrap: anywhere;
+  }
+  th {
+    font-weight: 600;
+  }
+`;
+
 const nonAutomaticPathTooltip =
   'Disable `automatic path` to enable `Number of hops`';
 
@@ -251,7 +260,7 @@ const messages = () => {
       </form>
       <h2>Messages</h2>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="aliases table">
+        <StyledTable sx={{ minWidth: 650 }} aria-label="aliases table">
           <TableHead>
             <TableRow>
               <TableCell>id</TableCell>
@@ -288,7 +297,7 @@ const messages = () => {
               );
             })}
           </TableBody>
-        </Table>
+        </StyledTable>
       </TableContainer>
     </Section>
   );
