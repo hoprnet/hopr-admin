@@ -7,7 +7,7 @@
     "@emotion/styled": "^11.11.0",
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@fontsource/roboto": "^5.0.0",
-    "@hoprnet/hopr-sdk": "./packages/hoprnet-hopr-sdk-v0.0.1-alpha.10.tgz",
+    "@hoprnet/hopr-sdk": "^0.0.1-alpha.10",
     "@metamask/jazzicon": "^2.0.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.0",
