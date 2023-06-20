@@ -6,7 +6,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  tableCellClasses,
 } from '@mui/material';
 import { useEffect } from 'react';
 import Section from '../future-hopr-lib-components/Section';
@@ -15,11 +14,17 @@ import { actionsAsync } from '../store/slices/node/actionsAsync';
 import { exportToCsv } from '../utils/helpers';
 import { styled } from '@mui/material/styles';
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 12,
-  },
-}));
+const StyledTable = styled(Table)`
+  td{
+    overflow-wrap: anywhere;
+  }
+  th {
+    font-weight: 600;
+  }
+  th, td {
+    font-size: 12px;
+  }
+`;
 
 function PeersPage() {
   const dispatch = useAppDispatch();
@@ -69,7 +74,7 @@ function PeersPage() {
   return (
     <Section>
       <h2>
-        Peers seen in the network ({peers?.announced?.length || 0}){' '}
+        Peers seen in the network ({peers?.announced?.length || '-'}){' '}
         <button onClick={handleRefresh}>Refresh</button>
       </h2>
       <button
@@ -96,44 +101,39 @@ function PeersPage() {
         export
       </button>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="aliases table">
+        <StyledTable sx={{ minWidth: 650 }} aria-label="aliases table">
           <TableHead>
             <TableRow>
-              <StyledTableCell sx={{ fontSize: '12px' }}>Id</StyledTableCell>
-              <StyledTableCell>Peer Id</StyledTableCell>
-              <StyledTableCell>Alias</StyledTableCell>
-              <StyledTableCell>Elegible</StyledTableCell>
-              <StyledTableCell>Multiaddrs</StyledTableCell>
-              <StyledTableCell>Last seen</StyledTableCell>
-              <StyledTableCell>Quality</StyledTableCell>
+              <TableCell>#</TableCell>
+              <TableCell>Peer Id</TableCell>
+              <TableCell>Alias</TableCell>
+              <TableCell>Elegible</TableCell>
+              <TableCell>Multiaddrs</TableCell>
+              <TableCell>Last seen</TableCell>
+              <TableCell>Quality</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {Object.entries(peers?.announced ?? {}).map(([id, peer]) => (
               <TableRow key={id}>
-                <StyledTableCell component="th" scope="row">
+                <TableCell component="th" scope="row">
                   {id}
-                </StyledTableCell>
-                <StyledTableCell>{peer.peerId}</StyledTableCell>
-                <StyledTableCell>
+                </TableCell>
+                <TableCell>{peer.peerId}</TableCell>
+                <TableCell>
                   {getAliasByPeerId(peer.peerId)}
-                </StyledTableCell>
-                <StyledTableCell>
+                </TableCell>
+                <TableCell>
                   {peers?.connected
                     .some(
                       (connectedPeer) => connectedPeer.peerId === peer.peerId
                     )
                     .toString()}
-                </StyledTableCell>
-                <StyledTableCell>
-                  {splitString(peer.multiAddr).map((address) => (
-                    <>
-                      {address}
-                      <br />
-                    </>
-                  ))}
-                </StyledTableCell>
-                <StyledTableCell>
+                </TableCell>
+                <TableCell>
+                  {peer.multiAddr}
+                </TableCell>
+                <TableCell>
                   {new Date(peer.lastSeen).toLocaleString('en-US', {
                     year: 'numeric',
                     month: '2-digit',
@@ -142,12 +142,12 @@ function PeersPage() {
                     minute: '2-digit',
                     timeZoneName: 'short',
                   })}
-                </StyledTableCell>
-                <StyledTableCell>{peer.quality}</StyledTableCell>
+                </TableCell>
+                <TableCell>{peer.quality}</TableCell>
               </TableRow>
             ))}
           </TableBody>
-        </Table>
+        </StyledTable>
       </TableContainer>
     </Section>
   );
