@@ -31,7 +31,7 @@ function ChannelsPage() {
   const channels = useAppSelector((selector) => selector.node.channels);
   const aliases = useAppSelector((selector) => selector.node.aliases);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabIndex, set_tabIndex] = useState(0);
   const [closingStates, set_closingStates] = useState<
     Record<
       string,
@@ -147,7 +147,7 @@ function ChannelsPage() {
     event: React.SyntheticEvent<Element, Event>,
     newTabIndex: number
   ) => {
-    setTabIndex(newTabIndex);
+    set_tabIndex(newTabIndex);
     handleHash(newTabIndex);
   };
 
@@ -174,7 +174,7 @@ function ChannelsPage() {
         : '#incoming';
 
     const defaultTabIndex = defaultHash === '#outgoing' ? 1 : 0;
-    setTabIndex(defaultTabIndex);
+    set_tabIndex(defaultTabIndex);
     handleHash(defaultTabIndex);
 
     handleRefresh();
