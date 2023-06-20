@@ -13,6 +13,16 @@ import type {
   PingNodeResponseType,
 } from '@hoprnet/hopr-sdk';
 
+type Message = {
+  id: string;
+  createdAt: number;
+  body: string;
+  seen?: boolean;
+  status?: 'sending' | 'sent' | 'error';
+  error?: string;
+  challenge?: string;
+};
+
 type InitialState = {
   info: GetInfoResponseType | null;
   status: {
@@ -26,13 +36,8 @@ type InitialState = {
   aliases: GetAliasesResponseType | null;
   balances: AccountResponseType | null;
   channels: GetChannelsResponseType | null;
-  messages: {
-    id: string;
-    createdAt: number;
-    seen: boolean;
-    body: string;
-    challenge?: string;
-  }[];
+  messages: Message[];
+  messagesSent: Message[];
   logs: {
     id: string;
     message: string;
@@ -68,6 +73,7 @@ export const initialState: InitialState = {
   balances: null,
   channels: null,
   messages: [],
+  messagesSent: [],
   signedMessages: [],
   logs: [],
   peers: {

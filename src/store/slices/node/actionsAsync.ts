@@ -1,4 +1,8 @@
-import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  ActionReducerMapBuilder,
+  createAsyncThunk,
+  nanoid,
+} from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 import {
   type AliasPayloadType,
@@ -664,14 +668,35 @@ export const createExtraReducers = (
       }
     }
   });
-  builder.addCase(sendMessageThunk.fulfilled, (state, action) => {
-    if (action.payload) {
-      state.messages.push({
-        body: action.payload.body,
+  builder.addCase(sendMessageThunk.pending, (state, action) => {
+    if (action.meta) {
+      state.messagesSent.push({
+        id: action.meta.requestId,
+        body: action.meta.arg.body,
         createdAt: Date.now(),
-        seen: false,
-        challenge: action.payload.challenge,
+        status: 'sending',
       });
+    }
+  });
+  builder.addCase(sendMessageThunk.fulfilled, (state, action) => {
+    const index = state.messagesSent.findIndex((msg)=>msg.id === action.meta.requestId);
+    if (action.payload && index !== -1) {
+      state.messagesSent[index].status = 'sent';
+      state.messagesSent[index].challenge = action.payload.challenge;
+      state.messagesSent[index].createdAt = Date.now();
+    }
+  });
+  builder.addCase(sendMessageThunk.rejected, (state, action) => {
+    console.log('rejected', action)
+    const index = state.messagesSent.findIndex((msg)=>msg.id === action.meta.requestId);
+    if (index !== -1) {
+      console
+      state.messagesSent[index].status = 'error';
+      {/*  @ts-ignore */}
+      if (typeof(action.payload.status) === 'string') {
+        {/*  @ts-ignore */}
+        state.messagesSent[index].error = action.payload.status;
+      } 
     }
   });
   builder.addCase(signThunk.fulfilled, (state, action) => {
