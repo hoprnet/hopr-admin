@@ -9,7 +9,6 @@ import { actionsAsync } from '../store/slices/node/actionsAsync';
 
 // mui
 import {
-  MenuItem,
   Paper,
   Stack,
   Table,
@@ -78,13 +77,24 @@ const messages = () => {
     }
   }, [sendMode, path, automaticPath, numberOfHops]);
 
+  useEffect(() => {
+    if (apiEndpoint && apiToken) {
+      dispatch(
+        actionsAsync.getAliasesThunk({
+          apiEndpoint,
+          apiToken,
+        })
+      );
+    }
+  }, []);
+
   const isAlias = (alias: string) => {
     if (aliases) {
       return !!aliases[alias];
     } else return false;
   };
 
-  const validateReceiver = (receiver: string) => {
+  const validatePeerId = (receiver: string) => {
     if (isAlias(receiver)) {
       if (aliases) {
         return aliases[receiver];
@@ -97,27 +107,32 @@ const messages = () => {
     if (!(apiEndpoint && apiToken)) return;
     set_status('');
     set_loader(true);
-    const validatedReceiver = validateReceiver(receiver);
+    const validatedReceiver = validatePeerId(receiver);
 
-    const object: SendMessagePayloadType = {
+    const messagePayload: SendMessagePayloadType = {
       apiToken,
       apiEndpoint,
       body: message,
       recipient: validatedReceiver,
     };
     if (numberOfHops !== '') {
-      object.hops = numberOfHops;
+      messagePayload.hops = numberOfHops;
     } else if (path !== '') {
-      object.path = path.replace(/(\r\n|\n|\r| )/gm, '').split(',');
+      const pathElements = path.replace(/(\r\n|\n|\r| )/gm, '').split(',');
+      const validatedPath = pathElements.map((element) =>
+        validatePeerId(element)
+      );
+      messagePayload.path = validatedPath;
     }
 
-    console.log('@message:', object);
-    let resp;
+    let response;
     try {
-      resp = await dispatch(actionsAsync.sendMessageThunk(object)).unwrap();
+      response = await dispatch(
+        actionsAsync.sendMessageThunk(messagePayload)
+      ).unwrap();
 
-      console.log('@message resp:', resp);
-      if (typeof resp === 'string') set_status('Message sent');
+      console.log('@message response:', response);
+      if (typeof response === 'string') set_status('Message sent');
     } catch (err: any) {
       console.log('@message err:', err);
       set_status(err.error);
