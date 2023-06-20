@@ -132,12 +132,6 @@ function PeersPage() {
                 </TableCell>
                 <TableCell>
                   {peer.multiAddr}
-                  {splitString(peer.multiAddr).map((address) => (
-                    <>
-                      {address}
-                      <br />
-                    </>
-                  ))}
                 </TableCell>
                 <TableCell>
                   {new Date(peer.lastSeen).toLocaleString('en-US', {
