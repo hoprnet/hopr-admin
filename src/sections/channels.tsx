@@ -157,20 +157,28 @@ function ChannelsPage() {
   };
 
   useEffect(() => {
-    const queryParams = new URLSearchParams({
-      apiToken: loginData.apiToken!,
-      apiEndpoint: loginData.apiEndpoint!,
-    }).toString();
-
-    set_queryParams(queryParams);
-
-    if (queryParams) {
-      console.log(`queryParams: ${queryParams}`);
-      navigate(`?${queryParams}#incoming`, { replace: true });
+    if (loginData.apiEndpoint && loginData.apiToken) {
+      const queryParams = new URLSearchParams({
+        apiToken: loginData.apiToken,
+        apiEndpoint: loginData.apiEndpoint,
+      }).toString();
+      set_queryParams(queryParams);
     }
+  }, [loginData.apiToken, loginData.apiEndpoint]);
+
+  useEffect(() => {
+    const currentHash = window.location.hash;
+    const defaultHash =
+      currentHash === '#incoming' || currentHash === '#outgoing'
+        ? currentHash
+        : '#incoming';
+
+    const defaultTabIndex = defaultHash === '#outgoing' ? 1 : 0;
+    setTabIndex(defaultTabIndex);
+    handleHash(defaultTabIndex);
 
     handleRefresh();
-  }, [loginData.apiToken, loginData.apiEndpoint, navigate]);
+  }, [queryParams]);
 
   const handleRefresh = () => {
     dispatch(
