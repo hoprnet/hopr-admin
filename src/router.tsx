@@ -156,18 +156,30 @@ const LayoutEnhanced = () => {
   useEffect(() => {
     if (!(apiEndpoint && apiToken)) return;
     if (loginData.apiEndpoint === apiEndpoint && loginData.apiToken === apiToken) return;
-    dispatch(authActions.useNodeData({
-      apiEndpoint, apiToken 
-    }));
-    dispatch(authActionsAsync.loginThunk({
-      apiEndpoint, apiToken 
-    }));
-    dispatch(nodeActionsAsync.getInfoThunk({
-      apiToken, apiEndpoint 
-    }));
-    dispatch(nodeActionsAsync.getAddressesThunk({
-      apiToken, apiEndpoint 
-    }));
+    dispatch(
+      authActions.useNodeData({
+        apiEndpoint,
+        apiToken,
+      }),
+    );
+    dispatch(
+      authActionsAsync.loginThunk({
+        apiEndpoint,
+        apiToken,
+      }),
+    );
+    dispatch(
+      nodeActionsAsync.getInfoThunk({
+        apiToken,
+        apiEndpoint,
+      }),
+    );
+    dispatch(
+      nodeActionsAsync.getAddressesThunk({
+        apiToken,
+        apiEndpoint,
+      }),
+    );
   }, [apiEndpoint, apiToken]);
 
   return (

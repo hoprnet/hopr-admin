@@ -23,7 +23,8 @@ const nodeSlice = createSlice({
       state.messages = state.messages.map((message) => {
         if (message.id === action.payload.id) {
           return {
-            ...message, seen: !message.seen 
+            ...message,
+            seen: !message.seen,
           };
         }
         return message;

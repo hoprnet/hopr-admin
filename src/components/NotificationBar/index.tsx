@@ -79,7 +79,7 @@ export default function NotificationBar() {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{'aria-labelledby': 'notification-menu-button',}}
+        MenuListProps={{ 'aria-labelledby': 'notification-menu-button' }}
       >
         {notifications.filter((notification) => !notification.seen).length ? (
           notifications

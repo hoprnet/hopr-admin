@@ -12,7 +12,7 @@ const appSlice = createSlice({
         source: string;
         timeout: number | null;
         url: string | null;
-      }>
+      }>,
     ) => {
       const now = Date.now();
       const defaultTimeout = 5000;
@@ -25,17 +25,23 @@ const appSlice = createSlice({
     },
     seenNotification: (state, action: PayloadAction<(typeof initialState)['notifications'][0]>) => {
       state.notifications = state.notifications.map((notification) =>
-        notification.id === action.payload.id ? {
-          ...notification, seen: true 
-        } : notification
+        notification.id === action.payload.id
+          ? {
+            ...notification,
+            seen: true,
+          }
+          : notification,
       );
     },
     clearExpiredNotifications: (state) => {
       const now = Date.now();
       state.notifications = state.notifications.map((notification) =>
-        notification.timeout < now ? {
-          ...notification, seen: true 
-        } : notification
+        notification.timeout < now
+          ? {
+            ...notification,
+            seen: true,
+          }
+          : notification,
       );
     },
     clearAllNotifications: (state) => {

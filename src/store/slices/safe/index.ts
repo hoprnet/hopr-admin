@@ -11,7 +11,7 @@ const safeSlice = createSlice({
     state.safeInfos = [];
     state.safeTransactions = null;
     state.safesByOwner = [];
-  },},
+  }},
   extraReducers: (builder) => createExtraReducers(builder),
 });
 

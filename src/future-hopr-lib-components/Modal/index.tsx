@@ -33,7 +33,7 @@ const Modal: React.FC<Props> = (props) => {
     selectedValue,
     open,
     title,
-    children
+    children,
   } = props;
 
   const handleClose = (event: {}) => {

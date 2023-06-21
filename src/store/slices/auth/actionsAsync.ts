@@ -11,7 +11,7 @@ export const loginThunk = createAsyncThunk(
       apiToken: loginData.apiToken,
     });
     if (info) dispatch(authActions.setConnected());
-  }
+  },
 );
 
-export const actionsAsync = {loginThunk,};
+export const actionsAsync = { loginThunk };

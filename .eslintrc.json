@@ -26,6 +26,13 @@
         "ExportDeclaration": { "minProperties": 2 }
       }
     ],
+    "comma-dangle": [2, {
+      "arrays": "always-multiline",
+      "objects": "always-multiline",
+      "imports": "always-multiline",
+      "exports": "always-multiline",
+      "functions": "always-multiline"
+    }],
     "import-newlines/enforce": "warn",
     "newline-destructuring/newline": "warn",
     "no-duplicate-imports": "warn",

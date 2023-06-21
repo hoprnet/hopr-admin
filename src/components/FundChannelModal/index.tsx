@@ -4,7 +4,7 @@ import {
   DialogContent,
   TextField,
   DialogActions,
-  InputAdornment
+  InputAdornment,
 } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '../../store';
 import { useState } from 'react';
@@ -22,7 +22,7 @@ export const FundChannelModal = ({
   channelId,
   peerId,
   handleRefresh,
-  buttonText
+  buttonText,
 }: FundChannelModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
@@ -57,7 +57,7 @@ export const FundChannelModal = ({
         incomingAmount: '0',
         outgoingAmount: weiValue,
         timeout: 60e3,
-      })
+      }),
     )
       .unwrap()
       .then(() => {
@@ -87,7 +87,7 @@ export const FundChannelModal = ({
             type="string"
             value={fundingAmount}
             onChange={(e) => set_fundingAmount(e.target.value)}
-            InputProps={{endAdornment: <InputAdornment position="end">mHOPR</InputAdornment>,}}
+            InputProps={{ endAdornment: <InputAdornment position="end">mHOPR</InputAdornment> }}
             sx={{ mt: '16px' }}
           />
         </DialogContent>

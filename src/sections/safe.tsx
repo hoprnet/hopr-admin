@@ -52,14 +52,17 @@ function SafeSection() {
           key={safeAddress}
           onClick={() => {
             if (signer) {
-              dispatch(safeActionsAsync.getSafeInfoThunk({
-                signer, safeAddress 
-              }));
+              dispatch(
+                safeActionsAsync.getSafeInfoThunk({
+                  signer,
+                  safeAddress,
+                }),
+              );
               dispatch(
                 safeActionsAsync.getAllSafeTransactionsThunk({
                   signer,
                   safeAddress,
-                })
+                }),
               );
             }
           }}
@@ -93,10 +96,11 @@ function SafeSection() {
             dispatch(
               safeActionsAsync.createSafeWithConfigThunk({
                 config: {
-                  owners: owners.split(','), threshold 
+                  owners: owners.split(','),
+                  threshold,
                 },
                 signer,
-              })
+              }),
             );
           }
         }}
@@ -127,7 +131,7 @@ function SafeSection() {
                   to: signerAddress,
                   data: '0x',
                 },
-              })
+              }),
             );
           }
         }}
@@ -150,7 +154,7 @@ function SafeSection() {
                         signer,
                         safeAddress: transaction.safe,
                         safeTransaction: transaction,
-                      })
+                      }),
                     );
                   }
                 }}
@@ -166,7 +170,7 @@ function SafeSection() {
                         signer,
                         safeAddress: transaction.safe,
                         safeTransactionHash: transaction.safeTxHash,
-                      })
+                      }),
                     );
                   }
                 }}

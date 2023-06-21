@@ -105,6 +105,6 @@ function Stepper(props) {
   );
 }
 
-Stepper.defaultProps = {steps: [],};
+Stepper.defaultProps = { steps: [] };
 
 export default Stepper;

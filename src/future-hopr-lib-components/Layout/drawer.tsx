@@ -108,7 +108,8 @@ export default function ResponsiveDrawer(props: Props) {
       <Box
         component="nav"
         sx={{
-          width: { sm: drawerWidth }, flexShrink: { sm: 0 } 
+          width: { sm: drawerWidth },
+          flexShrink: { sm: 0 },
         }}
         aria-label="mailbox folders"
       >
@@ -122,7 +123,8 @@ export default function ResponsiveDrawer(props: Props) {
           }}
           sx={{
             display: {
-              xs: 'block', sm: 'none' 
+              xs: 'block',
+              sm: 'none',
             },
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
@@ -136,7 +138,8 @@ export default function ResponsiveDrawer(props: Props) {
           variant="permanent"
           sx={{
             display: {
-              xs: 'none', sm: 'block' 
+              xs: 'none',
+              sm: 'block',
             },
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',

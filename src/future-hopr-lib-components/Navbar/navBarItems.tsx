@@ -33,7 +33,7 @@ const NavBarItems = ({
   right,
   mobile,
   itemsNavbar,
-  onButtonClick
+  onButtonClick,
 }: NavBarItemsProps) => {
   const position = center ? 'center' : right ? 'right' : mobile ? 'mobile' : 'position-undefined';
 
@@ -62,4 +62,4 @@ const NavBarItems = ({
 
 export default NavBarItems;
 
-NavBarItems.defaultProps = {itemsNavbar: [],};
+NavBarItems.defaultProps = { itemsNavbar: [] };

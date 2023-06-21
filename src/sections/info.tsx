@@ -8,7 +8,7 @@ import { actionsAsync } from '../store/slices/node/actionsAsync';
 function InfoPage() {
   const dispatch = useAppDispatch();
   const {
-    apiEndpoint, apiToken 
+    apiEndpoint, apiToken, 
   } = useAppSelector((selector) => selector.auth.loginData);
   const balances = useAppSelector((selector) => selector.node.balances);
   const addresses = useAppSelector((selector) => selector.node.addresses);
@@ -25,30 +25,54 @@ function InfoPage() {
 
   const fetchInfoData = () => {
     if (apiEndpoint && apiToken) {
-      dispatch(actionsAsync.getBalancesThunk({
-        apiEndpoint, apiToken 
-      }));
-      dispatch(actionsAsync.getChannelsThunk({
-        apiEndpoint, apiToken 
-      }));
-      dispatch(actionsAsync.getAddressesThunk({
-        apiEndpoint, apiToken 
-      }));
-      dispatch(actionsAsync.getVersionThunk({
-        apiEndpoint, apiToken 
-      }));
-      dispatch(actionsAsync.getInfoThunk({
-        apiEndpoint, apiToken 
-      }));
-      dispatch(actionsAsync.getPeersThunk({
-        apiEndpoint, apiToken 
-      }));
-      dispatch(actionsAsync.getAliasesThunk({
-        apiEndpoint, apiToken 
-      }));
-      dispatch(actionsAsync.getStatisticsThunk({
-        apiEndpoint, apiToken 
-      }));
+      dispatch(
+        actionsAsync.getBalancesThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+      dispatch(
+        actionsAsync.getChannelsThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+      dispatch(
+        actionsAsync.getAddressesThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+      dispatch(
+        actionsAsync.getVersionThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+      dispatch(
+        actionsAsync.getInfoThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+      dispatch(
+        actionsAsync.getPeersThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+      dispatch(
+        actionsAsync.getAliasesThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+      dispatch(
+        actionsAsync.getStatisticsThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
     }
   };
 

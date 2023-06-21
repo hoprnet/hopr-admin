@@ -17,4 +17,4 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   });
 };
 
-export const actionsAsync = {connect,};
+export const actionsAsync = { connect };

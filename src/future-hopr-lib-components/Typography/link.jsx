@@ -49,4 +49,4 @@ function Typography(props) {
 
 export default Typography;
 
-Typography.defaultProps = {className: '',};
+Typography.defaultProps = { className: '' };

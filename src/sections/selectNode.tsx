@@ -62,7 +62,7 @@ function Section1() {
 
     // If have have saved the node with the same apiToken, we check the saveApiToken checkbox
     const existingItemIndex = nodesSavedLocally.findIndex(
-      (item) => item.apiEndpoint === loginData.apiEndpoint && item.apiToken === loginData.apiToken
+      (item) => item.apiEndpoint === loginData.apiEndpoint && item.apiToken === loginData.apiToken,
     );
     if (
       existingItemIndex !== -1 &&
@@ -79,25 +79,38 @@ function Section1() {
         apiEndpoint,
         apiToken: saveApiToken ? apiToken : '',
         localName: localName ? localName : '',
-      })
+      }),
     );
   };
 
   const useNode = () => {
     dispatch(authActions.resetState());
     dispatch(nodeActions.resetState());
-    dispatch(authActions.useNodeData({
-      apiEndpoint, apiToken, localName 
-    }));
-    dispatch(authActionsAsync.loginThunk({
-      apiEndpoint, apiToken 
-    }));
-    dispatch(nodeActionsAsync.getAddressesThunk({
-      apiToken, apiEndpoint 
-    }));
-    dispatch(nodeActionsAsync.getInfoThunk({
-      apiToken, apiEndpoint 
-    }))
+    dispatch(
+      authActions.useNodeData({
+        apiEndpoint,
+        apiToken,
+        localName,
+      }),
+    );
+    dispatch(
+      authActionsAsync.loginThunk({
+        apiEndpoint,
+        apiToken,
+      }),
+    );
+    dispatch(
+      nodeActionsAsync.getAddressesThunk({
+        apiToken,
+        apiEndpoint,
+      }),
+    );
+    dispatch(
+      nodeActionsAsync.getInfoThunk({
+        apiToken,
+        apiEndpoint,
+      }),
+    )
       .unwrap()
       .then(() => {
         dispatch(nodeActions.initializeMessagesWebsocket());
@@ -106,7 +119,8 @@ function Section1() {
         dispatch(nodeActions.initializeLogsWebsocket());
       });
     set_searchParams({
-      apiToken, apiEndpoint 
+      apiToken,
+      apiEndpoint,
     });
   };
 

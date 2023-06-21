@@ -23,7 +23,7 @@ let prevLatestMessageTimestamp: {
 const Watcher = () => {
   const dispatch = useAppDispatch();
   const {
-    apiEndpoint, apiToken 
+    apiEndpoint, apiToken, 
   } = useAppSelector((store) => store.auth.loginData);
   const { connected } = useAppSelector((store) => store.auth.status);
   const messages = useAppSelector((store) => store.node.messages);
@@ -57,16 +57,20 @@ const Watcher = () => {
     prevLatestMessageTimestamp = null;
     if (apiEndpoint && apiToken) {
       prevLoginData = {
-        apiEndpoint, apiToken 
+        apiEndpoint,
+        apiToken,
       };
     }
   };
 
   const watchNodeFunds = async () => {
     if (apiToken && apiEndpoint && connected) {
-      const newNodeFunds = await dispatch(nodeActionsAsync.getBalancesThunk({
-        apiEndpoint, apiToken 
-      })).unwrap();
+      const newNodeFunds = await dispatch(
+        nodeActionsAsync.getBalancesThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      ).unwrap();
 
       if (!newNodeFunds) return;
 
@@ -80,7 +84,7 @@ const Watcher = () => {
               name: 'Node received native funds',
               url: null,
               timeout: null,
-            })
+            }),
           );
         }
       }
@@ -96,7 +100,7 @@ const Watcher = () => {
               name: 'Node received hopr funds',
               url: null,
               timeout: null,
-            })
+            }),
           );
         }
       }
@@ -107,9 +111,12 @@ const Watcher = () => {
 
   const watchNodeInfo = async () => {
     if (apiEndpoint && apiToken && connected) {
-      const newNodeInfo = await dispatch(nodeActionsAsync.getInfoThunk({
-        apiEndpoint, apiToken 
-      })).unwrap();
+      const newNodeInfo = await dispatch(
+        nodeActionsAsync.getInfoThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      ).unwrap();
 
       if (!newNodeInfo) return;
 
@@ -121,7 +128,7 @@ const Watcher = () => {
             url: null,
             name: `node connectivity status is now ${newNodeInfo?.connectivityStatus}`,
             source: 'node',
-          })
+          }),
         );
       }
 
@@ -136,7 +143,7 @@ const Watcher = () => {
         nodeActionsAsync.getChannelsThunk({
           apiEndpoint,
           apiToken,
-        })
+        }),
       ).unwrap();
 
       if (!newChannels) return;
@@ -153,7 +160,7 @@ const Watcher = () => {
               name: notificationText,
               timeout: null,
               url: null,
-            })
+            }),
           );
         }
       }
@@ -177,7 +184,7 @@ const Watcher = () => {
           name: 'Received new message',
           timeout: null,
           url: null,
-        })
+        }),
       );
     }
 
@@ -236,7 +243,8 @@ const Watcher = () => {
       const channelWasClosed = !newChannelsMap.has(oldChannel.channelId);
       if (channelWasClosed) {
         updatedChannels.push({
-          ...oldChannel, status: 'Closed' 
+          ...oldChannel,
+          status: 'Closed',
         });
       }
     }
@@ -248,7 +256,7 @@ const Watcher = () => {
    */
   const isChannelStatusEqual = (
     oldChannel: GetChannelsResponseType['incoming'][0],
-    newChannel: GetChannelsResponseType['incoming'][0]
+    newChannel: GetChannelsResponseType['incoming'][0],
   ) => {
     return oldChannel.status === newChannel.status;
   };
@@ -269,7 +277,7 @@ const Watcher = () => {
       createdAt: number;
       amountOfTimesRepeated: number;
     } | null,
-    newMessageTimestamp: { createdAt: number; amountOfTimesRepeated: number }
+    newMessageTimestamp: { createdAt: number; amountOfTimesRepeated: number },
   ) => {
     if (!oldMessageTimestamp) return false;
 

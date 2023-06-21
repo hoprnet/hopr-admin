@@ -50,10 +50,10 @@ const nonAutomaticPathTooltip = 'Disable `automatic path` to enable `Number of h
 
 const messages = () => {
   const {
-    messages, aliases 
+    messages, aliases, 
   } = useAppSelector((selector) => selector.node);
   const {
-    apiEndpoint, apiToken 
+    apiEndpoint, apiToken, 
   } = useAppSelector((selector) => selector.auth.loginData);
   const dispatch = useAppDispatch();
 
@@ -91,7 +91,7 @@ const messages = () => {
         actionsAsync.getAliasesThunk({
           apiEndpoint,
           apiToken,
-        })
+        }),
       );
     }
   }, []);
@@ -152,7 +152,7 @@ const messages = () => {
   const handleNumberOfHops = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_sendMode('numberOfHops');
     set_numberOfHops(
-      parseInt(event.target.value) || parseInt(event.target.value) === 0 ? parseInt(event.target.value) : ''
+      parseInt(event.target.value) || parseInt(event.target.value) === 0 ? parseInt(event.target.value) : '',
     );
   };
 
@@ -207,7 +207,9 @@ const messages = () => {
                   value={numberOfHops}
                   onChange={handleNumberOfHops}
                   inputProps={{
-                    min: 0, max: 10, step: 1 
+                    min: 0,
+                    max: 10,
+                    step: 1,
                   }}
                   disabled={automaticPath}
                 />

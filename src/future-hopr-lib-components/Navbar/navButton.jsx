@@ -92,7 +92,7 @@ export default function Button(props) {
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
-          MenuListProps={{'aria-labelledby': props.id,}}
+          MenuListProps={{ 'aria-labelledby': props.id }}
         >
           {props.subMenu.map((item, index) => (
             <SMuiMenuItem

@@ -42,6 +42,8 @@ export const useSigner = () => {
   }, []);
 
   return {
-    signer, loading, error 
+    signer,
+    loading,
+    error,
   };
 };

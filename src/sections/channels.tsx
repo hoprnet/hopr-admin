@@ -84,7 +84,7 @@ function ChannelsPage() {
               type="string"
               value={amount}
               onChange={(e) => set_amount(e.target.value)}
-              InputProps={{endAdornment: <InputAdornment position="end">mHOPR</InputAdornment>,}}
+              InputProps={{ endAdornment: <InputAdornment position="end">mHOPR</InputAdornment> }}
             />
           </DialogContent>
           <DialogActions>
@@ -116,7 +116,7 @@ function ChannelsPage() {
         amount: amount,
         peerId: peerId,
         timeout: 60e3,
-      })
+      }),
     )
       .unwrap()
       .then(() => {
@@ -176,13 +176,13 @@ function ChannelsPage() {
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
   };
 
@@ -213,7 +213,7 @@ function ChannelsPage() {
                 status: channel.status,
                 dedicatedFunds: channel.balance,
               })),
-              `${tabLabel}-channels.csv`
+              `${tabLabel}-channels.csv`,
             );
           }
         }}
@@ -239,7 +239,7 @@ function ChannelsPage() {
         apiToken: loginData.apiToken!,
         direction: direction,
         peerId: peerId,
-      })
+      }),
     )
       .unwrap()
       .then(() => {
