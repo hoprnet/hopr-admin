@@ -55,7 +55,11 @@ function EncourageSection(props) {
       className={`EncourageSectionSection ${props.className}`}
       id={props.id}
     >
-      <Typography type="h2" center fullWidth>
+      <Typography
+        type="h2"
+        center
+        fullWidth
+      >
         {props.title}
       </Typography>
       <Container>

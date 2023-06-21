@@ -5,8 +5,8 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-} from '@mui/material';
+  TableRow
+} from '@mui/material'
 import { useEffect } from 'react';
 import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
@@ -15,13 +15,14 @@ import { exportToCsv } from '../utils/helpers';
 import { styled } from '@mui/material/styles';
 
 const StyledTable = styled(Table)`
-  td{
+  td {
     overflow-wrap: anywhere;
   }
   th {
     font-weight: 600;
   }
-  th, td {
+  th,
+  td {
     font-size: 12px;
   }
 `;
@@ -41,13 +42,13 @@ function PeersPage() {
       actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
   };
 
@@ -74,13 +75,10 @@ function PeersPage() {
   return (
     <Section>
       <h2>
-        Peers seen in the network ({peers?.announced?.length || '-'}){' '}
-        <button onClick={handleRefresh}>Refresh</button>
+        Peers seen in the network ({peers?.announced?.length || '-'}) <button onClick={handleRefresh}>Refresh</button>
       </h2>
       <button
-        disabled={
-          !peers?.announced || Object.keys(peers.announced).length === 0
-        }
+        disabled={!peers?.announced || Object.keys(peers.announced).length === 0}
         onClick={() => {
           if (peers?.announced) {
             exportToCsv(
@@ -93,7 +91,7 @@ function PeersPage() {
                 backoff: peer.backoff,
                 isNew: peer.isNew,
               })),
-              'peers.csv'
+              'peers.csv',
             );
           }
         }}
@@ -101,7 +99,10 @@ function PeersPage() {
         export
       </button>
       <TableContainer component={Paper}>
-        <StyledTable sx={{ minWidth: 650 }} aria-label="aliases table">
+        <StyledTable
+          sx={{ minWidth: 650 }}
+          aria-label="aliases table"
+        >
           <TableHead>
             <TableRow>
               <TableCell>#</TableCell>
@@ -116,23 +117,18 @@ function PeersPage() {
           <TableBody>
             {Object.entries(peers?.announced ?? {}).map(([id, peer]) => (
               <TableRow key={id}>
-                <TableCell component="th" scope="row">
+                <TableCell
+                  component="th"
+                  scope="row"
+                >
                   {id}
                 </TableCell>
                 <TableCell>{peer.peerId}</TableCell>
+                <TableCell>{getAliasByPeerId(peer.peerId)}</TableCell>
                 <TableCell>
-                  {getAliasByPeerId(peer.peerId)}
+                  {peers?.connected.some((connectedPeer) => connectedPeer.peerId === peer.peerId).toString()}
                 </TableCell>
-                <TableCell>
-                  {peers?.connected
-                    .some(
-                      (connectedPeer) => connectedPeer.peerId === peer.peerId
-                    )
-                    .toString()}
-                </TableCell>
-                <TableCell>
-                  {peer.multiAddr}
-                </TableCell>
+                <TableCell>{peer.multiAddr}</TableCell>
                 <TableCell>
                   {new Date(peer.lastSeen).toLocaleString('en-US', {
                     year: 'numeric',

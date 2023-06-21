@@ -28,7 +28,13 @@ interface Props extends DialogProps {
 }
 
 const Modal: React.FC<Props> = (props) => {
-  const { onClose, selectedValue, open, title, children } = props;
+  const {
+    onClose,
+    selectedValue,
+    open,
+    title,
+    children,
+  } = props;
 
   const handleClose = (event: {}) => {
     // @ts-ignore
@@ -36,7 +42,10 @@ const Modal: React.FC<Props> = (props) => {
   };
 
   return (
-    <SDialog onClose={handleClose} open={open}>
+    <SDialog
+      onClose={handleClose}
+      open={open}
+    >
       <Row>
         <div className="modal-title">{title}</div>
         <IconButton

@@ -9,7 +9,12 @@ interface Props extends CheckboxProps {
 const Checkbox: React.FC<Props> = (props) => {
   return (
     <FormControlLabel
-      control={<MuiCheckbox onChange={props.onChange} checked={props.value} />}
+      control={
+        <MuiCheckbox
+          onChange={props.onChange}
+          checked={props.value}
+        />
+      }
       label={props.label}
     />
   );

@@ -5,8 +5,8 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-} from '@mui/material';
+  TableRow
+} from '@mui/material'
 import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
 import { useEffect, useRef, useState } from 'react';
@@ -34,13 +34,17 @@ function AliasesPage() {
         actionsAsync.getAliasesThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        })
+        }),
       );
     }
   }, [loginData]);
 
   return (
-    <Section className="Section--aliases" id="Section--aliases" yellow>
+    <Section
+      className="Section--aliases"
+      id="Section--aliases"
+      yellow
+    >
       <h2>Add new alias</h2>
       <CreateAliasForm />
       <h2>Aliases table</h2>
@@ -51,7 +55,7 @@ function AliasesPage() {
               actionsAsync.getAliasesThunk({
                 apiEndpoint: loginData.apiEndpoint,
                 apiToken: loginData.apiToken,
-              })
+              }),
             );
           }
         }}
@@ -67,7 +71,7 @@ function AliasesPage() {
                 alias: alias,
                 peerId: aliases[alias],
               })),
-              'aliases.csv'
+              'aliases.csv',
             );
           }
         }}
@@ -77,19 +81,14 @@ function AliasesPage() {
       <CSVUploader
         onParse={(parsedData) => {
           for (const data of parsedData) {
-            if (
-              data.alias &&
-              data.peerId &&
-              loginData.apiEndpoint &&
-              loginData.apiToken
-            ) {
+            if (data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken) {
               dispatch(
                 actionsAsync.setAliasThunk({
                   alias: String(data.alias),
                   peerId: String(data.peerId),
                   apiEndpoint: loginData.apiEndpoint,
                   apiToken: loginData.apiToken,
-                })
+                }),
               )
                 .unwrap()
                 .then(() => {
@@ -112,7 +111,10 @@ function AliasesPage() {
         }}
       />
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="aliases table">
+        <Table
+          sx={{ minWidth: 650 }}
+          aria-label="aliases table"
+        >
           <TableHead>
             <TableRow>
               <TableCell>id</TableCell>
@@ -124,7 +126,10 @@ function AliasesPage() {
           <TableBody>
             {Object.entries(aliases ?? {}).map(([alias, peerId], key) => (
               <TableRow key={key}>
-                <TableCell component="th" scope="row">
+                <TableCell
+                  component="th"
+                  scope="row"
+                >
                   {key}
                 </TableCell>
                 <TableCell>{peerId}</TableCell>
@@ -190,7 +195,7 @@ function DeleteAliasButton({
               alias,
               apiEndpoint: loginData.apiEndpoint,
               apiToken: loginData.apiToken,
-            })
+            }),
           )
             .unwrap()
             .then(() => {
@@ -219,8 +224,13 @@ function CreateAliasForm() {
   });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    set_form({ ...form, [name]: value });
+    const {
+      name, value, 
+    } = event.target;
+    set_form({
+      ...form,
+      [name]: value,
+    });
   };
 
   return (
@@ -249,7 +259,7 @@ function CreateAliasForm() {
                 peerId: form.peerId,
                 apiEndpoint: loginData.apiEndpoint,
                 apiToken: loginData.apiToken,
-              })
+              }),
             )
               .unwrap()
               .then(() => {
@@ -258,7 +268,10 @@ function CreateAliasForm() {
               })
               .catch((e) => {
                 set_success(false);
-                set_error({ error: e.error, status: e.status });
+                set_error({
+                  error: e.error,
+                  status: e.status,
+                });
               });
           }
         }}

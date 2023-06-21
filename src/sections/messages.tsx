@@ -19,7 +19,7 @@ import {
   TableRow,
   TextField,
   Tooltip,
-  CircularProgress,
+  CircularProgress
 } from '@mui/material';
 
 // HOPR components
@@ -46,23 +46,22 @@ const StyledTable = styled(Table)`
   }
 `;
 
-const nonAutomaticPathTooltip =
-  'Disable `automatic path` to enable `Number of hops`';
+const nonAutomaticPathTooltip = 'Disable `automatic path` to enable `Number of hops`';
 
 const messages = () => {
-  const { messages, aliases } = useAppSelector((selector) => selector.node);
-  const { apiEndpoint, apiToken } = useAppSelector(
-    (selector) => selector.auth.loginData
-  );
+  const {
+    messages, aliases, 
+  } = useAppSelector((selector) => selector.node);
+  const {
+    apiEndpoint, apiToken, 
+  } = useAppSelector((selector) => selector.auth.loginData);
   const dispatch = useAppDispatch();
 
   const [message, set_message] = useState<string>('');
   const [numberOfHops, set_numberOfHops] = useState<number | ''>('');
   const [path, set_path] = useState<string>('');
   const [automaticPath, set_automaticPath] = useState<boolean>(true);
-  const [sendMode, set_sendMode] = useState<
-    'path' | 'automaticPath' | 'numberOfHops'
-  >('automaticPath');
+  const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops'>('automaticPath');
   const [receiver, set_receiver] = useState<string>('');
   const [loader, set_loader] = useState<boolean>(false);
   const [status, set_status] = useState<string>('');
@@ -72,17 +71,17 @@ const messages = () => {
 
   useEffect(() => {
     switch (sendMode) {
-      case 'path':
-        set_automaticPath(false);
-        set_numberOfHops('');
-        break;
-      case 'numberOfHops':
-        set_automaticPath(false);
-        set_path('');
-        break;
-      default: //'automaticPath'
-        set_numberOfHops('');
-        set_path('');
+    case 'path':
+      set_automaticPath(false);
+      set_numberOfHops('');
+      break;
+    case 'numberOfHops':
+      set_automaticPath(false);
+      set_path('');
+      break;
+    default: //'automaticPath'
+      set_numberOfHops('');
+      set_path('');
     }
   }, [sendMode, path, automaticPath, numberOfHops]);
 
@@ -92,7 +91,7 @@ const messages = () => {
         actionsAsync.getAliasesThunk({
           apiEndpoint,
           apiToken,
-        })
+        }),
       );
     }
   }, []);
@@ -128,17 +127,13 @@ const messages = () => {
       messagePayload.hops = numberOfHops;
     } else if (path !== '') {
       const pathElements = path.replace(/(\r\n|\n|\r| )/gm, '').split(',');
-      const validatedPath = pathElements.map((element) =>
-        validatePeerId(element)
-      );
+      const validatedPath = pathElements.map((element) => validatePeerId(element));
       messagePayload.path = validatedPath;
     }
 
     let response;
     try {
-      response = await dispatch(
-        actionsAsync.sendMessageThunk(messagePayload)
-      ).unwrap();
+      response = await dispatch(actionsAsync.sendMessageThunk(messagePayload)).unwrap();
 
       console.log('@message response:', response);
       if (typeof response === 'string') set_status('Message sent');
@@ -157,9 +152,7 @@ const messages = () => {
   const handleNumberOfHops = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_sendMode('numberOfHops');
     set_numberOfHops(
-      parseInt(event.target.value) || parseInt(event.target.value) === 0
-        ? parseInt(event.target.value)
-        : ''
+      parseInt(event.target.value) || parseInt(event.target.value) === 0 ? parseInt(event.target.value) : '',
     );
   };
 
@@ -213,7 +206,11 @@ const messages = () => {
                   placeholder="1"
                   value={numberOfHops}
                   onChange={handleNumberOfHops}
-                  inputProps={{ min: 0, max: 10, step: 1 }}
+                  inputProps={{
+                    min: 0,
+                    max: 10,
+                    step: 1,
+                  }}
                   disabled={automaticPath}
                 />
               </span>
@@ -237,9 +234,7 @@ const messages = () => {
           </PathOrHops>
           <Tooltip
             title={'Choose `Automatic path` or set other sending mode'}
-            disableHoverListener={
-              !(!automaticPath && numberOfHops === '' && path === '')
-            }
+            disableHoverListener={!(!automaticPath && numberOfHops === '' && path === '')}
           >
             <span style={{ width: '100%' }}>
               <button
@@ -260,7 +255,10 @@ const messages = () => {
       </form>
       <h2>Messages</h2>
       <TableContainer component={Paper}>
-        <StyledTable sx={{ minWidth: 650 }} aria-label="aliases table">
+        <StyledTable
+          sx={{ minWidth: 650 }}
+          aria-label="aliases table"
+        >
           <TableHead>
             <TableRow>
               <TableCell>id</TableCell>
@@ -276,7 +274,10 @@ const messages = () => {
                   key={message.id}
                   className={`message-${message.seen ? 'unseen' : 'seen'}`}
                 >
-                  <TableCell component="th" scope="row">
+                  <TableCell
+                    component="th"
+                    scope="row"
+                  >
                     {index}
                   </TableCell>
                   <TableCell style={{ overflowWrap: 'anywhere' }}>
@@ -285,11 +286,7 @@ const messages = () => {
                     </Tooltip>
                   </TableCell>
                   <TableCell>
-                    <button
-                      onClick={() =>
-                        dispatch(nodeActions.toggleMessageSeen(message))
-                      }
-                    >
+                    <button onClick={() => dispatch(nodeActions.toggleMessageSeen(message))}>
                       Mark as {message.seen ? 'unseen' : 'seen'}
                     </button>
                   </TableCell>

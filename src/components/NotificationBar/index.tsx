@@ -63,9 +63,7 @@ export default function NotificationBar() {
     <Container>
       <SBadge
         id="notification-menu-button"
-        badgeContent={
-          notifications.filter((notification) => !notification.seen).length
-        }
+        badgeContent={notifications.filter((notification) => !notification.seen).length}
         color="secondary"
         aria-controls={open ? 'basic-menu' : undefined}
         aria-haspopup="true"
@@ -81,9 +79,7 @@ export default function NotificationBar() {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{
-          'aria-labelledby': 'notification-menu-button',
-        }}
+        MenuListProps={{ 'aria-labelledby': 'notification-menu-button' }}
       >
         {notifications.filter((notification) => !notification.seen).length ? (
           notifications
@@ -93,10 +89,8 @@ export default function NotificationBar() {
                 key={notification.id}
                 onClick={() => {
                   dispatch(appActions.seenNotification(notification));
-                  if(notification.source === 'node/message') {
-                    navigate(`networking/messages${
-                      searchParams ? searchParams : ''
-                    }`);
+                  if (notification.source === 'node/message') {
+                    navigate(`networking/messages${searchParams ? searchParams : ''}`);
                   }
                 }}
               >
@@ -110,5 +104,3 @@ export default function NotificationBar() {
     </Container>
   );
 }
-
-

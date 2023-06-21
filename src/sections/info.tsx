@@ -7,9 +7,9 @@ import { actionsAsync } from '../store/slices/node/actionsAsync';
 
 function InfoPage() {
   const dispatch = useAppDispatch();
-  const { apiEndpoint, apiToken } = useAppSelector(
-    (selector) => selector.auth.loginData
-  );
+  const {
+    apiEndpoint, apiToken, 
+  } = useAppSelector((selector) => selector.auth.loginData);
   const balances = useAppSelector((selector) => selector.node.balances);
   const addresses = useAppSelector((selector) => selector.node.addresses);
   const channels = useAppSelector((selector) => selector.node.channels);
@@ -25,28 +25,76 @@ function InfoPage() {
 
   const fetchInfoData = () => {
     if (apiEndpoint && apiToken) {
-      dispatch(actionsAsync.getBalancesThunk({ apiEndpoint, apiToken }));
-      dispatch(actionsAsync.getChannelsThunk({ apiEndpoint, apiToken }));
-      dispatch(actionsAsync.getAddressesThunk({ apiEndpoint, apiToken }));
-      dispatch(actionsAsync.getVersionThunk({ apiEndpoint, apiToken }));
-      dispatch(actionsAsync.getInfoThunk({ apiEndpoint, apiToken }));
-      dispatch(actionsAsync.getPeersThunk({ apiEndpoint, apiToken }));
-      dispatch(actionsAsync.getAliasesThunk({ apiEndpoint, apiToken }));
-      dispatch(actionsAsync.getStatisticsThunk({ apiEndpoint, apiToken }));
+      dispatch(
+        actionsAsync.getBalancesThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+      dispatch(
+        actionsAsync.getChannelsThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+      dispatch(
+        actionsAsync.getAddressesThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+      dispatch(
+        actionsAsync.getVersionThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+      dispatch(
+        actionsAsync.getInfoThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+      dispatch(
+        actionsAsync.getPeersThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+      dispatch(
+        actionsAsync.getAliasesThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+      dispatch(
+        actionsAsync.getStatisticsThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
     }
   };
 
   // check if user is logged in
   if (!apiEndpoint || !apiToken) {
     return (
-      <Section className="Section--selectNode" id="Section--selectNode" yellow>
+      <Section
+        className="Section--selectNode"
+        id="Section--selectNode"
+        yellow
+      >
         Login to node
       </Section>
     );
   }
 
   return (
-    <Section className="Section--selectNode" id="Section--selectNode" yellow>
+    <Section
+      className="Section--selectNode"
+      id="Section--selectNode"
+      yellow
+    >
       <h2>
         Info <button onClick={fetchInfoData}>refresh</button>{' '}
       </h2>
@@ -85,20 +133,8 @@ function InfoPage() {
       </div>
       <h2>Channels</h2>
       <div id="channels">
-        <div>
-          Incoming:{' '}
-          {
-            channels?.incoming.filter((channel) => channel.status === 'Open')
-              .length
-          }
-        </div>
-        <div>
-          Outgoing:{' '}
-          {
-            channels?.outgoing.filter((channel) => channel.status === 'Open')
-              .length
-          }
-        </div>
+        <div>Incoming: {channels?.incoming.filter((channel) => channel.status === 'Open').length}</div>
+        <div>Outgoing: {channels?.outgoing.filter((channel) => channel.status === 'Open').length}</div>
       </div>
       <h2>Peers</h2>
       <div id="peers">

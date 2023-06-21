@@ -137,16 +137,16 @@ export default function NftImageInteractive(props) {
 
   const spineColor = (rank) => {
     switch (rank) {
-      case 'bronze':
-        return '#e9a950';
-      case 'silver':
-        return '#828282';
-      case 'gold':
-        return '#eceb8a';
-      case 'diamond':
-        return '#ffffff';
-      default:
-        return '#00009c';
+    case 'bronze':
+      return '#e9a950';
+    case 'silver':
+      return '#828282';
+    case 'gold':
+      return '#eceb8a';
+    case 'diamond':
+      return '#ffffff';
+    default:
+      return '#00009c';
     }
   };
 
@@ -167,18 +167,9 @@ export default function NftImageInteractive(props) {
           set_rotated(false);
         }}
       >
-        <div
-          className={[
-            'nft-front',
-            fliped ? 'flip' : '',
-            rotated ? 'rotate' : '',
-          ].join(' ')}
-        >
+        <div className={['nft-front', fliped ? 'flip' : '', rotated ? 'rotate' : ''].join(' ')}>
           <div
-            className={[
-              'nft-image-container',
-              props.ignored ? 'ignored' : '',
-            ].join(' ')}
+            className={['nft-image-container', props.ignored ? 'ignored' : ''].join(' ')}
             onClick={() => {
               set_fliped(true);
             }}
@@ -198,12 +189,19 @@ export default function NftImageInteractive(props) {
               set_fliped(false);
             })}
           >
-            <Table width1stColumn="65" className="text" noTopBorder>
+            <Table
+              width1stColumn="65"
+              className="text"
+              noTopBorder
+            >
               <tbody>
                 <tr>
                   <th>Image</th>
                   <td>
-                    <img src={props.image} className="nft-image-in-table" />
+                    <img
+                      src={props.image}
+                      className="nft-image-in-table"
+                    />
                   </td>
                 </tr>
                 <tr>
@@ -231,11 +229,7 @@ export default function NftImageInteractive(props) {
                 )}
                 <tr>
                   <th>Boost</th>
-                  {props.ignored ? (
-                    <td>Ignored</td>
-                  ) : (
-                    <td>{(props.nft.boost * 100).toFixed(2)}%</td>
-                  )}
+                  {props.ignored ? <td>Ignored</td> : <td>{(props.nft.boost * 100).toFixed(2)}%</td>}
                 </tr>
               </tbody>
             </Table>

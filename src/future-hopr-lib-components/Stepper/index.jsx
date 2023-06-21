@@ -84,10 +84,7 @@ const Step = styled.div`
 `;
 
 function Stepper(props) {
-  const step =
-    props.children?.length > 0
-      ? props.children[props.currentStep]
-      : props.children;
+  const step = props.children?.length > 0 ? props.children[props.currentStep] : props.children;
 
   return (
     <SStepper className={``}>
@@ -95,9 +92,7 @@ function Stepper(props) {
       <Steps>
         {props.steps.map((step, index) => (
           <Step
-            className={`step ${
-              index === props.currentStep ? 'current-step' : ''
-            }`}
+            className={`step ${index === props.currentStep ? 'current-step' : ''}`}
             key={`step_${index}`}
           >
             <span>{step.name}</span>
@@ -110,8 +105,6 @@ function Stepper(props) {
   );
 }
 
-Stepper.defaultProps = {
-  steps: [],
-};
+Stepper.defaultProps = { steps: [] };
 
 export default Stepper;

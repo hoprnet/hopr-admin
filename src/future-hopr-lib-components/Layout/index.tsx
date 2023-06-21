@@ -59,7 +59,10 @@ const Layout: React.FC<{
         webapp={webapp}
       />
       {drawer && (
-        <Drawer drawerItems={drawerItems} drawerLoginState={drawerLoginState} />
+        <Drawer
+          drawerItems={drawerItems}
+          drawerLoginState={drawerLoginState}
+        />
       )}
       <Content
         className="Content"

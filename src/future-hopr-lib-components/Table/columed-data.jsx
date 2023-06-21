@@ -44,8 +44,7 @@ export const Table = styled.table`
     max-width: 100px;
   }
   th:first-of-type {
-    width: ${(props) =>
-      props.width1stColumn ? props.width1stColumn : '160'}px;
+    width: ${(props) => (props.width1stColumn ? props.width1stColumn : '160')}px;
   }
   ${(props) => props.noTopBorder && `tr:first-of-type { border-top: none; }`};
 `;
@@ -69,9 +68,7 @@ export default function TableDataColumed(props) {
       ) : (
         <Table>{props.children}</Table>
       )}
-      <Table className="mobile-only">
-        {props.children.length > 0 && props.children?.map((elem) => elem)}
-      </Table>
+      <Table className="mobile-only">{props.children.length > 0 && props.children?.map((elem) => elem)}</Table>
     </Tables>
   );
 }

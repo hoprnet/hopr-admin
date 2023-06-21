@@ -6,9 +6,16 @@ function SectionLogs() {
   const { logs } = useAppSelector((selector) => selector.node);
 
   return (
-    <Section className="Section--logs" id="Section--logs" yellow>
+    <Section
+      className="Section--logs"
+      id="Section--logs"
+      yellow
+    >
       {logs.map((log) => (
-        <LogLine log={log} key={log.id} />
+        <LogLine
+          log={log}
+          key={log.id}
+        />
       ))}
     </Section>
   );

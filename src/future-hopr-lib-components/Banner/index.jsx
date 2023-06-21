@@ -46,7 +46,12 @@ const Text = styled.div`
 const Banner = (props) => (
   <SBanner>
     <Text>
-      {props.text} <Link href={props.linkHref} text={props.linkText} openIcon />
+      {props.text}{' '}
+      <Link
+        href={props.linkHref}
+        text={props.linkText}
+        openIcon
+      />
     </Text>
     {/* <GrayButton
             variant="contained"

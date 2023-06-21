@@ -42,7 +42,10 @@ const SMuiMenuItem = styled(MuiMenuItem)`
 `;
 
 export default function Button(props) {
-  const { subMenu, ...rest } = props;
+  const {
+    subMenu,
+    ...rest
+  } = props;
   //  const router = useRouter();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -89,9 +92,7 @@ export default function Button(props) {
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
-          MenuListProps={{
-            'aria-labelledby': props.id,
-          }}
+          MenuListProps={{ 'aria-labelledby': props.id }}
         >
           {props.subMenu.map((item, index) => (
             <SMuiMenuItem

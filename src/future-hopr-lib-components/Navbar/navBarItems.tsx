@@ -35,22 +35,10 @@ const NavBarItems = ({
   itemsNavbar,
   onButtonClick,
 }: NavBarItemsProps) => {
-  const position = center
-    ? 'center'
-    : right
-    ? 'right'
-    : mobile
-    ? 'mobile'
-    : 'position-undefined';
+  const position = center ? 'center' : right ? 'right' : mobile ? 'mobile' : 'position-undefined';
 
   return (
-    <Content
-      className={[
-        'menu',
-        `menu-${position}`,
-        webapp ? 'menu-webpapp' : '',
-      ].join(' ')}
-    >
+    <Content className={['menu', `menu-${position}`, webapp ? 'menu-webpapp' : ''].join(' ')}>
       {/*  @ts-ignore */}
       {itemsNavbar &&
         itemsNavbar[0]?.label &&
@@ -74,6 +62,4 @@ const NavBarItems = ({
 
 export default NavBarItems;
 
-NavBarItems.defaultProps = {
-  itemsNavbar: [],
-};
+NavBarItems.defaultProps = { itemsNavbar: [] };
