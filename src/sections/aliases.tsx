@@ -1,4 +1,12 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow
+} from '@mui/material'
 import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
 import { useEffect, useRef, useState } from 'react';
@@ -27,7 +35,7 @@ function AliasesPage() {
         actionsAsync.getAliasesThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        })
+        }),
       );
     }
   }, [loginData]);
@@ -38,7 +46,7 @@ function AliasesPage() {
         actionsAsync.getAliasesThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        })
+        }),
       );
     }
   };
@@ -62,7 +70,7 @@ function AliasesPage() {
                 alias: alias,
                 peerId: aliases[alias],
               })),
-              'aliases.csv'
+              'aliases.csv',
             );
           }
         }}
@@ -79,7 +87,7 @@ function AliasesPage() {
                   peerId: String(data.peerId),
                   apiEndpoint: loginData.apiEndpoint,
                   apiToken: loginData.apiToken,
-                })
+                }),
               )
                 .unwrap()
                 .then(() => {
@@ -186,7 +194,7 @@ function DeleteAliasButton({
               alias,
               apiEndpoint: loginData.apiEndpoint,
               apiToken: loginData.apiToken,
-            })
+            }),
           )
             .unwrap()
             .then(() => {
