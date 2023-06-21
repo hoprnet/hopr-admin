@@ -8,7 +8,12 @@ interface JazzIconProps extends HTMLAttributes<HTMLDivElement> {
   diameter: number;
 }
 
-const JazzIcon = ({ address, diameter, className, ...rest }: JazzIconProps) => {
+const JazzIcon = ({
+  address,
+  diameter,
+  className,
+  ...rest
+}: JazzIconProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -22,7 +27,11 @@ const JazzIcon = ({ address, diameter, className, ...rest }: JazzIconProps) => {
   }, []);
 
   return (
-    <div className={`JazzIcon ${className}`} ref={containerRef} {...rest} />
+    <div
+      className={`JazzIcon ${className}`}
+      ref={containerRef}
+      {...rest}
+    />
   );
 };
 

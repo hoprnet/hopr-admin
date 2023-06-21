@@ -30,7 +30,10 @@ const LaunchAppBtn = styled(MuiButton)`
 
 const LaunchPlaygroundBtn = (props) => {
   return (
-    <LaunchAppBtn variant="contained" {...props}>
+    <LaunchAppBtn
+      variant="contained"
+      {...props}
+    >
       {props.children}
     </LaunchAppBtn>
   );

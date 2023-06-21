@@ -35,7 +35,10 @@ const SButton = styled(MuiButton)`
 
 export default function Button(props) {
   return (
-    <SButton className={props.className} {...props}>
+    <SButton
+      className={props.className}
+      {...props}
+    >
       {props.children}
     </SButton>
   );

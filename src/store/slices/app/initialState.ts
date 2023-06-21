@@ -9,6 +9,4 @@ type InitialState = {
   }[];
 };
 
-export const initialState: InitialState = {
-  notifications: [],
-};
+export const initialState: InitialState = {notifications: [],};

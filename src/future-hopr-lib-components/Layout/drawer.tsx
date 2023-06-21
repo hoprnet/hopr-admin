@@ -50,7 +50,7 @@ const SLink = styled(Link)<SLinkProps>`
 
 export default function ResponsiveDrawer(props: Props) {
   const { window } = props;
-  let searchParams = useLocation()?.search;
+  const searchParams = useLocation()?.search;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -71,17 +71,12 @@ export default function ResponsiveDrawer(props: Props) {
               group.items.map((item: any, indexI: number) => {
                 return (
                   <SLink
-                    to={`${group.path}/${item.path}${
-                      searchParams ? searchParams : ''
-                    }`}
+                    to={`${group.path}/${item.path}${searchParams ? searchParams : ''}`}
                     key={indexI}
                     disabled={
                       !item.element ||
                       // @ts-ignore
-                      (item.loginNeeded &&
-                        props?.drawerLoginState?.[
-                          item.loginNeeded as 'web3' | 'node'
-                        ] === false)
+                      (item.loginNeeded && props?.drawerLoginState?.[item.loginNeeded as 'web3' | 'node'] === false)
                     }
                   >
                     <ListItem disablePadding>
@@ -89,10 +84,7 @@ export default function ResponsiveDrawer(props: Props) {
                         disabled={
                           !item.element ||
                           // @ts-ignore
-                          (item.loginNeeded &&
-                            props?.drawerLoginState?.[
-                              item.loginNeeded as 'web3' | 'node'
-                            ] === false)
+                          (item.loginNeeded && props?.drawerLoginState?.[item.loginNeeded as 'web3' | 'node'] === false)
                         }
                       >
                         <ListItemIcon>{item.icon}</ListItemIcon>
@@ -109,14 +101,15 @@ export default function ResponsiveDrawer(props: Props) {
     </div>
   );
 
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
+  const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
     <Box sx={{ display: 'flex' }}>
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{
+          width: { sm: drawerWidth }, flexShrink: { sm: 0 } 
+        }}
         aria-label="mailbox folders"
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
@@ -125,11 +118,12 @@ export default function ResponsiveDrawer(props: Props) {
           variant="temporary"
           open={mobileOpen}
           onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+          ModalProps={{keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: 'block', sm: 'none' },
+            display: {
+              xs: 'block', sm: 'none' 
+            },
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: drawerWidth,
@@ -141,7 +135,9 @@ export default function ResponsiveDrawer(props: Props) {
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: 'none', sm: 'block' },
+            display: {
+              xs: 'none', sm: 'block' 
+            },
             '& .MuiDrawer-paper': {
               boxSizing: 'border-box',
               width: drawerWidth,

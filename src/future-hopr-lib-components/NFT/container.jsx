@@ -9,9 +9,5 @@ const Container = styled.div`
 `;
 
 export default function NftContainer(props) {
-  return (
-    <Container className={['NftContainer'].join(' ')}>
-      {props.children}
-    </Container>
-  );
+  return <Container className={['NftContainer'].join(' ')}>{props.children}</Container>;
 }

@@ -139,7 +139,10 @@ const Footer = () => {
       <Content>
         <LeftColumn className="left-column">
           <Logo className="logo">
-            <img src="/hopr_token-icon.svg" alt="HOPR Logo" />
+            <img
+              src="/hopr_token-icon.svg"
+              alt="HOPR Logo"
+            />
           </Logo>
           <div className="content">
             <Addresses>
@@ -168,14 +171,26 @@ const Footer = () => {
         <div className="right-column">
           <div className="social-networks">
             {socials?.map((x, i) => (
-              <a key={i} href={x.link} target="_blank" rel="noreferrer">
-                <img src={x.img} alt={x.network} />
+              <a
+                key={i}
+                href={x.link}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img
+                  src={x.img}
+                  alt={x.network}
+                />
               </a>
             ))}
           </div>
           <div className="links">
             {links?.map((x, i) => (
-              <a key={i} title={x.name} href={x.link}>
+              <a
+                key={i}
+                title={x.name}
+                href={x.link}
+              >
                 {x.name}
               </a>
             ))}

@@ -62,7 +62,10 @@ const LogLine = ({ log }: LogLineProps) => {
       <Pre>
         {peerId ? (
           <>
-            <JazzIcon address={peerId} diameter={16} />
+            <JazzIcon
+              address={peerId}
+              diameter={16}
+            />
             <div>
               {log.message.replace(peerId, '')}
               <AbbreviatedPeerId id={peerId} />

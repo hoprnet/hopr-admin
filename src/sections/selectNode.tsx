@@ -16,55 +16,36 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 function Section1() {
   const dispatch = useAppDispatch();
-  const nodesSavedLocally = useAppSelector((store) => store.auth.nodes).map(
-    (node, index) => {
-      return {
-        name: node.localName
-          ? `${node.localName} (${node.apiEndpoint})`
-          : node.apiEndpoint,
-        localName: node.localName,
-        value: index,
-        apiEndpoint: node.apiEndpoint,
-        apiToken: node.apiToken,
-      };
-    }
-  );
+  const nodesSavedLocally = useAppSelector((store) => store.auth.nodes).map((node, index) => {
+    return {
+      name: node.localName ? `${node.localName} (${node.apiEndpoint})` : node.apiEndpoint,
+      localName: node.localName,
+      value: index,
+      apiEndpoint: node.apiEndpoint,
+      apiToken: node.apiToken,
+    };
+  });
   const connecting = useAppSelector((store) => store.auth.status.connecting);
   const loginData = useAppSelector((store) => store.auth.loginData);
 
   const [searchParams, set_searchParams] = useSearchParams();
-  const [localName, set_localName] = useState(
-    loginData.localName ? loginData.localName : ''
-  );
-  const [apiEndpoint, set_apiEndpoint] = useState(
-    loginData.apiEndpoint ? loginData.apiEndpoint : ''
-  );
-  const [apiToken, set_apiToken] = useState(
-    loginData.apiToken ? loginData.apiToken : ''
-  );
-  const [saveApiToken, set_saveApiToken] = useState(
-    loginData.apiToken ? true : false
-  );
-  const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] =
-    useState('' as number | '');
+  const [localName, set_localName] = useState(loginData.localName ? loginData.localName : '');
+  const [apiEndpoint, set_apiEndpoint] = useState(loginData.apiEndpoint ? loginData.apiEndpoint : '');
+  const [apiToken, set_apiToken] = useState(loginData.apiToken ? loginData.apiToken : '');
+  const [saveApiToken, set_saveApiToken] = useState(loginData.apiToken ? true : false);
+  const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] = useState('' as number | '');
 
   useEffect(() => {
     // Update the Select based on loginData from the Store
     if (!loginData.apiEndpoint) return;
-    const existingItem = nodesSavedLocally.findIndex(
-      (item: any) => item.apiEndpoint === loginData.apiEndpoint
-    );
+    const existingItem = nodesSavedLocally.findIndex((item: any) => item.apiEndpoint === loginData.apiEndpoint);
     console.log(existingItem, nodesSavedLocally[existingItem]);
     if (existingItem !== -1) set_nodesSavedLocallyChosenIndex(existingItem);
   }, [loginData, nodesSavedLocally]);
 
   useEffect(() => {
     // Update the TextFields based on loginData from the Store
-    if (
-      loginData.apiEndpoint === apiEndpoint &&
-      loginData.apiToken === apiToken
-    )
-      return;
+    if (loginData.apiEndpoint === apiEndpoint && loginData.apiToken === apiToken) return;
     const apiEndpointSP = searchParams.get('apiEndpoint');
     const apiTokenSP = searchParams.get('apiToken');
     if (!apiEndpointSP && !apiTokenSP) return;
@@ -81,9 +62,7 @@ function Section1() {
 
     // If have have saved the node with the same apiToken, we check the saveApiToken checkbox
     const existingItemIndex = nodesSavedLocally.findIndex(
-      (item) =>
-        item.apiEndpoint === loginData.apiEndpoint &&
-        item.apiToken === loginData.apiToken
+      (item) => item.apiEndpoint === loginData.apiEndpoint && item.apiToken === loginData.apiToken
     );
     if (
       existingItemIndex !== -1 &&
@@ -107,10 +86,18 @@ function Section1() {
   const useNode = () => {
     dispatch(authActions.resetState());
     dispatch(nodeActions.resetState());
-    dispatch(authActions.useNodeData({ apiEndpoint, apiToken, localName }));
-    dispatch(authActionsAsync.loginThunk({ apiEndpoint, apiToken }));
-    dispatch(nodeActionsAsync.getAddressesThunk({ apiToken, apiEndpoint }));
-    dispatch(nodeActionsAsync.getInfoThunk({ apiToken, apiEndpoint }))
+    dispatch(authActions.useNodeData({
+      apiEndpoint, apiToken, localName 
+    }));
+    dispatch(authActionsAsync.loginThunk({
+      apiEndpoint, apiToken 
+    }));
+    dispatch(nodeActionsAsync.getAddressesThunk({
+      apiToken, apiEndpoint 
+    }));
+    dispatch(nodeActionsAsync.getInfoThunk({
+      apiToken, apiEndpoint 
+    }))
       .unwrap()
       .then(() => {
         dispatch(nodeActions.initializeMessagesWebsocket());
@@ -118,7 +105,9 @@ function Section1() {
       .then(() => {
         dispatch(nodeActions.initializeLogsWebsocket());
       });
-    set_searchParams({ apiToken, apiEndpoint });
+    set_searchParams({
+      apiToken, apiEndpoint 
+    });
   };
 
   const clearLocalNodes = () => {
@@ -127,7 +116,11 @@ function Section1() {
   };
 
   return (
-    <Section className="Section--selectNode" id="Section--selectNode" yellow>
+    <Section
+      className="Section--selectNode"
+      id="Section--selectNode"
+      yellow
+    >
       <Select
         label={'nodesSavedLocally'}
         values={nodesSavedLocally}
@@ -191,7 +184,10 @@ function Section1() {
         }}
       />
       <br />
-      <button onClick={saveNode} disabled={apiEndpoint.length === 0}>
+      <button
+        onClick={saveNode}
+        disabled={apiEndpoint.length === 0}
+      >
         Save node locally
       </button>
       <button

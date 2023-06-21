@@ -16,8 +16,7 @@ const store = configureStore({
     web3: web3Slice,
     app: appSlice,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().prepend(websocketMiddleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(websocketMiddleware),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

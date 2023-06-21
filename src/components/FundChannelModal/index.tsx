@@ -4,8 +4,8 @@ import {
   DialogContent,
   TextField,
   DialogActions,
-  InputAdornment,
-} from '@mui/material';
+  InputAdornment
+} from '@mui/material'
 import { useAppDispatch, useAppSelector } from '../../store';
 import { useState } from 'react';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
@@ -22,13 +22,11 @@ export const FundChannelModal = ({
   channelId,
   peerId,
   handleRefresh,
-  buttonText,
+  buttonText
 }: FundChannelModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const [openFundingPopups, set_openFundingPopups] = useState<
-    Record<string, boolean>
-  >({});
+  const [openFundingPopups, set_openFundingPopups] = useState<Record<string, boolean>>({});
   const [fundingAmount, set_fundingAmount] = useState('');
 
   const handleOpenFundingPopup = (channelId: string) => {
@@ -47,8 +45,7 @@ export const FundChannelModal = ({
   };
 
   const handleFundChannels = (peerId: string, channelId: string) => {
-    const parsedOutgoing =
-      parseFloat(fundingAmount ?? '0') >= 0 ? fundingAmount ?? '0' : '0';
+    const parsedOutgoing = parseFloat(fundingAmount ?? '0') >= 0 ? fundingAmount ?? '0' : '0';
 
     const weiValue = ethers.utils.parseEther(parsedOutgoing).toString();
 
@@ -78,9 +75,7 @@ export const FundChannelModal = ({
 
   return (
     <>
-      <button onClick={() => handleOpenFundingPopup(channelId)}>
-        {buttonText}
-      </button>
+      <button onClick={() => handleOpenFundingPopup(channelId)}>{buttonText}</button>
       <Dialog
         open={openFundingPopups[channelId] || false}
         onClose={() => closeFundingPopup(channelId)}
@@ -92,11 +87,7 @@ export const FundChannelModal = ({
             type="string"
             value={fundingAmount}
             onChange={(e) => set_fundingAmount(e.target.value)}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">mHOPR</InputAdornment>
-              ),
-            }}
+            InputProps={{endAdornment: <InputAdornment position="end">mHOPR</InputAdornment>,}}
             sx={{ mt: '16px' }}
           />
         </DialogContent>

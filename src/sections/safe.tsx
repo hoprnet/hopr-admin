@@ -29,14 +29,22 @@ function SafeSection() {
 
   if (!account) {
     return (
-      <Section className="Section--safe" id="Section--safe" yellow>
+      <Section
+        className="Section--safe"
+        id="Section--safe"
+        yellow
+      >
         <h2>connect signer</h2>
       </Section>
     );
   }
 
   return (
-    <Section className="Section--safe" id="Section--safe" yellow>
+    <Section
+      className="Section--safe"
+      id="Section--safe"
+      yellow
+    >
       <h1>Safe</h1>
       <h2>existing safes</h2>
       {safe.safesByOwner.map((safeAddress) => (
@@ -44,9 +52,9 @@ function SafeSection() {
           key={safeAddress}
           onClick={() => {
             if (signer) {
-              dispatch(
-                safeActionsAsync.getSafeInfoThunk({ signer, safeAddress })
-              );
+              dispatch(safeActionsAsync.getSafeInfoThunk({
+                signer, safeAddress 
+              }));
               dispatch(
                 safeActionsAsync.getAllSafeTransactionsThunk({
                   signer,
@@ -84,7 +92,9 @@ function SafeSection() {
           if (signer) {
             dispatch(
               safeActionsAsync.createSafeWithConfigThunk({
-                config: { owners: owners.split(','), threshold },
+                config: {
+                  owners: owners.split(','), threshold 
+                },
                 signer,
               })
             );
@@ -131,8 +141,7 @@ function SafeSection() {
             {transaction.txType} {transaction.to}
           </p>
           {transaction.txType === 'MULTISIG_TRANSACTION' ? (
-            transaction.confirmationsRequired ===
-            transaction.confirmations?.length ? (
+            transaction.confirmationsRequired === transaction.confirmations?.length ? (
               <button
                 onClick={() => {
                   if (signer) {

@@ -1,7 +1,4 @@
-import {
-  AllTransactionsListResponse,
-  SafeInfoResponse,
-} from '@safe-global/api-kit';
+import { AllTransactionsListResponse, SafeInfoResponse } from '@safe-global/api-kit';
 
 type InitialState = {
   selectedSafeAddress: string | null;

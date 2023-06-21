@@ -61,9 +61,7 @@ function App() {
     setRpcUrl2(cf.originalUrl);
     setCity(cf.city);
 
-    let chosenChain = chains.filter((chain) =>
-      cf.originalUrl.includes(chain.derpUrl)
-    )[0];
+    const chosenChain = chains.filter((chain) => cf.originalUrl.includes(chain.derpUrl))[0];
     if (chosenChain) {
       setChainId(chosenChain.chainId);
       setName('DERP - ' + chosenChain.name);
@@ -214,9 +212,7 @@ function App() {
               <th className={'hopr-table-header-Location'}>Location</th>
               <th className={'hopr-table-header-IP'}>IP</th>
               <th className={'hopr-table-header-Status'}>Status</th>
-              <th className={'hopr-table-header-MetaMask'}>
-                MetaMask Network Settings
-              </th>
+              <th className={'hopr-table-header-MetaMask'}>MetaMask Network Settings</th>
             </tr>
           </thead>
           <tbody>
@@ -273,9 +269,7 @@ function App() {
                   <td>{entry?.userAgent}</td>
                   <td>{entry?.method}</td>
                   <td>
-                    <pre>
-                      {entry.params && JSON.stringify(entry.params, null, 2)}
-                    </pre>
+                    <pre>{entry.params && JSON.stringify(entry.params, null, 2)}</pre>
                   </td>
                 </tr>
               );

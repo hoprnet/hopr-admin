@@ -16,19 +16,15 @@ const nodeSlice = createSlice({
       state.status.initiating = false;
       state.status.initiated = true;
     },
-    messageReceived(
-      state,
-      action: PayloadAction<(typeof initialState.messages)[0]>
-    ) {
+    messageReceived(state, action: PayloadAction<(typeof initialState.messages)[0]>) {
       state.messages.push(action.payload);
     },
-    toggleMessageSeen(
-      state,
-      action: PayloadAction<(typeof initialState.messages)[0]>
-    ) {
+    toggleMessageSeen(state, action: PayloadAction<(typeof initialState.messages)[0]>) {
       state.messages = state.messages.map((message) => {
         if (message.id === action.payload.id) {
-          return { ...message, seen: !message.seen };
+          return {
+            ...message, seen: !message.seen 
+          };
         }
         return message;
       });

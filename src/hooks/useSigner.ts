@@ -18,9 +18,7 @@ export const useSigner = () => {
     async function initializeSigner() {
       try {
         if (typeof (window as unknown as Window).ethereum !== 'undefined') {
-          const provider = new ethers.providers.Web3Provider(
-            (window as unknown as Window).ethereum
-          );
+          const provider = new ethers.providers.Web3Provider((window as unknown as Window).ethereum);
           const newSigner = provider.getSigner();
           setSigner(newSigner);
           setLoading(false);
@@ -43,5 +41,7 @@ export const useSigner = () => {
     initializeSigner();
   }, []);
 
-  return { signer, loading, error };
+  return {
+    signer, loading, error 
+  };
 };
