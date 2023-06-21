@@ -13,35 +13,56 @@ import Checkbox from '../future-hopr-lib-components/Toggles/Checkbox';
 
 //MUI
 import CircularProgress from '@mui/material/CircularProgress';
+import { SelectChangeEvent } from '@mui/material/Select';
+
+type ParsedNode = {
+  name: string;
+  localName: string;
+  value: string;
+  apiEndpoint: string;
+  apiToken: string;
+};
 
 function Section1() {
   const dispatch = useAppDispatch();
-  const nodesSavedLocally = useAppSelector((store) => store.auth.nodes).map((node, index) => {
-    return {
-      name: node.localName ? `${node.localName} (${node.apiEndpoint})` : node.apiEndpoint,
-      localName: node.localName,
-      value: index,
-      apiEndpoint: node.apiEndpoint,
-      apiToken: node.apiToken,
-    };
-  });
+  const nodesSavedLocally = useAppSelector((store) => store.auth.nodes);
+  const [nodesSavedLocallyParsed, set_nodesSavedLocallyParsed] = useState([] as ParsedNode[]);
   const connecting = useAppSelector((store) => store.auth.status.connecting);
   const loginData = useAppSelector((store) => store.auth.loginData);
 
   const [searchParams, set_searchParams] = useSearchParams();
   const [localName, set_localName] = useState(loginData.localName ? loginData.localName : '');
+
   const [apiEndpoint, set_apiEndpoint] = useState(loginData.apiEndpoint ? loginData.apiEndpoint : '');
   const [apiToken, set_apiToken] = useState(loginData.apiToken ? loginData.apiToken : '');
   const [saveApiToken, set_saveApiToken] = useState(loginData.apiToken ? true : false);
-  const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] = useState('' as number | '');
+  const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] = useState('' as string);
 
   useEffect(() => {
-    // Update the Select based on loginData from the Store
-    if (!loginData.apiEndpoint) return;
-    const existingItem = nodesSavedLocally.findIndex((item: any) => item.apiEndpoint === loginData.apiEndpoint);
-    console.log(existingItem, nodesSavedLocally[existingItem]);
-    if (existingItem !== -1) set_nodesSavedLocallyChosenIndex(existingItem);
-  }, [loginData, nodesSavedLocally]);
+    console.log('nodesSavedLocally', nodesSavedLocally);
+    const parsed = nodesSavedLocally.map((node, index) => {
+      return {
+        name: node.localName ? `${node.localName} (${node.apiEndpoint})` : node.apiEndpoint,
+        localName: node.localName,
+        value: index.toString(),
+        apiEndpoint: node.apiEndpoint,
+        apiToken: node.apiToken,
+      };
+    }) as ParsedNode[];
+    set_nodesSavedLocallyParsed(parsed);
+  }, [nodesSavedLocally]);
+
+  useEffect(() => {
+    console.log('loginData', loginData);
+  }, [loginData]);
+
+  useEffect(() => {
+    console.log('nodesSavedLocallyParsed', nodesSavedLocallyParsed);
+  }, [nodesSavedLocallyParsed]);
+
+  useEffect(() => {
+    console.log('nodesSavedLocallyChosenIndex', nodesSavedLocallyChosenIndex);
+  }, [nodesSavedLocallyChosenIndex]);
 
   useEffect(() => {
     // Update the TextFields based on loginData from the Store
@@ -129,6 +150,16 @@ function Section1() {
     dispatch(authActions.clearLocalNodes());
   };
 
+  const handleSelectlocalNodes = (event: SelectChangeEvent<unknown>) => {
+    const index = event.target.value as string;
+    const chosenNode = nodesSavedLocally[parseInt(index)] as ParsedNode;
+    set_nodesSavedLocallyChosenIndex(index);
+    set_apiEndpoint(chosenNode.apiEndpoint);
+    set_apiToken(chosenNode.apiToken);
+    set_saveApiToken(chosenNode.apiToken?.length > 0);
+    set_localName(chosenNode.localName);
+  };
+
   return (
     <Section
       className="Section--selectNode"
@@ -137,27 +168,14 @@ function Section1() {
     >
       <Select
         label={'nodesSavedLocally'}
-        values={nodesSavedLocally}
+        values={nodesSavedLocallyParsed}
         disabled={nodesSavedLocally.length === 0}
         value={nodesSavedLocallyChosenIndex}
-        onChange={(event) => {
-          const index = event.target.value as number;
-          const chosenNode = nodesSavedLocally[index];
-          set_nodesSavedLocallyChosenIndex(index);
-          if (chosenNode.apiEndpoint) {
-            set_apiEndpoint(chosenNode.apiEndpoint);
-          }
-          if (chosenNode.apiToken) {
-            set_apiToken(chosenNode.apiToken);
-          }
-          if (chosenNode.localName) {
-            set_localName(chosenNode.localName);
-          }
-          if (chosenNode.apiToken) {
-            set_saveApiToken(chosenNode.apiToken?.length > 0);
-          }
-        }}
+        onChange={handleSelectlocalNodes}
         style={{ width: '100%' }}
+        renderValue={(value) => {
+          return '1';
+        }}
       />
       <button
         disabled={nodesSavedLocally.length === 0}

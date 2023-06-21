@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
-import { actionsAsync } from './actionsAsync';
+import { actionsAsync, createExtraReducers } from './actionsAsync';
 import { getObjectFromLocalStorage, bubbleSortObject } from '../../../utils/functions';
 
 const authSlice = createSlice({
@@ -32,7 +32,6 @@ const authSlice = createSlice({
       state.loginData.apiEndpoint = action.payload.apiEndpoint;
       state.loginData.apiToken = action.payload.apiToken;
       state.loginData.localName = localName;
-      state.status.connecting = true;
     },
     setConnected(state) {
       state.status.connecting = false;
@@ -70,6 +69,7 @@ const authSlice = createSlice({
       localStorage.removeItem('admin-ui-node-list');
     },
   },
+  extraReducers: (builder) => createExtraReducers(builder),
 });
 
 export const authActions = authSlice.actions;
