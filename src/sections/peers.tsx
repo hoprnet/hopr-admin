@@ -5,7 +5,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
+  TableRow
 } from '@mui/material'
 import { useEffect } from 'react';
 import Section from '../future-hopr-lib-components/Section';

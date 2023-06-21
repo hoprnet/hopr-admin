@@ -19,7 +19,7 @@ import {
   type SignPayloadType,
   type WithdrawPayloadType,
   api,
-  utils,
+  utils
 } from '@hoprnet/hopr-sdk';
 
 const { APIError } = utils;

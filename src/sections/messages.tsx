@@ -19,7 +19,7 @@ import {
   TableRow,
   TextField,
   Tooltip,
-  CircularProgress,
+  CircularProgress
 } from '@mui/material';
 
 // HOPR components

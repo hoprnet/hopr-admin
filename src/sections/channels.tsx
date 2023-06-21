@@ -14,7 +14,7 @@ import {
   DialogContent,
   TextField,
   DialogActions,
-  InputAdornment,
+  InputAdornment
 } from '@mui/material';
 import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
