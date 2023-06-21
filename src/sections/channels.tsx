@@ -31,7 +31,7 @@ function ChannelsPage() {
   const channels = useAppSelector((selector) => selector.node.channels);
   const aliases = useAppSelector((selector) => selector.node.aliases);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabIndex, set_tabIndex] = useState(0);
   const [closingStates, set_closingStates] = useState<
     Record<
       string,
@@ -147,7 +147,7 @@ function ChannelsPage() {
     event: React.SyntheticEvent<Element, Event>,
     newTabIndex: number
   ) => {
-    setTabIndex(newTabIndex);
+    set_tabIndex(newTabIndex);
     handleHash(newTabIndex);
   };
 
@@ -157,20 +157,28 @@ function ChannelsPage() {
   };
 
   useEffect(() => {
-    const queryParams = new URLSearchParams({
-      apiToken: loginData.apiToken!,
-      apiEndpoint: loginData.apiEndpoint!,
-    }).toString();
-
-    set_queryParams(queryParams);
-
-    if (queryParams) {
-      console.log(`queryParams: ${queryParams}`);
-      navigate(`?${queryParams}#incoming`, { replace: true });
+    if (loginData.apiEndpoint && loginData.apiToken) {
+      const queryParams = new URLSearchParams({
+        apiToken: loginData.apiToken,
+        apiEndpoint: loginData.apiEndpoint,
+      }).toString();
+      set_queryParams(queryParams);
     }
+  }, [loginData.apiToken, loginData.apiEndpoint]);
+
+  useEffect(() => {
+    const currentHash = window.location.hash;
+    const defaultHash =
+      currentHash === '#incoming' || currentHash === '#outgoing'
+        ? currentHash
+        : '#incoming';
+
+    const defaultTabIndex = defaultHash === '#outgoing' ? 1 : 0;
+    set_tabIndex(defaultTabIndex);
+    handleHash(defaultTabIndex);
 
     handleRefresh();
-  }, [loginData.apiToken, loginData.apiEndpoint, navigate]);
+  }, [queryParams]);
 
   const handleRefresh = () => {
     dispatch(
