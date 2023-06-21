@@ -35,11 +35,10 @@ function Section1() {
 
   const [apiEndpoint, set_apiEndpoint] = useState(loginData.apiEndpoint ? loginData.apiEndpoint : '');
   const [apiToken, set_apiToken] = useState(loginData.apiToken ? loginData.apiToken : '');
-  const [saveApiToken, set_saveApiToken] = useState(loginData.apiToken ? true : false);
+  const [saveApiToken, set_saveApiToken] = useState(false);
   const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] = useState('' as string);
 
   useEffect(() => {
-    console.log('nodesSavedLocally', nodesSavedLocally);
     const parsed = nodesSavedLocally.map((node, index) => {
       return {
         name: node.localName ? `${node.localName} (${node.apiEndpoint})` : node.apiEndpoint,
@@ -53,16 +52,13 @@ function Section1() {
   }, [nodesSavedLocally]);
 
   useEffect(() => {
-    console.log('loginData', loginData);
+    // Update the Select based on loginData from the Store
+    if (!loginData.apiEndpoint) return;
+    const existingItemIndex = nodesSavedLocally.findIndex((item: any) => item.apiEndpoint === loginData.apiEndpoint);
+    if (existingItemIndex !== -1) set_nodesSavedLocallyChosenIndex(existingItemIndex.toString());
+    const existingItem = nodesSavedLocally[existingItemIndex] as ParsedNode;
+    if (existingItem.apiToken.length > 0 && loginData.apiToken === existingItem.apiToken) set_saveApiToken(true);
   }, [loginData]);
-
-  useEffect(() => {
-    console.log('nodesSavedLocallyParsed', nodesSavedLocallyParsed);
-  }, [nodesSavedLocallyParsed]);
-
-  useEffect(() => {
-    console.log('nodesSavedLocallyChosenIndex', nodesSavedLocallyChosenIndex);
-  }, [nodesSavedLocallyChosenIndex]);
 
   useEffect(() => {
     // Update the TextFields based on loginData from the Store
@@ -85,6 +81,7 @@ function Section1() {
     const existingItemIndex = nodesSavedLocally.findIndex(
       (item) => item.apiEndpoint === loginData.apiEndpoint && item.apiToken === loginData.apiToken,
     );
+
     if (
       existingItemIndex !== -1 &&
       nodesSavedLocally[existingItemIndex].apiToken &&
