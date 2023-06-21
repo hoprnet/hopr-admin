@@ -18,6 +18,7 @@ import SectionWeb3 from './sections/web3';
 import SectionSafe from './sections/safe';
 import AliasesPage from './sections/aliases';
 import InfoPage from './sections/info';
+import MessagesPage from './sections/messages';
 import PeersPage from './sections/peers';
 import TicketsPage from './sections/tickets';
 import ChannelsPage from './sections/channels';
@@ -112,9 +113,10 @@ export const applicationMap = [
         loginNeeded: 'node',
       },
       {
-        name: 'Message',
-        path: 'message',
+        name: 'Messages',
+        path: 'messages',
         icon: <MailIcon />,
+        element: <MessagesPage />,
         loginNeeded: 'node',
       },
       {

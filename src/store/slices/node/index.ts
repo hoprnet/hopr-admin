@@ -22,6 +22,17 @@ const nodeSlice = createSlice({
     ) {
       state.messages.push(action.payload);
     },
+    toggleMessageSeen(
+      state,
+      action: PayloadAction<(typeof initialState.messages)[0]>
+    ) {
+      state.messages = state.messages.map((message) => {
+        if (message.id === action.payload.id) {
+          return { ...message, seen: !message.seen };
+        }
+        return message;
+      });
+    },
     logsReceived(state, action: PayloadAction<(typeof initialState.logs)[0]>) {
       state.logs.push(action.payload);
     },

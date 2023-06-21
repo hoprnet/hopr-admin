@@ -1,5 +1,5 @@
 import { utils } from '@hoprnet/hopr-sdk';
-import { Middleware, PayloadAction } from '@reduxjs/toolkit';
+import { Middleware, PayloadAction, nanoid } from '@reduxjs/toolkit';
 import { initialState } from '../auth/initialState';
 import { nodeActions } from './index';
 import readStreamEvent from '../../../utils/readStreamEvent';
@@ -46,6 +46,7 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
             onMessage: (message) => {
               dispatch(
                 messageReceived({
+                  id: nanoid(),
                   body: message,
                   createdAt: Date.now(),
                   seen: false,

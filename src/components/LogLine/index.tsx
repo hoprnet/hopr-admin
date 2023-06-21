@@ -10,6 +10,10 @@ const LogLineContainer = styled.div`
   gap: 1rem;
   justify-content: space-between;
   width: 100%;
+
+  @media (min-width: 840px) {
+    gap: 3rem;
+  }
 `;
 
 const StyledTime = styled.time`
@@ -26,6 +30,7 @@ const Pre = styled.pre`
   margin: 0;
   padding-bottom: 0.5rem;
   white-space: break-spaces;
+  word-break: break-all;
 `;
 
 const regex = /(\b\w{53})\b/g;
