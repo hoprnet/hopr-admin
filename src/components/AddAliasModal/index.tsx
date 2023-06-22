@@ -1,5 +1,12 @@
-import { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, TextField, DialogActions, InputAdornment } from '@mui/material';
+import { useState, useEffect } from 'react';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
+  Alert
+} from '@mui/material'
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 
@@ -10,6 +17,7 @@ type CreateAliasModalProps = {
 export const CreateAliasModal = ({ handleRefresh }: CreateAliasModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
+  const aliases = useAppSelector((selector) => selector.node.aliases);
   const [error, set_error] = useState<{
     status: string | undefined;
     error: string | undefined;
@@ -19,9 +27,20 @@ export const CreateAliasModal = ({ handleRefresh }: CreateAliasModalProps) => {
     alias: '',
     peerId: '',
   });
+  const [duplicateAlias, set_duplicateAlias] = useState(false);
+
+  const handleCloseAlert = () => {
+    set_duplicateAlias(false);
+  };
+
+  const handleOpenAlert = () => {
+    set_duplicateAlias(true);
+  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
+    const {
+      name, value, 
+    } = event.target;
     set_modal({
       ...modal,
       [name]: value,
@@ -30,15 +49,36 @@ export const CreateAliasModal = ({ handleRefresh }: CreateAliasModalProps) => {
 
   const [openModal, setOpenModal] = useState(false);
 
+  useEffect(() => {
+    if (duplicateAlias) {
+      const timer = setTimeout(() => {
+        handleCloseAlert();
+      }, 5e3); // 5 seconds
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [duplicateAlias]);
+
   const handleOpenModal = () => {
     setOpenModal(true);
   };
 
   const handleCloseModal = () => {
+    set_modal({
+      peerId: '',
+      alias: '',
+    });
     setOpenModal(false);
   };
 
   const handleAddAlias = () => {
+    if (aliases && Object.keys(aliases).includes(modal.alias)) {
+      handleOpenAlert();
+      handleCloseModal();
+      return;
+    }
     if (loginData.apiEndpoint && loginData.apiToken) {
       dispatch(
         actionsAsync.setAliasThunk({
@@ -46,7 +86,7 @@ export const CreateAliasModal = ({ handleRefresh }: CreateAliasModalProps) => {
           peerId: modal.peerId,
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -71,7 +111,14 @@ export const CreateAliasModal = ({ handleRefresh }: CreateAliasModalProps) => {
   return (
     <>
       <button onClick={handleOpenModal}>Add New Alias</button>
-
+      {duplicateAlias && (
+        <Alert
+          severity="warning"
+          onClose={handleCloseAlert}
+        >
+          This is a duplicate alias!
+        </Alert>
+      )}
       <Dialog
         open={openModal}
         onClose={handleCloseModal}
@@ -81,16 +128,20 @@ export const CreateAliasModal = ({ handleRefresh }: CreateAliasModalProps) => {
           <TextField
             type="text"
             name="peerId"
-            placeholder="peerId"
+            label="Peer ID"
+            placeholder="16Uiu2HA..."
             onChange={handleChange}
             value={modal.peerId}
+            sx={{ mt: '6px' }}
           />
           <TextField
             type="text"
             name="alias"
-            placeholder="alias"
+            label="Alias"
+            placeholder="Alias"
             onChange={handleChange}
             value={modal.alias}
+            sx={{ mt: '6px' }}
           />
           <DialogActions>
             <button
