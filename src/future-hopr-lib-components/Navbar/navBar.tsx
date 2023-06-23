@@ -6,6 +6,8 @@ import styled from '@emotion/styled';
 //import LaunchPlaygroundBtn from '../../future-hopr-lib-components/Button/LaunchPlayground';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import NavBarItems from './navBarItems';
+import { Box, IconButton } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 
 interface AppBarProps extends MuiAppBarProps {
   tallerNavBarOnMobile?: boolean;
@@ -45,12 +47,17 @@ const Container = styled.div<{ webapp?: boolean }>`
   justify-content: space-between;
   ${(props) => !props.webapp && 'max-width: 1098px;'}
   width: 100%;
-  margin: auto;
+  margin-inline: 8px;
   position: relative;
   .menu {
     display: flex;
     flex-direction: row;
   }
+`;
+
+const FlexBox = styled(Box)`
+  display: flex;
+  gap: 1rem;
 `;
 
 const Logo = styled.div`
@@ -85,7 +92,9 @@ const NavBar: React.FC<{
   tallerNavBarOnMobile?: boolean;
   itemsNavbarCenter?: any[];
   itemsNavbarRight?: any[];
-  onButtonClick?: () => {};
+  openDrawer: boolean;
+  onButtonClick?: () => void;
+  set_openDrawer: (openDrawer: boolean) => void;
 }> = (props) => {
   //  const router = useRouter();
   const [activaMenu, setActivaMenu] = useState(false);
@@ -114,15 +123,20 @@ const NavBar: React.FC<{
         webapp={props.webapp}
       >
         <Container webapp={props.webapp}>
-          <Logo className="logo-hopr">
-            <a href="/">
-              <img
-                className="logo-hopr-navbar"
-                alt={props.mainLogoAlt}
-                src={props.mainLogo}
-              />
-            </a>
-          </Logo>
+          <FlexBox>
+            <IconButton onClick={() => props.set_openDrawer(!props.openDrawer)}>
+              <MenuIcon />
+            </IconButton>
+            <Logo className="logo-hopr">
+              <a href="/">
+                <img
+                  className="logo-hopr-navbar"
+                  alt={props.mainLogoAlt}
+                  src={props.mainLogo}
+                />
+              </a>
+            </Logo>
+          </FlexBox>
           <div
             onClick={() => setActivaMenu(!activaMenu)}
             className={'icon-menu' + (activaMenu ? ' open' : '')}
