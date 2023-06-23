@@ -1,44 +1,47 @@
 /// <reference types="vite-plugin-svgr/client" />
 // Packages
-import React from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { Outlet } from 'react-router-dom';
 
 // Components
 import NavBar from '../Navbar/navBar';
 import Footer from './footer';
-import Drawer from './drawer';
-import { PropaneSharp } from '@mui/icons-material';
+import Drawer from '../Drawer';
 
 const SLayout = styled.div``;
 
-const Content = styled.div<any>`
+const Content = styled.div<{ openDrawer: boolean }>`
   margin-top: 60px;
-  ${(props) =>
-    props.tallerNavBarOnMobile &&
-    `
-    @media screen and (max-width: 520px) {
-        margin-top: 0px;
-    }
-  `}
-  ${(props) =>
-    props.drawer &&
-    `
-    @media screen and (min-width: 600px) {
-        margin-left: 240px;
-    }
-  `}
+  transition: margin 0.4s ease;
+  margin-left: 0;
+  @media (min-width: 499.1px) {
+    margin-left: ${(props) => (props.openDrawer ? '240px' : '56px')};
+  }
 `;
 
 const Layout: React.FC<{
   className?: string;
   itemsNavbarRight?: any;
   tallerNavBarOnMobile?: boolean;
-  children?: any;
+  children?: ReactNode;
   drawer?: boolean;
   webapp?: boolean;
-  drawerLoginState?: {};
-  drawerItems?: {}[];
+  drawerLoginState?: {
+    node: boolean;
+    web3: boolean;
+  };
+  drawerItems: {
+    groupName: string;
+    path: string;
+    items: {
+      name: string;
+      path: string;
+      icon: JSX.Element;
+      element?: JSX.Element;
+      loginNeeded?: 'node' | 'web3';
+    }[];
+  }[];
 }> = ({
   className = '',
   children,
@@ -49,6 +52,26 @@ const Layout: React.FC<{
   webapp,
   drawerLoginState,
 }) => {
+  const [openDrawer, set_openDrawer] = useState(true);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 900) {
+        set_openDrawer(false);
+      } else {
+        if (!openDrawer) return;
+        set_openDrawer(true);
+      }
+    };
+
+    handleResize(); // Set initial state on component mount
+    window.addEventListener('resize', handleResize); // Add event listener to handle window resize
+
+    return () => {
+      window.removeEventListener('resize', handleResize); // Clean up the event listener on component unmount
+    };
+  }, []);
+
   return (
     <SLayout className="Layout">
       <NavBar
@@ -57,20 +80,24 @@ const Layout: React.FC<{
         itemsNavbarRight={itemsNavbarRight}
         tallerNavBarOnMobile={tallerNavBarOnMobile}
         webapp={webapp}
+        set_openDrawer={set_openDrawer}
+        openDrawer={openDrawer}
       />
+
       {drawer && (
         <Drawer
           drawerItems={drawerItems}
           drawerLoginState={drawerLoginState}
+          set_openDrawer={set_openDrawer}
+          openDrawer={openDrawer}
         />
       )}
       <Content
         className="Content"
-        drawer={drawer}
-        //       tallerNavBarOnMobile={tallerNavBarOnMobile}
+        openDrawer={openDrawer}
       >
         <Outlet />
-        {/* {children}  */}
+        {/* {children} */}
       </Content>
       {/* <Footer /> */}
     </SLayout>
