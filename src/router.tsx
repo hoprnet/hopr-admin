@@ -166,14 +166,15 @@ const LayoutEnhanced = () => {
   const apiToken = searchParams.get('apiToken');
 
   useEffect(() => {
-    if (!(apiEndpoint && apiToken)) return;
+    if (!apiEndpoint) return;
     if (loginData.apiEndpoint === apiEndpoint && loginData.apiToken === apiToken) return;
     dispatch(
       authActions.useNodeData({
         apiEndpoint,
-        apiToken,
+        apiToken: apiToken ? apiToken : '',
       }),
     );
+    if (!apiToken) return;
     dispatch(
       authActionsAsync.loginThunk({
         apiEndpoint,
