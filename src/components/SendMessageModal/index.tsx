@@ -31,6 +31,7 @@ const StatusContainer = styled.div`
 `;
 
 export const SendMessageModal = () => {
+  const dispatch = useAppDispatch();
   const [path, set_path] = useState<string>('');
   const [loader, set_loader] = useState<boolean>(false);
   const [status, set_status] = useState<string>('');
@@ -41,17 +42,13 @@ export const SendMessageModal = () => {
   const [receiver, set_receiver] = useState<string>('');
   const [openModal, set_openModal] = useState<boolean>(false);
 
-  const dispatch = useAppDispatch();
-
   const maxLength = 500;
   const remainingChars = maxLength - message.length;
 
   const nonAutomaticPathTooltip = 'Disable `automatic path` to enable `Number of hops`';
 
-  const {
-    apiEndpoint, apiToken, 
-  } = useAppSelector((selector) => selector.auth.loginData);
-  const { aliases } = useAppSelector((selector) => selector.node);
+  const loginData = useAppSelector((selector) => selector.auth.loginData);
+  const aliases = useAppSelector((selector) => selector.node.aliases);
 
   useEffect(() => {
     switch (sendMode) {
@@ -70,14 +67,14 @@ export const SendMessageModal = () => {
   }, [sendMode, path, automaticPath, numberOfHops]);
 
   const handleSendMessage = () => {
-    if (!(apiEndpoint && apiToken)) return;
+    if (!(loginData.apiEndpoint && loginData.apiToken)) return;
     set_status('');
     set_loader(true);
     const validatedReceiver = validatePeerId(receiver);
 
     const messagePayload: SendMessagePayloadType = {
-      apiToken,
-      apiEndpoint,
+      apiToken: loginData.apiToken,
+      apiEndpoint: loginData.apiEndpoint,
       body: message,
       recipient: validatedReceiver,
     };
@@ -94,6 +91,7 @@ export const SendMessageModal = () => {
     dispatch(actionsAsync.sendMessageThunk(messagePayload))
       .unwrap()
       .then((res) => {
+        console.log(res);
         set_status('Message sent');
         console.log(res?.body); // undefined
         console.log(res?.challenge); // undefined
@@ -105,6 +103,21 @@ export const SendMessageModal = () => {
       .finally(() => {
         set_loader(false);
       });
+
+    // let response;
+    // try {
+    //   response = await dispatch(actionsAsync.sendMessageThunk(messagePayload)).unwrap();
+
+    //   console.log('@message response:', response);
+    //   if (typeof response === 'string') {
+    //     set_status('Message sent');
+    //     console.log(response);
+    //   }
+    // } catch (err: any) {
+    //   console.log('@message err:', err);
+    //   set_status(err.error);
+    // }
+    // set_loader(false);
   };
 
   const handleAutomaticPath = (event: React.ChangeEvent<HTMLInputElement>) => {
