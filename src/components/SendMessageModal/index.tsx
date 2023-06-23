@@ -91,10 +91,8 @@ export const SendMessageModal = () => {
     dispatch(actionsAsync.sendMessageThunk(messagePayload))
       .unwrap()
       .then((res) => {
-        console.log(res);
+        console.log('@message: ', res?.challenge);
         set_status('Message sent');
-        console.log(res?.body); // undefined
-        console.log(res?.challenge); // undefined
       })
       .catch((e) => {
         console.log('@message err:', e);
@@ -103,21 +101,6 @@ export const SendMessageModal = () => {
       .finally(() => {
         set_loader(false);
       });
-
-    // let response;
-    // try {
-    //   response = await dispatch(actionsAsync.sendMessageThunk(messagePayload)).unwrap();
-
-    //   console.log('@message response:', response);
-    //   if (typeof response === 'string') {
-    //     set_status('Message sent');
-    //     console.log(response);
-    //   }
-    // } catch (err: any) {
-    //   console.log('@message err:', err);
-    //   set_status(err.error);
-    // }
-    // set_loader(false);
   };
 
   const handleAutomaticPath = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -248,18 +231,20 @@ export const SendMessageModal = () => {
               />
             </Tooltip>
           </PathOrHops>
-          <button
-            onClick={handleSendMessage}
-            disabled={
-              (!automaticPath && numberOfHops === '' && path === '') || message.length === 0 || receiver.length === 0
-            }
-            style={{
-              width: '100%',
-              marginTop: '8px',
-            }}
-          >
-            Send
-          </button>
+          <DialogActions>
+            <button
+              onClick={handleSendMessage}
+              disabled={
+                (!automaticPath && numberOfHops === '' && path === '') || message.length === 0 || receiver.length === 0
+              }
+              style={{
+                width: '100%',
+                marginTop: '8px',
+              }}
+            >
+              Send
+            </button>
+          </DialogActions>
           <StatusContainer>
             {loader && <CircularProgress />}
             {status}

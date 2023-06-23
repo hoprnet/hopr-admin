@@ -14,7 +14,7 @@ import {
   DialogContent,
   TextField,
   DialogActions,
-  InputAdornment,
+  InputAdornment
 } from '@mui/material';
 import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
@@ -87,13 +87,13 @@ function ChannelsPage() {
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
   };
 
@@ -124,7 +124,7 @@ function ChannelsPage() {
                 status: channel.status,
                 dedicatedFunds: channel.balance,
               })),
-              `${tabLabel}-channels.csv`
+              `${tabLabel}-channels.csv`,
             );
           }
         }}
@@ -150,7 +150,7 @@ function ChannelsPage() {
         apiToken: loginData.apiToken!,
         direction: direction,
         peerId: peerId,
-      })
+      }),
     )
       .unwrap()
       .then(() => {

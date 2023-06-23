@@ -15,6 +15,7 @@ import { exportToCsv } from '../utils/helpers';
 import { utils } from '@hoprnet/hopr-sdk';
 const { APIError } = utils;
 import { CreateAliasModal } from '../components/AddAliasModal';
+import { OpenChannelModal } from '../components/OpenChannelModal';
 
 function AliasesPage() {
   const dispatch = useAppDispatch();
@@ -116,10 +117,10 @@ function AliasesPage() {
         >
           <TableHead>
             <TableRow>
-              <TableCell>id</TableCell>
-              <TableCell>peerId</TableCell>
-              <TableCell>alias</TableCell>
-              <TableCell>actions</TableCell>
+              <TableCell>Id</TableCell>
+              <TableCell>Peer Id</TableCell>
+              <TableCell>Alias</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -134,6 +135,7 @@ function AliasesPage() {
                 <TableCell>{peerId}</TableCell>
                 <TableCell>{alias}</TableCell>
                 <TableCell>
+                  <CreateAliasModal handleRefresh={handleRefresh} />
                   <DeleteAliasButton
                     onSuccess={() => {
                       set_deleteSuccess(true);
@@ -151,6 +153,7 @@ function AliasesPage() {
                     }}
                     alias={alias}
                   />
+                  <OpenChannelModal handleRefresh={handleRefresh} />
                 </TableCell>
               </TableRow>
             ))}
