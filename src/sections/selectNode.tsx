@@ -57,7 +57,8 @@ function Section1() {
     const existingItemIndex = nodesSavedLocally.findIndex((item: any) => item.apiEndpoint === loginData.apiEndpoint);
     if (existingItemIndex !== -1) set_nodesSavedLocallyChosenIndex(existingItemIndex.toString());
     const existingItem = nodesSavedLocally[existingItemIndex] as ParsedNode;
-    if (existingItem.apiToken.length > 0 && loginData.apiToken === existingItem.apiToken) set_saveApiToken(true);
+    if (existingItem && existingItem.apiToken.length > 0 && loginData.apiToken === existingItem.apiToken)
+      set_saveApiToken(true);
   }, [loginData]);
 
   useEffect(() => {
