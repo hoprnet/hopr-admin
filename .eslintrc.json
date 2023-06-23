@@ -26,15 +26,18 @@
         "ExportDeclaration": { "minProperties": 2 }
       }
     ],
-    "comma-dangle": [2, {
-      "arrays": "always-multiline",
-      "objects": "always-multiline",
-      "imports": "never",
-      "exports": "always-multiline",
-      "functions": "always-multiline"
-    }],
+    "comma-dangle": [
+      2,
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "never",
+        "exports": "always-multiline",
+        "functions": "always-multiline"
+      }
+    ],
     "import-newlines/enforce": "warn",
-    "newline-destructuring/newline": "warn",
+    "newline-destructuring/newline": ["warn", { "items": 1 }],
     "no-duplicate-imports": "warn",
     "no-console": "warn",
     "prefer-const": "warn",
