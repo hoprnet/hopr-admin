@@ -50,10 +50,12 @@ const nonAutomaticPathTooltip = 'Disable `automatic path` to enable `Number of h
 
 const messages = () => {
   const {
-    messages, aliases, 
+    messages,
+    aliases,
   } = useAppSelector((selector) => selector.node);
   const {
-    apiEndpoint, apiToken, 
+    apiEndpoint,
+    apiToken,
   } = useAppSelector((selector) => selector.auth.loginData);
   const dispatch = useAppDispatch();
 
@@ -131,9 +133,9 @@ const messages = () => {
       messagePayload.path = validatedPath;
     }
 
-    let response;
+    // let response;
     try {
-      response = await dispatch(actionsAsync.sendMessageThunk(messagePayload)).unwrap();
+      const response = await dispatch(actionsAsync.sendMessageThunk(messagePayload)).unwrap();
 
       console.log('@message response:', response);
       if (typeof response === 'string') set_status('Message sent');
