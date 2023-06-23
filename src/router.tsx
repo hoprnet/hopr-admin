@@ -23,6 +23,7 @@ import Layout from './future-hopr-lib-components/Layout';
 import ConnectWeb3 from './components/ConnectWeb3';
 import ConnectNode from './components/ConnectNode';
 import NotificationBar from './components/NotificationBar';
+import InfoBar from './components/InfoBar';
 
 // Icons
 import CableIcon from '@mui/icons-material/Cable';
@@ -199,6 +200,7 @@ const LayoutEnhanced = () => {
           <ConnectNode />
         </>
       }
+      drawerRight={nodeConnected && <InfoBar />}
     />
   );
 };
