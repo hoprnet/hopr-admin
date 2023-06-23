@@ -1,4 +1,4 @@
-import { ActionReducerMapBuilder, createAsyncThunk, nanoid } from '@reduxjs/toolkit';
+import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 import {
   type AliasPayloadType,
@@ -757,13 +757,11 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     if (index !== -1) {
       console;
       state.messagesSent[index].status = 'error';
-      {
-        /*  @ts-ignore */
-      }
+      // prettier-ignore
+      { /*   @ts-ignore */ }
       if (typeof action.payload.status === 'string') {
-        {
-          /*  @ts-ignore */
-        }
+        // prettier-ignore
+        { /* @ts-ignore */ }
         state.messagesSent[index].error = action.payload.status;
       }
     }
