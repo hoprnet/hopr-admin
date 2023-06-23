@@ -38,7 +38,19 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LockIcon from '@mui/icons-material/Lock';
 import ContactPhone from '@mui/icons-material/ContactPhone';
 
-export const applicationMap = [
+type ApplicationMap = {
+  groupName: string;
+  path: string;
+  items: {
+    name: string;
+    path: string;
+    icon: JSX.Element;
+    element?: JSX.Element;
+    loginNeeded?: 'node' | 'web3';
+  }[];
+}[];
+
+export const applicationMap: ApplicationMap = [
   // {
   //   path: '/',
   //   element: <SectionInfo/>,
