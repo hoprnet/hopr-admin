@@ -55,22 +55,26 @@ const Layout: React.FC<{
   const [openDrawer, set_openDrawer] = useState(true);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 900) {
-        set_openDrawer(false);
-      } else {
-        if (!openDrawer) return;
-        set_openDrawer(true);
-      }
-    };
-
-    handleResize(); // Set initial state on component mount
-    window.addEventListener('resize', handleResize); // Add event listener to handle window resize
-
-    return () => {
-      window.removeEventListener('resize', handleResize); // Clean up the event listener on component unmount
-    };
+    if (window.innerWidth <= 900) {
+      set_openDrawer(false);
+    }
   }, []);
+
+  // TODO: Do we want this?
+  //   useEffect(() => {
+  //     const handleResize = () => {
+  //       if (window.innerWidth <= 900) {
+  //         set_openDrawer(false);
+  //       }
+  //     };
+
+  //     handleResize(); // Set initial state on component mount
+  //     window.addEventListener('resize', handleResize); // Add event listener to handle window resize
+
+  //     return () => {
+  //       window.removeEventListener('resize', handleResize); // Clean up the event listener on component unmount
+  //     };
+  //   }, []);
 
   return (
     <SLayout className="Layout">
