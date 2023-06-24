@@ -28,6 +28,13 @@ const Content = styled.div<any>`
         margin-left: 240px;
     }
   `}
+  ${(props) =>
+    props.drawerRight &&
+    `
+      @media screen and (min-width: 600px) {
+          margin-right: 161px;
+      }
+    `}
 `;
 
 const Layout: React.FC<{
@@ -39,6 +46,7 @@ const Layout: React.FC<{
   webapp?: boolean;
   drawerLoginState?: {};
   drawerItems?: {}[];
+  drawerRight?: React.ReactNode;
 }> = ({
   className = '',
   children,
@@ -48,6 +56,7 @@ const Layout: React.FC<{
   drawerItems,
   webapp,
   drawerLoginState,
+  drawerRight,
 }) => {
   return (
     <SLayout className="Layout">
@@ -66,12 +75,14 @@ const Layout: React.FC<{
       )}
       <Content
         className="Content"
-        drawer={drawer}
+        drawer={!!drawer}
+        drawerRight={!!drawerRight}
         //       tallerNavBarOnMobile={tallerNavBarOnMobile}
       >
         <Outlet />
         {/* {children}  */}
       </Content>
+      {drawerRight}
       {/* <Footer /> */}
     </SLayout>
   );
