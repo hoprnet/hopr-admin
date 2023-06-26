@@ -1,13 +1,17 @@
 /// <reference types="vite-plugin-svgr/client" />
 // Packages
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import styled from '@emotion/styled';
 import { Outlet } from 'react-router-dom';
+import { useMediaQuery } from '@mui/material';
 
 // Components
 import NavBar from '../Navbar/navBar';
 import Footer from './footer';
 import Drawer from '../Drawer';
+
+// Types
+import { ApplicationMapType } from '../../router';
 
 const SLayout = styled.div``;
 
@@ -31,17 +35,7 @@ const Layout: React.FC<{
     node: boolean;
     web3: boolean;
   };
-  drawerItems: {
-    groupName: string;
-    path: string;
-    items: {
-      name: string;
-      path: string;
-      icon: JSX.Element;
-      element?: JSX.Element;
-      loginNeeded?: 'node' | 'web3';
-    }[];
-  }[];
+  drawerItems: ApplicationMapType;
 }> = ({
   className = '',
   children,
@@ -52,29 +46,12 @@ const Layout: React.FC<{
   webapp,
   drawerLoginState,
 }) => {
-  const [openDrawer, set_openDrawer] = useState(true);
+  // Determine if the device is a mobile device based on the screen width
+  const isMobile = useMediaQuery('(max-width: 500px)');
 
-  useEffect(() => {
-    if (window.innerWidth <= 900) {
-      set_openDrawer(false);
-    }
-  }, []);
-
-  // TODO: Do we want this?
-  //   useEffect(() => {
-  //     const handleResize = () => {
-  //       if (window.innerWidth <= 900) {
-  //         set_openDrawer(false);
-  //       }
-  //     };
-
-  //     handleResize(); // Set initial state on component mount
-  //     window.addEventListener('resize', handleResize); // Add event listener to handle window resize
-
-  //     return () => {
-  //       window.removeEventListener('resize', handleResize); // Clean up the event listener on component unmount
-  //     };
-  //   }, []);
+  // Set the initial state of the drawer based on the device type
+  // If it's a mobile device, set the drawer to be closed by default
+  const [openDrawer, set_openDrawer] = useState(!isMobile);
 
   return (
     <SLayout className="Layout">

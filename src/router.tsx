@@ -37,10 +37,14 @@ import HubIcon from '@mui/icons-material/Hub';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LockIcon from '@mui/icons-material/Lock';
 import ContactPhone from '@mui/icons-material/ContactPhone';
+import NodeIcon from '@mui/icons-material/Router';
+import NetworkingIcon from '@mui/icons-material/Diversity3';
+import DevelopIcon from '@mui/icons-material/Code';
 
-type ApplicationMap = {
+export type ApplicationMapType = {
   groupName: string;
   path: string;
+  icon: JSX.Element;
   items: {
     name: string;
     path: string;
@@ -50,7 +54,7 @@ type ApplicationMap = {
   }[];
 }[];
 
-export const applicationMap: ApplicationMap = [
+export const applicationMap: ApplicationMapType = [
   // {
   //   path: '/',
   //   element: <SectionInfo/>,
@@ -59,6 +63,7 @@ export const applicationMap: ApplicationMap = [
   {
     groupName: 'Node',
     path: 'node',
+    icon: <NodeIcon />,
     items: [
       {
         name: 'Connect',
@@ -98,6 +103,7 @@ export const applicationMap: ApplicationMap = [
   {
     groupName: 'Networking',
     path: 'networking',
+    icon: <NetworkingIcon />,
     items: [
       {
         name: 'Ping',
@@ -138,6 +144,7 @@ export const applicationMap: ApplicationMap = [
   {
     groupName: 'DEVELOP',
     path: 'develop',
+    icon: <DevelopIcon />,
     items: [
       {
         name: 'Web3',
@@ -241,4 +248,3 @@ console.log('routes', routes);
 const router = createBrowserRouter(routes);
 
 export default router;
-export type ApplicationMapType = typeof applicationMap;

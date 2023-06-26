@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { css } from '@emotion/react';
 import {
   Divider,
   List,
@@ -11,30 +12,38 @@ import {
 import MuiDrawer from '@mui/material/Drawer';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { ApplicationMapType } from '../../router';
 
 const drawerWidth = 240;
+const minDrawerWidth = 56;
 
 const StyledDrawer = styled(MuiDrawer)`
   .MuiDrawer-paper {
     box-sizing: border-box;
     padding-top: 59px;
     transition: width 0.4s ease;
-    width: ${(props) => (props.open ? `${drawerWidth}px` : '56px')};
+    overflow: hidden;
+    width: ${(props) => (props.open ? `${drawerWidth}px` : `${minDrawerWidth}px`)};
+
+    ${(props) =>
+    props.variant === 'temporary' &&
+      css`
+        width: ${drawerWidth}px;
+      `}
   }
 `;
 
+const StyledListSubheader = styled(ListSubheader)`
+  align-items: center;
+  color: #777;
+  display: flex;
+  height: 64px;
+  letter-spacing: 0.2px;
+  user-select: none;
+`;
+
 type DrawerProps = {
-  drawerItems: {
-    groupName: string;
-    path: string;
-    items: {
-      name: string;
-      path: string;
-      icon: JSX.Element;
-      element?: JSX.Element;
-      loginNeeded?: 'node' | 'web3';
-    }[];
-  }[];
+  drawerItems: ApplicationMapType;
   drawerLoginState?: {
     node: boolean;
     web3: boolean;
@@ -63,39 +72,57 @@ const Drawer = ({
       }
     };
 
-    handleResize(); // Set initial state on component mount
-    window.addEventListener('resize', handleResize); // Add event listener to handle window resize
+    handleResize();
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize); // Clean up the event listener on component unmount
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  const handleButtonClick = () => {
+    if (drawerVariant === 'temporary') {
+      set_openDrawer(false);
+    }
+  };
 
   return (
     <StyledDrawer
       variant={drawerVariant}
       open={openDrawer}
-      onClose={() => set_openDrawer(!openDrawer)}
+      onClose={() => set_openDrawer(false)}
     >
       {drawerItems.map((group) => (
-        <>
+        <div key={group.groupName}>
           <Divider />
           <List
-            key={group.groupName}
-            subheader={openDrawer && <ListSubheader>{group.groupName}</ListSubheader>}
-            disablePadding
+            subheader={
+              openDrawer ? (
+                <StyledListSubheader>{group.groupName}</StyledListSubheader>
+              ) : (
+                <Tooltip
+                  title={`Group: ${group.groupName.toLowerCase()}`}
+                  placement="right"
+                >
+                  <StyledListSubheader>
+                    <ListItemIcon sx={{ color: '#ddd' }}>{group.icon}</ListItemIcon>
+                  </StyledListSubheader>
+                </Tooltip>
+              )
+            }
           >
             {group.items.map((item) => (
               <Tooltip
                 key={item.name}
                 title={!openDrawer && item.name}
-                placement="right-end"
+                placement="right"
               >
                 <ListItemButton
                   component={Link}
                   to={`${group.path}/${item.path}${searchParams ?? ''}`}
                   selected={location.pathname === `/${group.path}/${item.path}`}
                   disabled={item.loginNeeded && !drawerLoginState?.[item.loginNeeded]}
+                  onClick={handleButtonClick}
                   sx={{
                     height: 48,
                     '&.Mui-selected': {
@@ -106,12 +133,12 @@ const Drawer = ({
                   }}
                 >
                   <ListItemIcon>{item.icon}</ListItemIcon>
-                  {openDrawer && <ListItemText>{item.name}</ListItemText>}
+                  <ListItemText>{item.name}</ListItemText>
                 </ListItemButton>
               </Tooltip>
             ))}
           </List>
-        </>
+        </div>
       ))}
     </StyledDrawer>
   );
