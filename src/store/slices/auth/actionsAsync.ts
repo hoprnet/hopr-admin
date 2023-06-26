@@ -1,17 +1,43 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
+import { initialState } from './initialState';
 import { authActions } from './index';
-import { api } from '@hoprnet/hopr-sdk';
+import { api, utils } from '@hoprnet/hopr-sdk';
+const { APIError } = utils;
 const { getInfo } = api;
 
 export const loginThunk = createAsyncThunk(
   'auth/login',
-  async (loginData: { apiToken: string; apiEndpoint: string }, { dispatch }) => {
-    const info = await getInfo({
-      apiEndpoint: loginData.apiEndpoint,
-      apiToken: loginData.apiToken,
-    });
-    if (info) dispatch(authActions.setConnected());
+  async (loginData: { apiToken: string; apiEndpoint: string }, { rejectWithValue }) => {
+    try {
+      const info = await getInfo({
+        apiEndpoint: loginData.apiEndpoint,
+        apiToken: loginData.apiToken,
+      });
+      console.log('info', info);
+      return info;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
+    }
   },
 );
+
+export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
+  builder.addCase(loginThunk.pending, (state) => {
+    state.status.connecting = true;
+    state.status.connected = false;
+  });
+  builder.addCase(loginThunk.fulfilled, (state) => {
+    state.status.connecting = false;
+    state.status.connected = true;
+  });
+  builder.addCase(loginThunk.rejected, (state) => {
+    state.status.connecting = false;
+  });
+};
 
 export const actionsAsync = { loginThunk };
