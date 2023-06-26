@@ -1,10 +1,6 @@
 import { MouseEvent, useState, useEffect } from 'react';
 
 import styled from '@emotion/styled';
-
-// Store
-import { useAppDispatch, useAppSelector } from '../../store';
-import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import {
   Dialog,
   DialogTitle,
@@ -18,10 +14,15 @@ import {
 } from '@mui/material';
 import { SendMessagePayloadType } from '@hoprnet/hopr-sdk';
 import Checkbox from '../../future-hopr-lib-components/Toggles/Checkbox';
+import CloseIcon from '@mui/icons-material/Close';
+
+// Store
+import { useAppDispatch, useAppSelector } from '../../store';
+import { actionsAsync } from '../../store/slices/node/actionsAsync';
 
 const PathOrHops = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 8px;
   align-items: center;
 `;
@@ -30,7 +31,11 @@ const StatusContainer = styled.div`
   height: 32px;
 `;
 
-export const SendMessageModal = () => {
+type SendMessageModalProps = {
+  peerId?: string;
+};
+
+export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
   const dispatch = useAppDispatch();
   const [path, set_path] = useState<string>('');
   const [loader, set_loader] = useState<boolean>(false);
@@ -49,6 +54,12 @@ export const SendMessageModal = () => {
 
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const aliases = useAppSelector((selector) => selector.node.aliases);
+
+  const setPropReceiver = () => {
+    if (peerId) set_receiver(peerId);
+  };
+
+  useEffect(setPropReceiver, []);
 
   useEffect(() => {
     switch (sendMode) {
@@ -132,6 +143,7 @@ export const SendMessageModal = () => {
     set_path('');
     set_openModal(false);
     set_status('');
+    setPropReceiver();
   };
 
   const isAlias = (alias: string) => {
@@ -156,7 +168,17 @@ export const SendMessageModal = () => {
         onClose={handleCloseModal}
         fullWidth={true}
       >
-        <DialogTitle>Send Message</DialogTitle>
+        <DialogTitle>
+          Send Message{' '}
+          <CloseIcon
+            onClick={handleCloseModal}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+            }}
+          />
+        </DialogTitle>
         <DialogContent>
           <TextField
             label="Receiver"
@@ -227,7 +249,7 @@ export const SendMessageModal = () => {
                 onChange={handlePath}
                 disabled={automaticPath}
                 fullWidth
-                sx={{ maxWidth: '480px' }}
+                sx={{ maxWidth: '240px' }}
               />
             </Tooltip>
           </PathOrHops>

@@ -145,9 +145,15 @@ function PeersPage() {
                 </TableCell>
                 <TableCell>{peer.quality}</TableCell>
                 <TableCell>
-                  <CreateAliasModal handleRefresh={handleRefresh} />
-                  <OpenChannelModal handleRefresh={handleRefresh} />
-                  <SendMessageModal />
+                  <CreateAliasModal
+                    handleRefresh={handleRefresh}
+                    peerId={peer.peerId}
+                  />
+                  <OpenChannelModal
+                    handleRefresh={handleRefresh}
+                    peerId={peer.peerId}
+                  />
+                  <SendMessageModal peerId={peer.peerId} />
                 </TableCell>
               </TableRow>
             ))}

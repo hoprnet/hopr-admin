@@ -211,11 +211,11 @@ function ChannelsPage() {
         >
           <TableHead>
             <TableRow>
-              <TableCell>id</TableCell>
-              <TableCell>peerId</TableCell>
-              <TableCell>status</TableCell>
-              <TableCell>dedicated funds</TableCell>
-              <TableCell>actions</TableCell>
+              <TableCell>Id</TableCell>
+              <TableCell>Peer Id</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Dedicated Funds</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           {tabIndex === 0 && (
@@ -234,7 +234,7 @@ function ChannelsPage() {
                   <TableCell>
                     <FundChannelModal
                       peerId={channel.peerId}
-                      buttonText="Open Outgoing & Fund"
+                      text="Open Outgoing & Fund"
                       channelId={channel.channelId}
                       handleRefresh={handleRefresh}
                     />
@@ -268,7 +268,7 @@ function ChannelsPage() {
                     <hr />
                     <FundChannelModal
                       peerId={channel.peerId}
-                      buttonText="Fund"
+                      text="Fund"
                       channelId={channel.channelId}
                       handleRefresh={handleRefresh}
                     />

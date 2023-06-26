@@ -10,19 +10,20 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { useState } from 'react';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { ethers } from 'ethers';
+import CloseIcon from '@mui/icons-material/Close';
 
 type FundChannelModalProps = {
   channelId: string;
   peerId: string;
   handleRefresh: () => void;
-  buttonText: string;
+  text: string;
 };
 
 export const FundChannelModal = ({
   channelId,
   peerId,
   handleRefresh,
-  buttonText,
+  text,
 }: FundChannelModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
@@ -75,12 +76,22 @@ export const FundChannelModal = ({
 
   return (
     <>
-      <button onClick={() => handleOpenFundingPopup(channelId)}>{buttonText}</button>
+      <button onClick={() => handleOpenFundingPopup(channelId)}>{text}</button>
       <Dialog
         open={openFundingPopups[channelId] || false}
         onClose={() => closeFundingPopup(channelId)}
       >
-        <DialogTitle>Fund Channel</DialogTitle>
+        <DialogTitle>
+          {text}{' '}
+          <CloseIcon
+            onClick={() => closeFundingPopup(channelId)}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+            }}
+          />
+        </DialogTitle>
         <DialogContent>
           <TextField
             label="Funding Amount"

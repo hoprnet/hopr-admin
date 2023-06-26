@@ -9,12 +9,16 @@ import {
 } from '@mui/material'
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
+import CloseIcon from '@mui/icons-material/Close';
 
 type CreateAliasModalProps = {
   handleRefresh: () => void;
+  peerId?: string;
 };
 
-export const CreateAliasModal = ({ handleRefresh }: CreateAliasModalProps) => {
+export const CreateAliasModal = ({
+  handleRefresh, peerId, 
+}: CreateAliasModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const aliases = useAppSelector((selector) => selector.node.aliases);
@@ -28,6 +32,7 @@ export const CreateAliasModal = ({ handleRefresh }: CreateAliasModalProps) => {
     peerId: '',
   });
   const [duplicateAlias, set_duplicateAlias] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   const handleCloseAlert = () => {
     set_duplicateAlias(false);
@@ -46,8 +51,14 @@ export const CreateAliasModal = ({ handleRefresh }: CreateAliasModalProps) => {
       [name]: value,
     });
   };
-
-  const [openModal, setOpenModal] = useState(false);
+  const setPropPeerId = () => {
+    if (peerId)
+      set_modal({
+        ...modal,
+        peerId: peerId,
+      });
+  };
+  useEffect(setPropPeerId, []);
 
   useEffect(() => {
     if (duplicateAlias) {
@@ -66,11 +77,12 @@ export const CreateAliasModal = ({ handleRefresh }: CreateAliasModalProps) => {
   };
 
   const handleCloseModal = () => {
+    setOpenModal(false);
     set_modal({
       peerId: '',
       alias: '',
     });
-    setOpenModal(false);
+    setPropPeerId();
   };
 
   const handleAddAlias = () => {
@@ -123,7 +135,17 @@ export const CreateAliasModal = ({ handleRefresh }: CreateAliasModalProps) => {
         open={openModal}
         onClose={handleCloseModal}
       >
-        <DialogTitle>Add Alias</DialogTitle>
+        <DialogTitle>
+          Add Alias{' '}
+          <CloseIcon
+            onClick={handleCloseModal}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+            }}
+          />
+        </DialogTitle>
         <DialogContent>
           <TextField
             type="text"

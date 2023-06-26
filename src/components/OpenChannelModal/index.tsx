@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -10,26 +10,37 @@ import {
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { ethers } from 'ethers';
+import CloseIcon from '@mui/icons-material/Close';
 
 type OpenChannelModalProps = {
   handleRefresh: () => void;
+  peerId?: string;
 };
 
-export const OpenChannelModal = ({ handleRefresh }: OpenChannelModalProps) => {
+export const OpenChannelModal = ({
+  handleRefresh, peerId, 
+}: OpenChannelModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const [openChannelModal, set_openChannelModal] = useState(false);
-  const [peerId, set_peerId] = useState('');
   const [amount, set_amount] = useState('');
+  const [localPeerId, set_localPeerId] = useState('');
+
+  useEffect(() => {
+    if (peerId) {
+      set_localPeerId(peerId);
+    }
+  }, [peerId]);
 
   const handleOpenChannelDialog = () => {
     set_openChannelModal(true);
+    console.log(localPeerId);
   };
 
   const handleCloseChannelDialog = () => {
     set_openChannelModal(false);
     set_amount('');
-    set_peerId('');
+    if (peerId && localPeerId !== peerId) set_localPeerId(peerId);
   };
 
   const handleOpenChannel = (amount: string, peerId: string) => {
@@ -61,13 +72,23 @@ export const OpenChannelModal = ({ handleRefresh }: OpenChannelModalProps) => {
         open={openChannelModal}
         onClose={handleCloseChannelDialog}
       >
-        <DialogTitle>Open Channel</DialogTitle>
+        <DialogTitle>
+          Open Channel{' '}
+          <CloseIcon
+            onClick={handleCloseChannelDialog}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+            }}
+          />
+        </DialogTitle>
         <DialogContent>
           <TextField
             label="Peer ID"
-            value={peerId}
+            value={localPeerId}
             placeholder="16Uiu2HA..."
-            onChange={(e) => set_peerId(e.target.value)}
+            onChange={(e) => set_localPeerId(e.target.value)}
             sx={{ mt: '6px' }}
           />
           <TextField
@@ -83,8 +104,8 @@ export const OpenChannelModal = ({ handleRefresh }: OpenChannelModalProps) => {
         <DialogActions>
           <button onClick={handleCloseChannelDialog}>Cancel</button>
           <button
-            onClick={() => handleOpenChannel(ethers.utils.parseEther(amount).toString(), peerId)}
-            disabled={!amount || parseFloat(amount) <= 0 || !peerId}
+            onClick={() => handleOpenChannel(ethers.utils.parseEther(amount).toString(), localPeerId)}
+            disabled={!amount || parseFloat(amount) <= 0 || !localPeerId}
           >
             Open Channel
           </button>
