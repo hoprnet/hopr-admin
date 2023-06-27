@@ -58,8 +58,8 @@ const StyledListItemButton = styled(ListItemButton)`
 type DrawerProps = {
   drawerItems: ApplicationMapType;
   drawerLoginState?: {
-    node: boolean;
-    web3: boolean;
+    node?: boolean;
+    web3?: boolean;
   };
   openedNavigationDrawer: boolean;
   set_openedNavigationDrawer: (openedNavigationDrawer: boolean) => void;
@@ -134,7 +134,7 @@ const Drawer = ({
                   component={Link}
                   to={`${group.path}/${item.path}${searchParams ?? ''}`}
                   selected={location.pathname === `/${group.path}/${item.path}`}
-                  disabled={item.loginNeeded && !drawerLoginState?.[item.loginNeeded]}
+                  disabled={!item.element || (item.loginNeeded && !drawerLoginState?.[item.loginNeeded])}
                   onClick={handleButtonClick}
                 >
                   <ListItemIcon>{item.icon}</ListItemIcon>
