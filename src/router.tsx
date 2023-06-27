@@ -17,6 +17,7 @@ import MessagesPage from './sections/messages';
 import PeersPage from './sections/peers';
 import TicketsPage from './sections/tickets';
 import ChannelsPage from './sections/channels';
+import SafeStakingPage from './sections/safe-staking';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -38,6 +39,7 @@ import HubIcon from '@mui/icons-material/Hub';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LockIcon from '@mui/icons-material/Lock';
 import ContactPhone from '@mui/icons-material/ContactPhone';
+import SavingsIcon from '@mui/icons-material/Savings';
 
 export const applicationMap = [
   // {
@@ -140,6 +142,13 @@ export const applicationMap = [
         path: 'safe',
         icon: <LockIcon />,
         element: <SectionSafe />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Safe/Staking',
+        path: 'safe/staking',
+        icon: <SavingsIcon />,
+        element: <SafeStakingPage />,
         loginNeeded: 'web3',
       },
     ],
