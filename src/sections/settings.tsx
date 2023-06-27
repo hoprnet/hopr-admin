@@ -156,7 +156,7 @@ function SettingsPage() {
         </Table>
       </TableContainer>
       <button
-        style={{marginTop: '1rem'}}
+        style={{ marginTop: '1rem' }}
         onClick={handleSaveSettings}
       >
         Save
