@@ -196,7 +196,9 @@ const LayoutEnhanced = () => {
       itemsNavbarRight={
         <>
           <NotificationBar />
-          <ConnectWeb3 />
+          <ConnectWeb3 
+            inTheAppBar
+          />
           <ConnectNode />
         </>
       }
