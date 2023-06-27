@@ -56,8 +56,8 @@ const Layout: React.FC<{
   drawer?: boolean;
   webapp?: boolean;
   drawerLoginState?: {
-    node: boolean;
-    web3: boolean;
+    node?: boolean;
+    web3?: boolean;
   };
   drawerItems: ApplicationMapType;
   drawerRight?: React.ReactNode;
