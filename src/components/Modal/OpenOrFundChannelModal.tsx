@@ -13,7 +13,6 @@ import { ethers } from 'ethers';
 import CloseIcon from '@mui/icons-material/Close';
 
 type OpenChannelModalProps = {
-  handleRefresh: () => void;
   peerId?: string;
   channelId?: string;
   modalBtnText?: string;
@@ -22,7 +21,7 @@ type OpenChannelModalProps = {
 };
 
 export const OpenChannelModal = ({
-  handleRefresh, channelId, title, modalBtnText, actionBtnText, ...props
+  channelId, title, modalBtnText, actionBtnText, ...props
 }: OpenChannelModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
@@ -40,13 +39,9 @@ export const OpenChannelModal = ({
     set_peerId(props.peerId ? props.peerId : '');
   };
 
-  const handleAction = () => {
-    const handleOpenChannel = (amount: string, peerId: string) => {
-      // Close Modal after starting to open channel
-      handleCloseModal();
-  
-      const weiValue = ethers.utils.parseEther(amount).toString();
-      dispatch(
+  const handleAction = async () => {
+    const handleOpenChannel = async (weiValue: string, peerId: string) => {
+      await dispatch(
         actionsAsync.openChannelThunk({
           apiEndpoint: loginData.apiEndpoint!,
           apiToken: loginData.apiToken!,
@@ -54,22 +49,13 @@ export const OpenChannelModal = ({
           peerId: peerId,
           timeout: 60e3,
         }),
-      )
-        .unwrap()
-        .then(() => {
-          handleRefresh();
-        })
-        .catch((e) => {
-          console.log(e.error);
-        });
+      ).unwrap().catch((e) => {
+        console.log(e.error);
+      });
     };
   
-    const handleFundChannels = (amount: string, peerId: string, channelId: string) => {
-      handleCloseModal();
-  
-      const parsedOutgoing = parseFloat(amount ?? '0') >= 0 ? amount ?? '0' : '0';
-      const weiValue = ethers.utils.parseEther(parsedOutgoing).toString();
-      dispatch(
+    const handleFundChannels = async (weiValue: string, peerId: string, channelId: string) => {
+      await dispatch(
         actionsAsync.fundChannelsThunk({
           apiEndpoint: loginData.apiEndpoint!,
           apiToken: loginData.apiToken!,
@@ -78,14 +64,22 @@ export const OpenChannelModal = ({
           outgoingAmount: weiValue,
           timeout: 60e3,
         }),
-      ).unwrap()
-        .then(() => {
-          handleRefresh();
+        ).unwrap().catch((e) => {
+          console.log(e.error);
         });
     };
-
-    if(channelId) { handleFundChannels(amount, peerId, channelId); }
-    else { handleOpenChannel(amount, peerId); }
+    
+    handleCloseModal();
+    const parsedOutgoing = parseFloat(amount ?? '0') >= 0 ? amount ?? '0' : '0';
+    const weiValue = ethers.utils.parseEther(parsedOutgoing).toString();
+    if(channelId) { await handleFundChannels(weiValue, peerId, channelId); }
+    else { await handleOpenChannel(weiValue, peerId); }
+    dispatch(
+      actionsAsync.getChannelsThunk({
+        apiEndpoint: loginData.apiEndpoint!,
+        apiToken: loginData.apiToken!,
+      }),
+    );
   }
 
   return (

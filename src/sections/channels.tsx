@@ -8,13 +8,7 @@ import {
   TableContainer,
   Table,
   TableHead,
-  Paper,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  DialogActions,
-  InputAdornment
+  Paper
 } from '@mui/material';
 import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
@@ -202,7 +196,7 @@ function ChannelsPage() {
         </Tabs>
       </Box>
       {exportToCsvButton()}
-      {tabIndex === 1 && <OpenChannelModal handleRefresh={handleRefresh} />}
+      {tabIndex === 1 && <OpenChannelModal />}
       <TableContainer component={Paper}>
         <Table
           sx={{ minWidth: 650 }}
@@ -234,7 +228,6 @@ function ChannelsPage() {
                     <OpenChannelModal
                       peerId={channel.peerId}
                       title="Open Outgoing Channel"
-                      handleRefresh={handleRefresh}
                     />
                   </TableCell>
                 </TableRow>
@@ -270,7 +263,6 @@ function ChannelsPage() {
                       modalBtnText="Fund"
                       actionBtnText="Fund"
                       channelId={channel.channelId}
-                      handleRefresh={handleRefresh}
                     />
                   </TableCell>
                 </TableRow>

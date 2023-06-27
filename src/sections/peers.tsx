@@ -150,7 +150,6 @@ function PeersPage() {
                     peerId={peer.peerId}
                   />
                   <OpenChannelModal
-                    handleRefresh={handleRefresh}
                     peerId={peer.peerId}
                   />
                   <SendMessageModal peerId={peer.peerId} />
