@@ -14,9 +14,9 @@ import { actionsAsync } from '../store/slices/node/actionsAsync';
 import { exportToCsv } from '../utils/helpers';
 import { utils } from '@hoprnet/hopr-sdk';
 const { APIError } = utils;
-import { CreateAliasModal } from '../components/AddAliasModal';
-import { OpenChannelModal } from '../components/OpenChannelModal';
-import { SendMessageModal } from '../components/SendMessageModal';
+import { CreateAliasModal } from '../components/Modal/AddAliasModal';
+import { OpenChannelModal } from '../components/Modal/OpenOrFundChannelModal';
+import { SendMessageModal } from '../components/Modal/SendMessageModal';
 
 function AliasesPage() {
   const dispatch = useAppDispatch();

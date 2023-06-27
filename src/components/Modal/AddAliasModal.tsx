@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import {
-  Dialog,
   DialogTitle,
-  DialogContent,
   TextField,
   DialogActions,
   Alert
 } from '@mui/material'
+import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import CloseIcon from '@mui/icons-material/Close';
@@ -131,22 +130,22 @@ export const CreateAliasModal = ({
           This is a duplicate alias!
         </Alert>
       )}
-      <Dialog
+      <SDialog
         open={openModal}
         onClose={handleCloseModal}
       >
-        <DialogTitle>
-          Add Alias{' '}
-          <CloseIcon
+        <TopBar>
+          <DialogTitle>
+            Add Alias
+          </DialogTitle>
+          <SIconButton
+            aria-label="close modal"
             onClick={handleCloseModal}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-            }}
-          />
-        </DialogTitle>
-        <DialogContent>
+          >
+            <CloseIcon/>
+          </SIconButton>
+        </TopBar>
+        <SDialogContent>
           <TextField
             type="text"
             name="peerId"
@@ -154,7 +153,6 @@ export const CreateAliasModal = ({
             placeholder="16Uiu2HA..."
             onChange={handleChange}
             value={modal.peerId}
-            sx={{ mt: '6px' }}
           />
           <TextField
             type="text"
@@ -163,18 +161,17 @@ export const CreateAliasModal = ({
             placeholder="Alias"
             onChange={handleChange}
             value={modal.alias}
-            sx={{ mt: '6px' }}
           />
-          <DialogActions>
-            <button
-              disabled={modal.alias.length === 0 || modal.peerId.length === 0}
-              onClick={handleAddAlias}
-            >
-              Add
-            </button>
-          </DialogActions>
-        </DialogContent>
-      </Dialog>
+        </SDialogContent>
+        <DialogActions>
+          <button
+            disabled={modal.alias.length === 0 || modal.peerId.length === 0}
+            onClick={handleAddAlias}
+          >
+            Add
+          </button>
+        </DialogActions>
+      </SDialog>
     </>
   );
 };

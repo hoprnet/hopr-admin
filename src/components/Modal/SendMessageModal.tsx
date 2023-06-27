@@ -1,5 +1,4 @@
-import { MouseEvent, useState, useEffect } from 'react';
-
+import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import {
   Dialog,
@@ -12,8 +11,10 @@ import {
   TextField,
   Tooltip
 } from '@mui/material';
+import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
 import { SendMessagePayloadType } from '@hoprnet/hopr-sdk';
 import Checkbox from '../../future-hopr-lib-components/Toggles/Checkbox';
+import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 
 // Store
@@ -31,6 +32,7 @@ const StatusContainer = styled.div`
   height: 32px;
 `;
 
+
 type SendMessageModalProps = {
   peerId?: string;
 };
@@ -44,7 +46,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
   const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops'>('automaticPath');
   const [automaticPath, set_automaticPath] = useState<boolean>(true);
   const [message, set_message] = useState<string>('');
-  const [receiver, set_receiver] = useState<string>('');
+  const [receiver, set_receiver] = useState<string>(peerId ? peerId : '');
   const [openModal, set_openModal] = useState<boolean>(false);
 
   const maxLength = 500;
@@ -54,12 +56,6 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
 
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const aliases = useAppSelector((selector) => selector.node.aliases);
-
-  const setPropReceiver = () => {
-    if (peerId) set_receiver(peerId);
-  };
-
-  useEffect(setPropReceiver, []);
 
   useEffect(() => {
     switch (sendMode) {
@@ -96,8 +92,6 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
       const validatedPath = pathElements.map((element) => validatePeerId(element));
       messagePayload.path = validatedPath;
     }
-
-    console.log(JSON.stringify(messagePayload));
 
     dispatch(actionsAsync.sendMessageThunk(messagePayload))
       .unwrap()
@@ -139,11 +133,10 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
     set_sendMode('automaticPath');
     set_numberOfHops('');
     set_message('');
-    set_receiver(' ');
+    set_receiver(peerId ? peerId : '');
     set_path('');
     set_openModal(false);
     set_status('');
-    setPropReceiver();
   };
 
   const isAlias = (alias: string) => {
@@ -163,23 +156,24 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
   return (
     <>
       <button onClick={handleOpenModal}>Send Message</button>
-      <Dialog
+      <SDialog
         open={openModal}
         onClose={handleCloseModal}
         fullWidth={true}
       >
-        <DialogTitle>
-          Send Message{' '}
-          <CloseIcon
+        <TopBar>
+          <DialogTitle>
+            Send Message
+          </DialogTitle>
+          <SIconButton
+            aria-label="close modal"
             onClick={handleCloseModal}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-            }}
-          />
-        </DialogTitle>
-        <DialogContent>
+          >
+            <CloseIcon/>
+          </SIconButton>
+
+        </TopBar>
+        <SDialogContent>
           <TextField
             label="Receiver"
             placeholder="16Uiu2..."
@@ -187,30 +181,21 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
             onChange={(e) => set_receiver(e.target.value)}
             required
             fullWidth
-            sx={{
-              maxWidth: '480px',
-              mb: '8px',
-              mt: '12px',
-            }}
           />
           <TextField
             label="Message"
             placeholder="Hello Node..."
             multiline
             maxRows={4}
+            rows={4}
             value={message}
             onChange={(e) => set_message(e.target.value)}
             inputProps={{ maxLength: maxLength }}
             helperText={`${remainingChars} characters remaining`}
             required
             fullWidth
-            sx={{
-              maxWidth: '480px',
-              mb: '8px',
-            }}
           />
-          <br />
-          <span style={{ margin: '13px 0 -20px 0' }}>Send mode:</span>
+          <span style={{ margin: '0px 0px -6px' }}>Send mode:</span>
           <PathOrHops>
             <Checkbox
               label="Automatic path"
@@ -253,7 +238,8 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
               />
             </Tooltip>
           </PathOrHops>
-          <DialogActions>
+        </SDialogContent>
+        <DialogActions>
             <button
               onClick={handleSendMessage}
               disabled={
@@ -271,8 +257,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
             {loader && <CircularProgress />}
             {status}
           </StatusContainer>
-        </DialogContent>
-      </Dialog>
+      </SDialog>
     </>
   );
 };

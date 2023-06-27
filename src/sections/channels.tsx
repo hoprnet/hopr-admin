@@ -23,9 +23,8 @@ import { actionsAsync } from '../store/slices/node/actionsAsync';
 import { useNavigate } from 'react-router-dom';
 import { exportToCsv } from '../utils/helpers';
 import CircularProgress from '@mui/material/CircularProgress';
-import { FundChannelModal } from '../components/FundChannelModal';
 import { ethers } from 'ethers';
-import { OpenChannelModal } from '../components/OpenChannelModal';
+import { OpenChannelModal } from '../components/Modal/OpenOrFundChannelModal';
 
 function ChannelsPage() {
   const dispatch = useAppDispatch();
@@ -232,10 +231,9 @@ function ChannelsPage() {
                   <TableCell>{channel.status}</TableCell>
                   <TableCell>{ethers.utils.formatEther(channel.balance)} mHOPR</TableCell>
                   <TableCell>
-                    <FundChannelModal
+                    <OpenChannelModal
                       peerId={channel.peerId}
-                      text="Open Outgoing & Fund"
-                      channelId={channel.channelId}
+                      title="Open Outgoing Channel"
                       handleRefresh={handleRefresh}
                     />
                   </TableCell>
@@ -266,9 +264,11 @@ function ChannelsPage() {
                       <div key={index}>{error.error}</div>
                     ))}
                     <hr />
-                    <FundChannelModal
+                    <OpenChannelModal
                       peerId={channel.peerId}
-                      text="Fund"
+                      title="Fund Channel"
+                      modalBtnText="Fund"
+                      actionBtnText="Fund"
                       channelId={channel.channelId}
                       handleRefresh={handleRefresh}
                     />
