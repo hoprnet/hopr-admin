@@ -102,9 +102,9 @@ const NavBar: React.FC<{
   tallerNavBarOnMobile?: boolean;
   itemsNavbarCenter?: any[];
   itemsNavbarRight?: any[];
-  openNavigationDrawer: boolean;
+  openedNavigationDrawer: boolean;
   onButtonClick?: () => void;
-  set_openNavigationDrawer: (openNavigationDrawer: boolean) => void;
+  set_openedNavigationDrawer: (openedNavigationDrawer: boolean) => void;
 }> = (props) => {
   //  const router = useRouter();
   const [activaMenu, setActivaMenu] = useState(false);
@@ -134,7 +134,7 @@ const NavBar: React.FC<{
       >
         <Container webapp={props.webapp}>
           <FlexBox>
-            <IconButton onClick={() => props.set_openNavigationDrawer(!props.openNavigationDrawer)}>
+            <IconButton onClick={() => props.set_openedNavigationDrawer(!props.openedNavigationDrawer)}>
               <MenuIcon />
             </IconButton>
             <Logo className="logo-hopr">

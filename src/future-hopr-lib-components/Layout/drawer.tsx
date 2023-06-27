@@ -61,15 +61,15 @@ type DrawerProps = {
     node: boolean;
     web3: boolean;
   };
-  openNavigationDrawer: boolean;
-  set_openNavigationDrawer: (openNavigationDrawer: boolean) => void;
+  openedNavigationDrawer: boolean;
+  set_openedNavigationDrawer: (openedNavigationDrawer: boolean) => void;
 };
 
 const Drawer = ({
   drawerItems,
   drawerLoginState,
-  openNavigationDrawer,
-  set_openNavigationDrawer,
+  openedNavigationDrawer,
+  set_openedNavigationDrawer,
 }: DrawerProps) => {
   const location = useLocation();
   const searchParams = location.search;
@@ -95,22 +95,22 @@ const Drawer = ({
 
   const handleButtonClick = () => {
     if (drawerVariant === 'temporary') {
-      set_openNavigationDrawer(false);
+      set_openedNavigationDrawer(false);
     }
   };
 
   return (
     <StyledDrawer
       variant={drawerVariant}
-      open={openNavigationDrawer}
-      onClose={() => set_openNavigationDrawer(false)}
+      open={openedNavigationDrawer}
+      onClose={() => set_openedNavigationDrawer(false)}
     >
       {drawerItems.map((group) => (
         <div key={group.groupName}>
           <Divider />
           <List
             subheader={
-              openNavigationDrawer ? (
+              openedNavigationDrawer ? (
                 <StyledListSubheader>{group.groupName}</StyledListSubheader>
               ) : (
                 <Tooltip
@@ -127,7 +127,7 @@ const Drawer = ({
             {group.items.map((item) => (
               <Tooltip
                 key={item.name}
-                title={!openNavigationDrawer && item.name}
+                title={!openedNavigationDrawer && item.name}
                 placement="right"
               >
                 <StyledListItemButton
