@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import {
@@ -7,10 +8,9 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
+  Drawer as MuiDrawer,
   Tooltip
-} from '@mui/material'
-import MuiDrawer from '@mui/material/Drawer';
-import { useEffect, useState } from 'react';
+} from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { ApplicationMapType } from '../../router';
 
@@ -41,6 +41,19 @@ const StyledListSubheader = styled(ListSubheader)`
   letter-spacing: 0.2px;
   user-select: none;
 `;
+
+const StyledListItemButton = styled(ListItemButton)`
+  height: 48px;
+  &.Mui-selected {
+    color: #0000b4;
+    & .MuiTypography-root {
+      font-weight: bold;
+    }
+    & .MuiListItemIcon-root {
+      color: #0000b4;
+    }
+  }
+` as typeof ListItemButton;
 
 type DrawerProps = {
   drawerItems: ApplicationMapType;
@@ -117,24 +130,16 @@ const Drawer = ({
                 title={!openNavigationDrawer && item.name}
                 placement="right"
               >
-                <ListItemButton
+                <StyledListItemButton
                   component={Link}
                   to={`${group.path}/${item.path}${searchParams ?? ''}`}
                   selected={location.pathname === `/${group.path}/${item.path}`}
                   disabled={item.loginNeeded && !drawerLoginState?.[item.loginNeeded]}
                   onClick={handleButtonClick}
-                  sx={{
-                    height: 48,
-                    '&.Mui-selected': {
-                      color: '#0000B4',
-                      '& .MuiTypography-root': { fontWeight: 'bold' },
-                      '& .MuiListItemIcon-root': { color: '#0000B4' },
-                    },
-                  }}
                 >
                   <ListItemIcon>{item.icon}</ListItemIcon>
                   <ListItemText>{item.name}</ListItemText>
-                </ListItemButton>
+                </StyledListItemButton>
               </Tooltip>
             ))}
           </List>
