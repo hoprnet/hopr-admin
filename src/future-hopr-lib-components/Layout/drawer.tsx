@@ -21,7 +21,7 @@ const StyledDrawer = styled(MuiDrawer)`
   .MuiDrawer-paper {
     box-sizing: border-box;
     padding-top: 59px;
-    transition: width 0.4s ease;
+    transition: width 0.4s ease-out;
     overflow: hidden;
     width: ${(props) => (props.open ? `${drawerWidth}px` : `${minDrawerWidth}px`)};
 

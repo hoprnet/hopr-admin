@@ -56,8 +56,18 @@ const Container = styled.div<{ webapp?: boolean }>`
 `;
 
 const FlexBox = styled(Box)`
+  align-items: center;
   display: flex;
   gap: 1rem;
+
+  .MuiIconButton-root {
+    height: 48px;
+    width: 48px;
+    &:hover {
+      background-color: rgba(0, 0, 180, 0.1);
+      transition: background-color 0.4s ease;
+    }
+  }
 `;
 
 const Logo = styled.div`

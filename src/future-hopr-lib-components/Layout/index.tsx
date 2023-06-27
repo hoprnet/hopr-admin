@@ -9,7 +9,7 @@ import { useMediaQuery } from '@mui/material';
 // Components
 import NavBar from '../Navbar/navBar';
 import Footer from './footer';
-import Drawer from '../Drawer';
+import Drawer from './drawer';
 
 // Types
 import { ApplicationMapType } from '../../router';
@@ -24,8 +24,9 @@ type ContentType = {
 
 const Content = styled.div<ContentType>`
   margin-top: 60px;
-  transition: margin 0.4s ease;
   margin-left: 0;
+
+  transition: margin-left 0.4s ease-out;
   @media (min-width: 499.1px) {
     margin-left: ${(props) => (props.openNavigationDrawer ? '240px' : '56px')};
   }
