@@ -1,3 +1,19 @@
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 1 999;
+  src: local('Source Code Pro Variable Font'), local('SourceCodePro-VariableFont_wght'),
+    url('./fonts/SourceCodePro-VariableFont_wght.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: italic;
+  font-weight: 1 999;
+  src: local('Source Code Pro Italic Variable Font'), local('SourceCodePro-Italic-VariableFont_wght'),
+    url('./fonts/SourceCodePro-Italic-VariableFont_wght.ttf') format('truetype');
+}
+
 body {
   margin: 0;
   font-family: 'Source Code Pro', monospace;
