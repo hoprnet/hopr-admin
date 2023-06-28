@@ -8,14 +8,8 @@ import {
   TableContainer,
   Table,
   TableHead,
-  Paper,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  DialogActions,
-  InputAdornment
-} from '@mui/material';
+  Paper
+} from '@mui/material'
 import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
 import { useEffect, useRef, useState } from 'react';
@@ -23,8 +17,8 @@ import { actionsAsync } from '../store/slices/node/actionsAsync';
 import { useNavigate } from 'react-router-dom';
 import { exportToCsv } from '../utils/helpers';
 import CircularProgress from '@mui/material/CircularProgress';
-import { FundChannelModal } from '../components/FundChannelModal';
 import { ethers } from 'ethers';
+import { OpenChannelModal } from '../components/Modal/OpenOrFundChannelModal';
 
 function ChannelsPage() {
   const dispatch = useAppDispatch();
@@ -45,100 +39,10 @@ function ChannelsPage() {
       }
     >
   >({});
-  const [peerId, set_peerId] = useState('');
-  const [amount, set_amount] = useState('');
-  const [openChannelDialog, set_openChannelDialog] = useState(false);
-  const [channelOpening, set_channelOpening] = useState(false);
-  const [openingErrors, set_openingErrors] = useState<{ status: string | undefined; error: string | undefined }[]>([]);
-  const [openingSuccess, set_openingSucess] = useState(false);
+
   const [queryParams, set_queryParams] = useState('');
 
   const navigate = useNavigate();
-
-  const handleOpenChannelDialog = () => {
-    set_openChannelDialog(true);
-  };
-
-  const handleCloseChannelDialog = () => {
-    set_openChannelDialog(false);
-  };
-
-  const openChannelPopUp = () => {
-    return (
-      <>
-        <button onClick={handleOpenChannelDialog}>Open Channel</button>
-        <Dialog
-          open={openChannelDialog}
-          onClose={handleCloseChannelDialog}
-        >
-          <DialogTitle>Open Channel</DialogTitle>
-          <DialogContent>
-            <TextField
-              label="Peer ID"
-              value={peerId}
-              placeholder="16Eiu2HAm..."
-              onChange={(e) => set_peerId(e.target.value)}
-            />
-            <TextField
-              label="Amount"
-              type="string"
-              value={amount}
-              onChange={(e) => set_amount(e.target.value)}
-              InputProps={{ endAdornment: <InputAdornment position="end">mHOPR</InputAdornment> }}
-            />
-          </DialogContent>
-          <DialogActions>
-            <button onClick={handleCloseChannelDialog}>Cancel</button>
-            <button
-              onClick={() => handleOpenChannel(amount, peerId)}
-              disabled={!amount || parseFloat(amount) <= 0 || !peerId}
-            >
-              Open Channel
-            </button>
-          </DialogActions>
-        </Dialog>
-        {channelOpening && <CircularProgress />}
-        {openingSuccess && <div>Opening Channel Success</div>}
-        {openingErrors.map((error, index) => (
-          <div key={index}>{error.error}</div>
-        ))}
-      </>
-    );
-  };
-
-  const handleOpenChannel = (amount: string, peerId: string) => {
-    set_channelOpening(true); // Set loading state
-
-    dispatch(
-      actionsAsync.openChannelThunk({
-        apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
-        amount: amount,
-        peerId: peerId,
-        timeout: 60e3,
-      }),
-    )
-      .unwrap()
-      .then(() => {
-        // handle success opening channel
-        set_channelOpening(false);
-        set_openingSucess(true);
-        set_openingErrors([]);
-        handleRefresh();
-      })
-      .catch((e) => {
-        set_openingSucess(false);
-        set_openingErrors([
-          ...openingErrors,
-          {
-            error: e.error,
-            status: e.status,
-          },
-        ]);
-        set_channelOpening(false);
-        //handle error on opening channel});
-      });
-  };
 
   const handleTabChange = (event: React.SyntheticEvent<Element, Event>, newTabIndex: number) => {
     set_tabIndex(newTabIndex);
@@ -292,7 +196,7 @@ function ChannelsPage() {
         </Tabs>
       </Box>
       {exportToCsvButton()}
-      {tabIndex === 1 && openChannelPopUp()}
+      {tabIndex === 1 && <OpenChannelModal />}
       {tabIndex === 1 && (
         <CSVUploader
           onParse={(parsedData) => {
@@ -317,11 +221,11 @@ function ChannelsPage() {
         >
           <TableHead>
             <TableRow>
-              <TableCell>id</TableCell>
-              <TableCell>peerId</TableCell>
-              <TableCell>status</TableCell>
-              <TableCell>dedicated funds</TableCell>
-              <TableCell>actions</TableCell>
+              <TableCell>Id</TableCell>
+              <TableCell>Peer Id</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Dedicated Funds</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           {tabIndex === 0 && (
@@ -338,11 +242,9 @@ function ChannelsPage() {
                   <TableCell>{channel.status}</TableCell>
                   <TableCell>{ethers.utils.formatEther(channel.balance)} mHOPR</TableCell>
                   <TableCell>
-                    <FundChannelModal
+                    <OpenChannelModal
                       peerId={channel.peerId}
-                      buttonText="Open Outgoing & Fund"
-                      channelId={channel.channelId}
-                      handleRefresh={handleRefresh}
+                      title="Open Outgoing Channel"
                     />
                   </TableCell>
                 </TableRow>
@@ -372,11 +274,12 @@ function ChannelsPage() {
                       <div key={index}>{error.error}</div>
                     ))}
                     <hr />
-                    <FundChannelModal
+                    <OpenChannelModal
                       peerId={channel.peerId}
-                      buttonText="Fund"
+                      title="Fund Channel"
+                      modalBtnText="Fund"
+                      actionBtnText="Fund"
                       channelId={channel.channelId}
-                      handleRefresh={handleRefresh}
                     />
                   </TableCell>
                 </TableRow>

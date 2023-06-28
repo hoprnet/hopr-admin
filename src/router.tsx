@@ -17,6 +17,7 @@ import MessagesPage from './sections/messages';
 import PeersPage from './sections/peers';
 import TicketsPage from './sections/tickets';
 import ChannelsPage from './sections/channels';
+import SettingsPage from './sections/settings';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -38,8 +39,24 @@ import HubIcon from '@mui/icons-material/Hub';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LockIcon from '@mui/icons-material/Lock';
 import ContactPhone from '@mui/icons-material/ContactPhone';
+import NodeIcon from '@mui/icons-material/Router';
+import NetworkingIcon from '@mui/icons-material/Diversity3';
+import DevelopIcon from '@mui/icons-material/Code';
 
-export const applicationMap = [
+export type ApplicationMapType = {
+  groupName: string;
+  path: string;
+  icon: JSX.Element;
+  items: {
+    name: string;
+    path: string;
+    icon: JSX.Element;
+    element?: JSX.Element;
+    loginNeeded?: 'node' | 'web3';
+  }[];
+}[];
+
+export const applicationMap: ApplicationMapType = [
   // {
   //   path: '/',
   //   element: <SectionInfo/>,
@@ -48,6 +65,7 @@ export const applicationMap = [
   {
     groupName: 'Node',
     path: 'node',
+    icon: <NodeIcon />,
     items: [
       {
         name: 'Connect',
@@ -80,6 +98,7 @@ export const applicationMap = [
         name: 'Configuration',
         path: 'configuration',
         icon: <SettingsIcon />,
+        element: <SettingsPage />,
         loginNeeded: 'node',
       },
     ],
@@ -87,6 +106,7 @@ export const applicationMap = [
   {
     groupName: 'Networking',
     path: 'networking',
+    icon: <NetworkingIcon />,
     items: [
       {
         name: 'Ping',
@@ -127,6 +147,7 @@ export const applicationMap = [
   {
     groupName: 'DEVELOP',
     path: 'develop',
+    icon: <DevelopIcon />,
     items: [
       {
         name: 'Web3',
@@ -196,7 +217,7 @@ const LayoutEnhanced = () => {
       itemsNavbarRight={
         <>
           <NotificationBar />
-          <ConnectWeb3 />
+          <ConnectWeb3 inTheAppBar />
           <ConnectNode />
         </>
       }
@@ -231,4 +252,3 @@ console.log('routes', routes);
 const router = createBrowserRouter(routes);
 
 export default router;
-export type ApplicationMapType = typeof applicationMap;

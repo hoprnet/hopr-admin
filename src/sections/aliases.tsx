@@ -14,6 +14,9 @@ import { actionsAsync } from '../store/slices/node/actionsAsync';
 import { exportToCsv } from '../utils/helpers';
 import { utils } from '@hoprnet/hopr-sdk';
 const { APIError } = utils;
+import { CreateAliasModal } from '../components/Modal/AddAliasModal';
+import { OpenChannelModal } from '../components/Modal/OpenOrFundChannelModal';
+import { SendMessageModal } from '../components/Modal/SendMessageModal';
 
 function AliasesPage() {
   const dispatch = useAppDispatch();
@@ -39,6 +42,17 @@ function AliasesPage() {
     }
   }, [loginData]);
 
+  const handleRefresh = () => {
+    if (loginData.apiEndpoint && loginData.apiToken) {
+      dispatch(
+        actionsAsync.getAliasesThunk({
+          apiEndpoint: loginData.apiEndpoint,
+          apiToken: loginData.apiToken,
+        }),
+      );
+    }
+  };
+
   return (
     <Section
       className="Section--aliases"
@@ -46,22 +60,9 @@ function AliasesPage() {
       yellow
     >
       <h2>Add new alias</h2>
-      <CreateAliasForm />
+      <CreateAliasModal handleRefresh={handleRefresh} />
       <h2>Aliases table</h2>
-      <button
-        onClick={() => {
-          if (loginData.apiEndpoint && loginData.apiToken) {
-            dispatch(
-              actionsAsync.getAliasesThunk({
-                apiEndpoint: loginData.apiEndpoint,
-                apiToken: loginData.apiToken,
-              }),
-            );
-          }
-        }}
-      >
-        refresh
-      </button>
+      <button onClick={handleRefresh}>refresh</button>
       <button
         disabled={aliases !== null && Object.keys(aliases).length === 0}
         onClick={() => {
@@ -117,10 +118,10 @@ function AliasesPage() {
         >
           <TableHead>
             <TableRow>
-              <TableCell>id</TableCell>
-              <TableCell>peerId</TableCell>
-              <TableCell>alias</TableCell>
-              <TableCell>actions</TableCell>
+              <TableCell>Id</TableCell>
+              <TableCell>Peer Id</TableCell>
+              <TableCell>Alias</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -152,6 +153,8 @@ function AliasesPage() {
                     }}
                     alias={alias}
                   />
+                  <OpenChannelModal peerId={peerId} />
+                  <SendMessageModal peerId={peerId} />
                 </TableCell>
               </TableRow>
             ))}
@@ -225,7 +228,8 @@ function CreateAliasForm() {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {
-      name, value, 
+      name,
+      value,
     } = event.target;
     set_form({
       ...form,
