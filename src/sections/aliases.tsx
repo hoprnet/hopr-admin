@@ -154,7 +154,6 @@ function AliasesPage() {
                     alias={alias}
                   />
                   <OpenChannelModal
-                    handleRefresh={handleRefresh}
                     peerId={peerId}
                   />
                   <SendMessageModal peerId={peerId} />
