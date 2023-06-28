@@ -11,7 +11,7 @@ import { web3Actions } from '../../store/slices/web3';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 
-const Container = styled.div`
+const AppBarContainer = styled.div`
   height: 59px;
   width: 160px;
   display: flex;
@@ -29,7 +29,18 @@ const ConnectWalletContent = styled.div`
   }
 `;
 
-export default function ConnectWeb3() {
+type ConnectWeb3Props = {
+  inTheAppBar?: boolean;
+  open?: boolean;
+  onClose?: ()=>{};
+};
+
+
+export default function ConnectWeb3({
+  inTheAppBar, 
+  open,
+  onClose,
+}: ConnectWeb3Props) {
   const dispatch = useAppDispatch();
   const [chooseWalletModal, set_chooseWalletModal] = useState(false);
   const { connect } = useConnect({ connector: new InjectedConnector() });
@@ -37,29 +48,47 @@ export default function ConnectWeb3() {
   const { disconnect } = useDisconnect();
 
   useEffect(() => {
-    if (isConnected) set_chooseWalletModal(false);
+    if (isConnected) handleClose();
   }, [isConnected]);
 
-  return (
-    <Container>
-      {!isConnected ? (
-        <button
-          onClick={() => {
-            set_chooseWalletModal(true);
-          }}
-        >
-          Connect Wallet
-        </button>
-      ) : (
-        <button
-          onClick={() => {
-            disconnect();
-          }}
-        >
-          Disconnect
-        </button>
-      )}
+  useEffect(() => {
+    set_chooseWalletModal(open!);
+  }, [open]);
 
+  const handleClose = () => {
+    if(onClose) onClose();
+    set_chooseWalletModal(false);
+  }
+
+  const handleConnectToMetaMask = () => {
+    dispatch(web3Actions.setLoading(true));
+    connect();
+    if (isConnected) handleClose();
+  }
+
+  return (
+    <>
+      { inTheAppBar &&
+        <AppBarContainer>
+          {!isConnected ? (
+            <button
+              onClick={() => {
+                set_chooseWalletModal(true);
+              }}
+            >
+              Connect Wallet
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                disconnect();
+              }}
+            >
+              Disconnect
+            </button>
+          )}
+        </AppBarContainer>
+      }
       <Modal
         open={chooseWalletModal}
         onClose={() => {
@@ -69,11 +98,7 @@ export default function ConnectWeb3() {
       >
         <ConnectWalletContent>
           <WalletButton
-            onClick={() => {
-              dispatch(web3Actions.setLoading(true));
-              connect();
-              if (isConnected) set_chooseWalletModal(false);
-            }}
+            onClick={handleConnectToMetaMask}
             wallet="metamask"
           />
           <p>
@@ -82,6 +107,6 @@ export default function ConnectWeb3() {
           </p>
         </ConnectWalletContent>
       </Modal>
-    </Container>
+    </>
   );
 }
