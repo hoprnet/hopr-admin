@@ -8,7 +8,7 @@ const appSlice = createSlice({
     addNotification: (
       state,
       action: PayloadAction<{
-        id: string,
+        id: string;
         name: string;
         source: string;
         timeout: number | null;
@@ -60,7 +60,7 @@ const appSlice = createSlice({
     markSeenAllNotifications: (state) => {
       state.notifications = state.notifications.map((notification) => ({
         ...notification,
-        seen: true,        
+        seen: true,
       }));
     },
   },
