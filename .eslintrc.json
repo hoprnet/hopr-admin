@@ -38,7 +38,7 @@
       }
     ],
     "import-newlines/enforce": "warn",
-    "newline-destructuring/newline": "warn",
+    "newline-destructuring/newline": ["warn", { "items": 1 }],
     "no-duplicate-imports": "warn",
     "no-console": "warn",
     "prefer-const": "warn",

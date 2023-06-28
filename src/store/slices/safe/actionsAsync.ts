@@ -113,7 +113,8 @@ const addOwnerToSafeThunk = createAsyncThunk(
       threshold?: number;
     },
     {
-      rejectWithValue, dispatch, 
+      rejectWithValue,
+      dispatch,
     },
   ) => {
     try {
@@ -146,7 +147,8 @@ const removeOwnerFromSafeThunk = createAsyncThunk(
       threshold?: number;
     },
     {
-      rejectWithValue, dispatch, 
+      rejectWithValue,
+      dispatch,
     },
   ) => {
     try {
@@ -197,7 +199,8 @@ const createSafeTransactionThunk = createAsyncThunk(
       safeTransactionData: SafeTransactionDataPartial;
     },
     {
-      rejectWithValue, dispatch, 
+      rejectWithValue,
+      dispatch,
     },
   ) => {
     try {
@@ -240,7 +243,8 @@ const createSafeRejectionTransactionThunk = createAsyncThunk(
       nonce: number;
     },
     {
-      rejectWithValue, dispatch, 
+      rejectWithValue,
+      dispatch,
     },
   ) => {
     try {
@@ -282,7 +286,8 @@ const confirmTransactionThunk = createAsyncThunk(
       safeTransactionHash: string;
     },
     {
-      rejectWithValue, dispatch, 
+      rejectWithValue,
+      dispatch,
     },
   ) => {
     try {
@@ -313,7 +318,8 @@ const executeTransactionThunk = createAsyncThunk(
       safeTransaction: SafeMultisigTransactionResponse | SafeTransaction;
     },
     {
-      rejectWithValue, dispatch, 
+      rejectWithValue,
+      dispatch,
     },
   ) => {
     try {
