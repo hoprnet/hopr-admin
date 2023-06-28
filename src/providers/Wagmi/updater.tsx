@@ -11,7 +11,8 @@ import { web3Actions } from '../../store/slices/web3';
 export default function WagmiUpdater() {
   const dispatch = useAppDispatch();
   const {
-    address, isConnected, 
+    address,
+    isConnected,
   } = useAccount();
 
   useEffect(() => {

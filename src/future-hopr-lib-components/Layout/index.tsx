@@ -1,39 +1,49 @@
 /// <reference types="vite-plugin-svgr/client" />
 // Packages
-import React from 'react';
+import React, { ReactNode, useState } from 'react';
 import styled from '@emotion/styled';
+import { css } from '@emotion/react';
 import { Outlet } from 'react-router-dom';
+import { useMediaQuery } from '@mui/material';
 
 // Components
 import NavBar from '../Navbar/navBar';
 import Footer from './footer';
 import Drawer from './drawer';
-import { PropaneSharp } from '@mui/icons-material';
-import { ToastContainer } from 'react-toastify';
+
+// Types
+import { ApplicationMapType } from '../../router';
 
 const SLayout = styled.div``;
 
-const Content = styled.div<any>`
+type ContentType = {
+  openedNavigationDrawer: boolean;
+  tallerNavBarOnMobile?: boolean;
+  drawerRight: boolean;
+};
+
+const Content = styled.div<ContentType>`
   margin-top: 60px;
+  margin-left: 0;
+
+  transition: margin-left 0.4s ease-out;
+  @media (min-width: 499.1px) {
+    margin-left: ${(props) => (props.openedNavigationDrawer ? '240px' : '56px')};
+  }
+
   ${(props) =>
     props.tallerNavBarOnMobile &&
-    `
-    @media screen and (max-width: 520px) {
+    css`
+      @media screen and (max-width: 520px) {
         margin-top: 0px;
-    }
-  `}
-  ${(props) =>
-    props.drawer &&
-    `
-    @media screen and (min-width: 600px) {
-        margin-left: 240px;
-    }
-  `}
+      }
+    `}
+
   ${(props) =>
     props.drawerRight &&
-    `
+    css`
       @media screen and (min-width: 600px) {
-          margin-right: 161px;
+        margin-right: 161px;
       }
     `}
 `;
@@ -42,11 +52,14 @@ const Layout: React.FC<{
   className?: string;
   itemsNavbarRight?: any;
   tallerNavBarOnMobile?: boolean;
-  children?: any;
+  children?: ReactNode;
   drawer?: boolean;
   webapp?: boolean;
-  drawerLoginState?: {};
-  drawerItems?: {}[];
+  drawerLoginState?: {
+    node?: boolean;
+    web3?: boolean;
+  };
+  drawerItems: ApplicationMapType;
   drawerRight?: React.ReactNode;
 }> = ({
   className = '',
@@ -59,6 +72,13 @@ const Layout: React.FC<{
   drawerLoginState,
   drawerRight,
 }) => {
+  // Determine if the device is a mobile device based on the screen width
+  const isMobile = useMediaQuery('(max-width: 500px)');
+
+  // Set the initial state of the drawer based on the device type
+  // If it's a mobile device, set the drawer to be closed by default
+  const [openedNavigationDrawer, set_openedNavigationDrawer] = useState(!isMobile);
+
   return (
     <SLayout className="Layout">
       <NavBar
@@ -67,21 +87,25 @@ const Layout: React.FC<{
         itemsNavbarRight={itemsNavbarRight}
         tallerNavBarOnMobile={tallerNavBarOnMobile}
         webapp={webapp}
+        set_openedNavigationDrawer={set_openedNavigationDrawer}
+        openedNavigationDrawer={openedNavigationDrawer}
       />
+
       {drawer && (
         <Drawer
           drawerItems={drawerItems}
           drawerLoginState={drawerLoginState}
+          set_openedNavigationDrawer={set_openedNavigationDrawer}
+          openedNavigationDrawer={openedNavigationDrawer}
         />
       )}
       <Content
         className="Content"
-        drawer={!!drawer}
+        openedNavigationDrawer={openedNavigationDrawer}
         drawerRight={!!drawerRight}
-        //       tallerNavBarOnMobile={tallerNavBarOnMobile}
       >
         <Outlet />
-        {/* {children}  */}
+        {/* {children} */}
       </Content>
       {drawerRight}
       {/* <Footer /> */}

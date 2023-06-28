@@ -22,7 +22,8 @@ type LocalRootState = {
 };
 
 const websocketMiddleware: Middleware<object, LocalRootState> = ({
-  dispatch, getState, 
+  dispatch,
+  getState,
 }) => {
   let messagesWebsocket: typeof WebsocketHelper.prototype | null = null;
   let logsWebsocket: typeof WebsocketHelper.prototype | null = null;
@@ -31,7 +32,8 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
     if (action.type === initializeMessagesWebsocket.type) {
       // start websocket connection
       const {
-        apiEndpoint, apiToken, 
+        apiEndpoint,
+        apiToken,
       } = getState().auth.loginData;
       if (apiEndpoint && apiToken) {
         try {
@@ -66,7 +68,8 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
       dispatch(updateMessagesWebsocketStatus(false));
     } else if (action.type === initializeLogsWebsocket.type) {
       const {
-        apiEndpoint, apiToken, 
+        apiEndpoint,
+        apiToken,
       } = getState().auth.loginData;
       if (apiEndpoint && apiToken) {
         try {

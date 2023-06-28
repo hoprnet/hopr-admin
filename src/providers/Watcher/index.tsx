@@ -38,7 +38,8 @@ const CloseButtonToast = (props: { notificationId: string }) => {
 const Watcher = () => {
   const dispatch = useAppDispatch();
   const {
-    apiEndpoint, apiToken, 
+    apiEndpoint,
+    apiToken,
   } = useAppSelector((store) => store.auth.loginData);
   const { connected } = useAppSelector((store) => store.auth.status);
   const messages = useAppSelector((store) => store.node.messages);
