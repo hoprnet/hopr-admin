@@ -9,6 +9,7 @@ import NavBar from '../Navbar/navBar';
 import Footer from './footer';
 import Drawer from './drawer';
 import { PropaneSharp } from '@mui/icons-material';
+import { ToastContainer } from 'react-toastify';
 
 const SLayout = styled.div``;
 

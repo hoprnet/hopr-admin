@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { appActions } from '../../store/slices/app';
 import { nodeActionsAsync } from '../../store/slices/node';
+import { toast } from 'react-toastify';
 
 const FETCH_CHANNELS_INTERVAL = 10000;
 const FETCH_NODE_INTERVAL = 5000;
@@ -78,6 +79,7 @@ const Watcher = () => {
       if (prevNodeFunds && prevNodeFunds.native !== newNodeFunds.native) {
         const nativeBalanceIsMore = BigInt(prevNodeFunds.native) < BigInt(newNodeFunds.native);
         if (nativeBalanceIsMore) {
+          toast('Node received native funds');
           dispatch(
             appActions.addNotification({
               source: 'node',
@@ -94,6 +96,7 @@ const Watcher = () => {
         const hoprBalanceIsMore = BigInt(prevNodeFunds.hopr) < BigInt(newNodeFunds.hopr);
 
         if (hoprBalanceIsMore) {
+          toast('Node received hopr funds');
           dispatch(
             appActions.addNotification({
               source: 'node',
@@ -122,6 +125,7 @@ const Watcher = () => {
 
       //  check if status has changed
       if (prevNodeInfo && newNodeInfo.connectivityStatus !== prevNodeInfo.connectivityStatus) {
+        toast(`node connectivity status is now ${newNodeInfo?.connectivityStatus}`);
         dispatch(
           appActions.addNotification({
             timeout: null,
@@ -154,6 +158,7 @@ const Watcher = () => {
         for (const updatedChannel of updatedChannels ?? []) {
           // calculate the type of update: OPEN/CLOSE etc.
           const notificationText = calculateNotificationTextForChannelStatus(updatedChannel);
+          toast(notificationText);
           dispatch(
             appActions.addNotification({
               source: 'node',
@@ -178,6 +183,7 @@ const Watcher = () => {
     const newMessageHasArrived = checkForNewMessage(prevLatestMessageTimestamp, newMessageTimestamp);
 
     if (prevLatestMessageTimestamp && newMessageHasArrived) {
+      toast('new message');
       dispatch(
         appActions.addNotification({
           source: 'node/message',

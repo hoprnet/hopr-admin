@@ -1,24 +1,21 @@
-import { Store } from './types/index';
-import {
-  RouterProvider,
-  BrowserRouter,
-  Route,
-  createRoutesFromElements,
-  createBrowserRouter
-} from 'react-router-dom'
+import { RouterProvider } from 'react-router-dom';
 import store from './store';
 import { Provider } from 'react-redux';
-import Layout from './future-hopr-lib-components/Layout';
-
-import router, { applicationMap } from './router';
+import router from './router';
 import WagmiProvider from './providers/Wagmi';
 import Watcher from './providers/Watcher';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
     <Provider store={store}>
       <WagmiProvider>
         <Watcher />
+        <ToastContainer
+          position="bottom-right"
+          theme="dark"
+        />
         <RouterProvider router={router} />
       </WagmiProvider>
     </Provider>
