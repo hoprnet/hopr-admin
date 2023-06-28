@@ -17,6 +17,7 @@ import MessagesPage from './sections/messages';
 import PeersPage from './sections/peers';
 import TicketsPage from './sections/tickets';
 import ChannelsPage from './sections/channels';
+import SettingsPage from './sections/settings';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -97,6 +98,7 @@ export const applicationMap: ApplicationMapType = [
         name: 'Configuration',
         path: 'configuration',
         icon: <SettingsIcon />,
+        element: <SettingsPage />,
         loginNeeded: 'node',
       },
     ],
@@ -215,7 +217,7 @@ const LayoutEnhanced = () => {
       itemsNavbarRight={
         <>
           <NotificationBar />
-          <ConnectWeb3 />
+          <ConnectWeb3 inTheAppBar />
           <ConnectNode />
         </>
       }
