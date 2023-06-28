@@ -38,6 +38,7 @@ import HubIcon from '@mui/icons-material/Hub';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LockIcon from '@mui/icons-material/Lock';
 import ContactPhone from '@mui/icons-material/ContactPhone';
+import SettingsPage from './sections/settings';
 
 export const applicationMap = [
   // {
@@ -80,6 +81,7 @@ export const applicationMap = [
         name: 'Configuration',
         path: 'configuration',
         icon: <SettingsIcon />,
+        element: <SettingsPage />,
         loginNeeded: 'node',
       },
     ],
