@@ -3,7 +3,8 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { appActions } from '../../store/slices/app';
 import { nodeActionsAsync } from '../../store/slices/node';
-import { toast } from 'react-toastify';
+import { ToastOptions, toast } from 'react-toastify';
+import { nanoid } from '@reduxjs/toolkit';
 
 const FETCH_CHANNELS_INTERVAL = 10000;
 const FETCH_NODE_INTERVAL = 5000;
@@ -20,6 +21,19 @@ let prevLatestMessageTimestamp: {
   createdAt: number;
   amountOfTimesRepeated: number;
 } | null;
+
+const CloseButtonToast = (props: { notificationId: string }) => {
+  const dispatch = useAppDispatch();
+  return (
+    <button
+      onClick={() => {
+        dispatch(appActions.readNotification(props.notificationId));
+      }}
+    >
+      close
+    </button>
+  );
+};
 
 const Watcher = () => {
   const dispatch = useAppDispatch();
@@ -64,6 +78,29 @@ const Watcher = () => {
     }
   };
 
+  const sendNotification = ({
+    notificationPayload,toastPayload,
+  }: {
+    // notification payload without id
+    notificationPayload: Omit<Parameters<typeof appActions.addNotification>[0], 'id'>;
+    toastPayload?: { message: string; type?: ToastOptions['type'] };
+  }) => {
+    const notificationId = nanoid();
+    if (toastPayload) {
+      toast(toastPayload.message, {
+        type: toastPayload.type,
+        closeButton: <CloseButtonToast notificationId={notificationId} />,
+      });
+    }
+
+    dispatch(
+      appActions.addNotification({
+        ...notificationPayload,
+        id: notificationId,
+      }),
+    );
+  };
+
   const watchNodeFunds = async () => {
     if (apiToken && apiEndpoint && connected) {
       const newNodeFunds = await dispatch(
@@ -79,15 +116,15 @@ const Watcher = () => {
       if (prevNodeFunds && prevNodeFunds.native !== newNodeFunds.native) {
         const nativeBalanceIsMore = BigInt(prevNodeFunds.native) < BigInt(newNodeFunds.native);
         if (nativeBalanceIsMore) {
-          toast('Node received native funds');
-          dispatch(
-            appActions.addNotification({
+          sendNotification({
+            notificationPayload: {
               source: 'node',
               name: 'Node received native funds',
               url: null,
               timeout: null,
-            }),
-          );
+            },
+            toastPayload: { message: 'Node received native funds' },
+          });
         }
       }
 
@@ -96,15 +133,15 @@ const Watcher = () => {
         const hoprBalanceIsMore = BigInt(prevNodeFunds.hopr) < BigInt(newNodeFunds.hopr);
 
         if (hoprBalanceIsMore) {
-          toast('Node received hopr funds');
-          dispatch(
-            appActions.addNotification({
+          sendNotification({
+            notificationPayload: {
               source: 'node',
               name: 'Node received hopr funds',
               url: null,
               timeout: null,
-            }),
-          );
+            },
+            toastPayload: { message: 'Node received hopr funds' },
+          });
         }
       }
 
@@ -125,15 +162,15 @@ const Watcher = () => {
 
       //  check if status has changed
       if (prevNodeInfo && newNodeInfo.connectivityStatus !== prevNodeInfo.connectivityStatus) {
-        toast(`node connectivity status is now ${newNodeInfo?.connectivityStatus}`);
-        dispatch(
-          appActions.addNotification({
-            timeout: null,
-            url: null,
+        sendNotification({
+          notificationPayload: {
             name: `node connectivity status is now ${newNodeInfo?.connectivityStatus}`,
             source: 'node',
-          }),
-        );
+            url: null,
+            timeout: null,
+          },
+          toastPayload: { message: `node connectivity status is now ${newNodeInfo?.connectivityStatus}` },
+        });
       }
 
       prevNodeInfo = newNodeInfo;
@@ -158,15 +195,15 @@ const Watcher = () => {
         for (const updatedChannel of updatedChannels ?? []) {
           // calculate the type of update: OPEN/CLOSE etc.
           const notificationText = calculateNotificationTextForChannelStatus(updatedChannel);
-          toast(notificationText);
-          dispatch(
-            appActions.addNotification({
+          sendNotification({
+            notificationPayload: {
               source: 'node',
               name: notificationText,
-              timeout: null,
               url: null,
-            }),
-          );
+              timeout: null,
+            },
+            toastPayload: { message: notificationText },
+          });
         }
       }
 
@@ -183,15 +220,15 @@ const Watcher = () => {
     const newMessageHasArrived = checkForNewMessage(prevLatestMessageTimestamp, newMessageTimestamp);
 
     if (prevLatestMessageTimestamp && newMessageHasArrived) {
-      toast('new message');
-      dispatch(
-        appActions.addNotification({
+      sendNotification({
+        notificationPayload: {
           source: 'node/message',
           name: 'Received new message',
-          timeout: null,
           url: null,
-        }),
-      );
+          timeout: null,
+        },
+        toastPayload: { message: 'new message' },
+      });
     }
 
     prevLatestMessageTimestamp = newMessageTimestamp;

@@ -12,10 +12,7 @@ function App() {
     <Provider store={store}>
       <WagmiProvider>
         <Watcher />
-        <ToastContainer
-          position="bottom-right"
-          theme="dark"
-        />
+        <ToastContainer position="bottom-right" />
         <RouterProvider router={router} />
       </WagmiProvider>
     </Provider>

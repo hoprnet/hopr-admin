@@ -39,6 +39,16 @@ const SIconButton = styled(IconButton)`
   }
 `;
 
+const StyledUnreadMenuItem = styled(MenuItem)`
+  background-color: rgba(0, 0, 180);
+  color: #fff;
+  opacity: 90%;
+  border-bottom: 1px solid #444;
+  :hover {
+    color: #000000de;
+  }
+`;
+
 const SMenu = styled(Menu)``;
 
 const SMenuItem = styled(MenuItem)``;
@@ -57,6 +67,7 @@ export default function NotificationBar() {
 
   const handleClose = (notification: (typeof notifications)[0]) => {
     setAnchorEl(null);
+    dispatch(appActions.markSeenAllNotifications());
   };
 
   return (
@@ -81,14 +92,13 @@ export default function NotificationBar() {
         onClose={handleClose}
         MenuListProps={{ 'aria-labelledby': 'notification-menu-button' }}
       >
-        {notifications.filter((notification) => !notification.seen).length ? (
-          notifications
-            .filter((notification) => !notification.seen)
-            .map((notification) => (
+        {notifications.length ? (
+          notifications.map((notification) =>
+            notification.read ? (
               <MenuItem
                 key={notification.id}
                 onClick={() => {
-                  dispatch(appActions.seenNotification(notification));
+                  dispatch(appActions.readNotification(notification.id));
                   if (notification.source === 'node/message') {
                     navigate(`networking/messages${searchParams ? searchParams : ''}`);
                   }
@@ -96,7 +106,20 @@ export default function NotificationBar() {
               >
                 {notification.name}
               </MenuItem>
-            ))
+            ) : (
+              <StyledUnreadMenuItem
+                key={notification.id}
+                onClick={() => {
+                  dispatch(appActions.readNotification(notification.id));
+                  if (notification.source === 'node/message') {
+                    navigate(`networking/messages${searchParams ? searchParams : ''}`);
+                  }
+                }}
+              >
+                {notification.name}
+              </StyledUnreadMenuItem>
+            ),
+          )
         ) : (
           <MenuItem>No notifications</MenuItem>
         )}
