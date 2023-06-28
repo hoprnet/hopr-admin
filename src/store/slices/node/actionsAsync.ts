@@ -19,7 +19,8 @@ import {
   type SignPayloadType,
   type WithdrawPayloadType,
   api,
-  utils
+  utils,
+  HoprSDK
 } from '@hoprnet/hopr-sdk';
 
 const { APIError } = utils;
@@ -390,6 +391,45 @@ const openChannelThunk = createAsyncThunk(
   async (payload: OpenChannelPayloadType, { rejectWithValue }) => {
     try {
       const res = await openChannel(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
+    }
+  },
+);
+
+const openMultipleChannelsThunk = createAsyncThunk(
+  'node/openMultipleChannels',
+  async (
+    payload: {
+      apiEndpoint: string;
+      apiToken: string;
+      peerIds: string[];
+      amount: string;
+      timeout?: number;
+    },
+    { rejectWithValue },
+  ) => {
+    try {
+      const sdk = new HoprSDK({
+        apiEndpoint: payload.apiEndpoint,
+        apiToken: payload.apiToken,
+        timeout: payload.timeout,
+      });
+      const res = sdk.openMultipleChannels({
+        peerIds: payload.peerIds,
+        amount: payload.amount,
+      });
+      if (typeof res === 'undefined')
+        throw new APIError({
+          status: '400',
+          error: 'Node does not have enough balance to fund channels',
+        });
       return res;
     } catch (e) {
       if (e instanceof APIError) {
@@ -825,6 +865,7 @@ export const actionsAsync = {
   getChannelThunk,
   getChannelTicketsThunk,
   openChannelThunk,
+  openMultipleChannelsThunk,
   redeemChannelTicketsThunk,
   sendMessageThunk,
   signThunk,

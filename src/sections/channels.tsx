@@ -296,16 +296,16 @@ function ChannelsPage() {
       {tabIndex === 1 && (
         <CSVUploader
           onParse={(parsedData) => {
-            // console.log(JSON.stringify(parsedData)); // IT WORKS! array of strings representing peerIds
-            // if(data.peerId  && loginData.apiEndpoint && loginData.apiToken){
+            console.log(JSON.stringify(parsedData)); // IT WORKS! array of strings representing peerIds
+            // if (parsedData && loginData.apiEndpoint && loginData.apiToken) {
             //   dispatch(
-            //     actionsAsync.openMultipleChannels({
-            //       peerIds: transform that array of objects into only an array of strings,
-            //       ,
+            //     actionsAsync.openMultipleChannelsThunk({
+            //       peerIds: parsedData,
+            //       amount: something_amount,
             //       apiEndpoint: loginData.apiEndpoint,
             //       apiToken: loginData.apiToken,
-            //     })
-            //   )
+            //     }),
+            //   );
             // }
           }}
         />
