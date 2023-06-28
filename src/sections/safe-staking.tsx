@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import styled from '@emotion/styled';
 import Section from '../future-hopr-lib-components/Section';
 import Typography from '../future-hopr-lib-components/Typography';
 import Button from '../future-hopr-lib-components/Button/gray';
+import ConnectWeb3 from '../components/ConnectWeb3';
+import { useAppSelector } from '../store';
 
 const Title = styled(Typography)`
   color: #ffffff;
@@ -17,6 +20,13 @@ const Paragraph = styled(Typography)`
 `;
 
 function SafeStakingPage() {
+  const [openWeb3Modal, set_openWeb3Modal] = useState(false);
+  const status = useAppSelector((store) => store.web3.status);
+
+  const handleOnClose = () => {
+    set_openWeb3Modal(false);
+  };
+
   return (
     <Section
       darkGradient
@@ -33,7 +43,16 @@ function SafeStakingPage() {
         Blindtext. Decentralized approaches to digital services, finance and data transfer will usher in a new era of
         freedom, fairness and user choice.
       </Paragraph>
-      <Button>Connect wallet</Button>
+      <ConnectWeb3
+        open={openWeb3Modal}
+        onClose={handleOnClose}
+      />
+      <Button
+        onClick={() => set_openWeb3Modal(true)}
+        disabled={status.connected}
+      >
+        Connect wallet
+      </Button>
     </Section>
   );
 }
