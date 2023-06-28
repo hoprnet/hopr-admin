@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { actionsAsync } from '../store/slices/node/actionsAsync';
 import { useNavigate } from 'react-router-dom';
 import { exportToCsv } from '../utils/helpers';
@@ -293,6 +293,23 @@ function ChannelsPage() {
       </Box>
       {exportToCsvButton()}
       {tabIndex === 1 && openChannelPopUp()}
+      {tabIndex === 1 && (
+        <CSVUploader
+          onParse={(parsedData) => {
+            // console.log(JSON.stringify(parsedData)); // IT WORKS! array of strings representing peerIds
+            // if(data.peerId  && loginData.apiEndpoint && loginData.apiToken){
+            //   dispatch(
+            //     actionsAsync.openMultipleChannels({
+            //       peerIds: transform that array of objects into only an array of strings,
+            //       ,
+            //       apiEndpoint: loginData.apiEndpoint,
+            //       apiToken: loginData.apiToken,
+            //     })
+            //   )
+            // }
+          }}
+        />
+      )}
       <TableContainer component={Paper}>
         <Table
           sx={{ minWidth: 650 }}
@@ -369,6 +386,99 @@ function ChannelsPage() {
         </Table>
       </TableContainer>
     </Section>
+  );
+}
+
+/**
+ * Represents the expected structure of the parsed data.
+ */
+type ParsedData = string[];
+
+/**
+ * Props for the CSVUploader component.
+ */
+type CSVUploaderProps = {
+  /**
+   * Callback function called when the CSV data is successfully parsed.
+   * @param data The parsed data as an array of strings.
+   */
+  onParse: (data: ParsedData) => void;
+};
+
+/**
+ * Component for uploading and parsing CSV data.
+ */
+function CSVUploader<T extends ParsedData>({ onParse }: CSVUploaderProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  /**
+   * Handles the file upload event.
+   * @param event The file upload event.
+   */
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    const reader = new FileReader();
+
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      const contents = e.target?.result;
+      if (typeof contents === 'string') {
+        parseCSV(contents);
+      }
+    };
+
+    if (file) {
+      reader.readAsText(file);
+    }
+  };
+
+  const parseCSV = (csvContent: string) => {
+    const lines = csvContent.split('\n');
+    const parsedData: string[] = [];
+
+    // gets all keys, csv holds the headers on the first line
+    const header = lines[0].split(',');
+    const expectedObjectKeys = header.map((key) => key.trim());
+
+    // find the index of the "peerId" header
+    const peerIdIndex = expectedObjectKeys.findIndex((key) => key === 'peerId');
+
+    // loop through each line, get the peerId value and add it to parsedData
+    for (let i = 1; i < lines.length; i++) {
+      const values = lines[i].split(',');
+      if (values.length > 1 && peerIdIndex !== -1) {
+        const peerId = values[peerIdIndex]?.trim();
+        if (peerId) {
+          parsedData.push(peerId);
+        }
+      }
+    }
+
+    // after parsing, run the callback function
+    onParse(parsedData);
+
+    // Reset the file input value
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  return (
+    <div>
+      <button onClick={handleImportClick}>Open Multiple Channels</button>
+      {/* hidden import */}
+      <input
+        type="file"
+        accept=".csv"
+        style={{ display: 'none' }}
+        ref={fileInputRef}
+        onChange={handleFileUpload}
+        placeholder="import"
+      />
+    </div>
   );
 }
 
