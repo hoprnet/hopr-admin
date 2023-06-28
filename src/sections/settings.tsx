@@ -123,12 +123,13 @@ function SettingsPage() {
         >
           <TableHead>
             <TableRow>
-              <TableCell>Include Recipient</TableCell>
-              <TableCell>Strategy</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             <TableRow>
+              <TableCell>Include Recipient</TableCell>
               <TableCell>
                 False
                 <Switch
@@ -138,6 +139,9 @@ function SettingsPage() {
                 />{' '}
                 True
               </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Strategy</TableCell>
               <TableCell>
                 <Select
                   label={'Strategy'}
