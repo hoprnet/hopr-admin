@@ -8,7 +8,8 @@ import { actionsAsync } from '../store/slices/node/actionsAsync';
 function InfoPage() {
   const dispatch = useAppDispatch();
   const {
-    apiEndpoint, apiToken, 
+    apiEndpoint,
+    apiToken,
   } = useAppSelector((selector) => selector.auth.loginData);
   const balances = useAppSelector((selector) => selector.node.balances);
   const addresses = useAppSelector((selector) => selector.node.addresses);

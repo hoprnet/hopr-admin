@@ -32,10 +32,12 @@ const StyledTable = styled(Table)`
 `;
 const messages = () => {
   const {
-    messages, aliases, 
+    messages,
+    aliases,
   } = useAppSelector((selector) => selector.node);
   const {
-    apiEndpoint, apiToken, 
+    apiEndpoint,
+    apiToken,
   } = useAppSelector((selector) => selector.auth.loginData);
   const dispatch = useAppDispatch();
 

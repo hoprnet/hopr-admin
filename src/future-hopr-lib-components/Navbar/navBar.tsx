@@ -6,6 +6,8 @@ import styled from '@emotion/styled';
 //import LaunchPlaygroundBtn from '../../future-hopr-lib-components/Button/LaunchPlayground';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import NavBarItems from './navBarItems';
+import { Box, IconButton } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 
 interface AppBarProps extends MuiAppBarProps {
   tallerNavBarOnMobile?: boolean;
@@ -45,11 +47,26 @@ const Container = styled.div<{ webapp?: boolean }>`
   justify-content: space-between;
   ${(props) => !props.webapp && 'max-width: 1098px;'}
   width: 100%;
-  margin: auto;
+  margin-inline: 8px;
   position: relative;
   .menu {
     display: flex;
     flex-direction: row;
+  }
+`;
+
+const FlexBox = styled(Box)`
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+
+  .MuiIconButton-root {
+    height: 48px;
+    width: 48px;
+    &:hover {
+      background-color: rgba(0, 0, 180, 0.1);
+      transition: background-color 0.4s ease;
+    }
   }
 `;
 
@@ -85,7 +102,9 @@ const NavBar: React.FC<{
   tallerNavBarOnMobile?: boolean;
   itemsNavbarCenter?: any[];
   itemsNavbarRight?: any[];
-  onButtonClick?: () => {};
+  openedNavigationDrawer: boolean;
+  onButtonClick?: () => void;
+  set_openedNavigationDrawer: (openedNavigationDrawer: boolean) => void;
 }> = (props) => {
   //  const router = useRouter();
   const [activaMenu, setActivaMenu] = useState(false);
@@ -114,15 +133,20 @@ const NavBar: React.FC<{
         webapp={props.webapp}
       >
         <Container webapp={props.webapp}>
-          <Logo className="logo-hopr">
-            <a href="/">
-              <img
-                className="logo-hopr-navbar"
-                alt={props.mainLogoAlt}
-                src={props.mainLogo}
-              />
-            </a>
-          </Logo>
+          <FlexBox>
+            <IconButton onClick={() => props.set_openedNavigationDrawer(!props.openedNavigationDrawer)}>
+              <MenuIcon />
+            </IconButton>
+            <Logo className="logo-hopr">
+              <a href="/">
+                <img
+                  className="logo-hopr-navbar"
+                  alt={props.mainLogoAlt}
+                  src={props.mainLogo}
+                />
+              </a>
+            </Logo>
+          </FlexBox>
           <div
             onClick={() => setActivaMenu(!activaMenu)}
             className={'icon-menu' + (activaMenu ? ' open' : '')}

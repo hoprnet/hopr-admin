@@ -153,9 +153,7 @@ function AliasesPage() {
                     }}
                     alias={alias}
                   />
-                  <OpenChannelModal
-                    peerId={peerId}
-                  />
+                  <OpenChannelModal peerId={peerId} />
                   <SendMessageModal peerId={peerId} />
                 </TableCell>
               </TableRow>
@@ -212,6 +210,80 @@ function DeleteAliasButton({
     >
       delete
     </button>
+  );
+}
+
+function CreateAliasForm() {
+  const dispatch = useAppDispatch();
+  const loginData = useAppSelector((selector) => selector.auth.loginData);
+  const [error, set_error] = useState<{
+    status: string | undefined;
+    error: string | undefined;
+  }>();
+  const [success, set_success] = useState(false);
+  const [form, set_form] = useState<{ peerId: string; alias: string }>({
+    alias: '',
+    peerId: '',
+  });
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      name,
+      value,
+    } = event.target;
+    set_form({
+      ...form,
+      [name]: value,
+    });
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        name="peerId"
+        placeholder="peerId"
+        onChange={handleChange}
+        value={form.peerId}
+      />
+      <input
+        type="text"
+        name="alias"
+        placeholder="alias"
+        onChange={handleChange}
+        value={form.alias}
+      />
+      <button
+        disabled={form.alias.length === 0 || form.peerId.length === 0}
+        onClick={() => {
+          if (loginData.apiEndpoint && loginData.apiToken) {
+            dispatch(
+              actionsAsync.setAliasThunk({
+                alias: form.alias,
+                peerId: form.peerId,
+                apiEndpoint: loginData.apiEndpoint,
+                apiToken: loginData.apiToken,
+              }),
+            )
+              .unwrap()
+              .then(() => {
+                set_success(true);
+                set_error(undefined);
+              })
+              .catch((e) => {
+                set_success(false);
+                set_error({
+                  error: e.error,
+                  status: e.status,
+                });
+              });
+          }
+        }}
+      >
+        add
+      </button>
+      <p>{success ? 'created alias!' : error?.status}</p>
+    </div>
   );
 }
 
