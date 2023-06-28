@@ -32,12 +32,11 @@ const ConnectWalletContent = styled.div`
 type ConnectWeb3Props = {
   inTheAppBar?: boolean;
   open?: boolean;
-  onClose?: ()=>{};
+  onClose?: () => {};
 };
 
-
 export default function ConnectWeb3({
-  inTheAppBar, 
+  inTheAppBar,
   open,
   onClose,
 }: ConnectWeb3Props) {
@@ -56,19 +55,19 @@ export default function ConnectWeb3({
   }, [open]);
 
   const handleClose = () => {
-    if(onClose) onClose();
+    if (onClose) onClose();
     set_chooseWalletModal(false);
-  }
+  };
 
   const handleConnectToMetaMask = () => {
     dispatch(web3Actions.setLoading(true));
     connect();
     if (isConnected) handleClose();
-  }
+  };
 
   return (
     <>
-      { inTheAppBar &&
+      {inTheAppBar && (
         <AppBarContainer>
           {!isConnected ? (
             <button
@@ -88,7 +87,7 @@ export default function ConnectWeb3({
             </button>
           )}
         </AppBarContainer>
-      }
+      )}
       <Modal
         open={chooseWalletModal}
         onClose={() => {

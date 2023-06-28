@@ -80,7 +80,8 @@ const Watcher = () => {
   };
 
   const sendNotification = ({
-    notificationPayload,toastPayload,
+    notificationPayload,
+    toastPayload,
   }: {
     // notification payload without id
     notificationPayload: Omit<Parameters<typeof appActions.addNotification>[0], 'id'>;
