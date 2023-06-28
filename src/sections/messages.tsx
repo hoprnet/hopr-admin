@@ -19,20 +19,8 @@ import {
 } from '@mui/material'
 
 // HOPR components
-// import Checkbox from '../future-hopr-lib-components/Toggles/Checkbox';
 import Section from '../future-hopr-lib-components/Section';
-import { SendMessageModal } from '../components/SendMessageModal';
-
-// const PathOrHops = styled.div`
-//   display: flex;
-//   flex-direction: row;
-//   gap: 8px;
-//   align-items: center;
-// `;
-
-// const StatusContainer = styled.div`
-//   height: 32px;
-// `;
+import { SendMessageModal } from '../components/Modal/SendMessageModal';
 
 const StyledTable = styled(Table)`
   td {
@@ -42,9 +30,6 @@ const StyledTable = styled(Table)`
     font-weight: 600;
   }
 `;
-
-// const nonAutomaticPathTooltip = 'Disable `automatic path` to enable `Number of hops`';
-
 const messages = () => {
   const {
     messages, aliases, 
@@ -53,34 +38,6 @@ const messages = () => {
     apiEndpoint, apiToken, 
   } = useAppSelector((selector) => selector.auth.loginData);
   const dispatch = useAppDispatch();
-
-  // const [message, set_message] = useState<string>('');
-  // const [numberOfHops, set_numberOfHops] = useState<number | ''>('');
-  // const [path, set_path] = useState<string>('');
-  // const [automaticPath, set_automaticPath] = useState<boolean>(true);
-  // const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops'>('automaticPath');
-  // const [receiver, set_receiver] = useState<string>('');
-  // const [loader, set_loader] = useState<boolean>(false);
-  // const [status, set_status] = useState<string>('');
-
-  // const maxLength = 500;
-  // const remainingChars = maxLength - message.length;
-
-  // useEffect(() => {
-  //   switch (sendMode) {
-  //   case 'path':
-  //     set_automaticPath(false);
-  //     set_numberOfHops('');
-  //     break;
-  //   case 'numberOfHops':
-  //     set_automaticPath(false);
-  //     set_path('');
-  //     break;
-  //   default: //'automaticPath'
-  //     set_numberOfHops('');
-  //     set_path('');
-  //   }
-  // }, [sendMode, path, automaticPath, numberOfHops]);
 
   useEffect(() => {
     if (apiEndpoint && apiToken) {
@@ -92,71 +49,6 @@ const messages = () => {
       );
     }
   }, []);
-
-  // const isAlias = (alias: string) => {
-  //   if (aliases) {
-  //     return !!aliases[alias];
-  //   } else return false;
-  // };
-
-  // const validatePeerId = (receiver: string) => {
-  //   if (isAlias(receiver)) {
-  //     if (aliases) {
-  //       return aliases[receiver];
-  //     } else return receiver;
-  //   } else return receiver;
-  // };
-
-  // const handleSendMessage = async (event: MouseEvent<HTMLButtonElement>) => {
-  //   event.preventDefault();
-  //   if (!(apiEndpoint && apiToken)) return;
-  //   set_status('');
-  //   set_loader(true);
-  //   const validatedReceiver = validatePeerId(receiver);
-
-  //   const messagePayload: SendMessagePayloadType = {
-  //     apiToken,
-  //     apiEndpoint,
-  //     body: message,
-  //     recipient: validatedReceiver,
-  //   };
-  //   if (numberOfHops !== '') {
-  //     messagePayload.hops = numberOfHops;
-  //   } else if (path !== '') {
-  //     const pathElements = path.replace(/(\r\n|\n|\r| )/gm, '').split(',');
-  //     const validatedPath = pathElements.map((element) => validatePeerId(element));
-  //     messagePayload.path = validatedPath;
-  //   }
-
-  //   let response;
-  //   try {
-  //     response = await dispatch(actionsAsync.sendMessageThunk(messagePayload)).unwrap();
-
-  //     console.log('@message response:', response);
-  //     if (typeof response === 'string') set_status('Message sent');
-  //   } catch (err: any) {
-  //     console.log('@message err:', err);
-  //     set_status(err.error);
-  //   }
-  //   set_loader(false);
-  // };
-
-  // const handlePath = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   set_sendMode('path');
-  //   set_path(event.target.value);
-  // };
-
-  // const handleNumberOfHops = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   set_sendMode('numberOfHops');
-  //   set_numberOfHops(
-  //     parseInt(event.target.value) || parseInt(event.target.value) === 0 ? parseInt(event.target.value) : '',
-  //   );
-  // };
-
-  // const handleAutomaticPath = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   set_sendMode('automaticPath');
-  //   set_automaticPath(event.target.checked);
-  // };
 
   return (
     <Section yellow>

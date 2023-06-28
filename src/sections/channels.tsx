@@ -8,13 +8,7 @@ import {
   TableContainer,
   Table,
   TableHead,
-  Paper,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  DialogActions,
-  InputAdornment
+  Paper
 } from '@mui/material';
 import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
@@ -23,9 +17,8 @@ import { actionsAsync } from '../store/slices/node/actionsAsync';
 import { useNavigate } from 'react-router-dom';
 import { exportToCsv } from '../utils/helpers';
 import CircularProgress from '@mui/material/CircularProgress';
-import { FundChannelModal } from '../components/FundChannelModal';
 import { ethers } from 'ethers';
-import { OpenChannelModal } from '../components/OpenChannelModal';
+import { OpenChannelModal } from '../components/Modal/OpenOrFundChannelModal';
 
 function ChannelsPage() {
   const dispatch = useAppDispatch();
@@ -203,7 +196,7 @@ function ChannelsPage() {
         </Tabs>
       </Box>
       {exportToCsvButton()}
-      {tabIndex === 1 && <OpenChannelModal handleRefresh={handleRefresh} />}
+      {tabIndex === 1 && <OpenChannelModal />}
       <TableContainer component={Paper}>
         <Table
           sx={{ minWidth: 650 }}
@@ -232,11 +225,9 @@ function ChannelsPage() {
                   <TableCell>{channel.status}</TableCell>
                   <TableCell>{ethers.utils.formatEther(channel.balance)} mHOPR</TableCell>
                   <TableCell>
-                    <FundChannelModal
+                    <OpenChannelModal
                       peerId={channel.peerId}
-                      text="Open Outgoing & Fund"
-                      channelId={channel.channelId}
-                      handleRefresh={handleRefresh}
+                      title="Open Outgoing Channel"
                     />
                   </TableCell>
                 </TableRow>
@@ -266,11 +257,12 @@ function ChannelsPage() {
                       <div key={index}>{error.error}</div>
                     ))}
                     <hr />
-                    <FundChannelModal
+                    <OpenChannelModal
                       peerId={channel.peerId}
-                      text="Fund"
+                      title="Fund Channel"
+                      modalBtnText="Fund"
+                      actionBtnText="Fund"
                       channelId={channel.channelId}
-                      handleRefresh={handleRefresh}
                     />
                   </TableCell>
                 </TableRow>
