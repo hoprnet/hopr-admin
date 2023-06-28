@@ -13,6 +13,9 @@ import { useAppDispatch, useAppSelector } from '../store';
 import { actionsAsync } from '../store/slices/node/actionsAsync';
 import { exportToCsv } from '../utils/helpers';
 import { styled } from '@mui/material/styles';
+import { CreateAliasModal } from '../components/Modal/AddAliasModal';
+import { OpenChannelModal } from '../components/Modal/OpenOrFundChannelModal';
+import { SendMessageModal } from '../components/Modal/SendMessageModal';
 
 const StyledTable = styled(Table)`
   td {
@@ -112,6 +115,7 @@ function PeersPage() {
               <TableCell>Multiaddrs</TableCell>
               <TableCell>Last seen</TableCell>
               <TableCell>Quality</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -140,6 +144,16 @@ function PeersPage() {
                   })}
                 </TableCell>
                 <TableCell>{peer.quality}</TableCell>
+                <TableCell>
+                  <CreateAliasModal
+                    handleRefresh={handleRefresh}
+                    peerId={peer.peerId}
+                  />
+                  <OpenChannelModal
+                    peerId={peer.peerId}
+                  />
+                  <SendMessageModal peerId={peer.peerId} />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
