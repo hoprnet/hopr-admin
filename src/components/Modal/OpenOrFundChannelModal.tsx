@@ -1,11 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import {
-  DialogTitle,
-  TextField,
-  DialogActions,
-  InputAdornment
-} from '@mui/material'
+import { DialogTitle, TextField, DialogActions, InputAdornment } from '@mui/material';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
@@ -21,7 +16,11 @@ type OpenChannelModalProps = {
 };
 
 export const OpenChannelModal = ({
-  channelId, title, modalBtnText, actionBtnText, ...props
+  channelId,
+  title,
+  modalBtnText,
+  actionBtnText,
+  ...props
 }: OpenChannelModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
@@ -49,11 +48,13 @@ export const OpenChannelModal = ({
           peerId: peerId,
           timeout: 60e3,
         }),
-      ).unwrap().catch((e) => {
-        console.log(e.error);
-      });
+      )
+        .unwrap()
+        .catch((e) => {
+          console.log(e.error);
+        });
     };
-  
+
     const handleFundChannels = async (weiValue: string, peerId: string, channelId: string) => {
       await dispatch(
         actionsAsync.fundChannelsThunk({
@@ -64,23 +65,28 @@ export const OpenChannelModal = ({
           outgoingAmount: weiValue,
           timeout: 60e3,
         }),
-        ).unwrap().catch((e) => {
+      )
+        .unwrap()
+        .catch((e) => {
           console.log(e.error);
         });
     };
-    
+
     handleCloseModal();
     const parsedOutgoing = parseFloat(amount ?? '0') >= 0 ? amount ?? '0' : '0';
     const weiValue = ethers.utils.parseEther(parsedOutgoing).toString();
-    if(channelId) { await handleFundChannels(weiValue, peerId, channelId); }
-    else { await handleOpenChannel(weiValue, peerId); }
+    if (channelId) {
+      await handleFundChannels(weiValue, peerId, channelId);
+    } else {
+      await handleOpenChannel(weiValue, peerId);
+    }
     dispatch(
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
       }),
     );
-  }
+  };
 
   return (
     <>
@@ -90,14 +96,12 @@ export const OpenChannelModal = ({
         onClose={handleCloseModal}
       >
         <TopBar>
-          <DialogTitle>
-           {title ? title : 'Open Outgoing Channel'}
-          </DialogTitle>
+          <DialogTitle>{title ? title : 'Open Outgoing Channel'}</DialogTitle>
           <SIconButton
             aria-label="close modal"
             onClick={handleCloseModal}
           >
-            <CloseIcon/>
+            <CloseIcon />
           </SIconButton>
         </TopBar>
         <SDialogContent>
@@ -124,7 +128,7 @@ export const OpenChannelModal = ({
             onClick={handleAction}
             disabled={!amount || parseFloat(amount) <= 0 || !peerId}
           >
-            { actionBtnText ? actionBtnText : 'Open Channel'}
+            {actionBtnText ? actionBtnText : 'Open Channel'}
           </button>
         </DialogActions>
       </SDialog>

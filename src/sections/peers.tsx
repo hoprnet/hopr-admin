@@ -149,9 +149,7 @@ function PeersPage() {
                     handleRefresh={handleRefresh}
                     peerId={peer.peerId}
                   />
-                  <OpenChannelModal
-                    peerId={peer.peerId}
-                  />
+                  <OpenChannelModal peerId={peer.peerId} />
                   <SendMessageModal peerId={peer.peerId} />
                 </TableCell>
               </TableRow>

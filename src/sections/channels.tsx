@@ -9,7 +9,7 @@ import {
   Table,
   TableHead,
   Paper
-} from '@mui/material';
+} from '@mui/material'
 import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
 import { useEffect, useState } from 'react';
