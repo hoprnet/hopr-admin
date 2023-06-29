@@ -421,10 +421,11 @@ const openMultipleChannelsThunk = createAsyncThunk(
         apiToken: payload.apiToken,
         timeout: payload.timeout,
       });
-      const res = sdk.openMultipleChannels({
+      const res = await sdk.openMultipleChannels({
         peerIds: payload.peerIds,
         amount: payload.amount,
       });
+      console.log(res);
       if (typeof res === 'undefined')
         throw new APIError({
           status: '400',
@@ -432,6 +433,7 @@ const openMultipleChannelsThunk = createAsyncThunk(
         });
       return res;
     } catch (e) {
+      console.log(e);
       if (e instanceof APIError) {
         return rejectWithValue({
           status: e.status,
