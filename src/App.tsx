@@ -12,6 +12,7 @@ import Layout from './future-hopr-lib-components/Layout';
 
 import router, { applicationMap } from './router';
 import WagmiProvider from './providers/Wagmi';
+
 import Watcher from './providers/Watcher';
 
 function App() {

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import MuiButton from '@mui/material/Button';
+import MuiButton, { ButtonProps } from '@mui/material/Button';
 import Typography from '../Typography';
 
 const SButton = styled(MuiButton)`
@@ -13,9 +13,14 @@ const SButton = styled(MuiButton)`
     margin-bottom: 0;
     margin-left: 16px;
   }
-`;
+` as typeof MuiButton;
 
-export default function Button(props) {
+interface CustomButtonProps extends ButtonProps {
+  wallet: 'metamask' | 'viewMode' | 'walletConnect';
+  src?: string;
+}
+
+export default function Button(props: CustomButtonProps) {
   function src() {
     switch (props.wallet) {
     case 'metamask':
@@ -28,12 +33,10 @@ export default function Button(props) {
   }
 
   return (
-    <SButton
-      className={props.className}
-      {...props}
-    >
-      <img src={props.src ? props.src : src()} />
+    <SButton {...props}>
+      <img src={props.src ?? src()} />
       {props.wallet === 'viewMode' && <Typography>View mode</Typography>}
+      {props.value}
     </SButton>
   );
 }

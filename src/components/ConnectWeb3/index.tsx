@@ -10,6 +10,8 @@ import { web3Actions } from '../../store/slices/web3';
 // wagmi
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
+import { gnosis } from 'viem/chains';
 
 const AppBarContainer = styled.div`
   height: 59px;
@@ -32,18 +34,21 @@ const ConnectWalletContent = styled.div`
 type ConnectWeb3Props = {
   inTheAppBar?: boolean;
   open?: boolean;
-  onClose?: ()=>{};
+  onClose?: () => void;
 };
 
-
 export default function ConnectWeb3({
-  inTheAppBar, 
+  inTheAppBar,
   open,
   onClose,
 }: ConnectWeb3Props) {
   const dispatch = useAppDispatch();
   const [chooseWalletModal, set_chooseWalletModal] = useState(false);
   const { connect } = useConnect({ connector: new InjectedConnector() });
+  const { connect: openWalletConnect } = useConnect({connector: new WalletConnectConnector({
+    options: { projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID },
+    chains: [gnosis],
+  })});
   const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
 
@@ -56,19 +61,25 @@ export default function ConnectWeb3({
   }, [open]);
 
   const handleClose = () => {
-    if(onClose) onClose();
+    if (onClose) onClose();
     set_chooseWalletModal(false);
-  }
+  };
 
   const handleConnectToMetaMask = () => {
     dispatch(web3Actions.setLoading(true));
     connect();
     if (isConnected) handleClose();
-  }
+  };
+
+  const handleConnectToWalletConnect = () => {
+    dispatch(web3Actions.setLoading(true));
+    openWalletConnect();
+    handleClose();
+  };
 
   return (
     <>
-      { inTheAppBar &&
+      {inTheAppBar && (
         <AppBarContainer>
           {!isConnected ? (
             <button
@@ -88,7 +99,7 @@ export default function ConnectWeb3({
             </button>
           )}
         </AppBarContainer>
-      }
+      )}
       <Modal
         open={chooseWalletModal}
         onClose={() => {
@@ -100,6 +111,11 @@ export default function ConnectWeb3({
           <WalletButton
             onClick={handleConnectToMetaMask}
             wallet="metamask"
+          />
+          <WalletButton
+            onClick={handleConnectToWalletConnect}
+            wallet="walletConnect"
+            value={'connect with walletConnect'}
           />
           <p>
             By connecting a wallet, you agree to HOPR’s Terms of Service and acknowledge that you have read and
