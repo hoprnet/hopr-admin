@@ -79,7 +79,8 @@ const Watcher = () => {
     if (toastPayload) {
       toast(toastPayload.message, {
         type: toastPayload.type,
-        onClick: () => dispatch(appActions.readNotification(notificationId)),
+        // when a user presses cancel button it is not considered as an interaction
+        onClick: () => dispatch(appActions.interactedWithNotification(notificationId)),
       });
     }
 

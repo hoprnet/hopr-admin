@@ -40,13 +40,9 @@ const SIconButton = styled(IconButton)`
 `;
 
 const StyledUnreadMenuItem = styled(MenuItem)`
-  background-color: rgba(0, 0, 180);
-  color: #fff;
+  background-color: rgba(0, 0, 180, 0.3);
   opacity: 90%;
   border-bottom: 1px solid #444;
-  :hover {
-    color: #000000de;
-  }
 `;
 
 const SMenu = styled(Menu)``;
@@ -94,11 +90,11 @@ export default function NotificationBar() {
       >
         {notifications.length ? (
           notifications.map((notification) =>
-            notification.read ? (
+            notification.interacted ? (
               <MenuItem
                 key={notification.id}
                 onClick={() => {
-                  dispatch(appActions.readNotification(notification.id));
+                  dispatch(appActions.interactedWithNotification(notification.id));
                   if (notification.source === 'node/message') {
                     navigate(`networking/messages${searchParams ? searchParams : ''}`);
                   }
@@ -110,7 +106,7 @@ export default function NotificationBar() {
               <StyledUnreadMenuItem
                 key={notification.id}
                 onClick={() => {
-                  dispatch(appActions.readNotification(notification.id));
+                  dispatch(appActions.interactedWithNotification(notification.id));
                   if (notification.source === 'node/message') {
                     navigate(`networking/messages${searchParams ? searchParams : ''}`);
                   }

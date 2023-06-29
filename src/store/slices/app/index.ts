@@ -20,7 +20,7 @@ const appSlice = createSlice({
       state.notifications.push({
         ...action.payload,
         seen: false,
-        read: false,
+        interacted: false,
         timeout: action.payload.timeout ?? now + defaultTimeout,
       });
     },
@@ -34,13 +34,13 @@ const appSlice = createSlice({
           : notification,
       );
     },
-    readNotification: (state, action: PayloadAction<string>) => {
+    interactedWithNotification: (state, action: PayloadAction<string>) => {
       state.notifications = state.notifications.map((notification) =>
         notification.id === action.payload
           ? {
             ...notification,
             seen: true,
-            read: true,
+            interacted: true,
           }
           : notification,
       );

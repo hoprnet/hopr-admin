@@ -4,7 +4,7 @@ type InitialState = {
     name: string;
     source: string;
     seen: boolean;
-    read: boolean;
+    interacted: boolean;
     timeout: number;
     url: string | null;
   }[];
