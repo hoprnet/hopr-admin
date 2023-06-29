@@ -10,10 +10,13 @@ import { actionsAsync as web3ActionsAsync } from '../store/slices/web3/actionsAs
 import Section from '../future-hopr-lib-components/Section';
 
 import ConnectWeb3 from '../components/ConnectWeb3';
+import { useAccount, useBalance } from 'wagmi';
 
 function Section_Web3() {
   const dispatch = useAppDispatch();
   const web3 = useAppSelector((store: Store) => store.web3);
+  const { address } = useAccount();
+  const { data } = useBalance({ address });
 
   return (
     <Section
@@ -23,6 +26,7 @@ function Section_Web3() {
     >
       WEB3 REDUX STORE
       <pre>{JSON.stringify(web3, null, 4)}</pre>
+      <pre>{data?.value.toString()}</pre>
     </Section>
   );
 }

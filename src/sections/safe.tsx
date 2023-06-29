@@ -6,13 +6,16 @@ import { safeActionsAsync, safeActions } from '../store/slices/safe';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
-import { useSigner } from '../hooks';
-import { utils } from 'ethers';
+import { useEthersSigner } from '../hooks';
+import { parseEther } from 'viem';
+import { useAccount } from 'wagmi';
+
 function SafeSection() {
   const dispatch = useAppDispatch();
   const safe = useAppSelector((store) => store.safe);
   const { account } = useAppSelector((store) => store.web3);
-  const { signer } = useSigner();
+  const { address } = useAccount();
+  const signer = useEthersSigner();
   const [threshold, set_threshold] = useState(1);
   const [owners, set_owners] = useState('');
 
@@ -23,7 +26,12 @@ function SafeSection() {
   const fetchInitialStateForSigner = async () => {
     if (signer) {
       dispatch(safeActions.resetState());
-      dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer }));
+      dispatch(
+        safeActionsAsync.getSafesByOwnerThunk({
+          signerOrProvider: signer,
+          ownerAddress: address ?? '',
+        }),
+      );
     }
   };
 
@@ -54,13 +62,13 @@ function SafeSection() {
             if (signer) {
               dispatch(
                 safeActionsAsync.getSafeInfoThunk({
-                  signer,
+                  signerOrProvider: signer,
                   safeAddress,
                 }),
               );
               dispatch(
                 safeActionsAsync.getAllSafeTransactionsThunk({
-                  signer,
+                  signerOrProvider: signer,
                   safeAddress,
                 }),
               );
@@ -99,7 +107,7 @@ function SafeSection() {
                   owners: owners.split(','),
                   threshold,
                 },
-                signer,
+                signerOrProvider: signer,
               }),
             );
           }
@@ -110,7 +118,12 @@ function SafeSection() {
       <button
         onClick={() => {
           if (signer) {
-            dispatch(safeActionsAsync.createSafeThunk({ signer }));
+            dispatch(
+              safeActionsAsync.createSafeThunk({
+                signerOrProvider: signer,
+                signerAddress: address ?? '',
+              }),
+            );
           }
         }}
       >
@@ -127,7 +140,7 @@ function SafeSection() {
                 safeAddress: safe.selectedSafeAddress,
                 signer,
                 safeTransactionData: {
-                  value: utils.parseEther('0.001').toString(),
+                  value: parseEther('0.001').toString(),
                   to: signerAddress,
                   data: '0x',
                 },

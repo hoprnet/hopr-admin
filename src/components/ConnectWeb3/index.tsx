@@ -45,12 +45,15 @@ export default function ConnectWeb3({
   const dispatch = useAppDispatch();
   const [chooseWalletModal, set_chooseWalletModal] = useState(false);
   const { connect } = useConnect({ connector: new InjectedConnector() });
-  const { connect: openWalletConnect } = useConnect({connector: new WalletConnectConnector({
-    options: { projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID },
-    chains: [gnosis],
-  })});
   const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
+  const { connect: openWalletConnect } = useConnect({
+    connector: new WalletConnectConnector({
+      options: { projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID },
+      chains: [gnosis],
+    }),
+    onError: () => disconnect(),
+  });
 
   useEffect(() => {
     if (isConnected) handleClose();
