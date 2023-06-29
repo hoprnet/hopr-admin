@@ -194,7 +194,7 @@ const Watcher = () => {
               url: null,
               timeout: null,
             },
-            toastPayload: { message: updatedChannel.channelId + ' ' + notificationText },
+            toastPayload: { message: `${updatedChannel.channelId}: ${notificationText}` },
           });
         }
       }
@@ -229,7 +229,7 @@ const Watcher = () => {
           url: null,
           timeout: null,
         },
-        toastPayload: { message: 'received message: ' + newMessage.latestMessage.body },
+        toastPayload: { message: `received message: ${newMessage.latestMessage.body}` },
       });
     }
 
