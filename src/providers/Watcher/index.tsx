@@ -5,6 +5,7 @@ import { appActions } from '../../store/slices/app';
 import { nodeActionsAsync } from '../../store/slices/node';
 import { ToastOptions, toast } from 'react-toastify';
 import { nanoid } from '@reduxjs/toolkit';
+import { initialState } from '../../store/slices/node/initialState';
 
 const FETCH_CHANNELS_INTERVAL = 10000;
 const FETCH_NODE_INTERVAL = 5000;
@@ -21,19 +22,6 @@ let prevLatestMessageTimestamp: {
   createdAt: number;
   amountOfTimesRepeated: number;
 } | null;
-
-const CloseButtonToast = (props: { notificationId: string }) => {
-  const dispatch = useAppDispatch();
-  return (
-    <button
-      onClick={() => {
-        dispatch(appActions.readNotification(props.notificationId));
-      }}
-    >
-      close
-    </button>
-  );
-};
 
 const Watcher = () => {
   const dispatch = useAppDispatch();
@@ -91,7 +79,7 @@ const Watcher = () => {
     if (toastPayload) {
       toast(toastPayload.message, {
         type: toastPayload.type,
-        closeButton: <CloseButtonToast notificationId={notificationId} />,
+        onClick: () => dispatch(appActions.readNotification(notificationId)),
       });
     }
 
@@ -118,6 +106,7 @@ const Watcher = () => {
       if (prevNodeFunds && prevNodeFunds.native !== newNodeFunds.native) {
         const nativeBalanceIsMore = BigInt(prevNodeFunds.native) < BigInt(newNodeFunds.native);
         if (nativeBalanceIsMore) {
+          const nativeBalanceDifference = BigInt(newNodeFunds.native) - BigInt(prevNodeFunds.native);
           sendNotification({
             notificationPayload: {
               source: 'node',
@@ -125,7 +114,7 @@ const Watcher = () => {
               url: null,
               timeout: null,
             },
-            toastPayload: { message: 'Node received native funds' },
+            toastPayload: { message: `Node received ${nativeBalanceDifference} native funds` },
           });
         }
       }
@@ -133,8 +122,8 @@ const Watcher = () => {
       //  check if hopr balance has increased
       if (prevNodeFunds && prevNodeFunds.hopr !== newNodeFunds.hopr) {
         const hoprBalanceIsMore = BigInt(prevNodeFunds.hopr) < BigInt(newNodeFunds.hopr);
-
         if (hoprBalanceIsMore) {
+          const hoprBalanceDifference = BigInt(newNodeFunds.hopr) - BigInt(prevNodeFunds.hopr);
           sendNotification({
             notificationPayload: {
               source: 'node',
@@ -142,7 +131,7 @@ const Watcher = () => {
               url: null,
               timeout: null,
             },
-            toastPayload: { message: 'Node received hopr funds' },
+            toastPayload: { message: `Node received ${hoprBalanceDifference} hopr funds` },
           });
         }
       }
@@ -171,7 +160,7 @@ const Watcher = () => {
             url: null,
             timeout: null,
           },
-          toastPayload: { message: `node connectivity status is now ${newNodeInfo?.connectivityStatus}` },
+          toastPayload: {message: `node connectivity status updated from ${prevNodeInfo.connectivityStatus} to ${newNodeInfo?.connectivityStatus}`},
         });
       }
 
@@ -204,7 +193,7 @@ const Watcher = () => {
               url: null,
               timeout: null,
             },
-            toastPayload: { message: notificationText },
+            toastPayload: { message: updatedChannel.channelId + ' ' + notificationText },
           });
         }
       }
@@ -215,9 +204,19 @@ const Watcher = () => {
   };
 
   const watchMessages = () => {
-    const newMessageTimestamp = getLatestMessageTimestamp(messages);
+    const newMessage = getLatestMessage(messages);
 
-    if (!newMessageTimestamp) return;
+    if (!newMessage) return;
+
+    // holds the latest message timestamp and the amount of times that timestamp
+    // was repeated to check if we have received a message
+    // after what was considered our latest message
+    const newMessageTimestamp = {
+      // amount of times timestamp was seen throughout the messages state
+      amountOfTimesRepeated: newMessage.amountOfTimesRepeated,
+      // latest timestamp
+      createdAt: newMessage.createdAt,
+    };
 
     const newMessageHasArrived = checkForNewMessage(prevLatestMessageTimestamp, newMessageTimestamp);
 
@@ -229,7 +228,7 @@ const Watcher = () => {
           url: null,
           timeout: null,
         },
-        toastPayload: { message: 'new message' },
+        toastPayload: { message: 'received message: ' + newMessage.latestMessage.body },
       });
     }
 
@@ -306,14 +305,18 @@ const Watcher = () => {
     return oldChannel.status === newChannel.status;
   };
 
-  const getLatestMessageTimestamp = (newMessages: { createdAt: number }[]): typeof prevLatestMessageTimestamp => {
+  const getLatestMessage = (newMessages?: (typeof initialState)['messages']) => {
+    if (!newMessages?.length) return;
+
     const sortedMessages = [...newMessages].sort((a, b) => b.createdAt - a.createdAt);
-    const latestTimestamp = sortedMessages?.[0]?.createdAt ?? 0;
+    const latestMessage = sortedMessages?.[0];
+    const latestTimestamp = latestMessage.createdAt ?? 0;
     const amountOfMessagesWithTimestamp = newMessages.filter((msg) => msg.createdAt === latestTimestamp)?.length;
 
     return {
       createdAt: latestTimestamp,
       amountOfTimesRepeated: amountOfMessagesWithTimestamp,
+      latestMessage,
     };
   };
 
