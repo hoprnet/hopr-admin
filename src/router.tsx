@@ -144,13 +144,6 @@ export const applicationMap: ApplicationMapType = [
         element: <ChannelsPage />,
         loginNeeded: 'node',
       },
-      {
-        name: 'Wrapper',
-        path: 'wrapper',
-        icon: <PaidIcon />,
-        element: <WrapperPage />,
-        loginNeeded: 'node',
-      },
     ],
   },
   {
@@ -170,6 +163,13 @@ export const applicationMap: ApplicationMapType = [
         path: 'safe',
         icon: <LockIcon />,
         element: <SectionSafe />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Wrapper',
+        path: 'wrapper',
+        icon: <PaidIcon />,
+        element: <WrapperPage />,
         loginNeeded: 'web3',
       },
     ],
