@@ -18,6 +18,7 @@ import PeersPage from './sections/peers';
 import TicketsPage from './sections/tickets';
 import ChannelsPage from './sections/channels';
 import SettingsPage from './sections/settings';
+import WrapperPage from './sections/wrapper';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -42,6 +43,7 @@ import ContactPhone from '@mui/icons-material/ContactPhone';
 import NodeIcon from '@mui/icons-material/Router';
 import NetworkingIcon from '@mui/icons-material/Diversity3';
 import DevelopIcon from '@mui/icons-material/Code';
+import PaidIcon from '@mui/icons-material/Paid';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -140,6 +142,13 @@ export const applicationMap: ApplicationMapType = [
         path: 'channels',
         icon: <HubIcon />,
         element: <ChannelsPage />,
+        loginNeeded: 'node',
+      },
+      {
+        name: 'Wrapper',
+        path: 'wrapper',
+        icon: <PaidIcon />,
+        element: <WrapperPage />,
         loginNeeded: 'node',
       },
     ],
