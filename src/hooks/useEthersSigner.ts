@@ -1,14 +1,11 @@
 import * as React from 'react';
 import { type WalletClient, useWalletClient, PublicClient, usePublicClient } from 'wagmi';
-import { providers} from 'ethers';
+import { providers } from 'ethers';
 import { HttpTransport } from 'viem';
 
 type Window = {
   ethereum: providers.ExternalProvider;
 };
-
-
- 
 
 export function walletClientToSigner(walletClient: WalletClient) {
   const {
@@ -30,7 +27,6 @@ export function walletClientToSigner(walletClient: WalletClient) {
   const signer = provider.getSigner(account.address);
   return signer;
 }
-
 
 /** Hook to convert a viem Wallet Client to an ethers.js Signer. */
 export function useEthersSigner({ chainId = 100 }: { chainId?: number } = {}) {
