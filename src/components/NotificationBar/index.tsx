@@ -39,15 +39,15 @@ const SIconButton = styled(IconButton)`
   }
 `;
 
-const StyledUnreadMenuItem = styled(MenuItem)`
-  background-color: rgba(0, 0, 180, 0.3);
-  opacity: 90%;
-  border-bottom: 1px solid #444;
+const StyledMenuItem = styled(MenuItem)`
+  &.unreadMenuItem {
+    background-color: rgba(0, 0, 180, 0.3);
+    opacity: 90%;
+    border-bottom: 1px solid #444;
+  }
 `;
 
 const SMenu = styled(Menu)``;
-
-const SMenuItem = styled(MenuItem)``;
 
 export default function NotificationBar() {
   const dispatch = useAppDispatch();
@@ -89,33 +89,20 @@ export default function NotificationBar() {
         MenuListProps={{ 'aria-labelledby': 'notification-menu-button' }}
       >
         {notifications.length ? (
-          notifications.map((notification) =>
-            notification.interacted ? (
-              <MenuItem
-                key={notification.id}
-                onClick={() => {
-                  dispatch(appActions.interactedWithNotification(notification.id));
-                  if (notification.source === 'node/message') {
-                    navigate(`networking/messages${searchParams ? searchParams : ''}`);
-                  }
-                }}
-              >
-                {notification.name}
-              </MenuItem>
-            ) : (
-              <StyledUnreadMenuItem
-                key={notification.id}
-                onClick={() => {
-                  dispatch(appActions.interactedWithNotification(notification.id));
-                  if (notification.source === 'node/message') {
-                    navigate(`networking/messages${searchParams ? searchParams : ''}`);
-                  }
-                }}
-              >
-                {notification.name}
-              </StyledUnreadMenuItem>
-            ),
-          )
+          notifications.map((notification) => (
+            <StyledMenuItem
+              className={!notification.interacted ? 'unreadMenuItem' : ''}
+              key={notification.id}
+              onClick={() => {
+                dispatch(appActions.interactedWithNotification(notification.id));
+                if (notification.source === 'node/message') {
+                  navigate(`networking/messages${searchParams ? searchParams : ''}`);
+                }
+              }}
+            >
+              {notification.name}
+            </StyledMenuItem>
+          ))
         ) : (
           <MenuItem>No notifications</MenuItem>
         )}
