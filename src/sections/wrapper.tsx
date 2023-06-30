@@ -45,6 +45,7 @@ const StyledTextField = styled(TextField)`
   /* Firefox */
   input[type='number'] {
     -moz-appearance: textfield;
+    appearance: textfield;
   }
 `;
 
@@ -98,18 +99,24 @@ type NumberLiteral = `${number}`;
 type TransactionLinkProps = {
   isSuccess: boolean;
   hash: `0x${string}` | undefined;
+  swapDirection: 'xHOPR_to_wxHOPR' | 'wxHOPR_to_xHOPR';
 };
 
 function TransactionLink({
   isSuccess,
   hash,
+  swapDirection,
 }: TransactionLinkProps) {
   if (!isSuccess) return null;
 
   return (
     <span>
-      Check your{' '}
-      <GnosisLink href={`https://gnosisscan.io/tx/${hash}`}>
+      Check your {swapDirection === 'xHOPR_to_wxHOPR' ? 'xHOPR to wxHOPR ' : 'wxHOPR to xHOPR '}
+      <GnosisLink
+        href={`https://gnosisscan.io/tx/${hash}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         transaction
         <LaunchIcon />
       </GnosisLink>
@@ -123,29 +130,35 @@ function WrapperPage() {
   const [swapDirection, set_swapDirection] = useState<'xHOPR_to_wxHOPR' | 'wxHOPR_to_xHOPR'>('xHOPR_to_wxHOPR');
   const { address } = useAccount();
 
+  const xhoprSmartContractAddress = '0xD057604A14982FE8D88c5fC25Aac3267eA142a08';
+  const wxhoprSmartContractAddress = '0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1';
+  const hoprWrapperSmartContractAddress = '0x097707143e01318734535676cfe2e5cF8b656ae8';
+
   // Fetch balance data
   const { data: xHOPR_balance } = useBalance({
     address,
-    token: '0xD057604A14982FE8D88c5fC25Aac3267eA142a08',
+    token: xhoprSmartContractAddress,
+    watch: true,
   });
   const { data: wxHOPR_balance } = useBalance({
     address,
-    token: '0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1',
+    token: wxhoprSmartContractAddress,
+    watch: true,
   });
 
   // Prepare contract write configurations
   const { config: xHOPR_to_wxHOPR_config } = usePrepareContractWrite({
-    address: '0xD057604A14982FE8D88c5fC25Aac3267eA142a08',
+    address: xhoprSmartContractAddress,
     abi: wrapperAbi,
     functionName: 'transferAndCall',
-    args: ['0x097707143e01318734535676cfe2e5cF8b656ae8', parseUnits(xhoprValue as NumberLiteral, 18), '0x'],
+    args: [hoprWrapperSmartContractAddress, parseUnits(xhoprValue as NumberLiteral, 18), '0x'],
   });
 
   const { config: wxHOPR_to_xHOPR_config } = usePrepareContractWrite({
-    address: '0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1',
+    address: wxhoprSmartContractAddress,
     abi: wrapperAbi,
     functionName: 'transfer',
-    args: ['0x097707143e01318734535676cfe2e5cF8b656ae8', parseUnits(wxhoprValue as NumberLiteral, 18)],
+    args: [hoprWrapperSmartContractAddress, parseUnits(wxhoprValue as NumberLiteral, 18)],
   });
 
   // Perform contract writes and retrieve data.
@@ -179,6 +192,7 @@ function WrapperPage() {
     }
   };
 
+  // Clean up text fields after transaction is success.
   useEffect(() => {
     if (is_xHOPR_to_wxHOPR_success || is_wxHOPR_to_xHOPR_success) {
       set_xhoprValue('');
@@ -268,10 +282,12 @@ function WrapperPage() {
           <TransactionLink
             isSuccess={is_xHOPR_to_wxHOPR_success}
             hash={xHOPR_to_wxHOPR_data?.hash}
+            swapDirection={'xHOPR_to_wxHOPR'}
           />
           <TransactionLink
             isSuccess={is_wxHOPR_to_xHOPR_success}
             hash={wxHOPR_to_xHOPR_data?.hash}
+            swapDirection={'wxHOPR_to_xHOPR'}
           />
         </WrapperContainer>
       </StyledPaper>
