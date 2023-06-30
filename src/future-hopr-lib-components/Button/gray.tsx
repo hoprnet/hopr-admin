@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import MuiButton, { ButtonProps as MuiButtonProps } from '@mui/material/Button';
+import MuiButton, { ButtonProps } from '@mui/material/Button';
 
 const SButton = styled(MuiButton)`
   background: #ffffff;
@@ -26,8 +26,6 @@ const SButton = styled(MuiButton)`
     color: #414141;
   }
 `;
-
-type ButtonProps = MuiButtonProps;
 
 export default function Button(props: ButtonProps) {
   return (
