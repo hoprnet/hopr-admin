@@ -5,6 +5,7 @@ const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
+    resetState: () => initialState,
     addNotification: (
       state,
       action: PayloadAction<{
