@@ -5,6 +5,7 @@ import STextField from '../../future-hopr-lib-components/TextField';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import CloseIcon from '@mui/icons-material/Close';
+import { ethers } from 'ethers';
 
 type OpenMultipleChannelsModalProps = {};
 
@@ -38,10 +39,12 @@ export const OpenMultipleChannelsModal = () => {
 
   const handleAction = async () => {
     if (peerIds && loginData.apiEndpoint && loginData.apiToken) {
+      const parsedOutgoing = parseFloat(amount ?? '0') >= 0 ? amount ?? '0' : '0';
+      const weiValue = ethers.utils.parseEther(parsedOutgoing).toString();
       dispatch(
         actionsAsync.openMultipleChannelsThunk({
           peerIds: peerIds,
-          amount: amount,
+          amount: weiValue,
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
           timeout: 60e3 * 7, // 7 minutes... This method can take really long
