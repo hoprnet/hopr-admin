@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 function PingPage() {
   const dispatch = useAppDispatch();
   const [peerId, set_peerId] = useState('');
-  const [pinging, setPinging] = useState(false);
+  const [pinging, set_pinging] = useState(false);
   const [pinged, set_pinged] = useState(false);
   const [invalidPeerId, set_invalidPeerId] = useState(false);
 
@@ -38,7 +38,7 @@ function PingPage() {
   const handleClick = () => {
     if (apiEndpoint && apiToken && peerId !== '') {
       const validatedPeerId = validatePeerId(peerId);
-      setPinging(true); // Start pinging
+      set_pinging(true); // Start pinging
       set_invalidPeerId(false); // Clear previous invalidPeerId state
 
       dispatch(
@@ -51,11 +51,11 @@ function PingPage() {
         .unwrap()
         .then(() => {
           set_pinged(true); // Ping successful
-          setPinging(false); // Stop pinging
+          set_pinging(false); // Stop pinging
         })
         .catch(() => {
           set_pinged(false); // Ping failed
-          setPinging(false); // Stop pinging
+          set_pinging(false); // Stop pinging
           set_invalidPeerId(true); // Set invalidPeerId state
         });
     }
