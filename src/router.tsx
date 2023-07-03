@@ -205,6 +205,13 @@ const LayoutEnhanced = () => {
         apiEndpoint,
       }),
     );
+    dispatch(nodeActions.initializeMessagesWebsocket());
+    dispatch(nodeActions.initializeLogsWebsocket());
+
+    return () => {
+      dispatch(nodeActions.closeLogsWebsocket());
+      dispatch(nodeActions.closeMessagesWebsocket());
+    };
   }, [apiEndpoint, apiToken]);
 
   return (
