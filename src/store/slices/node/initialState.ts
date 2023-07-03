@@ -23,7 +23,7 @@ type Message = {
   challenge?: string;
 };
 
-type WebsocketConnectionStatus = 'connecting' | 'connected' | 'error' | null
+type WebsocketConnectionStatus = 'connecting' | 'connected' | 'error' | null;
 
 type InitialState = {
   info: GetInfoResponseType | null;

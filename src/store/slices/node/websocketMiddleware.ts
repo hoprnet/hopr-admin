@@ -20,7 +20,7 @@ const { WebsocketHelper } = utils;
 
 type LocalRootState = {
   auth: typeof initialState;
-  node: typeof nodeInitialState
+  node: typeof nodeInitialState;
 };
 
 const websocketMiddleware: Middleware<object, LocalRootState> = ({
@@ -32,7 +32,6 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
 
   return (next) => (action: PayloadAction) => {
     if (action.type === initializeMessagesWebsocket.type) {
-      
       // start websocket connection
       const {
         apiEndpoint,
@@ -42,12 +41,12 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
       if (apiEndpoint && apiToken) {
         try {
           // check if connection is being established
-          if (messagesWebsocketStatus === 'connecting') return
+          if (messagesWebsocketStatus === 'connecting') return;
           // close previous ws before opening new one
           if (messagesWebsocket) {
-            messagesWebsocket.close()
+            messagesWebsocket.close();
           }
-          dispatch(updateMessagesWebsocketStatus('connecting'))
+          dispatch(updateMessagesWebsocketStatus('connecting'));
           messagesWebsocket = new WebsocketHelper({
             apiEndpoint,
             apiToken,
@@ -85,12 +84,12 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
       if (apiEndpoint && apiToken) {
         try {
           // check if connection is being established
-          if (logsWebsocketStatus === 'connecting') return
+          if (logsWebsocketStatus === 'connecting') return;
           // close previous ws before opening new one
           if (logsWebsocket) {
-            logsWebsocket.close()
+            logsWebsocket.close();
           }
-          dispatch(updateLogsWebsocketStatus('connecting'))
+          dispatch(updateLogsWebsocketStatus('connecting'));
           logsWebsocket = new WebsocketHelper({
             apiEndpoint,
             apiToken,
