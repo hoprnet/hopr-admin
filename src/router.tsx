@@ -43,6 +43,7 @@ import ContactPhone from '@mui/icons-material/ContactPhone';
 import NodeIcon from '@mui/icons-material/Router';
 import NetworkingIcon from '@mui/icons-material/Diversity3';
 import DevelopIcon from '@mui/icons-material/Code';
+import PingPage from './sections/ping';
 import BarChartIcon from '@mui/icons-material/BarChart';
 
 export type ApplicationMapType = {
@@ -121,6 +122,7 @@ export const applicationMap: ApplicationMapType = [
         name: 'Ping',
         path: 'ping',
         icon: <RssFeedIcon />,
+        element: <PingPage />,
         loginNeeded: 'node',
       },
       {
@@ -212,6 +214,13 @@ const LayoutEnhanced = () => {
         apiEndpoint,
       }),
     );
+    dispatch(nodeActions.initializeMessagesWebsocket());
+    dispatch(nodeActions.initializeLogsWebsocket());
+
+    return () => {
+      dispatch(nodeActions.closeLogsWebsocket());
+      dispatch(nodeActions.closeMessagesWebsocket());
+    };
   }, [apiEndpoint, apiToken]);
 
   return (
