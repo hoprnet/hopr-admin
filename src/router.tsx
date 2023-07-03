@@ -17,6 +17,7 @@ import MessagesPage from './sections/messages';
 import PeersPage from './sections/peers';
 import TicketsPage from './sections/tickets';
 import ChannelsPage from './sections/channels';
+import MetricsPage from './sections/metrics';
 import SettingsPage from './sections/settings';
 
 // Layout
@@ -42,6 +43,7 @@ import ContactPhone from '@mui/icons-material/ContactPhone';
 import NodeIcon from '@mui/icons-material/Router';
 import NetworkingIcon from '@mui/icons-material/Diversity3';
 import DevelopIcon from '@mui/icons-material/Code';
+import BarChartIcon from '@mui/icons-material/BarChart';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -92,6 +94,13 @@ export const applicationMap: ApplicationMapType = [
         path: 'tickets',
         icon: <ConfirmationNumberIcon />,
         element: <TicketsPage />,
+        loginNeeded: 'node',
+      },
+      {
+        name: 'Metrics',
+        path: 'metrics',
+        icon: <BarChartIcon />,
+        element: <MetricsPage />,
         loginNeeded: 'node',
       },
       {
