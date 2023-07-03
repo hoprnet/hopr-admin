@@ -19,6 +19,7 @@ import TicketsPage from './sections/tickets';
 import ChannelsPage from './sections/channels';
 import MetricsPage from './sections/metrics';
 import SettingsPage from './sections/settings';
+import AddNode from './steps/install-node/addNode';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -45,6 +46,7 @@ import NetworkingIcon from '@mui/icons-material/Diversity3';
 import DevelopIcon from '@mui/icons-material/Code';
 import PingPage from './sections/ping';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -172,6 +174,20 @@ export const applicationMap: ApplicationMapType = [
         path: 'safe',
         icon: <LockIcon />,
         element: <SectionSafe />,
+        loginNeeded: 'web3',
+      },
+    ],
+  },
+  {
+    groupName: 'Steps',
+    path: 'steps',
+    icon: <DevelopIcon />,
+    items: [
+      {
+        name: 'Add node',
+        path: 'add-node',
+        icon: <AddBoxIcon />,
+        element: <AddNode />,
         loginNeeded: 'web3',
       },
     ],
