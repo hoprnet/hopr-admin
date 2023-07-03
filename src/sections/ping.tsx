@@ -40,16 +40,16 @@ function PingPage() {
   };
 
   const validatePeerId = (peerId: string) => {
-    if (isAlias(peerId)) {
-      if (aliases) {
-        return aliases[peerId];
-      } else return peerId;
-    } else return peerId;
+    if (aliases && isAlias(peerId)) {
+      return aliases[peerId];
+    }
+    return peerId;
   };
 
   const handleClick = () => {
     if (apiEndpoint && apiToken && peerId !== '') {
       const validatedPeerId = validatePeerId(peerId);
+      console.log('@  validatedPeerId:', validatedPeerId);
       set_pinging(true); // Start pinging
       set_invalidPeerId(false); // Clear previous invalidPeerId state
 
