@@ -34,11 +34,11 @@ const nodeSlice = createSlice({
       state.logs.push(action.payload);
     },
     // handle ws state
-    updateMessagesWebsocketStatus(state, action: PayloadAction<boolean>) {
-      state.messagesWebsocketConnected = action.payload;
+    updateMessagesWebsocketStatus(state, action: PayloadAction<typeof initialState.messagesWebsocketStatus>) {
+      state.messagesWebsocketStatus = action.payload;
     },
-    updateLogsWebsocketStatus(state, action: PayloadAction<boolean>) {
-      state.logsWebsocketConnected = action.payload;
+    updateLogsWebsocketStatus(state, action: PayloadAction<typeof initialState.messagesWebsocketStatus>) {
+      state.logsWebsocketStatus = action.payload;
     },
     // user actions to open and close ws
     initializeMessagesWebsocket() {
