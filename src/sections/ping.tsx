@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { nodeActionsAsync } from '../store/slices/node';
 import { useAppDispatch, useAppSelector } from '../store';
 
@@ -20,6 +20,18 @@ function PingPage() {
     apiEndpoint,
     apiToken,
   } = loginData;
+
+  // Get aliases on page load
+  useEffect(() => {
+    if (apiEndpoint && apiToken) {
+      dispatch(
+        nodeActionsAsync.getAliasesThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+    }
+  }, []);
 
   const isAlias = (alias: string) => {
     if (aliases) {
