@@ -13,7 +13,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  position: relative;
 
   & button {
     align-self: center;

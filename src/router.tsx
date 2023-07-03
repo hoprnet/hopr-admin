@@ -20,6 +20,7 @@ import ChannelsPage from './sections/channels';
 import MetricsPage from './sections/metrics';
 import SettingsPage from './sections/settings';
 import AddNode from './steps/install-node/addNode';
+import SelectNodeType from './steps/install-node/selectNodeType';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -188,6 +189,13 @@ export const applicationMap: ApplicationMapType = [
         path: 'add-node',
         icon: <AddBoxIcon />,
         element: <AddNode />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Select node type',
+        path: 'select-node-type',
+        icon: <AddBoxIcon />,
+        element: <SelectNodeType />,
         loginNeeded: 'web3',
       },
     ],
