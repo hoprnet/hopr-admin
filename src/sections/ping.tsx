@@ -49,7 +49,6 @@ function PingPage() {
   const handleClick = () => {
     if (apiEndpoint && apiToken && peerId !== '') {
       const validatedPeerId = validatePeerId(peerId);
-      console.log('@  validatedPeerId:', validatedPeerId);
       set_pinging(true); // Start pinging
       set_invalidPeerId(false); // Clear previous invalidPeerId state
 
