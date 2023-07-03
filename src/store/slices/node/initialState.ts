@@ -23,6 +23,8 @@ type Message = {
   challenge?: string;
 };
 
+type WebsocketConnectionStatus = 'connecting' | 'connected' | 'error' | null
+
 type InitialState = {
   info: GetInfoResponseType | null;
   status: {
@@ -55,8 +57,8 @@ type InitialState = {
   transactions: string[];
   pings: (PingNodeResponseType & { peerId: string })[];
   metrics: string | null;
-  messagesWebsocketConnected: boolean;
-  logsWebsocketConnected: boolean;
+  messagesWebsocketStatus: WebsocketConnectionStatus;
+  logsWebsocketStatus: WebsocketConnectionStatus;
 };
 
 export const initialState: InitialState = {
@@ -93,6 +95,6 @@ export const initialState: InitialState = {
   transactions: [],
   pings: [],
   metrics: null,
-  messagesWebsocketConnected: false,
-  logsWebsocketConnected: false,
+  messagesWebsocketStatus: null,
+  logsWebsocketStatus: null,
 };
