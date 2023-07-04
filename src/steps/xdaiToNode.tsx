@@ -67,17 +67,24 @@ const StyledCoinLabel = styled.p`
 const StyledButtonGroup = styled.div`
   margin-top: 32px;
   display: flex;
-  align-items: baseline;
+  justify-content: center;
+  align-items: center;
   gap: 1rem;
 `;
 
 const StyledGrayButton = styled(GrayButton)`
   outline: 2px solid #000050;
-  padding-inline: 2rem;
+  line-height: 30px;
+  border-radius: 20px;
+  padding: 0.2rem 4rem;
+`;
+
+const StyledBlueButton = styled(Button)`
+  text-transform: uppercase;
+  padding: 0.2rem 4rem;
 `;
 
 function XdaiToNode() {
-  const dispatch = useAppDispatch();
   return (
     <Section
       lightBlue
@@ -116,7 +123,7 @@ function XdaiToNode() {
           </StyledForm>
           <StyledButtonGroup>
             <StyledGrayButton>back</StyledGrayButton>
-            {/* <Button>confirm</Button> */}
+            <StyledBlueButton>confirm</StyledBlueButton>
           </StyledButtonGroup>
         </>
       </Card>
