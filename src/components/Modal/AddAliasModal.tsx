@@ -1,10 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  DialogTitle,
-  TextField,
-  DialogActions,
-  Alert
-} from '@mui/material'
+import { DialogTitle, TextField, DialogActions, Alert } from '@mui/material';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
@@ -16,7 +11,8 @@ type CreateAliasModalProps = {
 };
 
 export const CreateAliasModal = ({
-  handleRefresh, peerId, 
+  handleRefresh,
+  peerId,
 }: CreateAliasModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
@@ -43,7 +39,8 @@ export const CreateAliasModal = ({
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {
-      name, value, 
+      name,
+      value,
     } = event.target;
     set_modal({
       ...modal,
@@ -135,14 +132,12 @@ export const CreateAliasModal = ({
         onClose={handleCloseModal}
       >
         <TopBar>
-          <DialogTitle>
-            Add Alias
-          </DialogTitle>
+          <DialogTitle>Add Alias</DialogTitle>
           <SIconButton
             aria-label="close modal"
             onClick={handleCloseModal}
           >
-            <CloseIcon/>
+            <CloseIcon />
           </SIconButton>
         </TopBar>
         <SDialogContent>
