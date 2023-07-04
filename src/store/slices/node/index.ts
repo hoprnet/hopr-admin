@@ -18,7 +18,8 @@ const nodeSlice = createSlice({
     },
     messageReceived(state, action: PayloadAction<(typeof initialState.messages)[0]>) {
       state.messages.push(action.payload);
-      if(state.messages.length > 100 ) state.messages = state.messages.slice(state.messages.length-100, state.messages.length);
+      if (state.messages.length > 100)
+        state.messages = state.messages.slice(state.messages.length - 100, state.messages.length);
     },
     toggleMessageSeen(state, action: PayloadAction<(typeof initialState.messages)[0]>) {
       state.messages = state.messages.map((message) => {

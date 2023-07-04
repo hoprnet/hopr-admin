@@ -161,7 +161,7 @@ const Watcher = () => {
             url: null,
             timeout: null,
           },
-          toastPayload: {message: `node connectivity status updated from ${prevNodeInfo.connectivityStatus} to ${newNodeInfo?.connectivityStatus}`},
+          toastPayload: { message: `node connectivity status updated from ${prevNodeInfo.connectivityStatus} to ${newNodeInfo?.connectivityStatus}` },
         });
       }
 

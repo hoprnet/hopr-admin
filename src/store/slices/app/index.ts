@@ -24,7 +24,8 @@ const appSlice = createSlice({
         interacted: false,
         timeout: action.payload.timeout ?? now + defaultTimeout,
       });
-      if(state.notifications.length > 100) state.notifications = state.notifications.slice(state.notifications.length-100, state.notifications.length);
+      if (state.notifications.length > 100)
+        state.notifications = state.notifications.slice(state.notifications.length - 100, state.notifications.length);
     },
     seenNotification: (state, action: PayloadAction<string>) => {
       state.notifications = state.notifications.map((notification) =>
