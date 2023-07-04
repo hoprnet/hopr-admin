@@ -1,10 +1,16 @@
-import React from 'react';
+import { forwardRef, Ref } from 'react';
 import styled from '@emotion/styled';
-import MuiButton from '@mui/material/Button';
-import PropTypes from 'prop-types';
+import MuiButton, { ButtonProps } from '@mui/material/Button';
 
-const SButton = styled(MuiButton)`
-  font-family: Source Code Pro;
+type StyledButtonProps = ButtonProps & {
+  imageOnly?: boolean;
+  size70?: boolean;
+  standardWidth?: boolean;
+  fade?: boolean;
+};
+
+const StyledButton = styled(MuiButton)<StyledButtonProps>`
+  font-family: 'Source Code Pro';
   text-align: center;
   text-transform: none;
   font-style: normal;
@@ -45,46 +51,39 @@ const SButton = styled(MuiButton)`
   }
 `;
 
-const Button = React.forwardRef((props, ref) => {
+const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>) => {
   const {
-    hopr,
     imageOnly,
     size70,
-    loading,
     standardWidth,
     fade,
+    children,
     ...rest
   } = props;
 
+  const classNames = [
+    props.className,
+    'btn-hopr--v2',
+    imageOnly && 'btn-hopr--image-only',
+    size70 && 'btn-hopr--size70',
+    standardWidth && 'btn-hopr--standardWidth',
+    fade && 'btn-hopr--fade',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <SButton
-      variant={'contained'}
+    <StyledButton
+      variant="contained"
       {...rest}
       ref={ref}
-      className={[
-        props.className,
-        'btn-hopr--v2',
-        props.imageOnly && 'btn-hopr--image-only',
-        props.size70 && 'btn-hopr--size70',
-        props.standardWidth && 'btn-hopr--standardWidth',
-        props.fade && 'btn-hopr--fade',
-      ].join(' ')}
+      className={classNames}
     >
-      {props.children}
-    </SButton>
+      {children}
+    </StyledButton>
   );
 });
 
-Button.defaultProps = {
-  hopr: false,
-  imageOnly: false,
-  size70: false,
-};
-
-// Button.propTypes = {
-//     hopr: PropTypes.bool,
-//     imageOnly:  PropTypes.bool,
-//     size70:  PropTypes.bool,
-// };
+Button.displayName = 'Button'; // Set the display name here
 
 export default Button;
