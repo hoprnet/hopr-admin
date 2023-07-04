@@ -221,7 +221,7 @@ const Watcher = () => {
 
     const newMessageHasArrived = checkForNewMessage(prevLatestMessageTimestamp, newMessageTimestamp);
 
-    if (prevLatestMessageTimestamp && newMessageHasArrived) {
+    if (newMessageHasArrived) {
       sendNotification({
         notificationPayload: {
           source: 'node/message',
@@ -328,7 +328,8 @@ const Watcher = () => {
     } | null,
     newMessageTimestamp: { createdAt: number; amountOfTimesRepeated: number },
   ) => {
-    if (!oldMessageTimestamp) return false;
+    // if oldMessageTimestamp does not exist it is the first message
+    if (!oldMessageTimestamp) return true;
 
     if (oldMessageTimestamp.createdAt < newMessageTimestamp.createdAt) {
       return true;
