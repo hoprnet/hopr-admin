@@ -871,6 +871,7 @@ export const actionsAsync = {
   redeemChannelTicketsThunk,
   sendMessageThunk,
   signThunk,
+  pingNodeThunk,
   setSettingThunk,
   redeemTicketsThunk,
   createTokenThunk,

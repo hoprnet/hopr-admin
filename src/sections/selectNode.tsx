@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '../store';
 //Stores
 import { authActions, authActionsAsync } from '../store/slices/auth';
 import { nodeActionsAsync, nodeActions } from '../store/slices/node';
+import { appActions } from '../store/slices/app';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
@@ -105,6 +106,9 @@ function Section1() {
   const useNode = () => {
     dispatch(authActions.resetState());
     dispatch(nodeActions.resetState());
+    dispatch(appActions.resetState());
+    dispatch(nodeActions.closeMessagesWebsocket());
+    dispatch(nodeActions.closeLogsWebsocket());
     dispatch(
       authActions.useNodeData({
         apiEndpoint,

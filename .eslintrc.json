@@ -26,6 +26,7 @@
         "ExportDeclaration": { "minProperties": 2 }
       }
     ],
+    "object-curly-spacing": ["warn", "always"],
     "comma-dangle": [
       2,
       {
