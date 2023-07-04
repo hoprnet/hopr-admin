@@ -1,25 +1,21 @@
-import { Store } from './types/index';
-import {
-  RouterProvider,
-  BrowserRouter,
-  Route,
-  createRoutesFromElements,
-  createBrowserRouter
-} from 'react-router-dom'
-import store from './store';
 import { Provider } from 'react-redux';
-import Layout from './future-hopr-lib-components/Layout';
-
-import router, { applicationMap } from './router';
+import { RouterProvider } from 'react-router-dom';
+import { ThemeProvider } from '@mui/material';
 import WagmiProvider from './providers/Wagmi';
 import Watcher from './providers/Watcher';
+
+import store from './store';
+import router from './router';
+import theme from './theme';
 
 function App() {
   return (
     <Provider store={store}>
       <WagmiProvider>
-        <Watcher />
-        <RouterProvider router={router} />
+        <ThemeProvider theme={theme}>
+          <Watcher />
+          <RouterProvider router={router} />
+        </ThemeProvider>
       </WagmiProvider>
     </Provider>
   );

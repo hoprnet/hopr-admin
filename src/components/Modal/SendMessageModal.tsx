@@ -32,7 +32,6 @@ const StatusContainer = styled.div`
   height: 32px;
 `;
 
-
 type SendMessageModalProps = {
   peerId?: string;
 };
@@ -146,11 +145,10 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
   };
 
   const validatePeerId = (receiver: string) => {
-    if (isAlias(receiver)) {
-      if (aliases) {
-        return aliases[receiver];
-      } else return receiver;
-    } else return receiver;
+    if (aliases && isAlias(receiver)) {
+      return aliases[receiver];
+    }
+    return receiver;
   };
 
   return (
@@ -162,16 +160,13 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
         fullWidth={true}
       >
         <TopBar>
-          <DialogTitle>
-            Send Message
-          </DialogTitle>
+          <DialogTitle>Send Message</DialogTitle>
           <SIconButton
             aria-label="close modal"
             onClick={handleCloseModal}
           >
-            <CloseIcon/>
+            <CloseIcon />
           </SIconButton>
-
         </TopBar>
         <SDialogContent>
           <TextField
@@ -240,23 +235,23 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
           </PathOrHops>
         </SDialogContent>
         <DialogActions>
-            <button
-              onClick={handleSendMessage}
-              disabled={
-                (!automaticPath && numberOfHops === '' && path === '') || message.length === 0 || receiver.length === 0
-              }
-              style={{
-                width: '100%',
-                marginTop: '8px',
-              }}
-            >
-              Send
-            </button>
-          </DialogActions>
-          <StatusContainer>
-            {loader && <CircularProgress />}
-            {status}
-          </StatusContainer>
+          <button
+            onClick={handleSendMessage}
+            disabled={
+              (!automaticPath && numberOfHops === '' && path === '') || message.length === 0 || receiver.length === 0
+            }
+            style={{
+              width: '100%',
+              marginTop: '8px',
+            }}
+          >
+            Send
+          </button>
+        </DialogActions>
+        <StatusContainer>
+          {loader && <CircularProgress />}
+          {status}
+        </StatusContainer>
       </SDialog>
     </>
   );
