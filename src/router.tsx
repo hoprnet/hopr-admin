@@ -18,6 +18,7 @@ import PeersPage from './sections/peers';
 import TicketsPage from './sections/tickets';
 import ChannelsPage from './sections/channels';
 import SettingsPage from './sections/settings';
+import XdaiToNodePage from './sections/xdaiToNode';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -42,6 +43,8 @@ import ContactPhone from '@mui/icons-material/ContactPhone';
 import NodeIcon from '@mui/icons-material/Router';
 import NetworkingIcon from '@mui/icons-material/Diversity3';
 import DevelopIcon from '@mui/icons-material/Code';
+import RepeatIcon from '@mui/icons-material/Repeat';
+import Looks3Icon from '@mui/icons-material/Looks3';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -162,6 +165,19 @@ export const applicationMap: ApplicationMapType = [
         icon: <LockIcon />,
         element: <SectionSafe />,
         loginNeeded: 'web3',
+      },
+    ],
+  },
+  {
+    groupName: 'Staking',
+    path: 'staking',
+    icon: <RepeatIcon />,
+    items: [
+      {
+        name: 'xdai to node',
+        path: 'xdai-to-node',
+        icon: <Looks3Icon />,
+        element: <XdaiToNodePage />,
       },
     ],
   },
