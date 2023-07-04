@@ -13,28 +13,8 @@ import Paper from '@mui/material/Paper';
 // components
 import Button from '../future-hopr-lib-components/Button';
 import GrayButton from '../future-hopr-lib-components/Button/gray';
-
-const StyledContainer = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  padding: 128px;
-`;
-
-const StyledPaper = styled(Paper)`
-  margin: 2rem;
-  border-radius: 10px;
-`;
-
-const StyledTitle = styled.h2`
-  font-size: 30px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 60px;
-  letter-spacing: 0.35px;
-  text-transform: uppercase;
-`;
+import Card from './components/Card';
+import Section from '../future-hopr-lib-components/Section';
 
 const StyledForm = styled.div`
   width: 100%;
@@ -74,10 +54,6 @@ const StyledInputGroup = styled.div`
   gap: 10px;
 `;
 
-const StyledTextField = styled(TextField)`
-  text-align: right;
-`;
-
 const StyledCoinLabel = styled.p`
   color: var(--414141, #414141);
   font-size: 15px;
@@ -100,40 +76,52 @@ const StyledGrayButton = styled(GrayButton)`
   padding-inline: 2rem;
 `;
 
-function xdaiToNode() {
+function XdaiToNode() {
   const dispatch = useAppDispatch();
   return (
-    <StyledPaper>
-      <StyledContainer>
-        <img src="/assets/xdai-to-node.svg" />
-        <StyledTitle>fund your node with xdai</StyledTitle>
-        <StyledForm>
-          <StyledInstructions>
-            <StyledText>SEND xdAI to Node</StyledText>
-            <StyledDescription>
-              Add-in the amount of xDAI you like to transfer from your safe to your node.
-            </StyledDescription>
-          </StyledInstructions>
-          <StyledInputGroup>
-            <StyledTextField
-              variant="outlined"
-              placeholder="-"
-              size="small"
-              inputProps={{
-                inputMode: 'numeric',
-                pattern: '[0-9]*',
-              }}
-            />
-            <StyledCoinLabel>xdai</StyledCoinLabel>
-          </StyledInputGroup>
-        </StyledForm>
-        <StyledButtonGroup>
-          <StyledGrayButton>back</StyledGrayButton>
-          <Button>confirm</Button>
-        </StyledButtonGroup>
-      </StyledContainer>
-    </StyledPaper>
+    <Section
+      lightBlue
+      center
+      fullHeightMin
+    >
+      <Card
+        image={{
+          src: '/assets/xdai-to-node.svg',
+          height: 130,
+          alt: 'send xdai to node image',
+        }}
+        title="fund your node with xdai"
+      >
+        <>
+          <StyledForm>
+            <StyledInstructions>
+              <StyledText>SEND xdAI to Node</StyledText>
+              <StyledDescription>
+                Add-in the amount of xDAI you like to transfer from your safe to your node.
+              </StyledDescription>
+            </StyledInstructions>
+            <StyledInputGroup>
+              <TextField
+                variant="outlined"
+                placeholder="-"
+                size="small"
+                InputProps={{ inputProps: {
+                  style: { textAlign: 'right' },
+                  pattern: '[0-9]*',
+                  inputMode: 'numeric',
+                } }}
+              />
+              <StyledCoinLabel>xdai</StyledCoinLabel>
+            </StyledInputGroup>
+          </StyledForm>
+          <StyledButtonGroup>
+            <StyledGrayButton>back</StyledGrayButton>
+            {/* <Button>confirm</Button> */}
+          </StyledButtonGroup>
+        </>
+      </Card>
+    </Section>
   );
 }
 
-export default xdaiToNode;
+export default XdaiToNode;

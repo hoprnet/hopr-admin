@@ -20,7 +20,7 @@ import ChannelsPage from './sections/channels';
 import MetricsPage from './sections/metrics';
 import SafeStakingPage from './sections/safe-staking';
 import SettingsPage from './sections/settings';
-import XdaiToNodePage from './sections/xdaiToNode';
+import XdaiToNodePage from './steps/xdaiToNode';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
