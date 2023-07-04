@@ -20,7 +20,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     state.status.connected = false;
   });
   builder.addCase(loginThunk.fulfilled, (state, action) => {
-    if(action.payload) {
+    if (action.payload) {
       state.status.connecting = false;
       state.status.connected = true;
     }
