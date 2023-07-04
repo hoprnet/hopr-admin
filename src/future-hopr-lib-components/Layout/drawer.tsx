@@ -22,7 +22,13 @@ const StyledDrawer = styled(MuiDrawer)`
     box-sizing: border-box;
     padding-top: 59px;
     transition: width 0.4s ease-out;
-    overflow: hidden;
+    overflow-x: hidden;
+
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
     width: ${(props) => (props.open ? `${drawerWidth}px` : `${minDrawerWidth}px`)};
 
     ${(props) =>
