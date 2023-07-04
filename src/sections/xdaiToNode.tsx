@@ -19,7 +19,6 @@ const StyledContainer = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  font-family: 'Source Code Pro';
   padding: 128px;
 `;
 
@@ -96,19 +95,9 @@ const StyledButtonGroup = styled.div`
   gap: 1rem;
 `;
 
-const StyledButton = styled(Button)`
-  padding: 10px 60px;
-  border-radius: 25px;
-  text-transform: uppercase;
-  text-align: center;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 700;
-  &.outline {
-    border: 2px solid #000050;
-    background-color: inherit;
-    color: #000050;
-  }
+const StyledGrayButton = styled(GrayButton)`
+  outline: 2px solid #000050;
+  padding-inline: 2rem;
 `;
 
 function xdaiToNode() {
@@ -139,8 +128,8 @@ function xdaiToNode() {
           </StyledInputGroup>
         </StyledForm>
         <StyledButtonGroup>
-          <GrayButton className="outline">back</GrayButton>
-          <StyledButton>confirm</StyledButton>
+          <StyledGrayButton>back</StyledGrayButton>
+          <Button>confirm</Button>
         </StyledButtonGroup>
       </StyledContainer>
     </StyledPaper>
