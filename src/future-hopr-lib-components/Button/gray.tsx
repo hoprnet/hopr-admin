@@ -1,6 +1,5 @@
-import React from 'react';
 import styled from '@emotion/styled';
-import MuiButton from '@mui/material/Button';
+import MuiButton, { ButtonProps } from '@mui/material/Button';
 
 const SButton = styled(MuiButton)`
   background: #ffffff;
@@ -10,7 +9,7 @@ const SButton = styled(MuiButton)`
   font-weight: 700;
   font-size: 18px;
   line-height: 45px;
-  /* or 250% */
+  padding: 0.2rem 1.25rem;
 
   text-align: center;
   letter-spacing: 0.25px;
@@ -26,14 +25,9 @@ const SButton = styled(MuiButton)`
     background-color: #dfdfdf;
     color: #414141;
   }
-
-  &:focus {
-    background: rgba(255, 255, 255, 0.75);
-    color: #000;
-  }
 `;
 
-export default function Button(props) {
+export default function Button(props: ButtonProps) {
   return (
     <SButton
       className={props.className}

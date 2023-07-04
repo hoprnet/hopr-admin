@@ -1,5 +1,6 @@
 import { utils } from '@hoprnet/hopr-sdk';
 import { Middleware, PayloadAction, nanoid } from '@reduxjs/toolkit';
+import { initialState as nodeInitialState } from '../node/initialState';
 import { initialState } from '../auth/initialState';
 import { nodeActions } from './index';
 import readStreamEvent from '../../../utils/readStreamEvent';
@@ -19,6 +20,7 @@ const { WebsocketHelper } = utils;
 
 type LocalRootState = {
   auth: typeof initialState;
+  node: typeof nodeInitialState;
 };
 
 const websocketMiddleware: Middleware<object, LocalRootState> = ({
@@ -35,16 +37,24 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
         apiEndpoint,
         apiToken,
       } = getState().auth.loginData;
+      const messagesWebsocketStatus = getState().node.messagesWebsocketStatus;
       if (apiEndpoint && apiToken) {
         try {
+          // check if connection is being established
+          if (messagesWebsocketStatus === 'connecting') return;
+          // close previous ws before opening new one
+          if (messagesWebsocket) {
+            messagesWebsocket.close();
+          }
+          dispatch(updateMessagesWebsocketStatus('connecting'));
           messagesWebsocket = new WebsocketHelper({
             apiEndpoint,
             apiToken,
             onOpen: () => {
-              dispatch(updateMessagesWebsocketStatus(true));
+              dispatch(updateMessagesWebsocketStatus('connected'));
             },
             onClose: () => {
-              dispatch(updateMessagesWebsocketStatus(false));
+              dispatch(updateMessagesWebsocketStatus(null));
             },
             onMessage: (message) => {
               dispatch(
@@ -58,31 +68,38 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
             },
           });
         } catch (e) {
-          console.log(e);
-          dispatch(updateMessagesWebsocketStatus(false));
+          dispatch(updateMessagesWebsocketStatus('error'));
         }
       }
     } else if (action.type === closeMessagesWebsocket.type) {
       // close messages websocket
       messagesWebsocket?.close();
-      dispatch(updateMessagesWebsocketStatus(false));
+      dispatch(updateMessagesWebsocketStatus(null));
     } else if (action.type === initializeLogsWebsocket.type) {
       const {
         apiEndpoint,
         apiToken,
       } = getState().auth.loginData;
+      const logsWebsocketStatus = getState().node.logsWebsocketStatus;
       if (apiEndpoint && apiToken) {
         try {
+          // check if connection is being established
+          if (logsWebsocketStatus === 'connecting') return;
+          // close previous ws before opening new one
+          if (logsWebsocket) {
+            logsWebsocket.close();
+          }
+          dispatch(updateLogsWebsocketStatus('connecting'));
           logsWebsocket = new WebsocketHelper({
             apiEndpoint,
             apiToken,
             decodeMessage: false,
             path: '/api/v2/node/stream/websocket/',
             onOpen: () => {
-              dispatch(updateLogsWebsocketStatus(true));
+              dispatch(updateLogsWebsocketStatus('connected'));
             },
             onClose: () => {
-              dispatch(updateLogsWebsocketStatus(false));
+              dispatch(updateLogsWebsocketStatus(null));
             },
             onMessage: (message) => {
               const log = readStreamEvent(message);
@@ -92,14 +109,13 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
             },
           });
         } catch (e) {
-          console.log(e);
-          dispatch(updateLogsWebsocketStatus(false));
+          dispatch(updateLogsWebsocketStatus('error'));
         }
       }
     } else if (action.type === closeLogsWebsocket.type) {
       // close logs websocket
       logsWebsocket?.close();
-      dispatch(updateLogsWebsocketStatus(false));
+      dispatch(updateLogsWebsocketStatus(null));
     } else {
       return next(action);
     }

@@ -1,22 +1,26 @@
-import { RouterProvider } from 'react-router-dom';
-import store from './store';
+import { ThemeProvider } from '@mui/material';
 import { Provider } from 'react-redux';
-import router from './router';
+import { RouterProvider } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
 import WagmiProvider from './providers/Wagmi';
 import Watcher from './providers/Watcher';
+import router from './router';
+import store from './store';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import theme from './theme';
 
 function App() {
   return (
     <Provider store={store}>
       <WagmiProvider>
-        <Watcher />
-        <ToastContainer
-          position="bottom-right"
-          limit={10}
-        />
-        <RouterProvider router={router} />
+        <ThemeProvider theme={theme}>
+          <Watcher />
+          <ToastContainer
+            position="bottom-right"
+            limit={10}
+          />
+          <RouterProvider router={router} />
+        </ThemeProvider>
       </WagmiProvider>
     </Provider>
   );

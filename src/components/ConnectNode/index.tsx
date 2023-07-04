@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { authActions } from '../../store/slices/auth';
 import { nodeActions } from '../../store/slices/node';
+import { appActions } from '../../store/slices/app';
 
 const Container = styled.div`
   height: 59px;
@@ -34,6 +35,9 @@ export default function ConnectNode() {
   const handleLogout = () => {
     dispatch(authActions.resetState());
     dispatch(nodeActions.resetState());
+    dispatch(appActions.resetState());
+    dispatch(nodeActions.closeMessagesWebsocket());
+    dispatch(nodeActions.closeLogsWebsocket());
     navigate('node/connect');
   };
 
