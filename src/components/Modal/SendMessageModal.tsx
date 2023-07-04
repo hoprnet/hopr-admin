@@ -145,11 +145,10 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
   };
 
   const validatePeerId = (receiver: string) => {
-    if (isAlias(receiver)) {
-      if (aliases) {
-        return aliases[receiver];
-      } else return receiver;
-    } else return receiver;
+    if (aliases && isAlias(receiver)) {
+      return aliases[receiver];
+    }
+    return receiver;
   };
 
   return (

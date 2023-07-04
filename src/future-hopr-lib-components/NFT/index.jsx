@@ -65,9 +65,9 @@ const CustomWidthTooltip = styled(({
     {...props}
     classes={{ popper: className }}
   />
-))({[`
+))({ [`
         color: white;
-        & .${tooltipClasses.tooltip}`]: { maxWidth: 200 }});
+        & .${tooltipClasses.tooltip}`]: { maxWidth: 200 } });
 
 export default function Nft(props) {
   const [disableButton, set_disableButton] = useState(false);
