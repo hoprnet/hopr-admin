@@ -222,7 +222,7 @@ function XdaiToNode() {
                   }
                 }}
               >
-                approve
+                approve/sign
               </StyledApproveButton>
             </StyledPendingSafeTransactions>
           )}
@@ -233,7 +233,7 @@ function XdaiToNode() {
                 disabled={!Number(value) || !signer || !selectedSafeAddress || !nodeNativeAddress}
                 onClick={proposeTx}
               >
-                next
+                approve/sign
               </StyledBlueButton>
             ) : (
               <StyledBlueButton
@@ -245,7 +245,7 @@ function XdaiToNode() {
                 }
                 onClick={executeTx}
               >
-                confirm
+                execute
               </StyledBlueButton>
             )}
           </StyledButtonGroup>
