@@ -20,6 +20,7 @@ import ChannelsPage from './sections/channels';
 import MetricsPage from './sections/metrics';
 import SafeStakingPage from './sections/safe-staking';
 import SettingsPage from './sections/settings';
+import SafeQueue from './sections/safePendingTransactions';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -47,6 +48,7 @@ import NetworkingIcon from '@mui/icons-material/Diversity3';
 import DevelopIcon from '@mui/icons-material/Code';
 import PingPage from './sections/ping';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import SwapVertIcon from '@mui/icons-material/SwapVert';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -174,6 +176,13 @@ export const applicationMap: ApplicationMapType = [
         path: 'safe',
         icon: <LockIcon />,
         element: <SectionSafe />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Safe pending transactions',
+        path: 'safe-pending-transactions',
+        icon: <SwapVertIcon />,
+        element: <SafeQueue />,
         loginNeeded: 'web3',
       },
       {
