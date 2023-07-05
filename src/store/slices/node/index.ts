@@ -18,6 +18,8 @@ const nodeSlice = createSlice({
     },
     messageReceived(state, action: PayloadAction<(typeof initialState.messages)[0]>) {
       state.messages.push(action.payload);
+      if (state.messages.length > 100)
+        state.messages = state.messages.slice(state.messages.length - 100, state.messages.length);
     },
     toggleMessageSeen(state, action: PayloadAction<(typeof initialState.messages)[0]>) {
       state.messages = state.messages.map((message) => {
@@ -34,11 +36,11 @@ const nodeSlice = createSlice({
       state.logs.push(action.payload);
     },
     // handle ws state
-    updateMessagesWebsocketStatus(state, action: PayloadAction<boolean>) {
-      state.messagesWebsocketConnected = action.payload;
+    updateMessagesWebsocketStatus(state, action: PayloadAction<typeof initialState.messagesWebsocketStatus>) {
+      state.messagesWebsocketStatus = action.payload;
     },
-    updateLogsWebsocketStatus(state, action: PayloadAction<boolean>) {
-      state.logsWebsocketConnected = action.payload;
+    updateLogsWebsocketStatus(state, action: PayloadAction<typeof initialState.messagesWebsocketStatus>) {
+      state.logsWebsocketStatus = action.payload;
     },
     // user actions to open and close ws
     initializeMessagesWebsocket() {

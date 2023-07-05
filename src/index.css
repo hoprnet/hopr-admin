@@ -1,17 +1,37 @@
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 1 999;
+  src: local('Source Code Pro Variable Font'), local('SourceCodePro-VariableFont_wght'),
+    url('./fonts/SourceCodePro-VariableFont_wght.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: italic;
+  font-weight: 1 999;
+  src: local('Source Code Pro Italic Variable Font'), local('SourceCodePro-Italic-VariableFont_wght'),
+    url('./fonts/SourceCodePro-Italic-VariableFont_wght.ttf') format('truetype');
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-    'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Source Code Pro', monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: 'Source Code Pro', monospace;
 }
 
 a {
   color: unset;
   cursor: pointer;
   text-decoration: unset;
+}
+
+button,
+input {
+  font-family: inherit;
 }

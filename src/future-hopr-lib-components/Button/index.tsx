@@ -3,7 +3,6 @@ import styled from '@emotion/styled';
 import MuiButton, { ButtonProps } from '@mui/material/Button';
 
 type StyledButtonProps = ButtonProps & {
-  hopr?: boolean;
   imageOnly?: boolean;
   size70?: boolean;
   standardWidth?: boolean;
@@ -54,7 +53,6 @@ const StyledButton = styled(MuiButton)<StyledButtonProps>`
 
 const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>) => {
   const {
-    hopr,
     imageOnly,
     size70,
     standardWidth,
@@ -66,10 +64,10 @@ const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>
   const classNames = [
     props.className,
     'btn-hopr--v2',
-    props.imageOnly && 'btn-hopr--image-only',
-    props.size70 && 'btn-hopr--size70',
-    props.standardWidth && 'btn-hopr--standardWidth',
-    props.fade && 'btn-hopr--fade',
+    imageOnly && 'btn-hopr--image-only',
+    size70 && 'btn-hopr--size70',
+    standardWidth && 'btn-hopr--standardWidth',
+    fade && 'btn-hopr--fade',
   ]
     .filter(Boolean)
     .join(' ');
@@ -87,11 +85,5 @@ const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>
 });
 
 Button.displayName = 'Button'; // Set the display name here
-
-Button.defaultProps = {
-  hopr: false,
-  imageOnly: false,
-  size70: false,
-};
 
 export default Button;

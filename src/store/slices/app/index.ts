@@ -1,13 +1,15 @@
-import { PayloadAction, createSlice, nanoid } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 
 const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
+    resetState: () => initialState,
     addNotification: (
       state,
       action: PayloadAction<{
+        id: string;
         name: string;
         source: string;
         timeout: number | null;
@@ -18,17 +20,30 @@ const appSlice = createSlice({
       const defaultTimeout = 5000;
       state.notifications.push({
         ...action.payload,
-        id: nanoid(),
         seen: false,
+        interacted: false,
         timeout: action.payload.timeout ?? now + defaultTimeout,
       });
+      if (state.notifications.length > 100)
+        state.notifications = state.notifications.slice(state.notifications.length - 100, state.notifications.length);
     },
-    seenNotification: (state, action: PayloadAction<(typeof initialState)['notifications'][0]>) => {
+    seenNotification: (state, action: PayloadAction<string>) => {
       state.notifications = state.notifications.map((notification) =>
-        notification.id === action.payload.id
+        notification.id === action.payload
           ? {
             ...notification,
             seen: true,
+          }
+          : notification,
+      );
+    },
+    interactedWithNotification: (state, action: PayloadAction<string>) => {
+      state.notifications = state.notifications.map((notification) =>
+        notification.id === action.payload
+          ? {
+            ...notification,
+            seen: true,
+            interacted: true,
           }
           : notification,
       );
@@ -40,11 +55,12 @@ const appSlice = createSlice({
           ? {
             ...notification,
             seen: true,
+            read: true,
           }
           : notification,
       );
     },
-    clearAllNotifications: (state) => {
+    markSeenAllNotifications: (state) => {
       state.notifications = state.notifications.map((notification) => ({
         ...notification,
         seen: true,
