@@ -4,6 +4,7 @@ type InitialState = {
     name: string;
     source: string;
     seen: boolean;
+    interacted: boolean;
     timeout: number;
     url: string | null;
   }[];
