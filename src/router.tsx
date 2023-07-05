@@ -50,6 +50,8 @@ import DevelopIcon from '@mui/icons-material/Code';
 import PingPage from './sections/ping';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import DockerInstallation from './steps/install-node/dockerInstallation';
+import NodeAddress from './steps/install-node/nodeAddress';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -201,10 +203,24 @@ export const applicationMap: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
-        name: 'Select node type',
+        name: 'Select node',
         path: 'select-node-type',
         icon: <AddBoxIcon />,
         element: <SelectNodeType />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Docker',
+        path: 'docker-installation',
+        icon: <AddBoxIcon />,
+        element: <DockerInstallation />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Node Address',
+        path: 'node-address',
+        icon: <AddBoxIcon />,
+        element: <NodeAddress />,
         loginNeeded: 'web3',
       },
     ],

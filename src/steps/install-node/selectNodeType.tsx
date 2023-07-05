@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import Section from '../../future-hopr-lib-components/Section';
 import Button from '../../future-hopr-lib-components/Button';
 import Card from '../components/Card';
+import { Link } from 'react-router-dom';
 
 const NodeContainer = styled.div`
   display: flex;
@@ -76,12 +77,7 @@ const SelectNodeType = () => {
               possible as well!
             </TextContainer>
             <Stack>
-              <StyledButton
-                href="https://docs.hoprnet.org/node/using-docker"
-                target="_blank"
-              >
-                Install
-              </StyledButton>
+              <StyledButton href="/steps/docker-installation">Install</StyledButton>
             </Stack>
           </Node>
           <Node>
