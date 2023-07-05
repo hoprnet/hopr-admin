@@ -1,5 +1,3 @@
-import { Store } from '../types/index';
-
 //Stores
 import { useAppDispatch, useAppSelector } from '../store';
 
@@ -8,13 +6,17 @@ import styled from '@emotion/styled';
 
 // MUI
 import TextField from '@mui/material/TextField';
-import Paper from '@mui/material/Paper';
 
 // components
+import { SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-kit';
+import { useEffect, useState } from 'react';
+import { parseUnits } from 'viem';
 import Button from '../future-hopr-lib-components/Button';
 import GrayButton from '../future-hopr-lib-components/Button/gray';
-import Card from './components/Card';
 import Section from '../future-hopr-lib-components/Section';
+import { useSigner } from '../hooks';
+import { safeActionsAsync } from '../store/slices/safe';
+import Card from './components/Card';
 
 const StyledForm = styled.div`
   width: 100%;
@@ -84,7 +86,85 @@ const StyledBlueButton = styled(Button)`
   padding: 0.2rem 4rem;
 `;
 
+const StyledPendingSafeTransactions = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const StyledApproveButton = styled(Button)`
+  align-self: flex-start;
+  text-transform: uppercase;
+`;
+
 function XdaiToNode() {
+  const dispatch = useAppDispatch();
+  const safeTxs = useAppSelector((state) => state.safe.safeTransactions);
+  const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
+  const { native: nodeNativeAddress } = useAppSelector((state) => state.node.addresses);
+  const [value, set_value] = useState<string>('');
+  const [isLoading, set_isLoading] = useState<boolean>();
+  const [proposedTxHash, set_proposedTxHash] = useState<string>();
+  const [proposedTx, set_proposedTx] = useState<SafeMultisigTransactionWithTransfersResponse>();
+
+  const { signer } = useSigner();
+
+  useEffect(() => {
+    if (proposedTxHash) {
+      const foundProposedTx = safeTxs?.results.find(
+        (tx) => tx.txType === 'MULTISIG_TRANSACTION' && tx.safeTxHash === proposedTxHash,
+      );
+      if (foundProposedTx?.txType === 'MULTISIG_TRANSACTION') {
+        set_proposedTx(foundProposedTx);
+      }
+    }
+  }, [safeTxs, proposedTxHash]);
+
+  const proposeTx = () => {
+    if (signer && Number(value) && selectedSafeAddress && nodeNativeAddress) {
+      set_isLoading(true);
+      dispatch(
+        safeActionsAsync.createSafeTransactionThunk({
+          signer,
+          safeAddress: selectedSafeAddress,
+          safeTransactionData: {
+            to: nodeNativeAddress,
+            value: parseUnits(value as `${number}`, 18).toString(),
+            data: '0x',
+          },
+        }),
+      )
+        .unwrap()
+        .then((safeTxHash) => {
+          set_proposedTxHash(safeTxHash);
+          set_isLoading(false);
+        })
+        .catch(() => {
+          set_isLoading(false);
+        });
+    }
+  };
+
+  const executeTx = () => {
+    if (proposedTxHash && signer && selectedSafeAddress) {
+      const safeTx = safeTxs?.results.find((tx) => {
+        if (tx.txType === 'MULTISIG_TRANSACTION' && tx.safeTxHash === proposedTxHash) {
+          return true;
+        }
+        return false;
+      });
+
+      if (safeTx?.txType === 'MULTISIG_TRANSACTION') {
+        dispatch(
+          safeActionsAsync.executeTransactionThunk({
+            safeAddress: selectedSafeAddress,
+            signer,
+            safeTransaction: safeTx,
+          }),
+        );
+      }
+    }
+  };
+
   return (
     <Section
       lightBlue
@@ -99,7 +179,7 @@ function XdaiToNode() {
         }}
         title="fund your node with xdai"
       >
-        <>
+        <div>
           <StyledForm>
             <StyledInstructions>
               <StyledText>SEND xdAI to Node</StyledText>
@@ -112,20 +192,65 @@ function XdaiToNode() {
                 variant="outlined"
                 placeholder="-"
                 size="small"
-                InputProps={{ inputProps: {
-                  style: { textAlign: 'right' },
-                  pattern: '[0-9]*',
+                value={value}
+                onChange={(e) => set_value(e.target.value)}
+                inputProps={{
                   inputMode: 'numeric',
-                } }}
+                  pattern: '[0-9]*',
+                }}
+                InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
               />
               <StyledCoinLabel>xdai</StyledCoinLabel>
             </StyledInputGroup>
           </StyledForm>
+          {proposedTx && proposedTx.confirmationsRequired !== proposedTx.confirmations?.length && (
+            <StyledPendingSafeTransactions>
+              <StyledDescription>
+                transaction is pending{' '}
+                {(proposedTx.confirmationsRequired ?? 0) - (proposedTx.confirmations?.length ?? 0)} approvals
+              </StyledDescription>
+              <StyledApproveButton
+                onClick={() => {
+                  if (signer) {
+                    dispatch(
+                      safeActionsAsync.confirmTransactionThunk({
+                        signer,
+                        safeAddress: proposedTx.safe,
+                        safeTransactionHash: proposedTx.safeTxHash,
+                      }),
+                    );
+                  }
+                }}
+              >
+                approve
+              </StyledApproveButton>
+            </StyledPendingSafeTransactions>
+          )}
           <StyledButtonGroup>
             <StyledGrayButton>back</StyledGrayButton>
-            <StyledBlueButton>confirm</StyledBlueButton>
+            {!proposedTx ? (
+              <StyledBlueButton
+                disabled={!Number(value) || !signer || !selectedSafeAddress || !nodeNativeAddress}
+                onClick={proposeTx}
+              >
+                next
+              </StyledBlueButton>
+            ) : (
+              <StyledBlueButton
+                disabled={
+                  !signer ||
+                  !selectedSafeAddress ||
+                  !nodeNativeAddress ||
+                  proposedTx.confirmationsRequired !== proposedTx.confirmations?.length
+                }
+                onClick={executeTx}
+              >
+                confirm
+              </StyledBlueButton>
+            )}
           </StyledButtonGroup>
-        </>
+          {isLoading && <p>Signing transaction with nonce...</p>}
+        </div>
       </Card>
     </Section>
   );
