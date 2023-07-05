@@ -6,6 +6,7 @@ import styled from '@emotion/styled';
 
 // MUI
 import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
 
 // components
 import { SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-kit';
@@ -101,7 +102,7 @@ function XdaiToNode() {
   const safeTxs = useAppSelector((state) => state.safe.safeTransactions);
   const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
   const { native: nodeNativeAddress } = useAppSelector((state) => state.node.addresses);
-  const [value, set_value] = useState<string>('');
+  const [xdaiValue, set_xdaiValue] = useState<string>('');
   const [isLoading, set_isLoading] = useState<boolean>();
   const [proposedTxHash, set_proposedTxHash] = useState<string>();
   const [proposedTx, set_proposedTx] = useState<SafeMultisigTransactionWithTransfersResponse>();
@@ -120,7 +121,7 @@ function XdaiToNode() {
   }, [safeTxs, proposedTxHash]);
 
   const proposeTx = () => {
-    if (signer && Number(value) && selectedSafeAddress && nodeNativeAddress) {
+    if (signer && Number(xdaiValue) && selectedSafeAddress && nodeNativeAddress) {
       set_isLoading(true);
       dispatch(
         safeActionsAsync.createSafeTransactionThunk({
@@ -128,7 +129,7 @@ function XdaiToNode() {
           safeAddress: selectedSafeAddress,
           safeTransactionData: {
             to: nodeNativeAddress,
-            value: parseUnits(value as `${number}`, 18).toString(),
+            value: parseUnits(xdaiValue as `${number}`, 18).toString(),
             data: '0x',
           },
         }),
@@ -165,6 +166,46 @@ function XdaiToNode() {
     }
   };
 
+  const transactionHasEnoughApprovals = () => {
+    if (!proposedTx) return false;
+    if (!proposedTx.confirmations) return false;
+
+    return proposedTx.confirmations.length >= proposedTx.confirmationsRequired;
+  };
+
+  const getErrorsForSafeTx = ({ customValidator }: { customValidator?: () => { errors: string[] } }) => {
+    const errors: string[] = [];
+
+    if (!signer) {
+      errors.push('wallet is required');
+    }
+
+    if (!selectedSafeAddress) {
+      errors.push('safe is required');
+    }
+
+    if (!nodeNativeAddress) {
+      errors.push('node is required');
+    }
+
+    if (customValidator) {
+      const customErrors = customValidator();
+      errors.push(...customErrors.errors);
+    }
+
+    return errors;
+  };
+
+  const getErrorsForApproveButton = () =>
+    getErrorsForSafeTx({ customValidator: () => {
+      return Number(xdaiValue) ? { errors: [] } : { errors: ['xdai value is required'] };
+    } });
+
+  const getErrorsForExecuteButton = () =>
+    getErrorsForSafeTx({ customValidator: () => {
+      return transactionHasEnoughApprovals() ? { errors: [] } : { errors: ['transaction requires more approvals'] };
+    } });
+
   return (
     <Section
       lightBlue
@@ -192,8 +233,8 @@ function XdaiToNode() {
                 variant="outlined"
                 placeholder="-"
                 size="small"
-                value={value}
-                onChange={(e) => set_value(e.target.value)}
+                value={xdaiValue}
+                onChange={(e) => set_xdaiValue(e.target.value)}
                 inputProps={{
                   inputMode: 'numeric',
                   pattern: '[0-9]*',
@@ -203,50 +244,60 @@ function XdaiToNode() {
               <StyledCoinLabel>xdai</StyledCoinLabel>
             </StyledInputGroup>
           </StyledForm>
-          {proposedTx && proposedTx.confirmationsRequired !== proposedTx.confirmations?.length && (
+          {!!proposedTx && (
             <StyledPendingSafeTransactions>
               <StyledDescription>
-                transaction is pending{' '}
-                {(proposedTx.confirmationsRequired ?? 0) - (proposedTx.confirmations?.length ?? 0)} approvals
+                {transactionHasEnoughApprovals()
+                  ? 'transaction has been approved by all required owners'
+                  : `transaction is pending ${
+                    (proposedTx?.confirmationsRequired ?? 0) - (proposedTx?.confirmations?.length ?? 0)
+                  } approvals`}
               </StyledDescription>
-              <StyledApproveButton
-                onClick={() => {
-                  if (signer) {
-                    dispatch(
-                      safeActionsAsync.confirmTransactionThunk({
-                        signer,
-                        safeAddress: proposedTx.safe,
-                        safeTransactionHash: proposedTx.safeTxHash,
-                      }),
-                    );
-                  }
-                }}
-              >
-                approve/sign
-              </StyledApproveButton>
+              {!transactionHasEnoughApprovals() && (
+                <StyledApproveButton
+                  onClick={() => {
+                    if (signer && proposedTx) {
+                      dispatch(
+                        safeActionsAsync.confirmTransactionThunk({
+                          signer,
+                          safeAddress: proposedTx.safe,
+                          safeTransactionHash: proposedTx.safeTxHash,
+                        }),
+                      );
+                    }
+                  }}
+                >
+                  approve/sign
+                </StyledApproveButton>
+              )}
             </StyledPendingSafeTransactions>
           )}
           <StyledButtonGroup>
             <StyledGrayButton>back</StyledGrayButton>
             {!proposedTx ? (
-              <StyledBlueButton
-                disabled={!Number(value) || !signer || !selectedSafeAddress || !nodeNativeAddress}
-                onClick={proposeTx}
-              >
-                approve/sign
-              </StyledBlueButton>
+              <Tooltip title={getErrorsForApproveButton().at(0)}>
+                <span>
+                  {' '}
+                  <StyledBlueButton
+                    disabled={!!getErrorsForApproveButton().length}
+                    onClick={proposeTx}
+                  >
+                    approve/sign
+                  </StyledBlueButton>
+                </span>
+              </Tooltip>
             ) : (
-              <StyledBlueButton
-                disabled={
-                  !signer ||
-                  !selectedSafeAddress ||
-                  !nodeNativeAddress ||
-                  proposedTx.confirmationsRequired !== proposedTx.confirmations?.length
-                }
-                onClick={executeTx}
-              >
-                execute
-              </StyledBlueButton>
+              <Tooltip title={getErrorsForExecuteButton().at(0)}>
+                <span>
+                  {' '}
+                  <StyledBlueButton
+                    disabled={!!getErrorsForExecuteButton().length}
+                    onClick={executeTx}
+                  >
+                    execute
+                  </StyledBlueButton>
+                </span>
+              </Tooltip>
             )}
           </StyledButtonGroup>
           {isLoading && <p>Signing transaction with nonce...</p>}
