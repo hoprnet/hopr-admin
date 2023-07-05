@@ -3,6 +3,9 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { appActions } from '../../store/slices/app';
 import { nodeActionsAsync } from '../../store/slices/node';
+import { ToastOptions, toast } from 'react-toastify';
+import { nanoid } from '@reduxjs/toolkit';
+import { initialState } from '../../store/slices/node/initialState';
 
 const FETCH_CHANNELS_INTERVAL = 10000;
 const FETCH_NODE_INTERVAL = 5000;
@@ -64,6 +67,31 @@ const Watcher = () => {
     }
   };
 
+  const sendNotification = ({
+    notificationPayload,
+    toastPayload,
+  }: {
+    // notification payload without id
+    notificationPayload: Omit<Parameters<typeof appActions.addNotification>[0], 'id'>;
+    toastPayload?: { message: string; type?: ToastOptions['type'] };
+  }) => {
+    const notificationId = nanoid();
+    if (toastPayload) {
+      toast(toastPayload.message, {
+        type: toastPayload.type,
+        // when a user presses cancel button it is not considered as an interaction
+        onClick: () => dispatch(appActions.interactedWithNotification(notificationId)),
+      });
+    }
+
+    dispatch(
+      appActions.addNotification({
+        ...notificationPayload,
+        id: notificationId,
+      }),
+    );
+  };
+
   const watchNodeFunds = async () => {
     if (apiToken && apiEndpoint && connected) {
       const newNodeFunds = await dispatch(
@@ -79,30 +107,33 @@ const Watcher = () => {
       if (prevNodeFunds && prevNodeFunds.native !== newNodeFunds.native) {
         const nativeBalanceIsMore = BigInt(prevNodeFunds.native) < BigInt(newNodeFunds.native);
         if (nativeBalanceIsMore) {
-          dispatch(
-            appActions.addNotification({
+          const nativeBalanceDifference = BigInt(newNodeFunds.native) - BigInt(prevNodeFunds.native);
+          sendNotification({
+            notificationPayload: {
               source: 'node',
               name: 'Node received native funds',
               url: null,
               timeout: null,
-            }),
-          );
+            },
+            toastPayload: { message: `Node received ${nativeBalanceDifference} native funds` },
+          });
         }
       }
 
       //  check if hopr balance has increased
       if (prevNodeFunds && prevNodeFunds.hopr !== newNodeFunds.hopr) {
         const hoprBalanceIsMore = BigInt(prevNodeFunds.hopr) < BigInt(newNodeFunds.hopr);
-
         if (hoprBalanceIsMore) {
-          dispatch(
-            appActions.addNotification({
+          const hoprBalanceDifference = BigInt(newNodeFunds.hopr) - BigInt(prevNodeFunds.hopr);
+          sendNotification({
+            notificationPayload: {
               source: 'node',
               name: 'Node received hopr funds',
               url: null,
               timeout: null,
-            }),
-          );
+            },
+            toastPayload: { message: `Node received ${hoprBalanceDifference} hopr funds` },
+          });
         }
       }
 
@@ -123,14 +154,15 @@ const Watcher = () => {
 
       //  check if status has changed
       if (prevNodeInfo && newNodeInfo.connectivityStatus !== prevNodeInfo.connectivityStatus) {
-        dispatch(
-          appActions.addNotification({
-            timeout: null,
-            url: null,
+        sendNotification({
+          notificationPayload: {
             name: `node connectivity status is now ${newNodeInfo?.connectivityStatus}`,
             source: 'node',
-          }),
-        );
+            url: null,
+            timeout: null,
+          },
+          toastPayload: { message: `node connectivity status updated from ${prevNodeInfo.connectivityStatus} to ${newNodeInfo?.connectivityStatus}` },
+        });
       }
 
       prevNodeInfo = newNodeInfo;
@@ -155,14 +187,15 @@ const Watcher = () => {
         for (const updatedChannel of updatedChannels ?? []) {
           // calculate the type of update: OPEN/CLOSE etc.
           const notificationText = calculateNotificationTextForChannelStatus(updatedChannel);
-          dispatch(
-            appActions.addNotification({
+          sendNotification({
+            notificationPayload: {
               source: 'node',
               name: notificationText,
-              timeout: null,
               url: null,
-            }),
-          );
+              timeout: null,
+            },
+            toastPayload: { message: `${updatedChannel.channelId}: ${notificationText}` },
+          });
         }
       }
 
@@ -172,21 +205,32 @@ const Watcher = () => {
   };
 
   const watchMessages = () => {
-    const newMessageTimestamp = getLatestMessageTimestamp(messages);
+    const newMessage = getLatestMessage(messages);
 
-    if (!newMessageTimestamp) return;
+    if (!newMessage) return;
+
+    // holds the latest message timestamp and the amount of times that timestamp
+    // was repeated to check if we have received a message
+    // after what was considered our latest message
+    const newMessageTimestamp = {
+      // amount of times timestamp was seen throughout the messages state
+      amountOfTimesRepeated: newMessage.amountOfTimesRepeated,
+      // latest timestamp
+      createdAt: newMessage.createdAt,
+    };
 
     const newMessageHasArrived = checkForNewMessage(prevLatestMessageTimestamp, newMessageTimestamp);
 
-    if (prevLatestMessageTimestamp && newMessageHasArrived) {
-      dispatch(
-        appActions.addNotification({
+    if (newMessageHasArrived) {
+      sendNotification({
+        notificationPayload: {
           source: 'node/message',
           name: 'Received new message',
-          timeout: null,
           url: null,
-        }),
-      );
+          timeout: null,
+        },
+        toastPayload: { message: `received message: ${newMessage.latestMessage.body}` },
+      });
     }
 
     prevLatestMessageTimestamp = newMessageTimestamp;
@@ -262,14 +306,18 @@ const Watcher = () => {
     return oldChannel.status === newChannel.status;
   };
 
-  const getLatestMessageTimestamp = (newMessages: { createdAt: number }[]): typeof prevLatestMessageTimestamp => {
+  const getLatestMessage = (newMessages?: (typeof initialState)['messages']) => {
+    if (!newMessages?.length) return;
+
     const sortedMessages = [...newMessages].sort((a, b) => b.createdAt - a.createdAt);
-    const latestTimestamp = sortedMessages?.[0]?.createdAt ?? 0;
+    const latestMessage = sortedMessages?.[0];
+    const latestTimestamp = latestMessage.createdAt ?? 0;
     const amountOfMessagesWithTimestamp = newMessages.filter((msg) => msg.createdAt === latestTimestamp)?.length;
 
     return {
       createdAt: latestTimestamp,
       amountOfTimesRepeated: amountOfMessagesWithTimestamp,
+      latestMessage,
     };
   };
 
@@ -280,7 +328,8 @@ const Watcher = () => {
     } | null,
     newMessageTimestamp: { createdAt: number; amountOfTimesRepeated: number },
   ) => {
-    if (!oldMessageTimestamp) return false;
+    // if oldMessageTimestamp does not exist it is the first message
+    if (!oldMessageTimestamp) return true;
 
     if (oldMessageTimestamp.createdAt < newMessageTimestamp.createdAt) {
       return true;
