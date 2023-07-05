@@ -14,7 +14,7 @@ import {
 import Button from '../future-hopr-lib-components/Button';
 import Section from '../future-hopr-lib-components/Section';
 
-import SwapVertIcon from '@mui/icons-material/SwapVert';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import LaunchIcon from '@mui/icons-material/Launch';
 
 const StyledPaper = styled(Paper)`
@@ -47,9 +47,13 @@ const StyledTextField = styled(TextField)`
     -moz-appearance: textfield;
     appearance: textfield;
   }
+
+  &:disabled {
+    pointer-events: none;
+  }
 `;
 
-const StyledIconButton = styled(IconButton)`
+const StyledIconButton = styled(IconButton)<{ swapDirection: 'xHOPR_to_wxHOPR' | 'wxHOPR_to_xHOPR' }>`
   align-self: center;
   position: absolute;
   background: linear-gradient(rgba(0, 0, 178, 1), rgba(0, 0, 80, 1));
@@ -58,6 +62,8 @@ const StyledIconButton = styled(IconButton)`
 
   & svg {
     color: #fff;
+    transition: transform 0.4s ease;
+    transform: ${(props) => (props.swapDirection === 'xHOPR_to_wxHOPR' ? 'rotate(0)' : 'rotate(180deg)')};
   }
 
   &:disabled {
@@ -192,13 +198,27 @@ function WrapperPage() {
     }
   };
 
-  // Clean up text fields after transaction is success.
+  const updateBalances = () => {
+    if (address && xHOPR_balance && wxHOPR_balance) {
+      set_xhoprValue(xHOPR_balance.formatted);
+      set_wxhoprValue(wxHOPR_balance.formatted);
+    }
+  };
+
   useEffect(() => {
     if (is_xHOPR_to_wxHOPR_success || is_wxHOPR_to_xHOPR_success) {
+      updateBalances();
+    }
+  }, [xHOPR_balance, wxHOPR_balance]);
+
+  useEffect(() => {
+    if (address) {
+      updateBalances();
+    } else {
       set_xhoprValue('');
       set_wxhoprValue('');
     }
-  }, [is_xHOPR_to_wxHOPR_success, is_wxHOPR_to_xHOPR_success]);
+  }, [address, xHOPR_balance, wxHOPR_balance]);
 
   // Set the maximum value for xHOPR on input field.
   const setMax_xHOPR = () => {
@@ -215,8 +235,9 @@ function WrapperPage() {
 
   return (
     <Section
-      lightBlue
       center
+      fullHeightMin
+      lightBlue
     >
       <StyledPaper>
         <h2>Wrapper</h2>
@@ -228,12 +249,19 @@ function WrapperPage() {
             type="number"
             value={xhoprValue}
             onChange={(e) => set_xhoprValue(e.target.value)}
-            disabled={swapDirection === 'wxHOPR_to_xHOPR'}
+            onPointerDown={() => {
+              if (address) {
+                set_swapDirection('xHOPR_to_wxHOPR');
+                setMax_wxHOPR();
+              }
+            }}
+            disabled={!address || swapDirection === 'wxHOPR_to_xHOPR' || !write_xHOPR_to_wxHOPR}
+            fullWidth
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   <MaxButton
-                    disabled={!write_xHOPR_to_wxHOPR || swapDirection === 'wxHOPR_to_xHOPR'}
+                    disabled={swapDirection === 'wxHOPR_to_xHOPR' || !write_xHOPR_to_wxHOPR}
                     onClick={setMax_xHOPR}
                   >
                     Max
@@ -246,8 +274,9 @@ function WrapperPage() {
           <StyledIconButton
             onClick={handleSwap}
             disabled={!write_xHOPR_to_wxHOPR || !write_wxHOPR_to_xHOPR}
+            swapDirection={swapDirection}
           >
-            <SwapVertIcon />
+            <ArrowDownwardIcon />
           </StyledIconButton>
           <StyledTextField
             label="wxHOPR"
@@ -255,40 +284,56 @@ function WrapperPage() {
             type="number"
             value={wxhoprValue}
             onChange={(e) => set_wxhoprValue(e.target.value)}
-            disabled={swapDirection === 'xHOPR_to_wxHOPR'}
+            onPointerDown={() => {
+              if (address) {
+                set_swapDirection('wxHOPR_to_xHOPR');
+                setMax_xHOPR();
+              }
+            }}
+            disabled={!address || swapDirection === 'xHOPR_to_wxHOPR' || !write_wxHOPR_to_xHOPR}
+            fullWidth
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   <MaxButton
-                    disabled={!write_wxHOPR_to_xHOPR || swapDirection === 'xHOPR_to_wxHOPR'}
+                    disabled={swapDirection === 'xHOPR_to_wxHOPR' || !write_wxHOPR_to_xHOPR}
                     onClick={setMax_wxHOPR}
                   >
                     Max
                   </MaxButton>
                 </InputAdornment>
               ),
-              inputProps: { min: 0 },
+              inputProps: {
+                min: 0,
+                max: wxHOPR_balance,
+              },
             }}
           />
           <Button
-            hopr
             className="swap-button"
-            disabled={!write_xHOPR_to_wxHOPR || !write_wxHOPR_to_xHOPR}
+            disabled={
+              (swapDirection === 'xHOPR_to_wxHOPR' && !write_xHOPR_to_wxHOPR) ||
+              (swapDirection === 'wxHOPR_to_xHOPR' && !write_wxHOPR_to_xHOPR)
+            }
             onClick={handleClick}
           >
             Swap
           </Button>
           {(is_xHOPR_to_wxHOPR_loading || is_wxHOPR_to_xHOPR_loading) && <span>Check your Wallet...</span>}
-          <TransactionLink
-            isSuccess={is_xHOPR_to_wxHOPR_success}
-            hash={xHOPR_to_wxHOPR_data?.hash}
-            swapDirection={'xHOPR_to_wxHOPR'}
-          />
-          <TransactionLink
-            isSuccess={is_wxHOPR_to_xHOPR_success}
-            hash={wxHOPR_to_xHOPR_data?.hash}
-            swapDirection={'wxHOPR_to_xHOPR'}
-          />
+          {address && (
+            <>
+              <TransactionLink
+                isSuccess={is_xHOPR_to_wxHOPR_success}
+                hash={xHOPR_to_wxHOPR_data?.hash}
+                swapDirection={'xHOPR_to_wxHOPR'}
+              />
+              <TransactionLink
+                isSuccess={is_wxHOPR_to_xHOPR_success}
+                hash={wxHOPR_to_xHOPR_data?.hash}
+                swapDirection={'wxHOPR_to_xHOPR'}
+              />
+            </>
+          )}
         </WrapperContainer>
       </StyledPaper>
     </Section>
