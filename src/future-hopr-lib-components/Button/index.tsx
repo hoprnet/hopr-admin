@@ -7,6 +7,7 @@ type StyledButtonProps = ButtonProps & {
   size70?: boolean;
   standardWidth?: boolean;
   fade?: boolean;
+  target?: string;
 };
 
 const StyledButton = styled(MuiButton)<StyledButtonProps>`

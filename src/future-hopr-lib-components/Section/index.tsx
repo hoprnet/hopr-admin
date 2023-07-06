@@ -16,7 +16,7 @@ const SSection = styled.section`
     --section-background: linear-gradient(180deg, #1ad1ff -110.52%, hsla(0, 0%, 85%, 0) 105%);
   }
   &.section--light-blue {
-    --section-background: #7ee5ff;
+    --section-background: #edfbff;
   }
   &.section--dark-gradient {
     --section-background: linear-gradient(180deg, #000050 0.5%, #0000b4 100%);
