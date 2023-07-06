@@ -20,6 +20,7 @@ import ChannelsPage from './sections/channels';
 import MetricsPage from './sections/metrics';
 import SafeStakingPage from './sections/safe-staking';
 import SettingsPage from './sections/settings';
+import WrapperPage from './sections/wrapper';
 import XdaiToNodePage from './steps/xdaiToNode';
 
 // Layout
@@ -50,6 +51,7 @@ import RepeatIcon from '@mui/icons-material/Repeat';
 import Looks3Icon from '@mui/icons-material/Looks3';
 import PingPage from './sections/ping';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import PaidIcon from '@mui/icons-material/Paid';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -184,6 +186,13 @@ export const applicationMap: ApplicationMapType = [
         path: 'safe/staking',
         icon: <SavingsIcon />,
         element: <SafeStakingPage />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Wrapper',
+        path: 'wrapper',
+        icon: <PaidIcon />,
+        element: <WrapperPage />,
         loginNeeded: 'web3',
       },
     ],
