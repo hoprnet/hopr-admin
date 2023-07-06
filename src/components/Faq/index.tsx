@@ -133,11 +133,7 @@ const Faq = ({
             <Title>{faqItem.title}</Title>
           </AccordionTitle>
           <AccordionContent className={`Content ${variant}`}>
-            <Content>
-              {faqItem.content ||
-                `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus
-              ex, sit amet blandit leo lobortis eget.`}
-            </Content>
+            <Content>{faqItem.content}</Content>
           </AccordionContent>
         </StyledAccordion>
       ))}
