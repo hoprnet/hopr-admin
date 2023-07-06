@@ -218,7 +218,6 @@ const Watcher = () => {
   };
 
   const watchPendingSafeTransactions = async () => {
-    console.log('here');
     if (selectedSafeAddress && signer) {
       const pendingTransactions = await dispatch(
         safeActionsAsync.getPendingSafeTransactionsThunk({
@@ -226,7 +225,6 @@ const Watcher = () => {
           safeAddress: selectedSafeAddress,
         }),
       ).unwrap();
-      console.log({ pendingTransactions });
       if (!pendingTransactions?.count) return;
 
       const sortedPendingTransactions = [...pendingTransactions.results].sort(
@@ -250,7 +248,7 @@ const Watcher = () => {
           notificationPayload: {
             name: `Pending signature for transaction`,
             source: 'node',
-            url: null,
+            url: 'develop/safe-pending-transactions',
             timeout: null,
           },
           toastPayload: { message: `Pending signature for transaction to ${latestPendingTransaction?.to}` },
@@ -270,7 +268,7 @@ const Watcher = () => {
         notificationPayload: {
           name: `Pending signature for transaction`,
           source: 'node',
-          url: null,
+          url: 'develop/safe-pending-transactions',
           timeout: null,
         },
         toastPayload: { message: `Pending signature for transaction to ${latestPendingTransaction?.to}` },
@@ -300,9 +298,9 @@ const Watcher = () => {
     if (newMessageHasArrived) {
       sendNotification({
         notificationPayload: {
-          source: 'node/message',
+          source: 'node',
           name: 'Received new message',
-          url: null,
+          url: 'networking/messages',
           timeout: null,
         },
         toastPayload: { message: `received message: ${newMessage.latestMessage.body}` },

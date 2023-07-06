@@ -56,7 +56,9 @@ const StyledApproveButton = styled(Button)`
 
 const StyledButtonGroup = styled.div`
   display: flex;
+  justify-content: flex-end;
   gap: 0.5rem;
+  min-width: 170px;
   align-content: baseline;
 `;
 

@@ -95,8 +95,8 @@ export default function NotificationBar() {
               key={notification.id}
               onClick={() => {
                 dispatch(appActions.interactedWithNotification(notification.id));
-                if (notification.source === 'node/message') {
-                  navigate(`networking/messages${searchParams ? searchParams : ''}`);
+                if (notification.url) {
+                  navigate(`${notification.url}${searchParams ? searchParams : ''}`);
                 }
               }}
             >
