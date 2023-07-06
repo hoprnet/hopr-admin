@@ -8,6 +8,8 @@ import { nanoid } from '@reduxjs/toolkit';
 import { initialState } from '../../store/slices/node/initialState';
 import { useEthersSigner } from '../../hooks';
 import { safeActionsAsync } from '../../store/slices/safe';
+import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
+import { useAccount } from 'wagmi';
 
 const FETCH_CHANNELS_INTERVAL = 10000;
 const FETCH_NODE_INTERVAL = 5000;
@@ -25,7 +27,7 @@ let prevLatestMessageTimestamp: {
   createdAt: number;
   amountOfTimesRepeated: number;
 } | null;
-let previousPendingSafeTransctionTimestamp: number | null;
+let previousPendingSafeTransaction: SafeMultisigTransactionResponse | null;
 
 const Watcher = () => {
   const dispatch = useAppDispatch();
@@ -33,9 +35,12 @@ const Watcher = () => {
     apiEndpoint,
     apiToken,
   } = useAppSelector((store) => store.auth.loginData);
-  const { connected } = useAppSelector((store) => store.auth.status);
   const messages = useAppSelector((store) => store.node.messages);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress);
+  const {
+    address,
+    isConnected,
+  } = useAccount();
   const signer = useEthersSigner();
 
   useEffect(() => {
@@ -53,8 +58,9 @@ const Watcher = () => {
       clearInterval(watchChannelsInterval);
       clearInterval(watchNodeInfoInterval);
       clearInterval(watchNodeFundsInterval);
+      clearInterval(watchPendingSafeTransactionsInterval);
     };
-  }, [apiEndpoint, apiToken, connected]);
+  }, [apiEndpoint, apiToken, address, selectedSafeAddress]);
 
   // check when redux receives new messages
   useEffect(() => {
@@ -100,7 +106,7 @@ const Watcher = () => {
   };
 
   const watchNodeFunds = async () => {
-    if (apiToken && apiEndpoint && connected) {
+    if (apiToken && apiEndpoint && isConnected) {
       const newNodeFunds = await dispatch(
         nodeActionsAsync.getBalancesThunk({
           apiEndpoint,
@@ -149,7 +155,7 @@ const Watcher = () => {
   };
 
   const watchNodeInfo = async () => {
-    if (apiEndpoint && apiToken && connected) {
+    if (apiEndpoint && apiToken && isConnected) {
       const newNodeInfo = await dispatch(
         nodeActionsAsync.getInfoThunk({
           apiEndpoint,
@@ -177,7 +183,7 @@ const Watcher = () => {
   };
 
   const watchChannels = async () => {
-    if (apiEndpoint && apiToken && connected) {
+    if (apiEndpoint && apiToken && isConnected) {
       // fetch channels and update redux state
       const newChannels = await dispatch(
         nodeActionsAsync.getChannelsThunk({
@@ -212,6 +218,7 @@ const Watcher = () => {
   };
 
   const watchPendingSafeTransactions = async () => {
+    console.log('here');
     if (selectedSafeAddress && signer) {
       const pendingTransactions = await dispatch(
         safeActionsAsync.getPendingSafeTransactionsThunk({
@@ -222,11 +229,54 @@ const Watcher = () => {
       console.log({ pendingTransactions });
       if (!pendingTransactions?.count) return;
 
-      const latestPendingTransaction = pendingTransactions.results.sort(
+      const sortedPendingTransactions = [...pendingTransactions.results].sort(
         (a, b) => new Date(b.submissionDate).getTime() - new Date(a.submissionDate).getTime(),
       );
 
-      console.log({ latestPendingTransaction });
+      const latestPendingTransaction = sortedPendingTransactions.at(0);
+
+      if (!latestPendingTransaction) return;
+
+      const accountHasAlreadySignedTransaction = latestPendingTransaction.confirmations?.find(
+        (confirmation) => confirmation.owner === address,
+      );
+
+      // will not send notification if signer has already signed pending tx
+      if (accountHasAlreadySignedTransaction) return;
+
+      // send notification if this is the first tx observed
+      if (!previousPendingSafeTransaction) {
+        sendNotification({
+          notificationPayload: {
+            name: `Pending signature for transaction`,
+            source: 'node',
+            url: null,
+            timeout: null,
+          },
+          toastPayload: { message: `Pending signature for transaction to ${latestPendingTransaction?.to}` },
+        });
+        previousPendingSafeTransaction = latestPendingTransaction;
+        return;
+      }
+
+      const isLatestTransactionAfterPreviousTransaction =
+        new Date(latestPendingTransaction.submissionDate).getTime() >
+        new Date(previousPendingSafeTransaction.submissionDate).getTime();
+
+      if (!isLatestTransactionAfterPreviousTransaction) return;
+
+      // latest transaction is more recent than previous
+      sendNotification({
+        notificationPayload: {
+          name: `Pending signature for transaction`,
+          source: 'node',
+          url: null,
+          timeout: null,
+        },
+        toastPayload: { message: `Pending signature for transaction to ${latestPendingTransaction?.to}` },
+      });
+
+      previousPendingSafeTransaction = latestPendingTransaction;
     }
   };
 

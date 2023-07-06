@@ -205,16 +205,12 @@ const createSafeTransactionThunk = createAsyncThunk(
   ) => {
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
+      const safeApi = await createSafeApiService(payload.signer);
       // create safe transaction
       const safeTransaction = await safeSDK.createTransaction({ safeTransactionData: payload.safeTransactionData });
-      // check if created tx is valid
-      const isValidTx = await safeSDK.isValidTransaction(safeTransaction);
-      if (!isValidTx) throw Error('invalid tx');
-
       const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
       const senderSignature = await safeSDK.signTransactionHash(safeTxHash);
       const senderAddress = await payload.signer.getAddress();
-      const safeApi = await createSafeApiService(payload.signer);
       // propose safe transaction
       await safeApi.proposeTransaction({
         safeAddress: payload.safeAddress,
@@ -252,16 +248,12 @@ const createSafeRejectionTransactionThunk = createAsyncThunk(
   ) => {
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
+      const safeApi = await createSafeApiService(payload.signer);
       // create safe rejection transaction
       const safeTransaction = await safeSDK.createRejectionTransaction(payload.nonce);
-      // check if created tx is valid
-      const isValidTx = await safeSDK.isValidTransaction(safeTransaction);
-      if (!isValidTx) throw Error('invalid tx');
-
       const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
       const senderSignature = await safeSDK.signTransactionHash(safeTxHash);
       const senderAddress = await payload.signer.getAddress();
-      const safeApi = await createSafeApiService(payload.signer);
       // propose safe transaction
       await safeApi.proposeTransaction({
         safeAddress: payload.safeAddress,
