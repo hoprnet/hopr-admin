@@ -208,8 +208,8 @@ const createSafeTransactionThunk = createAsyncThunk(
       // create safe transaction
       const safeTransaction = await safeSDK.createTransaction({ safeTransactionData: payload.safeTransactionData });
       // check if created tx is valid
-      const isValidTx = await safeSDK.isValidTransaction(safeTransaction)
-      if (!isValidTx) throw Error('invalid tx')
+      const isValidTx = await safeSDK.isValidTransaction(safeTransaction);
+      if (!isValidTx) throw Error('invalid tx');
 
       const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
       const senderSignature = await safeSDK.signTransactionHash(safeTxHash);
@@ -255,8 +255,8 @@ const createSafeRejectionTransactionThunk = createAsyncThunk(
       // create safe rejection transaction
       const safeTransaction = await safeSDK.createRejectionTransaction(payload.nonce);
       // check if created tx is valid
-      const isValidTx = await safeSDK.isValidTransaction(safeTransaction)
-      if (!isValidTx) throw Error('invalid tx')
+      const isValidTx = await safeSDK.isValidTransaction(safeTransaction);
+      if (!isValidTx) throw Error('invalid tx');
 
       const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
       const senderSignature = await safeSDK.signTransactionHash(safeTxHash);
