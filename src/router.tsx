@@ -20,6 +20,7 @@ import ChannelsPage from './sections/channels';
 import MetricsPage from './sections/metrics';
 import SafeStakingPage from './sections/safe-staking';
 import SettingsPage from './sections/settings';
+import XdaiToNodePage from './steps/xdaiToNode';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -45,6 +46,8 @@ import SavingsIcon from '@mui/icons-material/Savings';
 import NodeIcon from '@mui/icons-material/Router';
 import NetworkingIcon from '@mui/icons-material/Diversity3';
 import DevelopIcon from '@mui/icons-material/Code';
+import RepeatIcon from '@mui/icons-material/Repeat';
+import Looks3Icon from '@mui/icons-material/Looks3';
 import PingPage from './sections/ping';
 import BarChartIcon from '@mui/icons-material/BarChart';
 
@@ -182,6 +185,19 @@ export const applicationMap: ApplicationMapType = [
         icon: <SavingsIcon />,
         element: <SafeStakingPage />,
         loginNeeded: 'web3',
+      },
+    ],
+  },
+  {
+    groupName: 'Staking',
+    path: 'staking',
+    icon: <RepeatIcon />,
+    items: [
+      {
+        name: 'xdai to node',
+        path: 'xdai-to-node',
+        icon: <Looks3Icon />,
+        element: <XdaiToNodePage />,
       },
     ],
   },
