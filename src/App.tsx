@@ -1,11 +1,12 @@
+import { ThemeProvider } from '@mui/material';
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
-import { ThemeProvider } from '@mui/material';
+import 'react-toastify/dist/ReactToastify.css';
 import WagmiProvider from './providers/Wagmi';
 import Watcher from './providers/Watcher';
-
-import store from './store';
 import router from './router';
+import store from './store';
+import { ToastContainer } from 'react-toastify';
 import theme from './theme';
 
 function App() {
@@ -14,6 +15,10 @@ function App() {
       <WagmiProvider>
         <ThemeProvider theme={theme}>
           <Watcher />
+          <ToastContainer
+            position="bottom-right"
+            limit={10}
+          />
           <RouterProvider router={router} />
         </ThemeProvider>
       </WagmiProvider>
