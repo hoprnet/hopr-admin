@@ -29,6 +29,7 @@ function Section1() {
   const nodesSavedLocally = useAppSelector((store) => store.auth.nodes);
   const [nodesSavedLocallyParsed, set_nodesSavedLocallyParsed] = useState([] as ParsedNode[]);
   const connecting = useAppSelector((store) => store.auth.status.connecting);
+  const error = useAppSelector((store) => store.auth.status.error);
   const loginData = useAppSelector((store) => store.auth.loginData);
 
   const [searchParams, set_searchParams] = useSearchParams();
@@ -103,7 +104,12 @@ function Section1() {
     );
   };
 
-  const useNode = () => {
+  const useNode = async () => {
+    set_searchParams({
+      apiToken,
+      apiEndpoint,
+    });
+
     dispatch(authActions.resetState());
     dispatch(nodeActions.resetState());
     dispatch(appActions.resetState());
@@ -116,35 +122,31 @@ function Section1() {
         localName,
       }),
     );
-    dispatch(
+    const loginInfo = await dispatch(
       authActionsAsync.loginThunk({
         apiEndpoint,
         apiToken,
       }),
-    );
-    dispatch(
-      nodeActionsAsync.getAddressesThunk({
-        apiToken,
-        apiEndpoint,
-      }),
-    );
-    dispatch(
-      nodeActionsAsync.getInfoThunk({
-        apiToken,
-        apiEndpoint,
-      }),
-    )
-      .unwrap()
-      .then(() => {
-        dispatch(nodeActions.initializeMessagesWebsocket());
-      })
-      .then(() => {
-        dispatch(nodeActions.initializeLogsWebsocket());
-      });
-    set_searchParams({
-      apiToken,
-      apiEndpoint,
-    });
+    ).unwrap();
+    if (loginInfo) {
+      dispatch(
+        nodeActionsAsync.getAddressesThunk({
+          apiToken,
+          apiEndpoint,
+        }),
+      );
+      dispatch(
+        nodeActionsAsync.getInfoThunk({
+          apiToken,
+          apiEndpoint,
+        }),
+      )
+        .unwrap()
+        .then(() => {
+          dispatch(nodeActions.initializeMessagesWebsocket());
+          dispatch(nodeActions.initializeLogsWebsocket());
+        });
+    }
   };
 
   const clearLocalNodes = () => {
@@ -169,7 +171,7 @@ function Section1() {
       yellow
     >
       <Select
-        label={'nodesSavedLocally'}
+        label={'Node credentials saved in browser local storage'}
         values={nodesSavedLocallyParsed}
         disabled={nodesSavedLocally.length === 0}
         value={nodesSavedLocallyChosenIndex}
@@ -183,7 +185,7 @@ function Section1() {
         disabled={nodesSavedLocally.length === 0}
         onClick={clearLocalNodes}
       >
-        Clear local nodes
+        Clear node credentials from the browser local storage
       </button>
       <br />
       Local name:
@@ -222,15 +224,19 @@ function Section1() {
         onClick={saveNode}
         disabled={apiEndpoint.length === 0}
       >
-        Save node locally
+        Save node credentials in browser local storage
       </button>
       <button
         onClick={useNode}
         disabled={apiEndpoint.length === 0 || apiToken.length === 0}
       >
-        Use node
+        Connect to the node
       </button>
+      <br />
       {connecting && <CircularProgress />}
+      <span>
+        {error}
+      </span>
     </Section>
   );
 }
