@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import Section from '../../future-hopr-lib-components/Section';
 import Button from '../../future-hopr-lib-components/Button';
 import Card from '../components/Card';
-import { Link } from 'react-router-dom';
 
 const NodeContainer = styled.div`
   display: flex;

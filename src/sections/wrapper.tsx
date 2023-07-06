@@ -53,17 +53,22 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
-const StyledIconButton = styled(IconButton)<{ swapDirection: 'xHOPR_to_wxHOPR' | 'wxHOPR_to_xHOPR' }>`
+const StyledIconButton = styled(IconButton)`
   align-self: center;
   position: absolute;
   background: linear-gradient(rgba(0, 0, 178, 1), rgba(0, 0, 80, 1));
   top: 48px;
   z-index: 2;
 
-  & svg {
+  svg {
     color: #fff;
     transition: transform 0.4s ease;
-    transform: ${(props) => (props.swapDirection === 'xHOPR_to_wxHOPR' ? 'rotate(0)' : 'rotate(180deg)')};
+  }
+
+  &.swapDirection {
+    svg {
+      transform: rotate(180deg);
+    }
   }
 
   &:disabled {
@@ -272,9 +277,9 @@ function WrapperPage() {
             }}
           />
           <StyledIconButton
+            className={`${swapDirection === 'wxHOPR_to_xHOPR' ? 'swapDirection' : ''}`}
             onClick={handleSwap}
             disabled={!write_xHOPR_to_wxHOPR || !write_wxHOPR_to_xHOPR}
-            swapDirection={swapDirection}
           >
             <ArrowDownwardIcon />
           </StyledIconButton>
