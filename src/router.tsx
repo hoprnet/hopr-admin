@@ -20,6 +20,8 @@ import ChannelsPage from './sections/channels';
 import MetricsPage from './sections/metrics';
 import SafeStakingPage from './sections/safe-staking';
 import SettingsPage from './sections/settings';
+import AddNode from './steps/install-node/addNode';
+import SelectNodeType from './steps/install-node/selectNodeType';
 import WrapperPage from './sections/wrapper';
 import XdaiToNodePage from './steps/xdaiToNode';
 
@@ -51,6 +53,9 @@ import RepeatIcon from '@mui/icons-material/Repeat';
 import Looks3Icon from '@mui/icons-material/Looks3';
 import PingPage from './sections/ping';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import DockerInstallation from './steps/install-node/dockerInstallation';
+import NodeAddress from './steps/install-node/nodeAddress';
 import PaidIcon from '@mui/icons-material/Paid';
 
 export type ApplicationMapType = {
@@ -207,6 +212,41 @@ export const applicationMap: ApplicationMapType = [
         path: 'xdai-to-node',
         icon: <Looks3Icon />,
         element: <XdaiToNodePage />,
+      },
+    ],
+  },
+  {
+    groupName: 'Steps',
+    path: 'steps',
+    icon: <DevelopIcon />,
+    items: [
+      {
+        name: 'Add node',
+        path: 'add-node',
+        icon: <AddBoxIcon />,
+        element: <AddNode />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Select node',
+        path: 'select-node-type',
+        icon: <AddBoxIcon />,
+        element: <SelectNodeType />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Docker',
+        path: 'docker-installation',
+        icon: <AddBoxIcon />,
+        element: <DockerInstallation />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Node Address',
+        path: 'node-address',
+        icon: <AddBoxIcon />,
+        element: <NodeAddress />,
+        loginNeeded: 'web3',
       },
     ],
   },
