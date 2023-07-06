@@ -140,12 +140,15 @@ function Section1() {
           apiToken,
           apiEndpoint,
         }),
-      )
-        .unwrap()
-        .then(() => {
-          dispatch(nodeActions.initializeMessagesWebsocket());
-          dispatch(nodeActions.initializeLogsWebsocket());
-        });
+      );
+      dispatch(
+        nodeActionsAsync.getAliasesThunk({
+          apiToken,
+          apiEndpoint,
+        })
+      );
+      dispatch(nodeActions.initializeMessagesWebsocket());
+      dispatch(nodeActions.initializeLogsWebsocket());
     }
   };
 
