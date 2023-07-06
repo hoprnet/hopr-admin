@@ -226,7 +226,7 @@ const createSafeTransactionThunk = createAsyncThunk(
           signer: payload.signer,
         }),
       );
-      return true;
+      return safeTxHash;
     } catch (e) {
       console.log(e);
       rejectWithValue(e);
@@ -354,7 +354,6 @@ const getAllSafeTransactionsThunk = createAsyncThunk(
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const transactions = await safeApi.getAllTransactions(payload.safeAddress, payload.options);
-      console.log(transactions);
       return transactions;
     } catch (e) {
       rejectWithValue(e);
