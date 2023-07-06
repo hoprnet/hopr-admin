@@ -6,9 +6,12 @@ import { nodeActionsAsync } from '../../store/slices/node';
 import { ToastOptions, toast } from 'react-toastify';
 import { nanoid } from '@reduxjs/toolkit';
 import { initialState } from '../../store/slices/node/initialState';
+import { useEthersSigner } from '../../hooks';
+import { safeActionsAsync } from '../../store/slices/safe';
 
 const FETCH_CHANNELS_INTERVAL = 10000;
 const FETCH_NODE_INTERVAL = 5000;
+const FETCH_SAFE_INTERVAL = 10000;
 
 // previous states to compare new states with
 let prevChannels: GetChannelsResponseType | null;
@@ -22,6 +25,7 @@ let prevLatestMessageTimestamp: {
   createdAt: number;
   amountOfTimesRepeated: number;
 } | null;
+let previousPendingSafeTransctionTimestamp: number | null;
 
 const Watcher = () => {
   const dispatch = useAppDispatch();
@@ -31,6 +35,8 @@ const Watcher = () => {
   } = useAppSelector((store) => store.auth.loginData);
   const { connected } = useAppSelector((store) => store.auth.status);
   const messages = useAppSelector((store) => store.node.messages);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress);
+  const signer = useEthersSigner();
 
   useEffect(() => {
     // reset state on every change of node
@@ -41,6 +47,7 @@ const Watcher = () => {
     const watchChannelsInterval = setInterval(watchChannels, FETCH_CHANNELS_INTERVAL);
     const watchNodeInfoInterval = setInterval(watchNodeInfo, FETCH_NODE_INTERVAL);
     const watchNodeFundsInterval = setInterval(watchNodeFunds, FETCH_NODE_INTERVAL);
+    const watchPendingSafeTransactionsInterval = setInterval(watchPendingSafeTransactions, FETCH_SAFE_INTERVAL);
 
     return () => {
       clearInterval(watchChannelsInterval);
@@ -201,6 +208,25 @@ const Watcher = () => {
 
       // update previous channels to newly fetched ones
       prevChannels = newChannels;
+    }
+  };
+
+  const watchPendingSafeTransactions = async () => {
+    if (selectedSafeAddress && signer) {
+      const pendingTransactions = await dispatch(
+        safeActionsAsync.getPendingSafeTransactionsThunk({
+          signer,
+          safeAddress: selectedSafeAddress,
+        }),
+      ).unwrap();
+      console.log({ pendingTransactions });
+      if (!pendingTransactions?.count) return;
+
+      const latestPendingTransaction = pendingTransactions.results.sort(
+        (a, b) => new Date(b.submissionDate).getTime() - new Date(a.submissionDate).getTime(),
+      );
+
+      console.log({ latestPendingTransaction });
     }
   };
 

@@ -9,7 +9,8 @@ const safeSlice = createSlice({
     state.recentlyCreatedSafe = null;
     state.selectedSafeAddress = null;
     state.safeInfos = [];
-    state.safeTransactions = null;
+    state.allTransactions = null;
+    state.pendingTransactions = null;
     state.safesByOwner = [];
   } },
   extraReducers: (builder) => createExtraReducers(builder),

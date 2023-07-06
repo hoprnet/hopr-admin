@@ -6,6 +6,8 @@ import { useAppDispatch, useAppSelector } from '../store';
 
 // COMPONENTS
 import Section from '../future-hopr-lib-components/Section';
+import Button from '../future-hopr-lib-components/Button';
+import GrayButton from '../future-hopr-lib-components/Button/gray';
 
 // LIBS
 import styled from '@emotion/styled';
@@ -13,9 +15,8 @@ import { SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-k
 import { useAccount } from 'wagmi';
 
 // HOOKS
-import { useSigner } from '../hooks';
+import { useEthersSigner } from '../hooks';
 import { formatEther } from 'viem';
-import Button from '../future-hopr-lib-components/Button';
 import { useState } from 'react';
 import { safeActionsAsync } from '../store/slices/safe';
 
@@ -53,9 +54,15 @@ const StyledApproveButton = styled(Button)`
   text-transform: uppercase;
 `;
 
+const StyledButtonGroup = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  align-content: baseline;
+`;
+
 const ApproveTransactionRow = ({ transaction }: { transaction: SafeMultisigTransactionWithTransfersResponse }) => {
   const dispatch = useAppDispatch();
-  const { signer } = useSigner();
+  const signer = useEthersSigner();
   const { address } = useAccount();
   const [isLoadingApproving, set_isLoadingApproving] = useState<boolean>(false);
   const [isLoadingExecuting, set_isLoadingExecuting] = useState<boolean>(false);
@@ -121,12 +128,14 @@ const ApproveTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
   return (
     <StyledPendingSafeTransactionWithFeedback>
       <StyledPendingSafeTransactionInfo>
-        <p>{String(transaction.isExecuted)}</p>
+        <p>{String(transaction.nonce)}</p>
         <p>Send</p>
         <p>{formatEther(BigInt(transaction.value))}</p>
         <p>{`${transaction.confirmations?.length ?? 0}/${transaction.confirmationsRequired}`}</p>
         {isTransactionExecutable() ? (
-          <StyledApproveButton onClick={executeTx}>execute</StyledApproveButton>
+          <StyledButtonGroup>
+            <StyledApproveButton onClick={executeTx}>execute</StyledApproveButton>
+          </StyledButtonGroup>
         ) : (
           <Tooltip title={!isTransactionPendingApprovalFromSigner() && 'You have already approved'}>
             <span>
@@ -147,7 +156,7 @@ const ApproveTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
 };
 
 const SafeQueue = () => {
-  const transactions = useAppSelector((state) => state.safe.safeTransactions);
+  const transactions = useAppSelector((state) => state.safe.allTransactions);
   const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
 
   if (!selectedSafeAddress)

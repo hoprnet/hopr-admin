@@ -15,7 +15,7 @@ import { parseUnits } from 'viem';
 import Button from '../future-hopr-lib-components/Button';
 import GrayButton from '../future-hopr-lib-components/Button/gray';
 import Section from '../future-hopr-lib-components/Section';
-import { useSigner } from '../hooks';
+import { useEthersSigner } from '../hooks';
 import { safeActionsAsync } from '../store/slices/safe';
 import Card from './components/Card';
 
@@ -99,7 +99,7 @@ const StyledApproveButton = styled(Button)`
 
 function XdaiToNode() {
   const dispatch = useAppDispatch();
-  const safeTxs = useAppSelector((state) => state.safe.safeTransactions);
+  const safeTxs = useAppSelector((state) => state.safe.allTransactions);
   const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
   const { native: nodeNativeAddress } = useAppSelector((state) => state.node.addresses);
   const [xdaiValue, set_xdaiValue] = useState<string>('');
@@ -107,7 +107,7 @@ function XdaiToNode() {
   const [proposedTxHash, set_proposedTxHash] = useState<string>();
   const [proposedTx, set_proposedTx] = useState<SafeMultisigTransactionWithTransfersResponse>();
 
-  const { signer } = useSigner();
+  const signer = useEthersSigner();
 
   useEffect(() => {
     if (proposedTxHash) {

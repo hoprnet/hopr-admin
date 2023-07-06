@@ -1,10 +1,11 @@
-import { AllTransactionsListResponse, SafeInfoResponse } from '@safe-global/api-kit';
+import { AllTransactionsListResponse, SafeInfoResponse, SafeMultisigTransactionListResponse } from '@safe-global/api-kit';
 
 type InitialState = {
   selectedSafeAddress: string | null;
   recentlyCreatedSafe: string | null;
   safesByOwner: string[];
-  safeTransactions: AllTransactionsListResponse | null;
+  allTransactions: AllTransactionsListResponse | null;
+  pendingTransactions: SafeMultisigTransactionListResponse | null;
   safeInfos: SafeInfoResponse[];
 };
 
@@ -12,6 +13,7 @@ export const initialState: InitialState = {
   selectedSafeAddress: null,
   recentlyCreatedSafe: null,
   safesByOwner: [],
-  safeTransactions: null,
+  allTransactions: null,
+  pendingTransactions: null,
   safeInfos: [],
 };

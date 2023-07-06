@@ -6,13 +6,13 @@ import { safeActionsAsync, safeActions } from '../store/slices/safe';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
-import { useSigner } from '../hooks';
+import { useEthersSigner } from '../hooks';
 import { utils } from 'ethers';
 function SafeSection() {
   const dispatch = useAppDispatch();
   const safe = useAppSelector((store) => store.safe);
   const { account } = useAppSelector((store) => store.web3);
-  const { signer } = useSigner();
+  const signer = useEthersSigner();
   const [threshold, set_threshold] = useState(1);
   const [owners, set_owners] = useState('');
 
@@ -139,7 +139,7 @@ function SafeSection() {
         create tx proposal
       </button>
       <h2>transactions actions</h2>
-      {safe.safeTransactions?.results.map((transaction, key) => (
+      {safe.allTransactions?.results.map((transaction, key) => (
         <div key={key}>
           <p>
             {transaction.txType} {transaction.to}

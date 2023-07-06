@@ -10,6 +10,7 @@ import { web3Actions } from '../../store/slices/web3';
 // wagmi
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
+import { gnosis, localhost } from 'viem/chains';
 
 const AppBarContainer = styled.div`
   height: 59px;
@@ -42,7 +43,7 @@ export default function ConnectWeb3({
 }: ConnectWeb3Props) {
   const dispatch = useAppDispatch();
   const [chooseWalletModal, set_chooseWalletModal] = useState(false);
-  const { connect } = useConnect({ connector: new InjectedConnector() });
+  const { connect } = useConnect({ connector: new InjectedConnector({ chains: [localhost, gnosis] }) });
   const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
 
