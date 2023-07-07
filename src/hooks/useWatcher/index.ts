@@ -1,19 +1,15 @@
 import { AccountResponseType, GetChannelsResponseType, GetInfoResponseType } from '@hoprnet/hopr-sdk';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { appActions } from '../../store/slices/app';
 import { nodeActionsAsync } from '../../store/slices/node';
 import { ToastOptions, toast } from 'react-toastify';
 import { nanoid } from '@reduxjs/toolkit';
 import { initialState } from '../../store/slices/node/initialState';
-import { useEthersSigner } from '../../hooks';
+import { useEthersSigner } from '..';
 import { safeActionsAsync } from '../../store/slices/safe';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { useAccount } from 'wagmi';
-
-const FETCH_CHANNELS_INTERVAL = 10000;
-const FETCH_NODE_INTERVAL = 10000;
-const FETCH_SAFE_INTERVAL = 10000;
 
 // previous states to compare new states with
 let prevChannels: GetChannelsResponseType | null;
@@ -29,7 +25,7 @@ let prevLatestMessageTimestamp: {
 } | null;
 let previousPendingSafeTransaction: SafeMultisigTransactionResponse | null;
 
-const Watcher = () => {
+export const useWatcher = (intervalDuration: number) => {
   const dispatch = useAppDispatch();
   const {
     apiEndpoint,
@@ -42,6 +38,14 @@ const Watcher = () => {
     isConnected,
   } = useAccount();
   const signer = useEthersSigner();
+  // We use a ref to store the id of the interval,
+  // so it can be cleared and reset as needed
+  const watchChannelsInterval = useRef(null);
+  const watchNodeInfoInterval = useRef(null);
+  const watchNodeFundsInterval = useRef(null);
+  const watchPendingSafeTransactionsInterval = useRef(null);
+
+  
 
   useEffect(() => {
     // reset state on every change of node
@@ -49,10 +53,10 @@ const Watcher = () => {
       resetPrevStates();
     }
 
-    const watchChannelsInterval = setInterval(watchChannels, FETCH_CHANNELS_INTERVAL);
-    const watchNodeInfoInterval = setInterval(watchNodeInfo, FETCH_NODE_INTERVAL);
-    const watchNodeFundsInterval = setInterval(watchNodeFunds, FETCH_NODE_INTERVAL);
-    const watchPendingSafeTransactionsInterval = setInterval(watchPendingSafeTransactions, FETCH_SAFE_INTERVAL);
+    const watchChannelsInterval = setInterval(watchChannels, intervalDuration);
+    const watchNodeInfoInterval = setInterval(watchNodeInfo, intervalDuration);
+    const watchNodeFundsInterval = setInterval(watchNodeFunds, intervalDuration);
+    const watchPendingSafeTransactionsInterval = setInterval(watchPendingSafeTransactions, intervalDuration);
 
     return () => {
       clearInterval(watchChannelsInterval);
@@ -183,38 +187,47 @@ const Watcher = () => {
   };
 
   const watchChannels = async () => {
-    if (apiEndpoint && apiToken && isConnected) {
-      // fetch channels and update redux state
-      const newChannels = await dispatch(
-        nodeActionsAsync.getChannelsThunk({
-          apiEndpoint,
-          apiToken,
-        }),
-      ).unwrap();
+    if (!apiEndpoint || !apiToken || !isConnected) return;
 
-      if (!newChannels) return;
-
-      if (prevChannels) {
-        // get channels that have been updated
-        const updatedChannels = getUpdatedChannels(prevChannels, newChannels);
-        for (const updatedChannel of updatedChannels ?? []) {
-          // calculate the type of update: OPEN/CLOSE etc.
-          const notificationText = calculateNotificationTextForChannelStatus(updatedChannel);
-          sendNotification({
-            notificationPayload: {
-              source: 'node',
-              name: notificationText,
-              url: null,
-              timeout: null,
-            },
-            toastPayload: { message: `${updatedChannel.channelId}: ${notificationText}` },
-          });
-        }
-      }
-
-      // update previous channels to newly fetched ones
-      prevChannels = newChannels;
+    // Clear the current interval, if there is one
+    if (watchChannelsInterval.current) {
+      clearInterval(watchChannelsInterval.current);
     }
+
+    
+    // fetch channels and update redux state
+    const newChannels = await dispatch(
+      nodeActionsAsync.getChannelsThunk({
+        apiEndpoint,
+        apiToken,
+      }),
+    ).unwrap();
+
+    if (!newChannels) return;
+
+    if (prevChannels) {
+      // get channels that have been updated
+      const updatedChannels = getUpdatedChannels(prevChannels, newChannels);
+      for (const updatedChannel of updatedChannels ?? []) {
+        // calculate the type of update: OPEN/CLOSE etc.
+        const notificationText = calculateNotificationTextForChannelStatus(updatedChannel);
+        sendNotification({
+          notificationPayload: {
+            source: 'node',
+            name: notificationText,
+            url: null,
+            timeout: null,
+          },
+          toastPayload: { message: `${updatedChannel.channelId}: ${notificationText}` },
+        });
+      }
+    }
+
+
+
+    // update previous channels to newly fetched ones
+    prevChannels = newChannels;
+    
   };
 
   const watchPendingSafeTransactions = async () => {
@@ -409,7 +422,7 @@ const Watcher = () => {
     return false;
   };
 
-  return <></>;
+  return {
+    watchChannels, watchPendingSafeTransactions, watchNodeFunds, watchNodeInfo, watchMessages,
+  };
 };
-
-export default Watcher;
