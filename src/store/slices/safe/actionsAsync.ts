@@ -239,7 +239,7 @@ const createSafeRejectionTransactionThunk = createAsyncThunk(
     payload: {
       signer: ethers.providers.JsonRpcSigner;
       safeAddress: string;
-      nonce: number
+      nonce: number;
     },
     {
       rejectWithValue,
