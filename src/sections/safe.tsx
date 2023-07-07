@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { nanoid } from '@reduxjs/toolkit';
 
 //Stores
 import { useAppDispatch, useAppSelector } from '../store';
@@ -6,20 +7,68 @@ import { safeActionsAsync, safeActions } from '../store/slices/safe';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
+import GrayButton from '../future-hopr-lib-components/Button/gray';
 import { useSigner } from '../hooks';
 import { utils } from 'ethers';
 import Card from '../steps/components/Card';
 import styled from '@emotion/styled';
-import { TextField } from '@mui/material';
+import {
+  IconButton,
+  TextField,
+  Button as MuiButton,
+  Select,
+  MenuItem
+} from '@mui/material'
+
+// Icons
+import CopyIcon from '@mui/icons-material/ContentCopy';
+import LaunchIcon from '@mui/icons-material/Launch';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Button from '../future-hopr-lib-components/Button';
 
 const Lowercase = styled.span`
   text-transform: lowercase;
 `;
 
-const Container = styled.div`
+const Container = styled.div<{ column?: boolean }>`
+  align-items: ${(props) => (props.column ? 'flex-start' : 'center')};
   display: flex;
+  flex-direction: ${(props) => props.column && 'column'};
   justify-content: space-between;
+  padding-bottom: 1rem;
   border-bottom: 1px solid #414141;
+  gap: 1rem;
+  min-height: 39px;
+`;
+
+const FlexContainer = styled.div`
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+`;
+
+const AddButton = styled(MuiButton)`
+  align-self: flex-start;
+  color: #0000b4;
+  font-weight: 700;
+`;
+
+const ThresholdInput = styled(TextField)`
+  max-width: 3rem;
+
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type='number'] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
 `;
 
 const StyledForm = styled.div`
@@ -36,13 +85,29 @@ const StyledInstructions = styled.div`
   width: 250px;
 `;
 
-const StyledText = styled.h3`
+const Subtitle = styled.h3`
   color: #414141;
   font-size: 20px;
   font-style: normal;
   font-weight: 500;
   letter-spacing: 0.35px;
   text-transform: uppercase;
+  margin: 0;
+`;
+
+const Text = styled.p`
+  margin: 0;
+`;
+
+const ButtonContainer = styled.div`
+  align-self: center;
+  display: flex;
+  gap: 1rem;
+`;
+
+const StyledGrayButton = styled(GrayButton)`
+  border: 1px solid black;
+  height: 39px;
 `;
 
 const StyledDescription = styled.p`
@@ -76,17 +141,62 @@ function SafeSection() {
   const { account } = useAppSelector((store) => store.web3);
   const { signer } = useSigner();
   const [threshold, set_threshold] = useState(1);
-  const [owners, set_owners] = useState('');
+  const [owners, set_owners] = useState<{ id: string; address: string }[]>([]);
+
+  useEffect(() => {
+    console.log('@  owners:', owners);
+  }, [owners]);
+
+  const [xdaiValue, set_xdaiValue] = useState('');
+  const [wxhoprValue, set_wxhoprValue] = useState('');
 
   useEffect(() => {
     fetchInitialStateForSigner();
   }, [signer]);
+
+  useEffect(() => {
+    if (account) {
+      addOwner(account);
+    }
+    return () => set_owners([]);
+  }, [account]);
 
   const fetchInitialStateForSigner = async () => {
     if (signer) {
       dispatch(safeActions.resetState());
       dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer }));
     }
+  };
+
+  const addOwner = (address: string) => {
+    set_owners((prevOwners) => {
+      return [
+        ...prevOwners,
+        {
+          id: nanoid(),
+          address,
+        },
+      ];
+    });
+  };
+
+  const updateOwnerAddress = (id: string, address: string) => {
+    set_owners((prevOwners) => {
+      return prevOwners.map((prevOwner) =>
+        prevOwner.id === id
+          ? {
+            ...prevOwner,
+            address,
+          }
+          : prevOwner,
+      );
+    });
+  };
+
+  const removeOwner = (id: string) => {
+    set_owners((prevOwners) => {
+      return prevOwners.filter((prevOwner) => prevOwner.id !== id);
+    });
   };
 
   if (!account) {
@@ -109,14 +219,88 @@ function SafeSection() {
     >
       <Card title="Owners and confirmations">
         <>
-          <p>Set the owner wallets of your Safe and how many need to confirm to execute a valid transaction.</p>
-          <StyledText style={{ margin: 0 }}>Setting owners</StyledText>
+          <Text>Set the owner wallets of your Safe and how many need to confirm to execute a valid transaction.</Text>
+          <Subtitle>Setting owners</Subtitle>
           <Container>
-            <p>Owner address</p>
-            <p>{account}</p>
+            <Text>Owner address</Text>
+            <FlexContainer>
+              <Text>{account}</Text>
+              <IconButton
+                size="small"
+                onClick={() => navigator.clipboard.writeText(account)}
+              >
+                <CopyIcon />
+              </IconButton>
+              <IconButton
+                size="small"
+                href={`https://gnosisscan.io/address/${account}`}
+                target="_blank"
+              >
+                <LaunchIcon />
+              </IconButton>
+            </FlexContainer>
           </Container>
-
-          <StyledForm>
+          {owners.length > 1 &&
+            owners.slice(1).map((owner) => {
+              return (
+                <FlexContainer key={owner.id}>
+                  <TextField
+                    label="Address"
+                    placeholder="New owner address here..."
+                    fullWidth
+                    onChange={(e) => updateOwnerAddress(owner.id, e.target.value)}
+                  />
+                  <IconButton onClick={() => removeOwner(owner.id)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </FlexContainer>
+              );
+            })}
+          <AddButton
+            variant="text"
+            startIcon={<AddIcon />}
+            onClick={() => addOwner('')}
+          >
+            Add new owner
+          </AddButton>
+          <Subtitle>Threshold</Subtitle>
+          <Container column>
+            <Text>Any transaction requires the confirmation of:</Text>
+            <FlexContainer>
+              <Select value={threshold}>
+                {owners.map((_, index) => (
+                  <MenuItem
+                    key={index + 1}
+                    value={index + 1}
+                  >
+                    {index + 1}
+                  </MenuItem>
+                ))}
+              </Select>
+              <Text>Out of {owners.length} owner(s).</Text>
+            </FlexContainer>
+          </Container>
+          <ButtonContainer>
+            <StyledGrayButton>Back</StyledGrayButton>
+            <Button
+              onClick={() => {
+                if (signer) {
+                  dispatch(
+                    safeActionsAsync.createSafeWithConfigThunk({
+                      config: {
+                        owners: owners.map((owner) => owner.address),
+                        threshold,
+                      },
+                      signer,
+                    }),
+                  );
+                }
+              }}
+            >
+              Continue
+            </Button>
+          </ButtonContainer>
+          {/* <StyledForm>
             <StyledInstructions>
               <StyledText>
                 Move <Lowercase>x</Lowercase>DAI to safe
@@ -131,8 +315,8 @@ function SafeSection() {
                 variant="outlined"
                 placeholder="-"
                 size="small"
-                // value={xdaiValue}
-                // onChange={(e) => set_xdaiValue(e.target.value)}
+                value={xdaiValue}
+                onChange={(e) => set_xdaiValue(e.target.value)}
                 inputProps={{
                   inputMode: 'numeric',
                   pattern: '[0-9]*',
@@ -159,8 +343,8 @@ function SafeSection() {
                 variant="outlined"
                 placeholder="-"
                 size="small"
-                // value={xdaiValue}
-                // onChange={(e) => set_xdaiValue(e.target.value)}
+                value={wxhoprValue}
+                onChange={(e) => set_wxhoprValue(e.target.value)}
                 inputProps={{
                   inputMode: 'numeric',
                   pattern: '[0-9]*',
@@ -171,7 +355,7 @@ function SafeSection() {
                 <Lowercase>wx</Lowercase>HOPR
               </StyledCoinLabel>
             </StyledInputGroup>
-          </StyledForm>
+          </StyledForm> */}
         </>
       </Card>
     </Section>
