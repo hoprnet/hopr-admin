@@ -45,8 +45,6 @@ export const useWatcher = (intervalDuration: number) => {
   const watchNodeFundsInterval = useRef(null);
   const watchPendingSafeTransactionsInterval = useRef(null);
 
-  
-
   useEffect(() => {
     // reset state on every change of node
     if (prevLoginData?.apiEndpoint !== apiEndpoint || prevLoginData.apiToken !== apiToken) {
@@ -194,7 +192,6 @@ export const useWatcher = (intervalDuration: number) => {
       clearInterval(watchChannelsInterval.current);
     }
 
-    
     // fetch channels and update redux state
     const newChannels = await dispatch(
       nodeActionsAsync.getChannelsThunk({
@@ -223,11 +220,8 @@ export const useWatcher = (intervalDuration: number) => {
       }
     }
 
-
-
     // update previous channels to newly fetched ones
     prevChannels = newChannels;
-    
   };
 
   const watchPendingSafeTransactions = async () => {
@@ -423,6 +417,10 @@ export const useWatcher = (intervalDuration: number) => {
   };
 
   return {
-    watchChannels, watchPendingSafeTransactions, watchNodeFunds, watchNodeInfo, watchMessages,
+    watchChannels,
+    watchPendingSafeTransactions,
+    watchNodeFunds,
+    watchNodeInfo,
+    watchMessages,
   };
 };
