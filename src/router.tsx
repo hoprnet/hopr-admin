@@ -288,6 +288,12 @@ const LayoutEnhanced = () => {
         apiEndpoint,
       }),
     );
+    dispatch(
+      nodeActionsAsync.getAliasesThunk({
+        apiToken,
+        apiEndpoint,
+      })
+    );
     dispatch(nodeActions.initializeMessagesWebsocket());
     dispatch(nodeActions.initializeLogsWebsocket());
 

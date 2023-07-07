@@ -35,3 +35,7 @@ button,
 input {
   font-family: inherit;
 }
+
+ul.notification-menu-list {
+  padding: 0;
+} 

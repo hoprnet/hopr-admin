@@ -6,6 +6,7 @@ type InitialState = {
   status: {
     connecting: boolean;
     connected: boolean;
+    error: string | null;
   };
   loginData: {
     apiEndpoint: string | null;
@@ -24,6 +25,7 @@ export const initialState: InitialState = {
   status: {
     connecting: false,
     connected: false,
+    error: null,
   },
   loginData: {
     apiEndpoint: null,
