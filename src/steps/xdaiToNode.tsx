@@ -18,6 +18,7 @@ import Section from '../future-hopr-lib-components/Section';
 import { useEthersSigner } from '../hooks';
 import { safeActionsAsync } from '../store/slices/safe';
 import Card from './components/Card';
+import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 
 const StyledForm = styled.div`
   width: 100%;
@@ -99,26 +100,24 @@ const StyledApproveButton = styled(Button)`
 
 function XdaiToNode() {
   const dispatch = useAppDispatch();
-  const safeTxs = useAppSelector((state) => state.safe.allTransactions);
+  const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions);
   const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
   const { native: nodeNativeAddress } = useAppSelector((state) => state.node.addresses);
   const [xdaiValue, set_xdaiValue] = useState<string>('');
   const [isLoading, set_isLoading] = useState<boolean>();
   const [proposedTxHash, set_proposedTxHash] = useState<string>();
-  const [proposedTx, set_proposedTx] = useState<SafeMultisigTransactionWithTransfersResponse>();
+  const [proposedTx, set_proposedTx] = useState<SafeMultisigTransactionResponse>();
 
   const signer = useEthersSigner();
 
   useEffect(() => {
     if (proposedTxHash) {
-      const foundProposedTx = safeTxs?.results.find(
-        (tx) => tx.txType === 'MULTISIG_TRANSACTION' && tx.safeTxHash === proposedTxHash,
-      );
-      if (foundProposedTx?.txType === 'MULTISIG_TRANSACTION') {
+      const foundProposedTx = pendingTransactions?.results.find((tx) => tx.safeTxHash === proposedTxHash);
+      if (foundProposedTx) {
         set_proposedTx(foundProposedTx);
       }
     }
-  }, [safeTxs, proposedTxHash]);
+  }, [pendingTransactions, proposedTxHash]);
 
   const proposeTx = () => {
     if (signer && Number(xdaiValue) && selectedSafeAddress && nodeNativeAddress) {
@@ -147,14 +146,14 @@ function XdaiToNode() {
 
   const executeTx = () => {
     if (proposedTxHash && signer && selectedSafeAddress) {
-      const safeTx = safeTxs?.results.find((tx) => {
-        if (tx.txType === 'MULTISIG_TRANSACTION' && tx.safeTxHash === proposedTxHash) {
+      const safeTx = pendingTransactions?.results.find((tx) => {
+        if (tx.safeTxHash === proposedTxHash) {
           return true;
         }
         return false;
       });
 
-      if (safeTx?.txType === 'MULTISIG_TRANSACTION') {
+      if (safeTx) {
         dispatch(
           safeActionsAsync.executeTransactionThunk({
             safeAddress: selectedSafeAddress,

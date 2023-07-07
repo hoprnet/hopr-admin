@@ -12,7 +12,7 @@ import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-type
 import { useAccount } from 'wagmi';
 
 const FETCH_CHANNELS_INTERVAL = 10000;
-const FETCH_NODE_INTERVAL = 5000;
+const FETCH_NODE_INTERVAL = 10000;
 const FETCH_SAFE_INTERVAL = 10000;
 
 // previous states to compare new states with
@@ -235,23 +235,16 @@ const Watcher = () => {
 
       if (!latestPendingTransaction) return;
 
-      const accountHasAlreadySignedTransaction = latestPendingTransaction.confirmations?.find(
-        (confirmation) => confirmation.owner === address,
-      );
-
-      // will not send notification if signer has already signed pending tx
-      if (accountHasAlreadySignedTransaction) return;
-
       // send notification if this is the first tx observed
       if (!previousPendingSafeTransaction) {
         sendNotification({
           notificationPayload: {
-            name: `Pending signature for transaction`,
+            name: `Pending transaction`,
             source: 'node',
-            url: 'develop/safe-pending-transactions',
+            url: 'develop/safe/pending-transactions',
             timeout: null,
           },
-          toastPayload: { message: `Pending signature for transaction to ${latestPendingTransaction?.to}` },
+          toastPayload: { message: `Pending transaction to ${latestPendingTransaction?.to}` },
         });
         previousPendingSafeTransaction = latestPendingTransaction;
         return;
@@ -266,12 +259,12 @@ const Watcher = () => {
       // latest transaction is more recent than previous
       sendNotification({
         notificationPayload: {
-          name: `Pending signature for transaction`,
+          name: `Pending transaction`,
           source: 'node',
-          url: 'develop/safe-pending-transactions',
+          url: 'develop/safe/pending-transactions',
           timeout: null,
         },
-        toastPayload: { message: `Pending signature for transaction to ${latestPendingTransaction?.to}` },
+        toastPayload: { message: `Pending transaction to ${latestPendingTransaction?.to}` },
       });
 
       previousPendingSafeTransaction = latestPendingTransaction;

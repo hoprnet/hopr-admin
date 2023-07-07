@@ -59,6 +59,12 @@ function SafeSection() {
                 }),
               );
               dispatch(
+                safeActionsAsync.getPendingSafeTransactionsThunk({
+                  signer,
+                  safeAddress,
+                }),
+              );
+              dispatch(
                 safeActionsAsync.getAllSafeTransactionsThunk({
                   signer,
                   safeAddress,

@@ -189,8 +189,8 @@ export const applicationMap: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
-        name: 'Safe pending transactions',
-        path: 'safe-pending-transactions',
+        name: 'Pending transactions',
+        path: 'safe/pending-transactions',
         icon: <SwapVertIcon />,
         element: <SafeQueue />,
         loginNeeded: 'web3',

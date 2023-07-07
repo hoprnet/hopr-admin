@@ -3,25 +3,25 @@ import { Paper, Tooltip } from '@mui/material';
 
 // STORE
 import { useAppDispatch, useAppSelector } from '../store';
+import { safeActionsAsync } from '../store/slices/safe';
 
 // COMPONENTS
-import Section from '../future-hopr-lib-components/Section';
 import Button from '../future-hopr-lib-components/Button';
 import GrayButton from '../future-hopr-lib-components/Button/gray';
+import Section from '../future-hopr-lib-components/Section';
 
 // LIBS
 import styled from '@emotion/styled';
-import { SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-kit';
 import { useAccount } from 'wagmi';
 
 // HOOKS
-import { useEthersSigner } from '../hooks';
-import { formatEther } from 'viem';
+import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { useState } from 'react';
-import { safeActionsAsync } from '../store/slices/safe';
+import { formatEther } from 'viem';
+import { useEthersSigner } from '../hooks';
 
 const StyledContainer = styled(Paper)`
-  min-width: 600px;
+  min-width: 800px;
   padding: 2rem;
   display: flex;
   flex-direction: column;
@@ -45,7 +45,7 @@ const StyledPendingSafeTransactionWithFeedback = styled.div`
 const StyledPendingSafeTransactionInfo = styled.div`
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
+  justify-content: space-around;
   gap: 1rem;
 `;
 
@@ -54,20 +54,26 @@ const StyledApproveButton = styled(Button)`
   text-transform: uppercase;
 `;
 
+const StyledRejectButton = styled(GrayButton)`
+  outline: 2px solid #000050;
+  line-height: 30px;
+  border-radius: 20px;
+`;
+
 const StyledButtonGroup = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
-  min-width: 170px;
   align-content: baseline;
 `;
 
-const ApproveTransactionRow = ({ transaction }: { transaction: SafeMultisigTransactionWithTransfersResponse }) => {
+const ApproveTransactionRow = ({ transaction }: { transaction: SafeMultisigTransactionResponse }) => {
   const dispatch = useAppDispatch();
   const signer = useEthersSigner();
   const { address } = useAccount();
   const [isLoadingApproving, set_isLoadingApproving] = useState<boolean>(false);
   const [isLoadingExecuting, set_isLoadingExecuting] = useState<boolean>(false);
+  const [isLoadingRejecting, set_isLoadingRejecting] = useState<boolean>(false);
 
   const isTransactionExecutable = () => {
     if (!signer) return false;
@@ -125,17 +131,38 @@ const ApproveTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
     }
   };
 
+  const rejectTx = () => {
+    if (signer) {
+      set_isLoadingRejecting(true);
+      dispatch(
+        safeActionsAsync.createSafeRejectionTransactionThunk({
+          signer,
+          safeAddress: transaction.safe,
+          nonce: transaction.nonce,
+        }),
+      )
+        .unwrap()
+        .then(() => {
+          set_isLoadingRejecting(false);
+        })
+        .catch(() => {
+          set_isLoadingRejecting(false);
+        });
+    }
+  };
+
   if (transaction.isExecuted) return <></>;
 
   return (
     <StyledPendingSafeTransactionWithFeedback>
       <StyledPendingSafeTransactionInfo>
         <p>{String(transaction.nonce)}</p>
-        <p>Send</p>
+        <p>{BigInt(transaction.value) ? 'Send' : 'Reject'}</p>
         <p>{formatEther(BigInt(transaction.value))}</p>
         <p>{`${transaction.confirmations?.length ?? 0}/${transaction.confirmationsRequired}`}</p>
         {isTransactionExecutable() ? (
           <StyledButtonGroup>
+            <StyledRejectButton onClick={rejectTx}>reject</StyledRejectButton>
             <StyledApproveButton onClick={executeTx}>execute</StyledApproveButton>
           </StyledButtonGroup>
         ) : (
@@ -153,12 +180,13 @@ const ApproveTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
       </StyledPendingSafeTransactionInfo>
       {isLoadingApproving && <p>Approving transaction with nonce...</p>}
       {isLoadingExecuting && <p>Executing transaction...</p>}
+      {isLoadingRejecting && <p>Rejecting transaction...</p>}
     </StyledPendingSafeTransactionWithFeedback>
   );
 };
 
 const SafeQueue = () => {
-  const transactions = useAppSelector((state) => state.safe.allTransactions);
+  const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions);
   const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
 
   if (!selectedSafeAddress)
@@ -178,16 +206,13 @@ const SafeQueue = () => {
       fullHeightMin
     >
       <StyledContainer>
-        <Title>Queued transactions</Title>
-        {transactions?.results.map(
-          (transaction) =>
-            transaction.txType === 'MULTISIG_TRANSACTION' && (
-              <ApproveTransactionRow
-                key={transaction.safeTxHash}
-                transaction={transaction}
-              />
-            ),
-        )}
+        <Title>Pending transactions</Title>
+        {pendingTransactions?.results.map((transaction) => (
+          <ApproveTransactionRow
+            key={transaction.safeTxHash}
+            transaction={transaction}
+          />
+        ))}
       </StyledContainer>
     </Section>
   );

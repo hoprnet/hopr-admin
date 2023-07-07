@@ -221,7 +221,7 @@ const createSafeTransactionThunk = createAsyncThunk(
       });
       // re fetch all txs
       dispatch(
-        getAllSafeTransactionsThunk({
+        getPendingSafeTransactionsThunk({
           safeAddress: payload.safeAddress,
           signer: payload.signer,
         }),
@@ -239,7 +239,7 @@ const createSafeRejectionTransactionThunk = createAsyncThunk(
     payload: {
       signer: ethers.providers.JsonRpcSigner;
       safeAddress: string;
-      nonce: number;
+      nonce: number
     },
     {
       rejectWithValue,
@@ -250,21 +250,21 @@ const createSafeRejectionTransactionThunk = createAsyncThunk(
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       const safeApi = await createSafeApiService(payload.signer);
       // create safe rejection transaction
-      const safeTransaction = await safeSDK.createRejectionTransaction(payload.nonce);
-      const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
+      const rejectTransaction = await safeSDK.createRejectionTransaction(payload.nonce);
+      const safeTxHash = await safeSDK.getTransactionHash(rejectTransaction);
       const senderSignature = await safeSDK.signTransactionHash(safeTxHash);
       const senderAddress = await payload.signer.getAddress();
       // propose safe transaction
       await safeApi.proposeTransaction({
         safeAddress: payload.safeAddress,
-        safeTransactionData: safeTransaction.data,
+        safeTransactionData: rejectTransaction.data,
         safeTxHash,
         senderAddress,
         senderSignature: senderSignature.data,
       });
       // re fetch all txs
       dispatch(
-        getAllSafeTransactionsThunk({
+        getPendingSafeTransactionsThunk({
           safeAddress: payload.safeAddress,
           signer: payload.signer,
         }),
@@ -296,7 +296,7 @@ const confirmTransactionThunk = createAsyncThunk(
       const confirmTransaction = await safeApi.confirmTransaction(payload.safeTransactionHash, signature.data);
       // re fetch all txs
       dispatch(
-        getAllSafeTransactionsThunk({
+        getPendingSafeTransactionsThunk({
           safeAddress: payload.safeAddress,
           signer: payload.signer,
         }),
@@ -326,7 +326,7 @@ const executeTransactionThunk = createAsyncThunk(
       await safeSDK.executeTransaction(payload.safeTransaction);
       // re fetch all txs
       dispatch(
-        getAllSafeTransactionsThunk({
+        getPendingSafeTransactionsThunk({
           safeAddress: payload.safeAddress,
           signer: payload.signer,
         }),
