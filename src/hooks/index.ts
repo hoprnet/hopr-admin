@@ -1,2 +1,2 @@
 export * from './useSigner';
-export * from './useWatcher'
+export * from './useWatcher';

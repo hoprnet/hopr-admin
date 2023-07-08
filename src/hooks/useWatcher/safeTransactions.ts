@@ -9,8 +9,9 @@ export const checkIfNewTransaction = (
   new Date(newPendingSafeTransaction.submissionDate).getTime() >
     new Date(previousPendingSafeTransaction.submissionDate).getTime();
 
-
-export const getLatestPendingSafeTransaction = (pendingTransactions: SafeMultisigTransactionListResponse | undefined) => {
+export const getLatestPendingSafeTransaction = (
+  pendingTransactions: SafeMultisigTransactionListResponse | undefined,
+) => {
   if (!pendingTransactions?.count) return;
 
   const sortedPendingTransactions = [...pendingTransactions.results].sort(
@@ -18,4 +19,4 @@ export const getLatestPendingSafeTransaction = (pendingTransactions: SafeMultisi
   );
 
   return sortedPendingTransactions.at(0);
-}
+};
