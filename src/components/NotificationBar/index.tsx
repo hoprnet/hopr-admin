@@ -49,11 +49,9 @@ const StyledMenuItem = styled(MenuItem)`
 
 const SMenu = styled(Menu)``;
 
-const REFRESH_RATE = 10000;
-
 export default function NotificationBar() {
   // start watching notifications
-  useWatcher(REFRESH_RATE);
+  useWatcher({});
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();

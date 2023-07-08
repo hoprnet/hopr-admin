@@ -1,9 +1,8 @@
 import { AccountResponseType, GetChannelsResponseType, GetInfoResponseType } from '@hoprnet/hopr-sdk';
 import { nanoid } from '@reduxjs/toolkit';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { ToastOptions, toast } from 'react-toastify';
-import { useAccount } from 'wagmi';
 import { useEthersSigner } from '..';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { appActions } from '../../store/slices/app';
@@ -13,6 +12,7 @@ import { calculateNotificationTextForChannelStatus, checkIfChannelsHaveChanged, 
 import { balanceHasIncreased, handleBalanceNotification } from './info';
 import { WatcherMessage, checkForNewMessage, getLatestMessage } from './messages';
 import { checkIfNewTransaction, getLatestPendingSafeTransaction } from './safeTransactions';
+import { useAccount } from 'wagmi';
 
 type WatchDataFunction<T> = {
   fetcher: () => Promise<T | undefined | null>;
@@ -35,6 +35,7 @@ const watchData = <T>({
   initialState,
 }: WatchDataFunction<T>) => {
   const fetchAndCompareData = async () => {
+    console.log('is this disabled', disabled);
     if (disabled) return;
 
     try {
@@ -59,7 +60,13 @@ const watchData = <T>({
   return fetchAndCompareData();
 };
 
-export const useWatcher = (intervalDuration: number) => {
+export const useWatcher = ({
+  watch = true,
+  intervalDuration = 10000,
+}: {
+  intervalDuration?: number;
+  watch?: boolean;
+}) => {
   const dispatch = useAppDispatch();
   const {
     apiEndpoint,
@@ -68,19 +75,29 @@ export const useWatcher = (intervalDuration: number) => {
   const messages = useAppSelector((store) => store.node.messages);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress);
   const signer = useEthersSigner();
-  // previous states
+  // redux previous states, this can be updated from anywhere in the app
   const prevChannels = useAppSelector((store) => store.app.previousStates.prevChannels);
   const prevMessage = useAppSelector((store) => store.app.previousStates.prevMessage);
   const prevNodeBalances = useAppSelector((store) => store.app.previousStates.prevNodeBalances);
   const prevNodeInfo = useAppSelector((store) => store.app.previousStates.prevNodeInfo);
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
+  // ref of previous states so the intervals can get the most recent info and not cause re renders
+  const prevNodeBalancesRef = useRef(prevNodeBalances);
+  const prevChannelsRef = useRef(prevChannels);
+  const prevNodeInfoRef = useRef(prevNodeInfo);
+  const prevPendingSafeTransactionRef = useRef(prevPendingSafeTransaction);
 
+  // node watchers
   useEffect(() => {
-    // reset state on mount
-    dispatch(appActions.setPrevMessage(null));
-    dispatch(appActions.setPrevChannels(null));
-    dispatch(appActions.setPrevNodeBalances(null));
-    dispatch(appActions.setPrevNodeInfo(null));
+    // reset state on log out
+    if (!apiEndpoint || !apiToken) {
+      dispatch(appActions.setPrevMessage(null));
+      dispatch(appActions.setPrevChannels(null));
+      dispatch(appActions.setPrevNodeBalances(null));
+      dispatch(appActions.setPrevNodeInfo(null));
+    }
+
+    if (!watch) return;
 
     const watchChannelsInterval = setInterval(watchChannels, intervalDuration);
     const watchNodeInfoInterval = setInterval(watchNodeInfo, intervalDuration);
@@ -91,22 +108,28 @@ export const useWatcher = (intervalDuration: number) => {
       clearInterval(watchNodeInfoInterval);
       clearInterval(watchNodeFundsInterval);
     };
-  }, [apiEndpoint, apiToken]);
+  }, [apiEndpoint, apiToken, watch]);
 
   // safe watchers
   useEffect(() => {
-    // reset state on mount
-    dispatch(appActions.setPrevPendingSafeTransaction(null));
-    console.log('what');
+    // reset state on log out
+    if (!selectedSafeAddress || !signer) {
+      dispatch(appActions.setPrevPendingSafeTransaction(null));
+    }
+
+    if (!watch) return;
+
     const watchPendingSafeTransactionsInterval = setInterval(watchPendingSafeTransactions, intervalDuration);
 
     return () => {
       clearInterval(watchPendingSafeTransactionsInterval);
     };
-  }, [selectedSafeAddress]);
+  }, [selectedSafeAddress, signer]);
 
   // check when redux receives new messages
   useEffect(() => {
+    if (!watch) return;
+
     watchMessages();
   }, [messages]);
 
@@ -138,7 +161,7 @@ export const useWatcher = (intervalDuration: number) => {
   const watchNodeFunds = () =>
     watchData<AccountResponseType | null>({
       disabled: !apiToken || !apiEndpoint,
-      initialState: prevNodeBalances,
+      initialState: prevNodeBalancesRef.current,
       fetcher: async () => {
         if (!apiToken || !apiEndpoint) return;
 
@@ -150,9 +173,9 @@ export const useWatcher = (intervalDuration: number) => {
         ).unwrap();
       },
       isDataDifferent: (newNodeFunds) =>
-        !!prevNodeBalances &&
-        (balanceHasIncreased(prevNodeBalances.native, newNodeFunds.native) ||
-          balanceHasIncreased(prevNodeBalances.hopr, prevNodeBalances.hopr)),
+        !!prevNodeBalancesRef.current &&
+        (balanceHasIncreased(prevNodeBalancesRef.current.native, newNodeFunds.native) ||
+          balanceHasIncreased(prevNodeBalancesRef.current.hopr, prevNodeBalancesRef.current.hopr)),
       notificationHandler: (newNodeBalances) => {
         handleBalanceNotification({
           newNodeBalances,
@@ -183,6 +206,7 @@ export const useWatcher = (intervalDuration: number) => {
       },
       updatePreviousData: (newNodeBalances) => {
         dispatch(appActions.setPrevNodeBalances(newNodeBalances));
+        prevNodeBalancesRef.current = newNodeBalances;
       },
     });
 
@@ -198,9 +222,9 @@ export const useWatcher = (intervalDuration: number) => {
           }),
         ).unwrap();
       },
-      initialState: prevNodeInfo,
+      initialState: prevNodeInfoRef.current,
       isDataDifferent: (newNodeInfo) =>
-        !!prevNodeInfo && newNodeInfo.connectivityStatus !== prevNodeInfo.connectivityStatus,
+        !!prevNodeInfoRef.current && newNodeInfo.connectivityStatus !== prevNodeInfoRef.current.connectivityStatus,
       notificationHandler: (newNodeInfo) => {
         sendNotification({
           notificationPayload: {
@@ -209,18 +233,19 @@ export const useWatcher = (intervalDuration: number) => {
             url: null,
             timeout: null,
           },
-          toastPayload: { message: `node connectivity status updated from ${prevNodeInfo?.connectivityStatus} to ${newNodeInfo?.connectivityStatus}` },
+          toastPayload: { message: `node connectivity status updated from ${prevNodeInfoRef.current?.connectivityStatus} to ${newNodeInfo?.connectivityStatus}` },
         });
       },
       updatePreviousData: (newNodeInfo) => {
         dispatch(appActions.setPrevNodeInfo(newNodeInfo));
+        prevNodeInfoRef.current = newNodeInfo;
       },
     });
 
   const watchChannels = () =>
     watchData<GetChannelsResponseType>({
       disabled: !apiEndpoint || !apiToken,
-      initialState: prevChannels,
+      initialState: prevChannelsRef.current,
       fetcher: async () => {
         if (!apiEndpoint || !apiToken) return;
         return dispatch(
@@ -230,9 +255,9 @@ export const useWatcher = (intervalDuration: number) => {
           }),
         ).unwrap();
       },
-      isDataDifferent: (newChannels) => checkIfChannelsHaveChanged(prevChannels, newChannels),
+      isDataDifferent: (newChannels) => checkIfChannelsHaveChanged(prevChannelsRef.current, newChannels),
       notificationHandler: (newChannels) => {
-        const updatedChannels = getUpdatedChannels(prevChannels, newChannels);
+        const updatedChannels = getUpdatedChannels(prevChannelsRef.current, newChannels);
         for (const updatedChannel of updatedChannels ?? []) {
           // calculate the type of update: OPEN/CLOSE etc.
           const notificationText = calculateNotificationTextForChannelStatus(updatedChannel);
@@ -249,13 +274,14 @@ export const useWatcher = (intervalDuration: number) => {
       },
       updatePreviousData: (newChannels) => {
         dispatch(appActions.setPrevChannels(newChannels));
+        prevChannelsRef.current = newChannels;
       },
     });
 
   const watchPendingSafeTransactions = () =>
     watchData<SafeMultisigTransactionResponse | null | undefined>({
       disabled: !selectedSafeAddress || !signer,
-      initialState: prevPendingSafeTransaction,
+      initialState: prevPendingSafeTransactionRef.current,
       fetcher: async () => {
         if (!signer || !selectedSafeAddress) return;
 
@@ -265,12 +291,12 @@ export const useWatcher = (intervalDuration: number) => {
             safeAddress: selectedSafeAddress,
           }),
         ).unwrap();
-
+        console.log({ pendingTransactions });
         return getLatestPendingSafeTransaction(pendingTransactions);
       },
       isDataDifferent: (newPendingSafeTransaction) => {
-        console.log(prevPendingSafeTransaction, newPendingSafeTransaction);
-        return checkIfNewTransaction(prevPendingSafeTransaction, newPendingSafeTransaction);
+        console.log('trying to see if data is diff', prevPendingSafeTransactionRef.current, newPendingSafeTransaction);
+        return checkIfNewTransaction(prevPendingSafeTransactionRef.current, newPendingSafeTransaction);
       },
       notificationHandler: (newData) => {
         sendNotification({
@@ -285,6 +311,7 @@ export const useWatcher = (intervalDuration: number) => {
       },
       updatePreviousData: (newPendingSafeTransaction) => {
         dispatch(appActions.setPrevPendingSafeTransaction(newPendingSafeTransaction));
+        prevPendingSafeTransactionRef.current = newPendingSafeTransaction;
       },
     });
 

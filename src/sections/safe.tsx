@@ -6,11 +6,12 @@ import { safeActionsAsync, safeActions } from '../store/slices/safe';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
-import { useEthersSigner } from '../hooks';
+import { useEthersSigner, useWatcher } from '../hooks';
 import { utils } from 'ethers';
 function SafeSection() {
   const dispatch = useAppDispatch();
   const safe = useAppSelector((store) => store.safe);
+  const { watchPendingSafeTransactions } = useWatcher({ watch: false });
   const { account } = useAppSelector((store) => store.web3);
   const signer = useEthersSigner();
   const [threshold, set_threshold] = useState(1);
@@ -52,14 +53,9 @@ function SafeSection() {
           key={safeAddress}
           onClick={() => {
             if (signer) {
+              watchPendingSafeTransactions();
               dispatch(
                 safeActionsAsync.getSafeInfoThunk({
-                  signer,
-                  safeAddress,
-                }),
-              );
-              dispatch(
-                safeActionsAsync.getPendingSafeTransactionsThunk({
                   signer,
                   safeAddress,
                 }),
