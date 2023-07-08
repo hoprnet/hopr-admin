@@ -1,29 +1,63 @@
 import { AccountResponseType, GetChannelsResponseType, GetInfoResponseType } from '@hoprnet/hopr-sdk';
-import { useEffect, useRef } from 'react';
+import { nanoid } from '@reduxjs/toolkit';
+import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
+import { useEffect } from 'react';
+import { ToastOptions, toast } from 'react-toastify';
+import { useAccount } from 'wagmi';
+import { useEthersSigner } from '..';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { appActions } from '../../store/slices/app';
 import { nodeActionsAsync } from '../../store/slices/node';
-import { ToastOptions, toast } from 'react-toastify';
-import { nanoid } from '@reduxjs/toolkit';
-import { initialState } from '../../store/slices/node/initialState';
-import { useEthersSigner } from '..';
 import { safeActionsAsync } from '../../store/slices/safe';
-import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
-import { useAccount } from 'wagmi';
+import { calculateNotificationTextForChannelStatus, checkIfChannelsHaveChanged, getUpdatedChannels } from './channels';
+import { balanceHasIncreased, handleBalanceNotification } from './info';
+import { WatcherMessage, checkForNewMessage, getLatestMessage } from './messages';
+import { checkIfNewTransaction, getLatestPendingSafeTransaction } from './safeTransactions';
 
-// previous states to compare new states with
-let prevChannels: GetChannelsResponseType | null;
-let prevNodeInfo: GetInfoResponseType | null;
-let prevLoginData: {
-  apiEndpoint: string;
-  apiToken: string;
-} | null;
-let prevNodeFunds: AccountResponseType | null;
-let prevLatestMessageTimestamp: {
-  createdAt: number;
-  amountOfTimesRepeated: number;
-} | null;
-let previousPendingSafeTransaction: SafeMultisigTransactionResponse | null;
+type WatchDataFunction<T> = {
+  fetcher: () => Promise<T | undefined | null>;
+  disabled: boolean;
+  initialState: T | null;
+  isDataDifferent: (currentData: NonNullable<T>) => boolean;
+  notificationHandler: (currentData: NonNullable<T>) => void;
+  updatePreviousData?: (currentData: NonNullable<T>) => void;
+};
+
+/**
+ * receives a promise
+ */
+const watchData = <T>({
+  fetcher,
+  disabled,
+  isDataDifferent,
+  notificationHandler,
+  updatePreviousData,
+  initialState,
+}: WatchDataFunction<T>) => {
+  const fetchAndCompareData = async () => {
+    if (disabled) return;
+
+    try {
+      const currentData = await fetcher();
+      if (!currentData) return;
+
+      if (isDataDifferent(currentData)) {
+        notificationHandler(currentData);
+        updatePreviousData?.(currentData);
+      }
+
+      // only update if there is no previous state, w
+      if (!initialState) {
+        updatePreviousData?.(currentData);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Call right away
+  return fetchAndCompareData();
+};
 
 export const useWatcher = (intervalDuration: number) => {
   const dispatch = useAppDispatch();
@@ -33,54 +67,48 @@ export const useWatcher = (intervalDuration: number) => {
   } = useAppSelector((store) => store.auth.loginData);
   const messages = useAppSelector((store) => store.node.messages);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress);
-  const {
-    address,
-    isConnected,
-  } = useAccount();
   const signer = useEthersSigner();
-  // We use a ref to store the id of the interval,
-  // so it can be cleared and reset as needed
-  const watchChannelsInterval = useRef(null);
-  const watchNodeInfoInterval = useRef(null);
-  const watchNodeFundsInterval = useRef(null);
-  const watchPendingSafeTransactionsInterval = useRef(null);
+  // previous states
+  const prevChannels = useAppSelector((store) => store.app.previousStates.prevChannels);
+  const prevMessage = useAppSelector((store) => store.app.previousStates.prevMessage);
+  const prevNodeBalances = useAppSelector((store) => store.app.previousStates.prevNodeBalances);
+  const prevNodeInfo = useAppSelector((store) => store.app.previousStates.prevNodeInfo);
+  const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
 
   useEffect(() => {
-    // reset state on every change of node
-    if (prevLoginData?.apiEndpoint !== apiEndpoint || prevLoginData.apiToken !== apiToken) {
-      resetPrevStates();
-    }
+    // reset state on mount
+    dispatch(appActions.setPrevMessage(null));
+    dispatch(appActions.setPrevChannels(null));
+    dispatch(appActions.setPrevNodeBalances(null));
+    dispatch(appActions.setPrevNodeInfo(null));
 
     const watchChannelsInterval = setInterval(watchChannels, intervalDuration);
     const watchNodeInfoInterval = setInterval(watchNodeInfo, intervalDuration);
     const watchNodeFundsInterval = setInterval(watchNodeFunds, intervalDuration);
-    const watchPendingSafeTransactionsInterval = setInterval(watchPendingSafeTransactions, intervalDuration);
 
     return () => {
       clearInterval(watchChannelsInterval);
       clearInterval(watchNodeInfoInterval);
       clearInterval(watchNodeFundsInterval);
+    };
+  }, [apiEndpoint, apiToken]);
+
+  // safe watchers
+  useEffect(() => {
+    // reset state on mount
+    dispatch(appActions.setPrevPendingSafeTransaction(null));
+    console.log('what');
+    const watchPendingSafeTransactionsInterval = setInterval(watchPendingSafeTransactions, intervalDuration);
+
+    return () => {
       clearInterval(watchPendingSafeTransactionsInterval);
     };
-  }, [apiEndpoint, apiToken, address, selectedSafeAddress]);
+  }, [selectedSafeAddress]);
 
   // check when redux receives new messages
   useEffect(() => {
     watchMessages();
   }, [messages]);
-
-  const resetPrevStates = () => {
-    prevChannels = null;
-    prevLoginData = null;
-    prevNodeFunds = null;
-    prevLatestMessageTimestamp = null;
-    if (apiEndpoint && apiToken) {
-      prevLoginData = {
-        apiEndpoint,
-        apiToken,
-      };
-    }
-  };
 
   const sendNotification = ({
     notificationPayload,
@@ -107,68 +135,73 @@ export const useWatcher = (intervalDuration: number) => {
     );
   };
 
-  const watchNodeFunds = async () => {
-    if (apiToken && apiEndpoint && isConnected) {
-      const newNodeFunds = await dispatch(
-        nodeActionsAsync.getBalancesThunk({
-          apiEndpoint,
-          apiToken,
-        }),
-      ).unwrap();
+  const watchNodeFunds = () =>
+    watchData<AccountResponseType | null>({
+      disabled: !apiToken || !apiEndpoint,
+      initialState: prevNodeBalances,
+      fetcher: async () => {
+        if (!apiToken || !apiEndpoint) return;
 
-      if (!newNodeFunds) return;
+        return await dispatch(
+          nodeActionsAsync.getBalancesThunk({
+            apiEndpoint,
+            apiToken,
+          }),
+        ).unwrap();
+      },
+      isDataDifferent: (newNodeFunds) =>
+        !!prevNodeBalances &&
+        (balanceHasIncreased(prevNodeBalances.native, newNodeFunds.native) ||
+          balanceHasIncreased(prevNodeBalances.hopr, prevNodeBalances.hopr)),
+      notificationHandler: (newNodeBalances) => {
+        handleBalanceNotification({
+          newNodeBalances,
+          prevNodeBalances,
+          sendNewHoprBalanceNotification: (hoprBalanceDifference) => {
+            sendNotification({
+              notificationPayload: {
+                source: 'node',
+                name: 'Node received hopr funds',
+                url: null,
+                timeout: null,
+              },
+              toastPayload: { message: `Node received ${hoprBalanceDifference} hopr funds` },
+            });
+          },
+          sendNewNativeBalanceNotification: (nativeBalanceDifference) => {
+            sendNotification({
+              notificationPayload: {
+                source: 'node',
+                name: 'Node received native funds',
+                url: null,
+                timeout: null,
+              },
+              toastPayload: { message: `Node received ${nativeBalanceDifference} native funds` },
+            });
+          },
+        });
+      },
+      updatePreviousData: (newNodeBalances) => {
+        dispatch(appActions.setPrevNodeBalances(newNodeBalances));
+      },
+    });
 
-      //  check if native balance has increased
-      if (prevNodeFunds && prevNodeFunds.native !== newNodeFunds.native) {
-        const nativeBalanceIsMore = BigInt(prevNodeFunds.native) < BigInt(newNodeFunds.native);
-        if (nativeBalanceIsMore) {
-          const nativeBalanceDifference = BigInt(newNodeFunds.native) - BigInt(prevNodeFunds.native);
-          sendNotification({
-            notificationPayload: {
-              source: 'node',
-              name: 'Node received native funds',
-              url: null,
-              timeout: null,
-            },
-            toastPayload: { message: `Node received ${nativeBalanceDifference} native funds` },
-          });
-        }
-      }
-
-      //  check if hopr balance has increased
-      if (prevNodeFunds && prevNodeFunds.hopr !== newNodeFunds.hopr) {
-        const hoprBalanceIsMore = BigInt(prevNodeFunds.hopr) < BigInt(newNodeFunds.hopr);
-        if (hoprBalanceIsMore) {
-          const hoprBalanceDifference = BigInt(newNodeFunds.hopr) - BigInt(prevNodeFunds.hopr);
-          sendNotification({
-            notificationPayload: {
-              source: 'node',
-              name: 'Node received hopr funds',
-              url: null,
-              timeout: null,
-            },
-            toastPayload: { message: `Node received ${hoprBalanceDifference} hopr funds` },
-          });
-        }
-      }
-
-      prevNodeFunds = newNodeFunds;
-    }
-  };
-
-  const watchNodeInfo = async () => {
-    if (apiEndpoint && apiToken && isConnected) {
-      const newNodeInfo = await dispatch(
-        nodeActionsAsync.getInfoThunk({
-          apiEndpoint,
-          apiToken,
-        }),
-      ).unwrap();
-
-      if (!newNodeInfo) return;
-
-      //  check if status has changed
-      if (prevNodeInfo && newNodeInfo.connectivityStatus !== prevNodeInfo.connectivityStatus) {
+  const watchNodeInfo = () =>
+    watchData<GetInfoResponseType | null>({
+      disabled: !apiEndpoint || !apiToken,
+      fetcher: async () => {
+        if (!apiEndpoint || !apiToken) return;
+        return dispatch(
+          nodeActionsAsync.getInfoThunk({
+            apiEndpoint,
+            apiToken,
+          }),
+        ).unwrap();
+      },
+      initialState: prevNodeInfo,
+      isDataDifferent: (newNodeInfo) =>
+        !!prevNodeInfo && newNodeInfo.connectivityStatus !== prevNodeInfo.connectivityStatus,
+      notificationHandler: (newNodeInfo) => {
         sendNotification({
           notificationPayload: {
             name: `node connectivity status is now ${newNodeInfo?.connectivityStatus}`,
@@ -176,74 +209,70 @@ export const useWatcher = (intervalDuration: number) => {
             url: null,
             timeout: null,
           },
-          toastPayload: { message: `node connectivity status updated from ${prevNodeInfo.connectivityStatus} to ${newNodeInfo?.connectivityStatus}` },
+          toastPayload: { message: `node connectivity status updated from ${prevNodeInfo?.connectivityStatus} to ${newNodeInfo?.connectivityStatus}` },
         });
-      }
+      },
+      updatePreviousData: (newNodeInfo) => {
+        dispatch(appActions.setPrevNodeInfo(newNodeInfo));
+      },
+    });
 
-      prevNodeInfo = newNodeInfo;
-    }
-  };
+  const watchChannels = () =>
+    watchData<GetChannelsResponseType>({
+      disabled: !apiEndpoint || !apiToken,
+      initialState: prevChannels,
+      fetcher: async () => {
+        if (!apiEndpoint || !apiToken) return;
+        return dispatch(
+          nodeActionsAsync.getChannelsThunk({
+            apiEndpoint,
+            apiToken,
+          }),
+        ).unwrap();
+      },
+      isDataDifferent: (newChannels) => checkIfChannelsHaveChanged(prevChannels, newChannels),
+      notificationHandler: (newChannels) => {
+        const updatedChannels = getUpdatedChannels(prevChannels, newChannels);
+        for (const updatedChannel of updatedChannels ?? []) {
+          // calculate the type of update: OPEN/CLOSE etc.
+          const notificationText = calculateNotificationTextForChannelStatus(updatedChannel);
+          sendNotification({
+            notificationPayload: {
+              source: 'node',
+              name: notificationText,
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: `${updatedChannel.channelId}: ${notificationText}` },
+          });
+        }
+      },
+      updatePreviousData: (newChannels) => {
+        dispatch(appActions.setPrevChannels(newChannels));
+      },
+    });
 
-  const watchChannels = async () => {
-    if (!apiEndpoint || !apiToken || !isConnected) return;
+  const watchPendingSafeTransactions = () =>
+    watchData<SafeMultisigTransactionResponse | null | undefined>({
+      disabled: !selectedSafeAddress || !signer,
+      initialState: prevPendingSafeTransaction,
+      fetcher: async () => {
+        if (!signer || !selectedSafeAddress) return;
 
-    // Clear the current interval, if there is one
-    if (watchChannelsInterval.current) {
-      clearInterval(watchChannelsInterval.current);
-    }
+        const pendingTransactions = await dispatch(
+          safeActionsAsync.getPendingSafeTransactionsThunk({
+            signer,
+            safeAddress: selectedSafeAddress,
+          }),
+        ).unwrap();
 
-    // fetch channels and update redux state
-    const newChannels = await dispatch(
-      nodeActionsAsync.getChannelsThunk({
-        apiEndpoint,
-        apiToken,
-      }),
-    ).unwrap();
-
-    if (!newChannels) return;
-
-    if (prevChannels) {
-      // get channels that have been updated
-      const updatedChannels = getUpdatedChannels(prevChannels, newChannels);
-      for (const updatedChannel of updatedChannels ?? []) {
-        // calculate the type of update: OPEN/CLOSE etc.
-        const notificationText = calculateNotificationTextForChannelStatus(updatedChannel);
-        sendNotification({
-          notificationPayload: {
-            source: 'node',
-            name: notificationText,
-            url: null,
-            timeout: null,
-          },
-          toastPayload: { message: `${updatedChannel.channelId}: ${notificationText}` },
-        });
-      }
-    }
-
-    // update previous channels to newly fetched ones
-    prevChannels = newChannels;
-  };
-
-  const watchPendingSafeTransactions = async () => {
-    if (selectedSafeAddress && signer) {
-      const pendingTransactions = await dispatch(
-        safeActionsAsync.getPendingSafeTransactionsThunk({
-          signer,
-          safeAddress: selectedSafeAddress,
-        }),
-      ).unwrap();
-      if (!pendingTransactions?.count) return;
-
-      const sortedPendingTransactions = [...pendingTransactions.results].sort(
-        (a, b) => new Date(b.submissionDate).getTime() - new Date(a.submissionDate).getTime(),
-      );
-
-      const latestPendingTransaction = sortedPendingTransactions.at(0);
-
-      if (!latestPendingTransaction) return;
-
-      // send notification if this is the first tx observed
-      if (!previousPendingSafeTransaction) {
+        return getLatestPendingSafeTransaction(pendingTransactions);
+      },
+      isDataDifferent: (newPendingSafeTransaction) => {
+        console.log(prevPendingSafeTransaction, newPendingSafeTransaction);
+        return checkIfNewTransaction(prevPendingSafeTransaction, newPendingSafeTransaction);
+      },
+      notificationHandler: (newData) => {
         sendNotification({
           notificationPayload: {
             name: `Pending transaction`,
@@ -251,170 +280,35 @@ export const useWatcher = (intervalDuration: number) => {
             url: 'develop/safe/pending-transactions',
             timeout: null,
           },
-          toastPayload: { message: `Pending transaction to ${latestPendingTransaction?.to}` },
+          toastPayload: { message: `Pending transaction to ${newData?.to}` },
         });
-        previousPendingSafeTransaction = latestPendingTransaction;
-        return;
-      }
+      },
+      updatePreviousData: (newPendingSafeTransaction) => {
+        dispatch(appActions.setPrevPendingSafeTransaction(newPendingSafeTransaction));
+      },
+    });
 
-      const isLatestTransactionAfterPreviousTransaction =
-        new Date(latestPendingTransaction.submissionDate).getTime() >
-        new Date(previousPendingSafeTransaction.submissionDate).getTime();
-
-      if (!isLatestTransactionAfterPreviousTransaction) return;
-
-      // latest transaction is more recent than previous
-      sendNotification({
-        notificationPayload: {
-          name: `Pending transaction`,
-          source: 'node',
-          url: 'develop/safe/pending-transactions',
-          timeout: null,
-        },
-        toastPayload: { message: `Pending transaction to ${latestPendingTransaction?.to}` },
-      });
-
-      previousPendingSafeTransaction = latestPendingTransaction;
-    }
-  };
-
-  const watchMessages = () => {
-    const newMessage = getLatestMessage(messages);
-
-    if (!newMessage) return;
-
-    // holds the latest message timestamp and the amount of times that timestamp
-    // was repeated to check if we have received a message
-    // after what was considered our latest message
-    const newMessageTimestamp = {
-      // amount of times timestamp was seen throughout the messages state
-      amountOfTimesRepeated: newMessage.amountOfTimesRepeated,
-      // latest timestamp
-      createdAt: newMessage.createdAt,
-    };
-
-    const newMessageHasArrived = checkForNewMessage(prevLatestMessageTimestamp, newMessageTimestamp);
-
-    if (newMessageHasArrived) {
-      sendNotification({
-        notificationPayload: {
-          source: 'node',
-          name: 'Received new message',
-          url: 'networking/messages',
-          timeout: null,
-        },
-        toastPayload: { message: `received message: ${newMessage.latestMessage.body}` },
-      });
-    }
-
-    prevLatestMessageTimestamp = newMessageTimestamp;
-  };
-
-  const calculateNotificationTextForChannelStatus = (updatedChannel: GetChannelsResponseType['incoming'][0]) => {
-    if (updatedChannel.status === 'Closed') {
-      return 'Channel is closed';
-    }
-
-    if (updatedChannel.status === 'Open') {
-      return 'Channel is open';
-    }
-
-    if (updatedChannel.status === 'PendingToClose') {
-      return 'Channel is closing';
-    }
-
-    if (updatedChannel.status === 'WaitingForCommitment') {
-      return 'Channel is opening';
-    }
-
-    return 'Channel has updated status';
-  };
-
-  const getUpdatedChannels = (oldChannels: GetChannelsResponseType, newChannels: GetChannelsResponseType) => {
-    // check if channels are exactly the same
-    if (JSON.stringify(oldChannels) === JSON.stringify(newChannels)) {
-      return;
-    }
-
-    const updatedChannels: GetChannelsResponseType['incoming'] = [];
-
-    // join incoming and outgoing channels into one array
-    const allOldChannels = oldChannels.incoming.concat(oldChannels.outgoing);
-    const allNewChannels = newChannels.incoming.concat(newChannels.outgoing);
-
-    // create map of channels to optimize lookup
-    const oldChannelsMap = new Map(allOldChannels.map((channel) => [channel.channelId, channel]));
-    const newChannelsMap = new Map(allNewChannels.map((channel) => [channel.channelId, channel]));
-
-    // check for updates and new channels
-    for (const newChannel of allNewChannels) {
-      const tempOldChannel = oldChannelsMap.get(newChannel.channelId);
-
-      // check if new channel is completely new
-      // or differs in status
-      if (!tempOldChannel || !isChannelStatusEqual(tempOldChannel, newChannel)) {
-        updatedChannels.push(newChannel);
-      }
-    }
-
-    // check for closed channels
-    for (const oldChannel of allOldChannels ?? []) {
-      const channelWasClosed = !newChannelsMap.has(oldChannel.channelId);
-      if (channelWasClosed) {
-        updatedChannels.push({
-          ...oldChannel,
-          status: 'Closed',
+  const watchMessages = () =>
+    watchData<WatcherMessage>({
+      disabled: !getLatestMessage(messages),
+      initialState: prevMessage,
+      fetcher: async () => getLatestMessage(messages),
+      isDataDifferent: (newData) => checkForNewMessage(prevMessage, newData),
+      notificationHandler: (newData) => {
+        sendNotification({
+          notificationPayload: {
+            source: 'node',
+            name: 'Received new message',
+            url: 'networking/messages',
+            timeout: null,
+          },
+          toastPayload: { message: `received message: ${newData.message?.body}` },
         });
-      }
-    }
-    return updatedChannels;
-  };
-
-  /**
-   * Checks if 2 channels have the same status
-   */
-  const isChannelStatusEqual = (
-    oldChannel: GetChannelsResponseType['incoming'][0],
-    newChannel: GetChannelsResponseType['incoming'][0],
-  ) => {
-    return oldChannel.status === newChannel.status;
-  };
-
-  const getLatestMessage = (newMessages?: (typeof initialState)['messages']) => {
-    if (!newMessages?.length) return;
-
-    const sortedMessages = [...newMessages].sort((a, b) => b.createdAt - a.createdAt);
-    const latestMessage = sortedMessages?.[0];
-    const latestTimestamp = latestMessage.createdAt ?? 0;
-    const amountOfMessagesWithTimestamp = newMessages.filter((msg) => msg.createdAt === latestTimestamp)?.length;
-
-    return {
-      createdAt: latestTimestamp,
-      amountOfTimesRepeated: amountOfMessagesWithTimestamp,
-      latestMessage,
-    };
-  };
-
-  const checkForNewMessage = (
-    oldMessageTimestamp: {
-      createdAt: number;
-      amountOfTimesRepeated: number;
-    } | null,
-    newMessageTimestamp: { createdAt: number; amountOfTimesRepeated: number },
-  ) => {
-    // if oldMessageTimestamp does not exist it is the first message
-    if (!oldMessageTimestamp) return true;
-
-    if (oldMessageTimestamp.createdAt < newMessageTimestamp.createdAt) {
-      return true;
-    }
-
-    if (oldMessageTimestamp.createdAt === newMessageTimestamp.createdAt) {
-      return oldMessageTimestamp.amountOfTimesRepeated < newMessageTimestamp.amountOfTimesRepeated;
-    }
-
-    return false;
-  };
+      },
+      updatePreviousData: (newMessage) => {
+        dispatch(appActions.setPrevMessage(newMessage));
+      },
+    });
 
   return {
     watchChannels,
