@@ -3,12 +3,22 @@ import { Message } from '../../store/slices/node/initialState';
 import { sendNotification } from './notifications';
 import { observeData } from './observeData';
 
+/**
+ * Describes a message being watched for changes.
+ * It includes the time it was created, how many times it's been repeated,
+ * and the actual message object.
+ */
 export type WatcherMessage = {
   createdAt: number;
   amountOfTimesRepeated: number;
   message?: Message;
 } | null;
 
+/**
+ * Sorts and returns the most recent message in an array of messages.
+ *
+ * @param newMessages The array of messages to process.
+ */
 const getLatestMessage = (newMessages?: Message[]): WatcherMessage | undefined => {
   if (!newMessages?.length) return;
 
@@ -24,6 +34,12 @@ const getLatestMessage = (newMessages?: Message[]): WatcherMessage | undefined =
   };
 };
 
+/**
+ * Checks if a new message is different from an old message.
+ *
+ * @param oldMessage The old message to compare.
+ * @param newMessage The new message to compare.
+ */
 const checkForNewMessage = (oldMessage: WatcherMessage, newMessage: NonNullable<WatcherMessage>) => {
   if (!oldMessage) return true;
 
@@ -38,6 +54,14 @@ const checkForNewMessage = (oldMessage: WatcherMessage, newMessage: NonNullable<
   return false;
 };
 
+/**
+ * Observes messages and triggers a notification when there's a new message.
+ *
+ * @param previousState The previous message.
+ * @param messages An array of current messages.
+ * @param updatePreviousData A function that updates the previous message with the current one.
+ * @param dispatch The dispatch function returned by the useAppDispatch hook.
+ */
 export const observeMessages = ({
   previousState,
   messages,

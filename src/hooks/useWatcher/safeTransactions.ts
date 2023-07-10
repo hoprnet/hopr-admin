@@ -6,6 +6,13 @@ import { useAppDispatch } from '../../store';
 import { sendNotification } from './notifications';
 import { observeData } from './observeData';
 
+/**
+ * Checks if there's a new pending transaction based on the submission date.
+ *
+ * @param previousPendingSafeTransaction The previous pending safe transaction.
+ * @param newPendingSafeTransaction The new pending safe transaction.
+ * @returns A boolean indicating whether there's a new transaction or not.
+ */
 export const checkIfNewTransaction = (
   previousPendingSafeTransaction: SafeMultisigTransactionResponse | null,
   newPendingSafeTransaction: SafeMultisigTransactionResponse,
@@ -14,6 +21,12 @@ export const checkIfNewTransaction = (
   new Date(newPendingSafeTransaction.submissionDate).getTime() >
     new Date(previousPendingSafeTransaction.submissionDate).getTime();
 
+/**
+ * Gets the latest pending safe transaction from a list of pending transactions.
+ *
+ * @param pendingTransactions A list of pending safe transactions.
+ * @returns The latest pending safe transaction, or undefined if no transactions are found.
+ */
 export const getLatestPendingSafeTransaction = (
   pendingTransactions: SafeMultisigTransactionListResponse | undefined,
 ) => {
@@ -26,6 +39,16 @@ export const getLatestPendingSafeTransaction = (
   return sortedPendingTransactions.at(0);
 };
 
+/**
+ * Observes the pending transactions in a given Safe and sends a notification
+ * if a new pending transaction is detected.
+ *
+ * @param selectedSafeAddress The address of the selected Safe.
+ * @param previousState The last observed state of the pending Safe transactions.
+ * @param signer The signer instance to be used for generating transactions.
+ * @param updatePreviousData Function to update the previous state of the pending Safe transactions.
+ * @param dispatch The dispatch function returned by the useAppDispatch hook.
+ */
 export const observePendingSafeTransactions = ({
   selectedSafeAddress,
   previousState,

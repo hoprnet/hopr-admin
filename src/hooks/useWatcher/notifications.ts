@@ -3,6 +3,13 @@ import { appActions } from '../../store/slices/app';
 import { nanoid } from '@reduxjs/toolkit';
 import { useAppDispatch } from '../../store';
 
+/**
+ * Sends a notification, triggering both a system notification and an optional toast message.
+ *
+ * @param notificationPayload The payload for the system notification, excluding the id.
+ * @param toastPayload Optional payload for a toast notification, including a message and type.
+ * @param dispatch The dispatch function returned by the useAppDispatch hook.
+ */
 export const sendNotification = ({
   notificationPayload,
   toastPayload,

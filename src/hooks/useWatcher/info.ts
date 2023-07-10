@@ -4,6 +4,15 @@ import { sendNotification } from './notifications';
 import { useAppDispatch } from '../../store';
 import { nodeActionsAsync } from '../../store/slices/node';
 
+/**
+ * Observes Node Information and triggers a notification when there's a change in connectivity status.
+ *
+ * @param previousState The previous state of the node information.
+ * @param apiToken The API token as a string, or null.
+ * @param apiEndpoint The API endpoint as a string, or null.
+ * @param updatePreviousData A function that updates the previous data with the current data.
+ * @param dispatch The dispatch function returned by the useAppDispatch hook.
+ */
 export const observeNodeInfo = ({
   previousState,
   apiEndpoint,

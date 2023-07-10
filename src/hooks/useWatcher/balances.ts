@@ -5,9 +5,24 @@ import { nodeActionsAsync } from '../../store/slices/node';
 import { sendNotification } from './notifications';
 import { formatEther } from 'viem';
 
+/**
+ * Checks if the new balance is greater than the previous balance.
+ *
+ * @param prevBalance The previous balance as a string.
+ * @param newBalance The new balance as a string.
+ * @returns A boolean indicating whether the new balance is greater than the previous balance.
+ */
 export const balanceHasIncreased = (prevBalance: string, newBalance: string) =>
   BigInt(prevBalance) < BigInt(newBalance);
 
+/**
+ * Handles balance notifications.
+ *
+ * @param newNodeBalances The new node balances of type AccountResponseType.
+ * @param prevNodeBalances The previous node balances of type AccountResponseType, or null.
+ * @param sendNewNativeBalanceNotification A function that handles new native balance notifications.
+ * @param sendNewHoprBalanceNotification A function that handles new HOPR balance notifications.
+ */
 export const handleBalanceNotification = ({
   newNodeBalances,
   prevNodeBalances,
@@ -33,6 +48,15 @@ export const handleBalanceNotification = ({
   }
 };
 
+/**
+ * Observes node balances and handles notifications when changes are detected.
+ *
+ * @param previousState The previous state of type AccountResponseType, or null.
+ * @param apiToken The API token as a string, or null.
+ * @param apiEndpoint The API endpoint as a string, or null.
+ * @param updatePreviousData A function that updates the previous data with the current data.
+ * @param dispatch The dispatch function returned by the useAppDispatch hook.
+ */
 export const observeNodeBalances = ({
   previousState,
   apiEndpoint,

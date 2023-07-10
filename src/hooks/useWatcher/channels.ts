@@ -4,11 +4,24 @@ import { sendNotification } from './notifications';
 import { useAppDispatch } from '../../store';
 import { nodeActionsAsync } from '../../store/slices/node';
 
+/**
+ * Checks if the channels have changed.
+ *
+ * @param previousChannels The previous channel state.
+ * @param newChannels The new channel state.
+ * @returns A boolean indicating whether the channels have changed.
+ */
 export const checkIfChannelsHaveChanged = (
   previousChannels: GetChannelsResponseType | null,
   newChannels: GetChannelsResponseType,
 ) => !!previousChannels && JSON.stringify(previousChannels) !== JSON.stringify(newChannels);
 
+/**
+ * Generates a notification text based on the updated channel's status.
+ *
+ * @param updatedChannel The updated channel.
+ * @returns The text for the notification.
+ */
 export const calculateNotificationTextForChannelStatus = (updatedChannel: GetChannelsResponseType['incoming'][0]) => {
   if (updatedChannel.status === 'Closed') {
     return 'Channel is closed';
@@ -29,6 +42,13 @@ export const calculateNotificationTextForChannelStatus = (updatedChannel: GetCha
   return 'Channel has updated status';
 };
 
+/**
+ * Compares old channels with new channels and determines which have been updated.
+ *
+ * @param oldChannels The previous channel state.
+ * @param newChannels The new channel state.
+ * @returns An array of channels that have been updated.
+ */
 export const getUpdatedChannels = (
   oldChannels: GetChannelsResponseType | null,
   newChannels: GetChannelsResponseType,
@@ -73,7 +93,11 @@ export const getUpdatedChannels = (
 };
 
 /**
- * Checks if 2 channels have the same status
+ * Checks if the status of two channels is equal.
+ *
+ * @param oldChannel The old channel.
+ * @param newChannel The new channel.
+ * @returns A boolean indicating whether the channel statuses are equal.
  */
 const isChannelStatusEqual = (
   oldChannel: GetChannelsResponseType['incoming'][0],
@@ -82,6 +106,15 @@ const isChannelStatusEqual = (
   return oldChannel.status === newChannel.status;
 };
 
+/**
+ * Observes channels and handles notifications when changes are detected.
+ *
+ * @param previousState The previous state of the channels.
+ * @param apiToken The API token as a string, or null.
+ * @param apiEndpoint The API endpoint as a string, or null.
+ * @param updatePreviousData A function that updates the previous data with the current data.
+ * @param dispatch The dispatch function returned by the useAppDispatch hook.
+ */
 export const observeChannels = ({
   previousState,
   apiEndpoint,
