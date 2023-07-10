@@ -9,6 +9,23 @@ const appSlice = createSlice({
   initialState,
   reducers: {
     resetState: () => initialState,
+    resetNodeState: (state) => ({
+      ...state,
+      previousStates: {
+        ...state.previousStates,
+        prevChannels: null,
+        prevMessage: null,
+        prevNodeBalances: null,
+        prevNodeInfo: null,
+      },
+    }),
+    resetSafeState: (state) => ({
+      ...state,
+      previousStates: {
+        ...state.previousStates,
+        prevPendingSafeTransaction: null,
+      },
+    }),
     addNotification: (
       state,
       action: PayloadAction<{

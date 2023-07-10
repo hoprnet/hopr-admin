@@ -75,7 +75,7 @@ export default function ConnectWeb3({
 
   const handleDisconnectMM = () => {
     disconnect();
-    dispatch(appActions.resetState());
+    dispatch(appActions.resetSafeState());
     dispatch(web3Actions.resetState());
   };
 
@@ -92,11 +92,7 @@ export default function ConnectWeb3({
               Connect Wallet
             </button>
           ) : (
-            <button
-              onClick={handleDisconnectMM}
-            >
-              Disconnect
-            </button>
+            <button onClick={handleDisconnectMM}>Disconnect</button>
           )}
         </AppBarContainer>
       )}

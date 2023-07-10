@@ -106,7 +106,7 @@ function Section1() {
   const useNode = () => {
     dispatch(authActions.resetState());
     dispatch(nodeActions.resetState());
-    dispatch(appActions.resetState());
+    dispatch(appActions.resetNodeState());
     dispatch(nodeActions.closeMessagesWebsocket());
     dispatch(nodeActions.closeLogsWebsocket());
     dispatch(

@@ -1,4 +1,8 @@
 import { GetChannelsResponseType } from '@hoprnet/hopr-sdk';
+import { observeData } from './observeData';
+import { sendNotification } from './notifications';
+import { useAppDispatch } from '../../store';
+import { nodeActionsAsync } from '../../store/slices/node';
 
 export const checkIfChannelsHaveChanged = (
   previousChannels: GetChannelsResponseType | null,
@@ -77,3 +81,49 @@ const isChannelStatusEqual = (
 ) => {
   return oldChannel.status === newChannel.status;
 };
+
+export const observeChannels = ({
+  previousState,
+  apiEndpoint,
+  apiToken,
+  updatePreviousData,
+  dispatch,
+}: {
+  previousState: GetChannelsResponseType | null;
+  apiToken: string | null;
+  apiEndpoint: string | null;
+  updatePreviousData: (currentData: GetChannelsResponseType) => void;
+  dispatch: ReturnType<typeof useAppDispatch>;
+}) =>
+  observeData<GetChannelsResponseType>({
+    disabled: !apiEndpoint || !apiToken,
+    previousData: previousState,
+    fetcher: async () => {
+      if (!apiEndpoint || !apiToken) return;
+      return dispatch(
+        nodeActionsAsync.getChannelsThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      ).unwrap();
+    },
+    isDataDifferent: (newChannels) => checkIfChannelsHaveChanged(previousState, newChannels),
+    notificationHandler: (newChannels) => {
+      const updatedChannels = getUpdatedChannels(previousState, newChannels);
+      for (const updatedChannel of updatedChannels ?? []) {
+        // calculate the type of update: OPEN/CLOSE etc.
+        const notificationText = calculateNotificationTextForChannelStatus(updatedChannel);
+        sendNotification({
+          notificationPayload: {
+            source: 'node',
+            name: notificationText,
+            url: null,
+            timeout: null,
+          },
+          toastPayload: { message: `${updatedChannel.channelId}: ${notificationText}` },
+          dispatch,
+        });
+      }
+    },
+    updatePreviousData,
+  });

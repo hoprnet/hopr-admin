@@ -1,4 +1,7 @@
-import { Message, initialState } from '../../store/slices/node/initialState';
+import { useAppDispatch } from '../../store';
+import { Message } from '../../store/slices/node/initialState';
+import { sendNotification } from './notifications';
+import { observeData } from './observeData';
 
 export type WatcherMessage = {
   createdAt: number;
@@ -6,7 +9,7 @@ export type WatcherMessage = {
   message?: Message;
 } | null;
 
-export const getLatestMessage = (newMessages?: (typeof initialState)['messages']): WatcherMessage | undefined => {
+const getLatestMessage = (newMessages?: Message[]): WatcherMessage | undefined => {
   if (!newMessages?.length) return;
 
   const sortedMessages = [...newMessages].sort((a, b) => b.createdAt - a.createdAt);
@@ -21,7 +24,7 @@ export const getLatestMessage = (newMessages?: (typeof initialState)['messages']
   };
 };
 
-export const checkForNewMessage = (oldMessage: WatcherMessage, newMessage: NonNullable<WatcherMessage>) => {
+const checkForNewMessage = (oldMessage: WatcherMessage, newMessage: NonNullable<WatcherMessage>) => {
   if (!oldMessage) return true;
 
   if (oldMessage.createdAt < newMessage.createdAt) {
@@ -34,3 +37,34 @@ export const checkForNewMessage = (oldMessage: WatcherMessage, newMessage: NonNu
 
   return false;
 };
+
+export const observeMessages = ({
+  previousState,
+  messages,
+  updatePreviousData,
+  dispatch,
+}: {
+  previousState: WatcherMessage | null;
+  messages: Message[];
+  updatePreviousData: (currentData: WatcherMessage) => void;
+  dispatch: ReturnType<typeof useAppDispatch>;
+}) =>
+  observeData<WatcherMessage>({
+    disabled: !getLatestMessage(messages),
+    previousData: previousState,
+    fetcher: async () => getLatestMessage(messages),
+    isDataDifferent: (newData) => checkForNewMessage(previousState, newData),
+    notificationHandler: (newData) => {
+      sendNotification({
+        notificationPayload: {
+          source: 'node',
+          name: 'Received new message',
+          url: 'networking/messages',
+          timeout: null,
+        },
+        toastPayload: { message: `received message: ${newData.message?.body}` },
+        dispatch,
+      });
+    },
+    updatePreviousData,
+  });

@@ -1,29 +1,47 @@
-import { AccountResponseType } from '@hoprnet/hopr-sdk';
+import { GetInfoResponseType } from '@hoprnet/hopr-sdk';
+import { observeData } from './observeData';
+import { sendNotification } from './notifications';
+import { useAppDispatch } from '../../store';
+import { nodeActionsAsync } from '../../store/slices/node';
 
-export const balanceHasIncreased = (prevBalance: string, newBalance: string) =>
-  BigInt(prevBalance) < BigInt(newBalance);
-
-export const handleBalanceNotification = ({
-  newNodeBalances,
-  prevNodeBalances,
-  sendNewHoprBalanceNotification,
-  sendNewNativeBalanceNotification,
+export const observeNodeInfo = ({
+  previousState,
+  apiEndpoint,
+  apiToken,
+  updatePreviousData,
+  dispatch,
 }: {
-  prevNodeBalances: AccountResponseType | null;
-  newNodeBalances: AccountResponseType;
-  sendNewNativeBalanceNotification: (nativeBalanceDifference: bigint) => void;
-  sendNewHoprBalanceNotification: (hoprBalanceDifference: bigint) => void;
-}) => {
-  if (!prevNodeBalances) return;
-  const nativeBalanceIsLarger = balanceHasIncreased(prevNodeBalances.native, newNodeBalances.native);
-  if (nativeBalanceIsLarger) {
-    const nativeBalanceDifference = BigInt(newNodeBalances.native) - BigInt(prevNodeBalances.native);
-    sendNewNativeBalanceNotification(nativeBalanceDifference);
-  }
-
-  const hoprBalanceIsMore = balanceHasIncreased(prevNodeBalances.hopr, newNodeBalances.hopr);
-  if (hoprBalanceIsMore) {
-    const hoprBalanceDifference = BigInt(newNodeBalances.hopr) - BigInt(prevNodeBalances.hopr);
-    sendNewHoprBalanceNotification(hoprBalanceDifference);
-  }
-};
+  previousState: GetInfoResponseType | null;
+  apiToken: string | null;
+  apiEndpoint: string | null;
+  updatePreviousData: (currentData: GetInfoResponseType) => void;
+  dispatch: ReturnType<typeof useAppDispatch>;
+}) =>
+  observeData<GetInfoResponseType | null>({
+    disabled: !apiEndpoint || !apiToken,
+    fetcher: async () => {
+      if (!apiEndpoint || !apiToken) return;
+      return dispatch(
+        nodeActionsAsync.getInfoThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      ).unwrap();
+    },
+    previousData: previousState,
+    isDataDifferent: (newNodeInfo) =>
+      !!previousState && newNodeInfo.connectivityStatus !== previousState.connectivityStatus,
+    notificationHandler: (newNodeInfo) => {
+      sendNotification({
+        notificationPayload: {
+          name: `node connectivity status is now ${newNodeInfo?.connectivityStatus}`,
+          source: 'node',
+          url: null,
+          timeout: null,
+        },
+        toastPayload: { message: `node connectivity status updated from ${previousState?.connectivityStatus} to ${newNodeInfo?.connectivityStatus}` },
+        dispatch,
+      });
+    },
+    updatePreviousData,
+  });
