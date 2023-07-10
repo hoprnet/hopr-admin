@@ -89,14 +89,6 @@ export const useWatcher = ({
 
   // node watchers
   useEffect(() => {
-    // reset state on log out
-    if (!apiEndpoint || !apiToken) {
-      dispatch(appActions.setPrevMessage(null));
-      dispatch(appActions.setPrevChannels(null));
-      dispatch(appActions.setPrevNodeBalances(null));
-      dispatch(appActions.setPrevNodeInfo(null));
-    }
-
     if (!watch) return;
 
     const watchChannelsInterval = setInterval(watchChannels, intervalDuration);
@@ -112,13 +104,11 @@ export const useWatcher = ({
 
   // safe watchers
   useEffect(() => {
-    // reset state on log out
-    if (!selectedSafeAddress || !signer) {
-      dispatch(appActions.setPrevPendingSafeTransaction(null));
-    }
-
+    console.log({selectedSafeAddress, signer})
     if (!watch) return;
+    console.log('watch', watch)
 
+    watchPendingSafeTransactions();
     const watchPendingSafeTransactionsInterval = setInterval(watchPendingSafeTransactions, intervalDuration);
 
     return () => {

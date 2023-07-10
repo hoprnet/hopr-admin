@@ -6,6 +6,7 @@ import WalletButton from '../../future-hopr-lib-components/Button/wallet-button'
 // Store
 import { useAppDispatch } from '../../store';
 import { web3Actions } from '../../store/slices/web3';
+import { appActions } from '../../store/slices/app';
 
 // wagmi
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
@@ -72,6 +73,12 @@ export default function ConnectWeb3({
     }
   };
 
+  const handleDisconnectMM = () => {
+    disconnect();
+    dispatch(appActions.resetState());
+    dispatch(web3Actions.resetState());
+  };
+
   return (
     <>
       {inTheAppBar && (
@@ -86,9 +93,7 @@ export default function ConnectWeb3({
             </button>
           ) : (
             <button
-              onClick={() => {
-                disconnect();
-              }}
+              onClick={handleDisconnectMM}
             >
               Disconnect
             </button>
