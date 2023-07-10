@@ -29,7 +29,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   });
   builder.addCase(loginThunk.rejected, (state, meta) => {
     state.status.connecting = false;
-    console.log(meta)
+    console.log(meta);
     state.status.error = 'Unable to connect.\n\n' + JSON.stringify(meta.error);
   });
 };
