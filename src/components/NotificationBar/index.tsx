@@ -39,9 +39,34 @@ const SIconButton = styled(IconButton)`
   }
 `;
 
-const SMenu = styled(Menu)``;
-
-const SMenuItem = styled(MenuItem)``;
+const StyledMenuItem = styled(MenuItem)`
+  padding-right: 23px;
+  &:not(:last-child){
+    border-bottom: 1px solid #8f8f8f;
+  }
+  &.unreadMenuItem {
+    background-color: rgba(25, 118, 210, 0.15);
+    opacity: 90%;
+    &:after{
+      content: '';
+      display: block;
+      position: relative;
+      width: 8px;
+      height: 8px;
+      left: 13px;
+      -moz-border-radius: 7.5px;
+      -webkit-border-radius: 7.5px;
+      border-radius: 7.5px;
+      background-color: rgb(56, 88, 152);
+    }
+  }
+  &.informational {
+    font-size: 12px;
+    background-color: rgb(255 143 143 / 39%);
+    cursor: default;
+    pointer-events: none;
+  }
+`;
 
 export default function NotificationBar() {
   const dispatch = useAppDispatch();
@@ -57,6 +82,7 @@ export default function NotificationBar() {
 
   const handleClose = (notification: (typeof notifications)[0]) => {
     setAnchorEl(null);
+    dispatch(appActions.markSeenAllNotifications());
   };
 
   return (
@@ -74,33 +100,43 @@ export default function NotificationBar() {
           <NotificationsNoneIcon />
         </SIconButton>
       </SBadge>
-      <SMenu
+      <Menu
         id="notification-menu"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{ 'aria-labelledby': 'notification-menu-button' }}
+        MenuListProps={{ 
+          'aria-labelledby': 'notification-menu-button',
+          'className': 'notification-menu-list',
+        }}
       >
-        {notifications.filter((notification) => !notification.seen).length ? (
-          notifications
-            .filter((notification) => !notification.seen)
-            .map((notification) => (
-              <MenuItem
-                key={notification.id}
-                onClick={() => {
-                  dispatch(appActions.seenNotification(notification));
-                  if (notification.source === 'node/message') {
-                    navigate(`networking/messages${searchParams ? searchParams : ''}`);
-                  }
-                }}
-              >
-                {notification.name}
-              </MenuItem>
-            ))
+        {notifications.length > 0 &&
+          <StyledMenuItem
+            className={'informational'}
+          >
+            Notifications are stored locally.<br/>
+            They will delete on refresh.
+          </StyledMenuItem>
+        }
+        {notifications.length > 0 ? (
+          notifications.map((notification) => (
+            <StyledMenuItem
+              className={!notification.interacted ? 'unreadMenuItem' : ''}
+              key={notification.id}
+              onClick={() => {
+                dispatch(appActions.interactedWithNotification(notification.id));
+                if (notification.source === 'node/message') {
+                  navigate(`networking/messages${searchParams ? searchParams : ''}`);
+                }
+              }}
+            >
+              {notification.name}
+            </StyledMenuItem>
+          ))
         ) : (
           <MenuItem>No notifications</MenuItem>
         )}
-      </SMenu>
+      </Menu>
     </Container>
   );
 }
