@@ -77,7 +77,12 @@ const NodeAddress = () => {
           />
           <ButtonContainer>
             <StyledGrayButton onClick={() => navigate(-1)}>Back</StyledGrayButton>
-            <Button onClick={addDelegate}>Confirm</Button>
+            <Button
+              disabled={!address || !signer || !safeAddress}
+              onClick={addDelegate}
+            >
+              Confirm
+            </Button>
           </ButtonContainer>
           {isLoading && <p>Adding delegate...</p>}
         </>
