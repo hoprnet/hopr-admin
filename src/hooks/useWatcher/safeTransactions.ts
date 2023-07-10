@@ -77,9 +77,7 @@ export const observePendingSafeTransactions = ({
 
       return getLatestPendingSafeTransaction(pendingTransactions);
     },
-    isDataDifferent: (newPendingSafeTransaction) => {
-      return checkIfNewTransaction(previousState, newPendingSafeTransaction);
-    },
+    isDataDifferent: (newPendingSafeTransaction) => checkIfNewTransaction(previousState, newPendingSafeTransaction),
     notificationHandler: (newData) => {
       sendNotification({
         notificationPayload: {
