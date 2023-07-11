@@ -75,6 +75,10 @@ export default function ConnectWeb3({
     <>
       {inTheAppBar && (
         <AppBarContainer>
+          <img
+            src="/assets/wallets/MetaMask_Fox.svg"
+            style={{ height: '50px' }}
+          />
           {!isConnected ? (
             <button
               onClick={() => {
