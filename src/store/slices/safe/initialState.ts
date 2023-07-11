@@ -1,17 +1,17 @@
-import { AllTransactionsListResponse, SafeInfoResponse } from '@safe-global/api-kit';
+import { AllTransactionsListResponse, SafeDelegateListResponse, SafeInfoResponse } from '@safe-global/api-kit';
 
 type InitialState = {
   selectedSafeAddress: string | null;
-  recentlyCreatedSafe: string | null;
   safesByOwner: string[];
   safeTransactions: AllTransactionsListResponse | null;
   safeInfos: SafeInfoResponse[];
+  safeDelegates: SafeDelegateListResponse | null;
 };
 
 export const initialState: InitialState = {
   selectedSafeAddress: null,
-  recentlyCreatedSafe: null,
   safesByOwner: [],
   safeTransactions: null,
   safeInfos: [],
+  safeDelegates: null,
 };
