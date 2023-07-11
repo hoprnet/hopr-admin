@@ -136,6 +136,29 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
   const { transaction } = props;
   const [open, set_open] = useState(false);
 
+  const getType = (transaction: SafeMultisigTransactionWithTransfersResponse) => {
+    if (transaction.dataDecoded) {
+      const decodedData = getDecodedData(transaction);
+      return typeof decodedData === 'string' ? decodedData : decodedData?.method;
+    } else if (BigInt(transaction.value)) {
+      return 'Sent';
+    } else {
+      return 'Rejection';
+    }
+  };
+
+  const getDecodedData = (transaction: SafeMultisigTransactionWithTransfersResponse) => {
+    if (typeof transaction.dataDecoded === 'string') {
+      return transaction.dataDecoded;
+    } else if (typeof transaction.dataDecoded === 'object') {
+      const transactionData = transaction.dataDecoded as unknown as {
+        method: string;
+        parameters: { name: string; type: string; value: string }[];
+      };
+      return transactionData;
+    }
+  };
+
   return (
     <>
       <TableRow>
@@ -145,7 +168,7 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
         >
           {transaction.nonce}
         </TableCell>
-        <TableCell align="right">{BigInt(transaction.value) ? 'Sent' : 'Rejection'}</TableCell>
+        <TableCell align="right">{getType(transaction)}</TableCell>
         <TableCell align="right"> {formatEther(BigInt(transaction.value))}</TableCell>
         <TableCell align="right">{transaction.executionDate}</TableCell>
         <TableCell align="right">{transaction.isExecuted ? 'Success' : 'Not executed'}</TableCell>
