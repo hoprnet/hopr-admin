@@ -71,7 +71,7 @@ const FundsToSafe = ({
       set_xdaiValue('');
       set_wxhoprValue('');
     }
-  }, [account, xDAI_balance, xDAI_to_safe_config.gas, wxHOPR_balance]);
+  }, [account, xDAI_balance, wxHOPR_balance]);
 
   const updateBalances = () => {
     if (account && xDAI_balance && wxHOPR_balance) {
