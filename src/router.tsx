@@ -55,6 +55,7 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import DockerInstallation from './steps/install-node/dockerInstallation';
 import NodeAddress from './steps/install-node/nodeAddress';
 import PaidIcon from '@mui/icons-material/Paid';
+import ConnectSafe from './components/ConnectSafe';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -306,6 +307,7 @@ const LayoutEnhanced = () => {
       itemsNavbarRight={
         <>
           <NotificationBar />
+          <ConnectSafe />
           <ConnectWeb3 inTheAppBar />
           <ConnectNode />
         </>
