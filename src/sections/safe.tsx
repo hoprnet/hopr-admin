@@ -76,6 +76,12 @@ function SafeSection() {
                   safeAddress,
                 }),
               );
+              dispatch(
+                safeActionsAsync.getSafeDelegatesThunk({
+                  signer,
+                  options: { safeAddress },
+                }),
+              );
             }
           }}
         >

@@ -15,18 +15,22 @@ export const loginThunk = createAsyncThunk(
 );
 
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
-  builder.addCase(loginThunk.pending, (state) => {
+  builder.addCase(loginThunk.pending, (state, meta) => {
     state.status.connecting = true;
     state.status.connected = false;
+    state.status.error = null;
   });
   builder.addCase(loginThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.status.connecting = false;
       state.status.connected = true;
+      state.status.error = null;
     }
   });
-  builder.addCase(loginThunk.rejected, (state) => {
+  builder.addCase(loginThunk.rejected, (state, meta) => {
     state.status.connecting = false;
+    console.log(meta);
+    state.status.error = 'Unable to connect.\n\n' + JSON.stringify(meta.error);
   });
 };
 

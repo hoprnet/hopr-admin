@@ -6,6 +6,9 @@ import Button from '../../future-hopr-lib-components/Button';
 import GrayButton from '../../future-hopr-lib-components/Button/gray';
 import Card from '../components/Card';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { useSigner } from '../../hooks';
+import { safeActionsAsync } from '../../store/slices/safe';
 
 const ButtonContainer = styled.div`
   align-self: center;
@@ -19,8 +22,44 @@ const StyledGrayButton = styled(GrayButton)`
 `;
 
 const NodeAddress = () => {
+  const dispatch = useAppDispatch();
+  const safeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
+  const account = useAppSelector((state) => state.web3.account);
   const navigate = useNavigate();
+  const { signer } = useSigner();
   const [address, set_address] = useState('');
+  const [isLoading, set_isLoading] = useState(false);
+
+  const addDelegate = async () => {
+    if (signer && safeAddress && account) {
+      set_isLoading(true);
+      await dispatch(
+        safeActionsAsync.addSafeDelegateThunk({
+          signer,
+          options: {
+            safeAddress,
+            delegateAddress: address,
+            delegatorAddress: account,
+            label: 'node',
+          },
+        }),
+      ).unwrap();
+      set_isLoading(false);
+    }
+  };
+
+  if (!safeAddress) {
+    return (
+      <Section
+        center
+        fullHeightMin
+        lightBlue
+      >
+        <Card title="Connect to safe" />
+      </Section>
+    );
+  }
+
   return (
     <Section
       center
@@ -38,8 +77,14 @@ const NodeAddress = () => {
           />
           <ButtonContainer>
             <StyledGrayButton onClick={() => navigate(-1)}>Back</StyledGrayButton>
-            <Button>Confirm</Button>
+            <Button
+              disabled={!address || !signer || !safeAddress}
+              onClick={addDelegate}
+            >
+              Confirm
+            </Button>
           </ButtonContainer>
+          {isLoading && <p>Adding delegate...</p>}
         </>
       </Card>
     </Section>

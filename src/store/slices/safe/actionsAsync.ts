@@ -1,7 +1,7 @@
 import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 import { ethers } from 'ethers';
-import SafeApiKit, { AllTransactionsOptions } from '@safe-global/api-kit';
+import SafeApiKit, { AddSafeDelegateProps, AllTransactionsOptions, DeleteSafeDelegateProps, GetSafeDelegateProps } from '@safe-global/api-kit'
 import Safe, { EthersAdapter, SafeAccountConfig, SafeFactory } from '@safe-global/protocol-kit';
 import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
 
@@ -377,17 +377,90 @@ const getPendingSafeTransactionsThunk = createAsyncThunk(
   },
 );
 
+const addSafeDelegateThunk = createAsyncThunk(
+  'safe/addDelegate',
+  async (
+    payload: { options: Omit<AddSafeDelegateProps, 'signer'>; signer: ethers.providers.JsonRpcSigner },
+    {
+      rejectWithValue,
+      dispatch,
+    },
+  ) => {
+    try {
+      const safeApi = await createSafeApiService(payload.signer);
+      const response = await safeApi.addSafeDelegate({
+        ...payload.options,
+        signer: payload.signer,
+      });
+
+      // update delegate list
+      dispatch(
+        getSafeDelegatesThunk({
+          signer: payload.signer,
+          options: { ...payload.options },
+        }),
+      );
+
+      return response;
+    } catch (e) {
+      rejectWithValue(e);
+    }
+  },
+);
+
+const removeSafeDelegateThunk = createAsyncThunk(
+  'safe/removeDelegate',
+  async (
+    payload: { options: Omit<DeleteSafeDelegateProps, 'signer'>; signer: ethers.providers.JsonRpcSigner },
+    {
+      rejectWithValue,
+      dispatch,
+    },
+  ) => {
+    try {
+      const safeApi = await createSafeApiService(payload.signer);
+      const response = await safeApi.removeSafeDelegate({
+        ...payload.options,
+        signer: payload.signer,
+      });
+
+      // update delegate list
+      dispatch(
+        getSafeDelegatesThunk({
+          signer: payload.signer,
+          options: { ...payload.options },
+        }),
+      );
+
+      return response;
+    } catch (e) {
+      rejectWithValue(e);
+    }
+  },
+);
+
+const getSafeDelegatesThunk = createAsyncThunk(
+  'safe/getDelegates',
+  async (payload: { options: GetSafeDelegateProps; signer: ethers.providers.JsonRpcSigner }, { rejectWithValue }) => {
+    try {
+      const safeApi = await createSafeApiService(payload.signer);
+      const response = await safeApi.getSafeDelegates(payload.options);
+      return response;
+    } catch (e) {
+      rejectWithValue(e);
+    }
+  },
+);
+
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   builder.addCase(createSafeThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.selectedSafeAddress = action.payload;
-      state.recentlyCreatedSafe = action.payload;
     }
   });
   builder.addCase(createSafeWithConfigThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.selectedSafeAddress = action.payload;
-      state.recentlyCreatedSafe = action.payload;
     }
   });
   builder.addCase(getSafesByOwnerThunk.fulfilled, (state, action) => {
@@ -417,6 +490,11 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
       state.pendingTransactions = action.payload;
     }
   });
+  builder.addCase(getSafeDelegatesThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      state.safeDelegates = action.payload;
+    }
+  });
 };
 
 export const actionsAsync = {
@@ -432,4 +510,7 @@ export const actionsAsync = {
   getSafeInfoThunk,
   executeTransactionThunk,
   getPendingSafeTransactionsThunk,
+  addSafeDelegateThunk,
+  removeSafeDelegateThunk,
+  getSafeDelegatesThunk,
 };
