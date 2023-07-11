@@ -3,7 +3,6 @@ import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import WagmiProvider from './providers/Wagmi';
-import Watcher from './providers/Watcher';
 import router from './router';
 import store from './store';
 import { ToastContainer } from 'react-toastify';
@@ -14,7 +13,6 @@ function App() {
     <Provider store={store}>
       <WagmiProvider>
         <ThemeProvider theme={theme}>
-          <Watcher />
           <ToastContainer
             position="bottom-right"
             limit={10}

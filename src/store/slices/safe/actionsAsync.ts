@@ -205,12 +205,12 @@ const createSafeTransactionThunk = createAsyncThunk(
   ) => {
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
+      const safeApi = await createSafeApiService(payload.signer);
       // create safe transaction
       const safeTransaction = await safeSDK.createTransaction({ safeTransactionData: payload.safeTransactionData });
       const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
       const senderSignature = await safeSDK.signTransactionHash(safeTxHash);
       const senderAddress = await payload.signer.getAddress();
-      const safeApi = await createSafeApiService(payload.signer);
       // propose safe transaction
       await safeApi.proposeTransaction({
         safeAddress: payload.safeAddress,
@@ -221,14 +221,13 @@ const createSafeTransactionThunk = createAsyncThunk(
       });
       // re fetch all txs
       dispatch(
-        getAllSafeTransactionsThunk({
+        getPendingSafeTransactionsThunk({
           safeAddress: payload.safeAddress,
           signer: payload.signer,
         }),
       );
       return safeTxHash;
     } catch (e) {
-      console.log(e);
       rejectWithValue(e);
     }
   },
@@ -249,23 +248,23 @@ const createSafeRejectionTransactionThunk = createAsyncThunk(
   ) => {
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
+      const safeApi = await createSafeApiService(payload.signer);
       // create safe rejection transaction
-      const safeTransaction = await safeSDK.createRejectionTransaction(payload.nonce);
-      const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
+      const rejectTransaction = await safeSDK.createRejectionTransaction(payload.nonce);
+      const safeTxHash = await safeSDK.getTransactionHash(rejectTransaction);
       const senderSignature = await safeSDK.signTransactionHash(safeTxHash);
       const senderAddress = await payload.signer.getAddress();
-      const safeApi = await createSafeApiService(payload.signer);
       // propose safe transaction
       await safeApi.proposeTransaction({
         safeAddress: payload.safeAddress,
-        safeTransactionData: safeTransaction.data,
+        safeTransactionData: rejectTransaction.data,
         safeTxHash,
         senderAddress,
         senderSignature: senderSignature.data,
       });
       // re fetch all txs
       dispatch(
-        getAllSafeTransactionsThunk({
+        getPendingSafeTransactionsThunk({
           safeAddress: payload.safeAddress,
           signer: payload.signer,
         }),
@@ -297,7 +296,7 @@ const confirmTransactionThunk = createAsyncThunk(
       const confirmTransaction = await safeApi.confirmTransaction(payload.safeTransactionHash, signature.data);
       // re fetch all txs
       dispatch(
-        getAllSafeTransactionsThunk({
+        getPendingSafeTransactionsThunk({
           safeAddress: payload.safeAddress,
           signer: payload.signer,
         }),
@@ -324,18 +323,16 @@ const executeTransactionThunk = createAsyncThunk(
   ) => {
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
-
       await safeSDK.executeTransaction(payload.safeTransaction);
       // re fetch all txs
       dispatch(
-        getAllSafeTransactionsThunk({
+        getPendingSafeTransactionsThunk({
           safeAddress: payload.safeAddress,
           signer: payload.signer,
         }),
       );
       return true;
     } catch (e) {
-      console.log(e);
       rejectWithValue(e);
     }
   },
@@ -354,6 +351,25 @@ const getAllSafeTransactionsThunk = createAsyncThunk(
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const transactions = await safeApi.getAllTransactions(payload.safeAddress, payload.options);
+      return transactions;
+    } catch (e) {
+      rejectWithValue(e);
+    }
+  },
+);
+
+const getPendingSafeTransactionsThunk = createAsyncThunk(
+  'safe/getPendingSafeTransactions',
+  async (
+    payload: {
+      signer: ethers.providers.JsonRpcSigner;
+      safeAddress: string;
+    },
+    { rejectWithValue },
+  ) => {
+    try {
+      const safeApi = await createSafeApiService(payload.signer);
+      const transactions = await safeApi.getPendingTransactions(payload.safeAddress);
       return transactions;
     } catch (e) {
       rejectWithValue(e);
@@ -466,7 +482,12 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   });
   builder.addCase(getAllSafeTransactionsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.safeTransactions = action.payload;
+      state.allTransactions = action.payload;
+    }
+  });
+  builder.addCase(getPendingSafeTransactionsThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      state.pendingTransactions = action.payload;
     }
   });
   builder.addCase(getSafeDelegatesThunk.fulfilled, (state, action) => {
@@ -488,6 +509,7 @@ export const actionsAsync = {
   createSafeTransactionThunk,
   getSafeInfoThunk,
   executeTransactionThunk,
+  getPendingSafeTransactionsThunk,
   addSafeDelegateThunk,
   removeSafeDelegateThunk,
   getSafeDelegatesThunk,

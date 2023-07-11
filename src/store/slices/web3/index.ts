@@ -6,6 +6,7 @@ const web3Slice = createSlice({
   name: 'web3',
   initialState,
   reducers: {
+    resetState: () => initialState,
     setLoading(state, action) {
       state.status.loading = action.payload;
     },
