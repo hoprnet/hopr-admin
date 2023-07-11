@@ -145,7 +145,7 @@ function Section1() {
         nodeActionsAsync.getAliasesThunk({
           apiToken,
           apiEndpoint,
-        })
+        }),
       );
       dispatch(nodeActions.initializeMessagesWebsocket());
       dispatch(nodeActions.initializeLogsWebsocket());
@@ -237,9 +237,7 @@ function Section1() {
       </button>
       <br />
       {connecting && <CircularProgress />}
-      <span>
-        {error}
-      </span>
+      <span>{error}</span>
     </Section>
   );
 }
