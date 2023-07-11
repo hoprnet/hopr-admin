@@ -258,32 +258,32 @@ const LayoutEnhanced = () => {
       authActions.useNodeData({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      }),
+      })
     );
     if (!apiToken) return;
     dispatch(
       authActionsAsync.loginThunk({
         apiEndpoint,
         apiToken,
-      }),
+      })
     );
     dispatch(
       nodeActionsAsync.getInfoThunk({
         apiToken,
         apiEndpoint,
-      }),
+      })
     );
     dispatch(
       nodeActionsAsync.getAddressesThunk({
         apiToken,
         apiEndpoint,
-      }),
+      })
     );
     dispatch(
       nodeActionsAsync.getAliasesThunk({
         apiToken,
         apiEndpoint,
-      }),
+      })
     );
     dispatch(nodeActions.initializeMessagesWebsocket());
     dispatch(nodeActions.initializeLogsWebsocket());

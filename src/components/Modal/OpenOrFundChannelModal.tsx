@@ -47,7 +47,7 @@ export const OpenChannelModal = ({
           amount: weiValue,
           peerId: peerId,
           timeout: 60e3,
-        }),
+        })
       )
         .unwrap()
         .catch((e) => {
@@ -64,7 +64,7 @@ export const OpenChannelModal = ({
           incomingAmount: '0',
           outgoingAmount: weiValue,
           timeout: 60e3,
-        }),
+        })
       )
         .unwrap()
         .catch((e) => {
@@ -84,7 +84,7 @@ export const OpenChannelModal = ({
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      }),
+      })
     );
   };
 

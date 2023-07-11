@@ -56,19 +56,19 @@ function SafeSection() {
                 safeActionsAsync.getSafeInfoThunk({
                   signer,
                   safeAddress,
-                }),
+                })
               );
               dispatch(
                 safeActionsAsync.getAllSafeTransactionsThunk({
                   signer,
                   safeAddress,
-                }),
+                })
               );
               dispatch(
                 safeActionsAsync.getSafeDelegatesThunk({
                   signer,
                   options: { safeAddress },
-                }),
+                })
               );
             }
           }}
@@ -106,7 +106,7 @@ function SafeSection() {
                   threshold,
                 },
                 signer,
-              }),
+              })
             );
           }
         }}
@@ -137,7 +137,7 @@ function SafeSection() {
                   to: signerAddress,
                   data: '0x',
                 },
-              }),
+              })
             );
           }
         }}
@@ -160,7 +160,7 @@ function SafeSection() {
                         signer,
                         safeAddress: transaction.safe,
                         safeTransaction: transaction,
-                      }),
+                      })
                     );
                   }
                 }}
@@ -176,7 +176,7 @@ function SafeSection() {
                         signer,
                         safeAddress: transaction.safe,
                         safeTransactionHash: transaction.safeTxHash,
-                      }),
+                      })
                     );
                   }
                 }}

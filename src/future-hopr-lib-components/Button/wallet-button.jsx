@@ -18,12 +18,12 @@ const SButton = styled(MuiButton)`
 export default function Button(props) {
   function src() {
     switch (props.wallet) {
-    case 'metamask':
-      return '/assets/wallets/MetaMask-Emblem.svg';
-    case 'viewMode':
-      return '/assets/wallets/Eye_open_font_awesome.svg';
-    default:
-      return '';
+      case 'metamask':
+        return '/assets/wallets/MetaMask-Emblem.svg';
+      case 'viewMode':
+        return '/assets/wallets/Eye_open_font_awesome.svg';
+      default:
+        return '';
     }
   }
 

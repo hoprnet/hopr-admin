@@ -42,7 +42,8 @@
     "no-duplicate-imports": "warn",
     "no-console": "warn",
     "prefer-const": "warn",
-    "no-var": "off"
+    "no-var": "off",
+    "linebreak-style": "unix"
   },
   "settings": {
     "react": {

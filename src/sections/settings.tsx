@@ -7,7 +7,7 @@ import {
   TableContainer,
   TableCell,
   Switch,
-  SelectChangeEvent
+  SelectChangeEvent,
 } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../store';
 import Section from '../future-hopr-lib-components/Section';
@@ -32,7 +32,7 @@ function SettingsPage() {
         nodeActionsAsync.getSettingsThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        }),
+        })
       );
     }
   }, [loginData]);
@@ -85,7 +85,7 @@ function SettingsPage() {
           apiToken: loginData.apiToken!,
           setting: 'includeRecipient',
           settingValue: localSettings.includeRecipient,
-        }),
+        })
       )
         .unwrap()
         .catch((e) => {
@@ -100,7 +100,7 @@ function SettingsPage() {
           apiToken: loginData.apiToken!,
           setting: 'strategy',
           settingValue: localSettings.strategy,
-        }),
+        })
       )
         .unwrap()
         .catch((e) => {

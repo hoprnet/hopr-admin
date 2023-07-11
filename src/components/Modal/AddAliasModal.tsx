@@ -10,10 +10,7 @@ type CreateAliasModalProps = {
   peerId?: string;
 };
 
-export const CreateAliasModal = ({
-  handleRefresh,
-  peerId,
-}: CreateAliasModalProps) => {
+export const CreateAliasModal = ({ handleRefresh, peerId }: CreateAliasModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const aliases = useAppSelector((selector) => selector.node.aliases);
@@ -38,10 +35,7 @@ export const CreateAliasModal = ({
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const {
-      name,
-      value,
-    } = event.target;
+    const { name, value } = event.target;
     set_modal({
       ...modal,
       [name]: value,
@@ -94,7 +88,7 @@ export const CreateAliasModal = ({
           peerId: modal.peerId,
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        }),
+        })
       )
         .unwrap()
         .then(() => {

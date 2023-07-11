@@ -9,7 +9,7 @@ import {
   CircularProgress,
   Stack,
   TextField,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
 import { SendMessagePayloadType } from '@hoprnet/hopr-sdk';
@@ -58,17 +58,17 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
 
   useEffect(() => {
     switch (sendMode) {
-    case 'path':
-      set_automaticPath(false);
-      set_numberOfHops('');
-      break;
-    case 'numberOfHops':
-      set_automaticPath(false);
-      set_path('');
-      break;
-    default: //'automaticPath'
-      set_numberOfHops('');
-      set_path('');
+      case 'path':
+        set_automaticPath(false);
+        set_numberOfHops('');
+        break;
+      case 'numberOfHops':
+        set_automaticPath(false);
+        set_path('');
+        break;
+      default: //'automaticPath'
+        set_numberOfHops('');
+        set_path('');
     }
   }, [sendMode, path, automaticPath, numberOfHops]);
 
@@ -120,7 +120,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
   const handleNumberOfHops = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_sendMode('numberOfHops');
     set_numberOfHops(
-      parseInt(event.target.value) || parseInt(event.target.value) === 0 ? parseInt(event.target.value) : '',
+      parseInt(event.target.value) || parseInt(event.target.value) === 0 ? parseInt(event.target.value) : ''
     );
   };
 

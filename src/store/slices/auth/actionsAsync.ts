@@ -11,7 +11,7 @@ export const loginThunk = createAsyncThunk(
       apiToken: loginData.apiToken,
     });
     return info;
-  },
+  }
 );
 
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {

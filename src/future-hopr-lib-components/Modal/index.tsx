@@ -28,13 +28,7 @@ interface Props extends DialogProps {
 }
 
 const Modal: React.FC<Props> = (props) => {
-  const {
-    onClose,
-    selectedValue,
-    open,
-    title,
-    children,
-  } = props;
+  const { onClose, selectedValue, open, title, children } = props;
 
   const handleClose = (event: {}) => {
     // @ts-ignore

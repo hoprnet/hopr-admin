@@ -112,7 +112,7 @@ function XdaiToNode() {
   useEffect(() => {
     if (proposedTxHash) {
       const foundProposedTx = safeTxs?.results.find(
-        (tx) => tx.txType === 'MULTISIG_TRANSACTION' && tx.safeTxHash === proposedTxHash,
+        (tx) => tx.txType === 'MULTISIG_TRANSACTION' && tx.safeTxHash === proposedTxHash
       );
       if (foundProposedTx?.txType === 'MULTISIG_TRANSACTION') {
         set_proposedTx(foundProposedTx);
@@ -132,7 +132,7 @@ function XdaiToNode() {
             value: parseUnits(xdaiValue as `${number}`, 18).toString(),
             data: '0x',
           },
-        }),
+        })
       )
         .unwrap()
         .then((safeTxHash) => {
@@ -160,7 +160,7 @@ function XdaiToNode() {
             safeAddress: selectedSafeAddress,
             signer,
             safeTransaction: safeTx,
-          }),
+          })
         );
       }
     }
@@ -197,14 +197,18 @@ function XdaiToNode() {
   };
 
   const getErrorsForApproveButton = () =>
-    getErrorsForSafeTx({ customValidator: () => {
-      return Number(xdaiValue) ? { errors: [] } : { errors: ['xdai value is required'] };
-    } });
+    getErrorsForSafeTx({
+      customValidator: () => {
+        return Number(xdaiValue) ? { errors: [] } : { errors: ['xdai value is required'] };
+      },
+    });
 
   const getErrorsForExecuteButton = () =>
-    getErrorsForSafeTx({ customValidator: () => {
-      return transactionHasEnoughApprovals() ? { errors: [] } : { errors: ['transaction requires more approvals'] };
-    } });
+    getErrorsForSafeTx({
+      customValidator: () => {
+        return transactionHasEnoughApprovals() ? { errors: [] } : { errors: ['transaction requires more approvals'] };
+      },
+    });
 
   return (
     <Section
@@ -250,8 +254,8 @@ function XdaiToNode() {
                 {transactionHasEnoughApprovals()
                   ? 'transaction has been approved by all required owners'
                   : `transaction is pending ${
-                    (proposedTx?.confirmationsRequired ?? 0) - (proposedTx?.confirmations?.length ?? 0)
-                  } approvals`}
+                      (proposedTx?.confirmationsRequired ?? 0) - (proposedTx?.confirmations?.length ?? 0)
+                    } approvals`}
               </StyledDescription>
               {!transactionHasEnoughApprovals() && (
                 <StyledApproveButton
@@ -262,7 +266,7 @@ function XdaiToNode() {
                           signer,
                           safeAddress: proposedTx.safe,
                           safeTransactionHash: proposedTx.safeTxHash,
-                        }),
+                        })
                       );
                     }
                   }}

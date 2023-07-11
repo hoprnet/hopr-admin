@@ -25,10 +25,7 @@ let prevLatestMessageTimestamp: {
 
 const Watcher = () => {
   const dispatch = useAppDispatch();
-  const {
-    apiEndpoint,
-    apiToken,
-  } = useAppSelector((store) => store.auth.loginData);
+  const { apiEndpoint, apiToken } = useAppSelector((store) => store.auth.loginData);
   const { connected } = useAppSelector((store) => store.auth.status);
   const messages = useAppSelector((store) => store.node.messages);
 
@@ -88,7 +85,7 @@ const Watcher = () => {
       appActions.addNotification({
         ...notificationPayload,
         id: notificationId,
-      }),
+      })
     );
   };
 
@@ -98,7 +95,7 @@ const Watcher = () => {
         nodeActionsAsync.getBalancesThunk({
           apiEndpoint,
           apiToken,
-        }),
+        })
       ).unwrap();
 
       if (!newNodeFunds) return;
@@ -147,7 +144,7 @@ const Watcher = () => {
         nodeActionsAsync.getInfoThunk({
           apiEndpoint,
           apiToken,
-        }),
+        })
       ).unwrap();
 
       if (!newNodeInfo) return;
@@ -161,7 +158,9 @@ const Watcher = () => {
             url: null,
             timeout: null,
           },
-          toastPayload: { message: `node connectivity status updated from ${prevNodeInfo.connectivityStatus} to ${newNodeInfo?.connectivityStatus}` },
+          toastPayload: {
+            message: `node connectivity status updated from ${prevNodeInfo.connectivityStatus} to ${newNodeInfo?.connectivityStatus}`,
+          },
         });
       }
 
@@ -176,7 +175,7 @@ const Watcher = () => {
         nodeActionsAsync.getChannelsThunk({
           apiEndpoint,
           apiToken,
-        }),
+        })
       ).unwrap();
 
       if (!newChannels) return;
@@ -301,7 +300,7 @@ const Watcher = () => {
    */
   const isChannelStatusEqual = (
     oldChannel: GetChannelsResponseType['incoming'][0],
-    newChannel: GetChannelsResponseType['incoming'][0],
+    newChannel: GetChannelsResponseType['incoming'][0]
   ) => {
     return oldChannel.status === newChannel.status;
   };
@@ -326,7 +325,7 @@ const Watcher = () => {
       createdAt: number;
       amountOfTimesRepeated: number;
     } | null,
-    newMessageTimestamp: { createdAt: number; amountOfTimesRepeated: number },
+    newMessageTimestamp: { createdAt: number; amountOfTimesRepeated: number }
   ) => {
     // if oldMessageTimestamp does not exist it is the first message
     if (!oldMessageTimestamp) return true;

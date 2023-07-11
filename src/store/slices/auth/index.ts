@@ -19,7 +19,7 @@ const authSlice = createSlice({
         apiToken: string;
         apiEndpoint: string;
         localName?: string;
-      }>,
+      }>
     ) {
       // Check if we have name saved locally
       let localName: string | null = action.payload.localName ? action.payload.localName : '';
@@ -43,7 +43,7 @@ const authSlice = createSlice({
         apiToken: string;
         apiEndpoint: string;
         localName: string;
-      }>,
+      }>
     ) {
       const newItem = action.payload;
       const existingItem = state.nodes.findIndex((item) => item.apiEndpoint === newItem.apiEndpoint);

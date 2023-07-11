@@ -1,10 +1,4 @@
-import {
-  Description,
-  Image,
-  ImageContainer,
-  StyledCard,
-  Title
-} from './styled'
+import { Description, Image, ImageContainer, StyledCard, Title } from './styled';
 
 type CardProps = {
   image?: {
@@ -18,12 +12,7 @@ type CardProps = {
   children?: JSX.Element;
 };
 
-const Card = ({
-  image,
-  title,
-  description,
-  children,
-}: CardProps) => {
+const Card = ({ image, title, description, children }: CardProps) => {
   return (
     <StyledCard>
       {image && (

@@ -6,10 +6,7 @@ import { actionsAsync } from '../store/slices/node/actionsAsync';
 function MetricsPage() {
   const metrics = useAppSelector((selector) => selector.node.metrics);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const {
-    apiEndpoint,
-    apiToken,
-  } = loginData;
+  const { apiEndpoint, apiToken } = loginData;
 
   const dispatch = useAppDispatch();
 
@@ -19,7 +16,7 @@ function MetricsPage() {
         actionsAsync.getPrometheusMetricsThunk({
           apiEndpoint,
           apiToken,
-        }),
+        })
       );
     }
   }, [apiEndpoint, apiToken]);

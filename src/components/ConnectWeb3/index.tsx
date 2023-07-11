@@ -35,11 +35,7 @@ type ConnectWeb3Props = {
   onClose?: () => void;
 };
 
-export default function ConnectWeb3({
-  inTheAppBar,
-  open,
-  onClose,
-}: ConnectWeb3Props) {
+export default function ConnectWeb3({ inTheAppBar, open, onClose }: ConnectWeb3Props) {
   const dispatch = useAppDispatch();
   const [chooseWalletModal, set_chooseWalletModal] = useState(false);
   const { connect } = useConnect({ connector: new InjectedConnector() });
