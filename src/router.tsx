@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouteObject, useSearchParams, useLocation } from 'react-router-dom';
+import { createBrowserRouter, RouteObject, useSearchParams } from 'react-router-dom';
 
 // Store
 import { useAppDispatch, useAppSelector } from './store';
@@ -49,8 +49,6 @@ import SavingsIcon from '@mui/icons-material/Savings';
 import NodeIcon from '@mui/icons-material/Router';
 import NetworkingIcon from '@mui/icons-material/Diversity3';
 import DevelopIcon from '@mui/icons-material/Code';
-import RepeatIcon from '@mui/icons-material/Repeat';
-import Looks3Icon from '@mui/icons-material/Looks3';
 import PingPage from './sections/ping';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -203,19 +201,6 @@ export const applicationMap: ApplicationMapType = [
     ],
   },
   {
-    groupName: 'Staking',
-    path: 'staking',
-    icon: <RepeatIcon />,
-    items: [
-      {
-        name: 'xdai to node',
-        path: 'xdai-to-node',
-        icon: <Looks3Icon />,
-        element: <XdaiToNodePage />,
-      },
-    ],
-  },
-  {
     groupName: 'Steps',
     path: 'steps',
     icon: <DevelopIcon />,
@@ -247,6 +232,12 @@ export const applicationMap: ApplicationMapType = [
         icon: <AddBoxIcon />,
         element: <NodeAddress />,
         loginNeeded: 'web3',
+      },
+      {
+        name: 'xdai to node',
+        path: 'xdai-to-node',
+        icon: <AddBoxIcon />,
+        element: <XdaiToNodePage />,
       },
     ],
   },
@@ -292,7 +283,7 @@ const LayoutEnhanced = () => {
       nodeActionsAsync.getAliasesThunk({
         apiToken,
         apiEndpoint,
-      })
+      }),
     );
     dispatch(nodeActions.initializeMessagesWebsocket());
     dispatch(nodeActions.initializeLogsWebsocket());

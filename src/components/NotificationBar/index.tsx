@@ -41,13 +41,13 @@ const SIconButton = styled(IconButton)`
 
 const StyledMenuItem = styled(MenuItem)`
   padding-right: 23px;
-  &:not(:last-child){
+  &:not(:last-child) {
     border-bottom: 1px solid #8f8f8f;
   }
   &.unreadMenuItem {
     background-color: rgba(25, 118, 210, 0.15);
     opacity: 90%;
-    &:after{
+    &:after {
       content: '';
       display: block;
       position: relative;
@@ -105,19 +105,18 @@ export default function NotificationBar() {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{ 
+        MenuListProps={{
           'aria-labelledby': 'notification-menu-button',
-          'className': 'notification-menu-list',
+          className: 'notification-menu-list',
         }}
       >
-        {notifications.length > 0 &&
-          <StyledMenuItem
-            className={'informational'}
-          >
-            Notifications are stored locally.<br/>
+        {notifications.length > 0 && (
+          <StyledMenuItem className={'informational'}>
+            Notifications are stored locally.
+            <br />
             They will delete on refresh.
           </StyledMenuItem>
-        }
+        )}
         {notifications.length > 0 ? (
           notifications.map((notification) => (
             <StyledMenuItem
