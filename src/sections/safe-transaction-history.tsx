@@ -1,5 +1,7 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {
   Box,
   Collapse,
@@ -32,9 +34,20 @@ const StyledCollapsibleCell = styled(TableCell)`
 
 const StyledBox = styled(Box)`
   margin: 1;
-  margin-left: auto;
   display: flex;
   justify-content: space-evenly;
+`;
+
+const StyledTransactionHashWithIcon = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  & svg {
+    align-self: flex-end;
+    height: 16px;
+    width: 16px;
+  }
 `;
 
 const GnosisLink = styled.a`
@@ -49,7 +62,7 @@ const GnosisLink = styled.a`
   }
 `;
 
-const GNOSIS_BASE_URL = '';
+const GNOSIS_BASE_URL = 'https://gnosisscan.io';
 
 function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersResponse }) {
   const { transaction } = props;
@@ -156,11 +169,39 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
             <StyledBox>
               <List>
                 <p>Created: {transaction.submissionDate}</p>
-                <p>To: {transaction.value}</p>
-                <p>Safe hash: {truncateEthereumAddress(transaction.safeTxHash)}</p>{' '}
+                <StyledTransactionHashWithIcon>
+                  <span>To: {truncateEthereumAddress(transaction.to)}</span>
+                  <GnosisLink
+                    href={`${GNOSIS_BASE_URL}/address/${transaction.to}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <OpenInNewIcon />
+                  </GnosisLink>
+                </StyledTransactionHashWithIcon>
+                <StyledTransactionHashWithIcon>
+                  <span>Safe hash: {truncateEthereumAddress(transaction.safeTxHash)}</span>
+                  <IconButton
+                    onClick={() => {
+                      navigator.clipboard.writeText(transaction.safeTxHash);
+                    }}
+                  >
+                    {' '}
+                    <ContentCopyIcon />
+                  </IconButton>
+                </StyledTransactionHashWithIcon>
                 {transaction.isExecuted && (
                   <>
-                    <p>Transaction hash: {truncateEthereumAddress(transaction.transactionHash)}</p>
+                    <StyledTransactionHashWithIcon>
+                      <span>Transaction hash: {truncateEthereumAddress(transaction.transactionHash)}</span>
+                      <GnosisLink
+                        href={`${GNOSIS_BASE_URL}/tx/${transaction.transactionHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <OpenInNewIcon />
+                      </GnosisLink>
+                    </StyledTransactionHashWithIcon>
                     <p>Executed: {transaction.executionDate}</p>
                   </>
                 )}
@@ -173,12 +214,30 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
               <List>
                 <h4>Confirmations {`(${transaction.confirmations?.length}/${transaction.confirmationsRequired})`}</h4>
                 {transaction.confirmations?.map((confirmation) => (
-                  <p key={confirmation.owner}>- {confirmation.owner}</p>
+                  <StyledTransactionHashWithIcon key={confirmation.owner}>
+                    <span>- {truncateEthereumAddress(confirmation.owner)}</span>
+                    <GnosisLink
+                      href={`${GNOSIS_BASE_URL}/address/${confirmation.owner}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <OpenInNewIcon />
+                    </GnosisLink>
+                  </StyledTransactionHashWithIcon>
                 ))}
                 {transaction.executor && (
                   <>
                     <h4>Executor</h4>
-                    <p>{transaction.executor}</p>
+                    <StyledTransactionHashWithIcon>
+                      <span>- {truncateEthereumAddress(transaction.executor)}</span>
+                      <GnosisLink
+                        href={`${GNOSIS_BASE_URL}/address/${transaction.executor}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <OpenInNewIcon />
+                      </GnosisLink>
+                    </StyledTransactionHashWithIcon>
                   </>
                 )}
               </List>
@@ -214,53 +273,6 @@ function ModuleTransactionRow(props: { transaction: SafeModuleTransactionWithTra
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-      </TableRow>
-      <TableRow>
-        <StyledCollapsibleCell>
-          <Collapse
-            in={open}
-            timeout="auto"
-            unmountOnExit
-          >
-            <StyledBox>
-              <Typography
-                variant="h6"
-                gutterBottom
-                component="div"
-              >
-                Description
-              </Typography>
-              <Table
-                size="small"
-                aria-label="purchases"
-              >
-                {/* <TableHead>
-                  <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Customer</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Total price ($)</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {row.history.map((historyRow) => (
-                    <TableRow key={historyRow.date}>
-                      <TableCell
-                        component="th"
-                        scope="row"
-                      >
-                        {historyRow.date}
-                      </TableCell>
-                      <TableCell>{historyRow.customerId}</TableCell>
-                      <TableCell align="right">{historyRow.amount}</TableCell>
-                      <TableCell align="right">{Math.round(historyRow.amount * row.price * 100) / 100}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody> */}
-              </Table>
-            </StyledBox>
-          </Collapse>
-        </StyledCollapsibleCell>
       </TableRow>
     </>
   );
