@@ -14,7 +14,7 @@ import SafeDeployed from '../steps/safe/safeDeployed';
 function SafeSection() {
   const account = useAppSelector((store) => store.web3.account) as `0x${string}`;
   const { signer } = useSigner();
-  const [step, set_step] = useState(2);
+  const [step, set_step] = useState(0);
 
   if (!account) {
     return (

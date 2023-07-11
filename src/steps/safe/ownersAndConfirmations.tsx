@@ -21,6 +21,8 @@ import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { safeActionsAsync } from '../../store/slices/safe';
+import { useAppDispatch } from '../../store';
 
 type OwnersAndConfirmationsProps = {
   account: `0x${string}`;
@@ -33,6 +35,7 @@ const OwnersAndConfirmations = ({
   signer,
   set_step,
 }: OwnersAndConfirmationsProps) => {
+  const dispatch = useAppDispatch();
   const [owners, set_owners] = useState<{ id: string; address: string }[]>([]);
   const [threshold, set_threshold] = useState(1);
 
@@ -76,15 +79,15 @@ const OwnersAndConfirmations = ({
 
   const handleContinueClick = async () => {
     if (signer) {
-      // await dispatch(
-      //   safeActionsAsync.createSafeWithConfigThunk({
-      //     config: {
-      //       owners: owners.map((owner) => owner.address),
-      //       threshold,
-      //     },
-      //     signer,
-      //   }),
-      // ).unwrap();
+      await dispatch(
+        safeActionsAsync.createSafeWithConfigThunk({
+          config: {
+            owners: owners.map((owner) => owner.address),
+            threshold,
+          },
+          signer,
+        }),
+      ).unwrap();
       set_step(1);
     }
   };
