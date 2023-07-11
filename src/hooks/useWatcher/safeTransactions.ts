@@ -18,6 +18,7 @@ export const checkIfNewTransaction = (
   newPendingSafeTransaction: SafeMultisigTransactionResponse,
 ) =>
   !previousPendingSafeTransaction ||
+  previousPendingSafeTransaction.safe != newPendingSafeTransaction.safe ||
   new Date(newPendingSafeTransaction.submissionDate).getTime() >
     new Date(previousPendingSafeTransaction.submissionDate).getTime();
 
