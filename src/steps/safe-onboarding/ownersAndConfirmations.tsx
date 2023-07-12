@@ -15,6 +15,7 @@ import {
 import Button from '../../future-hopr-lib-components/Button';
 import Card from '../components/Card';
 import { IconButton, MenuItem, Select, TextField } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // Icons
 import CopyIcon from '@mui/icons-material/ContentCopy';
@@ -36,6 +37,8 @@ const OwnersAndConfirmations = ({
   set_step,
 }: OwnersAndConfirmationsProps) => {
   const dispatch = useAppDispatch();
+  const [loading, set_loading] = useState(false);
+  const [error, set_error] = useState<any>('');
   const [owners, set_owners] = useState<{ id: string; address: string }[]>([]);
   const [threshold, set_threshold] = useState(1);
 
@@ -78,19 +81,29 @@ const OwnersAndConfirmations = ({
   };
 
   const handleContinueClick = async () => {
-    if (signer) {
+    if (!signer) return;
+
+    const config = {
+      owners: owners.map((owner) => owner.address),
+      threshold,
+    };
+
+    try {
+      set_loading(true);
       await dispatch(
         safeActionsAsync.createSafeWithConfigThunk({
-          config: {
-            owners: owners.map((owner) => owner.address),
-            threshold,
-          },
+          config,
           signer,
         }),
       ).unwrap();
       set_step(1);
+    } catch (error) {
+      set_error(error);
+    } finally {
+      set_loading(false);
     }
   };
+
   return (
     <Card
       title="Owners and confirmations"
@@ -163,8 +176,15 @@ const OwnersAndConfirmations = ({
         </Container>
         <ButtonContainer>
           <StyledGrayButton>Back</StyledGrayButton>
-          <Button onClick={handleContinueClick}>Continue</Button>
+          <Button
+            onClick={handleContinueClick}
+            disabled={loading}
+          >
+            Continue
+          </Button>
         </ButtonContainer>
+        {loading && <CircularProgress />}
+        {error && <span>There was an error: {error}</span>}
       </>
     </Card>
   );
