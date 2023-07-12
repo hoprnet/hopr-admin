@@ -7,7 +7,7 @@ import GrayButton from '../../future-hopr-lib-components/Button/gray';
 import Card from '../components/Card';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { useSigner } from '../../hooks';
+import { useEthersSigner } from '../../hooks';
 import { safeActionsAsync } from '../../store/slices/safe';
 
 const ButtonContainer = styled.div`
@@ -26,7 +26,7 @@ const NodeAddress = () => {
   const safeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
   const account = useAppSelector((state) => state.web3.account);
   const navigate = useNavigate();
-  const { signer } = useSigner();
+  const signer = useEthersSigner();
   const [address, set_address] = useState('');
   const [isLoading, set_isLoading] = useState(false);
 
