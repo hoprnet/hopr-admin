@@ -20,6 +20,7 @@ import ChannelsPage from './sections/channels';
 import MetricsPage from './sections/metrics';
 import SafeStakingPage from './sections/safe-staking';
 import SettingsPage from './sections/settings';
+import SafeQueue from './sections/safePendingTransactions';
 import AddNode from './steps/install-node/addNode';
 import SelectNodeType from './steps/install-node/selectNodeType';
 import WrapperPage from './sections/wrapper';
@@ -52,6 +53,7 @@ import NetworkingIcon from '@mui/icons-material/Diversity3';
 import DevelopIcon from '@mui/icons-material/Code';
 import PingPage from './sections/ping';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import SwapVertIcon from '@mui/icons-material/SwapVert';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import DockerInstallation from './steps/install-node/dockerInstallation';
 import NodeAddress from './steps/install-node/nodeAddress';
@@ -184,6 +186,13 @@ export const applicationMap: ApplicationMapType = [
         path: 'safe',
         icon: <LockIcon />,
         element: <SectionSafe />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Pending transactions',
+        path: 'safe/pending-transactions',
+        icon: <SwapVertIcon />,
+        element: <SafeQueue />,
         loginNeeded: 'web3',
       },
       {

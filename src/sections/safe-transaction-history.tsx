@@ -14,12 +14,11 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-  Typography
+  TableRow
 } from '@mui/material';
 import { AllTransactionsListResponse, EthereumTxWithTransfersResponse, SafeModuleTransactionWithTransfersResponse, SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-kit'
 import { useEffect, useState } from 'react';
-import { useSigner } from '../hooks';
+import { useEthersSigner } from '../hooks';
 import { useAppDispatch, useAppSelector } from '../store';
 import { safeActionsAsync } from '../store/slices/safe';
 import { formatEther } from 'viem';
@@ -319,9 +318,9 @@ function TransactionHistoryRow(props: { transaction: AllTransactionsListResponse
 
 export default function SafeTransactionHistoryPage() {
   const dispatch = useAppDispatch();
-  const safeTransactions = useAppSelector((state) => state.safe.safeTransactions);
+  const safeTransactions = useAppSelector((state) => state.safe.allTransactions);
   const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
-  const { signer } = useSigner();
+  const signer = useEthersSigner();
 
   const fetchAllSafeTransaction = () => {
     if (signer && selectedSafeAddress) {
