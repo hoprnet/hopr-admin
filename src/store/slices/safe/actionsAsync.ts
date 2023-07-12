@@ -75,12 +75,20 @@ const createSafeWithConfigThunk = createAsyncThunk(
   ) => {
     try {
       const safeFactory = await createSafeFactory(payload.signer);
-      const safeAccount = await safeFactory.deploySafe({ safeAccountConfig: payload.config });
-      console.log({ safeAccount });
+
+      // The saltNonce is used to calculate a deterministic address for the new Safe contract.
+      // This way, even if the same Safe configuration is used multiple times,
+      // each deployment will result in a new, unique Safe contract.
+      const saltNonce = Date.now().toString();
+
+      const safeAccount = await safeFactory.deploySafe({
+        safeAccountConfig: payload.config,
+        saltNonce,
+      });
+
       const safeAddress = await safeAccount.getAddress();
       return safeAddress;
     } catch (e) {
-      console.log('error creating safe', e);
       return rejectWithValue(e);
     }
   },
