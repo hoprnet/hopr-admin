@@ -55,6 +55,7 @@ function SafeSection() {
           key={safeAddress}
           onClick={() => {
             if (signer) {
+              dispatch(appActions.resetState());
               observePendingSafeTransactions({
                 dispatch,
                 previousState: prevPendingSafeTransaction,
