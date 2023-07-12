@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useWatcher } from '../../hooks';
 // Mui
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
@@ -69,6 +69,9 @@ const StyledMenuItem = styled(MenuItem)`
 `;
 
 export default function NotificationBar() {
+  // start watching notifications
+  useWatcher({});
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const searchParams = useLocation()?.search;
@@ -124,8 +127,8 @@ export default function NotificationBar() {
               key={notification.id}
               onClick={() => {
                 dispatch(appActions.interactedWithNotification(notification.id));
-                if (notification.source === 'node/message') {
-                  navigate(`networking/messages${searchParams ? searchParams : ''}`);
+                if (notification.url) {
+                  navigate(`${notification.url}${searchParams ? searchParams : ''}`);
                 }
               }}
             >

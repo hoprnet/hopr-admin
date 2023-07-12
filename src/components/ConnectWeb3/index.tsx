@@ -6,10 +6,12 @@ import WalletButton from '../../future-hopr-lib-components/Button/wallet-button'
 // Store
 import { useAppDispatch } from '../../store';
 import { web3Actions } from '../../store/slices/web3';
+import { appActions } from '../../store/slices/app';
 
 // wagmi
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
+import { gnosis, localhost } from 'viem/chains';
 
 const AppBarContainer = styled.div`
   height: 59px;
@@ -38,7 +40,7 @@ type ConnectWeb3Props = {
 export default function ConnectWeb3({ inTheAppBar, open, onClose }: ConnectWeb3Props) {
   const dispatch = useAppDispatch();
   const [chooseWalletModal, set_chooseWalletModal] = useState(false);
-  const { connect } = useConnect({ connector: new InjectedConnector() });
+  const { connect } = useConnect({ connector: new InjectedConnector({ chains: [localhost, gnosis] }) });
   const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
 
@@ -67,6 +69,12 @@ export default function ConnectWeb3({ inTheAppBar, open, onClose }: ConnectWeb3P
     }
   };
 
+  const handleDisconnectMM = () => {
+    disconnect();
+    dispatch(appActions.resetSafeState());
+    dispatch(web3Actions.resetState());
+  };
+
   return (
     <>
       {inTheAppBar && (
@@ -80,13 +88,7 @@ export default function ConnectWeb3({ inTheAppBar, open, onClose }: ConnectWeb3P
               Connect Wallet
             </button>
           ) : (
-            <button
-              onClick={() => {
-                disconnect();
-              }}
-            >
-              Disconnect
-            </button>
+            <button onClick={handleDisconnectMM}>Disconnect</button>
           )}
         </AppBarContainer>
       )}

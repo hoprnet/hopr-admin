@@ -6,13 +6,16 @@ import { safeActionsAsync, safeActions } from '../store/slices/safe';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
-import { useSigner } from '../hooks';
+import { useEthersSigner } from '../hooks';
 import { utils } from 'ethers';
+import { observePendingSafeTransactions } from '../hooks/useWatcher/safeTransactions';
+import { appActions } from '../store/slices/app';
 function SafeSection() {
   const dispatch = useAppDispatch();
   const safe = useAppSelector((store) => store.safe);
+  const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
   const { account } = useAppSelector((store) => store.web3);
-  const { signer } = useSigner();
+  const signer = useEthersSigner();
   const [threshold, set_threshold] = useState(1);
   const [owners, set_owners] = useState('');
 
@@ -52,6 +55,16 @@ function SafeSection() {
           key={safeAddress}
           onClick={() => {
             if (signer) {
+              dispatch(appActions.resetState());
+              observePendingSafeTransactions({
+                dispatch,
+                previousState: prevPendingSafeTransaction,
+                selectedSafeAddress: safeAddress,
+                signer,
+                updatePreviousData: (newData) => {
+                  dispatch(appActions.setPrevPendingSafeTransaction(newData));
+                },
+              });
               dispatch(
                 safeActionsAsync.getSafeInfoThunk({
                   signer,
@@ -145,7 +158,7 @@ function SafeSection() {
         create tx proposal
       </button>
       <h2>transactions actions</h2>
-      {safe.safeTransactions?.results.map((transaction, key) => (
+      {safe.allTransactions?.results.map((transaction, key) => (
         <div key={key}>
           <p>
             {transaction.txType} {transaction.to}
