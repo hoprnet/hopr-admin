@@ -5,15 +5,15 @@ import { useAppSelector } from '../../store';
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
-import { useSigner } from '../../hooks';
+import { useEthersSigner } from '../../hooks';
 
 import OwnersAndConfirmations from './ownersAndConfirmations';
 import FundsToSafe from './fundsToSafe';
 import SafeDeployed from './safeDeployed';
 
-function SafeSection() {
+function SafeOnboarding() {
   const account = useAppSelector((store) => store.web3.account) as `0x${string}`;
-  const { signer } = useSigner();
+  const signer = useEthersSigner();
   const [step, set_step] = useState(0);
 
   if (!account) {
@@ -72,4 +72,4 @@ function SafeSection() {
   }
 }
 
-export default SafeSection;
+export default SafeOnboarding;
