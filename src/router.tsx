@@ -25,6 +25,7 @@ import AddNode from './steps/install-node/addNode';
 import SelectNodeType from './steps/install-node/selectNodeType';
 import WrapperPage from './sections/wrapper';
 import XdaiToNodePage from './steps/xdaiToNode';
+import SafeTransactionHistoryPage from './sections/safe-transaction-history';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -57,6 +58,7 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import DockerInstallation from './steps/install-node/dockerInstallation';
 import NodeAddress from './steps/install-node/nodeAddress';
 import PaidIcon from '@mui/icons-material/Paid';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -198,6 +200,13 @@ export const applicationMap: ApplicationMapType = [
         path: 'safe/staking',
         icon: <SavingsIcon />,
         element: <SafeStakingPage />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Transaction history',
+        path: 'safe/transaction-history',
+        icon: <ReceiptIcon />,
+        element: <SafeTransactionHistoryPage />,
         loginNeeded: 'web3',
       },
       {
