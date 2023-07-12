@@ -59,7 +59,7 @@ const createSafeThunk = createAsyncThunk(
       const safeAddress = await safeAccount.getAddress();
       return safeAddress;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   },
 );
@@ -76,10 +76,12 @@ const createSafeWithConfigThunk = createAsyncThunk(
     try {
       const safeFactory = await createSafeFactory(payload.signer);
       const safeAccount = await safeFactory.deploySafe({ safeAccountConfig: payload.config });
+      console.log({ safeAccount });
       const safeAddress = await safeAccount.getAddress();
       return safeAddress;
     } catch (e) {
-      rejectWithValue(e);
+      console.log('error creating safe', e);
+      return rejectWithValue(e);
     }
   },
 );
@@ -98,7 +100,7 @@ const getSafesByOwnerThunk = createAsyncThunk(
       const safeAddresses = await safeApi.getSafesByOwner(signerAddress);
       return safeAddresses;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   },
 );
@@ -132,7 +134,7 @@ const addOwnerToSafeThunk = createAsyncThunk(
       );
       return addOwnerTx;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   },
 );
@@ -166,7 +168,7 @@ const removeOwnerFromSafeThunk = createAsyncThunk(
       );
       return removeOwnerTx;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   },
 );
@@ -185,7 +187,7 @@ const getSafeInfoThunk = createAsyncThunk(
       const safeInfo = await safeApi.getSafeInfo(payload.safeAddress);
       return safeInfo;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   },
 );
@@ -228,7 +230,7 @@ const createSafeTransactionThunk = createAsyncThunk(
       );
       return safeTxHash;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   },
 );
@@ -271,7 +273,7 @@ const createSafeRejectionTransactionThunk = createAsyncThunk(
       );
       return true;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   },
 );
@@ -303,7 +305,7 @@ const confirmTransactionThunk = createAsyncThunk(
       );
       return confirmTransaction;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   },
 );
@@ -333,7 +335,7 @@ const executeTransactionThunk = createAsyncThunk(
       );
       return true;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   },
 );
@@ -353,7 +355,7 @@ const getAllSafeTransactionsThunk = createAsyncThunk(
       const transactions = await safeApi.getAllTransactions(payload.safeAddress, payload.options);
       return transactions;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   },
 );
@@ -372,7 +374,7 @@ const getPendingSafeTransactionsThunk = createAsyncThunk(
       const transactions = await safeApi.getPendingTransactions(payload.safeAddress);
       return transactions;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   },
 );
@@ -403,7 +405,7 @@ const addSafeDelegateThunk = createAsyncThunk(
 
       return response;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   },
 );
@@ -434,7 +436,7 @@ const removeSafeDelegateThunk = createAsyncThunk(
 
       return response;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   },
 );
@@ -447,7 +449,7 @@ const getSafeDelegatesThunk = createAsyncThunk(
       const response = await safeApi.getSafeDelegates(payload.options);
       return response;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   },
 );

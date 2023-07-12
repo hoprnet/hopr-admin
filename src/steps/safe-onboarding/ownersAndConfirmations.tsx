@@ -98,7 +98,7 @@ const OwnersAndConfirmations = ({
       ).unwrap();
       set_step(1);
     } catch (error) {
-      set_error(error);
+      set_error(JSON.stringify(error));
     } finally {
       set_loading(false);
     }
