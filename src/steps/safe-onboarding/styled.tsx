@@ -124,3 +124,8 @@ export const MaxButton = styled(Button)`
   text-transform: uppercase;
   margin-left: auto;
 `;
+
+export const StyledError = styled.p`
+  margin: 0;
+  word-break: break-all;
+`;

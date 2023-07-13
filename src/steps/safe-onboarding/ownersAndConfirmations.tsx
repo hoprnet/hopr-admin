@@ -7,11 +7,12 @@ import {
   AddButton,
   ButtonContainer,
   Container,
+  StyledError,
   FlexContainer,
   StyledGrayButton,
   Subtitle,
   Text
-} from './styled'
+} from './styled';
 import Button from '../../future-hopr-lib-components/Button';
 import Card from '../components/Card';
 import { IconButton, MenuItem, Select, TextField } from '@mui/material';
@@ -89,6 +90,7 @@ const OwnersAndConfirmations = ({
     };
 
     try {
+      set_error('');
       set_loading(true);
       await dispatch(
         safeActionsAsync.createSafeWithConfigThunk({
@@ -98,7 +100,12 @@ const OwnersAndConfirmations = ({
       ).unwrap();
       set_step(1);
     } catch (error) {
-      set_error(JSON.stringify(error));
+      if (error instanceof Error) {
+        set_error(error.message);
+      } else {
+        set_error(JSON.stringify(error, null, 2));
+      }
+      set_step(0);
     } finally {
       set_loading(false);
     }
@@ -184,7 +191,11 @@ const OwnersAndConfirmations = ({
           </Button>
         </ButtonContainer>
         {loading && <CircularProgress />}
-        {error && <span>There was an error: {error}</span>}
+        {error && (
+          <StyledError>
+            <strong>There was an error:</strong> {error}
+          </StyledError>
+        )}
       </>
     </Card>
   );
