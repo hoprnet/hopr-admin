@@ -1,42 +1,137 @@
 import { ReactNode } from 'react';
+import { useAppSelector } from '../store';
 import styled from '@emotion/styled';
 
 import Section from '../future-hopr-lib-components/Section';
-import { useAppSelector } from '../store';
-import { Card, Chip } from '@mui/material';
+import Button from '../future-hopr-lib-components/Button';
+import { Card, Chip, IconButton } from '@mui/material';
+
+import CopyIcon from '@mui/icons-material/ContentCopy';
+import LaunchIcon from '@mui/icons-material/Launch';
+import { Link } from 'react-router-dom';
 
 const StyledCard = styled(Card)`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   padding: 2rem;
   min-width: 1080px;
+`;
+
+const FlexContainer = styled.div`
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+`;
+
+const SafeAddress = styled.p`
+  font-weight: 700;
+  margin: 0;
+`;
+
+const StyledIconButton = styled(IconButton)`
+  & svg {
+    width: 1rem;
+    height: 1rem;
+  }
 `;
 
 const Content = styled.div`
   display: grid;
   gap: 2rem;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: 1fr 1fr 1fr;
+  // for redeemed-tickets: (99px + 99px + 32px => 230px)
+  grid-template-columns: 1fr 230px repeat(2, 99px) 230px 1fr;
+
+  & #wxhopr-total-stake {
+    grid-column: 1/4;
+  }
+
+  & #xdai-in-safe {
+    grid-column: 4/7;
+  }
+
+  & #expected-apy {
+    grid-column: 2/3;
+  }
+
+  & #redeemed-tickets {
+    grid-column: 3/5;
+  }
+
+  & #earned-rewards {
+    grid-column: 5/6;
+  }
+
+  & #stake-development {
+    grid-column: 1/7;
+  }
 `;
 
 const StyledGrayCard = styled(Card)`
   background-color: #edf2f7;
+  display: flex;
+  justify-content: space-between;
   padding: 1rem;
 `;
 
+const CardContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const CardTitle = styled.h4`
+  font-weight: 700;
+  margin: 0;
+`;
+
+const CardValue = styled.h5`
+  font-size: 2rem;
+  font-weight: 500;
+  margin: 0;
+`;
+
+const CardCurrency = styled.p`
+  font-size: 1rem;
+  font-weight: 800;
+  margin: 0;
+  line-height: 1.4;
+`;
+
+const ValueAndCurrency = styled.div`
+  align-items: flex-end;
+  display: flex;
+  gap: 0.5rem;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
 const StyledChip = styled(Chip)<{ color: string }>`
+  align-self: flex-start;
+  background-color: ${(props) => props.color === 'error' && '#ffcbcb'};
   background-color: ${(props) => props.color === 'success' && '#cbffd0'};
-  background-color: ${(props) => props.color === 'error' && '#FFCBCB'};
-  color: ${(props) => props.color === 'success' && '#00C213'};
-  color: ${(props) => props.color === 'error' && '#C20000'};
+  color: ${(props) => props.color === 'error' && '#c20000'};
+  color: ${(props) => props.color === 'success' && '#00c213'};
+  font-weight: 700;
 `;
 
 type GrayCardProps = {
   id: string;
   title?: string;
   value?: string;
+  currency?: 'xDAI' | 'xHOPR' | 'wxHOPR';
   chip?: {
     label: string;
     color: 'success' | 'error';
   };
+  buttons?: {
+    text: string;
+    link: string;
+  }[];
   children?: ReactNode;
 };
 
@@ -44,18 +139,41 @@ const GrayCard = ({
   id,
   title,
   value,
+  currency,
   chip,
+  buttons,
   children,
 }: GrayCardProps) => {
   return (
     <StyledGrayCard id={id}>
-      {title && <p>{title}</p>}
-      {value && <p>{value}</p>}
-      {chip && (
-        <StyledChip
-          label={chip.label}
-          color={chip.color}
-        />
+      {(title || value) && (
+        <CardContent>
+          {title && <CardTitle>{title}</CardTitle>}
+          {value && (
+            <ValueAndCurrency>
+              <CardValue>{value}</CardValue>
+              {currency && <CardCurrency>{currency}</CardCurrency>}
+            </ValueAndCurrency>
+          )}
+          {chip && (
+            <StyledChip
+              label={chip.label}
+              color={chip.color}
+            />
+          )}
+        </CardContent>
+      )}
+      {buttons && (
+        <ButtonGroup>
+          {buttons.map((button) => (
+            <Button
+              key={button.text}
+              href={button.link}
+            >
+              {button.text}
+            </Button>
+          ))}
+        </ButtonGroup>
       )}
       {children}
     </StyledGrayCard>
@@ -71,7 +189,24 @@ const StakingScreen = () => {
       fullHeightMin
     >
       <StyledCard>
-        {selectedSafeAddress ? <p>Safe address: {selectedSafeAddress}</p> : <p>Create a Safe</p>}
+        {selectedSafeAddress && (
+          <FlexContainer>
+            <SafeAddress>Safe address: {selectedSafeAddress}</SafeAddress>
+            <div>
+              <StyledIconButton
+                size="small"
+                onClick={() => navigator.clipboard.writeText(selectedSafeAddress)}
+              >
+                <CopyIcon />
+              </StyledIconButton>
+              <StyledIconButton size="small">
+                <Link to={`https://gnosisscan.io/address/${selectedSafeAddress}`}>
+                  <LaunchIcon />
+                </Link>
+              </StyledIconButton>
+            </div>
+          </FlexContainer>
+        )}
         <Content>
           <GrayCard
             id="wxhopr-total-stake"
@@ -81,16 +216,40 @@ const StakingScreen = () => {
               label: '+12%/24h',
               color: 'success',
             }}
+            buttons={[
+              {
+                text: 'BUY xHOPR',
+                link: '#',
+              },
+              {
+                text: 'xHOPR → wxHOPR',
+                link: '#',
+              },
+              {
+                text: 'STAKE wxHOPR',
+                link: '#',
+              },
+            ]}
           />
           <GrayCard
             id="xdai-in-safe"
             title="xDAI in Safe"
             value="1,329"
+            buttons={[
+              {
+                text: 'FUND SAFE',
+                link: '#',
+              },
+              {
+                text: 'SEND TO NODE',
+                link: '#',
+              },
+            ]}
           />
           <GrayCard
             id="expected-apy"
             title="Expected APY"
-            value="2%"
+            value="2 %"
           />
           <GrayCard
             id="redeemed-tickets"
@@ -104,12 +263,16 @@ const StakingScreen = () => {
           <GrayCard
             id="earned-rewards"
             title="Earned rewards"
-            value="12,736 wxHOPR"
+            value="12,736"
+            currency="wxHOPR"
             chip={{
               label: '-5%/24h',
               color: 'error',
             }}
           />
+          <GrayCard id="stake-development">
+            <p>Cool graph here</p>
+          </GrayCard>
         </Content>
       </StyledCard>
     </Section>
