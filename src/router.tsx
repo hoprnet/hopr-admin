@@ -273,8 +273,6 @@ function createApplicationMap() {
 
 export const applicationMap: ApplicationMapType = createApplicationMap();
 
-console.log('applicationMap', applicationMap);
-
 const LayoutEnhanced = () => {
   const dispatch = useAppDispatch();
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
