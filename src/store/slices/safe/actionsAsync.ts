@@ -206,10 +206,14 @@ const createSafeTransactionThunk = createAsyncThunk(
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       const safeApi = await createSafeApiService(payload.signer);
+      // gets next nonce considering pending txs
+      const nextSafeNonce = await safeApi.getNextNonce(payload.safeAddress);
       // create safe transaction
-      const safeTransaction = await safeSDK.createTransaction({ safeTransactionData: payload.safeTransactionData });
+      const safeTransaction = await safeSDK.createTransaction({ safeTransactionData: {
+        ...payload.safeTransactionData, nonce: nextSafeNonce, 
+      } });
       const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
-      const senderSignature = await safeSDK.signTransactionHash(safeTxHash);
+      const signature = await safeSDK.signTransactionHash(safeTxHash);
       const senderAddress = await payload.signer.getAddress();
       // propose safe transaction
       await safeApi.proposeTransaction({
@@ -217,7 +221,7 @@ const createSafeTransactionThunk = createAsyncThunk(
         safeTransactionData: safeTransaction.data,
         safeTxHash,
         senderAddress,
-        senderSignature: senderSignature.data,
+        senderSignature: signature.data,
       });
       // re fetch all txs
       dispatch(
