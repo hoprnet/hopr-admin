@@ -20,10 +20,12 @@ import ChannelsPage from './sections/channels';
 import MetricsPage from './sections/metrics';
 import SafeStakingPage from './sections/safe-staking';
 import SettingsPage from './sections/settings';
+import SafeQueue from './sections/safePendingTransactions';
 import AddNode from './steps/install-node/addNode';
 import SelectNodeType from './steps/install-node/selectNodeType';
 import WrapperPage from './sections/wrapper';
 import XdaiToNodePage from './steps/xdaiToNode';
+import SafeTransactionHistoryPage from './sections/safe-transaction-history';
 import StakingScreen from './sections/staking-screen';
 
 // Layout
@@ -52,10 +54,12 @@ import NetworkingIcon from '@mui/icons-material/Diversity3';
 import DevelopIcon from '@mui/icons-material/Code';
 import PingPage from './sections/ping';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import SwapVertIcon from '@mui/icons-material/SwapVert';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import DockerInstallation from './steps/install-node/dockerInstallation';
 import NodeAddress from './steps/install-node/nodeAddress';
 import PaidIcon from '@mui/icons-material/Paid';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -193,10 +197,24 @@ export const applicationMap: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
+        name: 'Pending transactions',
+        path: 'safe/pending-transactions',
+        icon: <SwapVertIcon />,
+        element: <SafeQueue />,
+        loginNeeded: 'web3',
+      },
+      {
         name: 'Safe/Staking',
         path: 'safe/staking',
         icon: <SavingsIcon />,
         element: <SafeStakingPage />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Transaction history',
+        path: 'safe/transaction-history',
+        icon: <ReceiptIcon />,
+        element: <SafeTransactionHistoryPage />,
         loginNeeded: 'web3',
       },
       {

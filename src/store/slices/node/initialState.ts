@@ -13,7 +13,7 @@ import type {
   PingNodeResponseType
 } from '@hoprnet/hopr-sdk';
 
-type Message = {
+export type Message = {
   id: string;
   createdAt: number;
   body: string;

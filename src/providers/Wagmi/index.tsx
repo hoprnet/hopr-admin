@@ -1,10 +1,9 @@
-import { ReactElement, JSXElementConstructor, ReactFragment, ReactPortal } from 'react';
+import { JSXElementConstructor, ReactElement, ReactFragment, ReactPortal } from 'react';
 
 // wagmi
-import { WagmiConfig, createConfig } from 'wagmi';
 import { gnosis } from '@wagmi/core/chains';
+import { WagmiConfig, createConfig } from 'wagmi';
 import { createPublicClient, http } from 'viem';
-
 import Updater from './updater';
 
 const config = createConfig({
