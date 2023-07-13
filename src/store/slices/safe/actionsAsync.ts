@@ -214,7 +214,7 @@ const createSafeTransactionThunk = createAsyncThunk(
         nonce: nextSafeNonce,
       } });
       const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
-      const signature = await safeSDK.signTransactionHash(safeTxHash);
+      const signature = await safeSDK.signTypedData(safeTransaction);
       const senderAddress = await payload.signer.getAddress();
       // propose safe transaction
       await safeApi.proposeTransaction({
@@ -257,7 +257,7 @@ const createSafeRejectionTransactionThunk = createAsyncThunk(
       // create safe rejection transaction
       const rejectTransaction = await safeSDK.createRejectionTransaction(payload.nonce);
       const safeTxHash = await safeSDK.getTransactionHash(rejectTransaction);
-      const senderSignature = await safeSDK.signTransactionHash(safeTxHash);
+      const signature = await safeSDK.signTypedData(rejectTransaction);
       const senderAddress = await payload.signer.getAddress();
       // propose safe transaction
       await safeApi.proposeTransaction({
@@ -265,7 +265,7 @@ const createSafeRejectionTransactionThunk = createAsyncThunk(
         safeTransactionData: rejectTransaction.data,
         safeTxHash,
         senderAddress,
-        senderSignature: senderSignature.data,
+        senderSignature: signature.data,
       });
       // re fetch all txs
       dispatch(
