@@ -210,7 +210,8 @@ const createSafeTransactionThunk = createAsyncThunk(
       const nextSafeNonce = await safeApi.getNextNonce(payload.safeAddress);
       // create safe transaction
       const safeTransaction = await safeSDK.createTransaction({ safeTransactionData: {
-        ...payload.safeTransactionData, nonce: nextSafeNonce, 
+        ...payload.safeTransactionData,
+        nonce: nextSafeNonce,
       } });
       const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
       const signature = await safeSDK.signTransactionHash(safeTxHash);
