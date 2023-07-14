@@ -13,7 +13,7 @@ import {
   TableHead,
   TableRow,
   Tooltip
-} from '@mui/material'
+} from '@mui/material';
 
 // MUI ICONS
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -196,7 +196,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
         });
     }
   };
-  
+
   const getType = (transaction: SafeMultisigTransactionResponse) => {
     if (transaction.dataDecoded) {
       const decodedData = getDecodedData(transaction);
@@ -222,23 +222,27 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
 
   const actionButtons = () => {
     if (isTransactionExecutable()) {
-      return  <StyledButtonGroup>
-        <StyledRejectButton onClick={rejectTx}>reject</StyledRejectButton>
-        <StyledApproveButton onClick={executeTx}>execute</StyledApproveButton>
-      </StyledButtonGroup>
+      return (
+        <StyledButtonGroup>
+          <StyledRejectButton onClick={rejectTx}>reject</StyledRejectButton>
+          <StyledApproveButton onClick={executeTx}>execute</StyledApproveButton>
+        </StyledButtonGroup>
+      );
     } else {
-      return <Tooltip title={!isTransactionPendingApprovalFromSigner() && 'You have already approved'}>
-        <span>
-          <StyledApproveButton
-            onClick={approveTx}
-            disabled={!isTransactionPendingApprovalFromSigner()}
-          >
-          approve/sign
-          </StyledApproveButton>
-        </span>
-      </Tooltip>
+      return (
+        <Tooltip title={!isTransactionPendingApprovalFromSigner() && 'You have already approved'}>
+          <span>
+            <StyledApproveButton
+              onClick={approveTx}
+              disabled={!isTransactionPendingApprovalFromSigner()}
+            >
+              approve/sign
+            </StyledApproveButton>
+          </span>
+        </Tooltip>
+      );
     }
-  }
+  };
 
   return (
     <>
@@ -340,7 +344,10 @@ const SafeQueue = () => {
       </Section>
     );
   return (
-    <Section lightBlue fullHeight>
+    <Section
+      lightBlue
+      fullHeight
+    >
       <TableContainer
         component={Paper}
         title="Pending transactions"
