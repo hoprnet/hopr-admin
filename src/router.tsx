@@ -26,6 +26,7 @@ import SelectNodeType from './steps/install-node/selectNodeType';
 import WrapperPage from './sections/wrapper';
 import XdaiToNodePage from './steps/xdaiToNode';
 import SafeTransactionHistoryPage from './sections/safe-transaction-history';
+import SafeOnboarding from './steps/safe-onboarding';
 import StakingScreen from './sections/staking-screen';
 
 // Layout
@@ -231,6 +232,13 @@ export const applicationMap: ApplicationMapType = [
     path: 'steps',
     icon: <DevelopIcon />,
     items: [
+      {
+        name: 'Safe Onboarding',
+        path: 'safe-onboarding',
+        icon: <LockIcon />,
+        element: <SafeOnboarding />,
+        loginNeeded: 'web3',
+      },
       {
         name: 'Add node',
         path: 'add-node',
