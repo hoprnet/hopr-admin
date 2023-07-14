@@ -36,7 +36,7 @@ import { useAccount } from 'wagmi';
 
 // HOOKS
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { formatEther } from 'viem';
 import { useEthersSigner } from '../hooks';
 import { truncateEthereumAddress } from '../utils/helpers';
@@ -69,6 +69,7 @@ const StyledRejectButton = styled(GrayButton)`
 `;
 
 const StyledButtonGroup = styled.div`
+  margin: 1rem;
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
@@ -112,32 +113,31 @@ const GnosisLink = styled.a`
 
 const GNOSIS_BASE_URL = 'https://gnosisscan.io';
 
-const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTransactionResponse }) => {
-  const dispatch = useAppDispatch();
+/**
+ * Checks if transaction is pending approval from connected signer
+ * @returns boolean
+ */
+const isTransactionPendingApprovalFromSigner = (
+  transaction: SafeMultisigTransactionResponse,
+  address: string | undefined,
+) => {
+  const foundSigner = transaction?.confirmations?.find((confirmation) => confirmation.owner === address);
+  if (foundSigner) {
+    return false;
+  }
+  return true;
+};
+
+const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionResponse }) => {
   const signer = useEthersSigner();
+  const dispatch = useAppDispatch();
   const { address } = useAccount();
+  const safeNonce = useAppSelector((state) => state.safe.safeInfo?.nonce);
   const [isLoadingApproving, set_isLoadingApproving] = useState<boolean>(false);
   const [isLoadingExecuting, set_isLoadingExecuting] = useState<boolean>(false);
   const [isLoadingRejecting, set_isLoadingRejecting] = useState<boolean>(false);
-  const [open, set_open] = useState(false);
 
-  const isTransactionExecutable = () => {
-    if (!signer) return false;
-    return (transaction.confirmations?.length ?? 0) >= transaction.confirmationsRequired;
-  };
-  /**
-   * Checks if transaction is pending approval from connected signer
-   * @returns boolean
-   */
-  const isTransactionPendingApprovalFromSigner = () => {
-    const foundSigner = transaction?.confirmations?.find((confirmation) => confirmation.owner === address);
-    if (foundSigner) {
-      return false;
-    }
-    return true;
-  };
-
-  const executeTx = () => {
+  const executeTx = (transaction: SafeMultisigTransactionResponse) => {
     if (signer) {
       set_isLoadingExecuting(true);
       dispatch(
@@ -157,7 +157,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
     }
   };
 
-  const approveTx = () => {
+  const approveTx = (transaction: SafeMultisigTransactionResponse) => {
     if (signer) {
       set_isLoadingApproving(true);
       dispatch(
@@ -177,7 +177,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
     }
   };
 
-  const rejectTx = () => {
+  const rejectTx = (transaction: SafeMultisigTransactionResponse) => {
     if (signer) {
       set_isLoadingRejecting(true);
       dispatch(
@@ -195,6 +195,92 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
           set_isLoadingRejecting(false);
         });
     }
+  };
+
+  const isTransactionApproved = (transaction: SafeMultisigTransactionResponse) => {
+    if (!signer) return false;
+    return (transaction.confirmations?.length ?? 0) >= transaction.confirmationsRequired;
+  };
+
+  const isTransactionExecutable = (transaction: SafeMultisigTransactionResponse) => {
+    if (!signer) return false;
+    if (safeNonce !== transaction.nonce) return false;
+
+    return true;
+  };
+
+  if (isTransactionApproved(transaction)) {
+    return (
+      <>
+        <StyledButtonGroup>
+          <Tooltip
+            title={
+              !isTransactionExecutable(transaction) && `Transaction with nonce ${safeNonce} should be handled first`
+            }
+          >
+            <span>
+              <StyledRejectButton
+                disabled={!isTransactionExecutable(transaction)}
+                onClick={() => rejectTx(transaction)}
+              >
+                reject
+              </StyledRejectButton>
+            </span>
+          </Tooltip>
+          <Tooltip
+            title={
+              !isTransactionExecutable(transaction) && `Transaction with nonce ${safeNonce} should be handled first`
+            }
+          >
+            <span>
+              <StyledApproveButton
+                disabled={!isTransactionExecutable(transaction)}
+                onClick={() => executeTx(transaction)}
+              >
+                execute
+              </StyledApproveButton>
+            </span>
+          </Tooltip>
+        </StyledButtonGroup>
+        {isLoadingExecuting && <p>Executing transaction...</p>}
+        {isLoadingRejecting && <p>Rejecting transaction...</p>}
+      </>
+    );
+  } else {
+    return (
+      <>
+        <StyledButtonGroup>
+          <Tooltip title={!isTransactionPendingApprovalFromSigner(transaction, address) && 'You have already approved'}>
+            <span>
+              <StyledApproveButton
+                onClick={() => approveTx(transaction)}
+                disabled={!isTransactionPendingApprovalFromSigner(transaction, address)}
+              >
+                approve/sign
+              </StyledApproveButton>
+            </span>
+          </Tooltip>
+        </StyledButtonGroup>
+        {isLoadingApproving && <p>Approving transaction with nonce...</p>}
+      </>
+    );
+  }
+};
+
+const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTransactionResponse }) => {
+  const { address } = useAccount();
+  const [open, set_open] = useState(false);
+
+  const getTransactionStatus = (transaction: SafeMultisigTransactionResponse) => {
+    if (transaction.confirmations?.length === transaction.confirmationsRequired) {
+      return 'Awaiting execution';
+    }
+
+    if (isTransactionPendingApprovalFromSigner(transaction, address)) {
+      return 'Needs your confirmation ';
+    }
+
+    return 'Awaiting confirmation';
   };
 
   const getType = (transaction: SafeMultisigTransactionResponse) => {
@@ -220,30 +306,6 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
     }
   };
 
-  const actionButtons = () => {
-    if (isTransactionExecutable()) {
-      return (
-        <StyledButtonGroup>
-          <StyledRejectButton onClick={rejectTx}>reject</StyledRejectButton>
-          <StyledApproveButton onClick={executeTx}>execute</StyledApproveButton>
-        </StyledButtonGroup>
-      );
-    } else {
-      return (
-        <Tooltip title={!isTransactionPendingApprovalFromSigner() && 'You have already approved'}>
-          <span>
-            <StyledApproveButton
-              onClick={approveTx}
-              disabled={!isTransactionPendingApprovalFromSigner()}
-            >
-              approve/sign
-            </StyledApproveButton>
-          </span>
-        </Tooltip>
-      );
-    }
-  };
-
   return (
     <>
       <TableRow>
@@ -256,7 +318,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
         <TableCell align="right">{getType(transaction)}</TableCell>
         <TableCell align="right"> {formatEther(BigInt(transaction.value))}</TableCell>
         <TableCell align="right">{`${transaction.confirmations?.length}/${transaction.confirmationsRequired}`}</TableCell>
-        <TableCell align="right">{transaction.isExecuted ? 'Success' : 'Not executed'}</TableCell>
+        <TableCell align="right">{getTransactionStatus(transaction)}</TableCell>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -318,7 +380,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
                     </GnosisLink>
                   </StyledTransactionHashWithIcon>
                 ))}
-                {actionButtons()}
+                <ActionButtons transaction={transaction} />
               </List>
             </StyledBox>
           </Collapse>
@@ -329,8 +391,37 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
 };
 
 const SafeQueue = () => {
+  const dispatch = useAppDispatch();
   const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions);
   const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
+  const signer = useEthersSigner();
+
+  useEffect(() => {
+    if (signer && selectedSafeAddress) {
+      dispatch(
+        safeActionsAsync.getPendingSafeTransactionsThunk({
+          safeAddress: selectedSafeAddress,
+          signer,
+        }),
+      );
+    }
+
+    const updateSafeNonceInterval = setInterval(() => {
+      if (!signer || !selectedSafeAddress) return;
+      // update safe nonce
+      dispatch(
+        safeActionsAsync.getSafeInfoThunk({
+          signer: signer,
+          safeAddress: selectedSafeAddress,
+        }),
+      );
+    }, 10000)
+    
+    return () => {
+      clearInterval(updateSafeNonceInterval)
+    }
+  }, [selectedSafeAddress]);
+  
 
   if (!selectedSafeAddress)
     return (
