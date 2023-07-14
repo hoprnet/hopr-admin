@@ -9,6 +9,7 @@ import { Card, Chip, IconButton } from '@mui/material';
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { Link } from 'react-router-dom';
+import { useBalance } from 'wagmi';
 
 const StyledCard = styled(Card)`
   display: flex;
@@ -180,8 +181,17 @@ const GrayCard = ({
   );
 };
 
+const wxhoprSmartContractAddress = '0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1';
+
 const StakingScreen = () => {
-  const selectedSafeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress);
+  const selectedSafeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress) as `0x${string}`;
+
+  const { data: wxHOPR_balance } = useBalance({
+    address: selectedSafeAddress ?? undefined,
+    token: wxhoprSmartContractAddress,
+    watch: true,
+  });
+
   return (
     <Section
       lightBlue
@@ -211,7 +221,7 @@ const StakingScreen = () => {
           <GrayCard
             id="wxhopr-total-stake"
             title="wxHOPR Total Stake"
-            value="28,120,578.05"
+            value={wxHOPR_balance?.formatted || '-'}
             chip={{
               label: '+12%/24h',
               color: 'success',
