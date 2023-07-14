@@ -415,22 +415,33 @@ const SafeQueue = () => {
           safeAddress: selectedSafeAddress,
         }),
       );
-    }, 10000)
-    
+    }, 10000);
+
     return () => {
-      clearInterval(updateSafeNonceInterval)
-    }
+      clearInterval(updateSafeNonceInterval);
+    };
   }, [selectedSafeAddress]);
-  
 
   if (!selectedSafeAddress)
     return (
       <Section
-        center
-        fullHeightMin
+        lightBlue
+        fullHeight
       >
         <StyledContainer>
           <Title>Connect to safe</Title>
+        </StyledContainer>
+      </Section>
+    );
+
+  if (!pendingTransactions?.count)
+    return (
+      <Section
+        lightBlue
+        fullHeight
+      >
+        <StyledContainer>
+          <Title>No pending transactions</Title>
         </StyledContainer>
       </Section>
     );
