@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActions, safeActionsAsync } from '../../store/slices/safe';
 
-import { useSigner } from '../../hooks';
+import { useEthersSigner } from '../../hooks';
 
 import Select from '@mui/material/Select';
 import { MenuItem } from '@mui/material';
@@ -21,7 +21,7 @@ const AppBarContainer = styled.div`
 
 export default function ConnectSafe() {
   const dispatch = useAppDispatch();
-  const { signer } = useSigner();
+  const signer = useEthersSigner();
   const connected = useAppSelector((selector) => selector.web3.status);
   const safes = useAppSelector((selector) => selector.safe.safesByOwner);
   const safeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress);
@@ -60,7 +60,11 @@ export default function ConnectSafe() {
       <AppBarContainer>
         <img
           src="/assets/safe-icon.svg"
-          style={{ height: '50px' }}
+          alt="Safe Icon"
+          style={{
+            height: '50px',
+            marginRight: '10px',
+          }}
         />
         {connected.connected ? (
           <>
@@ -73,6 +77,18 @@ export default function ConnectSafe() {
               renderValue={() => shorterAddress(selectedSafeAddress)}
               variant="standard"
               disableUnderline
+              IconComponent={(props) => (
+                <img
+                  src="/assets/dropdown-arrow.svg"
+                  {...props}
+                  style={{ paddingTop: '5px' }}
+                />
+              )}
+              sx={{
+                width: '170px',
+                height: '25px',
+                marginRight: '5px',
+              }}
             >
               {safes.map((safeAddress) => (
                 <MenuItem
