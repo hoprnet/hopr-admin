@@ -1,15 +1,16 @@
 import { ReactNode } from 'react';
+import { useBalance } from 'wagmi';
 import { useAppSelector } from '../store';
 import styled from '@emotion/styled';
 
-import Section from '../future-hopr-lib-components/Section';
 import Button from '../future-hopr-lib-components/Button';
+import Chart from 'react-apexcharts';
+import Section from '../future-hopr-lib-components/Section';
 import { Card, Chip, IconButton } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
-import { Link } from 'react-router-dom';
-import { useBalance } from 'wagmi';
 
 const StyledCard = styled(Card)`
   display: flex;
@@ -120,6 +121,10 @@ const StyledChip = styled(Chip)<{ color: string }>`
   font-weight: 700;
 `;
 
+const ChartContainer = styled.div`
+  width: 100%;
+`;
+
 type GrayCardProps = {
   id: string;
   title?: string;
@@ -167,11 +172,8 @@ const GrayCard = ({
       {buttons && (
         <ButtonGroup>
           {buttons.map((button) => (
-            <Button
-              key={button.text}
-              href={button.link}
-            >
-              {button.text}
+            <Button key={button.text}>
+              <Link to={button.link}>{button.text}</Link>
             </Button>
           ))}
         </ButtonGroup>
@@ -181,11 +183,39 @@ const GrayCard = ({
   );
 };
 
+const ColumnChart = () => {
+  // Dummy data, modify this to make the graph look cool.
+  const options = {
+    chart: { id: 'column-chart' },
+    xaxis: { categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998] },
+  };
+  const series = [
+    {
+      name: 'Stake development',
+      data: [30, 40, 45, 50, 49, 60, 70, 91],
+    },
+  ];
+  return (
+    <ChartContainer>
+      <Chart
+        options={options}
+        series={series}
+        type="bar"
+        height="300"
+      />
+    </ChartContainer>
+  );
+};
+
 const wxhoprSmartContractAddress = '0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1';
 
 const StakingScreen = () => {
   const selectedSafeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress) as `0x${string}`;
 
+  const { data: xDAI_balance } = useBalance({
+    address: selectedSafeAddress,
+    watch: true,
+  });
   const { data: wxHOPR_balance } = useBalance({
     address: selectedSafeAddress ?? undefined,
     token: wxhoprSmartContractAddress,
@@ -233,7 +263,7 @@ const StakingScreen = () => {
               },
               {
                 text: 'xHOPR → wxHOPR',
-                link: '#',
+                link: '/develop/wrapper',
               },
               {
                 text: 'STAKE wxHOPR',
@@ -244,7 +274,7 @@ const StakingScreen = () => {
           <GrayCard
             id="xdai-in-safe"
             title="xDAI in Safe"
-            value="1,329"
+            value={xDAI_balance?.formatted || '-'}
             buttons={[
               {
                 text: 'FUND SAFE',
@@ -281,7 +311,7 @@ const StakingScreen = () => {
             }}
           />
           <GrayCard id="stake-development">
-            <p>Cool graph here</p>
+            <ColumnChart />
           </GrayCard>
         </Content>
       </StyledCard>
