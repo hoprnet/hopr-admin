@@ -59,6 +59,7 @@ import DockerInstallation from './steps/installNode/dockerInstallation';
 import NodeAddress from './steps/installNode/nodeAddress';
 import PaidIcon from '@mui/icons-material/Paid';
 import ReceiptIcon from '@mui/icons-material/Receipt';
+import SafeOnboarding from './steps/safeOnboarding';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -223,6 +224,13 @@ export const applicationMap: ApplicationMapType = [
     path: 'steps',
     icon: <DevelopIcon />,
     items: [
+      {
+        name: 'Safe Onboarding',
+        path: 'safe-onboarding',
+        icon: <LockIcon />,
+        element: <SafeOnboarding />,
+        loginNeeded: 'web3',
+      },
       {
         name: 'Add node',
         path: 'add-node',

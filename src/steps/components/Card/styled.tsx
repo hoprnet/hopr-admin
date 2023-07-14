@@ -20,6 +20,7 @@ export const Image = styled.img`
 `;
 
 export const Title = styled.h2`
+  color: #414141;
   font-size: 32px;
   font-weight: 400;
   text-align: center;
@@ -27,8 +28,10 @@ export const Title = styled.h2`
   margin: 0;
 `;
 
-export const Description = styled.p`
+export const Description = styled.p<{ descriptionLeft?: boolean }>`
+  color: #414141;
   font-weight: 500;
   margin: 0;
-  text-align: center;
+  max-width: 80ch;
+  text-align: ${(props) => (props.descriptionLeft ? 'left' : 'center')};
 `;
