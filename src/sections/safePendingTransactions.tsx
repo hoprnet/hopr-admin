@@ -1,5 +1,25 @@
 // MUI
-import { Paper, Tooltip } from '@mui/material';
+import {
+  Box,
+  Collapse,
+  Divider,
+  IconButton,
+  List,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip
+} from '@mui/material'
+
+// MUI ICONS
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 // STORE
 import { useAppDispatch, useAppSelector } from '../store';
@@ -19,6 +39,7 @@ import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-type
 import { useState } from 'react';
 import { formatEther } from 'viem';
 import { useEthersSigner } from '../hooks';
+import { truncateEthereumAddress } from '../utils/helpers';
 
 const StyledContainer = styled(Paper)`
   min-width: 800px;
@@ -34,19 +55,6 @@ const Title = styled.h2`
   text-align: center;
   text-transform: uppercase;
   margin: 0;
-`;
-
-const StyledPendingSafeTransactionWithFeedback = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-`;
-
-const StyledPendingSafeTransactionInfo = styled.div`
-  display: flex;
-  align-items: baseline;
-  justify-content: space-around;
-  gap: 1rem;
 `;
 
 const StyledApproveButton = styled(Button)`
@@ -67,13 +75,51 @@ const StyledButtonGroup = styled.div`
   align-content: baseline;
 `;
 
-const ApproveTransactionRow = ({ transaction }: { transaction: SafeMultisigTransactionResponse }) => {
+const StyledCollapsibleCell = styled(TableCell)`
+  padding-bottom: 0;
+  padding-top: 0;
+`;
+
+const StyledBox = styled(Box)`
+  margin: 1;
+  display: flex;
+  justify-content: space-evenly;
+`;
+
+const StyledTransactionHashWithIcon = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  & svg {
+    align-self: flex-end;
+    height: 16px;
+    width: 16px;
+  }
+`;
+
+const GnosisLink = styled.a`
+  display: inline-flex;
+  gap: 2px;
+  text-decoration: underline;
+
+  & svg {
+    align-self: flex-end;
+    height: 16px;
+    width: 16px;
+  }
+`;
+
+const GNOSIS_BASE_URL = 'https://gnosisscan.io';
+
+const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTransactionResponse }) => {
   const dispatch = useAppDispatch();
   const signer = useEthersSigner();
   const { address } = useAccount();
   const [isLoadingApproving, set_isLoadingApproving] = useState<boolean>(false);
   const [isLoadingExecuting, set_isLoadingExecuting] = useState<boolean>(false);
   const [isLoadingRejecting, set_isLoadingRejecting] = useState<boolean>(false);
+  const [open, set_open] = useState(false);
 
   const isTransactionExecutable = () => {
     if (!signer) return false;
@@ -150,38 +196,131 @@ const ApproveTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
         });
     }
   };
+  
+  const getType = (transaction: SafeMultisigTransactionResponse) => {
+    if (transaction.dataDecoded) {
+      const decodedData = getDecodedData(transaction);
+      return typeof decodedData === 'string' ? decodedData : decodedData?.method;
+    } else if (BigInt(transaction.value)) {
+      return 'Sent';
+    } else {
+      return 'Rejection';
+    }
+  };
 
-  if (transaction.isExecuted) return <></>;
+  const getDecodedData = (transaction: SafeMultisigTransactionResponse) => {
+    if (typeof transaction.dataDecoded === 'string') {
+      return transaction.dataDecoded;
+    } else if (typeof transaction.dataDecoded === 'object') {
+      const transactionData = transaction.dataDecoded as unknown as {
+        method: string;
+        parameters: { name: string; type: string; value: string }[];
+      };
+      return transactionData;
+    }
+  };
+
+  const actionButtons = () => {
+    if (isTransactionExecutable()) {
+      return  <StyledButtonGroup>
+        <StyledRejectButton onClick={rejectTx}>reject</StyledRejectButton>
+        <StyledApproveButton onClick={executeTx}>execute</StyledApproveButton>
+      </StyledButtonGroup>
+    } else {
+      return <Tooltip title={!isTransactionPendingApprovalFromSigner() && 'You have already approved'}>
+        <span>
+          <StyledApproveButton
+            onClick={approveTx}
+            disabled={!isTransactionPendingApprovalFromSigner()}
+          >
+          approve/sign
+          </StyledApproveButton>
+        </span>
+      </Tooltip>
+    }
+  }
 
   return (
-    <StyledPendingSafeTransactionWithFeedback>
-      <StyledPendingSafeTransactionInfo>
-        <p>{String(transaction.nonce)}</p>
-        <p>{BigInt(transaction.value) ? 'Send' : 'Reject'}</p>
-        <p>{formatEther(BigInt(transaction.value))}</p>
-        <p>{`${transaction.confirmations?.length ?? 0}/${transaction.confirmationsRequired}`}</p>
-        {isTransactionExecutable() ? (
-          <StyledButtonGroup>
-            <StyledRejectButton onClick={rejectTx}>reject</StyledRejectButton>
-            <StyledApproveButton onClick={executeTx}>execute</StyledApproveButton>
-          </StyledButtonGroup>
-        ) : (
-          <Tooltip title={!isTransactionPendingApprovalFromSigner() && 'You have already approved'}>
-            <span>
-              <StyledApproveButton
-                onClick={approveTx}
-                disabled={!isTransactionPendingApprovalFromSigner()}
-              >
-                approve/sign
-              </StyledApproveButton>
-            </span>
-          </Tooltip>
-        )}
-      </StyledPendingSafeTransactionInfo>
-      {isLoadingApproving && <p>Approving transaction with nonce...</p>}
-      {isLoadingExecuting && <p>Executing transaction...</p>}
-      {isLoadingRejecting && <p>Rejecting transaction...</p>}
-    </StyledPendingSafeTransactionWithFeedback>
+    <>
+      <TableRow>
+        <TableCell
+          component="th"
+          scope="row"
+        >
+          {transaction.nonce}
+        </TableCell>
+        <TableCell align="right">{getType(transaction)}</TableCell>
+        <TableCell align="right"> {formatEther(BigInt(transaction.value))}</TableCell>
+        <TableCell align="right">{`${transaction.confirmations?.length}/${transaction.confirmationsRequired}`}</TableCell>
+        <TableCell align="right">{transaction.isExecuted ? 'Success' : 'Not executed'}</TableCell>
+        <TableCell>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => set_open(!open)}
+          >
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <StyledCollapsibleCell colSpan={6}>
+          <Collapse
+            in={open}
+            timeout="auto"
+            unmountOnExit
+          >
+            <StyledBox>
+              <List>
+                <p>Created: {transaction.submissionDate}</p>
+                <StyledTransactionHashWithIcon>
+                  <span>To: {truncateEthereumAddress(transaction.to)}</span>
+                  <GnosisLink
+                    href={`${GNOSIS_BASE_URL}/address/${transaction.to}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <OpenInNewIcon />
+                  </GnosisLink>
+                </StyledTransactionHashWithIcon>
+                <StyledTransactionHashWithIcon>
+                  <span>Safe hash: {truncateEthereumAddress(transaction.safeTxHash)}</span>
+                  <IconButton
+                    onClick={() => {
+                      navigator.clipboard.writeText(transaction.safeTxHash);
+                    }}
+                  >
+                    {' '}
+                    <ContentCopyIcon />
+                  </IconButton>
+                </StyledTransactionHashWithIcon>
+              </List>
+              <Divider
+                orientation="vertical"
+                variant="middle"
+                flexItem
+              />
+              <List>
+                <h4>Confirmations {`(${transaction.confirmations?.length}/${transaction.confirmationsRequired})`}</h4>
+                {transaction.confirmations?.map((confirmation) => (
+                  <StyledTransactionHashWithIcon key={confirmation.owner}>
+                    <span>- {truncateEthereumAddress(confirmation.owner)}</span>
+                    <GnosisLink
+                      href={`${GNOSIS_BASE_URL}/address/${confirmation.owner}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <OpenInNewIcon />
+                    </GnosisLink>
+                  </StyledTransactionHashWithIcon>
+                ))}
+                {actionButtons()}
+              </List>
+            </StyledBox>
+          </Collapse>
+        </StyledCollapsibleCell>
+      </TableRow>
+    </>
   );
 };
 
@@ -201,19 +340,32 @@ const SafeQueue = () => {
       </Section>
     );
   return (
-    <Section
-      center
-      fullHeightMin
-    >
-      <StyledContainer>
-        <Title>Pending transactions</Title>
-        {pendingTransactions?.results.map((transaction) => (
-          <ApproveTransactionRow
-            key={transaction.safeTxHash}
-            transaction={transaction}
-          />
-        ))}
-      </StyledContainer>
+    <Section lightBlue fullHeight>
+      <TableContainer
+        component={Paper}
+        title="Pending transactions"
+      >
+        <Table aria-label="safe pending transactions">
+          <TableHead>
+            <TableRow>
+              <TableCell>Nonce</TableCell>
+              <TableCell align="right">Type</TableCell>
+              <TableCell align="right">Amount</TableCell>
+              <TableCell align="right">Confirmations</TableCell>
+              <TableCell align="right">Status</TableCell>
+              <TableCell />
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {pendingTransactions?.results.map((transaction, key) => (
+              <PendingTransactionRow
+                transaction={transaction}
+                key={key}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Section>
   );
 };
