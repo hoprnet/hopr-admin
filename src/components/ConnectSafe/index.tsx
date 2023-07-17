@@ -15,7 +15,6 @@ import { appActions } from '../../store/slices/app';
 
 const AppBarContainer = styled.div`
   align-items: center;
-  background-color: salmon;
   border-right: 1px lightgray solid;
   display: flex;
   height: 59px;
