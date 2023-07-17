@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, MouseEvent } from 'react';
 import styled from '@emotion/styled';
 import Modal from '../../future-hopr-lib-components/Modal';
 import WalletButton from '../../future-hopr-lib-components/Button/wallet-button';
 
 // Store
-import { useAppDispatch } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { web3Actions } from '../../store/slices/web3';
 import { appActions } from '../../store/slices/app';
 
@@ -12,10 +12,11 @@ import { appActions } from '../../store/slices/app';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { gnosis, localhost } from 'viem/chains';
+import { Button, Menu, MenuItem } from '@mui/material';
 
 const AppBarContainer = styled.div`
   height: 59px;
-  width: 160px;
+  width: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,9 +45,12 @@ export default function ConnectWeb3({
 }: ConnectWeb3Props) {
   const dispatch = useAppDispatch();
   const [chooseWalletModal, set_chooseWalletModal] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const { connect } = useConnect({ connector: new InjectedConnector({ chains: [localhost, gnosis] }) });
   const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
+  const account = useAppSelector((selector) => selector.web3.account);
+  const [currentAccount, set_currentAccount] = useState('');
 
   useEffect(() => {
     if (isConnected) handleClose();
@@ -57,6 +61,12 @@ export default function ConnectWeb3({
       set_chooseWalletModal(open);
     }
   }, [open]);
+
+  useEffect(() => {
+    if (account) {
+      set_currentAccount(account);
+    }
+  }, [account]);
 
   const handleClose = () => {
     if (onClose) {
@@ -79,6 +89,20 @@ export default function ConnectWeb3({
     dispatch(web3Actions.resetState());
   };
 
+  // New function to handle opening the menu
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  // New function to handle closing the menu
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const shorterAddress = (address: string) => {
+    return `${address.substring(0, 6)}...${address.substring(address.length - 6, address.length)}`;
+  };
+
   return (
     <>
       {inTheAppBar && (
@@ -96,7 +120,22 @@ export default function ConnectWeb3({
               Connect Wallet
             </button>
           ) : (
-            <button onClick={handleDisconnectMM}>Disconnect</button>
+            <>
+              <Button
+                onClick={handleOpenMenu}
+                sx={{ color: 'black' }}
+              >
+                {shorterAddress(currentAccount)}
+              </Button>
+
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleCloseMenu}
+              >
+                <MenuItem onClick={handleDisconnectMM}>Disconnect</MenuItem>
+              </Menu>
+            </>
           )}
         </AppBarContainer>
       )}
