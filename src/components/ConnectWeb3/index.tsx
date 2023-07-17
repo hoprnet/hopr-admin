@@ -16,10 +16,18 @@ import { Button, Menu, MenuItem } from '@mui/material';
 
 const AppBarContainer = styled.div`
   height: 59px;
-  width: 200px;
+  width: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
+  & .image-container {
+    height: 50px;
+    width: 50px;
+    & img {
+      width: 100%;
+      height: 100%;
+    }
+  }
 `;
 
 const ConnectWalletContent = styled.div`
@@ -29,6 +37,22 @@ const ConnectWalletContent = styled.div`
   margin-top: 8px;
   p {
     margin-top: 48px;
+  }
+`;
+
+const Web3Button = styled(Button)`
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: #414141;
+  & p {
+    margin: 0;
+    font-size: 12px;
+  }
+  & .chain {
+    color: #808080;
+    line-height: 12px;
   }
 `;
 
@@ -50,6 +74,7 @@ export default function ConnectWeb3({
   const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
   const account = useAppSelector((selector) => selector.web3.account);
+  const chain = useAppSelector((selector) => selector.web3.chain);
   const [currentAccount, set_currentAccount] = useState('');
 
   useEffect(() => {
@@ -100,33 +125,30 @@ export default function ConnectWeb3({
   };
 
   const shorterAddress = (address: string) => {
-    return `${address.substring(0, 6)}...${address.substring(address.length - 6, address.length)}`;
+    return `${address.substring(0, 6)}...${address.substring(address.length - 4, address.length)}`;
   };
 
   return (
     <>
       {inTheAppBar && (
         <AppBarContainer>
-          <img
-            src="/assets/wallets/MetaMask_Fox.svg"
-            style={{ height: '50px' }}
-          />
+          <div className="image-container">
+            <img src="/assets/wallets/MetaMask_Fox.svg" />
+          </div>
           {!isConnected ? (
-            <button
+            <Web3Button
               onClick={() => {
                 set_chooseWalletModal(true);
               }}
             >
               Connect Wallet
-            </button>
+            </Web3Button>
           ) : (
             <>
-              <Button
-                onClick={handleOpenMenu}
-                sx={{ color: 'black' }}
-              >
-                {shorterAddress(currentAccount)}
-              </Button>
+              <Web3Button onClick={handleOpenMenu}>
+                <p className="chain">Metamask @ {chain}</p>
+                <p>eth: {shorterAddress(currentAccount)}</p>
+              </Web3Button>
 
               <Menu
                 anchorEl={anchorEl}
