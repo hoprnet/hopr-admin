@@ -485,9 +485,7 @@ const SafeQueue = () => {
       lightBlue
       fullHeight
     >
-      <TableContainer
-        component={Paper}
-      >
+      <TableContainer component={Paper}>
         <Table aria-label="safe pending transactions">
           <TableHead>
             <TableRow>
