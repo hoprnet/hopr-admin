@@ -61,6 +61,7 @@ import NodeAddress from './steps/installNode/nodeAddress';
 import PaidIcon from '@mui/icons-material/Paid';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import SafeOnboarding from './steps/safeOnboarding';
+import NoNodeAdded from './sections/noNodeAdded';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -188,6 +189,13 @@ export const applicationMap: ApplicationMapType = [
         path: 'staking-screen',
         icon: <SavingsIcon />,
         element: <StakingScreen />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'No node added',
+        path: 'no-node',
+        icon: <SavingsIcon />,
+        element: <NoNodeAdded />,
         loginNeeded: 'web3',
       },
       {
