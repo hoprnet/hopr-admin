@@ -2,7 +2,7 @@ import { ThemeProvider } from '@mui/material';
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
-import WagmiProvider from './providers/Wagmi';
+import WagmiProvider from './providers/wagmi';
 import router from './router';
 import store from './store';
 import { ToastContainer } from 'react-toastify';
