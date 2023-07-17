@@ -189,30 +189,27 @@ const SafeQueue = () => {
   const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions);
   const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
 
-  if (!selectedSafeAddress)
-    return (
-      <Section
-        center
-        fullHeightMin
-      >
-        <StyledContainer>
-          <Title>Connect to safe</Title>
-        </StyledContainer>
-      </Section>
-    );
   return (
     <Section
       center
+      lightBlue
       fullHeightMin
     >
       <StyledContainer>
-        <Title>Pending transactions</Title>
-        {pendingTransactions?.results.map((transaction) => (
-          <ApproveTransactionRow
-            key={transaction.safeTxHash}
-            transaction={transaction}
-          />
-        ))}
+          {
+            selectedSafeAddress ? 
+              <>
+                <Title>Pending transactions</Title>
+                {pendingTransactions?.results.map((transaction) => (
+                  <ApproveTransactionRow
+                    key={transaction.safeTxHash}
+                    transaction={transaction}
+                  />
+                ))}
+              </>
+            :
+              <Title>Connect to safe</Title>
+          }
       </StyledContainer>
     </Section>
   );

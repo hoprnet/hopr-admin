@@ -66,6 +66,7 @@ function TicketsPage() {
       className="Section--tickets"
       id="Section--tickets"
       yellow
+      fullHeightMin
     >
       <h2>
         Tickets <button onClick={handleRefresh}>Refresh</button>

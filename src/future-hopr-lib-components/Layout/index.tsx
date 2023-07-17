@@ -14,7 +14,13 @@ import Drawer from './drawer';
 // Types
 import { ApplicationMapType } from '../../router';
 
-const SLayout = styled.div``;
+const SLayout = styled.div`
+  &.webapp {
+    .Section.full-height-min {
+      min-height: calc(100vh - 60px - 80px);
+    }
+  }
+`;
 
 type ContentType = {
   openedNavigationDrawer: boolean;
@@ -80,7 +86,7 @@ const Layout: React.FC<{
   const [openedNavigationDrawer, set_openedNavigationDrawer] = useState(!isMobile);
 
   return (
-    <SLayout className="Layout">
+    <SLayout className={`Layout${webapp ? ' webapp' : ''}`}>
       <NavBar
         mainLogo="/logo.svg"
         mainLogoAlt="hopr logo"
