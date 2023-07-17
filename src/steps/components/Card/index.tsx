@@ -15,6 +15,7 @@ type CardProps = {
   };
   title?: string;
   description?: string;
+  descriptionLeft?: boolean;
   children?: JSX.Element;
 };
 
@@ -22,6 +23,7 @@ const Card = ({
   image,
   title,
   description,
+  descriptionLeft,
   children,
 }: CardProps) => {
   return (
@@ -38,7 +40,7 @@ const Card = ({
         </ImageContainer>
       )}
       {title && <Title>{title}</Title>}
-      {description && <Description>{description}</Description>}
+      {description && <Description descriptionLeft={descriptionLeft}>{description}</Description>}
       {children}
     </StyledCard>
   );
