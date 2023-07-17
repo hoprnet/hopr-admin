@@ -18,15 +18,14 @@ import PeersPage from './sections/peers';
 import TicketsPage from './sections/tickets';
 import ChannelsPage from './sections/channels';
 import MetricsPage from './sections/metrics';
-import SafeStakingPage from './sections/safe-staking';
+import SafeStakingPage from './sections/safeStaking';
 import SettingsPage from './sections/settings';
 import SafeQueue from './sections/safePendingTransactions';
-import AddNode from './steps/install-node/addNode';
-import SelectNodeType from './steps/install-node/selectNodeType';
+import AddNode from './steps/installNode/addNode';
+import SelectNodeType from './steps/installNode/selectNodeType';
 import WrapperPage from './sections/wrapper';
 import XdaiToNodePage from './steps/xdaiToNode';
-import SafeTransactionHistoryPage from './sections/safe-transaction-history';
-import SafeOnboarding from './steps/safe-onboarding';
+import SafeTransactionHistoryPage from './sections/safeTransactionHistory';
 import StakingScreen from './sections/staking-screen';
 
 // Layout
@@ -57,10 +56,11 @@ import PingPage from './sections/ping';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import AddBoxIcon from '@mui/icons-material/AddBox';
-import DockerInstallation from './steps/install-node/dockerInstallation';
-import NodeAddress from './steps/install-node/nodeAddress';
+import DockerInstallation from './steps/installNode/dockerInstallation';
+import NodeAddress from './steps/installNode/nodeAddress';
 import PaidIcon from '@mui/icons-material/Paid';
 import ReceiptIcon from '@mui/icons-material/Receipt';
+import SafeOnboarding from './steps/safeOnboarding';
 
 export type ApplicationMapType = {
   groupName: string;
