@@ -33,6 +33,10 @@ import Section from '../future-hopr-lib-components/Section';
 // LIBS
 import styled from '@emotion/styled';
 import { useAccount } from 'wagmi';
+import { default as dayjs } from 'dayjs';
+import { default as utc } from 'dayjs/plugin/utc';
+import { default as timezone } from 'dayjs/plugin/timezone';
+import { default as relativeTime } from 'dayjs/plugin/relativeTime';
 
 // HOOKS
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
@@ -40,6 +44,7 @@ import { useEffect, useState } from 'react';
 import { formatEther } from 'viem';
 import { useEthersSigner } from '../hooks';
 import { truncateEthereumAddress } from '../utils/helpers';
+import { SafeMultisigTransactionListResponse } from '@safe-global/api-kit';
 
 const StyledContainer = styled(Paper)`
   min-width: 800px;
@@ -213,11 +218,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
     return (
       <>
         <StyledButtonGroup>
-          <Tooltip
-            title={
-              !isTransactionExecutable(transaction) && `Transaction with nonce ${safeNonce} should be handled first`
-            }
-          >
+          <Tooltip title={!isTransactionExecutable(transaction) && `Earlier actions should be handled first`}>
             <span>
               <StyledRejectButton
                 disabled={!isTransactionExecutable(transaction)}
@@ -227,11 +228,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
               </StyledRejectButton>
             </span>
           </Tooltip>
-          <Tooltip
-            title={
-              !isTransactionExecutable(transaction) && `Transaction with nonce ${safeNonce} should be handled first`
-            }
-          >
+          <Tooltip title={!isTransactionExecutable(transaction) && `Earlier actions should be handled first`}>
             <span>
               <StyledApproveButton
                 disabled={!isTransactionExecutable(transaction)}
@@ -306,6 +303,31 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
     }
   };
 
+  const formatDateToUserTimezone = (date: string) => {
+    dayjs.extend(utc);
+    dayjs.extend(timezone);
+    // guess user timezone;
+    const userTimezone = dayjs.tz.guess();
+    const formattedDate = `${dayjs(date).tz(userTimezone).format('YYYY-MM-DD HH:MM')} GMT ${dayjs(date)
+      .tz(userTimezone)
+      .format('Z')}`;
+
+    return formattedDate;
+  };
+
+  const calculateRelativeTime = (date: string) => {
+    // add relative time plugin to dayjs
+    dayjs.extend(relativeTime);
+    const daysSinceDate = dayjs().diff(date, 'days');
+
+    if (daysSinceDate > 7) {
+      return formatDateToUserTimezone(date);
+    }
+
+    const relativeDateString = dayjs(date).fromNow();
+    return relativeDateString;
+  };
+
   return (
     <>
       <TableRow>
@@ -313,7 +335,9 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
           component="th"
           scope="row"
         >
-          {transaction.nonce}
+          <Tooltip title={formatDateToUserTimezone(transaction.submissionDate)}>
+            <span>{calculateRelativeTime(transaction.submissionDate)}</span>
+          </Tooltip>
         </TableCell>
         <TableCell align="right">{getType(transaction)}</TableCell>
         <TableCell align="right"> {formatEther(BigInt(transaction.value))}</TableCell>
@@ -338,7 +362,8 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
           >
             <StyledBox>
               <List>
-                <p>Created: {transaction.submissionDate}</p>
+                <p>Nonce: {transaction.nonce}</p>
+                <p>Created: {formatDateToUserTimezone(transaction.submissionDate)}</p>
                 <StyledTransactionHashWithIcon>
                   <span>To: {truncateEthereumAddress(transaction.to)}</span>
                   <GnosisLink
@@ -422,6 +447,16 @@ const SafeQueue = () => {
     };
   }, [selectedSafeAddress]);
 
+  const sortByDate = (pendingTransactions: SafeMultisigTransactionListResponse) => {
+    if (!pendingTransactions.count) return null;
+    const sortedCopy: SafeMultisigTransactionListResponse = JSON.parse(JSON.stringify(pendingTransactions));
+
+    // sort from oldest date to newest
+    return sortedCopy.results.sort(
+      (prevDay, nextDay) => dayjs(prevDay.submissionDate).valueOf() - dayjs(nextDay.submissionDate).valueOf(),
+    );
+  };
+
   if (!selectedSafeAddress)
     return (
       <Section
@@ -452,12 +487,11 @@ const SafeQueue = () => {
     >
       <TableContainer
         component={Paper}
-        title="Pending transactions"
       >
         <Table aria-label="safe pending transactions">
           <TableHead>
             <TableRow>
-              <TableCell>Nonce</TableCell>
+              <TableCell>Date</TableCell>
               <TableCell align="right">Type</TableCell>
               <TableCell align="right">Amount</TableCell>
               <TableCell align="right">Confirmations</TableCell>
@@ -466,7 +500,7 @@ const SafeQueue = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {pendingTransactions?.results.map((transaction, key) => (
+            {sortByDate(pendingTransactions)?.map((transaction, key) => (
               <PendingTransactionRow
                 transaction={transaction}
                 key={key}
