@@ -136,7 +136,7 @@ export const observeNodeBalances = ({
             },
             toastPayload: { message: `Node xDai level is low, node has ${formatEther(
               BigInt(newNativeBalance),
-            )} and should have ${formatEther(BigInt(minimumNodeBalances.native))}}` },
+            )} and should have ${formatEther(BigInt(minimumNodeBalances.native))}` },
             dispatch,
           });
         },
