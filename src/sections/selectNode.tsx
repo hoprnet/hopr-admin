@@ -153,10 +153,12 @@ function Section1() {
         dispatch(nodeActions.initializeLogsWebsocket());
       }
     } catch (e) {
-      const nodeBalances = await dispatch(nodeActionsAsync.getBalancesThunk({
-        apiEndpoint,
-        apiToken,
-      })).unwrap()
+      const nodeBalances = await dispatch(
+        nodeActionsAsync.getBalancesThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      ).unwrap();
 
       const addresses = await dispatch(
         nodeActionsAsync.getAddressesThunk({
@@ -166,16 +168,17 @@ function Section1() {
       ).unwrap();
 
       const minimumNodeBalance = parseEther('0.001');
-      
+
       if (nodeBalances?.native && BigInt(nodeBalances.native) < minimumNodeBalance) {
-        dispatch(authActions.setStatusError(`Unable to connect.
+        dispatch(
+          authActions.setStatusError(`Unable to connect.
         \n Your xDai balance seems to low to operate the node. 
         \n Please top up your node.
-        \n Address: ${addresses?.native} \n\n' + ${JSON.stringify(error)}`,
-        ))
+        \n Address: ${addresses?.native} \n\n' + ${JSON.stringify(error)}`),
+        );
       }
-    } 
-  }
+    }
+  };
 
   const clearLocalNodes = () => {
     set_nodesSavedLocallyChosenIndex('');

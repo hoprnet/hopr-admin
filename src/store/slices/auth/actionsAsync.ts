@@ -13,8 +13,8 @@ export const loginThunk = createAsyncThunk(
       });
       return info;
     } catch (e) {
-      return rejectWithValue(e)
-    } 
+      return rejectWithValue(e);
+    }
   },
 );
 

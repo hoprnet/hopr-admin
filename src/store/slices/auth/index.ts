@@ -69,7 +69,7 @@ const authSlice = createSlice({
       localStorage.removeItem('admin-ui-node-list');
     },
     setStatusError(state, action: PayloadAction<string>) {
-      state.status.error = action.payload
+      state.status.error = action.payload;
     },
   },
   extraReducers: (builder) => createExtraReducers(builder),
