@@ -137,6 +137,7 @@ type GrayCardProps = {
   buttons?: {
     text: string;
     link: string;
+    disabled?: boolean;
   }[];
   children?: ReactNode;
 };
@@ -172,7 +173,10 @@ const GrayCard = ({
       {buttons && (
         <ButtonGroup>
           {buttons.map((button) => (
-            <Button key={button.text}>
+            <Button
+              key={button.text}
+              disabled={button.disabled}
+            >
               <Link to={button.link}>{button.text}</Link>
             </Button>
           ))}
@@ -260,6 +264,7 @@ const StakingScreen = () => {
               {
                 text: 'BUY xHOPR',
                 link: '#',
+                disabled: true,
               },
               {
                 text: 'xHOPR → wxHOPR',
@@ -268,6 +273,7 @@ const StakingScreen = () => {
               {
                 text: 'STAKE wxHOPR',
                 link: '#',
+                disabled: true,
               },
             ]}
           />
@@ -279,10 +285,12 @@ const StakingScreen = () => {
               {
                 text: 'FUND SAFE',
                 link: '#',
+                disabled: true,
               },
               {
                 text: 'SEND TO NODE',
                 link: '#',
+                disabled: true,
               },
             ]}
           />
