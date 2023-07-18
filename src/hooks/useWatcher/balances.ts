@@ -3,7 +3,7 @@ import { useAppDispatch } from '../../store';
 import { observeData } from './observeData';
 import { nodeActionsAsync } from '../../store/slices/node';
 import { sendNotification } from './notifications';
-import { formatEther, parseEther } from 'viem';
+import { formatEther } from 'viem';
 
 /**
  * Checks if the new balance is greater than the previous balance.
@@ -14,9 +14,6 @@ import { formatEther, parseEther } from 'viem';
  */
 export const balanceHasIncreased = (prevBalance: string, newBalance: string) =>
   BigInt(prevBalance) < BigInt(newBalance);
-
-export const balanceIsLessThanMinimumThreshold = (minimumThreshold: bigint, newBalance: string) =>
-  BigInt(newBalance) < minimumThreshold;
 
 /**
  * Handles balance notifications.
