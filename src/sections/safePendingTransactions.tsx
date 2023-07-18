@@ -457,56 +457,43 @@ const SafeQueue = () => {
     );
   };
 
-  if (!selectedSafeAddress)
-    return (
-      <Section
-        lightBlue
-        fullHeight
-      >
-        <StyledContainer>
-          <Title>Connect to safe</Title>
-        </StyledContainer>
-      </Section>
-    );
-
-  if (!pendingTransactions?.count)
-    return (
-      <Section
-        lightBlue
-        fullHeight
-      >
-        <StyledContainer>
-          <Title>No pending transactions</Title>
-        </StyledContainer>
-      </Section>
-    );
   return (
     <Section
       lightBlue
-      fullHeight
+      fullHeightMin
     >
-      <TableContainer component={Paper}>
-        <Table aria-label="safe pending transactions">
-          <TableHead>
-            <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell align="right">Type</TableCell>
-              <TableCell align="right">Amount</TableCell>
-              <TableCell align="right">Confirmations</TableCell>
-              <TableCell align="right">Status</TableCell>
-              <TableCell />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sortByDate(pendingTransactions)?.map((transaction, key) => (
-              <PendingTransactionRow
-                transaction={transaction}
-                key={key}
-              />
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <StyledContainer>
+        { !selectedSafeAddress ?
+          <Title>Connect to safe</Title>
+         :
+          <TableContainer component={Paper}>
+            <Table aria-label="safe pending transactions">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Date</TableCell>
+                  <TableCell align="right">Type</TableCell>
+                  <TableCell align="right">Amount</TableCell>
+                  <TableCell align="right">Confirmations</TableCell>
+                  <TableCell align="right">Status</TableCell>
+                  <TableCell />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {
+                  (pendingTransactions && !!pendingTransactions?.count) &&
+                  sortByDate(pendingTransactions)?.map((transaction, key) => (
+                    <PendingTransactionRow
+                      transaction={transaction}
+                      key={key}
+                    />
+                  ))
+                }
+                { pendingTransactions && !pendingTransactions?.count && <span>No entries</span> }
+              </TableBody>
+            </Table>
+          </TableContainer>
+        }
+      </StyledContainer>
     </Section>
   );
 };

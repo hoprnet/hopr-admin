@@ -344,7 +344,10 @@ export default function SafeTransactionHistoryPage() {
   }
 
   return (
-    <Section lightBlue>
+    <Section 
+      lightBlue
+      fullHeightMin
+    >
       <TableContainer
         component={Paper}
         title="Transaction history"

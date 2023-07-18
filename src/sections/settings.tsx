@@ -114,6 +114,7 @@ function SettingsPage() {
       className="Section--settings"
       id="Section--settings"
       yellow
+      fullHeightMin
     >
       <h2>Settings</h2>
       <TableContainer>

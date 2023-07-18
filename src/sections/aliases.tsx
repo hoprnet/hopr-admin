@@ -58,6 +58,7 @@ function AliasesPage() {
       className="Section--aliases"
       id="Section--aliases"
       yellow
+      fullHeightMin
     >
       <h2>Add new alias</h2>
       <CreateAliasModal handleRefresh={handleRefresh} />

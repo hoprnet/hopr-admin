@@ -76,7 +76,10 @@ function PeersPage() {
   };
 
   return (
-    <Section>
+    <Section
+      yellow
+      fullHeightMin
+    >
       <h2>
         Peers seen in the network ({peers?.announced?.length || '-'}) <button onClick={handleRefresh}>Refresh</button>
       </h2>

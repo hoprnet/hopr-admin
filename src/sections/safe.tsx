@@ -46,7 +46,8 @@ function SafeSection() {
     <Section
       className="Section--safe"
       id="Section--safe"
-      yellow
+      lightBlue
+      fullHeightMin
     >
       <h1>Safe</h1>
       <h2>existing safes</h2>
