@@ -123,60 +123,33 @@ function Section1() {
         localName,
       }),
     );
-    try {
-      const loginInfo = await dispatch(
-        authActionsAsync.loginThunk({
-          apiEndpoint,
-          apiToken,
-        }),
-      ).unwrap();
-      if (loginInfo) {
-        dispatch(
-          nodeActionsAsync.getAddressesThunk({
-            apiToken,
-            apiEndpoint,
-          }),
-        );
-        dispatch(
-          nodeActionsAsync.getInfoThunk({
-            apiToken,
-            apiEndpoint,
-          }),
-        );
-        dispatch(
-          nodeActionsAsync.getAliasesThunk({
-            apiToken,
-            apiEndpoint,
-          }),
-        );
-        dispatch(nodeActions.initializeMessagesWebsocket());
-        dispatch(nodeActions.initializeLogsWebsocket());
-      }
-    } catch (e) {
-      const nodeBalances = await dispatch(
-        nodeActionsAsync.getBalancesThunk({
-          apiEndpoint,
-          apiToken,
-        }),
-      ).unwrap();
-
-      const addresses = await dispatch(
+    const loginInfo = await dispatch(
+      authActionsAsync.loginThunk({
+        apiEndpoint,
+        apiToken,
+      }),
+    ).unwrap();
+    if (loginInfo) {
+      dispatch(
         nodeActionsAsync.getAddressesThunk({
           apiToken,
           apiEndpoint,
         }),
-      ).unwrap();
-
-      const minimumNodeBalance = parseEther('0.001');
-
-      if (nodeBalances?.native && BigInt(nodeBalances.native) < minimumNodeBalance) {
-        dispatch(
-          authActions.setStatusError(`Unable to connect.
-        \n Your xDai balance seems to low to operate the node. 
-        \n Please top up your node.
-        \n Address: ${addresses?.native} \n\n' + ${JSON.stringify(error)}`),
-        );
-      }
+      );
+      dispatch(
+        nodeActionsAsync.getInfoThunk({
+          apiToken,
+          apiEndpoint,
+        }),
+      );
+      dispatch(
+        nodeActionsAsync.getAliasesThunk({
+          apiToken,
+          apiEndpoint,
+        }),
+      );
+      dispatch(nodeActions.initializeMessagesWebsocket());
+      dispatch(nodeActions.initializeLogsWebsocket());
     }
   };
 

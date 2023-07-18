@@ -1,18 +1,51 @@
 import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 import { api } from '@hoprnet/hopr-sdk';
+import { nodeActionsAsync } from '../node';
+import { parseEther } from 'viem';
 const { getInfo } = api;
 
 export const loginThunk = createAsyncThunk(
   'auth/login',
-  async (loginData: { apiToken: string; apiEndpoint: string }, { rejectWithValue }) => {
+  async (loginData: { apiToken: string; apiEndpoint: string }, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    const {
+      apiEndpoint,
+      apiToken,
+    } = loginData
     try {
       const info = await getInfo({
-        apiEndpoint: loginData.apiEndpoint,
-        apiToken: loginData.apiToken,
+        apiEndpoint: apiEndpoint,
+        apiToken: apiToken,
       });
       return info;
     } catch (e) {
+      // see if connecting error is due to low balance
+      const nodeBalances = await dispatch(
+        nodeActionsAsync.getBalancesThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      ).unwrap();
+
+      const addresses = await dispatch(
+        nodeActionsAsync.getAddressesThunk({
+          apiToken,
+          apiEndpoint,
+        }),
+      ).unwrap();
+
+      const minimumNodeBalance = parseEther('0.001');
+
+      if (nodeBalances?.native && BigInt(nodeBalances.native) < minimumNodeBalance) {
+        return rejectWithValue(`Unable to connect.
+        \n Your xDai balance seems to low to operate the node. 
+        \n Please top up your node.
+        \n Address: ${addresses?.native}`);
+      }
+
       return rejectWithValue(e);
     }
   },
