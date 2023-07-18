@@ -14,7 +14,7 @@ export const loginThunk = createAsyncThunk(
     const {
       apiEndpoint,
       apiToken,
-    } = loginData
+    } = loginData;
     try {
       const info = await getInfo({
         apiEndpoint: apiEndpoint,
