@@ -486,13 +486,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getSafeInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.selectedSafeAddress = action.payload.address;
-      const existingSafe = state.safeInfos.findIndex((info) => info.address === action.payload?.address);
-      // safe exists
-      if (existingSafe !== -1) {
-        state.safeInfos[existingSafe] = action.payload;
-      } else {
-        state.safeInfos.push(action.payload);
-      }
+      state.safeInfo = action.payload;
     }
   });
   builder.addCase(getAllSafeTransactionsThunk.fulfilled, (state, action) => {
