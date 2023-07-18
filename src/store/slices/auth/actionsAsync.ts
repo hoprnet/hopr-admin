@@ -5,12 +5,16 @@ const { getInfo } = api;
 
 export const loginThunk = createAsyncThunk(
   'auth/login',
-  async (loginData: { apiToken: string; apiEndpoint: string }) => {
-    const info = await getInfo({
-      apiEndpoint: loginData.apiEndpoint,
-      apiToken: loginData.apiToken,
-    });
-    return info;
+  async (loginData: { apiToken: string; apiEndpoint: string }, { rejectWithValue }) => {
+    try {
+      const info = await getInfo({
+        apiEndpoint: loginData.apiEndpoint,
+        apiToken: loginData.apiToken,
+      });
+      return info;
+    } catch (e) {
+      return rejectWithValue(e)
+    } 
   },
 );
 

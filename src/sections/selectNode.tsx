@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../store';
 
 //Stores
 import { authActions, authActionsAsync } from '../store/slices/auth';
-import { nodeActionsAsync, nodeActions } from '../store/slices/node';
+import node, { nodeActionsAsync, nodeActions } from '../store/slices/node';
 import { appActions } from '../store/slices/app';
 
 // HOPR Components
@@ -15,6 +15,7 @@ import Checkbox from '../future-hopr-lib-components/Toggles/Checkbox';
 //MUI
 import CircularProgress from '@mui/material/CircularProgress';
 import { SelectChangeEvent } from '@mui/material/Select';
+import { parseEther } from 'viem';
 
 type ParsedNode = {
   name: string;
@@ -122,35 +123,59 @@ function Section1() {
         localName,
       }),
     );
-    const loginInfo = await dispatch(
-      authActionsAsync.loginThunk({
+    try {
+      const loginInfo = await dispatch(
+        authActionsAsync.loginThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      ).unwrap();
+      if (loginInfo) {
+        dispatch(
+          nodeActionsAsync.getAddressesThunk({
+            apiToken,
+            apiEndpoint,
+          }),
+        );
+        dispatch(
+          nodeActionsAsync.getInfoThunk({
+            apiToken,
+            apiEndpoint,
+          }),
+        );
+        dispatch(
+          nodeActionsAsync.getAliasesThunk({
+            apiToken,
+            apiEndpoint,
+          }),
+        );
+        dispatch(nodeActions.initializeMessagesWebsocket());
+        dispatch(nodeActions.initializeLogsWebsocket());
+      }
+    } catch (e) {
+      const nodeBalances = await dispatch(nodeActionsAsync.getBalancesThunk({
         apiEndpoint,
         apiToken,
-      }),
-    ).unwrap();
-    if (loginInfo) {
-      dispatch(
+      })).unwrap()
+
+      const addresses = await dispatch(
         nodeActionsAsync.getAddressesThunk({
           apiToken,
           apiEndpoint,
         }),
-      );
-      dispatch(
-        nodeActionsAsync.getInfoThunk({
-          apiToken,
-          apiEndpoint,
-        }),
-      );
-      dispatch(
-        nodeActionsAsync.getAliasesThunk({
-          apiToken,
-          apiEndpoint,
-        }),
-      );
-      dispatch(nodeActions.initializeMessagesWebsocket());
-      dispatch(nodeActions.initializeLogsWebsocket());
-    }
-  };
+      ).unwrap();
+
+      const minimumNodeBalance = parseEther('0.001');
+      
+      if (nodeBalances?.native && BigInt(nodeBalances.native) < minimumNodeBalance) {
+        dispatch(authActions.setStatusError(`Unable to connect.
+        \n Your xDai balance seems to low to operate the node. 
+        \n Please top up your node.
+        \n Address: ${addresses?.native} \n\n' + ${JSON.stringify(error)}`,
+        ))
+      }
+    } 
+  }
 
   const clearLocalNodes = () => {
     set_nodesSavedLocallyChosenIndex('');
