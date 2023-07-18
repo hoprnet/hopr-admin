@@ -41,8 +41,8 @@ export const handleBalanceNotification = ({
   sendNewHoprBalanceNotification: (hoprBalanceDifference: bigint) => void;
   sendNativeBalanceTooLowNotification: (newNativeBalance: bigint) => void;
 }) => {
-  if(BigInt(newNodeBalances.native) < BigInt(minimumNodeBalances.native)) {
-    return sendNativeBalanceTooLowNotification(BigInt(newNodeBalances.native))
+  if (BigInt(newNodeBalances.native) < BigInt(minimumNodeBalances.native)) {
+    return sendNativeBalanceTooLowNotification(BigInt(newNodeBalances.native));
   }
 
   if (!prevNodeBalances) return;
