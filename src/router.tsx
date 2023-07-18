@@ -26,6 +26,7 @@ import SelectNodeType from './steps/installNode/selectNodeType';
 import WrapperPage from './sections/wrapper';
 import XdaiToNodePage from './steps/xdaiToNode';
 import SafeTransactionHistoryPage from './sections/safeTransactionHistory';
+import StakingScreen from './sections/staking-screen';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -180,6 +181,13 @@ export const applicationMap: ApplicationMapType = [
         path: 'web3',
         icon: <AccountBalanceWalletIcon />,
         element: <SectionWeb3 />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Staking screen',
+        path: 'staking-screen',
+        icon: <SavingsIcon />,
+        element: <StakingScreen />,
         loginNeeded: 'web3',
       },
       {
