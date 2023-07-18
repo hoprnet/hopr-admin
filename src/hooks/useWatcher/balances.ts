@@ -3,7 +3,7 @@ import { useAppDispatch } from '../../store';
 import { observeData } from './observeData';
 import { nodeActionsAsync } from '../../store/slices/node';
 import { sendNotification } from './notifications';
-import { formatEther } from 'viem';
+import { formatEther, parseEther } from 'viem';
 
 /**
  * Checks if the new balance is greater than the previous balance.
@@ -14,6 +14,9 @@ import { formatEther } from 'viem';
  */
 export const balanceHasIncreased = (prevBalance: string, newBalance: string) =>
   BigInt(prevBalance) < BigInt(newBalance);
+
+export const balanceIsLessThanMinimumThreshold = (minimumThreshold: bigint, newBalance: string) =>
+  BigInt(newBalance) < minimumThreshold;
 
 /**
  * Handles balance notifications.
@@ -26,14 +29,22 @@ export const balanceHasIncreased = (prevBalance: string, newBalance: string) =>
 export const handleBalanceNotification = ({
   newNodeBalances,
   prevNodeBalances,
+  minimumNodeBalances,
   sendNewHoprBalanceNotification,
   sendNewNativeBalanceNotification,
+  sendNativeBalanceTooLowNotification,
 }: {
   prevNodeBalances: AccountResponseType | null;
   newNodeBalances: AccountResponseType;
+  minimumNodeBalances: AccountResponseType;
   sendNewNativeBalanceNotification: (nativeBalanceDifference: bigint) => void;
   sendNewHoprBalanceNotification: (hoprBalanceDifference: bigint) => void;
+  sendNativeBalanceTooLowNotification: (newNativeBalance: bigint) => void;
 }) => {
+  if(BigInt(newNodeBalances.native) < BigInt(minimumNodeBalances.native)) {
+    return sendNativeBalanceTooLowNotification(BigInt(newNodeBalances.native))
+  }
+
   if (!prevNodeBalances) return;
   const nativeBalanceIsLarger = balanceHasIncreased(prevNodeBalances.native, newNodeBalances.native);
   if (nativeBalanceIsLarger) {
@@ -61,12 +72,14 @@ export const observeNodeBalances = ({
   previousState,
   apiEndpoint,
   apiToken,
+  minimumNodeBalances,
   updatePreviousData,
   dispatch,
 }: {
   previousState: AccountResponseType | null;
   apiToken: string | null;
   apiEndpoint: string | null;
+  minimumNodeBalances: AccountResponseType;
   updatePreviousData: (currentData: AccountResponseType) => void;
   dispatch: ReturnType<typeof useAppDispatch>;
 }) =>
@@ -83,14 +96,12 @@ export const observeNodeBalances = ({
         }),
       ).unwrap();
     },
-    isDataDifferent: (newNodeFunds) =>
-      !!previousState &&
-      (balanceHasIncreased(previousState.native, newNodeFunds.native) ||
-        balanceHasIncreased(previousState.hopr, previousState.hopr)),
+    isDataDifferent: (newNodeBalances) => JSON.stringify(previousState) !== JSON.stringify(newNodeBalances),
     notificationHandler: (newNodeBalances) => {
       handleBalanceNotification({
         newNodeBalances,
         prevNodeBalances: previousState,
+        minimumNodeBalances,
         sendNewHoprBalanceNotification: (hoprBalanceDifference) => {
           sendNotification({
             notificationPayload: {
@@ -112,6 +123,20 @@ export const observeNodeBalances = ({
               timeout: null,
             },
             toastPayload: { message: `Node received ${formatEther(nativeBalanceDifference)} native funds` },
+            dispatch,
+          });
+        },
+        sendNativeBalanceTooLowNotification: (newNativeBalance) => {
+          sendNotification({
+            notificationPayload: {
+              source: 'node',
+              name: 'Your xDai level is low, HOPRd node might stop working soon. Top up xDai',
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: `Node xDai level is low, node has ${formatEther(
+              BigInt(newNativeBalance),
+            )} and should have ${formatEther(BigInt(minimumNodeBalances.native))}}` },
             dispatch,
           });
         },

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { parseEther } from 'viem';
 import { useEthersSigner } from '..';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { appActions } from '../../store/slices/app';
@@ -50,22 +51,26 @@ export const useWatcher = ({ intervalDuration = 10000 }: { intervalDuration?: nu
       });
     }, intervalDuration);
 
-    const watchNodeFundsInterval = setInterval(() => {
+    const watchNodeBalancesInterval = setInterval(() => {
       observeNodeBalances({
         apiEndpoint,
         apiToken,
-        dispatch,
+        minimumNodeBalances: {
+          hopr: '0',
+          native: parseEther('0.003').toString(),
+        },
         previousState: prevNodeBalances,
         updatePreviousData: (newNodeBalances) => {
           dispatch(appActions.setPrevNodeBalances(newNodeBalances));
         },
+        dispatch,
       });
     }, intervalDuration);
 
     return () => {
       clearInterval(watchChannelsInterval);
       clearInterval(watchNodeInfoInterval);
-      clearInterval(watchNodeFundsInterval);
+      clearInterval(watchNodeBalancesInterval);
     };
   }, [apiEndpoint, apiToken, prevNodeBalances, prevNodeInfo, prevChannels]);
 
