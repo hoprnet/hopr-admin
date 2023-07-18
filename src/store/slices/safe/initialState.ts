@@ -5,7 +5,7 @@ type InitialState = {
   safesByOwner: string[];
   allTransactions: AllTransactionsListResponse | null;
   pendingTransactions: SafeMultisigTransactionListResponse | null;
-  safeInfos: SafeInfoResponse[];
+  safeInfo: SafeInfoResponse | null;
   safeDelegates: SafeDelegateListResponse | null;
 };
 
@@ -14,6 +14,6 @@ export const initialState: InitialState = {
   safesByOwner: [],
   allTransactions: null,
   pendingTransactions: null,
-  safeInfos: [],
+  safeInfo: null,
   safeDelegates: null,
 };
