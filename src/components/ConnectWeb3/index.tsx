@@ -1,4 +1,4 @@
-import { useState, useEffect, MouseEvent } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import Modal from '../../future-hopr-lib-components/Modal';
 import WalletButton from '../../future-hopr-lib-components/Button/wallet-button';
@@ -7,6 +7,7 @@ import WalletButton from '../../future-hopr-lib-components/Button/wallet-button'
 import { useAppDispatch, useAppSelector } from '../../store';
 import { web3Actions } from '../../store/slices/web3';
 import { appActions } from '../../store/slices/app';
+import { safeActions } from '../../store/slices/safe';
 
 // wagmi
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
@@ -15,11 +16,12 @@ import { gnosis, localhost } from 'viem/chains';
 import { Button, Menu, MenuItem } from '@mui/material';
 
 const AppBarContainer = styled.div`
-  height: 59px;
-  width: 220px;
-  display: flex;
   align-items: center;
+  display: flex;
+  cursor: pointer;
+  height: 59px;
   justify-content: center;
+  width: 220px;
   & .image-container {
     height: 50px;
     width: 50px;
@@ -43,9 +45,9 @@ const ConnectWalletContent = styled.div`
 const Web3Button = styled(Button)`
   min-width: 150px;
   display: flex;
-  flex-direction: column;
   align-items: flex-start;
   color: #414141;
+  gap: 10px;
   & p {
     margin: 0;
     font-size: 12px;
@@ -54,6 +56,15 @@ const Web3Button = styled(Button)`
     color: #808080;
     line-height: 12px;
   }
+  &&.MuiButton-root {
+    &:hover {
+      background: none;
+    }
+  }
+`;
+
+const DropdownArrow = styled.img`
+  align-self: center;
 `;
 
 type ConnectWeb3Props = {
@@ -76,6 +87,22 @@ export default function ConnectWeb3({
   const account = useAppSelector((selector) => selector.web3.account);
   const chain = useAppSelector((selector) => selector.web3.chain);
   const [currentAccount, set_currentAccount] = useState('');
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        handleCloseMenu();
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     if (isConnected) handleClose();
@@ -112,6 +139,7 @@ export default function ConnectWeb3({
     disconnect();
     dispatch(appActions.resetSafeState());
     dispatch(web3Actions.resetState());
+    dispatch(safeActions.resetState());
   };
 
   // New function to handle opening the menu
@@ -128,26 +156,36 @@ export default function ConnectWeb3({
     return `${address.substring(0, 6)}...${address.substring(address.length - 4, address.length)}`;
   };
 
+  const handleWeb3ButtonClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (!isConnected) {
+      set_chooseWalletModal(true);
+    } else {
+      handleOpenMenu(event);
+    }
+  };
+
   return (
     <>
       {inTheAppBar && (
-        <AppBarContainer>
+        <AppBarContainer
+          onClick={handleWeb3ButtonClick}
+          ref={containerRef}
+        >
           <div className="image-container">
             <img src="/assets/wallets/MetaMask_Fox.svg" />
           </div>
           {!isConnected ? (
-            <Web3Button
-              onClick={() => {
-                set_chooseWalletModal(true);
-              }}
-            >
-              Connect Wallet
-            </Web3Button>
+            <Web3Button disableRipple>Connect Wallet</Web3Button>
           ) : (
             <>
-              <Web3Button onClick={handleOpenMenu}>
-                <p className="chain">Metamask @ {chain}</p>
-                <p>eth: {shorterAddress(currentAccount)}</p>
+              <Web3Button disableRipple>
+                <div className="wallet-info">
+                  <p className="chain">Metamask @ {chain}</p>
+                  <p>eth: {shorterAddress(currentAccount)}</p>
+                </div>
+                <div className="dropdown-icon">
+                  <DropdownArrow src="/assets/dropdown-arrow.svg" />
+                </div>
               </Web3Button>
 
               <Menu
