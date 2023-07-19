@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { createBrowserRouter, RouteObject, useSearchParams } from 'react-router-dom';
+import { environment } from '../config'
 
 // Store
 import { useAppDispatch, useAppSelector } from './store';
@@ -75,12 +76,7 @@ export type ApplicationMapType = {
   }[];
 }[];
 
-export const applicationMap: ApplicationMapType = [
-  // {
-  //   path: '/',
-  //   element: <SectionInfo/>,
-  //   drawer: false,
-  // },
+export const applicationMapNode: ApplicationMapType = [
   {
     groupName: 'Node',
     path: 'node',
@@ -170,10 +166,13 @@ export const applicationMap: ApplicationMapType = [
         loginNeeded: 'node',
       },
     ],
-  },
+  }
+];
+
+export const applicationMapWeb3: ApplicationMapType = [
   {
-    groupName: 'DEVELOP',
-    path: 'develop',
+    groupName: 'Staking Hub',
+    path: 'hub',
     icon: <DevelopIcon />,
     items: [
       {
@@ -226,9 +225,12 @@ export const applicationMap: ApplicationMapType = [
         loginNeeded: 'web3',
       },
     ],
-  },
+  }
+];
+
+export const applicationMapDev: ApplicationMapType = [
   {
-    groupName: 'Steps',
+    groupName: 'DEVELOP / Steps',
     path: 'steps',
     icon: <DevelopIcon />,
     items: [
@@ -276,6 +278,16 @@ export const applicationMap: ApplicationMapType = [
     ],
   },
 ];
+
+function createApplicationMap() {
+  let temp: ApplicationMapType = [];
+  if (environment === 'dev' ||  environment === 'node') applicationMapNode.map(elem => temp.push(elem))
+  if (environment === 'dev' ||  environment === 'web3') applicationMapWeb3.map(elem => temp.push(elem))
+  if (environment === 'dev' ) applicationMapDev.map(elem => temp.push(elem))
+  return temp;
+}
+
+export const applicationMap: ApplicationMapType = createApplicationMap();
 
 const LayoutEnhanced = () => {
   const dispatch = useAppDispatch();
@@ -340,8 +352,8 @@ const LayoutEnhanced = () => {
       itemsNavbarRight={
         <>
           <NotificationBar />
-          <ConnectWeb3 inTheAppBar />
-          <ConnectNode />
+          { ( environment === 'dev' ||  environment === 'web3' ) && <ConnectWeb3 inTheAppBar /> }
+          { ( environment === 'dev' ||  environment === 'node' ) && <ConnectNode /> }
         </>
       }
       drawerRight={nodeConnected && <InfoBar />}
