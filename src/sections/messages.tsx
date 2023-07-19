@@ -53,7 +53,10 @@ const messages = () => {
   }, []);
 
   return (
-    <Section yellow>
+    <Section 
+      yellow
+      fullHeightMin
+    >
       <h2>Send Message</h2>
       <SendMessageModal />
       <h2>Messages</h2>

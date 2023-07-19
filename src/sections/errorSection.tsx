@@ -7,6 +7,7 @@ function SectionError() {
       className="Section--error"
       id="Section--error"
       yellow
+      fullHeightMin
     ></Section>
   );
 }

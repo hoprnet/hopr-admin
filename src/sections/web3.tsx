@@ -19,7 +19,8 @@ function Section_Web3() {
     <Section
       className="Section--web3"
       id="Section--web3"
-      yellow
+      lightBlue
+      fullHeightMin
     >
       WEB3 REDUX STORE
       <pre>{JSON.stringify(web3, null, 4)}</pre>
