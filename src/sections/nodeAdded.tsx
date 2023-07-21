@@ -277,10 +277,10 @@ const NodeAdded = () => {
                 </NodeInfoRow>
                 <NodeInfoRow>
                   <p>Actions</p>
-                  <StyledIconButton>
+                  <StyledIconButton disabled>
                     <SettingsIcon />
                   </StyledIconButton>
-                  <StyledIconButton>
+                  <StyledIconButton disabled>
                     <CloseIcon />
                   </StyledIconButton>
                 </NodeInfoRow>
