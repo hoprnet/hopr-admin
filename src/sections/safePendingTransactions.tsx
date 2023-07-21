@@ -463,9 +463,9 @@ const SafeQueue = () => {
       fullHeightMin
     >
       <StyledContainer>
-        { !selectedSafeAddress ?
+        {!selectedSafeAddress ? (
           <Title>Connect to safe</Title>
-         :
+        ) : (
           <TableContainer component={Paper}>
             <Table aria-label="safe pending transactions">
               <TableHead>
@@ -479,20 +479,19 @@ const SafeQueue = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {
-                  (pendingTransactions && !!pendingTransactions?.count) &&
+                {pendingTransactions &&
+                  !!pendingTransactions?.count &&
                   sortByDate(pendingTransactions)?.map((transaction, key) => (
                     <PendingTransactionRow
                       transaction={transaction}
                       key={key}
                     />
-                  ))
-                }
-                { pendingTransactions && !pendingTransactions?.count && <span>No entries</span> }
+                  ))}
+                {pendingTransactions && !pendingTransactions?.count && <span>No entries</span>}
               </TableBody>
             </Table>
           </TableContainer>
-        }
+        )}
       </StyledContainer>
     </Section>
   );

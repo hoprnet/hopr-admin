@@ -344,7 +344,7 @@ export default function SafeTransactionHistoryPage() {
   }
 
   return (
-    <Section 
+    <Section
       lightBlue
       fullHeightMin
     >
