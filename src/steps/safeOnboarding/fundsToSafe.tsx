@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { formatEther, parseEther, parseUnits } from 'viem';
-import { useAppSelector } from '../../store';
 import {
   erc20ABI,
   useBalance,
   useContractWrite,
   usePrepareContractWrite,
   usePrepareSendTransaction,
-  useSendTransaction
+  useSendTransaction,
+  useWalletClient
 } from 'wagmi';
 
 import {
@@ -25,8 +25,18 @@ import {
 } from './styled';
 import Button from '../../future-hopr-lib-components/Button';
 import Card from '../components/Card';
+import {
+  CallContractTransactionInput,
+  TransactionType,
+  TransferFundsTransactionInput,
+  encodeMulti,
+  encodeSingle,
+  isValid
+} from 'ethers-multisend';
+import multiSendAbi from '../../abi/multiSendAbi.json';
 
 const wxhoprSmartContractAddress = '0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1';
+const multiSendSmartContractAddress = '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526';
 
 type Address = `0x${string}`;
 type NumberLiteral = `${number}`;
@@ -40,8 +50,8 @@ const FundsToSafe = ({
   account,
   set_step,
 }: FundsToSafeProps) => {
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress);
-
+  const selectedSafeAddress = '0x379aC695fEDB8D351dA25f7C51bE402557Cad3C4';
+  const { data: walletClient } = useWalletClient();
   const [xdaiValue, set_xdaiValue] = useState('');
   const [wxhoprValue, set_wxhoprValue] = useState('');
 
@@ -50,18 +60,6 @@ const FundsToSafe = ({
     address: account,
     token: wxhoprSmartContractAddress,
     watch: true,
-  });
-
-  const { config: xDAI_to_safe_config } = usePrepareSendTransaction({
-    to: selectedSafeAddress ?? undefined,
-    value: parseEther(xdaiValue as NumberLiteral),
-  });
-
-  const { config: wxHOPR_to_safe_config } = usePrepareContractWrite({
-    address: wxhoprSmartContractAddress,
-    abi: erc20ABI,
-    functionName: 'transfer',
-    args: [selectedSafeAddress as Address, parseUnits(wxhoprValue as NumberLiteral, 18)],
   });
 
   useEffect(() => {
@@ -92,27 +90,48 @@ const FundsToSafe = ({
     }
   };
 
-  const {
-    isLoading: is_wxHOPR_to_safe_loading,
-    write: write_wxHOPR_to_safe,
-  } = useContractWrite({
-    ...wxHOPR_to_safe_config,
-    onSuccess: () => set_step(2),
-  });
+  const encodeMultiSendTransactions = () => {
+    const xDaiTransaction: TransferFundsTransactionInput = {
+      id: 'xDai',
+      amount: xdaiValue,
+      to: selectedSafeAddress,
+      type: TransactionType.transferFunds,
+      decimals: 18,
+      token: null,
+    };
+   
 
-  const {
-    isLoading: is_xDAI_to_safe_loading,
-    sendTransaction: send_xDAI_to_safe,
-  } = useSendTransaction({
-    ...xDAI_to_safe_config,
-    onSuccess: () => write_wxHOPR_to_safe?.(),
-  });
+    const wxHoprTransaction: TransferFundsTransactionInput = {
+      id: 'wxHopr',
+      amount: parseEther(wxhoprValue).toString(),
+      to: selectedSafeAddress,
+      type: TransactionType.transferFunds,
+      decimals: 18,
+      token: wxhoprSmartContractAddress,
+    };
+    
+    const encodedTransactions = encodeMulti(
+      [encodeSingle(xDaiTransaction), encodeSingle(wxHoprTransaction)],
+      multiSendSmartContractAddress,
+    );
+    console.log(xdaiValue)
+    return encodedTransactions;
+  };
 
-  const handleDeployClick = () => {
+  const handleDeployClick = async () => {
+    console.log(xdaiValue, wxhoprValue);
     if (xdaiValue && wxhoprValue) {
-      send_xDAI_to_safe?.();
+      const encodedTransaction = encodeMultiSendTransactions()
+      const tx = await walletClient?.sendTransaction({
+        to: encodedTransaction.to as Address,
+        data: encodedTransaction.data as unknown as Address,
+        value: BigInt(encodedTransaction.value),
+      });
+
+      console.log(tx)
     }
   };
+
   return (
     <Card
       image={{
@@ -189,12 +208,11 @@ const FundsToSafe = ({
           <StyledGrayButton onClick={() => set_step(0)}>Back</StyledGrayButton>
           <Button
             onClick={handleDeployClick}
-            disabled={!send_xDAI_to_safe}
           >
             Deploy
           </Button>
         </ButtonContainer>
-        {(is_xDAI_to_safe_loading || is_wxHOPR_to_safe_loading) && <span>Check your Wallet...</span>}
+        {false && <span>Check your Wallet...</span>}
       </>
     </Card>
   );

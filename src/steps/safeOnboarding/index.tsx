@@ -14,7 +14,7 @@ import SafeDeployed from './safeDeployed';
 function SafeOnboarding() {
   const account = useAppSelector((store) => store.web3.account) as `0x${string}`;
   const signer = useEthersSigner();
-  const [step, set_step] = useState(0);
+  const [step, set_step] = useState(1);
 
   if (!account) {
     return (
