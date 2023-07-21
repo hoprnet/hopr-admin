@@ -181,6 +181,30 @@ const removeOwnerFromSafeThunk = createAsyncThunk(
   },
 );
 
+const updateSafeThresholdThunk = createAsyncThunk(
+  'safe/updateSafeThreshold',
+  async (
+    payload: {
+      signer: ethers.providers.JsonRpcSigner;
+      safeAddress: string;
+      newThreshold: number;
+    },
+    {
+      rejectWithValue,
+      dispatch,
+    },
+  ) => {
+    try {
+      const safeApi = await createSafeSDK(payload.signer, payload.safeAddress);
+      const changeThresholdTx = await safeApi.createChangeThresholdTx(payload.newThreshold);
+
+      return changeThresholdTx;
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  },
+);
+
 const getSafeInfoThunk = createAsyncThunk(
   'safe/getSafeInfo',
   async (
@@ -522,4 +546,5 @@ export const actionsAsync = {
   addSafeDelegateThunk,
   removeSafeDelegateThunk,
   getSafeDelegatesThunk,
+  updateSafeThresholdThunk,
 };
