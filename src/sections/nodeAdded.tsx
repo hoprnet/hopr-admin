@@ -5,6 +5,8 @@ import { Card, Chip } from '@mui/material';
 import { ReactNode } from 'react';
 import Button from '../future-hopr-lib-components/Button';
 import { Link } from 'react-router-dom';
+import { useAppSelector } from '../store';
+import { useBalance } from 'wagmi';
 
 const StyledCard = styled(Card)`
   display: flex;
@@ -49,6 +51,10 @@ const StyledGrayCard = styled(Card)`
   background-color: #edf2f7;
   color: #414141;
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
 `;
 
 const CardContent = styled.div`
@@ -63,14 +69,14 @@ const CardTitle = styled.h4`
 `;
 
 const CardValue = styled.h5`
-  font-size: 2rem;
+  font-size: 1.125rem;
   font-weight: 500;
   margin: 0;
 `;
 
 const CardCurrency = styled.p`
-  font-size: 1rem;
-  font-weight: 800;
+  font-size: 0.75rem;
+  font-weight: 500;
   margin: 0;
   line-height: 1.4;
 `;
@@ -83,7 +89,6 @@ const ValueAndCurrency = styled.div`
 
 const ButtonGroup = styled.div`
   display: flex;
-  flex-direction: column;
   gap: 0.5rem;
 `;
 
@@ -96,18 +101,31 @@ const StyledChip = styled(Chip)<{ color: string }>`
   font-weight: 700;
 `;
 
+const NodeGraphic = styled.div`
+  box-sizing: border-box;
+  background-color: #d3f6ff;
+  display: grid;
+  min-height: 100%;
+  max-width: 250px;
+  padding: 3rem;
+  place-items: center;
+`;
+
+const NodeInfo = styled.div``;
+
 type GrayCardProps = {
   id: string;
   title?: string;
   value?: string;
-  currency?: 'xDAI' | 'xHOPR' | 'wxHOPR';
+  currency?: 'xDAI' | 'xHOPR' | 'wxHOPR' | string;
   chip?: {
     label: string;
-    color: 'success' | 'error';
+    color: 'success' | 'error' | 'primary';
   };
   buttons?: {
     text: string;
     link: string;
+    disabled?: boolean;
   }[];
   children?: ReactNode;
 };
@@ -132,18 +150,22 @@ const GrayCard = ({
               {currency && <CardCurrency>{currency}</CardCurrency>}
             </ValueAndCurrency>
           )}
-          {chip && (
-            <StyledChip
-              label={chip.label}
-              color={chip.color}
-            />
-          )}
         </CardContent>
+      )}
+      {chip && (
+        <StyledChip
+          label={chip.label}
+          color={chip.color}
+        />
       )}
       {buttons && (
         <ButtonGroup>
           {buttons.map((button) => (
-            <Button key={button.text}>
+            <Button
+              key={button.text}
+              disabled={button.disabled}
+              nofade
+            >
               <Link to={button.link}>{button.text}</Link>
             </Button>
           ))}
@@ -155,6 +177,12 @@ const GrayCard = ({
 };
 
 const NodeAdded = () => {
+  const selectedSafeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress) as `0x${string}`;
+
+  const { data: xDAI_balance } = useBalance({
+    address: selectedSafeAddress,
+    watch: true,
+  });
   return (
     <Section
       lightBlue
@@ -163,15 +191,77 @@ const NodeAdded = () => {
     >
       <StyledCard>
         <Content>
-          <GrayCard id="node-graphic">Graph here0op9</GrayCard>
+          <GrayCard id="node-graphic">
+            <NodeGraphic>
+              <img
+                src="/assets/node-graphic.svg"
+                alt="Node Graphic"
+              />
+            </NodeGraphic>
+            <NodeInfo></NodeInfo>
+          </GrayCard>
           <GrayCard
             id="remaining-wxhopr-allowance"
             title="Remaining wxHOPR Allowance"
+            value="0"
+            currency="wxHOPR"
+            buttons={[
+              {
+                text: 'Adjust',
+                link: '#',
+                disabled: true,
+              },
+            ]}
           ></GrayCard>
-          <GrayCard id="earned-rewards">Earned rewards</GrayCard>
-          <GrayCard id="node-strategy">Node strategy</GrayCard>
-          <GrayCard id="redeemed-tickets">Redeemed Tickets</GrayCard>
-          <GrayCard id="xdai">xDAI</GrayCard>
+          <GrayCard
+            id="earned-rewards"
+            title="Earned rewards"
+            value="120,736.00"
+            currency="wxHOPR"
+            chip={{
+              label: '-5%/24h',
+              color: 'error',
+            }}
+          />
+          <GrayCard
+            id="node-strategy"
+            title="Node strategy"
+            value="0"
+            buttons={[
+              {
+                text: 'Adjust in node admin',
+                link: '#',
+                disabled: true,
+              },
+            ]}
+          ></GrayCard>
+          <GrayCard
+            id="redeemed-tickets"
+            title="Redeemed Tickets"
+            value="839"
+            currency="Ticket/wxHOPR"
+            chip={{
+              label: '+9%/24h',
+              color: 'success',
+            }}
+          ></GrayCard>
+          <GrayCard
+            id="xdai"
+            title="xDAI"
+            value={xDAI_balance?.formatted ?? '0'}
+            buttons={[
+              {
+                text: 'Send to node',
+                link: '#',
+                disabled: true,
+              },
+              {
+                text: 'Withdraw',
+                link: '#',
+                disabled: true,
+              },
+            ]}
+          ></GrayCard>
         </Content>
       </StyledCard>
     </Section>
