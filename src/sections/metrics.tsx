@@ -25,7 +25,7 @@ function MetricsPage() {
   }, [apiEndpoint, apiToken]);
 
   return (
-    <Section 
+    <Section
       yellow
       fullHeightMin
     >

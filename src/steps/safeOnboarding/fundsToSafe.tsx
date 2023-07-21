@@ -99,7 +99,6 @@ const FundsToSafe = ({
       decimals: 18,
       token: null,
     };
-   
 
     const wxHoprTransaction: TransferFundsTransactionInput = {
       id: 'wxHopr',
@@ -109,26 +108,26 @@ const FundsToSafe = ({
       decimals: 18,
       token: wxhoprSmartContractAddress,
     };
-    
+
     const encodedTransactions = encodeMulti(
       [encodeSingle(xDaiTransaction), encodeSingle(wxHoprTransaction)],
       multiSendSmartContractAddress,
     );
-    console.log(xdaiValue)
+    console.log(xdaiValue);
     return encodedTransactions;
   };
 
   const handleDeployClick = async () => {
     console.log(xdaiValue, wxhoprValue);
     if (xdaiValue && wxhoprValue) {
-      const encodedTransaction = encodeMultiSendTransactions()
+      const encodedTransaction = encodeMultiSendTransactions();
       const tx = await walletClient?.sendTransaction({
         to: encodedTransaction.to as Address,
         data: encodedTransaction.data as unknown as Address,
         value: BigInt(encodedTransaction.value),
       });
 
-      console.log(tx)
+      console.log(tx);
     }
   };
 
@@ -206,11 +205,7 @@ const FundsToSafe = ({
         </StyledForm>
         <ButtonContainer>
           <StyledGrayButton onClick={() => set_step(0)}>Back</StyledGrayButton>
-          <Button
-            onClick={handleDeployClick}
-          >
-            Deploy
-          </Button>
+          <Button onClick={handleDeployClick}>Deploy</Button>
         </ButtonContainer>
         {false && <span>Check your Wallet...</span>}
       </>

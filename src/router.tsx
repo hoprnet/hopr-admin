@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { createBrowserRouter, RouteObject, useSearchParams } from 'react-router-dom';
-import { environment } from '../config'
+import { environment } from '../config';
 
 // Store
 import { useAppDispatch, useAppSelector } from './store';
@@ -166,7 +166,7 @@ export const applicationMapNode: ApplicationMapType = [
         loginNeeded: 'node',
       },
     ],
-  }
+  },
 ];
 
 export const applicationMapWeb3: ApplicationMapType = [
@@ -225,7 +225,7 @@ export const applicationMapWeb3: ApplicationMapType = [
         loginNeeded: 'web3',
       },
     ],
-  }
+  },
 ];
 
 export const applicationMapDev: ApplicationMapType = [
@@ -280,10 +280,10 @@ export const applicationMapDev: ApplicationMapType = [
 ];
 
 function createApplicationMap() {
-  let temp: ApplicationMapType = [];
-  if (environment === 'dev' ||  environment === 'node') applicationMapNode.map(elem => temp.push(elem))
-  if (environment === 'dev' ||  environment === 'web3') applicationMapWeb3.map(elem => temp.push(elem))
-  if (environment === 'dev' ) applicationMapDev.map(elem => temp.push(elem))
+  const temp: ApplicationMapType = [];
+  if (environment === 'dev' || environment === 'node') applicationMapNode.map((elem) => temp.push(elem));
+  if (environment === 'dev' || environment === 'web3') applicationMapWeb3.map((elem) => temp.push(elem));
+  if (environment === 'dev') applicationMapDev.map((elem) => temp.push(elem));
   return temp;
 }
 
@@ -352,8 +352,8 @@ const LayoutEnhanced = () => {
       itemsNavbarRight={
         <>
           <NotificationBar />
-          { ( environment === 'dev' ||  environment === 'web3' ) && <ConnectWeb3 inTheAppBar /> }
-          { ( environment === 'dev' ||  environment === 'node' ) && <ConnectNode /> }
+          {(environment === 'dev' || environment === 'web3') && <ConnectWeb3 inTheAppBar />}
+          {(environment === 'dev' || environment === 'node') && <ConnectNode />}
         </>
       }
       drawerRight={nodeConnected && <InfoBar />}
