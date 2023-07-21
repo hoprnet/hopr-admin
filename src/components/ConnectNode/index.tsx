@@ -9,7 +9,7 @@ import { nodeActions } from '../../store/slices/node';
 import { appActions } from '../../store/slices/app';
 import { Button, Menu, MenuItem } from '@mui/material';
 
-const Container = styled.div`
+const Container = styled(Button)`
   align-items: center;
   border-left: 1px lightgray solid;
   cursor: pointer;
@@ -38,13 +38,15 @@ const Container = styled.div`
   }
 `;
 
-const NodeButton = styled(Button)`
+const NodeButton = styled.div`
+  font-family: 'Source Code Pro';
   min-width: 150px;
   display: flex;
-  flex-direction: row;
+  flex-direction: row !important;
   align-items: center;
   color: #414141;
   gap: 10px;
+  text-align: left;
   & p {
     margin: 0;
     font-size: 12px;
@@ -52,11 +54,6 @@ const NodeButton = styled(Button)`
   & .node-info {
     color: #414141;
     line-height: 12px;
-  }
-  &&.MuiButton-root {
-    &:hover {
-      background: none;
-    }
   }
 `;
 
@@ -74,11 +71,11 @@ export default function ConnectNode() {
   const localName = useAppSelector((store) => store.auth.loginData.localName);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
 
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      if (containerRef.current && !containerRef.current.contains(event.target as HTMLElement)) {
         handleCloseMenu();
       }
     };
@@ -130,7 +127,7 @@ export default function ConnectNode() {
       </div>
       {connected ? (
         <>
-          <NodeButton disableRipple>
+          <NodeButton>
             <p className="node-info">
               {peerId && `${peerId.substring(0, 6)}...${peerId.substring(peerId.length - 8, peerId.length)}`}
             </p>
@@ -149,7 +146,7 @@ export default function ConnectNode() {
       ) : (
         <SLink to={'node/connect'}>
           <div>
-            <NodeButton disableRipple>Connect to Node</NodeButton>
+            <NodeButton>Connect to Node</NodeButton>
           </div>
         </SLink>
       )}

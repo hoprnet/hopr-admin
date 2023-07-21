@@ -10,11 +10,13 @@ import { useEthersSigner } from '../../hooks';
 import { Button, Menu, MenuItem } from '@mui/material';
 import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
 import { appActions } from '../../store/slices/app';
+import { truncateEthereumAddress } from '../../utils/helpers';
 
-const AppBarContainer = styled.div`
+const AppBarContainer = styled(Button)`
   align-items: center;
   border-right: 1px lightgray solid;
   display: flex;
+  align-items: center;
   height: 59px;
   cursor: pointer;
   justify-content: center;
@@ -30,18 +32,17 @@ const AppBarContainer = styled.div`
   }
 `;
 
-const SafeButton = styled(Button)`
+const SafeButton = styled.div`
+  font-family: 'Source Code Pro';
+  font-size: 18px;
   width: 170px;
   display: flex;
   align-items: flex-start;
   flex-direction: row;
+  justify-content: space-evenly;
+  font-size: 14px;
   gap: 10px;
   color: #414141;
-  &&.MuiButton-root {
-    &:hover {
-      background: none;
-    }
-  }
 `;
 
 const DropdownArrow = styled.img`
@@ -62,7 +63,7 @@ export default function ConnectSafe() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
 
-  const menuRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     // Event listener callback to close the menu
@@ -113,19 +114,19 @@ export default function ConnectSafe() {
         safeActionsAsync.getSafeInfoThunk({
           signer: signer,
           safeAddress,
-        }),
+        })
       );
       dispatch(
         safeActionsAsync.getAllSafeTransactionsThunk({
           signer,
           safeAddress,
-        }),
+        })
       );
       dispatch(
         safeActionsAsync.getSafeDelegatesThunk({
           signer,
           options: { safeAddress },
-        }),
+        })
       );
       // Additional logic to connect to the safe
     }
@@ -139,10 +140,6 @@ export default function ConnectSafe() {
   // New function to handle closing the menu
   const handleCloseMenu = () => {
     setAnchorEl(null);
-  };
-
-  const shorterAddress = (address: string) => {
-    return `${address.substring(0, 6)}...${address.substring(address.length - 4, address.length)}`;
   };
 
   const handleSafeButtonClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -164,8 +161,8 @@ export default function ConnectSafe() {
       </div>
       {connected.connected ? (
         <>
-          <SafeButton disableRipple>
-            {shorterAddress(selectedSafeAddress) || ''} <DropdownArrow src="/assets/dropdown-arrow.svg" />
+          <SafeButton>
+            {truncateEthereumAddress(selectedSafeAddress) || '...'} <DropdownArrow src="/assets/dropdown-arrow.svg" />
           </SafeButton>
           <Menu
             anchorEl={anchorEl}
@@ -186,7 +183,7 @@ export default function ConnectSafe() {
                 value={safeAddress}
                 onClick={() => useSelectedSafe(safeAddress)}
               >
-                {shorterAddress(safeAddress)}
+                {truncateEthereumAddress(safeAddress)}
               </MenuItem>
             ))}
           </Menu>

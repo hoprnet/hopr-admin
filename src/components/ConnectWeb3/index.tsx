@@ -14,8 +14,9 @@ import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { gnosis, localhost } from 'viem/chains';
 import { Button, Menu, MenuItem } from '@mui/material';
+import { truncateEthereumAddress } from '../../utils/helpers';
 
-const AppBarContainer = styled.div`
+const AppBarContainer = styled(Button)`
   align-items: center;
   display: flex;
   cursor: pointer;
@@ -42,10 +43,12 @@ const ConnectWalletContent = styled.div`
   }
 `;
 
-const Web3Button = styled(Button)`
+const Web3Button = styled.div`
+  font-family: 'Source Code Pro';
   min-width: 150px;
   display: flex;
   align-items: flex-start;
+  justify-content: center;
   color: #414141;
   gap: 10px;
   & p {
@@ -55,11 +58,6 @@ const Web3Button = styled(Button)`
   & .chain {
     color: #808080;
     line-height: 12px;
-  }
-  &&.MuiButton-root {
-    &:hover {
-      background: none;
-    }
   }
 `;
 
@@ -73,11 +71,7 @@ type ConnectWeb3Props = {
   onClose?: () => void;
 };
 
-export default function ConnectWeb3({
-  inTheAppBar,
-  open,
-  onClose,
-}: ConnectWeb3Props) {
+export default function ConnectWeb3({ inTheAppBar, open, onClose }: ConnectWeb3Props) {
   const dispatch = useAppDispatch();
   const [chooseWalletModal, set_chooseWalletModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
@@ -88,7 +82,7 @@ export default function ConnectWeb3({
   const chain = useAppSelector((selector) => selector.web3.chain);
   const [currentAccount, set_currentAccount] = useState('');
 
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -152,10 +146,6 @@ export default function ConnectWeb3({
     setAnchorEl(null);
   };
 
-  const shorterAddress = (address: string) => {
-    return `${address.substring(0, 6)}...${address.substring(address.length - 4, address.length)}`;
-  };
-
   const handleWeb3ButtonClick = (event: React.MouseEvent<HTMLElement>) => {
     if (!isConnected) {
       set_chooseWalletModal(true);
@@ -175,13 +165,13 @@ export default function ConnectWeb3({
             <img src="/assets/wallets/MetaMask_Fox.svg" />
           </div>
           {!isConnected ? (
-            <Web3Button disableRipple>Connect Wallet</Web3Button>
+            <Web3Button>Connect Wallet</Web3Button>
           ) : (
             <>
-              <Web3Button disableRipple>
+              <Web3Button>
                 <div className="wallet-info">
                   <p className="chain">Metamask @ {chain}</p>
-                  <p>eth: {shorterAddress(currentAccount)}</p>
+                  <p>eth: {truncateEthereumAddress(currentAccount)}</p>
                 </div>
                 <div className="dropdown-icon">
                   <DropdownArrow src="/assets/dropdown-arrow.svg" />
