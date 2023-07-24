@@ -40,8 +40,7 @@ export const loginThunk = createAsyncThunk(
       const minimumNodeBalance = parseEther('0.001');
 
       if (nodeBalances?.native && BigInt(nodeBalances.native) < minimumNodeBalance) {
-        return rejectWithValue(`Unable to connect.
-        \n Your xDai balance seems to low to operate the node. 
+        return rejectWithValue(`Your xDai balance seems to low to operate the node. 
         \n Please top up your node.
         \n Address: ${addresses?.native}`);
       }
