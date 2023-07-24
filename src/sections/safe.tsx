@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 //Stores
 import { useAppDispatch, useAppSelector } from '../store';
-import { safeActionsAsync, safeActions } from '../store/slices/safe';
+import { safeActionsAsync } from '../store/slices/safe';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
@@ -14,11 +14,11 @@ import { Address, encodeFunctionData, formatEther } from 'viem';
 import { erc20ABI, useContractRead } from 'wagmi';
 import { SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types';
 
-const HOPR_CHANNELS_SMART_CONTRACT_ADDRESS = '0xfabee463f31e39ec8952bbfb4490c41103bf573e'
+const HOPR_CHANNELS_SMART_CONTRACT_ADDRESS = '0xfabee463f31e39ec8952bbfb4490c41103bf573e';
 // Maximum possible value for uint256
 const MAX_UINT256 = BigInt(2 ** 256) - BigInt(1);
 // mHopr
-const HOPR_TOKEN_SMART_CONTRACT_ADDRESS = '0x66225dE86Cac02b32f34992eb3410F59DE416698'
+const HOPR_TOKEN_SMART_CONTRACT_ADDRESS = '0x66225dE86Cac02b32f34992eb3410F59DE416698';
 
 function SafeSection() {
   const dispatch = useAppDispatch();
@@ -34,8 +34,8 @@ function SafeSection() {
     abi: erc20ABI,
     functionName: 'allowance',
     args: [safe.selectedSafeAddress as Address, HOPR_CHANNELS_SMART_CONTRACT_ADDRESS],
-  })
-  
+  });
+
   useEffect(() => {
     fetchInitialStateForSigner();
   }, [signer]);
@@ -45,32 +45,34 @@ function SafeSection() {
       dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer }));
     }
   };
-  
+
   const createApproveTransactionData = (spender: Address, value: bigint) => {
     const approveData = encodeFunctionData({
       abi: erc20ABI,
       functionName: 'approve',
       args: [spender, value],
-    })
-    return approveData
-  }
+    });
+    return approveData;
+  };
 
   const proposeApproveTransactionToSafe = async () => {
     if (signer && safe.selectedSafeAddress) {
-      const data = createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, MAX_UINT256)
+      const data = createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, MAX_UINT256);
       // creates a safe transaction with data to interact with a smart contract
       const safeTransactionData: SafeTransactionDataPartial = {
         to: HOPR_TOKEN_SMART_CONTRACT_ADDRESS,
         data,
-        value: "0",
-      }
-      await dispatch(safeActionsAsync.createSafeTransactionThunk({
-        signer,
-        safeAddress: safe.selectedSafeAddress,
-        safeTransactionData,
-      })).unwrap()
+        value: '0',
+      };
+      await dispatch(
+        safeActionsAsync.createSafeTransactionThunk({
+          signer,
+          safeAddress: safe.selectedSafeAddress,
+          safeTransactionData,
+        }),
+      ).unwrap();
     }
-  }
+  };
 
   if (!account) {
     return (
@@ -245,7 +247,12 @@ function SafeSection() {
       ))}
       <h2>approve hopr token to hopr channels</h2>
       <span>allowance: {formatEther(BigInt(allowanceData?.toString() ?? '0'))}</span>
-      <button disabled={!safe.selectedSafeAddress || !signer} onClick={proposeApproveTransactionToSafe}>approve</button>
+      <button
+        disabled={!safe.selectedSafeAddress || !signer}
+        onClick={proposeApproveTransactionToSafe}
+      >
+        approve
+      </button>
       <h2>store</h2>
       <pre>{JSON.stringify(safe, null, 4)}</pre>
     </Section>
