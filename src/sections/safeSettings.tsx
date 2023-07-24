@@ -4,59 +4,92 @@ import { safeActionsAsync, safeActions } from '../store/slices/safe';
 import { useEthersSigner } from '../hooks';
 import Section from '../future-hopr-lib-components/Section';
 import { Container, FlexContainer, Text } from '../steps/safeOnboarding/styled';
-import { Button, MenuItem, Select } from '@mui/material';
+import { Button, MenuItem, Select, TextField } from '@mui/material';
+import styled from '@emotion/styled';
+
+const RemoveOwnerDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+`;
 
 function SafeSettings() {
   const dispatch = useAppDispatch();
   const safe = useAppSelector((selector) => selector.safe.safeInfo);
-  const currentSafe = useAppSelector((selector) => selector.safe.selectedSafeAddress);
+  const safeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress);
+
   const signer = useEthersSigner();
   const [threshold, set_threshold] = useState(safe?.threshold || 0);
   const [newOwner, set_newOwner] = useState('');
 
   useEffect(() => {
     fetchInitialStateForSigner();
-    console.log(currentSafe);
+    console.log(safeAddress);
   }, [signer]);
 
+  useEffect(() => {
+    if (safeAddress && signer) {
+      dispatch(
+        safeActionsAsync.getSafeInfoThunk({
+          signer,
+          safeAddress: safeAddress,
+        }),
+      );
+      set_threshold(safe!.threshold);
+      console.log(safe?.owners);
+    }
+  }, [safeAddress]);
+
   const fetchInitialStateForSigner = async () => {
-    if (signer && currentSafe) {
+    if (signer && safeAddress) {
       dispatch(safeActions.resetState());
       dispatch(
         safeActionsAsync.getSafeInfoThunk({
           signer,
-          safeAddress: currentSafe,
+          safeAddress: safeAddress,
         }),
       );
-      console.log(currentSafe);
-      console.log(safe);
     }
   };
 
   const updateSafeThreshold = () => {
-    if (signer && currentSafe) {
+    if (signer && safeAddress) {
       const trx = dispatch(
         safeActionsAsync.updateSafeThresholdThunk({
           signer: signer,
           newThreshold: threshold,
-          safeAddress: currentSafe,
+          safeAddress: safeAddress,
         }),
       );
       //   dispatch(
       //     safeActionsAsync.confirmTransactionThunk({
-      //       safeAddress: currentSafe,
+      //       safeAddress: safeAddress,
       //       safeTransactionHash: trx.requestId,
       //       signer,
       //     }),
       //   );
       dispatch(
         safeActionsAsync.getAllSafeTransactionsThunk({
-          safeAddress: currentSafe,
+          safeAddress: safeAddress,
           signer: signer,
         }),
       );
       console.log(trx);
     }
+  };
+
+  const handleNewOwnerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const owner = event.target.value;
+    set_newOwner(owner);
+  };
+
+  const removeOwner = (address: string) => {
+    if (signer && safeAddress)
+      safeActionsAsync.removeOwnerFromSafeThunk({
+        ownerAddress: address,
+        safeAddress: safeAddress,
+        signer,
+      });
   };
 
   return (
@@ -96,7 +129,26 @@ function SafeSettings() {
         </Button>
       </Container>
       <h2>Add Owner</h2>
-      <Container column></Container>
+      <Container column>
+        <TextField
+          type="text"
+          name="newOwner"
+          label="address"
+          placeholder="New owner address here..."
+          onChange={handleNewOwnerChange}
+          value={newOwner}
+        />
+        <Button disabled={newOwner === '' || safe === null || safe?.owners.includes(newOwner)}>Add owner</Button>
+      </Container>
+      <h2>Remove Owner</h2>
+      <Container column>
+        {safe?.owners.map((address, idx) => (
+          <RemoveOwnerDiv>
+            <p>{address}</p>
+            <Button onClick={() => removeOwner(address)}>Remove</Button>
+          </RemoveOwnerDiv>
+        ))}
+      </Container>
     </Section>
   );
 }

@@ -72,7 +72,11 @@ type ConnectWeb3Props = {
   onClose?: () => void;
 };
 
-export default function ConnectWeb3({ inTheAppBar, open, onClose }: ConnectWeb3Props) {
+export default function ConnectWeb3({
+  inTheAppBar,
+  open,
+  onClose,
+}: ConnectWeb3Props) {
   const dispatch = useAppDispatch();
   const [chooseWalletModal, set_chooseWalletModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
