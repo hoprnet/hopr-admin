@@ -42,7 +42,7 @@ const NodeAddress = () => {
             delegatorAddress: account,
             label: 'node',
           },
-        }),
+        })
       ).unwrap();
       set_isLoading(false);
     }

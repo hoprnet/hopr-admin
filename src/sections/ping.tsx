@@ -16,10 +16,7 @@ function PingPage() {
   const pings = useAppSelector((selector) => selector.node.pings);
   const aliases = useAppSelector((selector) => selector.node.aliases);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const {
-    apiEndpoint,
-    apiToken,
-  } = loginData;
+  const { apiEndpoint, apiToken } = loginData;
 
   // Get aliases on page load
   useEffect(() => {
@@ -28,7 +25,7 @@ function PingPage() {
         nodeActionsAsync.getAliasesThunk({
           apiEndpoint,
           apiToken,
-        }),
+        })
       );
     }
   }, []);
@@ -57,7 +54,7 @@ function PingPage() {
           apiEndpoint,
           apiToken,
           peerId: validatedPeerId,
-        }),
+        })
       )
         .unwrap()
         .then(() => {

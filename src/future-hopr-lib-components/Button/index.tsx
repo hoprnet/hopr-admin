@@ -58,14 +58,7 @@ const StyledButton = styled(MuiButton)<StyledButtonProps>`
 `;
 
 const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>) => {
-  const {
-    imageOnly,
-    size70,
-    standardWidth,
-    fade,
-    children,
-    ...rest
-  } = props;
+  const { imageOnly, size70, standardWidth, fade, children, ...rest } = props;
 
   const classNames = [
     props.className,

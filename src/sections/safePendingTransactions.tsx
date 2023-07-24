@@ -12,7 +12,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 
 // MUI ICONS
@@ -124,7 +124,7 @@ const GNOSIS_BASE_URL = 'https://gnosisscan.io';
  */
 const isTransactionPendingApprovalFromSigner = (
   transaction: SafeMultisigTransactionResponse,
-  address: string | undefined,
+  address: string | undefined
 ) => {
   const foundSigner = transaction?.confirmations?.find((confirmation) => confirmation.owner === address);
   if (foundSigner) {
@@ -150,7 +150,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           safeAddress: transaction.safe,
           signer,
           safeTransaction: transaction,
-        }),
+        })
       )
         .unwrap()
         .then(() => {
@@ -170,7 +170,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           signer,
           safeAddress: transaction.safe,
           safeTransactionHash: transaction.safeTxHash,
-        }),
+        })
       )
         .unwrap()
         .then(() => {
@@ -190,7 +190,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           signer,
           safeAddress: transaction.safe,
           nonce: transaction.nonce,
-        }),
+        })
       )
         .unwrap()
         .then(() => {
@@ -427,7 +427,7 @@ const SafeQueue = () => {
         safeActionsAsync.getPendingSafeTransactionsThunk({
           safeAddress: selectedSafeAddress,
           signer,
-        }),
+        })
       );
     }
 
@@ -438,7 +438,7 @@ const SafeQueue = () => {
         safeActionsAsync.getSafeInfoThunk({
           signer: signer,
           safeAddress: selectedSafeAddress,
-        }),
+        })
       );
     }, 10000);
 
@@ -453,7 +453,7 @@ const SafeQueue = () => {
 
     // sort from oldest date to newest
     return sortedCopy.results.sort(
-      (prevDay, nextDay) => dayjs(prevDay.submissionDate).valueOf() - dayjs(nextDay.submissionDate).valueOf(),
+      (prevDay, nextDay) => dayjs(prevDay.submissionDate).valueOf() - dayjs(nextDay.submissionDate).valueOf()
     );
   };
 

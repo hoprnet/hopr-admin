@@ -15,7 +15,7 @@ import { observeData } from './observeData';
  */
 export const checkIfNewTransaction = (
   previousPendingSafeTransaction: SafeMultisigTransactionResponse | null,
-  newPendingSafeTransaction: SafeMultisigTransactionResponse,
+  newPendingSafeTransaction: SafeMultisigTransactionResponse
 ) =>
   !previousPendingSafeTransaction ||
   previousPendingSafeTransaction.safe != newPendingSafeTransaction.safe ||
@@ -29,12 +29,12 @@ export const checkIfNewTransaction = (
  * @returns The latest pending safe transaction, or undefined if no transactions are found.
  */
 export const getLatestPendingSafeTransaction = (
-  pendingTransactions: SafeMultisigTransactionListResponse | undefined,
+  pendingTransactions: SafeMultisigTransactionListResponse | undefined
 ) => {
   if (!pendingTransactions?.count) return;
 
   const sortedPendingTransactions = [...pendingTransactions.results].sort(
-    (a, b) => new Date(b.submissionDate).getTime() - new Date(a.submissionDate).getTime(),
+    (a, b) => new Date(b.submissionDate).getTime() - new Date(a.submissionDate).getTime()
   );
 
   return sortedPendingTransactions.at(0);
@@ -73,7 +73,7 @@ export const observePendingSafeTransactions = ({
         safeActionsAsync.getPendingSafeTransactionsThunk({
           signer,
           safeAddress: selectedSafeAddress,
-        }),
+        })
       ).unwrap();
 
       return getLatestPendingSafeTransaction(pendingTransactions);

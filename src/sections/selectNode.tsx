@@ -82,7 +82,7 @@ function Section1() {
 
     // If have have saved the node with the same apiToken, we check the saveApiToken checkbox
     const existingItemIndex = nodesSavedLocally.findIndex(
-      (item) => item.apiEndpoint === loginData.apiEndpoint && item.apiToken === loginData.apiToken,
+      (item) => item.apiEndpoint === loginData.apiEndpoint && item.apiToken === loginData.apiToken
     );
 
     if (
@@ -100,7 +100,7 @@ function Section1() {
         apiEndpoint,
         apiToken: saveApiToken ? apiToken : '',
         localName: localName ? localName : '',
-      }),
+      })
     );
   };
 
@@ -120,32 +120,32 @@ function Section1() {
         apiEndpoint,
         apiToken,
         localName,
-      }),
+      })
     );
     const loginInfo = await dispatch(
       authActionsAsync.loginThunk({
         apiEndpoint,
         apiToken,
-      }),
+      })
     ).unwrap();
     if (loginInfo) {
       dispatch(
         nodeActionsAsync.getAddressesThunk({
           apiToken,
           apiEndpoint,
-        }),
+        })
       );
       dispatch(
         nodeActionsAsync.getInfoThunk({
           apiToken,
           apiEndpoint,
-        }),
+        })
       );
       dispatch(
         nodeActionsAsync.getAliasesThunk({
           apiToken,
           apiEndpoint,
-        }),
+        })
       );
       dispatch(nodeActions.initializeMessagesWebsocket());
       dispatch(nodeActions.initializeLogsWebsocket());

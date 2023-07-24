@@ -30,45 +30,45 @@ function SafeOnboarding() {
   }
 
   switch (step) {
-  case 0:
-    return (
-      <Section
-        center
-        fullHeightMin
-        lightBlue
-      >
-        <OwnersAndConfirmations
-          account={account}
-          signer={signer}
-          set_step={set_step}
-        />
-      </Section>
-    );
-  case 1:
-    return (
-      <Section
-        center
-        fullHeightMin
-        lightBlue
-      >
-        <FundsToSafe
-          account={account}
-          set_step={set_step}
-        />
-      </Section>
-    );
-  case 2:
-    return (
-      <Section
-        center
-        fullHeightMin
-        lightBlue
-      >
-        <SafeDeployed />
-      </Section>
-    );
-  default:
-    return <></>;
+    case 0:
+      return (
+        <Section
+          center
+          fullHeightMin
+          lightBlue
+        >
+          <OwnersAndConfirmations
+            account={account}
+            signer={signer}
+            set_step={set_step}
+          />
+        </Section>
+      );
+    case 1:
+      return (
+        <Section
+          center
+          fullHeightMin
+          lightBlue
+        >
+          <FundsToSafe
+            account={account}
+            set_step={set_step}
+          />
+        </Section>
+      );
+    case 2:
+      return (
+        <Section
+          center
+          fullHeightMin
+          lightBlue
+        >
+          <SafeDeployed />
+        </Section>
+      );
+    default:
+      return <></>;
   }
 }
 

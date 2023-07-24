@@ -11,10 +11,7 @@ import { observePendingSafeTransactions } from './safeTransactions';
 
 export const useWatcher = ({ intervalDuration = 15000 }: { intervalDuration?: number }) => {
   const dispatch = useAppDispatch();
-  const {
-    apiEndpoint,
-    apiToken,
-  } = useAppSelector((store) => store.auth.loginData);
+  const { apiEndpoint, apiToken } = useAppSelector((store) => store.auth.loginData);
   const messages = useAppSelector((store) => store.node.messages);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress);
   const signer = useEthersSigner();

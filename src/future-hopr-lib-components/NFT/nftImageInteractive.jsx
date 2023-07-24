@@ -137,16 +137,16 @@ export default function NftImageInteractive(props) {
 
   const spineColor = (rank) => {
     switch (rank) {
-    case 'bronze':
-      return '#e9a950';
-    case 'silver':
-      return '#828282';
-    case 'gold':
-      return '#eceb8a';
-    case 'diamond':
-      return '#ffffff';
-    default:
-      return '#00009c';
+      case 'bronze':
+        return '#e9a950';
+      case 'silver':
+        return '#828282';
+      case 'gold':
+        return '#eceb8a';
+      case 'diamond':
+        return '#ffffff';
+      default:
+        return '#00009c';
     }
   };
 

@@ -32,12 +32,7 @@ const Data = styled.div`
 `;
 
 export default function InfoBar(props: Props) {
-  const {
-    balances,
-    peers,
-    info,
-    channels,
-  } = useAppSelector((state) => state.node);
+  const { balances, peers, info, channels } = useAppSelector((state) => state.node);
 
   const drawer = (
     <div>

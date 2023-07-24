@@ -7,7 +7,7 @@ import {
   useContractWrite,
   usePrepareContractWrite,
   usePrepareSendTransaction,
-  useSendTransaction
+  useSendTransaction,
 } from 'wagmi';
 
 import {
@@ -21,7 +21,7 @@ import {
   StyledInputGroup,
   StyledInstructions,
   StyledTextField,
-  Text
+  Text,
 } from './styled';
 import Button from '../../future-hopr-lib-components/Button';
 import Card from '../components/Card';
@@ -36,10 +36,7 @@ type FundsToSafeProps = {
   set_step: (step: number) => void;
 };
 
-const FundsToSafe = ({
-  account,
-  set_step,
-}: FundsToSafeProps) => {
+const FundsToSafe = ({ account, set_step }: FundsToSafeProps) => {
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress);
 
   const [xdaiValue, set_xdaiValue] = useState('');
@@ -92,18 +89,12 @@ const FundsToSafe = ({
     }
   };
 
-  const {
-    isLoading: is_wxHOPR_to_safe_loading,
-    write: write_wxHOPR_to_safe,
-  } = useContractWrite({
+  const { isLoading: is_wxHOPR_to_safe_loading, write: write_wxHOPR_to_safe } = useContractWrite({
     ...wxHOPR_to_safe_config,
     onSuccess: () => set_step(2),
   });
 
-  const {
-    isLoading: is_xDAI_to_safe_loading,
-    sendTransaction: send_xDAI_to_safe,
-  } = useSendTransaction({
+  const { isLoading: is_xDAI_to_safe_loading, sendTransaction: send_xDAI_to_safe } = useSendTransaction({
     ...xDAI_to_safe_config,
     onSuccess: () => write_wxHOPR_to_safe?.(),
   });
@@ -143,11 +134,13 @@ const FundsToSafe = ({
               size="small"
               value={xdaiValue}
               onChange={(e) => set_xdaiValue(e.target.value)}
-              InputProps={{ inputProps: {
-                style: { textAlign: 'right' },
-                min: 0,
-                pattern: '[0-9]*',
-              } }}
+              InputProps={{
+                inputProps: {
+                  style: { textAlign: 'right' },
+                  min: 0,
+                  pattern: '[0-9]*',
+                },
+              }}
             />
             <StyledCoinLabel>
               <Lowercase>x</Lowercase>DAI
@@ -173,11 +166,13 @@ const FundsToSafe = ({
               size="small"
               value={wxhoprValue}
               onChange={(e) => set_wxhoprValue(e.target.value)}
-              InputProps={{ inputProps: {
-                style: { textAlign: 'right' },
-                min: 0,
-                pattern: '[0-9]*',
-              } }}
+              InputProps={{
+                inputProps: {
+                  style: { textAlign: 'right' },
+                  min: 0,
+                  pattern: '[0-9]*',
+                },
+              }}
             />
             <StyledCoinLabel>
               <Lowercase>wx</Lowercase>HOPR

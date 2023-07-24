@@ -1,12 +1,4 @@
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow
-} from '@mui/material'
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { useEffect } from 'react';
 import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
@@ -45,13 +37,13 @@ function PeersPage() {
       actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      }),
+      })
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      }),
+      })
     );
   };
 
@@ -97,7 +89,7 @@ function PeersPage() {
                 backoff: peer.backoff,
                 isNew: peer.isNew,
               })),
-              'peers.csv',
+              'peers.csv'
             );
           }
         }}

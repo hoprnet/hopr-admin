@@ -142,15 +142,7 @@ type GrayCardProps = {
   children?: ReactNode;
 };
 
-const GrayCard = ({
-  id,
-  title,
-  value,
-  currency,
-  chip,
-  buttons,
-  children,
-}: GrayCardProps) => {
+const GrayCard = ({ id, title, value, currency, chip, buttons, children }: GrayCardProps) => {
   return (
     <StyledGrayCard id={id}>
       {(title || value) && (
