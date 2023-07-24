@@ -347,16 +347,17 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
 
       {(connecting || error) && (
         <Overlay className={`${error ? 'overlay-has-error' : ''}`}>
-          <CloseOverlayIconButton
-            color="primary"
-            aria-label="close modal"
-            onClick={() => {
-              dispatch(authActions.resetState());
-            }}
-          >
-            <CloseIcon />
-          </CloseOverlayIconButton>
-
+          {error && 
+            <CloseOverlayIconButton
+              color="primary"
+              aria-label="close modal"
+              onClick={() => {
+                dispatch(authActions.resetState());
+              }}
+            >
+              <CloseIcon />
+            </CloseOverlayIconButton>
+          }
           {connecting && <CircularProgress />}
           {error && (
             <div className={'error'}>

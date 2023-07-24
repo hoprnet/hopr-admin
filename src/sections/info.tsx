@@ -84,6 +84,7 @@ function InfoPage() {
         className="Section--selectNode"
         id="Section--selectNode"
         yellow
+        fullHeightMin
       >
         Login to node
       </Section>
@@ -95,6 +96,7 @@ function InfoPage() {
       className="Section--selectNode"
       id="Section--selectNode"
       yellow
+      fullHeightMin
     >
       <h2>
         Info <button onClick={fetchInfoData}>refresh</button>{' '}
