@@ -60,6 +60,7 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import DockerInstallation from './steps/installNode/dockerInstallation';
 import NodeAddress from './steps/installNode/nodeAddress';
 import PaidIcon from '@mui/icons-material/Paid';
+import ConnectSafe from './components/ConnectSafe';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import SafeOnboarding from './steps/safeOnboarding';
 import NoNodeAdded from './sections/noNodeAdded';
@@ -360,6 +361,7 @@ const LayoutEnhanced = () => {
       itemsNavbarRight={
         <>
           <NotificationBar />
+          {(environment === 'dev' || environment === 'web3') && <ConnectSafe />}
           {(environment === 'dev' || environment === 'web3') && <ConnectWeb3 inTheAppBar />}
           {(environment === 'dev' || environment === 'node') && <ConnectNode />}
         </>
