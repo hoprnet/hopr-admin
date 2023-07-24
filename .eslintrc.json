@@ -12,7 +12,7 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint", "import-newlines", "newline-destructuring"],
+  "plugins": ["react", "@typescript-eslint"],
   "rules": {
     "linebreak-style": "unix",
     "react/react-in-jsx-scope": "off",
@@ -33,13 +33,11 @@
       {
         "arrays": "always-multiline",
         "objects": "always-multiline",
-        "imports": "never",
+        "imports":  "always-multiline",
         "exports": "always-multiline",
         "functions": "always-multiline"
       }
     ],
-    "import-newlines/enforce": "warn",
-    "newline-destructuring/newline": ["warn", { "items": 1 }],
     "no-duplicate-imports": "warn",
     "no-console": "warn",
     "prefer-const": "warn",
