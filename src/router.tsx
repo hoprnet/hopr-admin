@@ -361,7 +361,7 @@ const LayoutEnhanced = () => {
       itemsNavbarRight={
         <>
           <NotificationBar />
-          <ConnectSafe />
+          {(environment === 'dev' || environment === 'web3') && <ConnectSafe />}
           {(environment === 'dev' || environment === 'web3') && <ConnectWeb3 inTheAppBar />}
           {(environment === 'dev' || environment === 'node') && <ConnectNode />}
         </>
