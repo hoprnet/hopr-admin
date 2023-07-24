@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import { ReactNode, useEffect } from 'react';
-import { truncateEthereumAddress } from '../utils/helpers';
+import { ReactNode } from 'react';
+import { truncateHOPRPeerId } from '../utils/helpers';
 import { useAppSelector } from '../store';
 import { useBalance } from 'wagmi';
 
@@ -11,6 +11,8 @@ import { Link } from 'react-router-dom';
 
 import SettingsIcon from '@mui/icons-material/Settings';
 import CloseIcon from '@mui/icons-material/Close';
+import CopyIcon from '@mui/icons-material/ContentCopy';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 const StyledCard = styled(Card)`
   display: flex;
@@ -107,7 +109,7 @@ const StyledChip = styled(Chip)<{ color: string }>`
 
 const Graphic = styled.div`
   display: grid;
-  grid-template-columns: 250px 1fr;
+  grid-template-columns: 200px 1fr;
   grid-template-rows: 1fr;
   gap: 1rem;
 `;
@@ -117,9 +119,15 @@ const NodeGraphic = styled.div`
   background-color: #d3f6ff;
   display: grid;
   min-height: 281px;
-  max-width: 250px;
-  padding: 3rem;
+  max-width: 200px;
+  padding: 1rem;
   place-items: center;
+
+  img {
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
 `;
 
 const NodeInfo = styled.div`
@@ -132,16 +140,20 @@ const NodeInfo = styled.div`
 
 const NodeInfoRow = styled.div`
   display: flex;
-  gap: 0.5rem;
 
   & p {
+    align-self: flex-end;
     margin: 0;
-    font-size: 14px;
+    font-size: 12px;
   }
 
-  & p:first-child {
-    width: 120px;
+  & p:first-of-type {
+    width: 112px;
     font-weight: 600;
+  }
+
+  & #actions {
+    align-self: flex-start;
   }
 `;
 
@@ -151,6 +163,7 @@ const StyledIconButton = styled(IconButton)`
   height: 1rem;
   padding: 1rem;
   width: 1rem;
+  margin-right: 0.5rem;
 
   &:hover {
     background-color: #2b2b66;
@@ -159,6 +172,19 @@ const StyledIconButton = styled(IconButton)`
   & svg {
     height: 1rem;
     width: 1rem;
+  }
+`;
+
+const SquaredIconButton = styled(IconButton)`
+  color: #414141;
+  height: 0.75rem;
+  padding: 0.75rem;
+  width: 0.75rem;
+  margin-left: 0.25rem;
+
+  & svg {
+    height: 0.75rem;
+    width: 0.75rem;
   }
 `;
 
@@ -229,15 +255,13 @@ const NodeAdded = () => {
   const selectedSafeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress) as `0x${string}`;
   const nodeNativeAddress = useAppSelector((selector) => selector.node.addresses.native);
   const nodeHoprAddress = useAppSelector((selector) => selector.node.addresses.hopr);
+  console.log('@  nodeHoprAddress:', nodeHoprAddress);
 
   const { data: xDAI_balance } = useBalance({
     address: selectedSafeAddress,
     watch: true,
   });
 
-  useEffect(() => {
-    return;
-  }, [nodeNativeAddress]);
   return (
     <Section
       lightBlue
@@ -256,8 +280,16 @@ const NodeAdded = () => {
               </NodeGraphic>
               <NodeInfo>
                 <NodeInfoRow>
-                  <p>Peer Id</p>
-                  <p>{nodeNativeAddress && truncateEthereumAddress(nodeNativeAddress)}</p>
+                  <p>Peer ID</p>
+                  <p>{nodeHoprAddress && truncateHOPRPeerId(nodeHoprAddress)}</p>
+                  <SquaredIconButton onClick={() => nodeHoprAddress && navigator.clipboard.writeText(nodeHoprAddress)}>
+                    <CopyIcon />
+                  </SquaredIconButton>
+                  <Link to={`https://gnosisscan.io/address/${nodeNativeAddress}`}>
+                    <SquaredIconButton>
+                      <LaunchIcon />
+                    </SquaredIconButton>
+                  </Link>
                 </NodeInfoRow>
                 <NodeInfoRow>
                   <p>Last seen</p>
@@ -276,11 +308,11 @@ const NodeAdded = () => {
                   <p>80%</p>
                 </NodeInfoRow>
                 <NodeInfoRow>
-                  <p>Actions</p>
-                  <StyledIconButton disabled>
+                  <p id="actions">Actions</p>
+                  <StyledIconButton>
                     <SettingsIcon />
                   </StyledIconButton>
-                  <StyledIconButton disabled>
+                  <StyledIconButton>
                     <CloseIcon />
                   </StyledIconButton>
                 </NodeInfoRow>
