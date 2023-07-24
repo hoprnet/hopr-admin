@@ -255,7 +255,6 @@ const NodeAdded = () => {
   const selectedSafeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress) as `0x${string}`;
   const nodeNativeAddress = useAppSelector((selector) => selector.node.addresses.native);
   const nodeHoprAddress = useAppSelector((selector) => selector.node.addresses.hopr);
-  console.log('@  nodeHoprAddress:', nodeHoprAddress);
 
   const { data: xDAI_balance } = useBalance({
     address: selectedSafeAddress,
@@ -281,15 +280,23 @@ const NodeAdded = () => {
               <NodeInfo>
                 <NodeInfoRow>
                   <p>Peer ID</p>
-                  <p>{nodeHoprAddress && truncateHOPRPeerId(nodeHoprAddress)}</p>
-                  <SquaredIconButton onClick={() => nodeHoprAddress && navigator.clipboard.writeText(nodeHoprAddress)}>
-                    <CopyIcon />
-                  </SquaredIconButton>
-                  <Link to={`https://gnosisscan.io/address/${nodeNativeAddress}`}>
-                    <SquaredIconButton>
-                      <LaunchIcon />
-                    </SquaredIconButton>
-                  </Link>
+                  {nodeHoprAddress ? (
+                    <>
+                      <p>{truncateHOPRPeerId(nodeHoprAddress)}</p>
+                      <SquaredIconButton
+                        onClick={() => nodeHoprAddress && navigator.clipboard.writeText(nodeHoprAddress)}
+                      >
+                        <CopyIcon />
+                      </SquaredIconButton>
+                      <Link to={`https://gnosisscan.io/address/${nodeNativeAddress}`}>
+                        <SquaredIconButton>
+                          <LaunchIcon />
+                        </SquaredIconButton>
+                      </Link>
+                    </>
+                  ) : (
+                    <p>-</p>
+                  )}
                 </NodeInfoRow>
                 <NodeInfoRow>
                   <p>Last seen</p>
@@ -309,10 +316,10 @@ const NodeAdded = () => {
                 </NodeInfoRow>
                 <NodeInfoRow>
                   <p id="actions">Actions</p>
-                  <StyledIconButton>
+                  <StyledIconButton disabled>
                     <SettingsIcon />
                   </StyledIconButton>
-                  <StyledIconButton>
+                  <StyledIconButton disabled>
                     <CloseIcon />
                   </StyledIconButton>
                 </NodeInfoRow>
