@@ -1,6 +1,4 @@
-import React, {
-  useState, useEffect, Fragment 
-} from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 
 import styled from '@emotion/styled';
 import { chains } from '../../shared/chains.js';

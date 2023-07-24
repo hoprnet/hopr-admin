@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
 import { parseEther } from 'viem';
 import { useEthersSigner } from '..';
-import {
-  useAppDispatch, useAppSelector 
-} from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { appActions } from '../../store/slices/app';
 import { observeNodeBalances } from './balances';
 import { observeChannels } from './channels';

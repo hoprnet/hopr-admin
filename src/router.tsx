@@ -1,19 +1,11 @@
 import { useEffect } from 'react';
-import {
-  createBrowserRouter, RouteObject, useSearchParams 
-} from 'react-router-dom';
+import { createBrowserRouter, RouteObject, useSearchParams } from 'react-router-dom';
 import { environment } from '../config';
 
 // Store
-import {
-  useAppDispatch, useAppSelector 
-} from './store';
-import {
-  authActions, authActionsAsync 
-} from './store/slices/auth';
-import {
-  nodeActions, nodeActionsAsync 
-} from './store/slices/node';
+import { useAppDispatch, useAppSelector } from './store';
+import { authActions, authActionsAsync } from './store/slices/auth';
+import { nodeActions, nodeActionsAsync } from './store/slices/node';
 
 // Sections
 import Section1 from './sections/selectNode';

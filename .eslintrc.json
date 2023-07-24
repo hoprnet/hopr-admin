@@ -26,7 +26,7 @@
       {
         "ObjectExpression": { "minProperties": 2 },
         "ObjectPattern": { "minProperties": 2 },
-        "ImportDeclaration": { "minProperties": 2 },
+        "ImportDeclaration": { "minProperties": 5 },
         "ExportDeclaration": { "minProperties": 2 }
       }
     ],

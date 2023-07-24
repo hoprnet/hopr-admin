@@ -1,7 +1,5 @@
 //Stores
-import {
-  useAppDispatch, useAppSelector 
-} from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 
 // Libraries
 import styled from '@emotion/styled';
@@ -12,9 +10,7 @@ import Tooltip from '@mui/material/Tooltip';
 
 // components
 import { SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-kit';
-import {
-  useEffect, useState 
-} from 'react';
+import { useEffect, useState } from 'react';
 import { parseUnits } from 'viem';
 import Button from '../future-hopr-lib-components/Button';
 import GrayButton from '../future-hopr-lib-components/Button/gray';

@@ -1,14 +1,8 @@
-import {
-  useEffect, useState 
-} from 'react';
+import { useEffect, useState } from 'react';
 
 //Stores
-import {
-  useAppDispatch, useAppSelector 
-} from '../store';
-import {
-  safeActionsAsync, safeActions 
-} from '../store/slices/safe';
+import { useAppDispatch, useAppSelector } from '../store';
+import { safeActionsAsync, safeActions } from '../store/slices/safe';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';

@@ -6,9 +6,7 @@ import Button from '../../future-hopr-lib-components/Button';
 import GrayButton from '../../future-hopr-lib-components/Button/gray';
 import Card from '../components/Card';
 import { useNavigate } from 'react-router-dom';
-import {
-  useAppDispatch, useAppSelector 
-} from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { useEthersSigner } from '../../hooks';
 import { safeActionsAsync } from '../../store/slices/safe';
 

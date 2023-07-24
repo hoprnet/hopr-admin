@@ -1,16 +1,8 @@
-import {
-  useEffect, useState 
-} from 'react';
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import {
-  DialogTitle, TextField, DialogActions, InputAdornment 
-} from '@mui/material';
-import {
-  SDialog, SDialogContent, SIconButton, TopBar 
-} from '../../future-hopr-lib-components/Modal/styled';
-import {
-  useAppDispatch, useAppSelector 
-} from '../../store';
+import { DialogTitle, TextField, DialogActions, InputAdornment } from '@mui/material';
+import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { ethers } from 'ethers';
 import CloseIcon from '@mui/icons-material/Close';

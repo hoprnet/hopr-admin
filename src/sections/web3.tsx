@@ -1,12 +1,8 @@
-import React, {
-  useState, useEffect 
-} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Store } from '../types/index';
 
 //Stores
-import {
-  useAppDispatch, useAppSelector 
-} from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { web3Actions } from '../store/slices/web3';
 import { actionsAsync as web3ActionsAsync } from '../store/slices/web3/actionsAsync';
 

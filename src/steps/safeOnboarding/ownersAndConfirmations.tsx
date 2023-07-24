@@ -1,6 +1,4 @@
-import {
-  useEffect, useState 
-} from 'react';
+import { useEffect, useState } from 'react';
 import { nanoid } from '@reduxjs/toolkit';
 import { ethers } from 'ethers';
 
@@ -17,9 +15,7 @@ import {
 } from './styled';
 import Button from '../../future-hopr-lib-components/Button';
 import Card from '../components/Card';
-import {
-  IconButton, MenuItem, Select, TextField 
-} from '@mui/material';
+import { IconButton, MenuItem, Select, TextField } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 
 // Icons

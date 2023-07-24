@@ -2,12 +2,8 @@ import {
   Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow 
 } from '@mui/material';
 import Section from '../future-hopr-lib-components/Section';
-import {
-  useAppDispatch, useAppSelector 
-} from '../store';
-import {
-  useEffect, useRef, useState 
-} from 'react';
+import { useAppDispatch, useAppSelector } from '../store';
+import { useEffect, useRef, useState } from 'react';
 import { actionsAsync } from '../store/slices/node/actionsAsync';
 import { exportToCsv } from '../utils/helpers';
 import { utils } from '@hoprnet/hopr-sdk';

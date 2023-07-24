@@ -1,8 +1,6 @@
 import Button from '../../future-hopr-lib-components/Button';
 import Card from '../components/Card';
-import {
-  ButtonContainer, Text 
-} from './styled';
+import { ButtonContainer, Text } from './styled';
 
 const SafeDeployed = () => {
   return (

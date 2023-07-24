@@ -1,6 +1,4 @@
-import {
-  HTMLAttributes, useEffect, useRef 
-} from 'react';
+import { HTMLAttributes, useEffect, useRef } from 'react';
 import md5 from 'md5';
 // @ts-ignore
 import jazzicon from '@metamask/jazzicon';

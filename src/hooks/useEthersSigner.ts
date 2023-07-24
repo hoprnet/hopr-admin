@@ -1,7 +1,5 @@
 import * as React from 'react';
-import {
-  type WalletClient, useWalletClient 
-} from 'wagmi';
+import { type WalletClient, useWalletClient } from 'wagmi';
 import { providers } from 'ethers';
 
 function walletClientToSigner(walletClient: WalletClient) {

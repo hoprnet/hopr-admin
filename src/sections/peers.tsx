@@ -3,9 +3,7 @@ import {
 } from '@mui/material';
 import { useEffect } from 'react';
 import Section from '../future-hopr-lib-components/Section';
-import {
-  useAppDispatch, useAppSelector 
-} from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { actionsAsync } from '../store/slices/node/actionsAsync';
 import { exportToCsv } from '../utils/helpers';
 import { styled } from '@mui/material/styles';

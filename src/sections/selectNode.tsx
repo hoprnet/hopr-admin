@@ -1,18 +1,10 @@
-import React, {
-  useState, useEffect 
-} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import {
-  useAppDispatch, useAppSelector 
-} from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 
 //Stores
-import {
-  authActions, authActionsAsync 
-} from '../store/slices/auth';
-import {
-  nodeActionsAsync, nodeActions 
-} from '../store/slices/node';
+import { authActions, authActionsAsync } from '../store/slices/auth';
+import { nodeActionsAsync, nodeActions } from '../store/slices/node';
 import { appActions } from '../store/slices/app';
 
 // HOPR Components

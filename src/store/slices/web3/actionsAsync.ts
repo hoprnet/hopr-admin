@@ -1,11 +1,7 @@
-import {
-  createAsyncThunk, ActionReducerMapBuilder 
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 
-import {
-  useAccount, useConnect, useDisconnect 
-} from 'wagmi';
+import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 
 const connect = createAsyncThunk('web3/connect', async () => {

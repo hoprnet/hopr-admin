@@ -1,6 +1,4 @@
-import {
-  forwardRef, Ref 
-} from 'react';
+import { forwardRef, Ref } from 'react';
 import styled from '@emotion/styled';
 import MuiButton, { ButtonProps } from '@mui/material/Button';
 

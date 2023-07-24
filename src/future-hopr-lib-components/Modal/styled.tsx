@@ -1,7 +1,5 @@
 import styled from '@emotion/styled';
-import {
-  Dialog, DialogContent, IconButton 
-} from '@mui/material';
+import { Dialog, DialogContent, IconButton } from '@mui/material';
 
 export const SDialog = styled(Dialog)`
   .MuiPaper-root {

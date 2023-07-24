@@ -1,6 +1,4 @@
-import {
-  useEffect, useState 
-} from 'react';
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import {
@@ -13,9 +11,7 @@ import {
   Drawer as MuiDrawer,
   Tooltip
 } from '@mui/material';
-import {
-  Link, useLocation 
-} from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ApplicationMapType } from '../../router';
 
 const drawerWidth = 240;

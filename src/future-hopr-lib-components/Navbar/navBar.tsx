@@ -1,6 +1,4 @@
-import React, {
-  useEffect, useState 
-} from 'react';
+import React, { useEffect, useState } from 'react';
 //import { useRouter } from 'next/router';
 import styled from '@emotion/styled';
 
@@ -8,9 +6,7 @@ import styled from '@emotion/styled';
 //import LaunchPlaygroundBtn from '../../future-hopr-lib-components/Button/LaunchPlayground';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import NavBarItems from './navBarItems';
-import {
-  Box, IconButton 
-} from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
 interface AppBarProps extends MuiAppBarProps {

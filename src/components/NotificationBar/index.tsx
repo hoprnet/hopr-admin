@@ -1,10 +1,6 @@
-import React, {
-  useState, useEffect 
-} from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import {
-  useNavigate, useLocation 
-} from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useWatcher } from '../../hooks';
 // Mui
 import IconButton from '@mui/material/IconButton';
@@ -14,9 +10,7 @@ import Badge from '@mui/material/Badge';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 
 // Store
-import {
-  useAppDispatch, useAppSelector 
-} from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { appActions } from '../../store/slices/app';
 
 const Container = styled.div`

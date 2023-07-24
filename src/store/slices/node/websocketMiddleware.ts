@@ -1,7 +1,5 @@
 import { utils } from '@hoprnet/hopr-sdk';
-import {
-  Middleware, PayloadAction, nanoid 
-} from '@reduxjs/toolkit';
+import { Middleware, PayloadAction, nanoid } from '@reduxjs/toolkit';
 import { initialState as nodeInitialState } from '../node/initialState';
 import { initialState } from '../auth/initialState';
 import { nodeActions } from './index';

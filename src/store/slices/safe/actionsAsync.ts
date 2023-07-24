@@ -1,22 +1,14 @@
-import {
-  ActionReducerMapBuilder, createAsyncThunk 
-} from '@reduxjs/toolkit';
+import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 import { ethers } from 'ethers';
-import SafeApiKit, {
-  AddSafeDelegateProps,
+import SafeApiKit, { AddSafeDelegateProps,
   AllTransactionsOptions,
   DeleteSafeDelegateProps,
-  GetSafeDelegateProps
-} from '@safe-global/api-kit';
-import Safe, {
-  EthersAdapter, SafeAccountConfig, SafeFactory 
-} from '@safe-global/protocol-kit';
-import {
-  SafeMultisigTransactionResponse,
+  GetSafeDelegateProps } from '@safe-global/api-kit';
+import Safe, { EthersAdapter, SafeAccountConfig, SafeFactory } from '@safe-global/protocol-kit';
+import { SafeMultisigTransactionResponse,
   SafeTransaction,
-  SafeTransactionDataPartial
-} from '@safe-global/safe-core-sdk-types';
+  SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types';
 
 const SERVICE_URL = 'https://safe-transaction-gnosis-chain.safe.global/';
 

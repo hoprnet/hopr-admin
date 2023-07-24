@@ -1,9 +1,5 @@
-import {
-  useEffect, useState 
-} from 'react';
-import {
-  formatEther, parseEther, parseUnits 
-} from 'viem';
+import { useEffect, useState } from 'react';
+import { formatEther, parseEther, parseUnits } from 'viem';
 import { useAppSelector } from '../../store';
 import {
   erc20ABI,

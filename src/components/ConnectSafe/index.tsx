@@ -1,21 +1,13 @@
-import {
-  useState, useEffect, useRef 
-} from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 
 // Store
-import {
-  useAppDispatch, useAppSelector 
-} from '../../store';
-import {
-  safeActions, safeActionsAsync 
-} from '../../store/slices/safe';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { safeActions, safeActionsAsync } from '../../store/slices/safe';
 
 import { useEthersSigner } from '../../hooks';
 
-import {
-  Button, Menu, MenuItem 
-} from '@mui/material';
+import { Button, Menu, MenuItem } from '@mui/material';
 import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
 import { appActions } from '../../store/slices/app';
 import { truncateEthereumAddress } from '../../utils/helpers';

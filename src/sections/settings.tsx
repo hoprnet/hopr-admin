@@ -1,6 +1,4 @@
-import {
-  useEffect, useState 
-} from 'react';
+import { useEffect, useState } from 'react';
 import {
   TableHead,
   TableRow,
@@ -11,9 +9,7 @@ import {
   Switch,
   SelectChangeEvent
 } from '@mui/material';
-import {
-  useAppDispatch, useAppSelector 
-} from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import Section from '../future-hopr-lib-components/Section';
 import Select from '../future-hopr-lib-components/Select';
 import { nodeActionsAsync } from '../store/slices/node';

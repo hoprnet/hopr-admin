@@ -1,10 +1,6 @@
 import Section from '../future-hopr-lib-components/Section';
-import {
-  useAppDispatch, useAppSelector 
-} from '../store';
-import {
-  useEffect, useState 
-} from 'react';
+import { useAppDispatch, useAppSelector } from '../store';
+import { useEffect, useState } from 'react';
 import { actionsAsync } from '../store/slices/node/actionsAsync';
 import CircularProgress from '@mui/material/CircularProgress';
 

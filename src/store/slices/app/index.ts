@@ -1,10 +1,6 @@
-import {
-  PayloadAction, createSlice 
-} from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
-import {
-  AccountResponseType, GetChannelsResponseType, GetInfoResponseType 
-} from '@hoprnet/hopr-sdk';
+import { AccountResponseType, GetChannelsResponseType, GetInfoResponseType } from '@hoprnet/hopr-sdk';
 import { WatcherMessage } from '../../../hooks/useWatcher/messages';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 

@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 import Section from '../future-hopr-lib-components/Section';
-import {
-  useAppDispatch, useAppSelector 
-} from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { actionsAsync } from '../store/slices/node/actionsAsync';
 
 function MetricsPage() {

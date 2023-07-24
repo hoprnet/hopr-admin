@@ -1,9 +1,5 @@
-import {
-  useEffect, useState 
-} from 'react';
-import {
-  useBalance, useContractWrite, usePrepareContractWrite, useAccount 
-} from 'wagmi';
+import { useEffect, useState } from 'react';
+import { useBalance, useContractWrite, usePrepareContractWrite, useAccount } from 'wagmi';
 import { parseUnits } from 'viem';
 import wrapperAbi from '../abi/wrapperAbi.json';
 

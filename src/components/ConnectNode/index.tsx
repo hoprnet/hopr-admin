@@ -1,21 +1,13 @@
-import React, {
-  useState, useEffect, useRef 
-} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
-import {
-  Link, useNavigate 
-} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // Store
-import {
-  useAppDispatch, useAppSelector 
-} from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { authActions } from '../../store/slices/auth';
 import { nodeActions } from '../../store/slices/node';
 import { appActions } from '../../store/slices/app';
-import {
-  Button, Menu, MenuItem 
-} from '@mui/material';
+import { Button, Menu, MenuItem } from '@mui/material';
 
 const Container = styled(Button)`
   align-items: center;

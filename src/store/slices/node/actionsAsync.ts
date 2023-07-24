@@ -1,6 +1,4 @@
-import {
-  ActionReducerMapBuilder, createAsyncThunk 
-} from '@reduxjs/toolkit';
+import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 import {
   type AliasPayloadType,

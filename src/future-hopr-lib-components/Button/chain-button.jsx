@@ -1,6 +1,4 @@
-import React, {
-  useState, useEffect, Fragment, useCallback 
-} from 'react';
+import React, { useState, useEffect, Fragment, useCallback } from 'react';
 import styled from '@emotion/styled';
 import MuiButton from '@mui/material/Button';
 

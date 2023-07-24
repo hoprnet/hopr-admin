@@ -1,6 +1,4 @@
-import {
-  useState, useEffect 
-} from 'react';
+import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import {
   Dialog,
@@ -13,18 +11,14 @@ import {
   TextField,
   Tooltip
 } from '@mui/material';
-import {
-  SDialog, SDialogContent, SIconButton, TopBar 
-} from '../../future-hopr-lib-components/Modal/styled';
+import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
 import { SendMessagePayloadType } from '@hoprnet/hopr-sdk';
 import Checkbox from '../../future-hopr-lib-components/Toggles/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 
 // Store
-import {
-  useAppDispatch, useAppSelector 
-} from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 
 const PathOrHops = styled.div`

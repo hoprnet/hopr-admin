@@ -16,19 +16,13 @@ import {
   TableHead,
   TableRow
 } from '@mui/material';
-import {
-  AllTransactionsListResponse,
+import { AllTransactionsListResponse,
   EthereumTxWithTransfersResponse,
   SafeModuleTransactionWithTransfersResponse,
-  SafeMultisigTransactionWithTransfersResponse
-} from '@safe-global/api-kit';
-import {
-  useEffect, useState 
-} from 'react';
+  SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-kit';
+import { useEffect, useState } from 'react';
 import { useEthersSigner } from '../hooks';
-import {
-  useAppDispatch, useAppSelector 
-} from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { safeActionsAsync } from '../store/slices/safe';
 import { formatEther } from 'viem';
 import styled from '@emotion/styled';

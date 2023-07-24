@@ -1,8 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
-import {
-  actionsAsync, createExtraReducers 
-} from './actionsAsync';
+import { actionsAsync, createExtraReducers } from './actionsAsync';
 
 const web3Slice = createSlice({
   name: 'web3',

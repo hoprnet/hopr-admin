@@ -22,9 +22,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 // STORE
-import {
-  useAppDispatch, useAppSelector 
-} from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { safeActionsAsync } from '../store/slices/safe';
 
 // COMPONENTS
@@ -42,9 +40,7 @@ import { default as relativeTime } from 'dayjs/plugin/relativeTime';
 
 // HOOKS
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
-import {
-  useEffect, useState 
-} from 'react';
+import { useEffect, useState } from 'react';
 import { formatEther } from 'viem';
 import { useEthersSigner } from '../hooks';
 import { truncateEthereumAddress } from '../utils/helpers';

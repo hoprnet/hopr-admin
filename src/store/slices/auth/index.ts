@@ -1,13 +1,7 @@
-import {
-  PayloadAction, createSlice 
-} from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
-import {
-  actionsAsync, createExtraReducers 
-} from './actionsAsync';
-import {
-  getObjectFromLocalStorage, bubbleSortObject 
-} from '../../../utils/functions';
+import { actionsAsync, createExtraReducers } from './actionsAsync';
+import { getObjectFromLocalStorage, bubbleSortObject } from '../../../utils/functions';
 
 const authSlice = createSlice({
   name: 'auth',

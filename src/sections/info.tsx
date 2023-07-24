@@ -1,6 +1,4 @@
-import {
-  useAppDispatch, useAppSelector 
-} from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
