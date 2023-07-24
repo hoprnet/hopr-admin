@@ -43,7 +43,7 @@
     "dev:clean": "npm run dev -- --force",
     "build": "tsc && vite build",
     "serve": "vite preview --port 3000",
-    "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
+    "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx ./src",
     "format": "yarn prettier --write ./src",
     "format-lint": "prettier-eslint --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "prepare": "husky install"

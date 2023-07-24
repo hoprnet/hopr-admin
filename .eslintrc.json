@@ -12,7 +12,10 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint"],
+  "plugins": [
+    "react", 
+    "@typescript-eslint"
+  ],
   "rules": {
     "linebreak-style": ["error", "unix"],
     "react/react-in-jsx-scope": "off",
@@ -33,7 +36,7 @@
       {
         "arrays": "always-multiline",
         "objects": "always-multiline",
-        "imports":  "never",
+        "imports": "never",
         "exports": "always-multiline",
         "functions": "always-multiline"
       }

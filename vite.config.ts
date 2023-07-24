@@ -18,12 +18,12 @@ export default defineConfig(() => {
       // emotion setup with react
       react({
         jsxImportSource: '@emotion/react',
-        babel: {plugins: ['@emotion/babel-plugin']},
+        babel: { plugins: ['@emotion/babel-plugin'] },
       }),
     ],
-    optimizeDeps: {esbuildOptions: {
+    optimizeDeps: { esbuildOptions: {
       // Node.js global to browser globalThis
-      define: {global: 'globalThis'},
+      define: { global: 'globalThis' },
       // Enable esbuild polyfill plugins
       plugins: [
         NodeGlobalsPolyfillPlugin({
@@ -31,7 +31,7 @@ export default defineConfig(() => {
           process: true,
         }),
       ],
-    }},
-    build: {outDir: 'build'},
+    } },
+    build: { outDir: 'build' },
   };
 });
