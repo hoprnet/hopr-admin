@@ -22,6 +22,7 @@ const AppBarContainer = styled(Button)`
   justify-content: center;
   width: 250px;
   gap: 10px;
+  border-radius: 0;
   & .image-container {
     height: 50px;
     width: 50px;
@@ -49,8 +50,9 @@ const DropdownArrow = styled.img`
   align-self: center;
 `;
 
-const DisabledButton = styled(Button)`
+const DisabledButton = styled.div`
   width: 170px;
+  color: #969696;
 `;
 
 export default function ConnectSafe() {
@@ -152,6 +154,7 @@ export default function ConnectSafe() {
     <AppBarContainer
       onClick={handleSafeButtonClick}
       ref={menuRef}
+      disabled={!connected.connected}
     >
       <div className="image-container">
         <img
@@ -189,7 +192,7 @@ export default function ConnectSafe() {
           </Menu>
         </>
       ) : (
-        <DisabledButton disabled>Connect Wallet</DisabledButton>
+        <DisabledButton>Connect Wallet</DisabledButton>
       )}
     </AppBarContainer>
   );

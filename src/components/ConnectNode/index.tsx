@@ -19,6 +19,7 @@ const Container = styled(Button)`
   gap: 10px;
   height: 59px;
   width: 240px;
+  border-radius: 0;
   div {
     align-items: center;
     display: flex;
