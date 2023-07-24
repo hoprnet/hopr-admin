@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+import {
+  useState, useEffect 
+} from 'react';
 import styled from '@emotion/styled';
 import {
   Dialog,
@@ -9,16 +11,20 @@ import {
   CircularProgress,
   Stack,
   TextField,
-  Tooltip,
+  Tooltip
 } from '@mui/material';
-import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
+import {
+  SDialog, SDialogContent, SIconButton, TopBar 
+} from '../../future-hopr-lib-components/Modal/styled';
 import { SendMessagePayloadType } from '@hoprnet/hopr-sdk';
 import Checkbox from '../../future-hopr-lib-components/Toggles/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 
 // Store
-import { useAppDispatch, useAppSelector } from '../../store';
+import {
+  useAppDispatch, useAppSelector 
+} from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 
 const PathOrHops = styled.div`
@@ -58,17 +64,17 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
 
   useEffect(() => {
     switch (sendMode) {
-      case 'path':
-        set_automaticPath(false);
-        set_numberOfHops('');
-        break;
-      case 'numberOfHops':
-        set_automaticPath(false);
-        set_path('');
-        break;
-      default: //'automaticPath'
-        set_numberOfHops('');
-        set_path('');
+    case 'path':
+      set_automaticPath(false);
+      set_numberOfHops('');
+      break;
+    case 'numberOfHops':
+      set_automaticPath(false);
+      set_path('');
+      break;
+    default: //'automaticPath'
+      set_numberOfHops('');
+      set_path('');
     }
   }, [sendMode, path, automaticPath, numberOfHops]);
 
@@ -120,7 +126,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
   const handleNumberOfHops = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_sendMode('numberOfHops');
     set_numberOfHops(
-      parseInt(event.target.value) || parseInt(event.target.value) === 0 ? parseInt(event.target.value) : ''
+      parseInt(event.target.value) || parseInt(event.target.value) === 0 ? parseInt(event.target.value) : '',
     );
   };
 

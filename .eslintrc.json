@@ -14,7 +14,7 @@
   },
   "plugins": ["react", "@typescript-eslint"],
   "rules": {
-    "linebreak-style": "unix",
+    "linebreak-style": ["error", "unix"],
     "react/react-in-jsx-scope": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".ts", ".tsx"] }],
     "indent": ["error", 2],
@@ -23,7 +23,7 @@
       {
         "ObjectExpression": { "minProperties": 2 },
         "ObjectPattern": { "minProperties": 2 },
-        "ImportDeclaration": { "minProperties": 5 },
+        "ImportDeclaration": { "minProperties": 2 },
         "ExportDeclaration": { "minProperties": 2 }
       }
     ],
@@ -33,7 +33,7 @@
       {
         "arrays": "always-multiline",
         "objects": "always-multiline",
-        "imports":  "always-multiline",
+        "imports":  "never",
         "exports": "always-multiline",
         "functions": "always-multiline"
       }

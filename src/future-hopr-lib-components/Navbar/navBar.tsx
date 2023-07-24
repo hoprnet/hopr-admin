@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  useEffect, useState 
+} from 'react';
 //import { useRouter } from 'next/router';
 import styled from '@emotion/styled';
 
@@ -6,7 +8,9 @@ import styled from '@emotion/styled';
 //import LaunchPlaygroundBtn from '../../future-hopr-lib-components/Button/LaunchPlayground';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import NavBarItems from './navBarItems';
-import { Box, IconButton } from '@mui/material';
+import {
+  Box, IconButton 
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
 interface AppBarProps extends MuiAppBarProps {
@@ -14,7 +18,9 @@ interface AppBarProps extends MuiAppBarProps {
   webapp?: boolean;
 }
 
-const AppBar = styled(({ tallerNavBarOnMobile, webapp, ...rest }: AppBarProps) => <MuiAppBar {...rest} />)`
+const AppBar = styled(({
+  tallerNavBarOnMobile, webapp, ...rest 
+}: AppBarProps) => <MuiAppBar {...rest} />)`
   background: white;
   height: 60px;
   border-bottom: 1px lightgray solid;

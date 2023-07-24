@@ -1,6 +1,10 @@
 import Section from '../future-hopr-lib-components/Section';
-import { useAppDispatch, useAppSelector } from '../store';
-import { useEffect, useState } from 'react';
+import {
+  useAppDispatch, useAppSelector 
+} from '../store';
+import {
+  useEffect, useState 
+} from 'react';
 import { actionsAsync } from '../store/slices/node/actionsAsync';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -24,13 +28,13 @@ function TicketsPage() {
       actionsAsync.getStatisticsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
     dispatch(
       actionsAsync.getTicketsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
   };
 
@@ -40,7 +44,7 @@ function TicketsPage() {
       actionsAsync.redeemTicketsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     )
       .unwrap()
       .then(() => {

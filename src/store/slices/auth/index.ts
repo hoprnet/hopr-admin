@@ -1,7 +1,13 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import {
+  PayloadAction, createSlice 
+} from '@reduxjs/toolkit';
 import { initialState } from './initialState';
-import { actionsAsync, createExtraReducers } from './actionsAsync';
-import { getObjectFromLocalStorage, bubbleSortObject } from '../../../utils/functions';
+import {
+  actionsAsync, createExtraReducers 
+} from './actionsAsync';
+import {
+  getObjectFromLocalStorage, bubbleSortObject 
+} from '../../../utils/functions';
 
 const authSlice = createSlice({
   name: 'auth',
@@ -19,7 +25,7 @@ const authSlice = createSlice({
         apiToken: string;
         apiEndpoint: string;
         localName?: string;
-      }>
+      }>,
     ) {
       // Check if we have name saved locally
       let localName: string | null = action.payload.localName ? action.payload.localName : '';
@@ -43,7 +49,7 @@ const authSlice = createSlice({
         apiToken: string;
         apiEndpoint: string;
         localName: string;
-      }>
+      }>,
     ) {
       const newItem = action.payload;
       const existingItem = state.nodes.findIndex((item) => item.apiEndpoint === newItem.apiEndpoint);

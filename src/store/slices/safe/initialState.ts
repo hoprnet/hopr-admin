@@ -2,7 +2,7 @@ import {
   AllTransactionsListResponse,
   SafeDelegateListResponse,
   SafeMultisigTransactionListResponse,
-  SafeInfoResponse,
+  SafeInfoResponse
 } from '@safe-global/api-kit';
 
 type InitialState = {

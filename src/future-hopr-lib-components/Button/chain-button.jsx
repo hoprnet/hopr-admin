@@ -1,4 +1,6 @@
-import React, { useState, useEffect, Fragment, useCallback } from 'react';
+import React, {
+  useState, useEffect, Fragment, useCallback 
+} from 'react';
 import styled from '@emotion/styled';
 import MuiButton from '@mui/material/Button';
 
@@ -23,7 +25,9 @@ const SButton = styled(MuiButton)`
 `;
 
 export default function ChainButton(props) {
-  const { connected, chainId, ...rest } = props;
+  const {
+    connected, chainId, ...rest 
+  } = props;
 
   const switchChain = async () => {
     if (!window.ethereum) return;

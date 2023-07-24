@@ -1,7 +1,13 @@
-import { Box, Tabs, Tab, TableRow, TableCell, TableBody, TableContainer, Table, TableHead, Paper } from '@mui/material';
+import {
+  Box, Tabs, Tab, TableRow, TableCell, TableBody, TableContainer, Table, TableHead, Paper 
+} from '@mui/material';
 import Section from '../future-hopr-lib-components/Section';
-import { useAppDispatch, useAppSelector } from '../store';
-import { useEffect, useState } from 'react';
+import {
+  useAppDispatch, useAppSelector 
+} from '../store';
+import {
+  useEffect, useState 
+} from 'react';
 import { actionsAsync } from '../store/slices/node/actionsAsync';
 import { useNavigate } from 'react-router-dom';
 import { exportToCsv } from '../utils/helpers';
@@ -69,13 +75,13 @@ function ChannelsPage() {
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
   };
 
@@ -106,7 +112,7 @@ function ChannelsPage() {
                 status: channel.status,
                 dedicatedFunds: channel.balance,
               })),
-              `${tabLabel}-channels.csv`
+              `${tabLabel}-channels.csv`,
             );
           }
         }}
@@ -132,7 +138,7 @@ function ChannelsPage() {
         apiToken: loginData.apiToken!,
         direction: direction,
         peerId: peerId,
-      })
+      }),
     )
       .unwrap()
       .then(() => {

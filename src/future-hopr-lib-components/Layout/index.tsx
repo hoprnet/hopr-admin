@@ -1,6 +1,8 @@
 /// <reference types="vite-plugin-svgr/client" />
 // Packages
-import React, { ReactNode, useState } from 'react';
+import React, {
+  ReactNode, useState 
+} from 'react';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { Outlet } from 'react-router-dom';

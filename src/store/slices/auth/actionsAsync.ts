@@ -1,4 +1,6 @@
-import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  ActionReducerMapBuilder, createAsyncThunk 
+} from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 import { api } from '@hoprnet/hopr-sdk';
 const { getInfo } = api;
@@ -11,7 +13,7 @@ export const loginThunk = createAsyncThunk(
       apiToken: loginData.apiToken,
     });
     return info;
-  }
+  },
 );
 
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {

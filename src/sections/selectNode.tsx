@@ -1,10 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState, useEffect 
+} from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../store';
+import {
+  useAppDispatch, useAppSelector 
+} from '../store';
 
 //Stores
-import { authActions, authActionsAsync } from '../store/slices/auth';
-import { nodeActionsAsync, nodeActions } from '../store/slices/node';
+import {
+  authActions, authActionsAsync 
+} from '../store/slices/auth';
+import {
+  nodeActionsAsync, nodeActions 
+} from '../store/slices/node';
 import { appActions } from '../store/slices/app';
 
 // HOPR Components
@@ -82,7 +90,7 @@ function Section1() {
 
     // If have have saved the node with the same apiToken, we check the saveApiToken checkbox
     const existingItemIndex = nodesSavedLocally.findIndex(
-      (item) => item.apiEndpoint === loginData.apiEndpoint && item.apiToken === loginData.apiToken
+      (item) => item.apiEndpoint === loginData.apiEndpoint && item.apiToken === loginData.apiToken,
     );
 
     if (
@@ -100,7 +108,7 @@ function Section1() {
         apiEndpoint,
         apiToken: saveApiToken ? apiToken : '',
         localName: localName ? localName : '',
-      })
+      }),
     );
   };
 
@@ -120,32 +128,32 @@ function Section1() {
         apiEndpoint,
         apiToken,
         localName,
-      })
+      }),
     );
     const loginInfo = await dispatch(
       authActionsAsync.loginThunk({
         apiEndpoint,
         apiToken,
-      })
+      }),
     ).unwrap();
     if (loginInfo) {
       dispatch(
         nodeActionsAsync.getAddressesThunk({
           apiToken,
           apiEndpoint,
-        })
+        }),
       );
       dispatch(
         nodeActionsAsync.getInfoThunk({
           apiToken,
           apiEndpoint,
-        })
+        }),
       );
       dispatch(
         nodeActionsAsync.getAliasesThunk({
           apiToken,
           apiEndpoint,
-        })
+        }),
       );
       dispatch(nodeActions.initializeMessagesWebsocket());
       dispatch(nodeActions.initializeLogsWebsocket());

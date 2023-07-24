@@ -1,11 +1,19 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouteObject, useSearchParams } from 'react-router-dom';
+import {
+  createBrowserRouter, RouteObject, useSearchParams 
+} from 'react-router-dom';
 import { environment } from '../config';
 
 // Store
-import { useAppDispatch, useAppSelector } from './store';
-import { authActions, authActionsAsync } from './store/slices/auth';
-import { nodeActions, nodeActionsAsync } from './store/slices/node';
+import {
+  useAppDispatch, useAppSelector 
+} from './store';
+import {
+  authActions, authActionsAsync 
+} from './store/slices/auth';
+import {
+  nodeActions, nodeActionsAsync 
+} from './store/slices/node';
 
 // Sections
 import Section1 from './sections/selectNode';
@@ -313,32 +321,32 @@ const LayoutEnhanced = () => {
       authActions.useNodeData({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     if (!apiToken) return;
     dispatch(
       authActionsAsync.loginThunk({
         apiEndpoint,
         apiToken,
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getInfoThunk({
         apiToken,
         apiEndpoint,
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getAddressesThunk({
         apiToken,
         apiEndpoint,
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getAliasesThunk({
         apiToken,
         apiEndpoint,
-      })
+      }),
     );
     dispatch(nodeActions.initializeMessagesWebsocket());
     dispatch(nodeActions.initializeLogsWebsocket());

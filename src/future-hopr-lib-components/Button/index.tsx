@@ -1,4 +1,6 @@
-import { forwardRef, Ref } from 'react';
+import {
+  forwardRef, Ref 
+} from 'react';
 import styled from '@emotion/styled';
 import MuiButton, { ButtonProps } from '@mui/material/Button';
 
@@ -58,7 +60,9 @@ const StyledButton = styled(MuiButton)<StyledButtonProps>`
 `;
 
 const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>) => {
-  const { imageOnly, size70, standardWidth, fade, children, ...rest } = props;
+  const {
+    imageOnly, size70, standardWidth, fade, children, ...rest 
+  } = props;
 
   const classNames = [
     props.className,

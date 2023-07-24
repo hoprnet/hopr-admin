@@ -1,4 +1,6 @@
-import { ToastOptions, toast } from 'react-toastify';
+import {
+  ToastOptions, toast 
+} from 'react-toastify';
 import { appActions } from '../../store/slices/app';
 import { nanoid } from '@reduxjs/toolkit';
 import { useAppDispatch } from '../../store';
@@ -33,6 +35,6 @@ export const sendNotification = ({
     appActions.addNotification({
       ...notificationPayload,
       id: notificationId,
-    })
+    }),
   );
 };

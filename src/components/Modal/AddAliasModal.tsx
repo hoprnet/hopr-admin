@@ -1,7 +1,15 @@
-import { useState, useEffect } from 'react';
-import { DialogTitle, TextField, DialogActions, Alert } from '@mui/material';
-import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
-import { useAppDispatch, useAppSelector } from '../../store';
+import {
+  useState, useEffect 
+} from 'react';
+import {
+  DialogTitle, TextField, DialogActions, Alert 
+} from '@mui/material';
+import {
+  SDialog, SDialogContent, SIconButton, TopBar 
+} from '../../future-hopr-lib-components/Modal/styled';
+import {
+  useAppDispatch, useAppSelector 
+} from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -10,7 +18,9 @@ type CreateAliasModalProps = {
   peerId?: string;
 };
 
-export const CreateAliasModal = ({ handleRefresh, peerId }: CreateAliasModalProps) => {
+export const CreateAliasModal = ({
+  handleRefresh, peerId, 
+}: CreateAliasModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const aliases = useAppSelector((selector) => selector.node.aliases);
@@ -35,7 +45,9 @@ export const CreateAliasModal = ({ handleRefresh, peerId }: CreateAliasModalProp
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
+    const {
+      name, value, 
+    } = event.target;
     set_modal({
       ...modal,
       [name]: value,
@@ -88,7 +100,7 @@ export const CreateAliasModal = ({ handleRefresh, peerId }: CreateAliasModalProp
           peerId: modal.peerId,
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        })
+        }),
       )
         .unwrap()
         .then(() => {

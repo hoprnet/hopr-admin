@@ -1,8 +1,14 @@
-import { useEffect, useState } from 'react';
+import {
+  useEffect, useState 
+} from 'react';
 
 //Stores
-import { useAppDispatch, useAppSelector } from '../store';
-import { safeActionsAsync, safeActions } from '../store/slices/safe';
+import {
+  useAppDispatch, useAppSelector 
+} from '../store';
+import {
+  safeActionsAsync, safeActions 
+} from '../store/slices/safe';
 
 // HOPR Components
 import Section from '../future-hopr-lib-components/Section';
@@ -70,19 +76,19 @@ function SafeSection() {
                 safeActionsAsync.getSafeInfoThunk({
                   signer,
                   safeAddress,
-                })
+                }),
               );
               dispatch(
                 safeActionsAsync.getAllSafeTransactionsThunk({
                   signer,
                   safeAddress,
-                })
+                }),
               );
               dispatch(
                 safeActionsAsync.getSafeDelegatesThunk({
                   signer,
                   options: { safeAddress },
-                })
+                }),
               );
             }
           }}
@@ -120,7 +126,7 @@ function SafeSection() {
                   threshold,
                 },
                 signer,
-              })
+              }),
             );
           }
         }}
@@ -151,7 +157,7 @@ function SafeSection() {
                   to: signerAddress,
                   data: '0x',
                 },
-              })
+              }),
             );
           }
         }}
@@ -174,7 +180,7 @@ function SafeSection() {
                         signer,
                         safeAddress: transaction.safe,
                         safeTransaction: transaction,
-                      })
+                      }),
                     );
                   }
                 }}
@@ -190,7 +196,7 @@ function SafeSection() {
                         signer,
                         safeAddress: transaction.safe,
                         safeTransactionHash: transaction.safeTxHash,
-                      })
+                      }),
                     );
                   }
                 }}

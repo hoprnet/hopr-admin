@@ -13,7 +13,7 @@ import { nodeActionsAsync } from '../../store/slices/node';
  */
 export const checkIfChannelsHaveChanged = (
   previousChannels: GetChannelsResponseType | null,
-  newChannels: GetChannelsResponseType
+  newChannels: GetChannelsResponseType,
 ) => !!previousChannels && JSON.stringify(previousChannels) !== JSON.stringify(newChannels);
 
 /**
@@ -51,7 +51,7 @@ export const calculateNotificationTextForChannelStatus = (updatedChannel: GetCha
  */
 export const getUpdatedChannels = (
   oldChannels: GetChannelsResponseType | null,
-  newChannels: GetChannelsResponseType
+  newChannels: GetChannelsResponseType,
 ) => {
   // check if channels are exactly the same
   if (JSON.stringify(oldChannels) === JSON.stringify(newChannels)) {
@@ -101,7 +101,7 @@ export const getUpdatedChannels = (
  */
 const isChannelStatusEqual = (
   oldChannel: GetChannelsResponseType['incoming'][0],
-  newChannel: GetChannelsResponseType['incoming'][0]
+  newChannel: GetChannelsResponseType['incoming'][0],
 ) => {
   return oldChannel.status === newChannel.status;
 };
@@ -137,7 +137,7 @@ export const observeChannels = ({
         nodeActionsAsync.getChannelsThunk({
           apiEndpoint,
           apiToken,
-        })
+        }),
       ).unwrap();
     },
     isDataDifferent: (newChannels) => checkIfChannelsHaveChanged(previousState, newChannels),

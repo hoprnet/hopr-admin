@@ -1,8 +1,16 @@
-import { useEffect, useState } from 'react';
+import {
+  useEffect, useState 
+} from 'react';
 import styled from '@emotion/styled';
-import { DialogTitle, TextField, DialogActions, InputAdornment } from '@mui/material';
-import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
-import { useAppDispatch, useAppSelector } from '../../store';
+import {
+  DialogTitle, TextField, DialogActions, InputAdornment 
+} from '@mui/material';
+import {
+  SDialog, SDialogContent, SIconButton, TopBar 
+} from '../../future-hopr-lib-components/Modal/styled';
+import {
+  useAppDispatch, useAppSelector 
+} from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { ethers } from 'ethers';
 import CloseIcon from '@mui/icons-material/Close';
@@ -47,7 +55,7 @@ export const OpenChannelModal = ({
           amount: weiValue,
           peerId: peerId,
           timeout: 60e3,
-        })
+        }),
       )
         .unwrap()
         .catch((e) => {
@@ -64,7 +72,7 @@ export const OpenChannelModal = ({
           incomingAmount: '0',
           outgoingAmount: weiValue,
           timeout: 60e3,
-        })
+        }),
       )
         .unwrap()
         .catch((e) => {
@@ -84,7 +92,7 @@ export const OpenChannelModal = ({
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
   };
 

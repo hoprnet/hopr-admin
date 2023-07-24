@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react';
+import {
+  useEffect, useState 
+} from 'react';
 import {
   TableHead,
   TableRow,
@@ -7,9 +9,11 @@ import {
   TableContainer,
   TableCell,
   Switch,
-  SelectChangeEvent,
+  SelectChangeEvent
 } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../store';
+import {
+  useAppDispatch, useAppSelector 
+} from '../store';
 import Section from '../future-hopr-lib-components/Section';
 import Select from '../future-hopr-lib-components/Select';
 import { nodeActionsAsync } from '../store/slices/node';
@@ -32,7 +36,7 @@ function SettingsPage() {
         nodeActionsAsync.getSettingsThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        })
+        }),
       );
     }
   }, [loginData]);
@@ -85,7 +89,7 @@ function SettingsPage() {
           apiToken: loginData.apiToken!,
           setting: 'includeRecipient',
           settingValue: localSettings.includeRecipient,
-        })
+        }),
       )
         .unwrap()
         .catch((e) => {
@@ -100,7 +104,7 @@ function SettingsPage() {
           apiToken: loginData.apiToken!,
           setting: 'strategy',
           settingValue: localSettings.strategy,
-        })
+        }),
       )
         .unwrap()
         .catch((e) => {

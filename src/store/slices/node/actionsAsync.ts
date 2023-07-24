@@ -1,4 +1,6 @@
-import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  ActionReducerMapBuilder, createAsyncThunk 
+} from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 import {
   type AliasPayloadType,
@@ -19,7 +21,7 @@ import {
   type SignPayloadType,
   type WithdrawPayloadType,
   api,
-  utils,
+  utils
 } from '@hoprnet/hopr-sdk';
 
 const { APIError } = utils;
@@ -155,7 +157,7 @@ const getPeerInfoThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 const getSettingsThunk = createAsyncThunk('node/getSettings', async (payload: BasePayloadType, { rejectWithValue }) => {
@@ -186,7 +188,7 @@ const getStatisticsThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 const getTicketsThunk = createAsyncThunk('node/getTickets', async (payload: BasePayloadType, { rejectWithValue }) => {
@@ -231,7 +233,7 @@ const getEntryNodesThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 const getVersionThunk = createAsyncThunk('node/getVersion', async (payload: BasePayloadType, { rejectWithValue }) => {
@@ -314,7 +316,7 @@ const removeAliasThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 const closeChannelThunk = createAsyncThunk(
@@ -331,7 +333,7 @@ const closeChannelThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 const fundChannelsThunk = createAsyncThunk(
@@ -348,7 +350,7 @@ const fundChannelsThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 const getChannelThunk = createAsyncThunk(
@@ -365,7 +367,7 @@ const getChannelThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 const getChannelTicketsThunk = createAsyncThunk(
@@ -382,7 +384,7 @@ const getChannelTicketsThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 const openChannelThunk = createAsyncThunk(
@@ -399,7 +401,7 @@ const openChannelThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 const redeemChannelTicketsThunk = createAsyncThunk(
@@ -416,7 +418,7 @@ const redeemChannelTicketsThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 const sendMessageThunk = createAsyncThunk(
@@ -436,7 +438,7 @@ const sendMessageThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 const signThunk = createAsyncThunk('node/sign', async (payload: SignPayloadType, { rejectWithValue }) => {
@@ -484,7 +486,7 @@ const setSettingThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 const redeemTicketsThunk = createAsyncThunk(
@@ -501,7 +503,7 @@ const redeemTicketsThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 const createTokenThunk = createAsyncThunk(
@@ -518,7 +520,7 @@ const createTokenThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 const deleteTokenThunk = createAsyncThunk(
@@ -538,7 +540,7 @@ const deleteTokenThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 const getPrometheusMetricsThunk = createAsyncThunk(
@@ -555,7 +557,7 @@ const getPrometheusMetricsThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
@@ -662,7 +664,9 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   });
   builder.addCase(getChannelThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      const { balance, channelId, peerId, status, type } = action.payload;
+      const {
+        balance, channelId, peerId, status, type, 
+      } = action.payload;
       // find channel if it already exists
       const channelIndex = state.channels?.[type].findIndex((channel) => channel.channelId === channelId);
 

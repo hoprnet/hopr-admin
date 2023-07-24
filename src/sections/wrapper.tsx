@@ -1,10 +1,16 @@
-import { useEffect, useState } from 'react';
-import { useBalance, useContractWrite, usePrepareContractWrite, useAccount } from 'wagmi';
+import {
+  useEffect, useState 
+} from 'react';
+import {
+  useBalance, useContractWrite, usePrepareContractWrite, useAccount 
+} from 'wagmi';
 import { parseUnits } from 'viem';
 import wrapperAbi from '../abi/wrapperAbi.json';
 
 import styled from '@emotion/styled';
-import { IconButton, Paper, TextField, InputAdornment, Button as MuiButton } from '@mui/material';
+import {
+  IconButton, Paper, TextField, InputAdornment, Button as MuiButton 
+} from '@mui/material';
 import Button from '../future-hopr-lib-components/Button';
 import Section from '../future-hopr-lib-components/Section';
 
@@ -107,7 +113,9 @@ type TransactionLinkProps = {
   swapDirection: 'xHOPR_to_wxHOPR' | 'wxHOPR_to_xHOPR';
 };
 
-function TransactionLink({ isSuccess, hash, swapDirection }: TransactionLinkProps) {
+function TransactionLink({
+  isSuccess, hash, swapDirection, 
+}: TransactionLinkProps) {
   if (!isSuccess) return null;
 
   return (

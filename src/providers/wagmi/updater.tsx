@@ -1,16 +1,22 @@
 import { useEffect } from 'react';
 
 // wagmi
-import { useNetwork, useAccount, useConnect, useDisconnect } from 'wagmi';
+import {
+  useNetwork, useAccount, useConnect, useDisconnect 
+} from 'wagmi';
 
 // Redux
-import { useAppDispatch, useAppSelector } from '../../store';
+import {
+  useAppDispatch, useAppSelector 
+} from '../../store';
 import { Store } from '../../types/index';
 import { web3Actions } from '../../store/slices/web3';
 
 export default function WagmiUpdater() {
   const dispatch = useAppDispatch();
-  const { address, isConnected } = useAccount();
+  const {
+    address, isConnected, 
+  } = useAccount();
   const { chain } = useNetwork();
 
   useEffect(() => {

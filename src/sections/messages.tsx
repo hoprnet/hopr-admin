@@ -1,13 +1,19 @@
-import { useEffect, useState } from 'react';
+import {
+  useEffect, useState 
+} from 'react';
 import styled from '@emotion/styled';
 
 // Store
-import { useAppDispatch, useAppSelector } from '../store';
+import {
+  useAppDispatch, useAppSelector 
+} from '../store';
 import { nodeActions } from '../store/slices/node';
 import { actionsAsync } from '../store/slices/node/actionsAsync';
 
 // mui
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
+import {
+  Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip 
+} from '@mui/material';
 
 // HOPR components
 import Section from '../future-hopr-lib-components/Section';
@@ -22,8 +28,12 @@ const StyledTable = styled(Table)`
   }
 `;
 const messages = () => {
-  const { messages, aliases } = useAppSelector((selector) => selector.node);
-  const { apiEndpoint, apiToken } = useAppSelector((selector) => selector.auth.loginData);
+  const {
+    messages, aliases, 
+  } = useAppSelector((selector) => selector.node);
+  const {
+    apiEndpoint, apiToken, 
+  } = useAppSelector((selector) => selector.auth.loginData);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -32,7 +42,7 @@ const messages = () => {
         actionsAsync.getAliasesThunk({
           apiEndpoint,
           apiToken,
-        })
+        }),
       );
     }
   }, []);

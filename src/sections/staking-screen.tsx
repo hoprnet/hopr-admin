@@ -6,7 +6,9 @@ import styled from '@emotion/styled';
 import Button from '../future-hopr-lib-components/Button';
 import Chart from 'react-apexcharts';
 import Section from '../future-hopr-lib-components/Section';
-import { Card, Chip, IconButton } from '@mui/material';
+import {
+  Card, Chip, IconButton 
+} from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import CopyIcon from '@mui/icons-material/ContentCopy';
@@ -142,7 +144,9 @@ type GrayCardProps = {
   children?: ReactNode;
 };
 
-const GrayCard = ({ id, title, value, currency, chip, buttons, children }: GrayCardProps) => {
+const GrayCard = ({
+  id, title, value, currency, chip, buttons, children, 
+}: GrayCardProps) => {
   return (
     <StyledGrayCard id={id}>
       {(title || value) && (

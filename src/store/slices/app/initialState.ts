@@ -1,4 +1,6 @@
-import type { AccountResponseType, GetChannelsResponseType, GetInfoResponseType } from '@hoprnet/hopr-sdk';
+import type {
+  AccountResponseType, GetChannelsResponseType, GetInfoResponseType 
+} from '@hoprnet/hopr-sdk';
 import type { WatcherMessage } from '../../../hooks/useWatcher/messages';
 import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 

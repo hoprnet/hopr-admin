@@ -1,6 +1,8 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import { useAppDispatch, useAppSelector } from '../../store';
+import {
+  useAppDispatch, useAppSelector 
+} from '../../store';
 import Drawer from '@mui/material/Drawer';
 import styled from '@emotion/styled';
 import Toolbar from '@mui/material/Toolbar';
@@ -32,7 +34,9 @@ const Data = styled.div`
 `;
 
 export default function InfoBar(props: Props) {
-  const { balances, peers, info, channels } = useAppSelector((state) => state.node);
+  const {
+    balances, peers, info, channels, 
+  } = useAppSelector((state) => state.node);
 
   const drawer = (
     <div>

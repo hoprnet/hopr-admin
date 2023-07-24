@@ -1,4 +1,6 @@
-import { IconButton, TextField, Button as MuiButton, Select, MenuItem } from '@mui/material';
+import {
+  IconButton, TextField, Button as MuiButton, Select, MenuItem 
+} from '@mui/material';
 
 import styled from '@emotion/styled';
 import Button from '../../future-hopr-lib-components/Button';

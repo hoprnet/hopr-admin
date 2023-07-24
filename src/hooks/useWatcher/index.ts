@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import { parseEther } from 'viem';
 import { useEthersSigner } from '..';
-import { useAppDispatch, useAppSelector } from '../../store';
+import {
+  useAppDispatch, useAppSelector 
+} from '../../store';
 import { appActions } from '../../store/slices/app';
 import { observeNodeBalances } from './balances';
 import { observeChannels } from './channels';
@@ -11,7 +13,9 @@ import { observePendingSafeTransactions } from './safeTransactions';
 
 export const useWatcher = ({ intervalDuration = 15000 }: { intervalDuration?: number }) => {
   const dispatch = useAppDispatch();
-  const { apiEndpoint, apiToken } = useAppSelector((store) => store.auth.loginData);
+  const {
+    apiEndpoint, apiToken, 
+  } = useAppSelector((store) => store.auth.loginData);
   const messages = useAppSelector((store) => store.node.messages);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress);
   const signer = useEthersSigner();

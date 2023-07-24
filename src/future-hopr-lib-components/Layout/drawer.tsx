@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react';
+import {
+  useEffect, useState 
+} from 'react';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import {
@@ -9,9 +11,11 @@ import {
   ListItemText,
   ListSubheader,
   Drawer as MuiDrawer,
-  Tooltip,
+  Tooltip
 } from '@mui/material';
-import { Link, useLocation } from 'react-router-dom';
+import {
+  Link, useLocation 
+} from 'react-router-dom';
 import { ApplicationMapType } from '../../router';
 
 const drawerWidth = 240;
@@ -32,7 +36,7 @@ const StyledDrawer = styled(MuiDrawer)`
     width: ${(props) => (props.open ? `${drawerWidth}px` : `${minDrawerWidth}px`)};
 
     ${(props) =>
-      props.variant === 'temporary' &&
+    props.variant === 'temporary' &&
       css`
         width: ${drawerWidth}px;
       `}
@@ -71,7 +75,9 @@ type DrawerProps = {
   set_openedNavigationDrawer: (openedNavigationDrawer: boolean) => void;
 };
 
-const Drawer = ({ drawerItems, drawerLoginState, openedNavigationDrawer, set_openedNavigationDrawer }: DrawerProps) => {
+const Drawer = ({
+  drawerItems, drawerLoginState, openedNavigationDrawer, set_openedNavigationDrawer, 
+}: DrawerProps) => {
   const location = useLocation();
   const searchParams = location.search;
 

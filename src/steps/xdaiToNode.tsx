@@ -1,5 +1,7 @@
 //Stores
-import { useAppDispatch, useAppSelector } from '../store';
+import {
+  useAppDispatch, useAppSelector 
+} from '../store';
 
 // Libraries
 import styled from '@emotion/styled';
@@ -10,7 +12,9 @@ import Tooltip from '@mui/material/Tooltip';
 
 // components
 import { SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-kit';
-import { useEffect, useState } from 'react';
+import {
+  useEffect, useState 
+} from 'react';
 import { parseUnits } from 'viem';
 import Button from '../future-hopr-lib-components/Button';
 import GrayButton from '../future-hopr-lib-components/Button/gray';
@@ -131,7 +135,7 @@ function XdaiToNode() {
             value: parseUnits(xdaiValue as `${number}`, 18).toString(),
             data: '0x',
           },
-        })
+        }),
       )
         .unwrap()
         .then((safeTxHash) => {
@@ -159,7 +163,7 @@ function XdaiToNode() {
             safeAddress: selectedSafeAddress,
             signer,
             safeTransaction: safeTx,
-          })
+          }),
         );
       }
     }
@@ -196,18 +200,14 @@ function XdaiToNode() {
   };
 
   const getErrorsForApproveButton = () =>
-    getErrorsForSafeTx({
-      customValidator: () => {
-        return Number(xdaiValue) ? { errors: [] } : { errors: ['xdai value is required'] };
-      },
-    });
+    getErrorsForSafeTx({ customValidator: () => {
+      return Number(xdaiValue) ? { errors: [] } : { errors: ['xdai value is required'] };
+    } });
 
   const getErrorsForExecuteButton = () =>
-    getErrorsForSafeTx({
-      customValidator: () => {
-        return transactionHasEnoughApprovals() ? { errors: [] } : { errors: ['transaction requires more approvals'] };
-      },
-    });
+    getErrorsForSafeTx({ customValidator: () => {
+      return transactionHasEnoughApprovals() ? { errors: [] } : { errors: ['transaction requires more approvals'] };
+    } });
 
   return (
     <Section
@@ -253,8 +253,8 @@ function XdaiToNode() {
                 {transactionHasEnoughApprovals()
                   ? 'transaction has been approved by all required owners'
                   : `transaction is pending ${
-                      (proposedTx?.confirmationsRequired ?? 0) - (proposedTx?.confirmations?.length ?? 0)
-                    } approvals`}
+                    (proposedTx?.confirmationsRequired ?? 0) - (proposedTx?.confirmations?.length ?? 0)
+                  } approvals`}
               </StyledDescription>
               {!transactionHasEnoughApprovals() && (
                 <StyledApproveButton
@@ -265,7 +265,7 @@ function XdaiToNode() {
                           signer,
                           safeAddress: proposedTx.safe,
                           safeTransactionHash: proposedTx.safeTxHash,
-                        })
+                        }),
                       );
                     }
                   }}

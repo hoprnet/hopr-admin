@@ -1,6 +1,10 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import {
+  PayloadAction, createSlice 
+} from '@reduxjs/toolkit';
 import { initialState } from './initialState';
-import { AccountResponseType, GetChannelsResponseType, GetInfoResponseType } from '@hoprnet/hopr-sdk';
+import {
+  AccountResponseType, GetChannelsResponseType, GetInfoResponseType 
+} from '@hoprnet/hopr-sdk';
 import { WatcherMessage } from '../../../hooks/useWatcher/messages';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 
@@ -34,7 +38,7 @@ const appSlice = createSlice({
         source: string;
         timeout: number | null;
         url: string | null;
-      }>
+      }>,
     ) => {
       const now = Date.now();
       const defaultTimeout = 5000;
@@ -51,21 +55,21 @@ const appSlice = createSlice({
       state.notifications = state.notifications.map((notification) =>
         notification.id === action.payload
           ? {
-              ...notification,
-              seen: true,
-            }
-          : notification
+            ...notification,
+            seen: true,
+          }
+          : notification,
       );
     },
     interactedWithNotification: (state, action: PayloadAction<string>) => {
       state.notifications = state.notifications.map((notification) =>
         notification.id === action.payload
           ? {
-              ...notification,
-              seen: true,
-              interacted: true,
-            }
-          : notification
+            ...notification,
+            seen: true,
+            interacted: true,
+          }
+          : notification,
       );
     },
     clearExpiredNotifications: (state) => {
@@ -73,11 +77,11 @@ const appSlice = createSlice({
       state.notifications = state.notifications.map((notification) =>
         notification.timeout < now
           ? {
-              ...notification,
-              seen: true,
-              read: true,
-            }
-          : notification
+            ...notification,
+            seen: true,
+            read: true,
+          }
+          : notification,
       );
     },
     markSeenAllNotifications: (state) => {

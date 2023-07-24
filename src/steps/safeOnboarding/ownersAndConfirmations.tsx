@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react';
+import {
+  useEffect, useState 
+} from 'react';
 import { nanoid } from '@reduxjs/toolkit';
 import { ethers } from 'ethers';
 
@@ -11,11 +13,13 @@ import {
   FlexContainer,
   StyledGrayButton,
   Subtitle,
-  Text,
+  Text
 } from './styled';
 import Button from '../../future-hopr-lib-components/Button';
 import Card from '../components/Card';
-import { IconButton, MenuItem, Select, TextField } from '@mui/material';
+import {
+  IconButton, MenuItem, Select, TextField 
+} from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 
 // Icons
@@ -32,7 +36,9 @@ type OwnersAndConfirmationsProps = {
   set_step: (step: number) => void;
 };
 
-const OwnersAndConfirmations = ({ account, signer, set_step }: OwnersAndConfirmationsProps) => {
+const OwnersAndConfirmations = ({
+  account, signer, set_step, 
+}: OwnersAndConfirmationsProps) => {
   const dispatch = useAppDispatch();
   const [loading, set_loading] = useState(false);
   const [error, set_error] = useState<any>('');
@@ -92,7 +98,7 @@ const OwnersAndConfirmations = ({ account, signer, set_step }: OwnersAndConfirma
         safeActionsAsync.createSafeWithConfigThunk({
           config,
           signer,
-        })
+        }),
       ).unwrap();
       set_step(1);
     } catch (error) {

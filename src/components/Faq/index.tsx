@@ -1,4 +1,6 @@
-import { Accordion, AccordionDetails, AccordionSummary, Card, Chip } from '@mui/material';
+import {
+  Accordion, AccordionDetails, AccordionSummary, Card, Chip 
+} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import styled from '@emotion/styled';
 import { useState } from 'react';
@@ -95,7 +97,9 @@ type FaqProps = {
   }[];
 };
 
-const Faq = ({ variant, label, data }: FaqProps) => {
+const Faq = ({
+  variant, label, data, 
+}: FaqProps) => {
   const [expandedId, set_expandedId] = useState<number | false>(false);
 
   const handleAccordionClick = (id: number) => {

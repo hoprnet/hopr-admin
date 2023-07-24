@@ -1,6 +1,10 @@
-import { useEffect, useState } from 'react';
+import {
+  useEffect, useState 
+} from 'react';
 import { nodeActionsAsync } from '../store/slices/node';
-import { useAppDispatch, useAppSelector } from '../store';
+import {
+  useAppDispatch, useAppSelector 
+} from '../store';
 
 import AbbreviatedPeerId from '../components/AbbreviatedPeerId';
 import Section from '../future-hopr-lib-components/Section';
@@ -16,7 +20,9 @@ function PingPage() {
   const pings = useAppSelector((selector) => selector.node.pings);
   const aliases = useAppSelector((selector) => selector.node.aliases);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const { apiEndpoint, apiToken } = loginData;
+  const {
+    apiEndpoint, apiToken, 
+  } = loginData;
 
   // Get aliases on page load
   useEffect(() => {
@@ -25,7 +31,7 @@ function PingPage() {
         nodeActionsAsync.getAliasesThunk({
           apiEndpoint,
           apiToken,
-        })
+        }),
       );
     }
   }, []);
@@ -54,7 +60,7 @@ function PingPage() {
           apiEndpoint,
           apiToken,
           peerId: validatedPeerId,
-        })
+        }),
       )
         .unwrap()
         .then(() => {

@@ -14,17 +14,21 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
+  TableRow
 } from '@mui/material';
 import {
   AllTransactionsListResponse,
   EthereumTxWithTransfersResponse,
   SafeModuleTransactionWithTransfersResponse,
-  SafeMultisigTransactionWithTransfersResponse,
+  SafeMultisigTransactionWithTransfersResponse
 } from '@safe-global/api-kit';
-import { useEffect, useState } from 'react';
+import {
+  useEffect, useState 
+} from 'react';
 import { useEthersSigner } from '../hooks';
-import { useAppDispatch, useAppSelector } from '../store';
+import {
+  useAppDispatch, useAppSelector 
+} from '../store';
 import { safeActionsAsync } from '../store/slices/safe';
 import { formatEther } from 'viem';
 import styled from '@emotion/styled';
@@ -335,7 +339,7 @@ export default function SafeTransactionHistoryPage() {
         safeActionsAsync.getAllSafeTransactionsThunk({
           signer,
           safeAddress: selectedSafeAddress,
-        })
+        }),
       );
     }
   };
