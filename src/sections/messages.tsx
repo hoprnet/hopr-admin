@@ -53,7 +53,7 @@ const messages = () => {
   }, []);
 
   return (
-    <Section 
+    <Section
       yellow
       fullHeightMin
     >

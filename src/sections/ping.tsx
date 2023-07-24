@@ -73,7 +73,7 @@ function PingPage() {
   };
 
   return (
-    <Section 
+    <Section
       yellow
       fullHeightMin
     >
