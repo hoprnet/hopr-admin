@@ -31,7 +31,7 @@ const AppBarContainer = styled(Button)`
       width: 100%;
     }
   }
-  &.safe-not-connected{
+  &.safe-not-connected {
     img {
       filter: opacity(0.5);
     }
@@ -121,19 +121,19 @@ export default function ConnectSafe() {
         safeActionsAsync.getSafeInfoThunk({
           signer: signer,
           safeAddress,
-        })
+        }),
       );
       dispatch(
         safeActionsAsync.getAllSafeTransactionsThunk({
           signer,
           safeAddress,
-        })
+        }),
       );
       dispatch(
         safeActionsAsync.getSafeDelegatesThunk({
           signer,
           options: { safeAddress },
-        })
+        }),
       );
       // Additional logic to connect to the safe
     }
@@ -196,7 +196,11 @@ export default function ConnectSafe() {
                 value={safeAddress}
                 onClick={() => useSelectedSafe(safeAddress)}
               >
-                {safeAddress && `${safeAddress.substring(0, 6)}...${safeAddress.substring(safeAddress.length - 8, safeAddress.length)}`}
+                {safeAddress &&
+                  `${safeAddress.substring(0, 6)}...${safeAddress.substring(
+                    safeAddress.length - 8,
+                    safeAddress.length,
+                  )}`}
               </MenuItem>
             ))}
           </Menu>

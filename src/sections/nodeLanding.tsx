@@ -13,5 +13,4 @@ function NodeLandingPage() {
   );
 }
 
-
 export default NodeLandingPage;

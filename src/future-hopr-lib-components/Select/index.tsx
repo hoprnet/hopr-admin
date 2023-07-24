@@ -21,17 +21,16 @@ const SFormControl = styled(FormControl)`
   .MuiFormLabel-root.MuiInputLabel-shrink {
     color: #000030;
   }
-  .MuiInputBase-root{
+  .MuiInputBase-root {
     button.removeValue {
       display: none;
     }
   }
-  
 `;
 
 interface Props extends SelectProps {
-  removeValue?: (value: number)=>void,
-  removeValueTooltip?: string,
+  removeValue?: (value: number) => void;
+  removeValueTooltip?: string;
   values?: {
     value: string | number;
     name: string | number | null;
@@ -40,9 +39,7 @@ interface Props extends SelectProps {
 
 const Section: React.FC<Props> = (props) => {
   return (
-    <SFormControl
-      style={props.style}
-    >
+    <SFormControl style={props.style}>
       <InputLabel id="select-small">{props.label}</InputLabel>
       <Select
         labelId="select-small"
@@ -57,27 +54,24 @@ const Section: React.FC<Props> = (props) => {
             <MenuItem
               value={elem.value}
               key={`${elem.value}_${elem.name}_${index}`}
-              style={props.removeValue && {justifyContent: 'space-between'}}
+              style={props.removeValue && { justifyContent: 'space-between' }}
             >
               {elem.name}
-              {
-                props.removeValue && 
-                <Tooltip
-                  title={props.removeValueTooltip}
-                >
-                  <IconButton 
+              {props.removeValue && (
+                <Tooltip title={props.removeValueTooltip}>
+                  <IconButton
                     aria-label="delete"
                     className="removeValue"
-                    onClick={(event)=>{
-                      event.stopPropagation()
+                    onClick={(event) => {
+                      event.stopPropagation();
                       // @ts-ignore
-                      props.removeValue(elem.value)
+                      props.removeValue(elem.value);
                     }}
                   >
                     <DeleteIcon />
                   </IconButton>
                 </Tooltip>
-              }
+              )}
             </MenuItem>
           ))}
       </Select>

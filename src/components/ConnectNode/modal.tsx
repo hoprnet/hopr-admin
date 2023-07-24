@@ -22,7 +22,6 @@ import { SelectChangeEvent } from '@mui/material/Select';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
 
-
 type ParsedNode = {
   name: string;
   localName: string;
@@ -33,13 +32,12 @@ type ParsedNode = {
 
 type ConnectNodeModalProps = {
   open: boolean;
-  handleClose: ()=>void;
+  handleClose: () => void;
 };
 
 const SModal = styled(Modal)`
   position: relative;
-`
-
+`;
 
 const LocalNodesContainer = styled.div`
   display: flex;
@@ -48,9 +46,9 @@ const LocalNodesContainer = styled.div`
   margin-bottom: 48px;
   button {
     height: 48px;
-    width: 48px
+    width: 48px;
   }
-`
+`;
 
 const SaveTokenContainer = styled.div`
   display: flex;
@@ -59,8 +57,7 @@ const SaveTokenContainer = styled.div`
   margin-bottom: 24px;
   width: 100%;
   justify-content: center;
-`
-
+`;
 
 const ConnectContainer = styled.div`
   display: flex;
@@ -68,7 +65,7 @@ const ConnectContainer = styled.div`
   align-items: center;
   width: 100%;
   justify-content: center;
-`
+`;
 
 const Overlay = styled.div`
   position: absolute;
@@ -81,22 +78,22 @@ const Overlay = styled.div`
   align-items: center;
   width: 100%;
   justify-content: center;
-  background: rgba(255,255,255,0.85);
+  background: rgba(255, 255, 255, 0.85);
   z-index: 100;
   &.overlay-has-error {
     align-items: flex-start;
-    background: rgba(255,255,255,1);
+    background: rgba(255, 255, 255, 1);
     p {
       margin-top: 24px;
       font-weight: 600;
     }
     .error {
-      width: calc( 100% - 32px );
+      width: calc(100% - 32px);
       word-wrap: break-word;
       padding-bottom: 16px;
     }
   }
-`
+`;
 
 const CloseOverlayIconButton = styled(IconButton)`
   position: absolute;
@@ -104,10 +101,7 @@ const CloseOverlayIconButton = styled(IconButton)`
   top: 16px;
 `;
 
-
-const defaultProps = {
-  open: false,
-};
+const defaultProps = { open: false };
 
 function ConnectNodeModal(props: ConnectNodeModalProps) {
   const dispatch = useAppDispatch();
@@ -242,8 +236,10 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
 
   const handleClose = () => {
     props.handleClose();
-    setTimeout(()=>{dispatch(authActions.resetState())}, 400);
-  }
+    setTimeout(() => {
+      dispatch(authActions.resetState());
+    }, 400);
+  };
 
   const clearSingleLocal = (index: number) => {
     dispatch(authActions.clearLocalNode(index));
@@ -282,11 +278,9 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           removeValue={clearSingleLocal}
           removeValueTooltip={'Remove node from local storage'}
         />
-        <Tooltip
-          title={'Clear all node credentials from the browser local storage'}
-        >
+        <Tooltip title={'Clear all node credentials from the browser local storage'}>
           <span>
-            <IconButton 
+            <IconButton
               aria-label="delete"
               disabled={nodesSavedLocally.length === 0}
               onClick={clearLocalNodes}
@@ -296,7 +290,6 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           </span>
         </Tooltip>
       </LocalNodesContainer>
-
 
       <p>
         <strong>Node credentials:</strong>
@@ -333,9 +326,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
             set_saveApiToken(event.target.checked);
           }}
         />
-        <Tooltip
-          title={'Save node credentials in browser local storage'}
-        >
+        <Tooltip title={'Save node credentials in browser local storage'}>
           <Button
             onClick={saveNode}
             disabled={apiEndpoint.length === 0}
@@ -354,28 +345,27 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         </Button>
       </ConnectContainer>
 
+      {(connecting || error) && (
+        <Overlay className={`${error ? 'overlay-has-error' : ''}`}>
+          <CloseOverlayIconButton
+            color="primary"
+            aria-label="close modal"
+            onClick={() => {
+              dispatch(authActions.resetState());
+            }}
+          >
+            <CloseIcon />
+          </CloseOverlayIconButton>
 
-      {(connecting || error) && 
-        <Overlay className={ `${error ? 'overlay-has-error' : ''}`}>
-
-            <CloseOverlayIconButton
-              color="primary"
-              aria-label="close modal"
-              onClick={()=>{dispatch(authActions.resetState())}}
-            >
-              <CloseIcon />
-            </CloseOverlayIconButton>
-
-          { connecting &&  <CircularProgress /> }
-          { error && 
+          {connecting && <CircularProgress />}
+          {error && (
             <div className={'error'}>
               <p>ERROR</p>
-              { error }
+              {error}
             </div>
-          }
+          )}
         </Overlay>
-      }
-
+      )}
     </SModal>
   );
 }

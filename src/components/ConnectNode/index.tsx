@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { Link, useNavigate } from 'react-router-dom';
 
-
-// Components 
+// Components
 import Modal from './modal';
 
 // Store
