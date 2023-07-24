@@ -70,7 +70,10 @@ function PingPage() {
   };
 
   return (
-    <Section yellow>
+    <Section
+      yellow
+      fullHeightMin
+    >
       <h2>Ping</h2>
       <TextField
         type="text"

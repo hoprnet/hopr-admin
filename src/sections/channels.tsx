@@ -169,6 +169,7 @@ function ChannelsPage() {
       className="Channels--aliases"
       id="Channels--aliases"
       yellow
+      fullHeightMin
     >
       <h2>
         Channels

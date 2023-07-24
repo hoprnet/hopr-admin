@@ -17,6 +17,15 @@ const web3Slice = createSlice({
     setAccount(state, action) {
       state.account = action.payload ? action.payload : null;
     },
+    setChainId(state, action) {
+      state.chainId = action.payload ? action.payload : null;
+    },
+    setChain(state, action) {
+      state.chain = action.payload ? action.payload : null;
+    },
+    setWallet(state, action) {
+      state.wallet = action.payload ? action.payload : null;
+    },
   },
   extraReducers: (builder) => createExtraReducers(builder),
 });

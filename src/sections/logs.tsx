@@ -10,6 +10,7 @@ function SectionLogs() {
       className="Section--logs"
       id="Section--logs"
       yellow
+      fullHeightMin
     >
       {logs.map((log) => (
         <LogLine

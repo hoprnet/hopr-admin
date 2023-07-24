@@ -50,6 +50,11 @@ const StyledButton = styled(MuiButton)<StyledButtonProps>`
   &.btn-hopr--v2.btn-hopr--fade:not(.Mui-disabled) {
     background: linear-gradient(rgb(0 0 80 / 60%), rgb(0 0 180 / 60%));
   }
+  &.white:not(.Mui-disabled) {
+    background: #fff;
+    color: #0000b2;
+    font-weight: 700;
+  }
 `;
 
 const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>) => {

@@ -172,6 +172,7 @@ function Section1() {
       className="Section--selectNode"
       id="Section--selectNode"
       yellow
+      fullHeightMin
     >
       <Select
         label={'Node credentials saved in browser local storage'}

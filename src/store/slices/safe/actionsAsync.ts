@@ -68,7 +68,7 @@ const createSafeThunk = createAsyncThunk(
       const safeAddress = await safeAccount.getAddress();
       return safeAddress;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   }
 );
@@ -84,11 +84,21 @@ const createSafeWithConfigThunk = createAsyncThunk(
   ) => {
     try {
       const safeFactory = await createSafeFactory(payload.signer);
-      const safeAccount = await safeFactory.deploySafe({ safeAccountConfig: payload.config });
+
+      // The saltNonce is used to calculate a deterministic address for the new Safe contract.
+      // This way, even if the same Safe configuration is used multiple times,
+      // each deployment will result in a new, unique Safe contract.
+      const saltNonce = Date.now().toString();
+
+      const safeAccount = await safeFactory.deploySafe({
+        safeAccountConfig: payload.config,
+        saltNonce,
+      });
+
       const safeAddress = await safeAccount.getAddress();
       return safeAddress;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   }
 );
@@ -107,7 +117,7 @@ const getSafesByOwnerThunk = createAsyncThunk(
       const safeAddresses = await safeApi.getSafesByOwner(signerAddress);
       return safeAddresses;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   }
 );
@@ -138,7 +148,7 @@ const addOwnerToSafeThunk = createAsyncThunk(
       );
       return addOwnerTx;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   }
 );
@@ -169,7 +179,7 @@ const removeOwnerFromSafeThunk = createAsyncThunk(
       );
       return removeOwnerTx;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   }
 );
@@ -188,7 +198,7 @@ const getSafeInfoThunk = createAsyncThunk(
       const safeInfo = await safeApi.getSafeInfo(payload.safeAddress);
       return safeInfo;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   }
 );
@@ -206,10 +216,15 @@ const createSafeTransactionThunk = createAsyncThunk(
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       const safeApi = await createSafeApiService(payload.signer);
+      // gets next nonce considering pending txs
+      const nextSafeNonce = await safeApi.getNextNonce(payload.safeAddress);
       // create safe transaction
-      const safeTransaction = await safeSDK.createTransaction({ safeTransactionData: payload.safeTransactionData });
+      const safeTransaction = await safeSDK.createTransaction({ safeTransactionData: {
+        ...payload.safeTransactionData,
+        nonce: nextSafeNonce,
+      } });
       const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
-      const senderSignature = await safeSDK.signTransactionHash(safeTxHash);
+      const signature = await safeSDK.signTypedData(safeTransaction);
       const senderAddress = await payload.signer.getAddress();
       // propose safe transaction
       await safeApi.proposeTransaction({
@@ -217,7 +232,7 @@ const createSafeTransactionThunk = createAsyncThunk(
         safeTransactionData: safeTransaction.data,
         safeTxHash,
         senderAddress,
-        senderSignature: senderSignature.data,
+        senderSignature: signature.data,
       });
       // re fetch all txs
       dispatch(
@@ -228,7 +243,7 @@ const createSafeTransactionThunk = createAsyncThunk(
       );
       return safeTxHash;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   }
 );
@@ -249,7 +264,7 @@ const createSafeRejectionTransactionThunk = createAsyncThunk(
       // create safe rejection transaction
       const rejectTransaction = await safeSDK.createRejectionTransaction(payload.nonce);
       const safeTxHash = await safeSDK.getTransactionHash(rejectTransaction);
-      const senderSignature = await safeSDK.signTransactionHash(safeTxHash);
+      const signature = await safeSDK.signTypedData(rejectTransaction);
       const senderAddress = await payload.signer.getAddress();
       // propose safe transaction
       await safeApi.proposeTransaction({
@@ -257,7 +272,7 @@ const createSafeRejectionTransactionThunk = createAsyncThunk(
         safeTransactionData: rejectTransaction.data,
         safeTxHash,
         senderAddress,
-        senderSignature: senderSignature.data,
+        senderSignature: signature.data,
       });
       // re fetch all txs
       dispatch(
@@ -268,7 +283,7 @@ const createSafeRejectionTransactionThunk = createAsyncThunk(
       );
       return true;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   }
 );
@@ -297,7 +312,7 @@ const confirmTransactionThunk = createAsyncThunk(
       );
       return confirmTransaction;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   }
 );
@@ -324,7 +339,7 @@ const executeTransactionThunk = createAsyncThunk(
       );
       return true;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   }
 );
@@ -344,7 +359,7 @@ const getAllSafeTransactionsThunk = createAsyncThunk(
       const transactions = await safeApi.getAllTransactions(payload.safeAddress, payload.options);
       return transactions;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   }
 );
@@ -363,7 +378,7 @@ const getPendingSafeTransactionsThunk = createAsyncThunk(
       const transactions = await safeApi.getPendingTransactions(payload.safeAddress);
       return transactions;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   },
 );
@@ -391,7 +406,7 @@ const addSafeDelegateThunk = createAsyncThunk(
 
       return response;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   }
 );
@@ -419,7 +434,7 @@ const removeSafeDelegateThunk = createAsyncThunk(
 
       return response;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   }
 );
@@ -432,7 +447,7 @@ const getSafeDelegatesThunk = createAsyncThunk(
       const response = await safeApi.getSafeDelegates(payload.options);
       return response;
     } catch (e) {
-      rejectWithValue(e);
+      return rejectWithValue(e);
     }
   }
 );
@@ -456,13 +471,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getSafeInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.selectedSafeAddress = action.payload.address;
-      const existingSafe = state.safeInfos.findIndex((info) => info.address === action.payload?.address);
-      // safe exists
-      if (existingSafe !== -1) {
-        state.safeInfos[existingSafe] = action.payload;
-      } else {
-        state.safeInfos.push(action.payload);
-      }
+      state.safeInfo = action.payload;
     }
   });
   builder.addCase(getAllSafeTransactionsThunk.fulfilled, (state, action) => {

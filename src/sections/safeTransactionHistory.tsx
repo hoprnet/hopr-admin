@@ -310,6 +310,8 @@ function TransactionHistoryRow(props: { transaction: AllTransactionsListResponse
       return <MultisigTransactionRow transaction={transaction} />;
     } else if (transaction.txType === 'MODULE_TRANSACTION') {
       return <ModuleTransactionRow transaction={transaction} />;
+    } else {
+      return <></>;
     }
   };
 
@@ -342,7 +344,10 @@ export default function SafeTransactionHistoryPage() {
   }
 
   return (
-    <Section lightBlue>
+    <Section
+      lightBlue
+      fullHeightMin
+    >
       <TableContainer
         component={Paper}
         title="Transaction history"

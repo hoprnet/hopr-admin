@@ -22,7 +22,10 @@ function MetricsPage() {
   }, [apiEndpoint, apiToken]);
 
   return (
-    <Section yellow>
+    <Section
+      yellow
+      fullHeightMin
+    >
       <h2>Metrics</h2>
       <pre>{metrics}</pre>
     </Section>

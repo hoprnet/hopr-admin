@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { createBrowserRouter, RouteObject, useSearchParams } from 'react-router-dom';
+import { environment } from '../config';
 
 // Store
 import { useAppDispatch, useAppSelector } from './store';
@@ -18,14 +19,15 @@ import PeersPage from './sections/peers';
 import TicketsPage from './sections/tickets';
 import ChannelsPage from './sections/channels';
 import MetricsPage from './sections/metrics';
-import SafeStakingPage from './sections/safe-staking';
+import SafeStakingPage from './sections/safeStaking';
 import SettingsPage from './sections/settings';
 import SafeQueue from './sections/safePendingTransactions';
-import AddNode from './steps/install-node/addNode';
-import SelectNodeType from './steps/install-node/selectNodeType';
+import AddNode from './steps/installNode/addNode';
+import SelectNodeType from './steps/installNode/selectNodeType';
 import WrapperPage from './sections/wrapper';
 import XdaiToNodePage from './steps/xdaiToNode';
-import SafeTransactionHistoryPage from './sections/safe-transaction-history';
+import SafeTransactionHistoryPage from './sections/safeTransactionHistory';
+import StakingScreen from './sections/staking-screen';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -55,10 +57,13 @@ import PingPage from './sections/ping';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import AddBoxIcon from '@mui/icons-material/AddBox';
-import DockerInstallation from './steps/install-node/dockerInstallation';
-import NodeAddress from './steps/install-node/nodeAddress';
+import DockerInstallation from './steps/installNode/dockerInstallation';
+import NodeAddress from './steps/installNode/nodeAddress';
 import PaidIcon from '@mui/icons-material/Paid';
+import ConnectSafe from './components/ConnectSafe';
 import ReceiptIcon from '@mui/icons-material/Receipt';
+import SafeOnboarding from './steps/safeOnboarding';
+import NoNodeAdded from './sections/noNodeAdded';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -73,12 +78,7 @@ export type ApplicationMapType = {
   }[];
 }[];
 
-export const applicationMap: ApplicationMapType = [
-  // {
-  //   path: '/',
-  //   element: <SectionInfo/>,
-  //   drawer: false,
-  // },
+export const applicationMapNode: ApplicationMapType = [
   {
     groupName: 'Node',
     path: 'node',
@@ -169,9 +169,12 @@ export const applicationMap: ApplicationMapType = [
       },
     ],
   },
+];
+
+export const applicationMapWeb3: ApplicationMapType = [
   {
-    groupName: 'DEVELOP',
-    path: 'develop',
+    groupName: 'Staking Hub',
+    path: 'hub',
     icon: <DevelopIcon />,
     items: [
       {
@@ -179,6 +182,20 @@ export const applicationMap: ApplicationMapType = [
         path: 'web3',
         icon: <AccountBalanceWalletIcon />,
         element: <SectionWeb3 />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Staking screen',
+        path: 'staking-screen',
+        icon: <SavingsIcon />,
+        element: <StakingScreen />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'No node added',
+        path: 'no-node',
+        icon: <SavingsIcon />,
+        element: <NoNodeAdded />,
         loginNeeded: 'web3',
       },
       {
@@ -218,11 +235,21 @@ export const applicationMap: ApplicationMapType = [
       },
     ],
   },
+];
+
+export const applicationMapDev: ApplicationMapType = [
   {
-    groupName: 'Steps',
+    groupName: 'DEVELOP / Steps',
     path: 'steps',
     icon: <DevelopIcon />,
     items: [
+      {
+        name: 'Safe Onboarding',
+        path: 'safe-onboarding',
+        icon: <LockIcon />,
+        element: <SafeOnboarding />,
+        loginNeeded: 'web3',
+      },
       {
         name: 'Add node',
         path: 'add-node',
@@ -260,6 +287,16 @@ export const applicationMap: ApplicationMapType = [
     ],
   },
 ];
+
+function createApplicationMap() {
+  const temp: ApplicationMapType = [];
+  if (environment === 'dev' || environment === 'node') applicationMapNode.map((elem) => temp.push(elem));
+  if (environment === 'dev' || environment === 'web3') applicationMapWeb3.map((elem) => temp.push(elem));
+  if (environment === 'dev') applicationMapDev.map((elem) => temp.push(elem));
+  return temp;
+}
+
+export const applicationMap: ApplicationMapType = createApplicationMap();
 
 const LayoutEnhanced = () => {
   const dispatch = useAppDispatch();
@@ -324,8 +361,9 @@ const LayoutEnhanced = () => {
       itemsNavbarRight={
         <>
           <NotificationBar />
-          <ConnectWeb3 inTheAppBar />
-          <ConnectNode />
+          {(environment === 'dev' || environment === 'web3') && <ConnectSafe />}
+          {(environment === 'dev' || environment === 'web3') && <ConnectWeb3 inTheAppBar />}
+          {(environment === 'dev' || environment === 'node') && <ConnectNode />}
         </>
       }
       drawerRight={nodeConnected && <InfoBar />}
