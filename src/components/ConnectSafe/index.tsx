@@ -116,19 +116,19 @@ export default function ConnectSafe() {
         safeActionsAsync.getSafeInfoThunk({
           signer: signer,
           safeAddress,
-        })
+        }),
       );
       dispatch(
         safeActionsAsync.getAllSafeTransactionsThunk({
           signer,
           safeAddress,
-        })
+        }),
       );
       dispatch(
         safeActionsAsync.getSafeDelegatesThunk({
           signer,
           options: { safeAddress },
-        })
+        }),
       );
       // Additional logic to connect to the safe
     }
