@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../store';
 
 //Stores
 import { authActions, authActionsAsync } from '../store/slices/auth';
-import { nodeActionsAsync, nodeActions } from '../store/slices/node';
+import node, { nodeActionsAsync, nodeActions } from '../store/slices/node';
 import { appActions } from '../store/slices/app';
 
 // HOPR Components
@@ -15,6 +15,7 @@ import Checkbox from '../future-hopr-lib-components/Toggles/Checkbox';
 //MUI
 import CircularProgress from '@mui/material/CircularProgress';
 import { SelectChangeEvent } from '@mui/material/Select';
+import { parseEther } from 'viem';
 
 type ParsedNode = {
   name: string;
