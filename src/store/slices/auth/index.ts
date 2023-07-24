@@ -68,6 +68,9 @@ const authSlice = createSlice({
       state.nodes = [];
       localStorage.removeItem('admin-ui-node-list');
     },
+    setStatusError(state, action: PayloadAction<string>) {
+      state.status.error = action.payload;
+    },
   },
   extraReducers: (builder) => createExtraReducers(builder),
 });
