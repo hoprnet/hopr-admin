@@ -6,6 +6,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectProps } from '@mui/material/Select';
+import { Tooltip, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const SFormControl = styled(FormControl)`
   margin-bottom: 16px;
@@ -16,9 +18,20 @@ const SFormControl = styled(FormControl)`
   .MuiOutlinedInput-root {
     font-size: 17px;
   }
+  .MuiFormLabel-root.MuiInputLabel-shrink {
+    color: #000030;
+  }
+  .MuiInputBase-root{
+    button.removeValue {
+      display: none;
+    }
+  }
+  
 `;
 
 interface Props extends SelectProps {
+  removeValue?: (value: number)=>void,
+  removeValueTooltip?: string,
   values?: {
     value: string | number;
     name: string | number | null;
@@ -28,7 +41,6 @@ interface Props extends SelectProps {
 const Section: React.FC<Props> = (props) => {
   return (
     <SFormControl
-      size="small"
       style={props.style}
     >
       <InputLabel id="select-small">{props.label}</InputLabel>
@@ -45,8 +57,27 @@ const Section: React.FC<Props> = (props) => {
             <MenuItem
               value={elem.value}
               key={`${elem.value}_${elem.name}_${index}`}
+              style={props.removeValue && {justifyContent: 'space-between'}}
             >
               {elem.name}
+              {
+                props.removeValue && 
+                <Tooltip
+                  title={props.removeValueTooltip}
+                >
+                  <IconButton 
+                    aria-label="delete"
+                    className="removeValue"
+                    onClick={(event)=>{
+                      event.stopPropagation()
+                      // @ts-ignore
+                      props.removeValue(elem.value)
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
+              }
             </MenuItem>
           ))}
       </Select>

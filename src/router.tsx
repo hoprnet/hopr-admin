@@ -8,7 +8,7 @@ import { authActions, authActionsAsync } from './store/slices/auth';
 import { nodeActions, nodeActionsAsync } from './store/slices/node';
 
 // Sections
-import Section1 from './sections/selectNode';
+import Section1 from './components/ConnectNode/modal';
 import SectionLogs from './sections/logs';
 import SectionWeb3 from './sections/web3';
 import SectionSafe from './sections/safe';
@@ -84,12 +84,6 @@ export const applicationMapNode: ApplicationMapType = [
     path: 'node',
     icon: <NodeIcon />,
     items: [
-      {
-        name: 'Connect',
-        path: 'connect',
-        icon: <CableIcon />,
-        element: <Section1 />,
-      },
       {
         name: 'Info',
         path: 'info',
@@ -393,7 +387,6 @@ applicationMap.map((groups) => {
   //  }
 });
 
-console.log('routes', routes);
 const router = createBrowserRouter(routes);
 
 export default router;

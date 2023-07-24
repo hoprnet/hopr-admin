@@ -2,6 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { Link, useNavigate } from 'react-router-dom';
 
+
+// Components 
+import Modal from './modal';
+
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
 import { authActions } from '../../store/slices/auth';
@@ -28,11 +32,11 @@ const Container = styled(Button)`
     justify-content: center;
     width: 100%;
   }
-  & .image-container {
+  .image-container {
     height: 50px;
     margin-left: 8px;
     width: 50px;
-    & img {
+    img {
       height: 100%;
       width: 100%;
     }
@@ -48,11 +52,11 @@ const NodeButton = styled.div`
   color: #414141;
   gap: 10px;
   text-align: left;
-  & p {
+  p {
     margin: 0;
     font-size: 12px;
   }
-  & .node-info {
+  .node-info {
     color: #414141;
     line-height: 12px;
   }
@@ -67,6 +71,7 @@ const SLink = styled(Link)``;
 export default function ConnectNode() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [modalVisible, set_modalVisible] = useState(false);
   const connected = useAppSelector((store) => store.auth.status.connected);
   const peerId = useAppSelector((store) => store.node.addresses.hopr);
   const localName = useAppSelector((store) => store.auth.loginData.localName);
@@ -94,7 +99,7 @@ export default function ConnectNode() {
     dispatch(appActions.resetNodeState());
     dispatch(nodeActions.closeMessagesWebsocket());
     dispatch(nodeActions.closeLogsWebsocket());
-    navigate('node/connect');
+    navigate('/');
   };
 
   // New function to handle opening the menu
@@ -111,6 +116,7 @@ export default function ConnectNode() {
     if (connected) {
       handleOpenMenu(event);
     } else {
+      handleModalOpen();
       if (anchorEl) {
         // If the menu is open, it means the user clicked outside the menu, so we should close it without disconnecting.
         handleCloseMenu();
@@ -118,39 +124,56 @@ export default function ConnectNode() {
     }
   };
 
+  const handleModalClose = () => {
+    set_modalVisible(false);
+  };
+
+  const handleModalOpen = () => {
+    set_modalVisible(true);
+  };
+
   return (
-    <Container
-      onClick={handleContainerClick}
-      ref={containerRef}
-    >
-      <div className="image-container">
-        <img src="/assets/hopr_logo.svg" />
-      </div>
-      {connected ? (
-        <>
-          <NodeButton>
-            <p className="node-info">
-              {peerId && `${peerId.substring(0, 6)}...${peerId.substring(peerId.length - 8, peerId.length)}`}
-            </p>
-            <div className="dropdown-icon">
-              <DropdownArrow src="/assets/dropdown-arrow.svg" />
-            </div>
-          </NodeButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleCloseMenu}
-          >
-            <MenuItem onClick={() => handleLogout()}>Disconnect</MenuItem>
-          </Menu>
-        </>
-      ) : (
-        <SLink to={'node/connect'}>
+    <>
+      <Container
+        onClick={handleContainerClick}
+        ref={containerRef}
+      >
+        <div className="image-container">
+          <img src="/assets/hopr_logo.svg" />
+        </div>
+        {connected ? (
+          <>
+            <NodeButton>
+              <p className="node-info">
+                {peerId && `${peerId.substring(0, 6)}...${peerId.substring(peerId.length - 8, peerId.length)}`}
+              </p>
+              <div className="dropdown-icon">
+                <DropdownArrow src="/assets/dropdown-arrow.svg" />
+              </div>
+            </NodeButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleCloseMenu}
+              MenuListProps={{
+                'aria-labelledby': 'connect-node-menu-button',
+                className: 'connect-node-menu-list',
+              }}
+            >
+              <MenuItem onClick={handleModalOpen}>Change node</MenuItem>
+              <MenuItem onClick={() => handleLogout()}>Disconnect</MenuItem>
+            </Menu>
+          </>
+        ) : (
           <div>
             <NodeButton>Connect to Node</NodeButton>
           </div>
-        </SLink>
-      )}
-    </Container>
+        )}
+      </Container>
+      <Modal
+        open={modalVisible}
+        handleClose={handleModalClose}
+      />
+    </>
   );
 }

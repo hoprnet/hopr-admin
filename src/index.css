@@ -36,6 +36,21 @@ input {
   font-family: inherit;
 }
 
-ul.notification-menu-list {
+ul.notification-menu-list,
+ul.connect-node-menu-list,
+ul.safe-menu-list {
   padding: 0;
 } 
+
+ul.connect-node-menu-list {
+  width: 200px;
+} 
+
+ul.safe-menu-list {
+  width: 240px;
+} 
+
+ul.safe-menu-list > li {
+  display: flex;
+  justify-content: center;
+}

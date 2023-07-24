@@ -17,6 +17,9 @@ const STextField = styled(MuiTextField)`
   input {
     -moz-appearance: textfield;
   }
+  .MuiFormLabel-root.MuiInputLabel-shrink {
+    color: #000030;
+  }
   @media (max-width: 320px) {
     .MuiInputAdornment-root {
       display: none;
