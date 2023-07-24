@@ -195,10 +195,30 @@ const updateSafeThresholdThunk = createAsyncThunk(
     },
   ) => {
     try {
-      const safeApi = await createSafeSDK(payload.signer, payload.safeAddress);
-      const changeThresholdTx = await safeApi.createChangeThresholdTx(payload.newThreshold);
-
-      return changeThresholdTx;
+      const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
+      const safeApi = await createSafeApiService(payload.signer);
+      // gets next nonce considering pending txs
+      const nextSafeNonce = await safeApi.getNextNonce(payload.safeAddress);
+      const changeThresholdTx = await safeSDK.createChangeThresholdTx(payload.newThreshold, { nonce: nextSafeNonce });
+      const safeTxHash = await safeSDK.getTransactionHash(changeThresholdTx);
+      const signature = await safeSDK.signTypedData(changeThresholdTx);
+      const senderAddress = await payload.signer.getAddress();
+      // propose safe transaction
+      await safeApi.proposeTransaction({
+        safeAddress: payload.safeAddress,
+        safeTransactionData: changeThresholdTx.data,
+        safeTxHash,
+        senderAddress,
+        senderSignature: signature.data,
+      });
+      // re fetch all txs
+      dispatch(
+        getPendingSafeTransactionsThunk({
+          safeAddress: payload.safeAddress,
+          signer: payload.signer,
+        }),
+      );
+      return changeThresholdTx.data;
     } catch (e) {
       return rejectWithValue(e);
     }

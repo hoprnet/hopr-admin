@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../store';
-import { safeActionsAsync, safeActions } from '../store/slices/safe';
-import { useEthersSigner } from '../hooks';
-import Section from '../future-hopr-lib-components/Section';
 import { Container, FlexContainer, Text } from '../steps/safeOnboarding/styled';
-import { Button, MenuItem, Select, TextField } from '@mui/material';
+import { MenuItem, Select, TextField } from '@mui/material';
+import { safeActionsAsync, safeActions } from '../store/slices/safe';
+import { useAppDispatch, useAppSelector } from '../store';
+import { useEthersSigner } from '../hooks';
+import { useState, useEffect } from 'react';
+import Button from '../future-hopr-lib-components/Button';
+import Section from '../future-hopr-lib-components/Section';
 import styled from '@emotion/styled';
 
 const RemoveOwnerDiv = styled.div`
@@ -24,7 +25,6 @@ function SafeSettings() {
 
   useEffect(() => {
     fetchInitialStateForSigner();
-    console.log(safeAddress);
   }, [signer]);
 
   useEffect(() => {
@@ -36,7 +36,6 @@ function SafeSettings() {
         }),
       );
       set_threshold(safe!.threshold);
-      console.log(safe?.owners);
     }
   }, [safeAddress]);
 
@@ -54,27 +53,19 @@ function SafeSettings() {
 
   const updateSafeThreshold = () => {
     if (signer && safeAddress) {
-      const trx = dispatch(
+      dispatch(
         safeActionsAsync.updateSafeThresholdThunk({
           signer: signer,
           newThreshold: threshold,
           safeAddress: safeAddress,
         }),
       );
-      //   dispatch(
-      //     safeActionsAsync.confirmTransactionThunk({
-      //       safeAddress: safeAddress,
-      //       safeTransactionHash: trx.requestId,
-      //       signer,
-      //     }),
-      //   );
       dispatch(
         safeActionsAsync.getAllSafeTransactionsThunk({
           safeAddress: safeAddress,
           signer: signer,
         }),
       );
-      console.log(trx);
     }
   };
 
@@ -122,7 +113,7 @@ function SafeSettings() {
           <Text>Out of {safe?.owners.length} owner(s).</Text>
         </FlexContainer>
         <Button
-          disabled={threshold === safe?.threshold}
+          disabled={threshold === safe?.threshold || threshold == 0}
           onClick={updateSafeThreshold}
         >
           Update
