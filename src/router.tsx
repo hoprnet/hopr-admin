@@ -21,12 +21,10 @@ import ChannelsPage from './sections/channels';
 import MetricsPage from './sections/metrics';
 import SafeStakingPage from './sections/safeStaking';
 import SettingsPage from './sections/settings';
-import SafeQueue from './sections/safePendingTransactions';
 import AddNode from './steps/installNode/addNode';
 import SelectNodeType from './steps/installNode/selectNodeType';
 import WrapperPage from './sections/wrapper';
 import XdaiToNodePage from './steps/xdaiToNode';
-import SafeTransactionHistoryPage from './sections/safeTransactionHistory';
 import StakingScreen from './sections/staking-screen';
 
 // Layout
@@ -66,6 +64,7 @@ import SafeOnboarding from './steps/safeOnboarding';
 import NoNodeAdded from './sections/noNodeAdded';
 import StakingLandingPage from './sections/stakingLandingPage';
 import NodeAdded from './sections/nodeAdded';
+import SafeActions from './sections/actions';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -215,10 +214,10 @@ export const applicationMapWeb3: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
-        name: 'Pending transactions',
-        path: 'safe/pending-transactions',
+        name: 'Actions',
+        path: 'safe/actions',
         icon: <SwapVertIcon />,
-        element: <SafeQueue />,
+        element: <SafeActions />,
         loginNeeded: 'web3',
       },
       {
@@ -233,13 +232,6 @@ export const applicationMapWeb3: ApplicationMapType = [
         path: 'staking-hub-landing',
         icon: <SavingsIcon />,
         element: <StakingLandingPage />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Transaction history',
-        path: 'safe/transaction-history',
-        icon: <ReceiptIcon />,
-        element: <SafeTransactionHistoryPage />,
         loginNeeded: 'web3',
       },
       {
