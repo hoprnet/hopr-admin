@@ -34,3 +34,15 @@ export function truncateEthereumAddress(address: string) {
   if (!match) return address;
   return `${match[1]}…${match[2]}`;
 }
+
+export function truncateHOPRPeerId(peerId: string) {
+  if (!peerId) return;
+
+  // Check if the peerId starts with "16Uiu2" and has a total length of 53 characters.
+  if (!peerId.startsWith('16Uiu2') || peerId.length !== 53) return peerId;
+
+  // Get the last 8 characters of the peerId.
+  const last8Characters = peerId.slice(-8);
+
+  return `16Uiu2…${last8Characters}`;
+}
