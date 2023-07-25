@@ -14,22 +14,22 @@ import {
   TableRow,
   Tooltip
 } from '@mui/material';
-  
+
 // MUI ICONS
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-  
+
 // STORE
 import { useAppDispatch, useAppSelector } from '../store';
 import { safeActionsAsync } from '../store/slices/safe';
-  
+
 // COMPONENTS
 import Button from '../future-hopr-lib-components/Button';
 import GrayButton from '../future-hopr-lib-components/Button/gray';
 import Section from '../future-hopr-lib-components/Section';
-  
+
 // LIBS
 import styled from '@emotion/styled';
 import { useAccount } from 'wagmi';
@@ -43,7 +43,7 @@ import {
   SafeModuleTransactionWithTransfersResponse,
   SafeMultisigTransactionWithTransfersResponse,
   SafeMultisigTransactionListResponse
-} from '@safe-global/api-kit'
+} from '@safe-global/api-kit';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 
 // HOOKS
@@ -52,84 +52,82 @@ import { formatEther } from 'viem';
 import { useEthersSigner } from '../hooks';
 import { truncateEthereumAddress } from '../utils/helpers';
 
-  
-
 const StyledContainer = styled(Paper)`
-    min-width: 800px;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  `;
-  
+  min-width: 800px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+`;
+
 const Title = styled.h2`
-    font-size: 32px;
-    font-weight: 400;
-    text-align: center;
-    text-transform: uppercase;
-    margin: 0;
-  `;
-  
+  font-size: 32px;
+  font-weight: 400;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 0;
+`;
+
 const StyledApproveButton = styled(Button)`
-    align-self: flex-end;
-    text-transform: uppercase;
-  `;
-  
+  align-self: flex-end;
+  text-transform: uppercase;
+`;
+
 const StyledRejectButton = styled(GrayButton)`
-    outline: 2px solid #000050;
-    line-height: 30px;
-    border-radius: 20px;
-  `;
-  
+  outline: 2px solid #000050;
+  line-height: 30px;
+  border-radius: 20px;
+`;
+
 const StyledButtonGroup = styled.div`
-    margin: 1rem;
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    align-content: baseline;
-  `;
-  
+  margin: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  align-content: baseline;
+`;
+
 const StyledCollapsibleCell = styled(TableCell)`
-    padding-bottom: 0;
-    padding-top: 0;
-  `;
-  
+  padding-bottom: 0;
+  padding-top: 0;
+`;
+
 const StyledBox = styled(Box)`
-    margin: 1;
-    display: flex;
-    justify-content: space-evenly;
-  `;
-  
+  margin: 1;
+  display: flex;
+  justify-content: space-evenly;
+`;
+
 const StyledTransactionHashWithIcon = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  
-    & svg {
-      align-self: flex-end;
-      height: 16px;
-      width: 16px;
-    }
-  `;
-  
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  & svg {
+    align-self: flex-end;
+    height: 16px;
+    width: 16px;
+  }
+`;
+
 const GnosisLink = styled.a`
-    display: inline-flex;
-    gap: 2px;
-    text-decoration: underline;
-  
-    & svg {
-      align-self: flex-end;
-      height: 16px;
-      width: 16px;
-    }
-  `;
-  
+  display: inline-flex;
+  gap: 2px;
+  text-decoration: underline;
+
+  & svg {
+    align-self: flex-end;
+    height: 16px;
+    width: 16px;
+  }
+`;
+
 const GNOSIS_BASE_URL = 'https://gnosisscan.io';
-  
+
 /**
-   * Checks if transaction is pending approval from connected signer
-   * @returns boolean
-   */
+ * Checks if transaction is pending approval from connected signer
+ * @returns boolean
+ */
 const isTransactionPendingApprovalFromSigner = (
   transaction: SafeMultisigTransactionResponse,
   address: string | undefined,
@@ -140,7 +138,7 @@ const isTransactionPendingApprovalFromSigner = (
   }
   return true;
 };
-  
+
 const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionResponse }) => {
   const signer = useEthersSigner();
   const dispatch = useAppDispatch();
@@ -149,7 +147,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
   const [isLoadingApproving, set_isLoadingApproving] = useState<boolean>(false);
   const [isLoadingExecuting, set_isLoadingExecuting] = useState<boolean>(false);
   const [isLoadingRejecting, set_isLoadingRejecting] = useState<boolean>(false);
-  
+
   const executeTx = (transaction: SafeMultisigTransactionResponse) => {
     if (signer) {
       set_isLoadingExecuting(true);
@@ -169,7 +167,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
         });
     }
   };
-  
+
   const approveTx = (transaction: SafeMultisigTransactionResponse) => {
     if (signer) {
       set_isLoadingApproving(true);
@@ -189,7 +187,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
         });
     }
   };
-  
+
   const rejectTx = (transaction: SafeMultisigTransactionResponse) => {
     if (signer) {
       set_isLoadingRejecting(true);
@@ -209,19 +207,19 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
         });
     }
   };
-  
+
   const isTransactionApproved = (transaction: SafeMultisigTransactionResponse) => {
     if (!signer) return false;
     return (transaction.confirmations?.length ?? 0) >= transaction.confirmationsRequired;
   };
-  
+
   const isTransactionExecutable = (transaction: SafeMultisigTransactionResponse) => {
     if (!signer) return false;
     if (safeNonce !== transaction.nonce) return false;
-  
+
     return true;
   };
-  
+
   if (isTransactionApproved(transaction)) {
     return (
       <>
@@ -232,7 +230,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
                 disabled={!isTransactionExecutable(transaction)}
                 onClick={() => rejectTx(transaction)}
               >
-                  reject
+                reject
               </StyledRejectButton>
             </span>
           </Tooltip>
@@ -242,7 +240,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
                 disabled={!isTransactionExecutable(transaction)}
                 onClick={() => executeTx(transaction)}
               >
-                  execute
+                execute
               </StyledApproveButton>
             </span>
           </Tooltip>
@@ -261,7 +259,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
                 onClick={() => approveTx(transaction)}
                 disabled={!isTransactionPendingApprovalFromSigner(transaction, address)}
               >
-                  approve/sign
+                approve/sign
               </StyledApproveButton>
             </span>
           </Tooltip>
@@ -271,23 +269,23 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
     );
   }
 };
-  
+
 const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTransactionResponse }) => {
   const { address } = useAccount();
   const [open, set_open] = useState(false);
-  
+
   const getTransactionStatus = (transaction: SafeMultisigTransactionResponse) => {
     if (transaction.confirmations?.length === transaction.confirmationsRequired) {
       return 'Awaiting execution';
     }
-  
+
     if (isTransactionPendingApprovalFromSigner(transaction, address)) {
       return 'Needs your confirmation ';
     }
-  
+
     return 'Awaiting confirmation';
   };
-  
+
   const getType = (transaction: SafeMultisigTransactionResponse) => {
     if (transaction.dataDecoded) {
       const decodedData = getDecodedData(transaction);
@@ -298,19 +296,19 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
       return 'Rejection';
     }
   };
-  
+
   const getDecodedData = (transaction: SafeMultisigTransactionResponse) => {
     if (typeof transaction.dataDecoded === 'string') {
       return transaction.dataDecoded;
     } else if (typeof transaction.dataDecoded === 'object') {
       const transactionData = transaction.dataDecoded as unknown as {
-          method: string;
-          parameters: { name: string; type: string; value: string }[];
-        };
+        method: string;
+        parameters: { name: string; type: string; value: string }[];
+      };
       return transactionData;
     }
   };
-  
+
   const formatDateToUserTimezone = (date: string) => {
     dayjs.extend(utc);
     dayjs.extend(timezone);
@@ -319,23 +317,23 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
     const formattedDate = `${dayjs(date).tz(userTimezone).format('YYYY-MM-DD HH:MM')} GMT ${dayjs(date)
       .tz(userTimezone)
       .format('Z')}`;
-  
+
     return formattedDate;
   };
-  
+
   const calculateRelativeTime = (date: string) => {
     // add relative time plugin to dayjs
     dayjs.extend(relativeTime);
     const daysSinceDate = dayjs().diff(date, 'days');
-  
+
     if (daysSinceDate > 7) {
       return formatDateToUserTimezone(date);
     }
-  
+
     const relativeDateString = dayjs(date).fromNow();
     return relativeDateString;
   };
-  
+
   return (
     <>
       <TableRow>
@@ -422,13 +420,13 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
     </>
   );
 };
-  
+
 const SafeQueue = () => {
   const dispatch = useAppDispatch();
   const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions);
   const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
   const signer = useEthersSigner();
-  
+
   useEffect(() => {
     if (signer && selectedSafeAddress) {
       dispatch(
@@ -438,7 +436,7 @@ const SafeQueue = () => {
         }),
       );
     }
-  
+
     const updateSafeNonceInterval = setInterval(() => {
       if (!signer || !selectedSafeAddress) return;
       // update safe nonce
@@ -449,53 +447,50 @@ const SafeQueue = () => {
         }),
       );
     }, 10000);
-  
+
     return () => {
       clearInterval(updateSafeNonceInterval);
     };
   }, [selectedSafeAddress]);
-  
+
   const sortByDate = (pendingTransactions: SafeMultisigTransactionListResponse) => {
     if (!pendingTransactions.count) return null;
     const sortedCopy: SafeMultisigTransactionListResponse = JSON.parse(JSON.stringify(pendingTransactions));
-  
+
     // sort from oldest date to newest
     return sortedCopy.results.sort(
       (prevDay, nextDay) => dayjs(prevDay.submissionDate).valueOf() - dayjs(nextDay.submissionDate).valueOf(),
     );
   };
-  
-  return (    
-    
-    !selectedSafeAddress ? (
-      <Title>Connect to safe</Title>
-    ) : (
-      <TableContainer component={Paper}>
-        <Table aria-label="safe pending transactions">
-          <TableHead>
-            <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell align="right">Type</TableCell>
-              <TableCell align="right">Amount</TableCell>
-              <TableCell align="right">Confirmations</TableCell>
-              <TableCell align="right">Status</TableCell>
-              <TableCell />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {pendingTransactions &&
-                    !!pendingTransactions?.count &&
-                    sortByDate(pendingTransactions)?.map((transaction, key) => (
-                      <PendingTransactionRow
-                        transaction={transaction}
-                        key={key}
-                      />
-                    ))}
-            {pendingTransactions && !pendingTransactions?.count && <span>No entries</span>}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    )
+
+  return !selectedSafeAddress ? (
+    <Title>Connect to safe</Title>
+  ) : (
+    <TableContainer component={Paper}>
+      <Table aria-label="safe pending transactions">
+        <TableHead>
+          <TableRow>
+            <TableCell>Date</TableCell>
+            <TableCell align="right">Type</TableCell>
+            <TableCell align="right">Amount</TableCell>
+            <TableCell align="right">Confirmations</TableCell>
+            <TableCell align="right">Status</TableCell>
+            <TableCell />
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {pendingTransactions &&
+            !!pendingTransactions?.count &&
+            sortByDate(pendingTransactions)?.map((transaction, key) => (
+              <PendingTransactionRow
+                transaction={transaction}
+                key={key}
+              />
+            ))}
+          {pendingTransactions && !pendingTransactions?.count && <span>No entries</span>}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 
@@ -819,14 +814,13 @@ function SafeActions() {
           <Title>pending actions</Title>
           <p>1. Transaction have to be signed/rejected according to their tabular order.</p>
           <p>2. After signing all parties can click on EXECUTE. One signature is sufficient.</p>
-        </div>   
-        <SafeQueue/>
+        </div>
+        <SafeQueue />
         <Title>history</Title>
-        <TransactionHistoryTable/>
+        <TransactionHistoryTable />
       </StyledContainer>
     </Section>
-  )
+  );
 }
-  
+
 export default SafeActions;
-  
