@@ -83,7 +83,6 @@ const Overlay = styled.div`
   z-index: 10000;
 `;
 
-
 export default function ConnectNode() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -112,7 +111,7 @@ export default function ConnectNode() {
   }, []);
 
   useEffect(() => {
-    if(error) set_modalVisible(true);
+    if (error) set_modalVisible(true);
   }, [error]);
 
   const handleLogout = () => {
@@ -196,12 +195,12 @@ export default function ConnectNode() {
         open={!connecting && modalVisible}
         handleClose={handleModalClose}
       />
-      {connecting && 
+      {connecting && (
         <Overlay>
           <CircularProgress />
           Connecting to Node
         </Overlay>
-      }
+      )}
     </>
   );
 }

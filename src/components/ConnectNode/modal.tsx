@@ -235,7 +235,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
 
   const handleClose = () => {
     props.handleClose();
-    if(error) {
+    if (error) {
       setTimeout(() => {
         dispatch(authActions.resetState());
       }, 200);

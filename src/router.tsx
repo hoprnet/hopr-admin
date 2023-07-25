@@ -326,32 +326,37 @@ const LayoutEnhanced = () => {
       }),
     );
     if (!apiToken) return;
-    dispatch(
-      authActionsAsync.loginThunk({
-        apiEndpoint,
-        apiToken,
-      }),
-    );
-    dispatch(
-      nodeActionsAsync.getInfoThunk({
-        apiToken,
-        apiEndpoint,
-      }),
-    );
-    dispatch(
-      nodeActionsAsync.getAddressesThunk({
-        apiToken,
-        apiEndpoint,
-      }),
-    );
-    dispatch(
-      nodeActionsAsync.getAliasesThunk({
-        apiToken,
-        apiEndpoint,
-      }),
-    );
-    dispatch(nodeActions.initializeMessagesWebsocket());
-    dispatch(nodeActions.initializeLogsWebsocket());
+    const useNode = async () => {
+      const loginInfo = await dispatch(
+        authActionsAsync.loginThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      ).unwrap();
+      if (loginInfo) {
+        dispatch(
+          nodeActionsAsync.getInfoThunk({
+            apiToken,
+            apiEndpoint,
+          }),
+        );
+        dispatch(
+          nodeActionsAsync.getAddressesThunk({
+            apiToken,
+            apiEndpoint,
+          }),
+        );
+        dispatch(
+          nodeActionsAsync.getAliasesThunk({
+            apiToken,
+            apiEndpoint,
+          }),
+        );
+        dispatch(nodeActions.initializeMessagesWebsocket());
+        dispatch(nodeActions.initializeLogsWebsocket());
+      }
+    }
+    useNode();
 
     return () => {
       dispatch(nodeActions.closeLogsWebsocket());
