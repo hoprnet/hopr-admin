@@ -64,6 +64,7 @@ import ConnectSafe from './components/ConnectSafe';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import SafeOnboarding from './steps/safeOnboarding';
 import NoNodeAdded from './sections/noNodeAdded';
+import NodeAdded from './sections/nodeAdded';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -196,6 +197,13 @@ export const applicationMapWeb3: ApplicationMapType = [
         path: 'no-node',
         icon: <SavingsIcon />,
         element: <NoNodeAdded />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Node added',
+        path: 'node-added',
+        icon: <SavingsIcon />,
+        element: <NodeAdded />,
         loginNeeded: 'web3',
       },
       {
