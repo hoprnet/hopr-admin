@@ -19,6 +19,7 @@ import { exportToCsv } from '../utils/helpers';
 import CircularProgress from '@mui/material/CircularProgress';
 import { ethers } from 'ethers';
 import { OpenChannelModal } from '../components/Modal/OpenOrFundChannelModal';
+import OpenChannelsMap from '../components/OpenChannelsMap';
 
 function ChannelsPage() {
   const dispatch = useAppDispatch();
@@ -272,6 +273,7 @@ function ChannelsPage() {
           )}
         </Table>
       </TableContainer>
+      <OpenChannelsMap />
     </Section>
   );
 }
