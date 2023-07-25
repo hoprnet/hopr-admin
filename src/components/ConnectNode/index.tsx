@@ -10,7 +10,9 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { authActions } from '../../store/slices/auth';
 import { nodeActions } from '../../store/slices/node';
 import { appActions } from '../../store/slices/app';
-import { Button, Menu, MenuItem } from '@mui/material';
+
+//MUI
+import { Button, Menu, MenuItem, CircularProgress } from '@mui/material';
 
 const Container = styled(Button)`
   align-items: center;
@@ -65,13 +67,30 @@ const DropdownArrow = styled.img`
   align-self: center;
 `;
 
-const SLink = styled(Link)``;
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  color: #000050;
+  gap: 32px;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.78);
+  z-index: 10000;
+`;
+
 
 export default function ConnectNode() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [modalVisible, set_modalVisible] = useState(false);
   const connected = useAppSelector((store) => store.auth.status.connected);
+  const connecting = useAppSelector((store) => store.auth.status.connecting);
+  const error = useAppSelector((store) => store.auth.status.error);
   const peerId = useAppSelector((store) => store.node.addresses.hopr);
   const localName = useAppSelector((store) => store.auth.loginData.localName);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
@@ -91,6 +110,10 @@ export default function ConnectNode() {
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if(error) set_modalVisible(true);
+  }, [error]);
 
   const handleLogout = () => {
     dispatch(authActions.resetState());
@@ -170,9 +193,15 @@ export default function ConnectNode() {
         )}
       </Container>
       <Modal
-        open={modalVisible}
+        open={!connecting && modalVisible}
         handleClose={handleModalClose}
       />
+      {connecting && 
+        <Overlay>
+          <CircularProgress />
+          Connecting to Node
+        </Overlay>
+      }
     </>
   );
 }

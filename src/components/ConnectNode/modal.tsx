@@ -17,7 +17,7 @@ import TextField from '../../future-hopr-lib-components/TextField';
 import Button from '../../future-hopr-lib-components/Button';
 
 // MUI
-import { Tooltip, IconButton, CircularProgress } from '@mui/material';
+import { Tooltip, IconButton } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
@@ -174,6 +174,10 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     }
   }, [loginData]);
 
+  useEffect(() => {
+    if (error) navigate(`/?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
+  }, [error]);
+
   const saveNode = () => {
     dispatch(
       authActions.addNodeData({
@@ -216,29 +220,26 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         }),
       );
       dispatch(
-        nodeActionsAsync.getInfoThunk({
-          apiToken,
-          apiEndpoint,
-        }),
-      );
-      dispatch(
         nodeActionsAsync.getAliasesThunk({
           apiToken,
           apiEndpoint,
         }),
       );
+      dispatch(nodeActions.setInfo(loginInfo));
       dispatch(nodeActions.initializeMessagesWebsocket());
       dispatch(nodeActions.initializeLogsWebsocket());
-      navigate('/node/info');
+      if (!error) navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
       props.handleClose();
     }
   };
 
   const handleClose = () => {
     props.handleClose();
-    setTimeout(() => {
-      dispatch(authActions.resetState());
-    }, 400);
+    if(error) {
+      setTimeout(() => {
+        dispatch(authActions.resetState());
+      }, 200);
+    }
   };
 
   const clearSingleLocal = (index: number) => {
@@ -345,26 +346,21 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         </Button>
       </ConnectContainer>
 
-      {(connecting || error) && (
-        <Overlay className={`${error ? 'overlay-has-error' : ''}`}>
-          {error && 
-            <CloseOverlayIconButton
-              color="primary"
-              aria-label="close modal"
-              onClick={() => {
-                dispatch(authActions.resetState());
-              }}
-            >
-              <CloseIcon />
-            </CloseOverlayIconButton>
-          }
-          {connecting && <CircularProgress />}
-          {error && (
-            <div className={'error'}>
-              <p>ERROR</p>
-              {error}
-            </div>
-          )}
+      {error && (
+        <Overlay className={'overlay-has-error'}>
+          <CloseOverlayIconButton
+            color="primary"
+            aria-label="close modal"
+            onClick={() => {
+              dispatch(authActions.resetState());
+            }}
+          >
+            <CloseIcon />
+          </CloseOverlayIconButton>
+          <div className={'error'}>
+            <p>ERROR</p>
+            {error}
+          </div>
         </Overlay>
       )}
     </SModal>
