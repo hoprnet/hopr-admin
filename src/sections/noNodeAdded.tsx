@@ -164,6 +164,7 @@ type StakingCardProps = {
     text: string;
     link: string;
     className?: string;
+    disabled?: boolean;
   }[];
   children?: ReactNode;
 };
@@ -206,6 +207,7 @@ const StakingCard = ({
           {buttons.map((button) => (
             <Button
               key={button.text}
+              disabled={button.disabled}
               className={button.className}
             >
               <Link to={button.link}>{button.text}</Link>
@@ -288,6 +290,7 @@ const NoNodeAdded = () => {
               {
                 text: 'BUY xHOPR',
                 link: '#',
+                disabled: true,
               },
               {
                 text: 'xHOPR → wxHOPR',
@@ -296,6 +299,7 @@ const NoNodeAdded = () => {
               {
                 text: 'STAKE wxHOPR',
                 link: '#',
+                disabled: true,
               },
             ]}
           />
@@ -307,10 +311,12 @@ const NoNodeAdded = () => {
               {
                 text: 'FUND SAFE',
                 link: '#',
+                disabled: true,
               },
               {
                 text: 'SEND TO NODE',
                 link: '#',
+                disabled: true,
               },
             ]}
           />
