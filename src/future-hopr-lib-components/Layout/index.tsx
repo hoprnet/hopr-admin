@@ -13,6 +13,8 @@ import Drawer from './drawer';
 
 // Types
 import { ApplicationMapType } from '../../router';
+import { useAppSelector } from '../../store';
+import InfoStatus from '../../components/InfoStatus';
 
 const SLayout = styled.div`
   &.webapp {
@@ -80,6 +82,7 @@ const Layout: React.FC<{
 }) => {
   // Determine if the device is a mobile device based on the screen width
   const isMobile = useMediaQuery('(max-width: 500px)');
+  const account = useAppSelector((selector) => selector.web3.account);
 
   // Set the initial state of the drawer based on the device type
   // If it's a mobile device, set the drawer to be closed by default
@@ -96,7 +99,7 @@ const Layout: React.FC<{
         set_openedNavigationDrawer={set_openedNavigationDrawer}
         openedNavigationDrawer={openedNavigationDrawer}
       />
-
+      {account && <InfoStatus />}
       {drawer && (
         <Drawer
           drawerItems={drawerItems}

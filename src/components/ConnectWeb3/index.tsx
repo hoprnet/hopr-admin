@@ -22,7 +22,7 @@ const AppBarContainer = styled(Button)`
   cursor: pointer;
   height: 59px;
   justify-content: center;
-  width: 220px;
+  width: 285px;
   border-radius: 0;
   & .image-container {
     height: 50px;
