@@ -64,6 +64,8 @@ import ConnectSafe from './components/ConnectSafe';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import SafeOnboarding from './steps/safeOnboarding';
 import NoNodeAdded from './sections/noNodeAdded';
+import StakingLandingPage from './sections/stakingLandingPage';
+import NodeAdded from './sections/nodeAdded';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -193,6 +195,13 @@ export const applicationMapWeb3: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
+        name: 'Node added',
+        path: 'node-added',
+        icon: <SavingsIcon />,
+        element: <NodeAdded />,
+        loginNeeded: 'web3',
+      },
+      {
         name: 'Safe',
         path: 'safe',
         icon: <LockIcon />,
@@ -211,6 +220,13 @@ export const applicationMapWeb3: ApplicationMapType = [
         path: 'safe/staking',
         icon: <SavingsIcon />,
         element: <SafeStakingPage />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Staking Hub',
+        path: 'staking-hub-landing',
+        icon: <SavingsIcon />,
+        element: <StakingLandingPage />,
         loginNeeded: 'web3',
       },
       {
