@@ -317,6 +317,8 @@ export const applicationMap: ApplicationMapType = createApplicationMap();
 const LayoutEnhanced = () => {
   const dispatch = useAppDispatch();
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
+  const account = useAppSelector((selector) => selector.web3.account);
+  const isConnected = useAppSelector((selector) => selector.web3.status.connected);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [searchParams, set_searchParams] = useSearchParams();
   const apiEndpoint = searchParams.get('apiEndpoint');
@@ -382,7 +384,7 @@ const LayoutEnhanced = () => {
           {(environment === 'dev' || environment === 'node') && <ConnectNode />}
         </>
       }
-      drawerRight={nodeConnected && <InfoBar />}
+      drawerRight={(isConnected || nodeConnected) && <InfoBar />}
     />
   );
 };

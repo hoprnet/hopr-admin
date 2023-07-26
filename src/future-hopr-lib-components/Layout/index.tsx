@@ -14,7 +14,6 @@ import Drawer from './drawer';
 // Types
 import { ApplicationMapType } from '../../router';
 import { useAppSelector } from '../../store';
-import InfoStatus from '../../components/InfoStatus';
 
 const SLayout = styled.div`
   &.webapp {
@@ -99,7 +98,6 @@ const Layout: React.FC<{
         set_openedNavigationDrawer={set_openedNavigationDrawer}
         openedNavigationDrawer={openedNavigationDrawer}
       />
-      {account && <InfoStatus />}
       {drawer && (
         <Drawer
           drawerItems={drawerItems}
