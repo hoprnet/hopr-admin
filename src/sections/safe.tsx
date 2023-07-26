@@ -13,12 +13,11 @@ import { appActions } from '../store/slices/app';
 import { Address, encodeFunctionData, formatEther } from 'viem';
 import { erc20ABI, useContractRead } from 'wagmi';
 import { SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types';
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../config';
 
-const HOPR_CHANNELS_SMART_CONTRACT_ADDRESS = '0xfabee463f31e39ec8952bbfb4490c41103bf573e';
 // Maximum possible value for uint256
 const MAX_UINT256 = BigInt(2 ** 256) - BigInt(1);
-// mHopr
-const HOPR_TOKEN_SMART_CONTRACT_ADDRESS = '0x66225dE86Cac02b32f34992eb3410F59DE416698';
+
 
 function SafeSection() {
   const dispatch = useAppDispatch();
