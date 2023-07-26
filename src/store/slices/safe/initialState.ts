@@ -4,7 +4,7 @@ import {
   SafeMultisigTransactionListResponse,
   SafeInfoResponse,
   TokenInfoListResponse
-} from '@safe-global/api-kit'
+} from '@safe-global/api-kit';
 
 type InitialState = {
   selectedSafeAddress: string | null;

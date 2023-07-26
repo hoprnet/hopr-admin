@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 import { default as utc } from 'dayjs/plugin/utc';
 import { default as timezone } from 'dayjs/plugin/timezone';
 

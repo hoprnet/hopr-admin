@@ -289,21 +289,21 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
   // value can represent token value or json params if there is no
   const [value, set_value] = useState<string>();
   const [currency, set_currency] = useState<string>();
-  const [dateInUserTimezone, set_dateInUserTimezone] = useState<string>()
-  const [dateInGMT, set_dateInGMT] = useState<string>()
-  const [transactionStatus, set_transactionStatus] = useState<string>()
-  
+  const [dateInUserTimezone, set_dateInUserTimezone] = useState<string>();
+  const [dateInGMT, set_dateInGMT] = useState<string>();
+  const [transactionStatus, set_transactionStatus] = useState<string>();
+
   useEffect(() => {
     if (signer && transaction) {
-      set_source(getSourceOfTransaction(transaction))
-      set_request(getRequest(transaction))
-      getValueFromTransaction(transaction, signer).then((value) => set_value(value?.toString()))
-      getCurrencyFromTransaction(transaction, signer).then((currency) => set_currency(currency))
-      set_dateInGMT(calculateTimeInGMT(transaction.submissionDate))
-      set_dateInUserTimezone(formatDateToUserTimezone(transaction.submissionDate))
-      set_transactionStatus(getTransactionStatus(transaction))
+      set_source(getSourceOfTransaction(transaction));
+      set_request(getRequest(transaction));
+      getValueFromTransaction(transaction, signer).then((value) => set_value(value?.toString()));
+      getCurrencyFromTransaction(transaction, signer).then((currency) => set_currency(currency));
+      set_dateInGMT(calculateTimeInGMT(transaction.submissionDate));
+      set_dateInUserTimezone(formatDateToUserTimezone(transaction.submissionDate));
+      set_transactionStatus(getTransactionStatus(transaction));
     }
-  }, [signer, transaction])
+  }, [signer, transaction]);
 
   const getTransactionStatus = (transaction: SafeMultisigTransactionResponse) => {
     if (transaction.confirmations?.length === transaction.confirmationsRequired) {
@@ -349,7 +349,9 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
     return truncateEthereumAddress(transaction.confirmations.at(0)?.owner ?? '');
   };
 
-  const getCurrencyFromTransaction = async (transaction: SafeMultisigTransactionResponse, signer: ethers.providers.JsonRpcSigner,
+  const getCurrencyFromTransaction = async (
+    transaction: SafeMultisigTransactionResponse,
+    signer: ethers.providers.JsonRpcSigner,
   ) => {
     const isNativeTransaction = !transaction.data;
     if (isNativeTransaction) {
@@ -365,11 +367,11 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
 
     if (!token.name && !token.symbol) {
       // this is not a token contract
-      return JSON.stringify(transaction.dataDecoded)
+      return JSON.stringify(transaction.dataDecoded);
     }
 
-    return token.symbol
-  }
+    return token.symbol;
+  };
 
   const getValueFromTransaction = async (
     transaction: SafeMultisigTransactionResponse,
@@ -389,17 +391,17 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
 
     if (!token.name && !token.symbol) {
       // this is not a token contract
-      return JSON.stringify(transaction.dataDecoded)
+      return JSON.stringify(transaction.dataDecoded);
     }
 
     const decodedData = decodeFunctionData({
       abi: erc20ABI,
       data: transaction.data as Address,
-    })
+    });
 
-    const value = getValueFromERC20Functions(decodedData)
+    const value = getValueFromERC20Functions(decodedData);
 
-    return value
+    return value;
   };
 
   const getValueFromERC20Functions = (
