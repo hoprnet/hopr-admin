@@ -248,15 +248,14 @@ const createSafeTransactionThunk = createAsyncThunk(
   },
 );
 
-const createSafeContractTransaction = 
-createAsyncThunk(
+const createSafeContractTransaction = createAsyncThunk(
   'safe/createContractTransaction',
   async (
     payload: {
       signer: ethers.providers.JsonRpcSigner;
       safeAddress: string;
-      smartContractAddress: string; 
-      data: string
+      smartContractAddress: string;
+      data: string;
     },
     {
       rejectWithValue,
@@ -269,7 +268,7 @@ createAsyncThunk(
         data,
         signer,
         safeAddress,
-      } = payload 
+      } = payload;
 
       const safeTransactionData: SafeTransactionDataPartial = {
         to: smartContractAddress,
@@ -284,7 +283,7 @@ createAsyncThunk(
         }),
       ).unwrap();
 
-      return safeTxHash
+      return safeTxHash;
     } catch (e) {
       return rejectWithValue(e);
     }
