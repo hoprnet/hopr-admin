@@ -32,12 +32,11 @@ import Section from '../future-hopr-lib-components/Section';
 
 // LIBS
 import styled from '@emotion/styled';
-import { useAccount } from 'wagmi';
+import { erc20ABI, useAccount } from 'wagmi';
 import { default as dayjs } from 'dayjs';
 import { default as utc } from 'dayjs/plugin/utc';
 import { default as timezone } from 'dayjs/plugin/timezone';
-import { default as relativeTime } from 'dayjs/plugin/relativeTime';
-import {
+import SafeApiKit, {
   AllTransactionsListResponse,
   EthereumTxWithTransfersResponse,
   SafeModuleTransactionWithTransfersResponse,
@@ -48,9 +47,10 @@ import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-type
 
 // HOOKS
 import { useEffect, useState } from 'react';
-import { formatEther } from 'viem';
+import { Address, decodeFunctionData, formatEther } from 'viem';
 import { useEthersSigner } from '../hooks';
 import { truncateEthereumAddress } from '../utils/helpers';
+import { ethers } from 'ethers';
 
 const StyledContainer = styled(Paper)`
   min-width: 800px;
@@ -68,16 +68,11 @@ const Title = styled.h2`
   margin: 0;
 `;
 
-const StyledApproveButton = styled(Button)`
+const StyledBlueButton = styled(Button)`
   align-self: flex-end;
   text-transform: uppercase;
 `;
 
-const StyledRejectButton = styled(GrayButton)`
-  outline: 2px solid #000050;
-  line-height: 30px;
-  border-radius: 20px;
-`;
 
 const StyledButtonGroup = styled.div`
   margin: 1rem;
@@ -108,6 +103,16 @@ const StyledTransactionHashWithIcon = styled.div`
     height: 16px;
     width: 16px;
   }
+`;
+
+const StyledTableHead = styled(TableHead)`
+  background-color: #aec5db;
+  text-transform: uppercase;
+`;
+
+const StyledPaper = styled(Paper)`
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
 `;
 
 const GnosisLink = styled.a`
@@ -226,22 +231,22 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
         <StyledButtonGroup>
           <Tooltip title={!isTransactionExecutable(transaction) && `Earlier actions should be handled first`}>
             <span>
-              <StyledRejectButton
+              <StyledBlueButton
                 disabled={!isTransactionExecutable(transaction)}
                 onClick={() => rejectTx(transaction)}
               >
                 reject
-              </StyledRejectButton>
+              </StyledBlueButton>
             </span>
           </Tooltip>
           <Tooltip title={!isTransactionExecutable(transaction) && `Earlier actions should be handled first`}>
             <span>
-              <StyledApproveButton
+              <StyledBlueButton
                 disabled={!isTransactionExecutable(transaction)}
                 onClick={() => executeTx(transaction)}
               >
                 execute
-              </StyledApproveButton>
+              </StyledBlueButton>
             </span>
           </Tooltip>
         </StyledButtonGroup>
@@ -255,12 +260,12 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
         <StyledButtonGroup>
           <Tooltip title={!isTransactionPendingApprovalFromSigner(transaction, address) && 'You have already approved'}>
             <span>
-              <StyledApproveButton
+              <StyledBlueButton
                 onClick={() => approveTx(transaction)}
                 disabled={!isTransactionPendingApprovalFromSigner(transaction, address)}
               >
                 approve/sign
-              </StyledApproveButton>
+              </StyledBlueButton>
             </span>
           </Tooltip>
         </StyledButtonGroup>
@@ -314,25 +319,39 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
     dayjs.extend(timezone);
     // guess user timezone;
     const userTimezone = dayjs.tz.guess();
-    const formattedDate = `${dayjs(date).tz(userTimezone).format('YYYY-MM-DD HH:MM')} GMT ${dayjs(date)
-      .tz(userTimezone)
-      .format('Z')}`;
-
+    const formattedDate = dayjs(date).tz(userTimezone).format('YYYY-MM-DD');
     return formattedDate;
   };
 
-  const calculateRelativeTime = (date: string) => {
-    // add relative time plugin to dayjs
-    dayjs.extend(relativeTime);
-    const daysSinceDate = dayjs().diff(date, 'days');
+  const calculateTimeInGMT = (date: string) => {
+    dayjs.extend(utc);
+    const timeInGMT = `${dayjs(date).utc().format('YYYY-MM-DD HH:MM')} GMT ${dayjs(date).utc().format('Z')}`;
+    return timeInGMT;
+  };
 
-    if (daysSinceDate > 7) {
-      return formatDateToUserTimezone(date);
+  const getSourceOfTransaction = (transaction: SafeMultisigTransactionResponse) => {
+    // if there are no signatures this is from a Delegate
+    if (!transaction.confirmations?.length) {
+      return 'Delegate'
     }
 
-    const relativeDateString = dayjs(date).fromNow();
-    return relativeDateString;
-  };
+    return truncateEthereumAddress(transaction.confirmations.at(0)?.owner ?? '')
+  }
+
+  const getTokenInfo = (transaction: SafeMultisigTransactionResponse, signer: ethers.providers.JsonRpcSigner ): { value: string, name: string} | null => {
+    if (!transaction.data) {
+      // this is a native transfer
+      return {
+        name: 'xDAI',
+        value: formatEther(BigInt(transaction.value)),
+      }
+    }
+    // assume this is a token interaction
+    const decodedData = decodeFunctionData({
+      data: transaction.data as Address, abi: erc20ABI, 
+    })
+
+  }
 
   return (
     <>
@@ -341,15 +360,6 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
           component="th"
           scope="row"
         >
-          <Tooltip title={formatDateToUserTimezone(transaction.submissionDate)}>
-            <span>{calculateRelativeTime(transaction.submissionDate)}</span>
-          </Tooltip>
-        </TableCell>
-        <TableCell align="right">{getType(transaction)}</TableCell>
-        <TableCell align="right"> {formatEther(BigInt(transaction.value))}</TableCell>
-        <TableCell align="right">{`${transaction.confirmations?.length}/${transaction.confirmationsRequired}`}</TableCell>
-        <TableCell align="right">{getTransactionStatus(transaction)}</TableCell>
-        <TableCell>
           <IconButton
             aria-label="expand row"
             size="small"
@@ -357,7 +367,14 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
+          <Tooltip title={calculateTimeInGMT(transaction.submissionDate)}>
+            <span>{formatDateToUserTimezone(transaction.submissionDate)}</span>
+          </Tooltip>
         </TableCell>
+        <TableCell align="left">{getSourceOfTransaction(transaction)}</TableCell>
+        <TableCell align="left">{getType(transaction)}</TableCell>
+        <TableCell align="left"> {`${getTokenInfo()}`}</TableCell>
+        <TableCell align='left'> {<ActionButtons transaction={transaction} />}</TableCell>
       </TableRow>
       <TableRow>
         <StyledCollapsibleCell colSpan={6}>
@@ -411,7 +428,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
                     </GnosisLink>
                   </StyledTransactionHashWithIcon>
                 ))}
-                <ActionButtons transaction={transaction} />
+                {getTransactionStatus(transaction)}
               </List>
             </StyledBox>
           </Collapse>
@@ -421,7 +438,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
   );
 };
 
-const SafeQueue = () => {
+const PendingTransactions = () => {
   const dispatch = useAppDispatch();
   const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions);
   const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
@@ -466,18 +483,18 @@ const SafeQueue = () => {
   return !selectedSafeAddress ? (
     <Title>Connect to safe</Title>
   ) : (
-    <TableContainer component={Paper}>
+    <TableContainer component={StyledPaper}>
       <Table aria-label="safe pending transactions">
-        <TableHead>
+        <StyledTableHead>
           <TableRow>
             <TableCell>Date</TableCell>
-            <TableCell align="right">Type</TableCell>
-            <TableCell align="right">Amount</TableCell>
-            <TableCell align="right">Confirmations</TableCell>
-            <TableCell align="right">Status</TableCell>
+            <TableCell  align="left">Source</TableCell>
+            <TableCell  align="left">Capability</TableCell>
+            <TableCell  align="left">Value/Currency</TableCell>
+            <TableCell  align="left">Action</TableCell>
             <TableCell />
           </TableRow>
-        </TableHead>
+        </StyledTableHead>
         <TableBody>
           {pendingTransactions &&
             !!pendingTransactions?.count &&
@@ -776,20 +793,20 @@ function TransactionHistoryTable() {
 
   return (
     <TableContainer
-      component={Paper}
+      component={StyledPaper}
       title="Transaction history"
     >
       <Table aria-label="safe transaction history">
-        <TableHead>
+        <StyledTableHead>
           <TableRow>
-            <TableCell>Nonce</TableCell>
-            <TableCell align="right">Type</TableCell>
-            <TableCell align="right">Amount</TableCell>
+            <TableCell>Date</TableCell>
             <TableCell align="right">Time</TableCell>
-            <TableCell align="right">Status</TableCell>
+            <TableCell align="right">Source</TableCell>
+            <TableCell align="right">Capability</TableCell>
+            <TableCell align="right">Value/Currency</TableCell>
             <TableCell />
           </TableRow>
-        </TableHead>
+        </StyledTableHead>
         <TableBody>
           {safeTransactions?.results.map((transaction, key) => (
             <TransactionHistoryRow
@@ -815,7 +832,7 @@ function SafeActions() {
           <p>1. Transaction have to be signed/rejected according to their tabular order.</p>
           <p>2. After signing all parties can click on EXECUTE. One signature is sufficient.</p>
         </div>
-        <SafeQueue />
+        <PendingTransactions />
         <Title>history</Title>
         <TransactionHistoryTable />
       </StyledContainer>
