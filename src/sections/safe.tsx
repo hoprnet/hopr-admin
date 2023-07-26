@@ -14,6 +14,7 @@ import { Address, encodeFunctionData, formatEther } from 'viem';
 import { erc20ABI, useContractRead } from 'wagmi';
 import { SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types';
 import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, mHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../config';
+import { createApproveTransactionData } from '../utils/blockchain';
 
 // Maximum possible value for uint256
 const MAX_UINT256 = BigInt(2 ** 256) - BigInt(1);
@@ -42,15 +43,6 @@ function SafeSection() {
     if (signer) {
       dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer }));
     }
-  };
-
-  const createApproveTransactionData = (spender: Address, value: bigint) => {
-    const approveData = encodeFunctionData({
-      abi: erc20ABI,
-      functionName: 'approve',
-      args: [spender, value],
-    });
-    return approveData;
   };
 
   if (!account) {
