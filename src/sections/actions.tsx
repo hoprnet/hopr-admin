@@ -73,7 +73,6 @@ const StyledBlueButton = styled(Button)`
   text-transform: uppercase;
 `;
 
-
 const StyledButtonGroup = styled.div`
   margin: 1rem;
   display: flex;
@@ -332,26 +331,29 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
   const getSourceOfTransaction = (transaction: SafeMultisigTransactionResponse) => {
     // if there are no signatures this is from a Delegate
     if (!transaction.confirmations?.length) {
-      return 'Delegate'
+      return 'Delegate';
     }
 
-    return truncateEthereumAddress(transaction.confirmations.at(0)?.owner ?? '')
-  }
+    return truncateEthereumAddress(transaction.confirmations.at(0)?.owner ?? '');
+  };
 
-  const getTokenInfo = (transaction: SafeMultisigTransactionResponse, signer: ethers.providers.JsonRpcSigner ): { value: string, name: string} | null => {
+  const getTokenInfo = (
+    transaction: SafeMultisigTransactionResponse,
+    signer: ethers.providers.JsonRpcSigner,
+  ): { value: string; name: string } | null => {
     if (!transaction.data) {
       // this is a native transfer
       return {
         name: 'xDAI',
         value: formatEther(BigInt(transaction.value)),
-      }
+      };
     }
     // assume this is a token interaction
     const decodedData = decodeFunctionData({
-      data: transaction.data as Address, abi: erc20ABI, 
-    })
-
-  }
+      data: transaction.data as Address,
+      abi: erc20ABI,
+    });
+  };
 
   return (
     <>
@@ -374,7 +376,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
         <TableCell align="left">{getSourceOfTransaction(transaction)}</TableCell>
         <TableCell align="left">{getType(transaction)}</TableCell>
         <TableCell align="left"> {`${getTokenInfo()}`}</TableCell>
-        <TableCell align='left'> {<ActionButtons transaction={transaction} />}</TableCell>
+        <TableCell align="left"> {<ActionButtons transaction={transaction} />}</TableCell>
       </TableRow>
       <TableRow>
         <StyledCollapsibleCell colSpan={6}>
@@ -488,10 +490,10 @@ const PendingTransactions = () => {
         <StyledTableHead>
           <TableRow>
             <TableCell>Date</TableCell>
-            <TableCell  align="left">Source</TableCell>
-            <TableCell  align="left">Capability</TableCell>
-            <TableCell  align="left">Value/Currency</TableCell>
-            <TableCell  align="left">Action</TableCell>
+            <TableCell align="left">Source</TableCell>
+            <TableCell align="left">Capability</TableCell>
+            <TableCell align="left">Value/Currency</TableCell>
+            <TableCell align="left">Action</TableCell>
             <TableCell />
           </TableRow>
         </StyledTableHead>
