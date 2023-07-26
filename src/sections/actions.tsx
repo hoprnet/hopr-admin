@@ -406,17 +406,17 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
 
   const getValueFromERC20Functions = (
     decodedData: ReturnType<typeof decodeFunctionData<typeof erc20ABI>>,
-  ): bigint | null => {
+  ): string | null => {
     if (decodedData.functionName === 'transfer') {
-      return decodedData.args[1];
+      return formatEther(decodedData.args[1]);
     }
 
     if (decodedData.functionName === 'approve') {
-      return decodedData.args[1];
+      return formatEther(decodedData.args[1]);
     }
 
     if (decodedData.functionName === 'transferFrom') {
-      return decodedData.args[2];
+      return formatEther(decodedData.args[2]);
     }
 
     return null;
@@ -442,7 +442,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
         </TableCell>
         <TableCell align="left">{source}</TableCell>
         <TableCell align="left">{request}</TableCell>
-        <TableCell align="left">{`${value} ${currency}`}</TableCell>
+        <TableCell align="left">{`${value && value.length > 18 ? value.slice(0,18).concat('...') : value} ${currency}`}</TableCell>
         <TableCell align="left">
           <ActionButtons transaction={transaction} />
         </TableCell>
@@ -479,6 +479,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
                     <ContentCopyIcon />
                   </IconButton>
                 </StyledTransactionHashWithIcon>
+                {!!transaction.dataDecoded && <p>data: {JSON.stringify(transaction.dataDecoded, null, 8)}</p>}
               </List>
               <Divider
                 orientation="vertical"
@@ -486,6 +487,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
                 flexItem
               />
               <List>
+                <p>status: {transactionStatus}</p>
                 <h4>Confirmations {`(${transaction.confirmations?.length}/${transaction.confirmationsRequired})`}</h4>
                 {transaction.confirmations?.map((confirmation) => (
                   <StyledTransactionHashWithIcon key={confirmation.owner}>
@@ -499,7 +501,6 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
                     </GnosisLink>
                   </StyledTransactionHashWithIcon>
                 ))}
-                <p>status: {transactionStatus}</p>
               </List>
             </StyledBox>
           </Collapse>
@@ -892,10 +893,6 @@ const PendingTransactionsTable = () => {
 };
 
 function SafeActions() {
-  const signer = useEthersSigner();
-  const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
-  const dispatch = useAppDispatch();
-
   return (
     <Section
       lightBlue
