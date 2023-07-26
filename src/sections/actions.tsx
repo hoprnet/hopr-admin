@@ -2,6 +2,7 @@
 import {
   Box,
   Collapse,
+  Container,
   Divider,
   IconButton,
   List,
@@ -130,6 +131,12 @@ const GnosisLink = styled.a`
     width: 16px;
   }
 `;
+
+
+const StyledJSON = styled.div`
+  max-width: 16rem;
+  overflow-wrap: break-word;
+`
 
 const GNOSIS_BASE_URL = 'https://gnosisscan.io';
 
@@ -481,7 +488,9 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
                     <ContentCopyIcon />
                   </IconButton>
                 </StyledTransactionHashWithIcon>
-                {!!transaction.dataDecoded && <p>data: {JSON.stringify(transaction.dataDecoded, null, 8)}</p>}
+                <StyledJSON>
+                  {!!transaction.dataDecoded && <p>data: {JSON.stringify(transaction.dataDecoded, null, 8)}</p>}
+                </StyledJSON>
               </List>
               <Divider
                 orientation="vertical"
