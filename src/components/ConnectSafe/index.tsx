@@ -66,7 +66,6 @@ export default function ConnectSafe() {
   const connected = useAppSelector((selector) => selector.web3.status);
   const safes = useAppSelector((selector) => selector.safe.safesByOwner);
   const safeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress);
-  const [selectedSafeAddress, set_selectedSafeAddress] = useState(safeAddress || '');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
 
@@ -106,7 +105,6 @@ export default function ConnectSafe() {
 
   const useSelectedSafe = (safeAddress: string) => {
     if (signer) {
-      set_selectedSafeAddress(safeAddress);
       dispatch(appActions.resetState());
       observePendingSafeTransactions({
         dispatch,
@@ -135,7 +133,6 @@ export default function ConnectSafe() {
           options: { safeAddress },
         }),
       );
-      // Additional logic to connect to the safe
     }
   };
 
@@ -170,9 +167,9 @@ export default function ConnectSafe() {
       </div>
       {connected.connected ? (
         <>
-          <Content>
-            {truncateEthereumAddress(selectedSafeAddress) || '...'} <DropdownArrow src="/assets/dropdown-arrow.svg" />
-          </Content>
+          <SafeButton>
+            {truncateEthereumAddress(safeAddress || '...') || '...'} <DropdownArrow src="/assets/dropdown-arrow.svg" />
+          </SafeButton>
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
