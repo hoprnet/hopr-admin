@@ -60,6 +60,20 @@ const DisabledButton = styled.div`
   color: #969696;
 `;
 
+const SafeAddress = styled.div`
+  font-family: 'Source Code Pro';
+  font-size: 18px;
+  width: 170px;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: row;
+  justify-content: space-evenly;
+  font-size: 14px;
+  gap: 10px;
+  color: #414141;
+`;
+
+
 export default function ConnectSafe() {
   const dispatch = useAppDispatch();
   const signer = useEthersSigner();
@@ -157,7 +171,7 @@ export default function ConnectSafe() {
       onClick={handleSafeButtonClick}
       ref={menuRef}
       disabled={!connected.connected}
-      className={`safe-connect-btn ${selectedSafeAddress ? 'safe-connected' : 'safe-not-connected'}`}
+      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'}`}
     >
       <div className="image-container">
         <img
@@ -167,9 +181,9 @@ export default function ConnectSafe() {
       </div>
       {connected.connected ? (
         <>
-          <SafeButton>
+          <SafeAddress>
             {truncateEthereumAddress(safeAddress || '...') || '...'} <DropdownArrow src="/assets/dropdown-arrow.svg" />
-          </SafeButton>
+          </SafeAddress>
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
