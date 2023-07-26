@@ -132,11 +132,10 @@ const GnosisLink = styled.a`
   }
 `;
 
-
 const StyledJSON = styled.div`
   max-width: 16rem;
   overflow-wrap: break-word;
-`
+`;
 
 const GNOSIS_BASE_URL = 'https://gnosisscan.io';
 
