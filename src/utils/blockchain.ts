@@ -1,5 +1,5 @@
-import { Address, encodeFunctionData } from "viem";
-import { erc20ABI } from "wagmi";
+import { Address, encodeFunctionData } from 'viem';
+import { erc20ABI } from 'wagmi';
 
 export const createApproveTransactionData = (spender: Address, value: bigint) => {
   const approveData = encodeFunctionData({
