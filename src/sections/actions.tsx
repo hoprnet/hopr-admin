@@ -23,7 +23,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 // STORE
 import { useAppDispatch, useAppSelector } from '../store';
-import { safeActionsAsync } from '../store/slices/safe';
+import { safeActions, safeActionsAsync } from '../store/slices/safe';
 
 // COMPONENTS
 import Button from '../future-hopr-lib-components/Button';
@@ -34,8 +34,6 @@ import Section from '../future-hopr-lib-components/Section';
 import styled from '@emotion/styled';
 import { erc20ABI, useAccount } from 'wagmi';
 import { default as dayjs } from 'dayjs';
-import { default as utc } from 'dayjs/plugin/utc';
-import { default as timezone } from 'dayjs/plugin/timezone';
 import SafeApiKit, {
   AllTransactionsListResponse,
   EthereumTxWithTransfersResponse,
@@ -47,10 +45,17 @@ import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-type
 
 // HOOKS
 import { useEffect, useState } from 'react';
-import { Address, decodeFunctionData, formatEther } from 'viem';
+import {
+  Abi,
+  Address,
+  DecodeFunctionResultReturnType,
+  decodeFunctionData,
+  formatEther
+} from 'viem'
 import { useEthersSigner } from '../hooks';
 import { truncateEthereumAddress } from '../utils/helpers';
 import { ethers } from 'ethers';
+import { calculateTimeInGMT, formatDateToUserTimezone } from '../utils/date';
 
 const StyledContainer = styled(Paper)`
   min-width: 800px;
@@ -276,7 +281,29 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
 
 const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTransactionResponse }) => {
   const { address } = useAccount();
+  const signer = useEthersSigner();
+  const dispatch = useAppDispatch();
   const [open, set_open] = useState(false);
+  const [source, set_source] = useState<string>();
+  const [request, set_request] = useState<string>();
+  // value can represent token value or json params if there is no
+  const [value, set_value] = useState<string>();
+  const [currency, set_currency] = useState<string>();
+  const [dateInUserTimezone, set_dateInUserTimezone] = useState<string>()
+  const [dateInGMT, set_dateInGMT] = useState<string>()
+  const [transactionStatus, set_transactionStatus] = useState<string>()
+  
+  useEffect(() => {
+    if (signer && transaction) {
+      set_source(getSourceOfTransaction(transaction))
+      set_request(getRequest(transaction))
+      getValueFromTransaction(transaction, signer).then((value) => set_value(value?.toString()))
+      getCurrencyFromTransaction(transaction, signer).then((currency) => set_currency(currency))
+      set_dateInGMT(calculateTimeInGMT(transaction.submissionDate))
+      set_dateInUserTimezone(formatDateToUserTimezone(transaction.submissionDate))
+      set_transactionStatus(getTransactionStatus(transaction))
+    }
+  }, [signer, transaction])
 
   const getTransactionStatus = (transaction: SafeMultisigTransactionResponse) => {
     if (transaction.confirmations?.length === transaction.confirmationsRequired) {
@@ -290,7 +317,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
     return 'Awaiting confirmation';
   };
 
-  const getType = (transaction: SafeMultisigTransactionResponse) => {
+  const getRequest = (transaction: SafeMultisigTransactionResponse) => {
     if (transaction.dataDecoded) {
       const decodedData = getDecodedData(transaction);
       return typeof decodedData === 'string' ? decodedData : decodedData?.method;
@@ -313,46 +340,84 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
     }
   };
 
-  const formatDateToUserTimezone = (date: string) => {
-    dayjs.extend(utc);
-    dayjs.extend(timezone);
-    // guess user timezone;
-    const userTimezone = dayjs.tz.guess();
-    const formattedDate = dayjs(date).tz(userTimezone).format('YYYY-MM-DD');
-    return formattedDate;
-  };
-
-  const calculateTimeInGMT = (date: string) => {
-    dayjs.extend(utc);
-    const timeInGMT = `${dayjs(date).utc().format('YYYY-MM-DD HH:MM')} GMT ${dayjs(date).utc().format('Z')}`;
-    return timeInGMT;
-  };
-
   const getSourceOfTransaction = (transaction: SafeMultisigTransactionResponse) => {
-    // if there are no signatures this is from a Delegate
+    // if there are no signatures this is from a delegate
     if (!transaction.confirmations?.length) {
-      return 'Delegate';
+      return '-';
     }
 
     return truncateEthereumAddress(transaction.confirmations.at(0)?.owner ?? '');
   };
 
-  const getTokenInfo = (
+  const getCurrencyFromTransaction = async (transaction: SafeMultisigTransactionResponse, signer: ethers.providers.JsonRpcSigner,
+  ) => {
+    const isNativeTransaction = !transaction.data;
+    if (isNativeTransaction) {
+      return 'xDai';
+    }
+
+    const token = await dispatch(
+      safeActionsAsync.getToken({
+        signer,
+        tokenAddress: transaction.to,
+      }),
+    ).unwrap();
+
+    if (!token.name && !token.symbol) {
+      // this is not a token contract
+      return JSON.stringify(transaction.dataDecoded)
+    }
+
+    return token.symbol
+  }
+
+  const getValueFromTransaction = async (
     transaction: SafeMultisigTransactionResponse,
     signer: ethers.providers.JsonRpcSigner,
-  ): { value: string; name: string } | null => {
-    if (!transaction.data) {
-      // this is a native transfer
-      return {
-        name: 'xDAI',
-        value: formatEther(BigInt(transaction.value)),
-      };
+  ) => {
+    const isNativeTransaction = !transaction.data;
+    if (isNativeTransaction) {
+      return formatEther(BigInt(transaction.value));
     }
-    // assume this is a token interaction
+
+    const token = await dispatch(
+      safeActionsAsync.getToken({
+        signer,
+        tokenAddress: transaction.to,
+      }),
+    ).unwrap();
+
+    if (!token.name && !token.symbol) {
+      // this is not a token contract
+      return JSON.stringify(transaction.dataDecoded)
+    }
+
     const decodedData = decodeFunctionData({
-      data: transaction.data as Address,
       abi: erc20ABI,
-    });
+      data: transaction.data as Address,
+    })
+
+    const value = getValueFromERC20Functions(decodedData)
+
+    return value
+  };
+
+  const getValueFromERC20Functions = (
+    decodedData: ReturnType<typeof decodeFunctionData<typeof erc20ABI>>,
+  ): bigint | null => {
+    if (decodedData.functionName === 'transfer') {
+      return decodedData.args[1];
+    }
+
+    if (decodedData.functionName === 'approve') {
+      return decodedData.args[1];
+    }
+
+    if (decodedData.functionName === 'transferFrom') {
+      return decodedData.args[2];
+    }
+
+    return null;
   };
 
   return (
@@ -369,14 +434,16 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
-          <Tooltip title={calculateTimeInGMT(transaction.submissionDate)}>
-            <span>{formatDateToUserTimezone(transaction.submissionDate)}</span>
+          <Tooltip title={dateInGMT}>
+            <span>{dateInUserTimezone}</span>
           </Tooltip>
         </TableCell>
-        <TableCell align="left">{getSourceOfTransaction(transaction)}</TableCell>
-        <TableCell align="left">{getType(transaction)}</TableCell>
-        <TableCell align="left"> {`${getTokenInfo()}`}</TableCell>
-        <TableCell align="left"> {<ActionButtons transaction={transaction} />}</TableCell>
+        <TableCell align="left">{source}</TableCell>
+        <TableCell align="left">{request}</TableCell>
+        <TableCell align="left">{`${value} ${currency}`}</TableCell>
+        <TableCell align="left">
+          <ActionButtons transaction={transaction} />
+        </TableCell>
       </TableRow>
       <TableRow>
         <StyledCollapsibleCell colSpan={6}>
@@ -388,7 +455,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
             <StyledBox>
               <List>
                 <p>Nonce: {transaction.nonce}</p>
-                <p>Created: {formatDateToUserTimezone(transaction.submissionDate)}</p>
+                <p>Created: {dateInUserTimezone}</p>
                 <StyledTransactionHashWithIcon>
                   <span>To: {truncateEthereumAddress(transaction.to)}</span>
                   <GnosisLink
@@ -430,86 +497,13 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
                     </GnosisLink>
                   </StyledTransactionHashWithIcon>
                 ))}
-                {getTransactionStatus(transaction)}
+                <p>status: {transactionStatus}</p>
               </List>
             </StyledBox>
           </Collapse>
         </StyledCollapsibleCell>
       </TableRow>
     </>
-  );
-};
-
-const PendingTransactions = () => {
-  const dispatch = useAppDispatch();
-  const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions);
-  const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
-  const signer = useEthersSigner();
-
-  useEffect(() => {
-    if (signer && selectedSafeAddress) {
-      dispatch(
-        safeActionsAsync.getPendingSafeTransactionsThunk({
-          safeAddress: selectedSafeAddress,
-          signer,
-        }),
-      );
-    }
-
-    const updateSafeNonceInterval = setInterval(() => {
-      if (!signer || !selectedSafeAddress) return;
-      // update safe nonce
-      dispatch(
-        safeActionsAsync.getSafeInfoThunk({
-          signer: signer,
-          safeAddress: selectedSafeAddress,
-        }),
-      );
-    }, 10000);
-
-    return () => {
-      clearInterval(updateSafeNonceInterval);
-    };
-  }, [selectedSafeAddress]);
-
-  const sortByDate = (pendingTransactions: SafeMultisigTransactionListResponse) => {
-    if (!pendingTransactions.count) return null;
-    const sortedCopy: SafeMultisigTransactionListResponse = JSON.parse(JSON.stringify(pendingTransactions));
-
-    // sort from oldest date to newest
-    return sortedCopy.results.sort(
-      (prevDay, nextDay) => dayjs(prevDay.submissionDate).valueOf() - dayjs(nextDay.submissionDate).valueOf(),
-    );
-  };
-
-  return !selectedSafeAddress ? (
-    <Title>Connect to safe</Title>
-  ) : (
-    <TableContainer component={StyledPaper}>
-      <Table aria-label="safe pending transactions">
-        <StyledTableHead>
-          <TableRow>
-            <TableCell>Date</TableCell>
-            <TableCell align="left">Source</TableCell>
-            <TableCell align="left">Capability</TableCell>
-            <TableCell align="left">Value/Currency</TableCell>
-            <TableCell align="left">Action</TableCell>
-            <TableCell />
-          </TableRow>
-        </StyledTableHead>
-        <TableBody>
-          {pendingTransactions &&
-            !!pendingTransactions?.count &&
-            sortByDate(pendingTransactions)?.map((transaction, key) => (
-              <PendingTransactionRow
-                transaction={transaction}
-                key={key}
-              />
-            ))}
-          {pendingTransactions && !pendingTransactions?.count && <span>No entries</span>}
-        </TableBody>
-      </Table>
-    </TableContainer>
   );
 };
 
@@ -822,7 +816,84 @@ function TransactionHistoryTable() {
   );
 }
 
+const PendingTransactionsTable = () => {
+  const dispatch = useAppDispatch();
+  const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions);
+  const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
+  const signer = useEthersSigner();
+
+  useEffect(() => {
+    if (signer && selectedSafeAddress) {
+      dispatch(
+        safeActionsAsync.getPendingSafeTransactionsThunk({
+          safeAddress: selectedSafeAddress,
+          signer,
+        }),
+      );
+    }
+
+    const updateSafeNonceInterval = setInterval(() => {
+      if (!signer || !selectedSafeAddress) return;
+      // update safe nonce
+      dispatch(
+        safeActionsAsync.getSafeInfoThunk({
+          signer: signer,
+          safeAddress: selectedSafeAddress,
+        }),
+      );
+    }, 10000);
+
+    return () => {
+      clearInterval(updateSafeNonceInterval);
+    };
+  }, [selectedSafeAddress]);
+
+  const sortByDate = (pendingTransactions: SafeMultisigTransactionListResponse) => {
+    if (!pendingTransactions.count) return null;
+    const sortedCopy: SafeMultisigTransactionListResponse = JSON.parse(JSON.stringify(pendingTransactions));
+
+    // sort from oldest date to newest
+    return sortedCopy.results.sort(
+      (prevDay, nextDay) => dayjs(prevDay.submissionDate).valueOf() - dayjs(nextDay.submissionDate).valueOf(),
+    );
+  };
+
+  return !selectedSafeAddress ? (
+    <Title>Connect to safe</Title>
+  ) : (
+    <TableContainer component={StyledPaper}>
+      <Table aria-label="safe pending transactions">
+        <StyledTableHead>
+          <TableRow>
+            <TableCell>Date</TableCell>
+            <TableCell align="left">Source</TableCell>
+            <TableCell align="left">Capability</TableCell>
+            <TableCell align="left">Value/Currency</TableCell>
+            <TableCell align="left">Action</TableCell>
+            <TableCell />
+          </TableRow>
+        </StyledTableHead>
+        <TableBody>
+          {pendingTransactions &&
+            !!pendingTransactions?.count &&
+            sortByDate(pendingTransactions)?.map((transaction, key) => (
+              <PendingTransactionRow
+                transaction={transaction}
+                key={key}
+              />
+            ))}
+          {pendingTransactions && !pendingTransactions?.count && <span>No entries</span>}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+};
+
 function SafeActions() {
+  const signer = useEthersSigner();
+  const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
+  const dispatch = useAppDispatch();
+
   return (
     <Section
       lightBlue
@@ -834,7 +905,7 @@ function SafeActions() {
           <p>1. Transaction have to be signed/rejected according to their tabular order.</p>
           <p>2. After signing all parties can click on EXECUTE. One signature is sufficient.</p>
         </div>
-        <PendingTransactions />
+        <PendingTransactionsTable />
         <Title>history</Title>
         <TransactionHistoryTable />
       </StyledContainer>

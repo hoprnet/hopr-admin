@@ -467,6 +467,32 @@ const getSafeDelegatesThunk = createAsyncThunk(
   },
 );
 
+const getToken = createAsyncThunk(
+  'safe/getToken',
+  async (payload: { tokenAddress: string; signer: ethers.providers.JsonRpcSigner }, { rejectWithValue }) => {
+    try {
+      const safeApi = await createSafeApiService(payload.signer);
+      const token = await safeApi.getToken(payload.tokenAddress);
+      return token;
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  },
+);
+
+const getTokenList = createAsyncThunk(
+  'safe/getTokenList',
+  async (payload: { signer: ethers.providers.JsonRpcSigner }, { rejectWithValue }) => {
+    try {
+      const safeApi = await createSafeApiService(payload.signer);
+      const tokenList = await safeApi.getTokenList();
+      return tokenList;
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  },
+);
+
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   builder.addCase(createSafeThunk.fulfilled, (state, action) => {
     if (action.payload) {
@@ -504,6 +530,11 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
       state.safeDelegates = action.payload;
     }
   });
+  builder.addCase(getTokenList.fulfilled, (state, action) => {
+    if (action.payload) {
+      state.tokenList = action.payload;
+    }
+  });
 };
 
 export const actionsAsync = {
@@ -522,4 +553,6 @@ export const actionsAsync = {
   addSafeDelegateThunk,
   removeSafeDelegateThunk,
   getSafeDelegatesThunk,
+  getToken,
+  getTokenList,
 };
