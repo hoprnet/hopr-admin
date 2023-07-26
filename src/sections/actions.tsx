@@ -442,7 +442,9 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
         </TableCell>
         <TableCell align="left">{source}</TableCell>
         <TableCell align="left">{request}</TableCell>
-        <TableCell align="left">{`${value && value.length > 18 ? value.slice(0,18).concat('...') : value} ${currency}`}</TableCell>
+        <TableCell align="left">{`${
+          value && value.length > 18 ? value.slice(0, 18).concat('...') : value
+        } ${currency}`}</TableCell>
         <TableCell align="left">
           <ActionButtons transaction={transaction} />
         </TableCell>
