@@ -4,11 +4,18 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import Drawer from '@mui/material/Drawer';
 import styled from '@emotion/styled';
 import Toolbar from '@mui/material/Toolbar';
-import { ethers } from 'ethers';
+import { utils } from 'ethers';
 
 const drawerWidth = 160;
 
 interface Props {}
+
+const Contaier = styled(Box)`
+  display: none;  
+  @media screen and (min-width: 600px) {
+    display: flex;
+  }
+`;
 
 const AppBarFiller = styled(Toolbar)`
   min-height: 59px !important;
@@ -46,10 +53,10 @@ export default function InfoBar(props: Props) {
       <Data>{info?.connectivityStatus}</Data>
 
       <Title>xDai balance</Title>
-      <Data>{balances?.native && ethers.utils.formatEther(balances.native)}</Data>
+      <Data>{balances?.native && utils.formatEther(balances.native)}</Data>
 
       <Title>mHOPR balance</Title>
-      <Data>{balances?.hopr && ethers.utils.formatEther(balances.hopr)}</Data>
+      <Data>{balances?.hopr && utils.formatEther(balances.hopr)}</Data>
 
       <Title>Peers seen in the network</Title>
       <Data>{peers?.announced?.length || '-'}</Data>
@@ -63,7 +70,7 @@ export default function InfoBar(props: Props) {
   );
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Contaier sx={{ display: 'flex' }}>
       <Box
         component="nav"
         sx={{
@@ -81,6 +88,6 @@ export default function InfoBar(props: Props) {
           {drawer}
         </SDrawer>
       </Box>
-    </Box>
+    </Contaier>
   );
 }

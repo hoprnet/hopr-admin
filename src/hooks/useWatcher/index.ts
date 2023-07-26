@@ -16,6 +16,7 @@ export const useWatcher = ({ intervalDuration = 15000 }: { intervalDuration?: nu
     apiToken,
   } = useAppSelector((store) => store.auth.loginData);
   const messages = useAppSelector((store) => store.node.messages);
+  const connected = useAppSelector((store) => store.auth.status.connected);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress);
   const signer = useEthersSigner();
   // redux previous states, this can be updated from anywhere in the app
@@ -27,6 +28,8 @@ export const useWatcher = ({ intervalDuration = 15000 }: { intervalDuration?: nu
 
   // node watchers
   useEffect(() => {
+    if(!connected) return;
+    
     const watchChannelsInterval = setInterval(() => {
       observeChannels({
         apiEndpoint,
@@ -72,7 +75,7 @@ export const useWatcher = ({ intervalDuration = 15000 }: { intervalDuration?: nu
       clearInterval(watchNodeInfoInterval);
       clearInterval(watchNodeBalancesInterval);
     };
-  }, [apiEndpoint, apiToken, prevNodeBalances, prevNodeInfo, prevChannels]);
+  }, [connected, apiEndpoint, apiToken, prevNodeBalances, prevNodeInfo, prevChannels]);
 
   // safe watchers
   useEffect(() => {
