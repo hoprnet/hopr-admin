@@ -13,11 +13,10 @@ import { appActions } from '../store/slices/app';
 import { Address, encodeFunctionData, formatEther } from 'viem';
 import { erc20ABI, useContractRead } from 'wagmi';
 import { SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../config';
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, mHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../config';
 
 // Maximum possible value for uint256
 const MAX_UINT256 = BigInt(2 ** 256) - BigInt(1);
-
 
 function SafeSection() {
   const dispatch = useAppDispatch();
@@ -29,7 +28,7 @@ function SafeSection() {
   const [owners, set_owners] = useState('');
 
   const { data: allowanceData } = useContractRead({
-    address: HOPR_TOKEN_SMART_CONTRACT_ADDRESS,
+    address: mHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     abi: erc20ABI,
     functionName: 'allowance',
     args: [safe.selectedSafeAddress as Address, HOPR_CHANNELS_SMART_CONTRACT_ADDRESS],
@@ -52,25 +51,6 @@ function SafeSection() {
       args: [spender, value],
     });
     return approveData;
-  };
-
-  const proposeApproveTransactionToSafe = async () => {
-    if (signer && safe.selectedSafeAddress) {
-      const data = createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, MAX_UINT256);
-      // creates a safe transaction with data to interact with a smart contract
-      const safeTransactionData: SafeTransactionDataPartial = {
-        to: HOPR_TOKEN_SMART_CONTRACT_ADDRESS,
-        data,
-        value: '0',
-      };
-      await dispatch(
-        safeActionsAsync.createSafeTransactionThunk({
-          signer,
-          safeAddress: safe.selectedSafeAddress,
-          safeTransactionData,
-        }),
-      ).unwrap();
-    }
   };
 
   if (!account) {
@@ -248,7 +228,18 @@ function SafeSection() {
       <span>allowance: {formatEther(BigInt(allowanceData?.toString() ?? '0'))}</span>
       <button
         disabled={!safe.selectedSafeAddress || !signer}
-        onClick={proposeApproveTransactionToSafe}
+        onClick={() => {
+          if (signer && safe.selectedSafeAddress) {
+            dispatch(
+              safeActionsAsync.createSafeContractTransaction({
+                data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, MAX_UINT256),
+                signer,
+                safeAddress: safe.selectedSafeAddress,
+                smartContractAddress: mHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
+              }),
+            );
+          }
+        }}
       >
         approve
       </button>

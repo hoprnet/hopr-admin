@@ -248,6 +248,49 @@ const createSafeTransactionThunk = createAsyncThunk(
   },
 );
 
+const createSafeContractTransaction = 
+createAsyncThunk(
+  'safe/createContractTransaction',
+  async (
+    payload: {
+      signer: ethers.providers.JsonRpcSigner;
+      safeAddress: string;
+      smartContractAddress: string; 
+      data: string
+    },
+    {
+      rejectWithValue,
+      dispatch,
+    },
+  ) => {
+    try {
+      const {
+        smartContractAddress,
+        data,
+        signer,
+        safeAddress,
+      } = payload 
+
+      const safeTransactionData: SafeTransactionDataPartial = {
+        to: smartContractAddress,
+        data,
+        value: '0',
+      };
+      const safeTxHash = await dispatch(
+        createSafeTransactionThunk({
+          signer,
+          safeAddress: safeAddress,
+          safeTransactionData,
+        }),
+      ).unwrap();
+
+      return safeTxHash
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  },
+);
+
 const createSafeRejectionTransactionThunk = createAsyncThunk(
   'safe/rejectTransactionProposal',
   async (
@@ -522,4 +565,5 @@ export const actionsAsync = {
   addSafeDelegateThunk,
   removeSafeDelegateThunk,
   getSafeDelegatesThunk,
+  createSafeContractTransaction,
 };
