@@ -23,17 +23,22 @@ const AppBarContainer = styled(Button)`
   width: 250px;
   gap: 10px;
   border-radius: 0;
-  & .image-container {
+  .image-container {
     height: 50px;
     width: 50px;
-    & img {
+    img {
       height: 100%;
       width: 100%;
     }
   }
+  &.safe-not-connected {
+    img {
+      filter: opacity(0.5);
+    }
+  }
 `;
 
-const SafeButton = styled.div`
+const Content = styled.div`
   font-family: 'Source Code Pro';
   font-size: 18px;
   width: 170px;
@@ -54,6 +59,20 @@ const DisabledButton = styled.div`
   width: 170px;
   color: #969696;
 `;
+
+const SafeAddress = styled.div`
+  font-family: 'Source Code Pro';
+  font-size: 18px;
+  width: 170px;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: row;
+  justify-content: space-evenly;
+  font-size: 14px;
+  gap: 10px;
+  color: #414141;
+`;
+
 
 export default function ConnectSafe() {
   const dispatch = useAppDispatch();
@@ -152,6 +171,7 @@ export default function ConnectSafe() {
       onClick={handleSafeButtonClick}
       ref={menuRef}
       disabled={!connected.connected}
+      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'}`}
     >
       <div className="image-container">
         <img
@@ -161,9 +181,9 @@ export default function ConnectSafe() {
       </div>
       {connected.connected ? (
         <>
-          <SafeButton>
+          <SafeAddress>
             {truncateEthereumAddress(safeAddress || '...') || '...'} <DropdownArrow src="/assets/dropdown-arrow.svg" />
-          </SafeButton>
+          </SafeAddress>
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
@@ -176,6 +196,10 @@ export default function ConnectSafe() {
               vertical: 'top',
               horizontal: 'left',
             }}
+            MenuListProps={{
+              'aria-labelledby': 'safe-menu-button',
+              className: 'safe-menu-list',
+            }}
           >
             {safes.map((safeAddress) => (
               <MenuItem
@@ -183,7 +207,11 @@ export default function ConnectSafe() {
                 value={safeAddress}
                 onClick={() => useSelectedSafe(safeAddress)}
               >
-                {truncateEthereumAddress(safeAddress)}
+                {safeAddress &&
+                  `${safeAddress.substring(0, 6)}...${safeAddress.substring(
+                    safeAddress.length - 8,
+                    safeAddress.length,
+                  )}`}
               </MenuItem>
             ))}
           </Menu>

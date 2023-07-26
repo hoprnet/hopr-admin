@@ -16,6 +16,9 @@ const nodeSlice = createSlice({
       state.status.initiating = false;
       state.status.initiated = true;
     },
+    setInfo(state, action) {
+      state.info = action.payload;
+    },
     messageReceived(state, action: PayloadAction<(typeof initialState.messages)[0]>) {
       state.messages.push(action.payload);
       if (state.messages.length > 100)
