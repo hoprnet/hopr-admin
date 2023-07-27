@@ -56,7 +56,7 @@ import {
 import { useEthersSigner } from '../hooks';
 import { truncateEthereumAddress } from '../utils/helpers';
 import { ethers } from 'ethers';
-import { calculateTimeInGMT, formatDateToUserTimezone } from '../utils/date';
+import { calculateTimeInGMT, formatDateToUserTimezone, formatTimeToUserTimezone } from '../utils/date';
 
 const StyledContainer = styled(Paper)`
   min-width: 800px;
@@ -292,7 +292,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
   const [open, set_open] = useState(false);
   const [source, set_source] = useState<string>();
   const [request, set_request] = useState<string>();
-  // value can represent token value or json params if there is no
+  // value can represent token value or json params of data
   const [value, set_value] = useState<string>();
   const [currency, set_currency] = useState<string>();
   const [dateInUserTimezone, set_dateInUserTimezone] = useState<string>();
@@ -522,21 +522,22 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
 
 function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersResponse }) {
   const { transaction } = props;
+  const dispatch = useAppDispatch();
   const [open, set_open] = useState(false);
+  const [date, set_date] = useState<string>();
+  const [time, set_time] = useState<string>();
+  // value can represent token value or json params of data
+  const [value, set_value] = useState<string>();
+  const [currency, set_currency] = useState<string>();
+
+  useEffect(() => {
+    set_date(formatDateToUserTimezone(transaction.executionDate))
+    set_time(formatTimeToUserTimezone(transaction.executionDate))
+  }, [])
 
   return (
     <>
       <TableRow>
-        <TableCell
-          component="th"
-          scope="row"
-        ></TableCell>
-        <TableCell align="right">Received</TableCell>
-        <TableCell align="right">
-          {transaction.transfers[0] ? formatEther(BigInt(transaction.transfers[0].value)) : ''}
-        </TableCell>
-        <TableCell align="right">{transaction.executionDate}</TableCell>
-        <TableCell align="right">Success</TableCell>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -545,7 +546,15 @@ function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersRes
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
+          {date}
         </TableCell>
+        <TableCell align="right">{time}</TableCell>
+        <TableCell align="right">Received</TableCell>
+        <TableCell align="right">
+          {transaction.transfers[0] ? formatEther(BigInt(transaction.transfers[0].value)) : ''}
+        </TableCell>
+        <TableCell align="right">{transaction.executionDate}</TableCell>
+        <TableCell align="right">Success</TableCell>
       </TableRow>
       <TableRow>
         <StyledCollapsibleCell colSpan={6}>
@@ -811,7 +820,7 @@ function TransactionHistoryTable() {
             <TableCell>Date</TableCell>
             <TableCell align="right">Time</TableCell>
             <TableCell align="right">Source</TableCell>
-            <TableCell align="right">Capability</TableCell>
+            <TableCell align="right">Request</TableCell>
             <TableCell align="right">Value/Currency</TableCell>
             <TableCell />
           </TableRow>
