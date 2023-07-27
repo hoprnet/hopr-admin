@@ -36,7 +36,11 @@ type InitialState = {
     native: string | null;
   };
   aliases: GetAliasesResponseType | null;
-  balances: AccountResponseType | null;
+  balances: {
+    hopr: string | null;
+    native: string | null;
+    reloading: boolean;
+  };
   channels: GetChannelsResponseType | null;
   messages: Message[];
   messagesSent: Message[];
@@ -48,7 +52,10 @@ type InitialState = {
   signedMessages: { createdAt: number; body: string }[];
   peers: GetPeersResponseType | null;
   entryNodes: GetEntryNodesResponseType | null;
-  peerInfo: GetPeerInfoResponseType | null;
+  peerInfo: {
+    announced: string[];
+    observed: string[];
+  };
   settings: GetSettingsResponseType | null;
   statistics: GetStatisticsResponseType | null;
   tickets: GetTicketsResponseType | null;
@@ -72,7 +79,11 @@ export const initialState: InitialState = {
     native: null,
   },
   aliases: null,
-  balances: null,
+  balances: {
+    native: null,
+    hopr: null,
+    reloading: false,
+  },
   channels: null,
   messages: [],
   messagesSent: [],

@@ -48,7 +48,7 @@ export const Table = styled.table`
   th:first-of-type {
     width: ${(props) => (props.width1stColumn ? props.width1stColumn : '160')}px;
   }
-  &.table-has-title{
+  &.table-has-title {
     tr:first-of-type {
       border-top: 0.2rem solid darkgray;
     }
@@ -59,6 +59,13 @@ export const Table = styled.table`
     tr {
       display: flex;
       flex-direction: column;
+    }
+    th:first-of-type {
+      padding-top: 12px;
+      padding-bottom: 0px;
+    }
+    td {
+      padding-top: 2px;
     }
   }
 `;
@@ -75,16 +82,10 @@ export function TableExtended(props) {
   `;
 
   return (
-    <Content
-      style={props.style}
-    >
-      {props.title &&
-        <div className='title'>
-          {props.title}
-        </div>
-      }
+    <Content style={props.style}>
+      {props.title && <div className="title">{props.title}</div>}
       <Table
-        className='table-has-title'
+        className="table-has-title"
         width1stColumn={props.width1stColumn}
       >
         {props.children}
@@ -115,4 +116,4 @@ export default function TableDataColumed(props) {
       <Table className="mobile-only">{props.children.length > 0 && props.children?.map((elem) => elem)}</Table>
     </Tables>
   );
-};
+}

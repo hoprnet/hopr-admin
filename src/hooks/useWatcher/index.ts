@@ -28,8 +28,8 @@ export const useWatcher = ({ intervalDuration = 15000 }: { intervalDuration?: nu
 
   // node watchers
   useEffect(() => {
-    if(!connected) return;
-    
+    if (!connected) return;
+
     const watchChannelsInterval = setInterval(() => {
       observeChannels({
         apiEndpoint,

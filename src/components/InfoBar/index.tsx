@@ -11,7 +11,7 @@ const drawerWidth = 160;
 interface Props {}
 
 const Contaier = styled(Box)`
-  display: none;  
+  display: none;
   @media screen and (min-width: 600px) {
     display: flex;
   }
