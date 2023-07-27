@@ -45,7 +45,7 @@ import { erc20ABI, useAccount } from 'wagmi';
 // HOOKS
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
-import { Address, decodeFunctionData, formatEther } from 'viem';
+import { Address, decodeFunctionData, formatEther, formatUnits } from 'viem';
 import { useEthersSigner } from '../hooks';
 import { calculateTimeInGMT, formatDateToUserTimezone, formatTimeToUserTimezone } from '../utils/date';
 import { truncateEthereumAddress } from '../utils/helpers';
@@ -127,6 +127,12 @@ const GnosisLink = styled.a`
 const StyledJSON = styled.div`
   max-width: 16rem;
   overflow-wrap: break-word;
+`;
+
+const StyledTableRow = styled(TableRow)`
+  &.disabled {
+    opacity: 60%;
+  }
 `;
 
 const GNOSIS_BASE_URL = 'https://gnosisscan.io';
@@ -279,6 +285,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
 
 const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTransactionResponse }) => {
   const { address } = useAccount();
+  const safeNonce = useAppSelector((state) => state.safe.safeInfo?.nonce);
   const signer = useEthersSigner();
   const dispatch = useAppDispatch();
   const [open, set_open] = useState(false);
@@ -316,25 +323,17 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
   };
 
   const getRequest = (transaction: SafeMultisigTransactionResponse) => {
-    if (transaction.dataDecoded) {
-      const decodedData = getDecodedData(transaction);
-      return typeof decodedData === 'string' ? decodedData : decodedData?.method;
+    if (transaction.data) {
+      const decodedData = decodeFunctionData({
+        data: transaction.data as Address,
+        abi: erc20ABI,
+      });
+      return typeof decodedData === 'string' ? decodedData : decodedData.functionName;
     } else if (BigInt(transaction.value)) {
       return 'Sent';
     } else {
-      return 'Rejection';
-    }
-  };
-
-  const getDecodedData = (transaction: SafeMultisigTransactionResponse) => {
-    if (typeof transaction.dataDecoded === 'string') {
-      return transaction.dataDecoded;
-    } else if (typeof transaction.dataDecoded === 'object') {
-      const transactionData = transaction.dataDecoded as unknown as {
-        method: string;
-        parameters: { name: string; type: string; value: string }[];
-      };
-      return transactionData;
+      // This is not a multisig transaction, no way to tell this was a rejection
+      return '-';
     }
   };
 
@@ -422,7 +421,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
 
   return (
     <>
-      <TableRow>
+      <StyledTableRow className={(safeNonce ?? 0) < transaction.nonce ? 'disabled' : ''}>
         <TableCell
           component="th"
           scope="row"
@@ -446,8 +445,8 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
         <TableCell align="left">
           <ActionButtons transaction={transaction} />
         </TableCell>
-      </TableRow>
-      <TableRow>
+      </StyledTableRow>
+      <StyledTableRow className={(safeNonce ?? 0) < transaction.nonce ? 'disabled' : ''}>
         <StyledCollapsibleCell colSpan={6}>
           <Collapse
             in={open}
@@ -507,7 +506,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
             </StyledBox>
           </Collapse>
         </StyledCollapsibleCell>
-      </TableRow>
+      </StyledTableRow>
     </>
   );
 };
@@ -524,17 +523,18 @@ function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersRes
   useEffect(() => {
     set_date(formatDateToUserTimezone(transaction.executionDate));
     set_time(formatTimeToUserTimezone(transaction.executionDate));
-    set_value(getValueFromEthereumTransaction(transaction));
-    set_currency(getCurrencyFromEthereumTransaction(transaction));
+    set_value(getValueFromHistoryTransaction(transaction));
+    set_currency(getCurrencyFromHistoryTransaction(transaction));
     set_source(getSourceFromEthereumTransaction(transaction));
   }, []);
 
-  const getValueFromEthereumTransaction = (transaction: EthereumTxWithTransfersResponse) => {
-    const value = transaction.transfers.at(0)?.value;
+  const getValueFromHistoryTransaction = (transaction: EthereumTxWithTransfersResponse) => {
+    const units = transaction.transfers.at(0)?.tokenInfo.decimals ?? 18;
+    const value = formatUnits(BigInt(transaction.transfers.at(0)?.value ?? 0), units);
     return value;
   };
 
-  const getCurrencyFromEthereumTransaction = (transaction: EthereumTxWithTransfersResponse) => {
+  const getCurrencyFromHistoryTransaction = (transaction: EthereumTxWithTransfersResponse) => {
     const currency = transaction.transfers.at(0)?.tokenInfo.symbol;
     return currency;
   };
@@ -546,7 +546,7 @@ function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersRes
 
   return (
     <>
-      <TableRow>
+      <StyledTableRow>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -560,9 +560,11 @@ function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersRes
         <TableCell align="right">{time}</TableCell>
         <TableCell align="right">{truncateEthereumAddress(source ?? '')}</TableCell>
         <TableCell align="right">Received</TableCell>
-        <TableCell align="right">{`${formatEther(BigInt(value ?? ''))} ${currency}`}</TableCell>
-      </TableRow>
-      <TableRow>
+        <TableCell align="right">{`${
+          value && value.length > 18 ? value.slice(0, 18).concat('...') : value
+        } ${currency}`}</TableCell>
+      </StyledTableRow>
+      <StyledTableRow>
         <StyledCollapsibleCell colSpan={6}>
           <Collapse
             in={open}
@@ -570,35 +572,43 @@ function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersRes
             unmountOnExit
           >
             <StyledBox>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>From</TableCell>
-                    <TableCell>To</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Hash</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {transaction.transfers.map((transfer) => (
-                    <TableRow key={transfer.transactionHash}>
-                      <TableCell
-                        component="th"
-                        scope="row"
-                      >
-                        {truncateEthereumAddress(source ?? '')}
-                      </TableCell>
-                      <TableCell>{truncateEthereumAddress(transfer.to)}</TableCell>
-                      <TableCell align="right">{`${formatEther(BigInt(value ?? ''))} ${currency}`}</TableCell>
-                      <TableCell align="right">{truncateEthereumAddress(transfer.transactionHash)}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <List>
+                <p>Executed: {transaction.executionDate}</p>
+                <StyledTransactionHashWithIcon>
+                  <span>From: {truncateEthereumAddress(transaction.from)}</span>
+                  <GnosisLink
+                    href={`${GNOSIS_BASE_URL}/address/${transaction.from}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <OpenInNewIcon />
+                  </GnosisLink>
+                </StyledTransactionHashWithIcon>
+                <StyledTransactionHashWithIcon>
+                  <span>To: {truncateEthereumAddress(transaction.to)}</span>
+                  <GnosisLink
+                    href={`${GNOSIS_BASE_URL}/address/${transaction.to}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <OpenInNewIcon />
+                  </GnosisLink>
+                </StyledTransactionHashWithIcon>
+                <StyledTransactionHashWithIcon>
+                  <span>Transaction hash: {truncateEthereumAddress(transaction.txHash)}</span>
+                  <GnosisLink
+                    href={`${GNOSIS_BASE_URL}/tx/${transaction.txHash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <OpenInNewIcon />
+                  </GnosisLink>
+                </StyledTransactionHashWithIcon>
+              </List>
             </StyledBox>
           </Collapse>
         </StyledCollapsibleCell>
-      </TableRow>
+      </StyledTableRow>
     </>
   );
 }
@@ -606,11 +616,48 @@ function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersRes
 function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWithTransfersResponse }) {
   const { transaction } = props;
   const [open, set_open] = useState(false);
+  const [date, set_date] = useState<string>();
+  const [time, set_time] = useState<string>();
+  const [value, set_value] = useState<string>();
+  const [currency, set_currency] = useState<string>();
+  const [source, set_source] = useState<string>();
+  const [request, set_request] = useState<string>();
 
-  const getType = (transaction: SafeMultisigTransactionWithTransfersResponse) => {
-    if (transaction.dataDecoded) {
-      const decodedData = getDecodedData(transaction);
-      return typeof decodedData === 'string' ? decodedData : decodedData?.method;
+  useEffect(() => {
+    set_date(formatDateToUserTimezone(transaction.executionDate ?? transaction.submissionDate));
+    set_time(formatTimeToUserTimezone(transaction.executionDate ?? transaction.submissionDate));
+    set_value(getValueFromHistoryTransaction(transaction));
+    set_currency(getCurrencyFromHistoryTransaction(transaction));
+    set_source(getSourceFromMultisigTransaction(transaction));
+    set_request(getRequest(transaction));
+  }, []);
+
+  const getValueFromHistoryTransaction = (transaction: SafeMultisigTransactionWithTransfersResponse) => {
+    const value = formatEther(BigInt(transaction.transfers.at(0)?.value ?? 0));
+    return value;
+  };
+
+  const getCurrencyFromHistoryTransaction = (transaction: SafeMultisigTransactionWithTransfersResponse) => {
+    if (!transaction.transfers.at(0)?.tokenAddress) {
+      return 'xDai';
+    }
+
+    const currency = transaction.transfers.at(0)?.tokenInfo.symbol;
+    return currency;
+  };
+
+  const getSourceFromMultisigTransaction = (transaction: SafeMultisigTransactionWithTransfersResponse) => {
+    const source = transaction.confirmations?.at(0)?.owner;
+    return source;
+  };
+
+  const getRequest = (transaction: SafeMultisigTransactionResponse) => {
+    if (transaction.data) {
+      const decodedData = decodeFunctionData({
+        data: transaction.data as Address,
+        abi: erc20ABI,
+      });
+      return typeof decodedData === 'string' ? decodedData : decodedData.functionName;
     } else if (BigInt(transaction.value)) {
       return 'Sent';
     } else {
@@ -618,32 +665,13 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
     }
   };
 
-  const getDecodedData = (transaction: SafeMultisigTransactionWithTransfersResponse) => {
-    if (typeof transaction.dataDecoded === 'string') {
-      return transaction.dataDecoded;
-    } else if (typeof transaction.dataDecoded === 'object') {
-      const transactionData = transaction.dataDecoded as unknown as {
-        method: string;
-        parameters: { name: string; type: string; value: string }[];
-      };
-      return transactionData;
-    }
-  };
-
   return (
     <>
-      <TableRow>
+      <StyledTableRow className={!transaction.isExecuted ? 'disabled' : ''}>
         <TableCell
           component="th"
           scope="row"
         >
-          {transaction.nonce}
-        </TableCell>
-        <TableCell align="right">{getType(transaction)}</TableCell>
-        <TableCell align="right"> {formatEther(BigInt(transaction.value))}</TableCell>
-        <TableCell align="right">{transaction.executionDate}</TableCell>
-        <TableCell align="right">{transaction.isExecuted ? 'Success' : 'Not executed'}</TableCell>
-        <TableCell>
           <IconButton
             aria-label="expand row"
             size="small"
@@ -651,9 +679,16 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
+          {date}
         </TableCell>
-      </TableRow>
-      <TableRow>
+        <TableCell>{time}</TableCell>
+        <TableCell align="right">{truncateEthereumAddress(source ?? '')}</TableCell>
+        <TableCell align="right">{request}</TableCell>
+        <TableCell align="right">{`${
+          value && value.length > 10 ? value.slice(0, 10).concat('...') : value
+        } ${currency}`}</TableCell>
+      </StyledTableRow>
+      <StyledTableRow className={!transaction.isExecuted ? 'disabled' : ''}>
         <StyledCollapsibleCell colSpan={6}>
           <Collapse
             in={open}
@@ -738,7 +773,7 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
             </StyledBox>
           </Collapse>
         </StyledCollapsibleCell>
-      </TableRow>
+      </StyledTableRow>
     </>
   );
 }
@@ -746,19 +781,36 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
 function ModuleTransactionRow(props: { transaction: SafeModuleTransactionWithTransfersResponse }) {
   const { transaction } = props;
   const [open, set_open] = useState(false);
+  const [date, set_date] = useState<string>();
+  const [time, set_time] = useState<string>();
+  const [value, set_value] = useState<string>();
+  const [currency, set_currency] = useState<string>();
+
+  useEffect(() => {
+    set_date(formatDateToUserTimezone(transaction.executionDate));
+    set_time(formatTimeToUserTimezone(transaction.executionDate));
+    set_value(getValueFromHistoryTransaction(transaction));
+    set_currency(getCurrencyFromHistoryTransaction(transaction));
+  }, []);
+
+  const getValueFromHistoryTransaction = (transaction: SafeModuleTransactionWithTransfersResponse) => {
+    const units = transaction.transfers.at(0)?.tokenInfo.decimals ?? 18;
+    const value = formatUnits(BigInt(transaction.transfers.at(0)?.value ?? 0), units);
+    return value;
+  };
+
+  const getCurrencyFromHistoryTransaction = (transaction: SafeModuleTransactionWithTransfersResponse) => {
+    const currency = transaction.transfers.at(0)?.tokenInfo.symbol;
+    return currency;
+  };
 
   return (
     <>
-      <TableRow>
+      <StyledTableRow>
         <TableCell
           component="th"
           scope="row"
-        ></TableCell>
-        <TableCell align="right">{transaction.module}</TableCell>
-        <TableCell align="right">{transaction.value}</TableCell>
-        <TableCell align="right">{transaction.executionDate}</TableCell>
-        <TableCell align="right">{transaction.txType}</TableCell>
-        <TableCell>
+        >
           <IconButton
             aria-label="expand row"
             size="small"
@@ -766,8 +818,15 @@ function ModuleTransactionRow(props: { transaction: SafeModuleTransactionWithTra
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
+          {date}
         </TableCell>
-      </TableRow>
+        <TableCell align="right">{time}</TableCell>
+        <TableCell align="right">-</TableCell>
+        <TableCell align="right">{transaction.module}</TableCell>
+        <TableCell align="right">{`${
+          value && value.length > 18 ? value.slice(0, 18).concat('...') : value
+        } ${currency}`}</TableCell>
+      </StyledTableRow>
     </>
   );
 }
@@ -822,14 +881,14 @@ function TransactionHistoryTable() {
     >
       <Table aria-label="safe transaction history">
         <StyledTableHead>
-          <TableRow>
+          <StyledTableRow>
             <TableCell>Date</TableCell>
             <TableCell align="right">Time</TableCell>
             <TableCell align="right">Source</TableCell>
             <TableCell align="right">Request</TableCell>
             <TableCell align="right">Value/Currency</TableCell>
             <TableCell />
-          </TableRow>
+          </StyledTableRow>
         </StyledTableHead>
         <TableBody>
           {safeTransactions?.results.map((transaction, key) => (
@@ -892,14 +951,14 @@ const PendingTransactionsTable = () => {
     <TableContainer component={StyledPaper}>
       <Table aria-label="safe pending transactions">
         <StyledTableHead>
-          <TableRow>
+          <StyledTableRow>
             <TableCell>Date</TableCell>
             <TableCell align="left">Source</TableCell>
-            <TableCell align="left">Capability</TableCell>
+            <TableCell align="left">Request</TableCell>
             <TableCell align="left">Value/Currency</TableCell>
             <TableCell align="left">Action</TableCell>
             <TableCell />
-          </TableRow>
+          </StyledTableRow>
         </StyledTableHead>
         <TableBody>
           {pendingTransactions &&
