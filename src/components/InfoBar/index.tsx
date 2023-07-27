@@ -7,7 +7,7 @@ import Toolbar from '@mui/material/Toolbar';
 import { ethers } from 'ethers';
 import { useBalance } from 'wagmi';
 
-const drawerWidth = 160;
+const drawerWidth = 232;
 
 interface Props {}
 
@@ -18,9 +18,10 @@ const AppBarFiller = styled(Toolbar)`
 const SDrawer = styled(Drawer)`
   .MuiDrawer-paper {
     box-sizing: border-box;
-    width: 161px;
+    width: 233px;
     background: #ffffa0;
     font-size: 13px;
+    overflow-x: hidden;
   }
 `;
 
@@ -38,12 +39,11 @@ const Container = styled.div`
   display: flex;
   gap: 1rem;
   min-height: 80px;
-  min-width: 255px;
+  min-width: 185px;
   padding: 1rem;
   position: absolute;
   top: 45px;
-  right: 231px;
-  font-size: 8px;
+  font-size: 10px;
 `;
 
 const FlexColumn = styled.div`
@@ -57,7 +57,7 @@ const IconContainer = styled.div`
 `;
 
 const Icons = styled(FlexColumn)`
-  margin-top: 1.75rem;
+  margin-top: 2rem;
 `;
 
 const IconAndText = styled.div`
@@ -84,13 +84,13 @@ const InfoTitle = styled.p`
 const Balance = styled(FlexColumn)`
   background-color: #ddeaff;
   text-align: right;
-  padding: 0rem 2rem;
+  padding: 0rem 1rem;
   border-radius: 1rem 1rem 1rem 1rem;
 `;
 
 const SafeContainer = styled.div<{ show: boolean }>`
   visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
-  width: 83.2px;
+  width: 56px;
 `;
 
 const Safe = styled(Balance)``;
@@ -106,7 +106,7 @@ export default function InfoBar(props: Props) {
   } = useAppSelector((state) => state.node);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress);
   const account = useAppSelector((selector) => selector.web3.account) as `0x${string}`;
-  const isConnected = useAppSelector((selector) => selector.web3.status.connected);
+  const web3Connected = useAppSelector((selector) => selector.web3.status.connected);
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const wxhoprSmartContractAddress = '0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1';
   const xhoprSmartContractAddress = '0xD057604A14982FE8D88c5fC25Aac3267eA142a08';
@@ -228,26 +228,24 @@ export default function InfoBar(props: Props) {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      {nodeConnected && (
-        <Box
-          component="nav"
-          sx={{
-            width: { sm: drawerWidth },
-            flexShrink: { sm: 0 },
-          }}
-          aria-label="mailbox folders"
+      <Box
+        component="nav"
+        sx={{
+          width: { sm: drawerWidth },
+          flexShrink: { sm: 0 },
+        }}
+        aria-label="mailbox folders"
+      >
+        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+        <SDrawer
+          variant="permanent"
+          anchor={'right'}
+          open
         >
-          {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-          <SDrawer
-            variant="permanent"
-            anchor={'right'}
-            open
-          >
-            {nodeDrawer}
-          </SDrawer>
-        </Box>
-      )}
-      {isConnected && web3Drawer}
+          {web3Connected && web3Drawer}
+          {nodeConnected && !web3Connected && nodeDrawer}
+        </SDrawer>
+      </Box>
     </Box>
   );
 }

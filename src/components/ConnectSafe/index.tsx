@@ -179,6 +179,7 @@ export default function ConnectSafe() {
               vertical: 'top',
               horizontal: 'left',
             }}
+            disableScrollLock={true}
           >
             {safes.map((safeAddress) => (
               <MenuItem

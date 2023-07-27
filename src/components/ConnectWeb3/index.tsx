@@ -187,6 +187,7 @@ export default function ConnectWeb3({
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleCloseMenu}
+                disableScrollLock={true}
               >
                 <MenuItem onClick={handleDisconnectMM}>Disconnect</MenuItem>
               </Menu>
