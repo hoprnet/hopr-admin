@@ -25,6 +25,8 @@ function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((selector) => selector.node.channels);
   const aliases = useAppSelector((selector) => selector.node.aliases);
+  const peers = useAppSelector((selector) => selector.node.peers);
+  const node = useAppSelector((selector) => selector.node);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const [tabIndex, set_tabIndex] = useState(0);
   const [closingStates, set_closingStates] = useState<
@@ -40,6 +42,53 @@ function ChannelsPage() {
       }
     >
   >({});
+
+  type Node = {
+    id: string;
+    label: string;
+    image: string;
+    cluster: string;
+    tag: string;
+    color: string;
+    size: number;
+    x: number;
+    y: number;
+  };
+
+  const [nodes, set_nodes] = useState<Node[]>([]);
+  console.log('@  nodes:', nodes);
+
+  useEffect(() => {
+    if (node.addresses.hopr && peers) {
+      const myNode = {
+        id: node.addresses.hopr,
+        label: node.addresses.hopr,
+        image: '/assets/hopr_logo.svg',
+        cluster: '1',
+        tag: 'node',
+        color: 'red',
+        size: 100,
+        x: Math.random() * 1000,
+        y: Math.random() * 1000,
+      };
+
+      const connectedPeers = peers.connected.map((peer) => {
+        return {
+          id: peer.peerId,
+          label: peer.peerId,
+          image: '/assets/hopr_logo.svg',
+          cluster: '1',
+          tag: 'node',
+          color: '#ffffa0',
+          size: 20,
+          x: Math.random() * 1000,
+          y: Math.random() * 1000,
+        };
+      });
+
+      set_nodes((prevNodes) => [...prevNodes, myNode, ...connectedPeers]);
+    }
+  }, [peers]);
 
   const [queryParams, set_queryParams] = useState('');
 
@@ -85,6 +134,12 @@ function ChannelsPage() {
     );
     dispatch(
       actionsAsync.getAliasesThunk({
+        apiEndpoint: loginData.apiEndpoint!,
+        apiToken: loginData.apiToken!,
+      }),
+    );
+    dispatch(
+      actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
       }),
@@ -273,7 +328,7 @@ function ChannelsPage() {
           )}
         </Table>
       </TableContainer>
-      <OpenChannelsMap />
+      {nodes.length > 0 && <OpenChannelsMap nodes={nodes} />}
     </Section>
   );
 }

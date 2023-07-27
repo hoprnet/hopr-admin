@@ -1,27 +1,45 @@
+import '@react-sigma/core/lib/react-sigma.min.css';
 import { useEffect } from 'react';
 import Graph from 'graphology';
 import { SigmaContainer, useLoadGraph } from '@react-sigma/core';
-import '@react-sigma/core/lib/react-sigma.min.css';
 
-const LoadGraph = () => {
+type Node = {
+  id: string;
+  label: string;
+  image: string;
+  cluster: string;
+  tag: string;
+  color: string;
+  size: number;
+  x: number;
+  y: number;
+};
+
+type LoadGraphProps = {
+  nodes: Node[];
+};
+
+type OpenChannelsMapProps = {
+  nodes: Node[];
+};
+
+const LoadGraph = ({ nodes }: LoadGraphProps) => {
   const loadGraph = useLoadGraph();
 
   useEffect(() => {
     const graph = new Graph();
-    graph.addNode('first', {
-      x: 0,
-      y: 0,
-      size: 15,
-      label: 'My first node',
-      color: '#FA4F40',
+
+    nodes.forEach((node) => {
+      graph.addNode(node.id, node);
     });
+
     loadGraph(graph);
   }, [loadGraph]);
 
   return null;
 };
 
-const OpenChannelsMap = () => {
+const OpenChannelsMap = ({ nodes }: OpenChannelsMapProps) => {
   return (
     <SigmaContainer
       style={{
@@ -30,7 +48,7 @@ const OpenChannelsMap = () => {
         width: '100%',
       }}
     >
-      <LoadGraph />
+      <LoadGraph nodes={nodes} />
     </SigmaContainer>
   );
 };
