@@ -2,7 +2,6 @@
 import {
   Box,
   Collapse,
-  Container,
   Divider,
   IconButton,
   List,
@@ -17,46 +16,39 @@ import {
 } from '@mui/material';
 
 // MUI ICONS
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 // STORE
 import { useAppDispatch, useAppSelector } from '../store';
-import { safeActions, safeActionsAsync } from '../store/slices/safe';
+import { safeActionsAsync } from '../store/slices/safe';
 
 // COMPONENTS
 import Button from '../future-hopr-lib-components/Button';
-import GrayButton from '../future-hopr-lib-components/Button/gray';
 import Section from '../future-hopr-lib-components/Section';
 
 // LIBS
 import styled from '@emotion/styled';
-import { erc20ABI, useAccount } from 'wagmi';
-import { default as dayjs } from 'dayjs';
-import SafeApiKit, {
+import {
   AllTransactionsListResponse,
   EthereumTxWithTransfersResponse,
   SafeModuleTransactionWithTransfersResponse,
-  SafeMultisigTransactionWithTransfersResponse,
-  SafeMultisigTransactionListResponse
+  SafeMultisigTransactionListResponse,
+  SafeMultisigTransactionWithTransfersResponse
 } from '@safe-global/api-kit';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
+import { default as dayjs } from 'dayjs';
+import { erc20ABI, useAccount } from 'wagmi';
 
 // HOOKS
-import { useEffect, useState } from 'react';
-import {
-  Abi,
-  Address,
-  DecodeFunctionResultReturnType,
-  decodeFunctionData,
-  formatEther
-} from 'viem'
-import { useEthersSigner } from '../hooks';
-import { truncateEthereumAddress } from '../utils/helpers';
 import { ethers } from 'ethers';
+import { useEffect, useState } from 'react';
+import { Address, decodeFunctionData, formatEther } from 'viem';
+import { useEthersSigner } from '../hooks';
 import { calculateTimeInGMT, formatDateToUserTimezone, formatTimeToUserTimezone } from '../utils/date';
+import { truncateEthereumAddress } from '../utils/helpers';
 
 const StyledContainer = styled(Paper)`
   min-width: 800px;
@@ -529,29 +521,28 @@ function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersRes
   const [currency, set_currency] = useState<string>();
   const [source, set_source] = useState<string>();
 
-
   useEffect(() => {
     set_date(formatDateToUserTimezone(transaction.executionDate));
     set_time(formatTimeToUserTimezone(transaction.executionDate));
-    set_value(getValueFromEthereumTransaction(transaction))
-    set_currency(getCurrencyFromEthereumTransaction(transaction))
-    set_source(getSourceFromEthereumTransaction(transaction))
+    set_value(getValueFromEthereumTransaction(transaction));
+    set_currency(getCurrencyFromEthereumTransaction(transaction));
+    set_source(getSourceFromEthereumTransaction(transaction));
   }, []);
 
   const getValueFromEthereumTransaction = (transaction: EthereumTxWithTransfersResponse) => {
-    const value = transaction.transfers.at(0)?.value
+    const value = transaction.transfers.at(0)?.value;
     return value;
-  }
+  };
 
   const getCurrencyFromEthereumTransaction = (transaction: EthereumTxWithTransfersResponse) => {
-    const currency = transaction.transfers.at(0)?.tokenInfo.symbol
-    return currency
-  }
+    const currency = transaction.transfers.at(0)?.tokenInfo.symbol;
+    return currency;
+  };
 
   const getSourceFromEthereumTransaction = (transaction: EthereumTxWithTransfersResponse) => {
-    const source = transaction.from
+    const source = transaction.from;
     return source;
-  }
+  };
 
   return (
     <>
