@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../store';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { useNavigate } from 'react-router-dom';
+import styled from '@emotion/styled';
 
-//Stores
-import { authActions, authActionsAsync } from '../store/slices/auth';
-import node, { nodeActionsAsync, nodeActions } from '../store/slices/node';
-import { appActions } from '../store/slices/app';
+// Stores
+import { authActions, authActionsAsync } from '../../store/slices/auth';
+import { nodeActionsAsync, nodeActions } from '../../store/slices/node';
+import { appActions } from '../../store/slices/app';
 
 // HOPR Components
-import Section from '../future-hopr-lib-components/Section';
-import Select from '../future-hopr-lib-components/Select';
-import Checkbox from '../future-hopr-lib-components/Toggles/Checkbox';
+import Select from '../../future-hopr-lib-components/Select';
+import Checkbox from '../../future-hopr-lib-components/Toggles/Checkbox';
+import Modal from '../../future-hopr-lib-components/Modal';
+import TextField from '../../future-hopr-lib-components/TextField';
+import Button from '../../future-hopr-lib-components/Button';
 
-//MUI
-import CircularProgress from '@mui/material/CircularProgress';
+// MUI
+import { Tooltip, IconButton } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
-import { parseEther } from 'viem';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CloseIcon from '@mui/icons-material/Close';
 
 type ParsedNode = {
   name: string;
@@ -25,8 +30,82 @@ type ParsedNode = {
   apiToken: string;
 };
 
-function Section1() {
+type ConnectNodeModalProps = {
+  open: boolean;
+  handleClose: () => void;
+};
+
+const SModal = styled(Modal)`
+  position: relative;
+`;
+
+const LocalNodesContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 48px;
+  button {
+    height: 48px;
+    width: 48px;
+  }
+`;
+
+const SaveTokenContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 24px;
+  width: 100%;
+  justify-content: center;
+`;
+
+const ConnectContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+`;
+
+const Overlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.85);
+  z-index: 100;
+  &.overlay-has-error {
+    align-items: flex-start;
+    background: rgba(255, 255, 255, 1);
+    p {
+      margin-top: 24px;
+      font-weight: 600;
+    }
+    .error {
+      width: calc(100% - 32px);
+      word-wrap: break-word;
+      padding-bottom: 16px;
+    }
+  }
+`;
+
+const CloseOverlayIconButton = styled(IconButton)`
+  position: absolute;
+  right: 16px;
+  top: 16px;
+`;
+
+const defaultProps = { open: false };
+
+function ConnectNodeModal(props: ConnectNodeModalProps) {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const nodesSavedLocally = useAppSelector((store) => store.auth.nodes);
   const [nodesSavedLocallyParsed, set_nodesSavedLocallyParsed] = useState([] as ParsedNode[]);
   const connecting = useAppSelector((store) => store.auth.status.connecting);
@@ -95,6 +174,10 @@ function Section1() {
     }
   }, [loginData]);
 
+  useEffect(() => {
+    if (error) navigate(`/?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
+  }, [error]);
+
   const saveNode = () => {
     dispatch(
       authActions.addNodeData({
@@ -137,20 +220,30 @@ function Section1() {
         }),
       );
       dispatch(
-        nodeActionsAsync.getInfoThunk({
-          apiToken,
-          apiEndpoint,
-        }),
-      );
-      dispatch(
         nodeActionsAsync.getAliasesThunk({
           apiToken,
           apiEndpoint,
         }),
       );
+      dispatch(nodeActions.setInfo(loginInfo));
       dispatch(nodeActions.initializeMessagesWebsocket());
       dispatch(nodeActions.initializeLogsWebsocket());
+      if (!error) navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
+      props.handleClose();
     }
+  };
+
+  const handleClose = () => {
+    props.handleClose();
+    if (error) {
+      setTimeout(() => {
+        dispatch(authActions.resetState());
+      }, 200);
+    }
+  };
+
+  const clearSingleLocal = (index: number) => {
+    dispatch(authActions.clearLocalNode(index));
   };
 
   const clearLocalNodes = () => {
@@ -169,79 +262,110 @@ function Section1() {
   };
 
   return (
-    <Section
-      className="Section--selectNode"
-      id="Section--selectNode"
-      yellow
-      fullHeightMin
+    <SModal
+      open={props.open}
+      onClose={handleClose}
+      title="CONNECT NODE"
+      maxWidth={'580px'}
     >
-      <Select
-        label={'Node credentials saved in browser local storage'}
-        values={nodesSavedLocallyParsed}
-        disabled={nodesSavedLocally.length === 0}
-        value={nodesSavedLocallyChosenIndex}
-        onChange={handleSelectlocalNodes}
-        style={{ width: '100%' }}
-        renderValue={(value) => {
-          return '1';
-        }}
-      />
-      <button
-        disabled={nodesSavedLocally.length === 0}
-        onClick={clearLocalNodes}
-      >
-        Clear node credentials from the browser local storage
-      </button>
-      <br />
-      Local name:
-      <input
+      <LocalNodesContainer>
+        <Select
+          label={'Nodes saved in browser local storage'}
+          values={nodesSavedLocallyParsed}
+          disabled={nodesSavedLocally.length === 0}
+          value={nodesSavedLocallyChosenIndex}
+          onChange={handleSelectlocalNodes}
+          style={{ width: '100%' }}
+          removeValue={clearSingleLocal}
+          removeValueTooltip={'Remove node from local storage'}
+        />
+        <Tooltip title={'Clear all node credentials from the browser local storage'}>
+          <span>
+            <IconButton
+              aria-label="delete"
+              disabled={nodesSavedLocally.length === 0}
+              onClick={clearLocalNodes}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </span>
+        </Tooltip>
+      </LocalNodesContainer>
+
+      <p>
+        <strong>Node credentials:</strong>
+      </p>
+      <TextField
+        label={'Local name (optional)'}
         value={localName}
         onChange={(event) => {
           set_localName(event.target.value);
         }}
         style={{ width: '100%' }}
-      ></input>
-      apiEndpoint*:
-      <input
+      />
+      <TextField
+        label={'API endpoint (required)'}
         value={apiEndpoint}
         onChange={(event) => {
           set_apiEndpoint(event.target.value);
         }}
         style={{ width: '100%' }}
-      ></input>
-      apiToken*:
-      <input
+      />
+      <TextField
+        label={'API token (required)'}
         value={apiToken}
         onChange={(event) => {
           set_apiToken(event.target.value);
         }}
         style={{ width: '100%' }}
-      ></input>
-      <Checkbox
-        label={'Save API Key locally (unsafe)'}
-        value={saveApiToken}
-        onChange={(event) => {
-          set_saveApiToken(event.target.checked);
-        }}
       />
-      <br />
-      <button
-        onClick={saveNode}
-        disabled={apiEndpoint.length === 0}
-      >
-        Save node credentials in browser local storage
-      </button>
-      <button
-        onClick={useNode}
-        disabled={apiEndpoint.length === 0 || apiToken.length === 0}
-      >
-        Connect to the node
-      </button>
-      <br />
-      {connecting && <CircularProgress />}
-      <span>{error}</span>
-    </Section>
+      <SaveTokenContainer>
+        <Checkbox
+          label={'Save API token locally (unsafe)'}
+          value={saveApiToken}
+          onChange={(event) => {
+            set_saveApiToken(event.target.checked);
+          }}
+        />
+        <Tooltip title={'Save node credentials in browser local storage'}>
+          <Button
+            onClick={saveNode}
+            disabled={apiEndpoint.length === 0}
+          >
+            Save
+          </Button>
+        </Tooltip>
+      </SaveTokenContainer>
+
+      <ConnectContainer>
+        <Button
+          onClick={useNode}
+          disabled={apiEndpoint.length === 0 || apiToken.length === 0}
+        >
+          Connect to the node
+        </Button>
+      </ConnectContainer>
+
+      {error && (
+        <Overlay className={'overlay-has-error'}>
+          <CloseOverlayIconButton
+            color="primary"
+            aria-label="close modal"
+            onClick={() => {
+              dispatch(authActions.resetState());
+            }}
+          >
+            <CloseIcon />
+          </CloseOverlayIconButton>
+          <div className={'error'}>
+            <p>ERROR</p>
+            {error}
+          </div>
+        </Overlay>
+      )}
+    </SModal>
   );
 }
 
-export default Section1;
+ConnectNodeModal.defaultProps = defaultProps;
+export default ConnectNodeModal;

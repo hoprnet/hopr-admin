@@ -68,6 +68,13 @@ const authSlice = createSlice({
       state.nodes = [];
       localStorage.removeItem('admin-ui-node-list');
     },
+    clearLocalNode(state, payload) {
+      let tmp = state.nodes;
+      delete tmp[parseInt(payload.payload)];
+      tmp = tmp.filter((elem) => elem !== undefined);
+      state.nodes = tmp;
+      localStorage.setItem('admin-ui-node-list', JSON.stringify(state.nodes));
+    },
     setStatusError(state, action: PayloadAction<string>) {
       state.status.error = action.payload;
     },

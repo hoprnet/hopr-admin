@@ -8,9 +8,12 @@ import { Row } from '../Atoms/row';
 
 import CloseIcon from '@mui/icons-material/Close';
 
-const SDialog = styled(Dialog)`
+const SDialog = styled(({
+  maxWidthCss,
+  ...rest
+}: PropsStyled) => <Dialog {...rest} />)`
   .MuiPaper-root {
-    max-width: 395px;
+    max-width: ${(props) => (props.maxWidthCss ? props.maxWidthCss : '395px')};
     width: 100%;
     padding: 16px;
     font-family: 'Source Code Pro';
@@ -21,10 +24,16 @@ const SDialog = styled(Dialog)`
   }
 `;
 
+interface PropsStyled extends Omit<DialogProps, 'maxWidth'> {
+  selectedValue?: any;
+  maxWidthCss?: string;
+}
+
 const Content = styled.div``;
 
-interface Props extends DialogProps {
+interface Props extends Omit<DialogProps, 'maxWidth'> {
   selectedValue?: any;
+  maxWidth?: string;
 }
 
 const Modal: React.FC<Props> = (props) => {
@@ -34,6 +43,7 @@ const Modal: React.FC<Props> = (props) => {
     open,
     title,
     children,
+    maxWidth,
   } = props;
 
   const handleClose = (event: {}) => {
@@ -45,6 +55,7 @@ const Modal: React.FC<Props> = (props) => {
     <SDialog
       onClose={handleClose}
       open={open}
+      maxWidthCss={maxWidth}
     >
       <Row>
         <div className="modal-title">{title}</div>
