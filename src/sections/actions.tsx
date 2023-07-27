@@ -531,9 +531,9 @@ function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersRes
   const [currency, set_currency] = useState<string>();
 
   useEffect(() => {
-    set_date(formatDateToUserTimezone(transaction.executionDate))
-    set_time(formatTimeToUserTimezone(transaction.executionDate))
-  }, [])
+    set_date(formatDateToUserTimezone(transaction.executionDate));
+    set_time(formatTimeToUserTimezone(transaction.executionDate));
+  }, []);
 
   return (
     <>
