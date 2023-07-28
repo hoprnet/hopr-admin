@@ -42,9 +42,7 @@ function MetricsPage() {
       fullHeightMin
     >
       <h2>Metrics</h2>
-      <TableExtended>
-      {renderMetricsTable(metrics?.parsed)}
-      </TableExtended>
+      <TableExtended>{renderMetricsTable(metrics?.parsed)}</TableExtended>
 
       <Chart
         options={{ xaxis: { categories: metrics?.parsed?.core_histogram_ping_time_seconds?.categories
