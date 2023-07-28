@@ -76,11 +76,26 @@ function SafeSettings() {
 
   const removeOwner = (address: string) => {
     if (signer && safeAddress)
-      safeActionsAsync.removeOwnerFromSafeThunk({
-        ownerAddress: address,
-        safeAddress: safeAddress,
-        signer,
-      });
+      dispatch(
+        safeActionsAsync.removeOwnerFromSafeThunk({
+          ownerAddress: address,
+          safeAddress: safeAddress,
+          signer,
+          threshold: safe?.threshold,
+        }),
+      );
+  };
+
+  const addOwner = () => {
+    if (signer && safeAddress)
+      dispatch(
+        safeActionsAsync.addOwnerToSafeThunk({
+          ownerAddress: newOwner,
+          safeAddress: safeAddress,
+          signer: signer,
+          threshold: safe?.threshold,
+        }),
+      );
   };
 
   return (
@@ -129,7 +144,12 @@ function SafeSettings() {
           onChange={handleNewOwnerChange}
           value={newOwner}
         />
-        <Button disabled={newOwner === '' || safe === null || safe?.owners.includes(newOwner)}>Add owner</Button>
+        <Button
+          onClick={addOwner}
+          disabled={newOwner === '' || safe === null || safe?.owners.includes(newOwner)}
+        >
+          Add owner
+        </Button>
       </Container>
       <h2>Remove Owner</h2>
       <Container column>
