@@ -41,6 +41,7 @@ import {
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { default as dayjs } from 'dayjs';
 import { erc20ABI, erc4626ABI, erc721ABI, useAccount } from 'wagmi';
+import safeABI from '../abi/safeAbi.json';
 
 // HOOKS
 import { ethers } from 'ethers';
@@ -328,7 +329,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
         const decodedData = decodeFunctionData({
           data: transaction.data as Address,
           // could be any sc so not sure on the abi
-          abi: [...erc20ABI, ...erc4626ABI, ...erc721ABI],
+          abi: [...erc20ABI, ...erc4626ABI, ...erc721ABI, ...safeABI],
         });
         return decodedData.functionName;
       } catch (e) {
@@ -401,8 +402,8 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
     try {
       const decodedData = decodeFunctionData({
         data: transaction.data as Address,
-        // could be any sc so not sure on the abi
-        abi: [...erc20ABI, ...erc4626ABI, ...erc721ABI],
+        // assuming it is a erc20 token because we want to get the value
+        abi: erc20ABI,
       });
 
       const value = getValueFromERC20Functions(decodedData);
@@ -411,12 +412,12 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
     } catch (e) {
       // if the function is not from an abi stated above
       // the data may not decode
-      return 'Could not decode';
+      return null;
     }
   };
 
   const getValueFromERC20Functions = (
-    decodedData: ReturnType<typeof decodeFunctionData<typeof erc20ABI | typeof erc4626ABI | typeof erc721ABI>>,
+    decodedData: ReturnType<typeof decodeFunctionData<typeof erc20ABI>>,
   ): string | null => {
     if (decodedData.functionName === 'transfer') {
       return formatEther(decodedData.args[1]);
@@ -671,7 +672,7 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
         const decodedData = decodeFunctionData({
           data: transaction.data as Address,
           // could be any sc so not sure on the abi
-          abi: [...erc20ABI, ...erc4626ABI, ...erc721ABI],
+          abi: [...erc20ABI, ...erc4626ABI, ...erc721ABI, ...safeABI],
         });
         return decodedData.functionName;
       } catch (e) {
