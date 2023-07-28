@@ -60,13 +60,13 @@ type InitialState = {
     raw: string | null;
     parsed: {
       [key: string]: {
-        categories: [],
-        data: [],
-        length: number,
-        name: string,
-        type: string,
-      }
-    }
+        categories: [];
+        data: [];
+        length: number;
+        name: string;
+        type: string;
+      };
+    };
   };
   messagesWebsocketStatus: WebsocketConnectionStatus;
   logsWebsocketStatus: WebsocketConnectionStatus;
@@ -107,9 +107,7 @@ export const initialState: InitialState = {
   pings: [],
   metrics: {
     raw: null,
-    parsed: {
-
-    }
+    parsed: {},
   },
   messagesWebsocketStatus: null,
   logsWebsocketStatus: null,
