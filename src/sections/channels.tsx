@@ -56,7 +56,6 @@ function ChannelsPage() {
   };
 
   const [nodes, set_nodes] = useState<Node[]>([]);
-  console.log('@  nodes:', nodes);
 
   useEffect(() => {
     if (node.addresses.hopr && peers) {
@@ -67,7 +66,7 @@ function ChannelsPage() {
         cluster: '1',
         tag: 'node',
         color: 'red',
-        size: 100,
+        size: 60,
         x: Math.random() * 1000,
         y: Math.random() * 1000,
       };
@@ -328,7 +327,12 @@ function ChannelsPage() {
           )}
         </Table>
       </TableContainer>
-      {nodes.length > 0 && <OpenChannelsMap nodes={nodes} />}
+      {nodes.length > 0 && channels?.incoming && (
+        <OpenChannelsMap
+          nodes={nodes}
+          channels={channels}
+        />
+      )}
     </Section>
   );
 }
