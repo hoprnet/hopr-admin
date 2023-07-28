@@ -328,7 +328,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
         const decodedData = decodeFunctionData({
           data: transaction.data as Address,
           // could be any sc so not sure on the abi
-          abi: [...erc20ABI,...erc4626ABI, ...erc721ABI],
+          abi: [...erc20ABI, ...erc4626ABI, ...erc721ABI],
         });
         return decodedData.functionName;
       } catch (e) {
@@ -402,9 +402,8 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
       const decodedData = decodeFunctionData({
         data: transaction.data as Address,
         // could be any sc so not sure on the abi
-        abi: [...erc20ABI,...erc4626ABI, ...erc721ABI],
+        abi: [...erc20ABI, ...erc4626ABI, ...erc721ABI],
       });
-      
 
       const value = getValueFromERC20Functions(decodedData);
 
@@ -672,7 +671,7 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
         const decodedData = decodeFunctionData({
           data: transaction.data as Address,
           // could be any sc so not sure on the abi
-          abi: [...erc20ABI,...erc4626ABI, ...erc721ABI],
+          abi: [...erc20ABI, ...erc4626ABI, ...erc721ABI],
         });
         return decodedData.functionName;
       } catch (e) {
