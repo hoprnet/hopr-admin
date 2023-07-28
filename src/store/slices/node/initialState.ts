@@ -67,8 +67,8 @@ type InitialState = {
     raw: string | null;
     parsed: {
       [key: string]: {
-        categories: [];
-        data: [];
+        categories: string[];
+        data: any[];
         length: number;
         name: string;
         type: string;

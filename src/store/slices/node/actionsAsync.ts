@@ -770,7 +770,6 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     console.log('rejected', action);
     const index = state.messagesSent.findIndex((msg) => msg.id === action.meta.requestId);
     if (index !== -1) {
-      console;
       state.messagesSent[index].status = 'error';
       // prettier-ignore
       { /*   @ts-ignore */ }
