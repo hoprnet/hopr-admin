@@ -139,11 +139,11 @@ const NavBar: React.FC<{
             </IconButton>
             <Logo className="logo-hopr">
               {/* <a href="/"> */}
-                <img
-                  className="logo-hopr-navbar"
-                  alt={props.mainLogoAlt}
-                  src={props.mainLogo}
-                />
+              <img
+                className="logo-hopr-navbar"
+                alt={props.mainLogoAlt}
+                src={props.mainLogo}
+              />
               {/* </a> */}
             </Logo>
           </FlexBox>

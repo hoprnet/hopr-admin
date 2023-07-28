@@ -10,7 +10,7 @@ const drawerWidth = 160;
 
 interface Props {}
 
-const Contaier = styled(Box)`
+const Container = styled(Box)`
   display: none;
   @media screen and (min-width: 600px) {
     display: flex;
@@ -70,7 +70,7 @@ export default function InfoBar(props: Props) {
   );
 
   return (
-    <Contaier sx={{ display: 'flex' }}>
+    <Container sx={{ display: 'flex' }}>
       <Box
         component="nav"
         sx={{
@@ -88,6 +88,6 @@ export default function InfoBar(props: Props) {
           {drawer}
         </SDrawer>
       </Box>
-    </Contaier>
+    </Container>
   );
 }
