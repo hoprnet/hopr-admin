@@ -84,19 +84,17 @@ function TicketsPage() {
         actions={
           <>
             <IconButton
-              iconComponent={<ExitToAppIcon/>}
-              tooltipText='Redeem all tickets'
+              iconComponent={<ExitToAppIcon />}
+              tooltipText="Redeem all tickets"
               reloading={redeeming}
               onClick={handleRedeemAllTickets}
             />
             <IconButton
-              iconComponent={<GetAppIcon/>}
-              tooltipText='Download all tickets as JSON'
-              onClick={()=>{exportToFile(
-                JSON.stringify(tickets),
-                'tickets.json',
-                'text/json'
-              );}}
+              iconComponent={<GetAppIcon />}
+              tooltipText="Download all tickets as JSON"
+              onClick={() => {
+                exportToFile(JSON.stringify(tickets), 'tickets.json', 'text/json');
+              }}
             />
           </>
         }

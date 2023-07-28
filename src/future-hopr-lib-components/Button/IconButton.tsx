@@ -10,9 +10,8 @@ type SubpageTitleProps = {
   iconComponent?: any;
   tooltipText?: string;
   className?: string;
-  style?: Object
+  style?: Object;
 };
-
 
 const SIconButton = styled(MuiIconButton)`
   svg {
@@ -48,17 +47,17 @@ export const IconButton = ({
 }: SubpageTitleProps) => {
   return (
     <Tooltip
-        title={tooltipText}
-        className={className}
-        style={style}
+      title={tooltipText}
+      className={className}
+      style={style}
     >
-        <SIconButton
-            disabled={disabled}
-            className={`${reloading ? 'reloading' : ''}`}
-            onClick={onClick}
-        >
-            {iconComponent}
-        </SIconButton>
+      <SIconButton
+        disabled={disabled}
+        className={`${reloading ? 'reloading' : ''}`}
+        onClick={onClick}
+      >
+        {iconComponent}
+      </SIconButton>
     </Tooltip>
   );
 };

@@ -15,9 +15,7 @@ function SectionLogs() {
       yellow
       fullHeightMin
     >
-      <SubpageTitle
-        title="Logs"
-      />
+      <SubpageTitle title="Logs" />
       {logs.map((log) => (
         <LogLine
           log={log}

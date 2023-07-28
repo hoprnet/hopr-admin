@@ -65,11 +65,8 @@ export const SubpageTitle = ({
         <div className="actions">{actions}</div>
       </div>
 
-      {
-        refreshFunction && 
-        <Tooltip
-          title="Refresh"
-        >
+      {refreshFunction && (
+        <Tooltip title="Refresh">
           <SIconButton
             className={`left ${reloading || reloadingLocal ? 'reloading' : ''}`}
             onClick={() => {
@@ -83,8 +80,7 @@ export const SubpageTitle = ({
             <RefreshIcon />
           </SIconButton>
         </Tooltip>
-      }
-
+      )}
     </Content>
   );
 };
