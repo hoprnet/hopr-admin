@@ -324,11 +324,16 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
 
   const getRequest = (transaction: SafeMultisigTransactionResponse) => {
     if (transaction.data) {
-      const decodedData = decodeFunctionData({
-        data: transaction.data as Address,
-        abi: erc20ABI,
-      });
-      return typeof decodedData === 'string' ? decodedData : decodedData.functionName;
+      try {
+        const decodedData = decodeFunctionData({
+          data: transaction.data as Address,
+          // could be any sc so not sure on the abi
+          abi: [] as unknown[],
+        });
+        return decodedData.functionName;
+      } catch (e) {
+        return 'Could not decode'
+      }
     } else if (BigInt(transaction.value)) {
       return 'Sent';
     } else {
@@ -653,14 +658,20 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
 
   const getRequest = (transaction: SafeMultisigTransactionResponse) => {
     if (transaction.data) {
-      const decodedData = decodeFunctionData({
-        data: transaction.data as Address,
-        abi: erc20ABI,
-      });
-      return typeof decodedData === 'string' ? decodedData : decodedData.functionName;
+      try {
+        const decodedData = decodeFunctionData({
+          data: transaction.data as Address,
+          // could be any sc so not sure on the abi
+          abi: [] as unknown[],
+        });
+        return decodedData.functionName;
+      } catch (e) {
+        return 'Could not decode'
+      }
     } else if (BigInt(transaction.value)) {
       return 'Sent';
     } else {
+      // if a multisig transaction has no data or value it is probably a rejection
       return 'Rejection';
     }
   };
