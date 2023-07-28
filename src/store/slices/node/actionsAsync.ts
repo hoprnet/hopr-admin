@@ -559,15 +559,29 @@ const getPrometheusMetricsThunk = createAsyncThunk(
 );
 
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
+  builder.addCase(getInfoThunk.pending, (state, action) => {
+    state.info.isFetching = true;
+  });
   builder.addCase(getInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.info = action.payload;
+      state.info.data = action.payload;
     }
+    state.info.isFetching = false;
+  });
+  builder.addCase(getInfoThunk.rejected, (state, action) => {
+    state.info.isFetching = false;
+  });
+  builder.addCase(getAddressesThunk.pending, (state, action) => {
+    state.addresses.isFetching = true;
   });
   builder.addCase(getAddressesThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.addresses = action.payload;
+      state.addresses.data = action.payload;
     }
+    state.addresses.isFetching = false;
+  });
+  builder.addCase(getAddressesThunk.rejected, (state, action) => {
+    state.addresses.isFetching = false;
   });
   builder.addCase(getAliasesThunk.fulfilled, (state, action) => {
     if (action.payload) {
@@ -593,10 +607,17 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
       state.balances.reloading = false;
     }
   });
+  builder.addCase(getChannelsThunk.pending, (state, action) => {
+    state.channels.isFetching = true;
+  });
   builder.addCase(getChannelsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.channels = action.payload;
+      state.channels.data = action.payload;
     }
+    state.channels.isFetching = true;
+  });
+  builder.addCase(getChannelsThunk.rejected, (state, action) => {
+    state.channels.isFetching = false;
   });
   builder.addCase(getPeersThunk.fulfilled, (state, action) => {
     if (action.payload) {
@@ -684,12 +705,12 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
         type,
       } = action.payload;
       // find channel if it already exists
-      const channelIndex = state.channels?.[type].findIndex((channel) => channel.channelId === channelId);
+      const channelIndex = state.channels.data?.[type].findIndex((channel) => channel.channelId === channelId);
 
-      if (state.channels) {
+      if (state.channels.data) {
         if (channelIndex) {
           // update channel
-          state.channels[type][channelIndex] = {
+          state.channels.data[type][channelIndex] = {
             balance,
             channelId,
             peerId,
@@ -698,7 +719,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
           };
         } else {
           // add new channel
-          state.channels[type].push({
+          state.channels.data[type].push({
             balance,
             channelId,
             peerId,
@@ -707,7 +728,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
           });
         }
       } else {
-        state.channels = {
+        state.channels.data = {
           incoming: [],
           outgoing: [],
           // overwrite actual type

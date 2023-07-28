@@ -19,7 +19,7 @@ function InfoPage() {
   const addresses = useAppSelector((selector) => selector.node.addresses);
   const channels = useAppSelector((selector) => selector.node.channels);
   const version = useAppSelector((selector) => selector.node.version);
-  const info = useAppSelector((selector) => selector.node.info);
+  const info = useAppSelector((selector) => selector.node.info.data);
   const peers = useAppSelector((selector) => selector.node.peers);
   const aliases = useAppSelector((selector) => selector.node.aliases);
   const statistics = useAppSelector((selector) => selector.node.statistics);
@@ -174,11 +174,11 @@ function InfoPage() {
         <tbody>
           <tr>
             <th>PeerId</th>
-            <td>{addresses?.hopr}</td>
+            <td>{addresses?.data.hopr}</td>
           </tr>
           <tr>
             <th>Native</th>
-            <td>{addresses?.native}</td>
+            <td>{addresses?.data.native}</td>
           </tr>
           <tr>
             <th>hoprToken</th>

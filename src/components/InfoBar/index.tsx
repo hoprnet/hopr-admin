@@ -50,7 +50,7 @@ export default function InfoBar(props: Props) {
     <div>
       <AppBarFiller />
       <Title>Status</Title>
-      <Data>{info?.connectivityStatus}</Data>
+      <Data>{info.data?.connectivityStatus}</Data>
 
       <Title>xDai balance</Title>
       <Data>{balances?.native && utils.formatEther(balances.native)}</Data>
@@ -62,10 +62,10 @@ export default function InfoBar(props: Props) {
       <Data>{peers?.announced?.length || '-'}</Data>
 
       <Title>Outgoing Chanels</Title>
-      <Data>{channels?.outgoing?.length || '-'}</Data>
+      <Data>{channels.data?.outgoing?.length || '-'}</Data>
 
       <Title>Incoming Chanels</Title>
-      <Data>{channels?.incoming?.length || '-'}</Data>
+      <Data>{channels.data?.incoming?.length || '-'}</Data>
     </div>
   );
 

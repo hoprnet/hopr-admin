@@ -1,3 +1,4 @@
+import { environment } from '../../../../config';
 import type {
   GetStatisticsResponseType,
   AccountResponseType,
@@ -26,14 +27,21 @@ export type Message = {
 type WebsocketConnectionStatus = 'connecting' | 'connected' | 'error' | null;
 
 type InitialState = {
-  info: GetInfoResponseType | null;
+  // info: GetInfoResponseType | null;
+  info: {
+    data: GetInfoResponseType | null;
+    isFetching: boolean;
+  };
   status: {
-    initiating: boolean;
-    initiated: boolean;
+    data: {
+      initiating: boolean;
+      initiated: boolean;
+    };
+    isFetching: boolean;
   };
   addresses: {
-    hopr: string | null;
-    native: string | null;
+    data: { hopr: string | null; native: string | null };
+    isFetching: boolean;
   };
   aliases: GetAliasesResponseType | null;
   balances: {
@@ -41,7 +49,10 @@ type InitialState = {
     native: string | null;
     reloading: boolean;
   };
-  channels: GetChannelsResponseType | null;
+  channels: {
+    data: GetChannelsResponseType | null;
+    isFetching: boolean;
+  };
   messages: Message[];
   messagesSent: Message[];
   logs: {
@@ -69,14 +80,23 @@ type InitialState = {
 };
 
 export const initialState: InitialState = {
-  info: null,
+  info: {
+    data: null,
+    isFetching: false,
+  },
   status: {
-    initiating: false,
-    initiated: false,
+    data: {
+      initiating: false,
+      initiated: false,
+    },
+    isFetching: false,
   },
   addresses: {
-    hopr: null,
-    native: null,
+    data: {
+      hopr: null,
+      native: null,
+    },
+    isFetching: false,
   },
   aliases: null,
   balances: {
@@ -84,7 +104,10 @@ export const initialState: InitialState = {
     hopr: null,
     reloading: false,
   },
-  channels: null,
+  channels: {
+    data: null,
+    isFetching: false,
+  },
   messages: [],
   messagesSent: [],
   signedMessages: [],
