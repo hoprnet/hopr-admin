@@ -40,7 +40,7 @@ import {
 } from '@safe-global/api-kit';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { default as dayjs } from 'dayjs';
-import { erc20ABI, useAccount } from 'wagmi';
+import { erc20ABI, erc4626ABI, erc721ABI, useAccount } from 'wagmi';
 
 // HOOKS
 import { ethers } from 'ethers';
@@ -328,10 +328,12 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
         const decodedData = decodeFunctionData({
           data: transaction.data as Address,
           // could be any sc so not sure on the abi
-          abi: [] as unknown[],
+          abi: [...erc20ABI,...erc4626ABI, ...erc721ABI],
         });
         return decodedData.functionName;
       } catch (e) {
+        // if the function is not from an abi stated above
+        // the data may not decode
         return 'Could not decode';
       }
     } else if (BigInt(transaction.value)) {
@@ -396,18 +398,26 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
       return JSON.stringify(transaction.dataDecoded);
     }
 
-    const decodedData = decodeFunctionData({
-      abi: erc20ABI,
-      data: transaction.data as Address,
-    });
+    try {
+      const decodedData = decodeFunctionData({
+        data: transaction.data as Address,
+        // could be any sc so not sure on the abi
+        abi: [...erc20ABI,...erc4626ABI, ...erc721ABI],
+      });
+      
 
-    const value = getValueFromERC20Functions(decodedData);
+      const value = getValueFromERC20Functions(decodedData);
 
-    return value;
+      return value;
+    } catch (e) {
+      // if the function is not from an abi stated above
+      // the data may not decode
+      return 'Could not decode';
+    }
   };
 
   const getValueFromERC20Functions = (
-    decodedData: ReturnType<typeof decodeFunctionData<typeof erc20ABI>>,
+    decodedData: ReturnType<typeof decodeFunctionData<typeof erc20ABI | typeof erc4626ABI | typeof erc721ABI>>,
   ): string | null => {
     if (decodedData.functionName === 'transfer') {
       return formatEther(decodedData.args[1]);
@@ -662,10 +672,12 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
         const decodedData = decodeFunctionData({
           data: transaction.data as Address,
           // could be any sc so not sure on the abi
-          abi: [] as unknown[],
+          abi: [...erc20ABI,...erc4626ABI, ...erc721ABI],
         });
         return decodedData.functionName;
       } catch (e) {
+        // if the function is not from an abi stated above
+        // the data may not decode
         return 'Could not decode';
       }
     } else if (BigInt(transaction.value)) {
