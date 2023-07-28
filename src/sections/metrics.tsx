@@ -52,7 +52,9 @@ function MetricsPage() {
         ]}
         type="bar"
         style={{
-          maxWidth: '700px', width: '100%', height: '500px', 
+          maxWidth: '700px',
+          width: '100%',
+          height: '500px',
         }}
       />
 
@@ -67,7 +69,9 @@ function MetricsPage() {
         ]}
         type="bar"
         style={{
-          maxWidth: '700px', width: '100%', height: '500px', 
+          maxWidth: '700px',
+          width: '100%',
+          height: '500px',
         }}
       />
 
@@ -82,7 +86,9 @@ function MetricsPage() {
         ]}
         type="bar"
         style={{
-          maxWidth: '700px', width: '100%', height: '500px', 
+          maxWidth: '700px',
+          width: '100%',
+          height: '500px',
         }}
       />
 
@@ -97,7 +103,9 @@ function MetricsPage() {
         ]}
         type="bar"
         style={{
-          maxWidth: '700px', width: '100%', height: '500px', 
+          maxWidth: '700px',
+          width: '100%',
+          height: '500px',
         }}
       />
 
@@ -112,7 +120,9 @@ function MetricsPage() {
         ]}
         type="bar"
         style={{
-          maxWidth: '700px', width: '100%', height: '500px', 
+          maxWidth: '700px',
+          width: '100%',
+          height: '500px',
         }}
       />
     </Section>

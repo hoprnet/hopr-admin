@@ -15,7 +15,10 @@ export const parseMetrics = (data: string) => {
       key = lastKey = string[2];
       name = tmp[i].replace(`# HELP ${key} `, '');
       parsed[key] = {
-        name, data: [], categories: [], length: 0, 
+        name,
+        data: [],
+        categories: [],
+        length: 0,
       };
     } else if (string[0] === '#' && string[1] === 'TYPE') {
       key = string[2];
