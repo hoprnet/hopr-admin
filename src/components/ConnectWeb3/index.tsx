@@ -52,11 +52,11 @@ const Web3Button = styled.div`
   justify-content: center;
   color: #414141;
   gap: 10px;
-  & p {
+  p {
     margin: 0;
     font-size: 12px;
   }
-  & .chain {
+  .chain {
     color: #808080;
     line-height: 12px;
   }
@@ -165,6 +165,7 @@ export default function ConnectWeb3({
         <AppBarContainer
           onClick={handleWeb3ButtonClick}
           ref={containerRef}
+          className={`web3-connect-btn`}
         >
           <div className="image-container">
             <img src="/assets/wallets/MetaMask_Fox.svg" />
