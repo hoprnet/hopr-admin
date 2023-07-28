@@ -1,18 +1,22 @@
 import { useEffect, useState } from 'react';
-import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
+import { useBalance, usePrepareSendTransaction, useSendTransaction } from 'wagmi';
+import { parseEther } from 'viem';
+import { useAppSelector } from '../../store';
+import styled from '@emotion/styled';
+
 import {
-  Button as MuiButton,
+  CircularProgress,
   DialogTitle,
   InputAdornment,
   MenuItem,
+  Button as MuiButton,
   TextField
 } from '@mui/material'
+import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
+import Button from '../../future-hopr-lib-components/Button';
 
 import CloseIcon from '@mui/icons-material/Close';
-import { useBalance } from 'wagmi';
-import { useAppSelector } from '../../store';
-import styled from '@emotion/styled';
-import Button from '../../future-hopr-lib-components/Button';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 const Content = styled(SDialogContent)`
   gap: 1rem;
@@ -56,6 +60,18 @@ const MaxButton = styled(MuiButton)`
   }
 `;
 
+const GnosisLink = styled.a`
+  display: inline-flex;
+  gap: 2px;
+  text-decoration: underline;
+
+  & svg {
+    align-self: flex-end;
+    height: 16px;
+    width: 16px;
+  }
+`;
+
 const xhoprSmartContractAddress = '0xD057604A14982FE8D88c5fC25Aac3267eA142a08';
 
 type WithdraweModalProps = {
@@ -68,6 +84,20 @@ const WithdrawModal = ({ initialCurrency }: WithdraweModalProps) => {
   const [amount, set_amount] = useState<string>('');
   const [receiver, set_receiver] = useState<string>('');
   const selectedSafeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress);
+
+  // TODO: Missing safe tx proposal.
+  const { config } = usePrepareSendTransaction({
+    account: selectedSafeAddress as `0x${string}`,
+    to: receiver,
+    value: parseEther(amount),
+  });
+
+  const {
+    data,
+    isLoading,
+    isSuccess,
+    sendTransaction,
+  } = useSendTransaction(config);
 
   // Fetch balance data
   const { data: xDAI_balance } = useBalance({
@@ -85,6 +115,12 @@ const WithdrawModal = ({ initialCurrency }: WithdraweModalProps) => {
     setMaxAmount();
   }, [currency]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      setMaxAmount();
+    }
+  }, [isSuccess]);
+
   const handleOpenModal = () => {
     set_openModal(true);
   };
@@ -98,6 +134,12 @@ const WithdrawModal = ({ initialCurrency }: WithdraweModalProps) => {
       set_amount(xHOPR_balance.formatted);
     } else if (currency === 'xDAI' && xDAI_balance) {
       set_amount(xDAI_balance.formatted);
+    }
+  };
+
+  const handleWithdraw = () => {
+    if (receiver && amount) {
+      sendTransaction?.();
     }
   };
 
@@ -157,7 +199,21 @@ const WithdrawModal = ({ initialCurrency }: WithdraweModalProps) => {
                 value={receiver}
                 onChange={(e) => set_receiver(e.target.value)}
               />
-              <Button>Withdraw</Button>
+              <Button onClick={handleWithdraw}>Withdraw</Button>
+              {isLoading && <CircularProgress />}
+              {isSuccess && (
+                <p>
+                  Check your transaction{' '}
+                  <GnosisLink
+                    href={`https://gnosisscan.io/tx/${data?.hash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    here
+                    <LaunchIcon />
+                  </GnosisLink>
+                </p>
+              )}
             </>
           ) : (
             <p>Connect your SAFE</p>
