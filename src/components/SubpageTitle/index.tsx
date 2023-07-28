@@ -3,13 +3,13 @@ import styled from '@emotion/styled';
 
 // Mui
 import RefreshIcon from '@mui/icons-material/Refresh';
-import IconButton from '@mui/material/IconButton';
+import { Tooltip, IconButton } from '@mui/material';
 
 type SubpageTitleProps = {
   title?: string;
   reloading?: boolean;
   refreshFunction?: () => void;
-  actions?: any
+  actions?: any;
 };
 
 const Content = styled.div`
@@ -19,6 +19,9 @@ const Content = styled.div`
   width: 100%;
   justify-content: space-between;
   .right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
   }
   .left {
   }
@@ -59,23 +62,29 @@ export const SubpageTitle = ({
     <Content>
       <div className="right">
         <h2>{title}</h2>
-        <div className="actions">
-          {actions}
-        </div>
+        <div className="actions">{actions}</div>
       </div>
 
-      <SIconButton
-        className={`left${reloading || reloadingLocal ? 'reloading' : ''}`}
-        onClick={() => {
-          set_reloadingLocal(true);
-          refreshFunction && refreshFunction();
-          setTimeout(() => {
-            set_reloadingLocal(false);
-          }, 2000);
-        }}
-      >
-        <RefreshIcon />
-      </SIconButton>
+      {
+        refreshFunction && 
+        <Tooltip
+          title="Refresh"
+        >
+          <SIconButton
+            className={`left ${reloading || reloadingLocal ? 'reloading' : ''}`}
+            onClick={() => {
+              set_reloadingLocal(true);
+              refreshFunction();
+              setTimeout(() => {
+                set_reloadingLocal(false);
+              }, 2000);
+            }}
+          >
+            <RefreshIcon />
+          </SIconButton>
+        </Tooltip>
+      }
+
     </Content>
   );
 };
