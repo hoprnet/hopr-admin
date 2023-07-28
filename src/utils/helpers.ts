@@ -14,12 +14,12 @@ export const exportToCsv = <T extends object>(data: T[], filename: string) => {
 };
 
 export const exportToFile = <T extends object>(data: string, filename: string, type: string) => {
-  const blob = new Blob([data], {type});
+  const blob = new Blob([data], { type });
   const elem = window.document.createElement('a');
   elem.href = window.URL.createObjectURL(blob);
-  elem.download = filename;        
+  elem.download = filename;
   document.body.appendChild(elem);
-  elem.click();        
+  elem.click();
   document.body.removeChild(elem);
 };
 

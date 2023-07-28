@@ -15,13 +15,13 @@ import IconButton from '../future-hopr-lib-components/Button/IconButton';
 import GetAppIcon from '@mui/icons-material/GetApp';
 
 const TableTitle = styled.p`
-  font-family: "Source Code Pro";
+  font-family: 'Source Code Pro';
   font-size: 14px;
   font-weight: 700;
-  height: 18px;;
+  height: 18px;
   overflow-wrap: break-word;
   padding: 8px;
-`
+`;
 
 function MetricsPage() {
   const metrics = useAppSelector((selector) => selector.node.metrics);
@@ -51,12 +51,13 @@ function MetricsPage() {
   function renderMetricsTable(parsedMetrics: any) {
     const render: any[] = [];
     for (const [key, value] of Object.entries(metrics.parsed)) {
-      if (value.length === 1) render.push(
-        <tr key={key}>
-          <th>{value.name}</th>
-          <td>{value.data[0]}</td>
-        </tr>
-      );
+      if (value.length === 1)
+        render.push(
+          <tr key={key}>
+            <th>{value.name}</th>
+            <td>{value.data[0]}</td>
+          </tr>,
+        );
     }
     return <tbody>{render}</tbody>;
   }
@@ -81,15 +82,12 @@ function MetricsPage() {
           </>
         }
       />
-      <TableExtended
-        width1stColumn={"400px"}
-      >{renderMetricsTable(metrics?.parsed)}</TableExtended>
-      <br/>
-      <br/><br/>
+      <TableExtended width1stColumn={'400px'}>{renderMetricsTable(metrics?.parsed)}</TableExtended>
+      <br />
+      <br />
+      <br />
 
-      <TableTitle>
-        Measures total time it takes to ping a single node (seconds)
-      </TableTitle>
+      <TableTitle>Measures total time it takes to ping a single node (seconds)</TableTitle>
       <Chart
         options={{ xaxis: { categories: metrics?.parsed?.core_histogram_ping_time_seconds?.categories
           ? metrics?.parsed?.core_histogram_ping_time_seconds?.categories
@@ -107,9 +105,7 @@ function MetricsPage() {
         }}
       />
 
-      <TableTitle>
-        Time it takes for a node to start up
-      </TableTitle>
+      <TableTitle>Time it takes for a node to start up</TableTitle>
       <Chart
         options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_startup_time_seconds?.categories
           ? metrics?.parsed?.hoprd_histogram_startup_time_seconds?.categories
@@ -127,9 +123,7 @@ function MetricsPage() {
         }}
       />
 
-      <TableTitle>
-        Time it takes for a node to transition to the GREEN network state
-      </TableTitle>
+      <TableTitle>Time it takes for a node to transition to the GREEN network state</TableTitle>
       <Chart
         options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_time_to_green_second?.categories
           ? metrics?.parsed?.hoprd_histogram_time_to_green_seconds?.categories
@@ -147,10 +141,7 @@ function MetricsPage() {
         }}
       />
 
-
-      <TableTitle>
-        Histogram of measured received message latencies
-      </TableTitle>
+      <TableTitle>Histogram of measured received message latencies</TableTitle>
       <Chart
         options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_message_latency_ms?.categories
           ? metrics?.parsed?.hoprd_histogram_message_latency_ms?.categories
@@ -168,9 +159,7 @@ function MetricsPage() {
         }}
       />
 
-      <TableTitle>
-        Number different peer types by quality
-      </TableTitle>
+      <TableTitle>Number different peer types by quality</TableTitle>
       <Chart
         options={{ xaxis: { categories: metrics?.parsed?.core_mgauge_peers_by_quality?.categories
           ? metrics?.parsed?.core_mgauge_peers_by_quality?.categories
