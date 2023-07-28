@@ -544,13 +544,22 @@ function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersRes
   }, []);
 
   const getValueFromHistoryTransaction = (transaction: EthereumTxWithTransfersResponse) => {
-    const units = transaction.transfers.at(0)?.tokenInfo.decimals ?? 18;
+    if (!transaction.transfers.at(0)?.tokenAddress) {
+      // native transfer
+      return formatEther(BigInt(transaction.transfers.at(0)?.value ?? 0))
+    }
+    
+    const units = transaction.transfers.at(0)?.tokenInfo?.decimals ?? 18;
     const value = formatUnits(BigInt(transaction.transfers.at(0)?.value ?? 0), units);
     return value;
   };
 
   const getCurrencyFromHistoryTransaction = (transaction: EthereumTxWithTransfersResponse) => {
-    const currency = transaction.transfers.at(0)?.tokenInfo.symbol;
+    if (!transaction.transfers.at(0)?.tokenAddress) {
+      // native transfer
+      return 'xDai'
+    }
+    const currency = transaction.transfers.at(0)?.tokenInfo?.symbol;
     return currency;
   };
 
