@@ -332,7 +332,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
         });
         return decodedData.functionName;
       } catch (e) {
-        return 'Could not decode'
+        return 'Could not decode';
       }
     } else if (BigInt(transaction.value)) {
       return 'Sent';
@@ -666,7 +666,7 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
         });
         return decodedData.functionName;
       } catch (e) {
-        return 'Could not decode'
+        return 'Could not decode';
       }
     } else if (BigInt(transaction.value)) {
       return 'Sent';
