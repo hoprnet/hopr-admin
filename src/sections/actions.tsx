@@ -546,9 +546,9 @@ function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersRes
   const getValueFromHistoryTransaction = (transaction: EthereumTxWithTransfersResponse) => {
     if (!transaction.transfers.at(0)?.tokenAddress) {
       // native transfer
-      return formatEther(BigInt(transaction.transfers.at(0)?.value ?? 0))
+      return formatEther(BigInt(transaction.transfers.at(0)?.value ?? 0));
     }
-    
+
     const units = transaction.transfers.at(0)?.tokenInfo?.decimals ?? 18;
     const value = formatUnits(BigInt(transaction.transfers.at(0)?.value ?? 0), units);
     return value;
@@ -557,7 +557,7 @@ function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersRes
   const getCurrencyFromHistoryTransaction = (transaction: EthereumTxWithTransfersResponse) => {
     if (!transaction.transfers.at(0)?.tokenAddress) {
       // native transfer
-      return 'xDai'
+      return 'xDai';
     }
     const currency = transaction.transfers.at(0)?.tokenInfo?.symbol;
     return currency;
