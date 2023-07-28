@@ -1,8 +1,11 @@
 import { useEffect } from 'react';
-import Section from '../future-hopr-lib-components/Section';
 import { useAppDispatch, useAppSelector } from '../store';
 import { actionsAsync } from '../store/slices/node/actionsAsync';
 import Chart from 'react-apexcharts';
+
+// HOPR components
+import Section from '../future-hopr-lib-components/Section';
+import { TableExtended } from '../future-hopr-lib-components/Table/columed-data';
 
 function MetricsPage() {
   const metrics = useAppSelector((selector) => selector.node.metrics);
@@ -39,7 +42,9 @@ function MetricsPage() {
       fullHeightMin
     >
       <h2>Metrics</h2>
+      <TableExtended>
       {renderMetricsTable(metrics?.parsed)}
+      </TableExtended>
 
       <Chart
         options={{ xaxis: { categories: metrics?.parsed?.core_histogram_ping_time_seconds?.categories
