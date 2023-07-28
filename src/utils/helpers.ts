@@ -13,6 +13,16 @@ export const exportToCsv = <T extends object>(data: T[], filename: string) => {
   link.click();
 };
 
+export const exportToFile = <T extends object>(data: string, filename: string, type: string) => {
+  const csvContent = `data:${type};charset=utf-8,` + data;
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement('a');
+  link.setAttribute('href', encodedUri);
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+};
+
 /**
  * Exports an array of objects to a CSV file for download.
  * @param data The array of objects to export.

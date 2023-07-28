@@ -574,9 +574,23 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
       state.aliases = action.payload;
     }
   });
+  builder.addCase(getBalancesThunk.pending, (state, action) => {
+    if (action.payload) {
+      state.balances.reloading = true;
+    }
+  });
   builder.addCase(getBalancesThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.balances = action.payload;
+      state.balances = {
+        native: action.payload.native,
+        hopr: action.payload.hopr,
+        reloading: false,
+      };
+    }
+  });
+  builder.addCase(getBalancesThunk.rejected, (state, action) => {
+    if (action.payload) {
+      state.balances.reloading = false;
     }
   });
   builder.addCase(getChannelsThunk.fulfilled, (state, action) => {

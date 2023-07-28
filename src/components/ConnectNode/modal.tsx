@@ -199,13 +199,6 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     dispatch(appActions.resetNodeState());
     dispatch(nodeActions.closeMessagesWebsocket());
     dispatch(nodeActions.closeLogsWebsocket());
-    dispatch(
-      authActions.useNodeData({
-        apiEndpoint,
-        apiToken,
-        localName,
-      }),
-    );
     const loginInfo = await dispatch(
       authActionsAsync.loginThunk({
         apiEndpoint,
@@ -213,6 +206,13 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
       }),
     ).unwrap();
     if (loginInfo) {
+      dispatch(
+        authActions.useNodeData({
+          apiEndpoint,
+          apiToken,
+          localName,
+        }),
+      );
       dispatch(
         nodeActionsAsync.getAddressesThunk({
           apiToken,

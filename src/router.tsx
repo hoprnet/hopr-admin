@@ -355,7 +355,7 @@ const LayoutEnhanced = () => {
         dispatch(nodeActions.initializeMessagesWebsocket());
         dispatch(nodeActions.initializeLogsWebsocket());
       }
-    }
+    };
     useNode();
 
     return () => {
