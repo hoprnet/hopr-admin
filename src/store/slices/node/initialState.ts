@@ -56,7 +56,18 @@ type InitialState = {
   version: string | null;
   transactions: string[];
   pings: (PingNodeResponseType & { peerId: string })[];
-  metrics: string | null;
+  metrics: {
+    raw: string | null;
+    parsed: {
+      [key: string]: {
+        categories: [],
+        data: [],
+        length: number,
+        name: string,
+        type: string,
+      }
+    }
+  };
   messagesWebsocketStatus: WebsocketConnectionStatus;
   logsWebsocketStatus: WebsocketConnectionStatus;
 };
@@ -94,7 +105,12 @@ export const initialState: InitialState = {
   version: null,
   transactions: [],
   pings: [],
-  metrics: null,
+  metrics: {
+    raw: null,
+    parsed: {
+
+    }
+  },
   messagesWebsocketStatus: null,
   logsWebsocketStatus: null,
 };

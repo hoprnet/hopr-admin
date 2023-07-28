@@ -21,6 +21,7 @@ import {
   api,
   utils
 } from '@hoprnet/hopr-sdk';
+import { parseMetrics } from '../../../utils/metrics';
 
 const { APIError } = utils;
 const {
@@ -798,7 +799,8 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   });
   builder.addCase(getPrometheusMetricsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.metrics = action.payload;
+      state.metrics.raw = action.payload;
+      state.metrics.parsed = parseMetrics(action.payload);
     }
   });
 };
