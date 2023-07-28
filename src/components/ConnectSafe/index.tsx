@@ -73,7 +73,6 @@ const SafeAddress = styled.div`
   color: #414141;
 `;
 
-
 export default function ConnectSafe() {
   const dispatch = useAppDispatch();
   const signer = useEthersSigner();
