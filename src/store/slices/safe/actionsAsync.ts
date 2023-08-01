@@ -192,8 +192,8 @@ const getSafeInfoThunk = createAsyncThunk(
   ) => {
     try {
       const safeApi = await createSafeApiService(payload.signer);
-      const safeInfo = await safeApi.getSafeInfo(payload.safeAddress);
-      return safeInfo;
+      const info = await safeApi.getSafeInfo(payload.safeAddress);
+      return info;
     } catch (e) {
       return rejectWithValue(e);
     }
@@ -528,7 +528,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getSafeInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.selectedSafeAddress = action.payload.address;
-      state.safeInfo = action.payload;
+      state.info = action.payload;
     }
   });
   builder.addCase(getAllSafeTransactionsThunk.fulfilled, (state, action) => {
@@ -543,7 +543,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   });
   builder.addCase(getSafeDelegatesThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.safeDelegates = action.payload;
+      state.delegates = action.payload;
     }
   });
 };
