@@ -67,11 +67,11 @@ function AliasesPage() {
       <button
         disabled={aliases !== null && Object.keys(aliases).length === 0}
         onClick={() => {
-          if (aliases) {
+          if (aliases.data) {
             exportToCsv(
-              Object.keys(aliases).map((alias) => ({
+              Object.keys(aliases.data).map((alias) => ({
                 alias: alias,
-                peerId: aliases[alias],
+                peerId: aliases.data?.[alias],
               })),
               'aliases.csv',
             );
@@ -126,7 +126,7 @@ function AliasesPage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.entries(aliases ?? {}).map(([alias, peerId], key) => (
+            {Object.entries(aliases.data ?? {}).map(([alias, peerId], key) => (
               <TableRow key={key}>
                 <TableCell
                   component="th"

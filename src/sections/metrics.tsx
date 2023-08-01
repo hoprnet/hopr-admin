@@ -30,7 +30,7 @@ function MetricsPage() {
       fullHeightMin
     >
       <h2>Metrics</h2>
-      <pre>{metrics}</pre>
+      <pre>{metrics.data}</pre>
     </Section>
   );
 }

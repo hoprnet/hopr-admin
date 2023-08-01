@@ -583,14 +583,21 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getAddressesThunk.rejected, (state, action) => {
     state.addresses.isFetching = false;
   });
+  builder.addCase(getAliasesThunk.pending, (state, action) => {
+    state.aliases.isFetching = true;
+  });
   builder.addCase(getAliasesThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.aliases = action.payload;
+      state.aliases.data = action.payload;
     }
+    state.aliases.isFetching = false;
+  });
+  builder.addCase(getAliasesThunk.rejected, (state, action) => {
+    state.aliases.isFetching = false;
   });
   builder.addCase(getBalancesThunk.pending, (state, action) => {
     if (action.payload) {
-      state.balances.reloading = true;
+      state.balances.isFetching = true;
     }
   });
   builder.addCase(getBalancesThunk.fulfilled, (state, action) => {
@@ -598,14 +605,12 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
       state.balances = {
         native: action.payload.native,
         hopr: action.payload.hopr,
-        reloading: false,
+        isFetching: false,
       };
     }
   });
   builder.addCase(getBalancesThunk.rejected, (state, action) => {
-    if (action.payload) {
-      state.balances.reloading = false;
-    }
+    state.balances.isFetching = false;
   });
   builder.addCase(getChannelsThunk.pending, (state, action) => {
     state.channels.isFetching = true;
@@ -614,79 +619,142 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     if (action.payload) {
       state.channels.data = action.payload;
     }
-    state.channels.isFetching = true;
+    state.channels.isFetching = false;
   });
   builder.addCase(getChannelsThunk.rejected, (state, action) => {
     state.channels.isFetching = false;
   });
+  builder.addCase(getPeersThunk.pending, (state, action) => {
+    state.peers.isFetching = true;
+  });
   builder.addCase(getPeersThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.peers = action.payload;
+      state.peers.data = action.payload;
     }
+    state.peers.isFetching = false;
+  });
+  builder.addCase(getPeersThunk.rejected, (state, action) => {
+    state.peers.isFetching = false;
+  });
+  builder.addCase(getPeerInfoThunk.pending, (state, action) => {
+    state.peerInfo.isFetching = true;
   });
   builder.addCase(getPeerInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.peerInfo = action.payload;
+      state.peerInfo.data = action.payload;
     }
+    state.peerInfo.isFetching = false;
+  });
+  builder.addCase(getPeerInfoThunk.rejected, (state, action) => {
+    state.peerInfo.isFetching = false;
+  });
+  builder.addCase(getSettingsThunk.pending, (state, action) => {
+    state.settings.isFetching = true;
   });
   builder.addCase(getSettingsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.settings = action.payload;
+      state.settings.data = action.payload;
     }
+    state.settings.isFetching = false;
+  });
+  builder.addCase(getSettingsThunk.rejected, (state, action) => {
+    state.settings.isFetching = false;
+  });
+  builder.addCase(getStatisticsThunk.pending, (state, action) => {
+    state.statistics.isFetching = true;
   });
   builder.addCase(getStatisticsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.statistics = action.payload;
+      state.statistics.data = action.payload;
     }
+    state.statistics.isFetching = false;
+  });
+  builder.addCase(getStatisticsThunk.rejected, (state, action) => {
+    state.statistics.isFetching = false;
+  });
+  builder.addCase(getTicketsThunk.pending, (state, action) => {
+    state.tickets.isFetching = true;
   });
   builder.addCase(getTicketsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.tickets = action.payload;
+      state.tickets.data = action.payload;
     }
+    state.tickets.isFetching = false;
+  });
+  builder.addCase(getTicketsThunk.rejected, (state, action) => {
+    state.tickets.isFetching = false;
+  });
+  builder.addCase(getTokenThunk.pending, (state, action) => {
+    state.tokens.isFetching = true;
   });
   builder.addCase(getTokenThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      const tokenExists = state.tokens?.findIndex((token) => token.id === action.payload?.id);
+      const tokenExists = state.tokens.data?.findIndex((token) => token.id === action.payload?.id);
 
       if (tokenExists) {
-        state.tokens[tokenExists] = action.payload;
+        state.tokens.data[tokenExists] = action.payload;
       } else {
-        state.tokens.push(action.payload);
+        state.tokens.data.push(action.payload);
       }
     }
+    state.tokens.isFetching = false;
+  });
+  builder.addCase(getTokenThunk.rejected, (state, action) => {
+    state.tokens.isFetching = false;
+  });
+  builder.addCase(getEntryNodesThunk.pending, (state, action) => {
+    state.entryNodes.isFetching = true;
   });
   builder.addCase(getEntryNodesThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.entryNodes = action.payload;
+      state.entryNodes.data = action.payload;
     }
+    state.entryNodes.isFetching = false;
+  });
+  builder.addCase(getEntryNodesThunk.rejected, (state, action) => {
+    state.entryNodes.isFetching = false;
+  });
+  builder.addCase(getVersionThunk.pending, (state, action) => {
+    state.version.isFetching = true;
   });
   builder.addCase(getVersionThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.version = action.payload;
+      state.version.data = action.payload;
     }
+    state.version.isFetching = false;
+  });
+  builder.addCase(getVersionThunk.rejected, (state, action) => {
+    state.version.isFetching = false;
+  });
+  builder.addCase(getAliasThunk.pending, (state, action) => {
+    state.aliases.isFetching = true;
   });
   builder.addCase(getAliasThunk.fulfilled, (state, action) => {
-    if (action.payload && state.aliases) {
-      if (state.aliases) {
-        state.aliases[action.payload.alias] = action.payload.peerId;
+    if (action.payload && state.aliases.data) {
+      if (state.aliases.data) {
+        state.aliases.data[action.payload.alias] = action.payload.peerId;
       } else {
-        state.aliases = { [action.payload.alias]: action.payload.peerId };
+        state.aliases.data = { [action.payload.alias]: action.payload.peerId };
       }
     }
+    state.aliases.isFetching = false;
+  });
+  builder.addCase(getAliasThunk.rejected, (state, action) => {
+    state.aliases.isFetching = false;
   });
   builder.addCase(setAliasThunk.fulfilled, (state, action) => {
-    if (action.payload && state.aliases) {
-      if (state.aliases) {
-        state.aliases[action.payload.alias] = action.payload.peerId;
+    if (action.payload && state.aliases.data) {
+      if (state.aliases.data) {
+        state.aliases.data[action.payload.alias] = action.payload.peerId;
       } else {
-        state.aliases = { [action.payload.alias]: action.payload.peerId };
+        state.aliases.data = { [action.payload.alias]: action.payload.peerId };
       }
     }
   });
   builder.addCase(removeAliasThunk.fulfilled, (state, action) => {
-    if (action.payload && state.aliases) {
-      if (state.aliases) {
-        delete state.aliases[action.payload.alias];
+    if (action.payload && state.aliases.data) {
+      if (state.aliases.data) {
+        delete state.aliases.data[action.payload.alias];
       }
     }
   });
@@ -694,6 +762,9 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     if (action.payload) {
       state.transactions.push(action.payload);
     }
+  });
+  builder.addCase(getChannelThunk.pending, (state, action) => {
+    state.channels.isFetching = true;
   });
   builder.addCase(getChannelThunk.fulfilled, (state, action) => {
     if (action.payload) {
@@ -744,29 +815,40 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
         };
       }
     }
+    state.channels.isFetching = false;
+  });
+  builder.addCase(getChannelThunk.rejected, (state, action) => {
+    state.channels.isFetching = false;
+  });
+  builder.addCase(getChannelTicketsThunk.pending, (state, action) => {
+    state.tickets.isFetching = true;
   });
   builder.addCase(getChannelTicketsThunk.fulfilled, (state, action) => {
     if (action.payload) {
       for (const updatedTicket of action.payload) {
         // using challenge as an id between tickets
         const uniqueIdentifier = updatedTicket.challenge;
-        const existingIndex = state.tickets?.findIndex((ticket) => ticket.challenge === uniqueIdentifier);
+        const existingIndex = state.tickets.data?.findIndex((ticket) => ticket.challenge === uniqueIdentifier);
 
-        if (existingIndex && existingIndex !== -1 && state.tickets) {
+        if (existingIndex && existingIndex !== -1 && state.tickets.data) {
           // Update the existing ticket with the new values
-          state.tickets[existingIndex] = {
-            ...state.tickets[existingIndex],
+          state.tickets.data[existingIndex] = {
+            ...state.tickets.data[existingIndex],
             ...updatedTicket,
           };
-        } else if (state.tickets) {
+        } else if (state.tickets.data) {
           // Add the updated ticket as a new object
-          state.tickets.push(updatedTicket);
+          state.tickets.data.push(updatedTicket);
         } else {
           // initialize tickets array
-          state.tickets = [updatedTicket];
+          state.tickets.data = [updatedTicket];
         }
       }
     }
+    state.tickets.isFetching = false;
+  });
+  builder.addCase(getChannelTicketsThunk.rejected, (state, action) => {
+    state.tickets.isFetching = false;
   });
   builder.addCase(sendMessageThunk.pending, (state, action) => {
     if (action.meta) {
@@ -828,13 +910,20 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   });
   builder.addCase(deleteTokenThunk.fulfilled, (state, action) => {
     if (action.payload?.deleted) {
-      state.tokens = state.tokens.filter((token) => token.id !== action.payload?.id);
+      state.tokens.data = state.tokens.data.filter((token) => token.id !== action.payload?.id);
     }
+  });
+  builder.addCase(getPrometheusMetricsThunk.pending, (state, action) => {
+    state.metrics.isFetching = true;
   });
   builder.addCase(getPrometheusMetricsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.metrics = action.payload;
+      state.metrics.data = action.payload;
     }
+    state.metrics.isFetching = false;
+  });
+  builder.addCase(getPrometheusMetricsThunk.rejected, (state, action) => {
+    state.metrics.isFetching = false;
   });
 };
 

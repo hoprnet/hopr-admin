@@ -43,11 +43,11 @@ type InitialState = {
     data: { hopr: string | null; native: string | null };
     isFetching: boolean;
   };
-  aliases: GetAliasesResponseType | null;
+  aliases: { data: GetAliasesResponseType | null; isFetching: boolean };
   balances: {
     hopr: string | null;
     native: string | null;
-    reloading: boolean;
+    isFetching: boolean;
   };
   channels: {
     data: GetChannelsResponseType | null;
@@ -61,20 +61,23 @@ type InitialState = {
     timestamp: number;
   }[];
   signedMessages: { createdAt: number; body: string }[];
-  peers: GetPeersResponseType | null;
-  entryNodes: GetEntryNodesResponseType | null;
+  peers: { data: GetPeersResponseType | null; isFetching: boolean };
+  entryNodes: { data: GetEntryNodesResponseType | null; isFetching: boolean };
   peerInfo: {
-    announced: string[];
-    observed: string[];
+    data: {
+      announced: string[];
+      observed: string[];
+    };
+    isFetching: boolean;
   };
-  settings: GetSettingsResponseType | null;
-  statistics: GetStatisticsResponseType | null;
-  tickets: GetTicketsResponseType | null;
-  tokens: GetTokenResponseType[];
-  version: string | null;
+  settings: { data: GetSettingsResponseType | null; isFetching: boolean };
+  statistics: { data: GetStatisticsResponseType | null; isFetching: boolean };
+  tickets: { data: GetTicketsResponseType | null; isFetching: boolean };
+  tokens: { data: GetTokenResponseType[]; isFetching: boolean };
+  version: { data: string | null; isFetching: boolean };
   transactions: string[];
   pings: (PingNodeResponseType & { peerId: string })[];
-  metrics: string | null;
+  metrics: { data: string | null; isFetching: boolean };
   messagesWebsocketStatus: WebsocketConnectionStatus;
   logsWebsocketStatus: WebsocketConnectionStatus;
 };
@@ -98,11 +101,14 @@ export const initialState: InitialState = {
     },
     isFetching: false,
   },
-  aliases: null,
+  aliases: {
+    data: null,
+    isFetching: false,
+  },
   balances: {
     native: null,
     hopr: null,
-    reloading: false,
+    isFetching: false,
   },
   channels: {
     data: null,
@@ -113,22 +119,49 @@ export const initialState: InitialState = {
   signedMessages: [],
   logs: [],
   peers: {
-    connected: [],
-    announced: [],
+    data: {
+      connected: [],
+      announced: [],
+    },
+    isFetching: false,
   },
   peerInfo: {
-    announced: [],
-    observed: [],
+    data: {
+      announced: [],
+      observed: [],
+    },
+    isFetching: false,
   },
-  entryNodes: null,
-  settings: null,
-  statistics: null,
-  tickets: [],
-  tokens: [],
-  version: null,
+  entryNodes: {
+    data: null,
+    isFetching: false,
+  },
+  settings: {
+    data: null,
+    isFetching: false,
+  },
+  statistics: {
+    data: null,
+    isFetching: false,
+  },
+  tickets: {
+    data: [],
+    isFetching: false,
+  },
+  tokens: {
+    data: [],
+    isFetching: false,
+  },
+  version: {
+    data: null,
+    isFetching: false,
+  },
   transactions: [],
   pings: [],
-  metrics: null,
+  metrics: {
+    data: null,
+    isFetching: false,
+  },
   messagesWebsocketStatus: null,
   logsWebsocketStatus: null,
 };

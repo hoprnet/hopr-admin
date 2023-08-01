@@ -139,14 +139,14 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
   };
 
   const isAlias = (alias: string) => {
-    if (aliases) {
-      return !!aliases[alias];
+    if (aliases.data) {
+      return !!aliases.data[alias];
     } else return false;
   };
 
   const validatePeerId = (receiver: string) => {
-    if (aliases && isAlias(receiver)) {
-      return aliases[receiver];
+    if (aliases.data && isAlias(receiver)) {
+      return aliases.data[receiver];
     }
     return receiver;
   };

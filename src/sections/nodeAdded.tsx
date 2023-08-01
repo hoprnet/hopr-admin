@@ -253,8 +253,8 @@ const GrayCard = ({
 
 const NodeAdded = () => {
   const selectedSafeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress) as `0x${string}`;
-  const nodeNativeAddress = useAppSelector((selector) => selector.node.addresses.native);
-  const nodeHoprAddress = useAppSelector((selector) => selector.node.addresses.hopr);
+  const nodeNativeAddress = useAppSelector((selector) => selector.node.addresses.data.native);
+  const nodeHoprAddress = useAppSelector((selector) => selector.node.addresses.data.hopr);
 
   const { data: xDAI_balance } = useBalance({
     address: selectedSafeAddress,

@@ -91,8 +91,8 @@ function ChannelsPage() {
   };
 
   const getAliasByPeerId = (peerId: string): string => {
-    if (aliases) {
-      for (const [alias, id] of Object.entries(aliases)) {
+    if (aliases.data) {
+      for (const [alias, id] of Object.entries(aliases.data)) {
         if (id === peerId) {
           return alias;
         }
@@ -103,7 +103,7 @@ function ChannelsPage() {
 
   const exportToCsvButton = () => {
     const tabLabel = tabIndex === 0 ? 'incoming' : 'outgoing';
-    const channelsData = tabIndex === 0 ? channels?.incoming : channels?.outgoing;
+    const channelsData = tabIndex === 0 ? channels.data?.incoming : channels.data?.outgoing;
 
     return (
       <button
@@ -214,7 +214,7 @@ function ChannelsPage() {
           </TableHead>
           {tabIndex === 0 && (
             <TableBody>
-              {Object.entries(channels?.incoming ?? []).map(([, channel], key) => (
+              {Object.entries(channels.data?.incoming ?? []).map(([, channel], key) => (
                 <TableRow key={key}>
                   <TableCell
                     component="th"
@@ -228,7 +228,7 @@ function ChannelsPage() {
                   <TableCell>
                     <OpenChannelModal
                       peerId={channel.peerId}
-                      title="Open Outgoing Channel"
+                      title="Open Outgoing Channel.data"
                     />
                   </TableCell>
                 </TableRow>
@@ -237,7 +237,7 @@ function ChannelsPage() {
           )}
           {tabIndex === 1 && (
             <TableBody>
-              {Object.entries(channels?.outgoing ?? []).map(([, channel], key) => (
+              {Object.entries(channels.data?.outgoing ?? []).map(([, channel], key) => (
                 <TableRow key={key}>
                   <TableCell
                     component="th"
@@ -260,7 +260,7 @@ function ChannelsPage() {
                     <hr />
                     <OpenChannelModal
                       peerId={channel.peerId}
-                      title="Fund Channel"
+                      title="Fund Channel.data"
                       modalBtnText="Fund"
                       actionBtnText="Fund"
                       channelId={channel.channelId}

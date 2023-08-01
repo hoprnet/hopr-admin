@@ -9,12 +9,12 @@ const nodeSlice = createSlice({
     resetState: () => initialState,
     setInitiating(state) {
       console.log('SDK initiating');
-      state.status.initiating = true;
+      state.status.data.initiating = true;
     },
     setInitiated(state) {
       console.log('SDK setInitiated');
-      state.status.initiating = false;
-      state.status.initiated = true;
+      state.status.data.initiating = false;
+      state.status.data.initiated = true;
     },
     setInfo(state, action) {
       state.info = action.payload;

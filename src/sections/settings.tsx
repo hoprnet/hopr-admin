@@ -17,7 +17,7 @@ import { nodeActionsAsync } from '../store/slices/node';
 function SettingsPage() {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const settings = useAppSelector((selector) => selector.node.settings);
+  const settings = useAppSelector((selector) => selector.node.settings.data);
   const [localSettings, set_localSettings] = useState<{
     includeRecipient?: boolean;
     strategy?: string;

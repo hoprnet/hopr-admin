@@ -56,7 +56,7 @@ function PeersPage() {
   };
 
   const getAliasByPeerId = (peerId: string): string => {
-    for (const [alias, id] of Object.entries(aliases!)) {
+    for (const [alias, id] of Object.entries(aliases.data!)) {
       if (id === peerId) {
         return alias;
       }
@@ -81,14 +81,15 @@ function PeersPage() {
       fullHeightMin
     >
       <h2>
-        Peers seen in the network ({peers?.announced?.length || '-'}) <button onClick={handleRefresh}>Refresh</button>
+        Peers seen in the network ({peers.data?.announced?.length || '-'}){' '}
+        <button onClick={handleRefresh}>Refresh</button>
       </h2>
       <button
-        disabled={!peers?.announced || Object.keys(peers.announced).length === 0}
+        disabled={!peers.data?.announced || Object.keys(peers.data.announced).length === 0}
         onClick={() => {
-          if (peers?.announced) {
+          if (peers.data?.announced) {
             exportToCsv(
-              peers.announced.map((peer) => ({
+              peers.data.announced.map((peer) => ({
                 peerId: peer.peerId,
                 quality: peer.quality,
                 multiAddr: peer.multiAddr,
@@ -122,7 +123,7 @@ function PeersPage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.entries(peers?.announced ?? {}).map(([id, peer]) => (
+            {Object.entries(peers.data?.announced ?? {}).map(([id, peer]) => (
               <TableRow key={id}>
                 <TableCell
                   component="th"
@@ -133,7 +134,7 @@ function PeersPage() {
                 <TableCell>{peer.peerId}</TableCell>
                 <TableCell>{getAliasByPeerId(peer.peerId)}</TableCell>
                 <TableCell>
-                  {peers?.connected.some((connectedPeer) => connectedPeer.peerId === peer.peerId).toString()}
+                  {peers.data?.connected.some((connectedPeer) => connectedPeer.peerId === peer.peerId).toString()}
                 </TableCell>
                 <TableCell>{peer.multiAddr}</TableCell>
                 <TableCell>

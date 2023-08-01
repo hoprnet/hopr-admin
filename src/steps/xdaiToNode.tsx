@@ -102,7 +102,7 @@ function XdaiToNode() {
   const dispatch = useAppDispatch();
   const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions);
   const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
-  const { native: nodeNativeAddress } = useAppSelector((state) => state.node.addresses);
+  const { native: nodeNativeAddress } = useAppSelector((state) => state.node.addresses.data);
   const [xdaiValue, set_xdaiValue] = useState<string>('');
   const [isLoading, set_isLoading] = useState<boolean>();
   const [proposedTxHash, set_proposedTxHash] = useState<string>();

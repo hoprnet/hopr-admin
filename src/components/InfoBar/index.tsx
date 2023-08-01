@@ -53,13 +53,13 @@ export default function InfoBar(props: Props) {
       <Data>{info.data?.connectivityStatus}</Data>
 
       <Title>xDai balance</Title>
-      <Data>{balances?.native && utils.formatEther(balances.native)}</Data>
+      <Data>{balances.native && utils.formatEther(balances.native)}</Data>
 
       <Title>mHOPR balance</Title>
-      <Data>{balances?.hopr && utils.formatEther(balances.hopr)}</Data>
+      <Data>{balances.hopr && utils.formatEther(balances.hopr)}</Data>
 
       <Title>Peers seen in the network</Title>
-      <Data>{peers?.announced?.length || '-'}</Data>
+      <Data>{peers.data?.announced?.length || '-'}</Data>
 
       <Title>Outgoing Chanels</Title>
       <Data>{channels.data?.outgoing?.length || '-'}</Data>

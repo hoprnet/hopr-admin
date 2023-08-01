@@ -34,14 +34,14 @@ function PingPage() {
   }, []);
 
   const isAlias = (alias: string) => {
-    if (aliases) {
-      return !!aliases[alias];
+    if (aliases.data) {
+      return !!aliases.data[alias];
     } else return false;
   };
 
   const validatePeerId = (peerId: string) => {
-    if (aliases && isAlias(peerId)) {
-      return aliases[peerId];
+    if (aliases.data && isAlias(peerId)) {
+      return aliases.data[peerId];
     }
     return peerId;
   };

@@ -106,43 +106,43 @@ function TicketsPage() {
         <tbody>
           <tr>
             <th>Pending count</th>
-            <td>{statistics?.pending}</td>
+            <td>{statistics.data?.pending}</td>
           </tr>
           <tr>
             <th>Unredeemed count</th>
-            <td>{statistics?.unredeemed}</td>
+            <td>{statistics.data?.unredeemed}</td>
           </tr>
           <tr>
             <th>Unredeemed value</th>
-            <td>{statistics?.unredeemedValue}</td>
+            <td>{statistics.data?.unredeemedValue}</td>
           </tr>
           <tr>
             <th>Redeemed count</th>
-            <td>{statistics?.redeemed}</td>
+            <td>{statistics.data?.redeemed}</td>
           </tr>
           <tr>
             <th>Redeemed value</th>
-            <td>{statistics?.redeemedValue}</td>
+            <td>{statistics.data?.redeemedValue}</td>
           </tr>
           <tr>
             <th>Losing tickets count</th>
-            <td>{statistics?.losingTickets}</td>
+            <td>{statistics.data?.losingTickets}</td>
           </tr>
           <tr>
             <th>Win proportion</th>
-            <td>{statistics?.winProportion}</td>
+            <td>{statistics.data?.winProportion}</td>
           </tr>
           <tr>
             <th>Neglected count</th>
-            <td>{statistics?.neglected}</td>
+            <td>{statistics.data?.neglected}</td>
           </tr>
           <tr>
             <th>Rejected count</th>
-            <td>{statistics?.rejected}</td>
+            <td>{statistics.data?.rejected}</td>
           </tr>
           <tr>
             <th>Rejected value</th>
-            <td>{statistics?.rejectedValue}</td>
+            <td>{statistics.data?.rejectedValue}</td>
           </tr>
         </tbody>
       </TableExtended>
