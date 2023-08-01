@@ -5,7 +5,7 @@ import SafeApiKit, { AddSafeDelegateProps, AllTransactionsOptions, DeleteSafeDel
 import Safe, { EthersAdapter, SafeAccountConfig, SafeFactory } from '@safe-global/protocol-kit';
 import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
 
-const SERVICE_URL = 'https://safe-transaction-gnosis-chain.safe.global/';
+const SERVICE_URL = 'https://safe-transaction.stage.hoprtech.net/';
 
 const createSafeApiService = async (signer: ethers.providers.JsonRpcSigner) => {
   const adapter = new EthersAdapter({
