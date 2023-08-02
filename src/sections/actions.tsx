@@ -723,9 +723,10 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
         <TableCell>{time}</TableCell>
         <TableCell align="right">{truncateEthereumAddress(source ?? '')}</TableCell>
         <TableCell align="right">{request}</TableCell>
-        <TableCell colSpan={2} align="right">{`${
-          value && value.length > 10 ? value.slice(0, 10).concat('...') : value
-        } ${currency}`}</TableCell>
+        <TableCell
+          colSpan={2}
+          align="right"
+        >{`${value && value.length > 10 ? value.slice(0, 10).concat('...') : value} ${currency}`}</TableCell>
       </StyledHistoryTableRow>
       <StyledHistoryTableRow className={!transaction.isExecuted ? 'rejected' : ''}>
         <StyledCollapsibleCell colSpan={6}>
