@@ -84,7 +84,7 @@ export const observePendingSafeTransactions = ({
         notificationPayload: {
           name: `Pending transaction`,
           source: 'node',
-          url: 'hub/safe/pending-transactions',
+          url: 'hub/safe/actions',
           timeout: null,
         },
         toastPayload: { message: `Pending transaction to ${newData?.to}` },

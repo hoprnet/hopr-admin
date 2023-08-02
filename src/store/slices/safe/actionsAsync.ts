@@ -478,7 +478,9 @@ const getAllSafeTransactionsThunk = createAsyncThunk(
   ) => {
     try {
       const safeApi = await createSafeApiService(payload.signer);
-      const transactions = await safeApi.getAllTransactions(payload.safeAddress, payload.options);
+      const transactions = await safeApi.getAllTransactions(payload.safeAddress, {
+        ...payload.options, executed: true,
+      });
       return transactions;
     } catch (e) {
       return rejectWithValue(e);

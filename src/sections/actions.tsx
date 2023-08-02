@@ -130,9 +130,16 @@ const StyledJSON = styled.div`
   overflow-wrap: break-word;
 `;
 
-const StyledTableRow = styled(TableRow)`
+const StyledPendingTableRow = styled(TableRow)`
   &.disabled {
     opacity: 60%;
+  }
+`;
+
+const StyledHistoryTableRow = styled(TableRow)`
+  &.rejected {
+    background-color: rgba(255, 99, 71, 0.4);
+    min-width: 100vw;
   }
 `;
 
@@ -157,7 +164,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
   const signer = useEthersSigner();
   const dispatch = useAppDispatch();
   const { address } = useAccount();
-  const safeNonce = useAppSelector((state) => state.safe.safeInfo?.nonce);
+  const safeNonce = useAppSelector((state) => state.safe.info?.nonce);
   const [isLoadingApproving, set_isLoadingApproving] = useState<boolean>(false);
   const [isLoadingExecuting, set_isLoadingExecuting] = useState<boolean>(false);
   const [isLoadingRejecting, set_isLoadingRejecting] = useState<boolean>(false);
@@ -286,7 +293,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
 
 const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTransactionResponse }) => {
   const { address } = useAccount();
-  const safeNonce = useAppSelector((state) => state.safe.safeInfo?.nonce);
+  const safeNonce = useAppSelector((state) => state.safe.info?.nonce);
   const signer = useEthersSigner();
   const dispatch = useAppDispatch();
   const [open, set_open] = useState(false);
@@ -436,7 +443,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
 
   return (
     <>
-      <StyledTableRow className={(safeNonce ?? 0) < transaction.nonce ? 'disabled' : ''}>
+      <StyledPendingTableRow className={(safeNonce ?? 0) < transaction.nonce ? 'disabled' : ''}>
         <TableCell
           component="th"
           scope="row"
@@ -460,8 +467,8 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
         <TableCell align="left">
           <ActionButtons transaction={transaction} />
         </TableCell>
-      </StyledTableRow>
-      <StyledTableRow className={(safeNonce ?? 0) < transaction.nonce ? 'disabled' : ''}>
+      </StyledPendingTableRow>
+      <StyledPendingTableRow className={(safeNonce ?? 0) < transaction.nonce ? 'disabled' : ''}>
         <StyledCollapsibleCell colSpan={6}>
           <Collapse
             in={open}
@@ -521,7 +528,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
             </StyledBox>
           </Collapse>
         </StyledCollapsibleCell>
-      </StyledTableRow>
+      </StyledPendingTableRow>
     </>
   );
 };
@@ -570,7 +577,7 @@ function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersRes
 
   return (
     <>
-      <StyledTableRow>
+      <StyledHistoryTableRow>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -587,8 +594,8 @@ function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersRes
         <TableCell align="right">{`${
           value && value.length > 18 ? value.slice(0, 18).concat('...') : value
         } ${currency}`}</TableCell>
-      </StyledTableRow>
-      <StyledTableRow>
+      </StyledHistoryTableRow>
+      <StyledHistoryTableRow>
         <StyledCollapsibleCell colSpan={6}>
           <Collapse
             in={open}
@@ -632,7 +639,7 @@ function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersRes
             </StyledBox>
           </Collapse>
         </StyledCollapsibleCell>
-      </StyledTableRow>
+      </StyledHistoryTableRow>
     </>
   );
 }
@@ -699,7 +706,7 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
 
   return (
     <>
-      <StyledTableRow className={!transaction.isExecuted ? 'disabled' : ''}>
+      <StyledHistoryTableRow className={!transaction.isExecuted ? 'rejected' : ''}>
         <TableCell
           component="th"
           scope="row"
@@ -716,11 +723,11 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
         <TableCell>{time}</TableCell>
         <TableCell align="right">{truncateEthereumAddress(source ?? '')}</TableCell>
         <TableCell align="right">{request}</TableCell>
-        <TableCell align="right">{`${
+        <TableCell colSpan={2} align="right">{`${
           value && value.length > 10 ? value.slice(0, 10).concat('...') : value
         } ${currency}`}</TableCell>
-      </StyledTableRow>
-      <StyledTableRow className={!transaction.isExecuted ? 'disabled' : ''}>
+      </StyledHistoryTableRow>
+      <StyledHistoryTableRow className={!transaction.isExecuted ? 'rejected' : ''}>
         <StyledCollapsibleCell colSpan={6}>
           <Collapse
             in={open}
@@ -805,7 +812,7 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
             </StyledBox>
           </Collapse>
         </StyledCollapsibleCell>
-      </StyledTableRow>
+      </StyledHistoryTableRow>
     </>
   );
 }
@@ -838,7 +845,7 @@ function ModuleTransactionRow(props: { transaction: SafeModuleTransactionWithTra
 
   return (
     <>
-      <StyledTableRow>
+      <StyledHistoryTableRow>
         <TableCell
           component="th"
           scope="row"
@@ -858,7 +865,7 @@ function ModuleTransactionRow(props: { transaction: SafeModuleTransactionWithTra
         <TableCell align="right">{`${
           value && value.length > 18 ? value.slice(0, 18).concat('...') : value
         } ${currency}`}</TableCell>
-      </StyledTableRow>
+      </StyledHistoryTableRow>
     </>
   );
 }
@@ -913,14 +920,14 @@ function TransactionHistoryTable() {
     >
       <Table aria-label="safe transaction history">
         <StyledTableHead>
-          <StyledTableRow>
+          <StyledHistoryTableRow>
             <TableCell>Date</TableCell>
             <TableCell align="right">Time</TableCell>
             <TableCell align="right">Source</TableCell>
             <TableCell align="right">Request</TableCell>
             <TableCell align="right">Value/Currency</TableCell>
             <TableCell />
-          </StyledTableRow>
+          </StyledHistoryTableRow>
         </StyledTableHead>
         <TableBody>
           {safeTransactions?.results.map((transaction, key) => (
@@ -983,14 +990,14 @@ const PendingTransactionsTable = () => {
     <TableContainer component={StyledPaper}>
       <Table aria-label="safe pending transactions">
         <StyledTableHead>
-          <StyledTableRow>
+          <StyledPendingTableRow>
             <TableCell>Date</TableCell>
             <TableCell align="left">Source</TableCell>
             <TableCell align="left">Request</TableCell>
             <TableCell align="left">Value/Currency</TableCell>
             <TableCell align="left">Action</TableCell>
             <TableCell />
-          </StyledTableRow>
+          </StyledPendingTableRow>
         </StyledTableHead>
         <TableBody>
           {pendingTransactions &&
