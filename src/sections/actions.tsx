@@ -160,6 +160,12 @@ const isTransactionPendingApprovalFromSigner = (
   return true;
 };
 
+const TruncatedEthereumAddressWithTooltip = ({ address }:{address: string}) => {
+  return <div><Tooltip title={address}>
+    <p>{truncateEthereumAddress(address)}</p>
+  </Tooltip></div>
+}
+
 const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionResponse }) => {
   const signer = useEthersSigner();
   const dispatch = useAppDispatch();
@@ -480,7 +486,8 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
                 <p>Nonce: {transaction.nonce}</p>
                 <p>Created: {dateInUserTimezone}</p>
                 <StyledTransactionHashWithIcon>
-                  <span>To: {truncateEthereumAddress(transaction.to)}</span>
+                  <p>To:</p>
+                  <TruncatedEthereumAddressWithTooltip address={transaction.to}/>
                   <GnosisLink
                     href={`${GNOSIS_BASE_URL}/address/${transaction.to}`}
                     target="_blank"
@@ -490,7 +497,8 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
                   </GnosisLink>
                 </StyledTransactionHashWithIcon>
                 <StyledTransactionHashWithIcon>
-                  <span>Safe hash: {truncateEthereumAddress(transaction.safeTxHash)}</span>
+                  <p>Safe hash:</p>
+                  <TruncatedEthereumAddressWithTooltip address={transaction.safeTxHash}/>
                   <IconButton
                     onClick={() => {
                       navigator.clipboard.writeText(transaction.safeTxHash);
@@ -514,7 +522,8 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
                 <h4>Confirmations {`(${transaction.confirmations?.length}/${transaction.confirmationsRequired})`}</h4>
                 {transaction.confirmations?.map((confirmation) => (
                   <StyledTransactionHashWithIcon key={confirmation.owner}>
-                    <span>- {truncateEthereumAddress(confirmation.owner)}</span>
+                    <span>-</span>
+                    <TruncatedEthereumAddressWithTooltip address={confirmation.owner}/>
                     <GnosisLink
                       href={`${GNOSIS_BASE_URL}/address/${confirmation.owner}`}
                       target="_blank"
@@ -721,7 +730,7 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
           {date}
         </TableCell>
         <TableCell>{time}</TableCell>
-        <TableCell align="right">{truncateEthereumAddress(source ?? '')}</TableCell>
+        <TableCell align="right"><TruncatedEthereumAddressWithTooltip address={source ?? ''}/></TableCell>
         <TableCell align="right">{request}</TableCell>
         <TableCell
           colSpan={2}
@@ -739,7 +748,8 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
               <List>
                 <p>Created: {transaction.submissionDate}</p>
                 <StyledTransactionHashWithIcon>
-                  <span>To: {truncateEthereumAddress(transaction.to)}</span>
+                  <p>To:</p>
+                  <TruncatedEthereumAddressWithTooltip address={transaction.to}/>
                   <GnosisLink
                     href={`${GNOSIS_BASE_URL}/address/${transaction.to}`}
                     target="_blank"
@@ -749,7 +759,8 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
                   </GnosisLink>
                 </StyledTransactionHashWithIcon>
                 <StyledTransactionHashWithIcon>
-                  <span>Safe hash: {truncateEthereumAddress(transaction.safeTxHash)}</span>
+                  <p>Safe hash:</p>
+                  <TruncatedEthereumAddressWithTooltip address={transaction.safeTxHash}/>
                   <IconButton
                     onClick={() => {
                       navigator.clipboard.writeText(transaction.safeTxHash);
@@ -762,7 +773,8 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
                 {transaction.isExecuted && (
                   <>
                     <StyledTransactionHashWithIcon>
-                      <span>Transaction hash: {truncateEthereumAddress(transaction.transactionHash)}</span>
+                      <p>Transaction hash:</p>
+                      <TruncatedEthereumAddressWithTooltip address={transaction.transactionHash}/>
                       <GnosisLink
                         href={`${GNOSIS_BASE_URL}/tx/${transaction.transactionHash}`}
                         target="_blank"
@@ -784,7 +796,8 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
                 <h4>Confirmations {`(${transaction.confirmations?.length}/${transaction.confirmationsRequired})`}</h4>
                 {transaction.confirmations?.map((confirmation) => (
                   <StyledTransactionHashWithIcon key={confirmation.owner}>
-                    <span>- {truncateEthereumAddress(confirmation.owner)}</span>
+                    <span>-</span>
+                    <TruncatedEthereumAddressWithTooltip address={confirmation.owner}/>
                     <GnosisLink
                       href={`${GNOSIS_BASE_URL}/address/${confirmation.owner}`}
                       target="_blank"
@@ -798,7 +811,8 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
                   <>
                     <h4>Executor</h4>
                     <StyledTransactionHashWithIcon>
-                      <span>- {truncateEthereumAddress(transaction.executor)}</span>
+                      <span>-</span>
+                      <TruncatedEthereumAddressWithTooltip address={transaction.executor}/> 
                       <GnosisLink
                         href={`${GNOSIS_BASE_URL}/address/${transaction.executor}`}
                         target="_blank"
