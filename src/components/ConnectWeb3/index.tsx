@@ -22,7 +22,7 @@ const AppBarContainer = styled(Button)`
   cursor: pointer;
   height: 59px;
   justify-content: center;
-  width: 220px;
+  width: 285px;
   border-radius: 0;
   & .image-container {
     height: 50px;
@@ -188,6 +188,7 @@ export default function ConnectWeb3({
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleCloseMenu}
+                disableScrollLock={true}
               >
                 <MenuItem onClick={handleDisconnectMM}>Disconnect</MenuItem>
               </Menu>
