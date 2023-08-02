@@ -16,7 +16,7 @@ const RemoveOwnerDiv = styled.div`
 
 function SafeSettings() {
   const dispatch = useAppDispatch();
-  const safe = useAppSelector((selector) => selector.safe.safeInfo);
+  const safe = useAppSelector((selector) => selector.safe.info);
   const safeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress);
 
   const signer = useEthersSigner();
@@ -154,7 +154,7 @@ function SafeSettings() {
       <h2>Remove Owner</h2>
       <Container column>
         {safe?.owners.map((address, idx) => (
-          <RemoveOwnerDiv>
+          <RemoveOwnerDiv key={idx}>
             <p>{address}</p>
             <Button onClick={() => removeOwner(address)}>Remove</Button>
           </RemoveOwnerDiv>
