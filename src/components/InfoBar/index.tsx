@@ -41,7 +41,7 @@ const Data = styled.div`
   margin-bottom: 24px;
 `;
 
-const Container = styled.div`
+const Web3Container = styled.div`
   background-color: #cadeff;
   border-radius: 1rem;
   display: flex;
@@ -158,7 +158,7 @@ export default function InfoBar(props: Props) {
   };
 
   const web3Drawer = (
-    <Container>
+    <Web3Container>
       <Icons>
         <IconAndText>
           <IconContainer>
@@ -208,7 +208,7 @@ export default function InfoBar(props: Props) {
           <p>{truncateBalance3Decimals(xDAI_balance?.formatted) ?? 0}</p>
         </Wallet>
       </div>
-    </Container>
+    </Web3Container>
   );
 
   const nodeDrawer = (
