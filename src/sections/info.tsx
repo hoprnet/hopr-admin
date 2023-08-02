@@ -15,7 +15,8 @@ function InfoPage() {
     apiEndpoint,
     apiToken,
   } = useAppSelector((selector) => selector.auth.loginData);
-  const balances = useAppSelector((selector) => selector.node.balances);
+  const balances = useAppSelector((selector) => selector.node.balances.data);
+  const balancesFetching = useAppSelector((selector) => selector.node.balances.isFetching);
   const addresses = useAppSelector((selector) => selector.node.addresses);
   const channels = useAppSelector((selector) => selector.node.channels);
   const version = useAppSelector((selector) => selector.node.version);
@@ -105,7 +106,7 @@ function InfoPage() {
       <SubpageTitle
         title="Info"
         refreshFunction={fetchInfoData}
-        reloading={balances.isFetching}
+        reloading={balancesFetching}
       />
       <TableExtended
         title="Software"

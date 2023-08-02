@@ -20,7 +20,7 @@ import { SendMessageModal } from '../components/Modal/SendMessageModal';
 
 function AliasesPage() {
   const dispatch = useAppDispatch();
-  const aliases = useAppSelector((selector) => selector.node.aliases);
+  const aliases = useAppSelector((selector) => selector.node.aliases.data);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const [importSuccess, set_importSuccess] = useState(false);
   const [deleteSuccess, set_deleteSuccess] = useState(false);
@@ -67,11 +67,11 @@ function AliasesPage() {
       <button
         disabled={aliases !== null && Object.keys(aliases).length === 0}
         onClick={() => {
-          if (aliases.data) {
+          if (aliases) {
             exportToCsv(
-              Object.keys(aliases.data).map((alias) => ({
+              Object.keys(aliases).map((alias) => ({
                 alias: alias,
-                peerId: aliases.data?.[alias],
+                peerId: aliases?.[alias],
               })),
               'aliases.csv',
             );
@@ -126,7 +126,7 @@ function AliasesPage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.entries(aliases.data ?? {}).map(([alias, peerId], key) => (
+            {Object.entries(aliases ?? {}).map(([alias, peerId], key) => (
               <TableRow key={key}>
                 <TableCell
                   component="th"

@@ -596,15 +596,15 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     state.aliases.isFetching = false;
   });
   builder.addCase(getBalancesThunk.pending, (state, action) => {
-    if (action.payload) {
-      state.balances.isFetching = true;
-    }
+    state.balances.isFetching = true;
   });
   builder.addCase(getBalancesThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.balances = {
-        native: action.payload.native,
-        hopr: action.payload.hopr,
+        data: {
+          native: action.payload.native,
+          hopr: action.payload.hopr,
+        },
         isFetching: false,
       };
     }
@@ -730,7 +730,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     state.aliases.isFetching = true;
   });
   builder.addCase(getAliasThunk.fulfilled, (state, action) => {
-    if (action.payload && state.aliases.data) {
+    if (action.payload) {
       if (state.aliases.data) {
         state.aliases.data[action.payload.alias] = action.payload.peerId;
       } else {
@@ -743,7 +743,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     state.aliases.isFetching = false;
   });
   builder.addCase(setAliasThunk.fulfilled, (state, action) => {
-    if (action.payload && state.aliases.data) {
+    if (action.payload) {
       if (state.aliases.data) {
         state.aliases.data[action.payload.alias] = action.payload.peerId;
       } else {
@@ -908,10 +908,17 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
       }
     }
   });
+  builder.addCase(deleteTokenThunk.pending, (state, action) => {
+    state.tokens.isFetching = true;
+  });
   builder.addCase(deleteTokenThunk.fulfilled, (state, action) => {
     if (action.payload?.deleted) {
       state.tokens.data = state.tokens.data.filter((token) => token.id !== action.payload?.id);
     }
+    state.tokens.isFetching = false;
+  });
+  builder.addCase(deleteTokenThunk.rejected, (state, action) => {
+    state.tokens.isFetching = false;
   });
   builder.addCase(getPrometheusMetricsThunk.pending, (state, action) => {
     state.metrics.isFetching = true;

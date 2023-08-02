@@ -39,18 +39,16 @@ const Data = styled.div`
 `;
 
 export default function InfoBar(props: Props) {
-  const {
-    balances,
-    peers,
-    info,
-    channels,
-  } = useAppSelector((state) => state.node);
+  const channels = useAppSelector((selector) => selector.node.channels.data);
+  const peers = useAppSelector((selector) => selector.node.peers.data);
+  const balances = useAppSelector((selector) => selector.node.balances.data);
+  const info = useAppSelector((selector) => selector.node.info.data);
 
   const drawer = (
     <div>
       <AppBarFiller />
       <Title>Status</Title>
-      <Data>{info.data?.connectivityStatus}</Data>
+      <Data>{info?.connectivityStatus}</Data>
 
       <Title>xDai balance</Title>
       <Data>{balances.native && utils.formatEther(balances.native)}</Data>
@@ -59,13 +57,13 @@ export default function InfoBar(props: Props) {
       <Data>{balances.hopr && utils.formatEther(balances.hopr)}</Data>
 
       <Title>Peers seen in the network</Title>
-      <Data>{peers.data?.announced?.length || '-'}</Data>
+      <Data>{peers?.announced?.length || '-'}</Data>
 
       <Title>Outgoing Chanels</Title>
-      <Data>{channels.data?.outgoing?.length || '-'}</Data>
+      <Data>{channels?.outgoing?.length || '-'}</Data>
 
       <Title>Incoming Chanels</Title>
-      <Data>{channels.data?.incoming?.length || '-'}</Data>
+      <Data>{channels?.incoming?.length || '-'}</Data>
     </div>
   );
 

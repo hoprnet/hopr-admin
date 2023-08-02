@@ -417,8 +417,8 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
 
 const SafeQueue = () => {
   const dispatch = useAppDispatch();
-  const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions);
-  const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
+  const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions.data);
+  const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress.data);
   const signer = useEthersSigner();
 
   useEffect(() => {

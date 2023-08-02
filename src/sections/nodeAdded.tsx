@@ -252,7 +252,7 @@ const GrayCard = ({
 };
 
 const NodeAdded = () => {
-  const selectedSafeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress) as `0x${string}`;
+  const selectedSafeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress.data) as `0x${string}`;
   const nodeNativeAddress = useAppSelector((selector) => selector.node.addresses.data.native);
   const nodeHoprAddress = useAppSelector((selector) => selector.node.addresses.data.hopr);
 

@@ -100,8 +100,8 @@ const StyledApproveButton = styled(Button)`
 
 function XdaiToNode() {
   const dispatch = useAppDispatch();
-  const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions);
-  const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
+  const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions.data);
+  const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress.data);
   const { native: nodeNativeAddress } = useAppSelector((state) => state.node.addresses.data);
   const [xdaiValue, set_xdaiValue] = useState<string>('');
   const [isLoading, set_isLoading] = useState<boolean>();

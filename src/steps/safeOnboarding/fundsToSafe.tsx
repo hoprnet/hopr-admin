@@ -40,7 +40,7 @@ const FundsToSafe = ({
   account,
   set_step,
 }: FundsToSafeProps) => {
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
 
   const [xdaiValue, set_xdaiValue] = useState('');
   const [wxhoprValue, set_wxhoprValue] = useState('');

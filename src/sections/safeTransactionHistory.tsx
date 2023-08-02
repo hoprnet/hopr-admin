@@ -320,8 +320,8 @@ function TransactionHistoryRow(props: { transaction: AllTransactionsListResponse
 
 export default function SafeTransactionHistoryPage() {
   const dispatch = useAppDispatch();
-  const safeTransactions = useAppSelector((state) => state.safe.allTransactions);
-  const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
+  const safeTransactions = useAppSelector((state) => state.safe.allTransactions.data);
+  const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress.data);
   const signer = useEthersSigner();
 
   const fetchAllSafeTransaction = () => {

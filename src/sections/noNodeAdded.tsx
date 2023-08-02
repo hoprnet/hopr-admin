@@ -222,7 +222,7 @@ const StakingCard = ({
 const wxhoprSmartContractAddress = '0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1';
 
 const NoNodeAdded = () => {
-  const selectedSafeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress) as `0x${string}`;
+  const selectedSafeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress.data) as `0x${string}`;
 
   const { data: xDAI_balance } = useBalance({
     address: selectedSafeAddress,
