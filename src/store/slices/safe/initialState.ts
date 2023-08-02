@@ -1,19 +1,34 @@
 import { AllTransactionsListResponse, SafeDelegateListResponse, SafeMultisigTransactionListResponse, SafeInfoResponse } from '@safe-global/api-kit'
 
 type InitialState = {
-  selectedSafeAddress: string | null;
-  safesByOwner: string[];
-  allTransactions: AllTransactionsListResponse | null;
-  pendingTransactions: SafeMultisigTransactionListResponse | null;
+  selectedSafeAddress: { data: string | null; isFetching: boolean };
+  safesByOwner: { data: string[]; isFetching: boolean };
+  allTransactions: { data: AllTransactionsListResponse | null; isFetching: boolean };
+  pendingTransactions: { data: SafeMultisigTransactionListResponse | null; isFetching: boolean };
   safeInfo: SafeInfoResponse | null;
-  safeDelegates: SafeDelegateListResponse | null;
+  safeDelegates: { data: SafeDelegateListResponse | null; isFetching: boolean };
 };
 
 export const initialState: InitialState = {
-  selectedSafeAddress: null,
-  safesByOwner: [],
-  allTransactions: null,
-  pendingTransactions: null,
+  selectedSafeAddress: {
+    data: null,
+    isFetching: false,
+  },
+  safesByOwner: {
+    data: [],
+    isFetching: false,
+  },
+  allTransactions: {
+    data: null,
+    isFetching: false,
+  },
+  pendingTransactions: {
+    data: null,
+    isFetching: false,
+  },
   safeInfo: null,
-  safeDelegates: null,
+  safeDelegates: {
+    data: null,
+    isFetching: false,
+  },
 };

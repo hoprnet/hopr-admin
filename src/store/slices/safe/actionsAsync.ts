@@ -512,39 +512,76 @@ const getSafeDelegatesThunk = createAsyncThunk(
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   builder.addCase(createSafeThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.selectedSafeAddress = action.payload;
+      state.selectedSafeAddress.data = action.payload;
     }
+    state.selectedSafeAddress.isFetching = false;
   });
   builder.addCase(createSafeWithConfigThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.selectedSafeAddress = action.payload;
+      state.selectedSafeAddress.data = action.payload;
     }
+    state.selectedSafeAddress.isFetching = false;
+  });
+  builder.addCase(getSafesByOwnerThunk.pending, (state, action) => {
+    state.safesByOwner.isFetching = true;
   });
   builder.addCase(getSafesByOwnerThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.safesByOwner = action.payload.safes;
+      state.safesByOwner.data = action.payload.safes;
     }
+    state.safesByOwner.isFetching = false;
+  });
+  builder.addCase(getSafesByOwnerThunk.rejected, (state, action) => {
+    state.safesByOwner.isFetching = false;
+  });
+  builder.addCase(getSafeInfoThunk.pending, (state, action) => {
+    state.selectedSafeAddress.isFetching = true;
   });
   builder.addCase(getSafeInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.selectedSafeAddress = action.payload.address;
+      state.selectedSafeAddress.data = action.payload.address;
       state.safeInfo = action.payload;
     }
+    state.selectedSafeAddress.isFetching = false;
+  });
+  builder.addCase(getSafeInfoThunk.rejected, (state, action) => {
+    state.selectedSafeAddress.isFetching = false;
+  });
+  builder.addCase(getAllSafeTransactionsThunk.pending, (state, action) => {
+    state.allTransactions.isFetching = true;
   });
   builder.addCase(getAllSafeTransactionsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.allTransactions = action.payload;
+      state.allTransactions.data = action.payload;
     }
+    state.allTransactions.isFetching = false;
+  });
+  builder.addCase(getAllSafeTransactionsThunk.rejected, (state, action) => {
+    state.allTransactions.isFetching = false;
+  });
+  builder.addCase(getPendingSafeTransactionsThunk.pending, (state, action) => {
+    state.pendingTransactions.isFetching = true;
   });
   builder.addCase(getPendingSafeTransactionsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.pendingTransactions = action.payload;
+      state.pendingTransactions.data = action.payload;
     }
+    state.pendingTransactions.isFetching = false;
+  });
+  builder.addCase(getPendingSafeTransactionsThunk.rejected, (state, action) => {
+    state.pendingTransactions.isFetching = false;
+  });
+  builder.addCase(getSafeDelegatesThunk.pending, (state, action) => {
+    state.safeDelegates.isFetching = true;
   });
   builder.addCase(getSafeDelegatesThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.safeDelegates = action.payload;
+      state.safeDelegates.data = action.payload;
     }
+    state.safeDelegates.isFetching = false;
+  });
+  builder.addCase(getSafeDelegatesThunk.rejected, (state, action) => {
+    state.safeDelegates.isFetching = false;
   });
 };
 
