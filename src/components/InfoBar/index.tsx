@@ -27,9 +27,19 @@ const SDrawer = styled(Drawer)`
   .MuiDrawer-paper {
     box-sizing: border-box;
     width: 233px;
-    background: #ffffa0;
     font-size: 13px;
     overflow-x: hidden;
+  }
+  &.node{
+    .MuiDrawer-paper {
+      background: #ffffa0;
+    }
+  }
+  &.web3{
+    .MuiDrawer-paper {
+      background: #edfbff;
+      border: 0;
+    }
   }
 `;
 
@@ -49,9 +59,8 @@ const Web3Container = styled.div`
   min-height: 80px;
   min-width: 185px;
   padding: 1rem;
-  position: absolute;
-  top: 45px;
   font-size: 10px;
+  margin-right: 8px;
 `;
 
 const FlexColumn = styled.div`
@@ -158,62 +167,64 @@ export default function InfoBar(props: Props) {
   };
 
   const web3Drawer = (
-    <Web3Container>
-      <Icons>
-        <IconAndText>
-          <IconContainer>
-            <Icon
-              src="/assets/wxHoprIcon.svg"
-              alt="wxHOPR Icon"
-            />
-          </IconContainer>
-          <Text>wxHOPR</Text>
-        </IconAndText>
-        <IconAndText>
-          <IconContainer>
-            <Icon
-              src="/assets/xHoprIcon.svg"
-              alt="xHOPR Icon"
-            />
-          </IconContainer>
-          <Text>xHOPR</Text>
-        </IconAndText>
-        <IconAndText>
-          <IconContainer>
-            <Icon
-              src="/assets/xDaiIcon.svg"
-              alt="xDai Icon"
-            />
-          </IconContainer>
-          <Text>xDAI</Text>
-        </IconAndText>
-      </Icons>
-      <SafeContainer show={!!selectedSafeAddress}>
-        {selectedSafeAddress && (
-          <>
-            <InfoTitle>Safe</InfoTitle>
-            <Safe>
-              <p>{truncateBalance3Decimals(safeWxHoprBalance) ?? 0}</p>
-              <p>{truncateBalance3Decimals(safexHoprBalance) ?? 0}</p>
-              <p>{truncateBalance3Decimals(safeXdaiBalance) ?? 0}</p>
-            </Safe>
-          </>
-        )}
-      </SafeContainer>
-      <div>
-        <InfoTitle>Wallet</InfoTitle>
-        <Wallet>
-          <p>{truncateBalance3Decimals(wxHOPR_balance?.formatted) ?? 0}</p>
-          <p>{truncateBalance3Decimals(xHOPR_balance?.formatted) ?? 0}</p>
-          <p>{truncateBalance3Decimals(xDAI_balance?.formatted) ?? 0}</p>
-        </Wallet>
-      </div>
-    </Web3Container>
+    <>
+      <br/>
+      <Web3Container>
+        <Icons>
+          <IconAndText>
+            <IconContainer>
+              <Icon
+                src="/assets/wxHoprIcon.svg"
+                alt="wxHOPR Icon"
+              />
+            </IconContainer>
+            <Text>wxHOPR</Text>
+          </IconAndText>
+          <IconAndText>
+            <IconContainer>
+              <Icon
+                src="/assets/xHoprIcon.svg"
+                alt="xHOPR Icon"
+              />
+            </IconContainer>
+            <Text>xHOPR</Text>
+          </IconAndText>
+          <IconAndText>
+            <IconContainer>
+              <Icon
+                src="/assets/xDaiIcon.svg"
+                alt="xDai Icon"
+              />
+            </IconContainer>
+            <Text>xDAI</Text>
+          </IconAndText>
+        </Icons>
+        <SafeContainer show={!!selectedSafeAddress}>
+          {selectedSafeAddress && (
+            <>
+              <InfoTitle>Safe</InfoTitle>
+              <Safe>
+                <p>{truncateBalance3Decimals(safeWxHoprBalance) ?? 0}</p>
+                <p>{truncateBalance3Decimals(safexHoprBalance) ?? 0}</p>
+                <p>{truncateBalance3Decimals(safeXdaiBalance) ?? 0}</p>
+              </Safe>
+            </>
+          )}
+        </SafeContainer>
+        <div>
+          <InfoTitle>Wallet</InfoTitle>
+          <Wallet>
+            <p>{truncateBalance3Decimals(wxHOPR_balance?.formatted) ?? 0}</p>
+            <p>{truncateBalance3Decimals(xHOPR_balance?.formatted) ?? 0}</p>
+            <p>{truncateBalance3Decimals(xDAI_balance?.formatted) ?? 0}</p>
+          </Wallet>
+        </div>
+      </Web3Container>
+    </>
   );
 
   const nodeDrawer = (
     <div>
-      <AppBarFiller />
       <Title>Status</Title>
       <Data>{info?.connectivityStatus}</Data>
 
@@ -249,7 +260,9 @@ export default function InfoBar(props: Props) {
           variant="permanent"
           anchor={'right'}
           open
+          className={`${web3Connected ? 'web3' : ''} ${nodeConnected ? 'node' : ''}`}
         >
+          <AppBarFiller />
           {web3Connected && web3Drawer}
           {nodeConnected && !web3Connected && nodeDrawer}
         </SDrawer>
