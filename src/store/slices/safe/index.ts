@@ -7,10 +7,11 @@ const safeSlice = createSlice({
   initialState,
   reducers: { resetState: (state) => {
     state.selectedSafeAddress.data = null;
-    state.safeInfo = null;
     state.allTransactions.data = null;
     state.pendingTransactions.data = null;
     state.safesByOwner.data = [];
+    state.info.data = null;
+    state.delegates.data = null;
   } },
   extraReducers: (builder) => createExtraReducers(builder),
 });

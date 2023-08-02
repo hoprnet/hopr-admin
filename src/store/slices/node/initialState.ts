@@ -76,7 +76,21 @@ type InitialState = {
   version: { data: string | null; isFetching: boolean };
   transactions: string[];
   pings: (PingNodeResponseType & { peerId: string })[];
-  metrics: { data: string | null; isFetching: boolean };
+  metrics: {
+    data: {
+      raw: string | null;
+      parsed: {
+        [key: string]: {
+          categories: string[];
+          data: any[];
+          length: number;
+          name: string;
+          type: string;
+        };
+      };
+    };
+    isFetching: boolean;
+  };
   messagesWebsocketStatus: WebsocketConnectionStatus;
   logsWebsocketStatus: WebsocketConnectionStatus;
 };
@@ -160,7 +174,10 @@ export const initialState: InitialState = {
   transactions: [],
   pings: [],
   metrics: {
-    data: null,
+    data: {
+      raw: null,
+      parsed: {},
+    },
     isFetching: false,
   },
   messagesWebsocketStatus: null,

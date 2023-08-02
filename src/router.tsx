@@ -64,6 +64,7 @@ import ConnectSafe from './components/ConnectSafe';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import SafeOnboarding from './steps/safeOnboarding';
 import NoNodeAdded from './sections/noNodeAdded';
+import SafeSettings from './sections/safeSettings';
 import StakingLandingPage from './sections/stakingLandingPage';
 import NodeAdded from './sections/nodeAdded';
 
@@ -243,6 +244,13 @@ export const applicationMapWeb3: ApplicationMapType = [
         element: <WrapperPage />,
         loginNeeded: 'web3',
       },
+      {
+        name: 'Safe Settings',
+        path: 'safe-settings',
+        icon: <LockIcon />,
+        element: <SafeSettings />,
+        loginNeeded: 'web3',
+      },
     ],
   },
 ];
@@ -311,6 +319,8 @@ export const applicationMap: ApplicationMapType = createApplicationMap();
 const LayoutEnhanced = () => {
   const dispatch = useAppDispatch();
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
+  const account = useAppSelector((selector) => selector.web3.account);
+  const isConnected = useAppSelector((selector) => selector.web3.status.connected);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [searchParams, set_searchParams] = useSearchParams();
   const apiEndpoint = searchParams.get('apiEndpoint');
@@ -381,7 +391,7 @@ const LayoutEnhanced = () => {
           {(environment === 'dev' || environment === 'node') && <ConnectNode />}
         </>
       }
-      drawerRight={nodeConnected && <InfoBar />}
+      drawerRight={(isConnected || nodeConnected) && <InfoBar />}
     />
   );
 };

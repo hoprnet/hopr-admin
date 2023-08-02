@@ -195,6 +195,7 @@ export default function ConnectSafe() {
               vertical: 'top',
               horizontal: 'left',
             }}
+            disableScrollLock={true}
             MenuListProps={{
               'aria-labelledby': 'safe-menu-button',
               className: 'safe-menu-list',

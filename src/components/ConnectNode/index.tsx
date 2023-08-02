@@ -180,6 +180,7 @@ export default function ConnectNode() {
                 'aria-labelledby': 'connect-node-menu-button',
                 className: 'connect-node-menu-list',
               }}
+              disableScrollLock={true}
             >
               <MenuItem onClick={handleModalOpen}>Change node</MenuItem>
               <MenuItem onClick={() => handleLogout()}>Disconnect</MenuItem>

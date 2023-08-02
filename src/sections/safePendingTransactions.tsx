@@ -137,7 +137,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
   const signer = useEthersSigner();
   const dispatch = useAppDispatch();
   const { address } = useAccount();
-  const safeNonce = useAppSelector((state) => state.safe.safeInfo?.nonce);
+  const safeNonce = useAppSelector((state) => state.safe.info.data?.nonce);
   const [isLoadingApproving, set_isLoadingApproving] = useState<boolean>(false);
   const [isLoadingExecuting, set_isLoadingExecuting] = useState<boolean>(false);
   const [isLoadingRejecting, set_isLoadingRejecting] = useState<boolean>(false);

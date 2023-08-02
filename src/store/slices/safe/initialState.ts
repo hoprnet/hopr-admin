@@ -5,8 +5,8 @@ type InitialState = {
   safesByOwner: { data: string[]; isFetching: boolean };
   allTransactions: { data: AllTransactionsListResponse | null; isFetching: boolean };
   pendingTransactions: { data: SafeMultisigTransactionListResponse | null; isFetching: boolean };
-  safeInfo: SafeInfoResponse | null;
-  safeDelegates: { data: SafeDelegateListResponse | null; isFetching: boolean };
+  info: { data: SafeInfoResponse | null; isFetching: boolean };
+  delegates: { data: SafeDelegateListResponse | null; isFetching: boolean };
 };
 
 export const initialState: InitialState = {
@@ -26,8 +26,10 @@ export const initialState: InitialState = {
     data: null,
     isFetching: false,
   },
-  safeInfo: null,
-  safeDelegates: {
+  info: {
+    data: null, isFetching: false, 
+  },
+  delegates: {
     data: null,
     isFetching: false,
   },
