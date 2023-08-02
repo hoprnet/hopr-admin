@@ -12,8 +12,8 @@ type InitialState = {
   allTransactions: AllTransactionsListResponse | null;
   pendingTransactions: SafeMultisigTransactionListResponse | null;
   tokenList: TokenInfoListResponse | null;
-  safeInfo: SafeInfoResponse | null;
-  safeDelegates: SafeDelegateListResponse | null;
+  info: SafeInfoResponse | null;
+  delegates: SafeDelegateListResponse | null;
 };
 
 export const initialState: InitialState = {
@@ -22,6 +22,6 @@ export const initialState: InitialState = {
   allTransactions: null,
   pendingTransactions: null,
   tokenList: null,
-  safeInfo: null,
-  safeDelegates: null,
+  info: null,
+  delegates: null,
 };

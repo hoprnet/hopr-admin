@@ -62,6 +62,7 @@ import ConnectSafe from './components/ConnectSafe';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import SafeOnboarding from './steps/safeOnboarding';
 import NoNodeAdded from './sections/noNodeAdded';
+import SafeSettings from './sections/safeSettings';
 import StakingLandingPage from './sections/stakingLandingPage';
 import NodeAdded from './sections/nodeAdded';
 import SafeActions from './sections/actions';
@@ -233,6 +234,13 @@ export const applicationMapWeb3: ApplicationMapType = [
         path: 'wrapper',
         icon: <PaidIcon />,
         element: <WrapperPage />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Safe Settings',
+        path: 'safe-settings',
+        icon: <LockIcon />,
+        element: <SafeSettings />,
         loginNeeded: 'web3',
       },
     ],
