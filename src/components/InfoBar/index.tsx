@@ -5,7 +5,7 @@ import Drawer from '@mui/material/Drawer';
 import styled from '@emotion/styled';
 import Toolbar from '@mui/material/Toolbar';
 import { utils } from 'ethers';
-import WithdrawModal from '../Modal/WithdrawModal';
+import WithdrawModal from '../../sections/safeWithdrawCamilo';
 
 const drawerWidth = 160;
 
@@ -67,8 +67,6 @@ export default function InfoBar(props: Props) {
 
       <Title>Incoming Chanels</Title>
       <Data>{channels?.incoming?.length || '-'}</Data>
-
-      <WithdrawModal />
     </div>
   );
 

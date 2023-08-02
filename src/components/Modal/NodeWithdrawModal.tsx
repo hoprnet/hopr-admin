@@ -1,7 +1,12 @@
+// BAD FILE: TO FIX
 import { useEffect, useState } from 'react';
 import { useBalance, usePrepareSendTransaction, useSendTransaction } from 'wagmi';
 import { parseEther } from 'viem';
 import { useAppSelector } from '../../store';
+import { 
+  xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
+  wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS 
+} from '../../../config';
 import styled from '@emotion/styled';
 
 import {
@@ -72,15 +77,13 @@ const GnosisLink = styled.a`
   }
 `;
 
-const xhoprSmartContractAddress = '0xD057604A14982FE8D88c5fC25Aac3267eA142a08';
-
 type WithdraweModalProps = {
-  initialCurrency?: 'xHOPR' | 'xDAI';
+  initialCurrency?: 'wxHOPR' | 'xHOPR' | 'xDAI';
 };
 
 const WithdrawModal = ({ initialCurrency }: WithdraweModalProps) => {
   const [openModal, set_openModal] = useState(false);
-  const [currency, set_currency] = useState<'xHOPR' | 'xDAI' | string>(initialCurrency ?? 'xHOPR');
+  const [currency, set_currency] = useState<'wxHOPR' | 'xHOPR' | 'xDAI' | string>(initialCurrency ?? 'wxHOPR');
   const [amount, set_amount] = useState<string>('');
   const [receiver, set_receiver] = useState<string>('');
   const selectedSafeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress);
@@ -107,7 +110,13 @@ const WithdrawModal = ({ initialCurrency }: WithdraweModalProps) => {
 
   const { data: xHOPR_balance } = useBalance({
     address: selectedSafeAddress as `0x${string}`,
-    token: xhoprSmartContractAddress,
+    token: xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
+    watch: true,
+  });
+
+  const { data: wxHOPR_balance } = useBalance({
+    address: selectedSafeAddress as `0x${string}`,
+    token: wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     watch: true,
   });
 
@@ -132,6 +141,8 @@ const WithdrawModal = ({ initialCurrency }: WithdraweModalProps) => {
   const setMaxAmount = () => {
     if (currency === 'xHOPR' && xHOPR_balance) {
       set_amount(xHOPR_balance.formatted);
+    } else if (currency === 'wxHOPR' && wxHOPR_balance) {
+      set_amount(wxHOPR_balance.formatted);
     } else if (currency === 'xDAI' && xDAI_balance) {
       set_amount(xDAI_balance.formatted);
     }

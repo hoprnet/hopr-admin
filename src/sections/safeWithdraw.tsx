@@ -213,21 +213,33 @@ function XdaiToNode() {
     >
       <Card
         image={{
-          src: '/assets/xdai-to-node.svg',
+          src: '/assets/funds-safe-withdraw.svg',
           height: 130,
-          alt: 'send xdai to node image',
+          alt: 'Withdraw Token from Safe',
         }}
-        title="fund your node with xdai"
+        title="Withdraw from Staking Hub"
       >
         <div>
           <StyledForm>
             <StyledInstructions>
               <StyledText>SEND xdAI to Node</StyledText>
-              <StyledDescription>
+              {/* <StyledDescription>
                 Add-in the amount of xDAI you like to transfer from your safe to your node.
-              </StyledDescription>
+              </StyledDescription> */}
             </StyledInstructions>
             <StyledInputGroup>
+              <TextField
+                variant="outlined"
+                placeholder="-"
+                size="small"
+                value={xdaiValue}
+                onChange={(e) => set_xdaiValue(e.target.value)}
+                inputProps={{
+                  inputMode: 'numeric',
+                  pattern: '[0-9]*',
+                }}
+                InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
+              />
               <TextField
                 variant="outlined"
                 placeholder="-"
