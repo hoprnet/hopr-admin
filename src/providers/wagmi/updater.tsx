@@ -5,7 +5,6 @@ import { useNetwork, useAccount, useConnect, useDisconnect } from 'wagmi';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../store';
-import { Store } from '../../types/index';
 import { web3Actions } from '../../store/slices/web3';
 
 export default function WagmiUpdater() {
@@ -14,6 +13,7 @@ export default function WagmiUpdater() {
     address,
     isConnected,
   } = useAccount();
+
   const { chain } = useNetwork();
 
   useEffect(() => {
