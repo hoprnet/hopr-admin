@@ -27,7 +27,7 @@ const web3Slice = createSlice({
       state.wallet = action.payload ? action.payload : null;
     },
     setHasCommunityNFT(state, action: PayloadAction<boolean>) {
-      state.hasCommunityNFT = action.payload
+      state.hasCommunityNFT = action.payload;
     },
   },
   extraReducers: (builder) => createExtraReducers(builder),
