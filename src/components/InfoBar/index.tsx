@@ -6,10 +6,18 @@ import styled from '@emotion/styled';
 import Toolbar from '@mui/material/Toolbar';
 import { ethers } from 'ethers';
 import { useBalance } from 'wagmi';
+import { utils } from 'ethers';
 
 const drawerWidth = 232;
 
 interface Props {}
+
+const Container = styled(Box)`
+  display: none;
+  @media screen and (min-width: 600px) {
+    display: flex;
+  }
+`;
 
 const AppBarFiller = styled(Toolbar)`
   min-height: 59px !important;
@@ -210,10 +218,10 @@ export default function InfoBar(props: Props) {
       <Data>{info?.connectivityStatus}</Data>
 
       <Title>xDai balance</Title>
-      <Data>{balances?.native && ethers.utils.formatEther(balances.native)}</Data>
+      <Data>{balances?.native && utils.formatEther(balances.native)}</Data>
 
       <Title>mHOPR balance</Title>
-      <Data>{balances?.hopr && ethers.utils.formatEther(balances.hopr)}</Data>
+      <Data>{balances?.hopr && utils.formatEther(balances.hopr)}</Data>
 
       <Title>Peers seen in the network</Title>
       <Data>{peers?.announced?.length || '-'}</Data>
@@ -227,7 +235,7 @@ export default function InfoBar(props: Props) {
   );
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Container sx={{ display: 'flex' }}>
       <Box
         component="nav"
         sx={{
@@ -246,6 +254,6 @@ export default function InfoBar(props: Props) {
           {nodeConnected && !web3Connected && nodeDrawer}
         </SDrawer>
       </Box>
-    </Box>
+    </Container>
   );
 }
