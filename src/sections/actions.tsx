@@ -357,8 +357,8 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
     } else if (BigInt(transaction.value)) {
       return 'Sent';
     } else {
-      // This is not a multisig transaction, no way to tell this was a rejection
-      return '-';
+      // this should be a rejection tx if there is no value and no call data
+      return 'Rejection';
     }
   };
 
