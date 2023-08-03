@@ -16,8 +16,8 @@ const RemoveOwnerDiv = styled.div`
 
 function SafeSettings() {
   const dispatch = useAppDispatch();
-  const safe = useAppSelector((selector) => selector.safe.safeInfo);
-  const safeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress);
+  const safe = useAppSelector((state) => state.safe.info);
+  const safeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
 
   const signer = useEthersSigner();
   const [threshold, set_threshold] = useState(safe?.threshold || 0);
@@ -41,7 +41,6 @@ function SafeSettings() {
 
   const fetchInitialStateForSigner = async () => {
     if (signer && safeAddress) {
-      dispatch(safeActions.resetState());
       dispatch(
         safeActionsAsync.getSafeInfoThunk({
           signer,
@@ -153,7 +152,7 @@ function SafeSettings() {
       </Container>
       <h2>Remove Owner</h2>
       <Container column>
-        {safe?.owners.map((address, idx) => (
+        {safe?.owners.map((address) => (
           <RemoveOwnerDiv>
             <p>{address}</p>
             <Button onClick={() => removeOwner(address)}>Remove</Button>
