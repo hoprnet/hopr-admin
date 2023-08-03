@@ -309,7 +309,8 @@ function SafeWithdraw() {
                   value={token}
                   onChange={handleChangeToken}
                   style={{
-                    width: '230px', margin: 0, 
+                    width: '230px',
+                    margin: 0,
                   }}
                 />
                 <StyledCoinLabel>Token</StyledCoinLabel>
