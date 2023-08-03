@@ -6,6 +6,7 @@ import Card from '../../components/Card';
 const NodeContainer = styled.div`
   display: flex;
   gap: 2.5rem;
+  justify-content: center;
 `;
 
 const Node = styled.div`
@@ -54,6 +55,10 @@ const Stack = styled.div`
 const StyledButton = styled(Button)`
   align-self: center;
   text-transform: uppercase;
+`;
+
+const Children = styled.div`
+
 `;
 
 const SelectNodeType = () => {

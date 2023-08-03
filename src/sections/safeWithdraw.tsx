@@ -1,24 +1,26 @@
-//Stores
-import { useAppDispatch, useAppSelector } from '../store';
-
-// Libraries
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-
-// MUI
-import TextField from '@mui/material/TextField';
-import Tooltip from '@mui/material/Tooltip';
+import { useLocation, useSearchParams, useParams  } from 'react-router-dom';
+import { SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-kit';
+import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
+import { parseUnits } from 'viem';
+import { useAppDispatch, useAppSelector } from '../store';
+import { safeActionsAsync } from '../store/slices/safe';
 
 // components
-import { SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-kit';
-import { useEffect, useState } from 'react';
-import { parseUnits } from 'viem';
 import Button from '../future-hopr-lib-components/Button';
 import GrayButton from '../future-hopr-lib-components/Button/gray';
 import Section from '../future-hopr-lib-components/Section';
 import { useEthersSigner } from '../hooks';
-import { safeActionsAsync } from '../store/slices/safe';
+
 import Card from '../components/Card';
-import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
+
+
+// Mui
+import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
+import Select from '../future-hopr-lib-components/Select'
+import { SelectChangeEvent } from '@mui/material/Select';
 
 const StyledForm = styled.div`
   width: 100%;
@@ -26,12 +28,13 @@ const StyledForm = styled.div`
   align-items: baseline;
   gap: 1rem;
   border-bottom: 1px solid #414141;
+  justify-content: center;
+  padding-bottom: 16px;
 `;
 
 const StyledInstructions = styled.div`
   display: flex;
   flex-direction: column;
-  width: 250px;
 `;
 
 const StyledText = styled.h3`
@@ -40,7 +43,7 @@ const StyledText = styled.h3`
   font-style: normal;
   font-weight: 500;
   letter-spacing: 0.35px;
-  text-transform: uppercase;
+  text-align: end;
 `;
 
 const StyledDescription = styled.p`
@@ -54,6 +57,7 @@ const StyledDescription = styled.p`
 
 const StyledInputGroup = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: baseline;
   gap: 10px;
 `;
@@ -63,9 +67,7 @@ const StyledCoinLabel = styled.p`
   font-size: 15px;
   font-style: normal;
   font-weight: 400;
-  line-height: 60px;
   letter-spacing: 0.35px;
-  text-transform: uppercase;
 `;
 
 const StyledButtonGroup = styled.div`
@@ -74,13 +76,6 @@ const StyledButtonGroup = styled.div`
   justify-content: center;
   align-items: center;
   gap: 1rem;
-`;
-
-const StyledGrayButton = styled(GrayButton)`
-  outline: 2px solid #000050;
-  line-height: 30px;
-  border-radius: 20px;
-  padding: 0.2rem 4rem;
 `;
 
 const StyledBlueButton = styled(Button)`
@@ -98,12 +93,22 @@ const StyledApproveButton = styled(Button)`
   text-transform: uppercase;
 `;
 
-function XdaiToNode() {
+const InputWithLabel = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+`;
+
+function SafeWithdraw() {
   const dispatch = useAppDispatch();
+  const [ searchParams, setSearchParams] = useSearchParams();
+  const tokenParam = searchParams.get('token');
   const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions);
   const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
   const { native: nodeNativeAddress } = useAppSelector((state) => state.node.addresses);
   const [xdaiValue, set_xdaiValue] = useState<string>('');
+  const [token, set_token] = useState<string>(tokenParam || 'xdai');
   const [isLoading, set_isLoading] = useState<boolean>();
   const [proposedTxHash, set_proposedTxHash] = useState<string>();
   const [proposedTx, set_proposedTx] = useState<SafeMultisigTransactionResponse>();
@@ -205,6 +210,27 @@ function XdaiToNode() {
       return transactionHasEnoughApprovals() ? { errors: [] } : { errors: ['transaction requires more approvals'] };
     } });
 
+  const handleChangeToken = (event: SelectChangeEvent<unknown>) => {
+    const value = event.target.value as string;
+    set_token(value);
+    setSearchParams(`token=${value}`)
+  }
+
+  const coins = [
+    {
+      value: 'xdai',
+      name: 'xDai',
+    },
+    {
+      value: 'wxhopr',
+      name: 'wxHOPR',
+    },
+    {
+      value: 'xhopr',
+      name: 'xHOPR',
+    },
+  ];
+
   return (
     <Section
       lightBlue
@@ -222,37 +248,52 @@ function XdaiToNode() {
         <div>
           <StyledForm>
             <StyledInstructions>
-              <StyledText>SEND xdAI to Node</StyledText>
+              <StyledText>WITHDRAW</StyledText>
               {/* <StyledDescription>
                 Add-in the amount of xDAI you like to transfer from your safe to your node.
               </StyledDescription> */}
             </StyledInstructions>
             <StyledInputGroup>
-              <TextField
-                variant="outlined"
-                placeholder="-"
-                size="small"
-                value={xdaiValue}
-                onChange={(e) => set_xdaiValue(e.target.value)}
-                inputProps={{
-                  inputMode: 'numeric',
-                  pattern: '[0-9]*',
-                }}
-                InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
-              />
-              <TextField
-                variant="outlined"
-                placeholder="-"
-                size="small"
-                value={xdaiValue}
-                onChange={(e) => set_xdaiValue(e.target.value)}
-                inputProps={{
-                  inputMode: 'numeric',
-                  pattern: '[0-9]*',
-                }}
-                InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
-              />
-              <StyledCoinLabel>xdai</StyledCoinLabel>
+              <InputWithLabel>
+                <Select
+                  size="small"
+                  values={coins}
+                  value={token}
+                  onChange={handleChangeToken}
+                  style={{width: '230px', margin: 0}}
+                />
+                <StyledCoinLabel>Token</StyledCoinLabel>
+              </InputWithLabel>
+              <InputWithLabel>
+                <TextField
+                  variant="outlined"
+                  placeholder="-"
+                  size="small"
+                  value={xdaiValue}
+                  onChange={(e) => set_xdaiValue(e.target.value)}
+                  inputProps={{
+                    inputMode: 'numeric',
+                    pattern: '[0-9]*',
+                  }}
+                  InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
+                />
+                <StyledCoinLabel>Receiver</StyledCoinLabel>
+              </InputWithLabel>
+              <InputWithLabel>
+                <TextField
+                  variant="outlined"
+                  placeholder="-"
+                  size="small"
+                  value={xdaiValue}
+                  onChange={(e) => set_xdaiValue(e.target.value)}
+                  inputProps={{
+                    inputMode: 'numeric',
+                    pattern: '[0-9]*',
+                  }}
+                  InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
+                />
+                <StyledCoinLabel>{coins.filter(elem=>elem.value === token)[0].name}</StyledCoinLabel>
+              </InputWithLabel>
             </StyledInputGroup>
           </StyledForm>
           {!!proposedTx && (
@@ -284,7 +325,6 @@ function XdaiToNode() {
             </StyledPendingSafeTransactions>
           )}
           <StyledButtonGroup>
-            <StyledGrayButton>back</StyledGrayButton>
             {!proposedTx ? (
               <Tooltip title={getErrorsForApproveButton().at(0)}>
                 <span>
@@ -318,4 +358,4 @@ function XdaiToNode() {
   );
 }
 
-export default XdaiToNode;
+export default SafeWithdraw;

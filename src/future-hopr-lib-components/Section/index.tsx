@@ -46,9 +46,10 @@ const SSection = styled.section`
       min-height: -webkit-fill-available;
     }
   }
-  &.center {
-    display: grid;
-    place-items: center;
+  &.section--center {
+    display: flex;
+    padding-left: 16px;
+    padding-right: 16px;
   }
   padding-bottom: 40px;
   padding-top: 40px;
@@ -64,6 +65,7 @@ const Content = styled.div`
   padding-right: 16px;
   &.content--center {
     align-items: center;
+    width: calc( 100% - 32px);
   }
 `;
 
@@ -101,7 +103,7 @@ const Section: React.FC<SectionProps> = (props) => {
         props.lightGray && 'section--light-gray',
         props.fullHeightMin && 'full-height-min',
         props.fullHeight && 'full-height',
-        props.center && 'center',
+        props.center && 'section--center',
         props.disabled && 'section--disabled',
       ].join(' ')}
       id={props.id}

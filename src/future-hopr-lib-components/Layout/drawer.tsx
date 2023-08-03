@@ -52,10 +52,10 @@ const StyledListItemButton = styled(ListItemButton)`
   height: 48px;
   &.Mui-selected {
     color: #0000b4;
-    & .MuiTypography-root {
+    .MuiTypography-root {
       font-weight: bold;
     }
-    & .MuiListItemIcon-root {
+    .MuiListItemIcon-root {
       color: #0000b4;
     }
   }
