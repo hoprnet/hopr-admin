@@ -5,7 +5,7 @@ import { useNetwork, useAccount, useConnect, useDisconnect } from 'wagmi';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../store';
-import { web3Actions } from '../../store/slices/web3';
+import { web3Actions, web3ActionsAsync } from '../../store/slices/web3';
 
 export default function WagmiUpdater() {
   const dispatch = useAppDispatch();
@@ -22,6 +22,9 @@ export default function WagmiUpdater() {
 
   useEffect(() => {
     dispatch(web3Actions.setAccount(address));
+    if (address) {
+      dispatch(web3ActionsAsync.getCommunityNftsOwnedByAccount({account: address}))
+    }
   }, [isConnected, address]);
 
   useEffect(() => {
