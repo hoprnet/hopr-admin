@@ -24,7 +24,7 @@ function SafeSection() {
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
   const { account } = useAppSelector((store) => store.web3);
   const signer = useEthersSigner();
-  const { data: walletClient } = useWalletClient()
+  const { data: walletClient } = useWalletClient();
   const [threshold, set_threshold] = useState(1);
   const [owners, set_owners] = useState('');
 

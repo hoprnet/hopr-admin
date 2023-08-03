@@ -13,7 +13,7 @@ import { useWalletClient } from 'wagmi';
 
 function SafeOnboarding() {
   const account = useAppSelector((store) => store.web3.account) as `0x${string}`;
-  const { data: walletClient } = useWalletClient()
+  const { data: walletClient } = useWalletClient();
   const [step, set_step] = useState(0);
 
   if (!account) {

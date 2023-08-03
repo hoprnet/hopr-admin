@@ -1,7 +1,7 @@
 import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
-import SafeApiKit, { AddSafeDelegateProps, AllTransactionsOptions, DeleteSafeDelegateProps, GetSafeDelegateProps } from '@safe-global/api-kit';
+import SafeApiKit, { AddSafeDelegateProps, AllTransactionsOptions, DeleteSafeDelegateProps, GetSafeDelegateProps } from '@safe-global/api-kit'
 import Safe, { EthersAdapter, SafeAccountConfig } from '@safe-global/protocol-kit';
-import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types';
+import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
 import { gnosis } from '@wagmi/core/chains';
 import { ethers } from 'ethers';
 import {
@@ -11,8 +11,8 @@ import {
   http,
   toBytes,
   toHex
-} from 'viem';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_MANAGEMENT_MODULE, HOPR_NODE_STAKE_FACTORY } from '../../../../config';
+} from 'viem'
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_MANAGEMENT_MODULE, HOPR_NODE_STAKE_FACTORY } from '../../../../config'
 import hoprNodeStakeFactoryAbi from '../../../abi/nodeStakeFactoryAbi.json';
 import { initialState } from './initialState';
 
