@@ -34,5 +34,5 @@ const web3Slice = createSlice({
 });
 
 export const web3Actions = web3Slice.actions;
-export const web3ActionsAsync = actionsAsync
+export const web3ActionsAsync = actionsAsync;
 export default web3Slice.reducer;
