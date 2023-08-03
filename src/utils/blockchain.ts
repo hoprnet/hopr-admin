@@ -18,4 +18,3 @@ export const createSendTokensTransactionData = (recipient: Address, amount: bigi
   });
   return approveData;
 };
-

@@ -65,7 +65,7 @@ const Content = styled.div`
   padding-right: 16px;
   &.content--center {
     align-items: center;
-    width: calc( 100% - 32px);
+    width: calc(100% - 32px);
   }
 `;
 

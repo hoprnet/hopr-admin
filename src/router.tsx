@@ -28,7 +28,7 @@ import WrapperPage from './sections/wrapper';
 import XdaiToNodePage from './steps/xdaiToNode';
 import SafeTransactionHistoryPage from './sections/safeTransactionHistory';
 import StakingScreen from './sections/staking-screen';
-import SafeWithdraw from './sections/safeWithdraw'
+import SafeWithdraw from './sections/safeWithdraw';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';

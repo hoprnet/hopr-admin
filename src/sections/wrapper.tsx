@@ -2,11 +2,7 @@ import { useEffect, useState } from 'react';
 import { useBalance, useContractWrite, usePrepareContractWrite, useAccount } from 'wagmi';
 import { parseUnits } from 'viem';
 import wrapperAbi from '../abi/wrapperAbi.json';
-import {
-  xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
-  wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
-  wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS
-} from '../../config'
+import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS } from '../../config'
 
 import styled from '@emotion/styled';
 import {

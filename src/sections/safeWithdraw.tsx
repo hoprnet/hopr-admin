@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { useSearchParams  } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-kit';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { parseUnits } from 'viem';
@@ -108,21 +108,21 @@ const supportedTokens = [
   {
     value: 'wxhopr',
     name: 'wxHOPR',
-    smartContract: wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS
+    smartContract: wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
   },
   {
     value: 'xhopr',
     name: 'xHOPR',
-    smartContract: xHOPR_TOKEN_SMART_CONTRACT_ADDRESS
+    smartContract: xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
   },
 ];
-const supportedTokensValues = supportedTokens.map(elem=>elem.value);
+const supportedTokensValues = supportedTokens.map((elem) => elem.value);
 type SupportedTokens = (typeof supportedTokensValues)[number];
 const isSupportedToken = (x: any): x is SupportedTokens => supportedTokensValues.includes(x);
 
 function SafeWithdraw() {
   const dispatch = useAppDispatch();
-  const [ searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const tokenParam = searchParams.get('token');
   const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions);
   const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
@@ -149,8 +149,7 @@ function SafeWithdraw() {
     if (signer && Number(ethValue) && selectedSafeAddress) {
       set_isSigning(true);
 
-
-      if(token === 'xdai') {
+      if (token === 'xdai') {
         const parsedValue = parseUnits(ethValue as `${number}`, 18).toString();
         dispatch(
           safeActionsAsync.createSafeTransactionThunk({
@@ -162,7 +161,8 @@ function SafeWithdraw() {
               data: '0x',
             },
           }),
-        ).unwrap()
+        )
+          .unwrap()
           .then((safeTxHash) => {
             set_proposedTxHash(safeTxHash);
           })
@@ -170,7 +170,7 @@ function SafeWithdraw() {
             set_isSigning(false);
           });
       } else {
-        const smartContractAddress = supportedTokens.filter(elem=> elem.value === token)[0].smartContract as string;
+        const smartContractAddress = supportedTokens.filter((elem) => elem.value === token)[0].smartContract as string;
         const parsedValue = parseUnits(ethValue as `${number}`, 18).toString() as unknown;
         dispatch(
           safeActionsAsync.createSafeContractTransaction({
@@ -178,14 +178,15 @@ function SafeWithdraw() {
             signer,
             safeAddress: selectedSafeAddress,
             smartContractAddress,
+          }),
+        )
+          .unwrap()
+          .then((safeTxHash) => {
+            set_proposedTxHash(safeTxHash);
           })
-        ).unwrap()
-        .then((safeTxHash) => {
-          set_proposedTxHash(safeTxHash);
-        })
-        .finally(() => {
-          set_isSigning(false);
-        });
+          .finally(() => {
+            set_isSigning(false);
+          });
       }
     }
   };
@@ -207,18 +208,18 @@ function SafeWithdraw() {
             signer,
             safeTransaction: safeTx,
           }),
-        ).unwrap()
-        .then((res) => {
-          console.log('executeTransactionThunk success', res);
-        })
-        .finally(() => {
-          set_isExecuting(false);
-        });
+        )
+          .unwrap()
+          .then((res) => {
+            console.log('executeTransactionThunk success', res);
+          })
+          .finally(() => {
+            set_isExecuting(false);
+          });
       } else {
         set_isExecuting(false);
       }
     }
-   
   };
 
   const transactionHasEnoughApprovals = () => {
@@ -263,11 +264,11 @@ function SafeWithdraw() {
 
   const handleChangeToken = (event: SelectChangeEvent<unknown>) => {
     const value = event.target.value as string;
-    if(isSupportedToken(value)) {
+    if (isSupportedToken(value)) {
       set_token(value);
-      setSearchParams(`token=${value}`)
+      setSearchParams(`token=${value}`);
     }
-  }
+  };
 
   const handleApprove = () => {
     if (signer && proposedTx) {
@@ -279,8 +280,7 @@ function SafeWithdraw() {
         }),
       );
     }
-  }
-  
+  };
 
   return (
     <Section
@@ -308,7 +308,9 @@ function SafeWithdraw() {
                   values={supportedTokens}
                   value={token}
                   onChange={handleChangeToken}
-                  style={{width: '230px', margin: 0}}
+                  style={{
+                    width: '230px', margin: 0, 
+                  }}
                 />
                 <StyledCoinLabel>Token</StyledCoinLabel>
               </InputWithLabel>
@@ -336,7 +338,7 @@ function SafeWithdraw() {
                   }}
                   InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
                 />
-                <StyledCoinLabel>{supportedTokens.filter(elem=>elem.value === token)[0].name}</StyledCoinLabel>
+                <StyledCoinLabel>{supportedTokens.filter((elem) => elem.value === token)[0].name}</StyledCoinLabel>
               </InputWithLabel>
             </StyledInputGroup>
           </StyledForm>
@@ -350,11 +352,7 @@ function SafeWithdraw() {
                   } approvals`}
               </StyledDescription>
               {!transactionHasEnoughApprovals() && (
-                <StyledApproveButton
-                  onClick={handleApprove}
-                >
-                  approve/sign3
-                </StyledApproveButton>
+                <StyledApproveButton onClick={handleApprove}>approve/sign3</StyledApproveButton>
               )}
             </StyledPendingSafeTransactions>
           )}
@@ -371,7 +369,7 @@ function SafeWithdraw() {
                 </span>
               </Tooltip>
             ) : (
-              <Tooltip title={isExecuting? 'Executing transation' : getErrorsForExecuteButton().at(0)}>
+              <Tooltip title={isExecuting ? 'Executing transation' : getErrorsForExecuteButton().at(0)}>
                 <span>
                   <StyledBlueButton
                     disabled={!!getErrorsForExecuteButton().length || isExecuting}

@@ -57,9 +57,7 @@ const StyledButton = styled(Button)`
   text-transform: uppercase;
 `;
 
-const Children = styled.div`
-
-`;
+const Children = styled.div``;
 
 const SelectNodeType = () => {
   return (

@@ -3,10 +3,7 @@ import { useEffect, useState } from 'react';
 import { useBalance, usePrepareSendTransaction, useSendTransaction } from 'wagmi';
 import { parseEther } from 'viem';
 import { useAppSelector } from '../../store';
-import { 
-  xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
-  wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS 
-} from '../../../config';
+import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
 import styled from '@emotion/styled';
 
 import {

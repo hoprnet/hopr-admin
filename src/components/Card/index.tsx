@@ -38,9 +38,7 @@ const Description = styled.p<{ descriptionLeft?: boolean }>`
   text-align: ${(props) => (props.descriptionLeft ? 'left' : 'center')};
 `;
 
-const Children = styled.div`
-
-`;
+const Children = styled.div``;
 
 type CardProps = {
   image?: {
@@ -63,9 +61,7 @@ const Card = ({
   children,
 }: CardProps) => {
   return (
-    <SPaper
-      className={'SPaper'}
-    >
+    <SPaper className={'SPaper'}>
       {image && (
         <ImageContainer
           height={image.height}
@@ -79,9 +75,7 @@ const Card = ({
       )}
       {title && <Title>{title}</Title>}
       {description && <Description descriptionLeft={descriptionLeft}>{description}</Description>}
-      <Children>
-        {children}
-      </Children>
+      <Children>{children}</Children>
     </SPaper>
   );
 };

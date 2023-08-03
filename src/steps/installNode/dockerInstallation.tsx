@@ -31,7 +31,6 @@ const Children = styled.div`
   gap: 1.5rem;
 `;
 
-
 const DockerInstallation = () => {
   const navigate = useNavigate();
   const [address, set_address] = useState('');
