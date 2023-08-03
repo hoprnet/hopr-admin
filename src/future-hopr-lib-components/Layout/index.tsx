@@ -50,7 +50,7 @@ const Content = styled.div<ContentType>`
     props.drawerRight &&
     css`
       @media screen and (min-width: 600px) {
-        margin-right: 161px;
+        margin-right: 233px;
       }
     `}
 `;

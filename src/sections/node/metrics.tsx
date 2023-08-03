@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
 import styled from '@emotion/styled';
-import { useAppDispatch, useAppSelector } from '../store';
-import { actionsAsync } from '../store/slices/node/actionsAsync';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import Chart from 'react-apexcharts';
-import { exportToFile } from '../utils/helpers';
+import { exportToFile } from '../../utils/helpers';
 
 // HOPR components
-import Section from '../future-hopr-lib-components/Section';
-import { TableExtended } from '../future-hopr-lib-components/Table/columed-data';
-import { SubpageTitle } from '../components/SubpageTitle';
-import IconButton from '../future-hopr-lib-components/Button/IconButton';
+import Section from '../../future-hopr-lib-components/Section';
+import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
+import { SubpageTitle } from '../../components/SubpageTitle';
+import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 
 // Mui
 import GetAppIcon from '@mui/icons-material/GetApp';

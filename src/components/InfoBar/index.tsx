@@ -30,12 +30,12 @@ const SDrawer = styled(Drawer)`
     font-size: 13px;
     overflow-x: hidden;
   }
-  &.node{
+  &.node {
     .MuiDrawer-paper {
       background: #ffffa0;
     }
   }
-  &.web3{
+  &.web3 {
     .MuiDrawer-paper {
       background: #edfbff;
       border: 0;
@@ -168,7 +168,7 @@ export default function InfoBar(props: Props) {
 
   const web3Drawer = (
     <>
-      <br/>
+      <br />
       <Web3Container>
         <Icons>
           <IconAndText>

@@ -7,12 +7,20 @@ import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { ethers } from 'ethers';
 import CloseIcon from '@mui/icons-material/Close';
 
+// HOPR Components
+import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+
+// Mui
+import HubIcon from '@mui/icons-material/Hub';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+
 type OpenChannelModalProps = {
   peerId?: string;
   channelId?: string;
   modalBtnText?: string;
   actionBtnText?: string;
   title?: string;
+  type?: 'open' | 'fund';
 };
 
 export const OpenChannelModal = ({
@@ -20,6 +28,7 @@ export const OpenChannelModal = ({
   title,
   modalBtnText,
   actionBtnText,
+  type,
   ...props
 }: OpenChannelModalProps) => {
   const dispatch = useAppDispatch();
@@ -90,7 +99,13 @@ export const OpenChannelModal = ({
 
   return (
     <>
-      <button onClick={handleOpenChannelDialog}>{modalBtnText ? modalBtnText : 'Open Channel'}</button>
+      <IconButton
+        iconComponent={
+          type === 'open' ? <HubIcon /> : type === 'fund' ? <MonetizationOnIcon /> : <MonetizationOnIcon />
+        }
+        tooltipText={modalBtnText ? modalBtnText : 'Open outgoing channel'}
+        onClick={handleOpenChannelDialog}
+      />
       <SDialog
         open={openChannelModal}
         onClose={handleCloseModal}

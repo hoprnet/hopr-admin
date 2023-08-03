@@ -5,6 +5,12 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import CloseIcon from '@mui/icons-material/Close';
 
+// HOPR Components
+import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+
+//Mui
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+
 type CreateAliasModalProps = {
   handleRefresh: () => void;
   peerId?: string;
@@ -118,7 +124,11 @@ export const CreateAliasModal = ({
 
   return (
     <>
-      <button onClick={handleOpenModal}>Add New Alias</button>
+      <IconButton
+        iconComponent={<AddCircleOutlineIcon />}
+        tooltipText="Add new alias"
+        onClick={handleOpenModal}
+      />
       {duplicateAlias && (
         <Alert
           severity="warning"

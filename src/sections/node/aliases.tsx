@@ -1,3 +1,19 @@
+import { useAppDispatch, useAppSelector } from '../../store';
+import { useEffect, useRef, useState } from 'react';
+import { actionsAsync } from '../../store/slices/node/actionsAsync';
+import { exportToCsv } from '../../utils/helpers';
+import { utils } from '@hoprnet/hopr-sdk';
+const { APIError } = utils;
+
+// HOPR Components
+import Section from '../../future-hopr-lib-components/Section';
+import { SubpageTitle } from '../../components/SubpageTitle';
+import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+import { CreateAliasModal } from '../../components/Modal/AddAliasModal';
+import { OpenChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
+import { SendMessageModal } from '../../components/Modal/SendMessageModal';
+
+//Mui
 import {
   Paper,
   Table,
@@ -7,16 +23,8 @@ import {
   TableHead,
   TableRow
 } from '@mui/material'
-import Section from '../future-hopr-lib-components/Section';
-import { useAppDispatch, useAppSelector } from '../store';
-import { useEffect, useRef, useState } from 'react';
-import { actionsAsync } from '../store/slices/node/actionsAsync';
-import { exportToCsv } from '../utils/helpers';
-import { utils } from '@hoprnet/hopr-sdk';
-const { APIError } = utils;
-import { CreateAliasModal } from '../components/Modal/AddAliasModal';
-import { OpenChannelModal } from '../components/Modal/OpenOrFundChannelModal';
-import { SendMessageModal } from '../components/Modal/SendMessageModal';
+import GetAppIcon from '@mui/icons-material/GetApp';
+import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 
 function AliasesPage() {
   const dispatch = useAppDispatch();
@@ -53,6 +61,49 @@ function AliasesPage() {
     }
   };
 
+  const handleExport = () => {
+    if (aliases) {
+      exportToCsv(
+        Object.keys(aliases).map((alias) => ({
+          alias: alias,
+          peerId: aliases[alias],
+        })),
+        'aliases.csv',
+      );
+    }
+  };
+
+  const handleCSVUpload = (parsedData: any[]) => {
+    for (const data of parsedData) {
+      if (data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken) {
+        dispatch(
+          actionsAsync.setAliasThunk({
+            alias: String(data.alias),
+            peerId: String(data.peerId),
+            apiEndpoint: loginData.apiEndpoint,
+            apiToken: loginData.apiToken,
+          }),
+        )
+          .unwrap()
+          .then(() => {
+            set_importSuccess(true);
+            set_importErrors([]);
+          })
+          .catch((e) => {
+            set_importSuccess(false);
+            set_importErrors([
+              ...importErrors,
+              {
+                alias: String(data.alias),
+                error: e.error,
+                status: e.status,
+              },
+            ]);
+          });
+      }
+    }
+  };
+
   return (
     <Section
       className="Section--aliases"
@@ -60,58 +111,23 @@ function AliasesPage() {
       yellow
       fullHeightMin
     >
-      <h2>Add new alias</h2>
-      <CreateAliasModal handleRefresh={handleRefresh} />
-      <h2>Aliases table</h2>
-      <button onClick={handleRefresh}>refresh</button>
-      <button
-        disabled={aliases !== null && Object.keys(aliases).length === 0}
-        onClick={() => {
-          if (aliases) {
-            exportToCsv(
-              Object.keys(aliases).map((alias) => ({
-                alias: alias,
-                peerId: aliases[alias],
-              })),
-              'aliases.csv',
-            );
-          }
-        }}
-      >
-        export
-      </button>
-      <CSVUploader
-        onParse={(parsedData) => {
-          for (const data of parsedData) {
-            if (data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken) {
-              dispatch(
-                actionsAsync.setAliasThunk({
-                  alias: String(data.alias),
-                  peerId: String(data.peerId),
-                  apiEndpoint: loginData.apiEndpoint,
-                  apiToken: loginData.apiToken,
-                }),
-              )
-                .unwrap()
-                .then(() => {
-                  set_importSuccess(true);
-                  set_importErrors([]);
-                })
-                .catch((e) => {
-                  set_importSuccess(false);
-                  set_importErrors([
-                    ...importErrors,
-                    {
-                      alias: String(data.alias),
-                      error: e.error,
-                      status: e.status,
-                    },
-                  ]);
-                });
-            }
-          }
-        }}
+      <SubpageTitle
+        title={`Aliases`}
+        refreshFunction={handleRefresh}
+        actions={
+          <>
+            <CreateAliasModal handleRefresh={handleRefresh} />
+            <CSVUploader onParse={handleCSVUpload} />
+            <IconButton
+              iconComponent={<GetAppIcon />}
+              tooltipText="Export seen peers as a CSV"
+              disabled={aliases !== null && Object.keys(aliases).length === 0}
+              onClick={handleExport}
+            />
+          </>
+        }
       />
+
       <TableContainer component={Paper}>
         <Table
           sx={{ minWidth: 650 }}
@@ -154,7 +170,10 @@ function AliasesPage() {
                     }}
                     alias={alias}
                   />
-                  <OpenChannelModal peerId={peerId} />
+                  <OpenChannelModal
+                    peerId={peerId}
+                    type={'open'}
+                  />
                   <SendMessageModal peerId={peerId} />
                 </TableCell>
               </TableRow>
@@ -378,7 +397,12 @@ function CSVUploader<T extends ParsedData>({ onParse }: CSVUploaderProps<T>) {
 
   return (
     <div>
-      <button onClick={handleImportClick}>import</button>
+      <IconButton
+        iconComponent={<DriveFolderUploadIcon />}
+        tooltipText="Import aliases from a CSV"
+        onClick={handleImportClick}
+      />
+
       {/* hidden import */}
       <input
         type="file"

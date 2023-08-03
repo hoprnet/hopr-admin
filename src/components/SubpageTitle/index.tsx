@@ -22,6 +22,9 @@ const Content = styled.div`
     display: flex;
     align-items: center;
     gap: 16px;
+    .actions {
+      display: flex;
+    }
   }
   .left {
   }

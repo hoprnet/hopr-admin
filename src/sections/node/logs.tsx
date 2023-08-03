@@ -1,9 +1,9 @@
-import { useAppSelector } from '../store';
+import { useAppSelector } from '../../store';
 
 // HOPR Components
-import LogLine from '../components/LogLine';
-import Section from '../future-hopr-lib-components/Section';
-import { SubpageTitle } from '../components/SubpageTitle';
+import LogLine from '../../components/LogLine';
+import Section from '../../future-hopr-lib-components/Section';
+import { SubpageTitle } from '../../components/SubpageTitle';
 
 function SectionLogs() {
   const { logs } = useAppSelector((selector) => selector.node);
