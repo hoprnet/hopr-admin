@@ -148,16 +148,17 @@ function SafeWithdraw() {
   const proposeTx = () => {
     if (signer && Number(ethValue) && selectedSafeAddress) {
       set_isSigning(true);
-      const parsedValue = parseUnits(ethValue as `${number}`, 18).toString();
+
 
       if(token === 'xdai') {
+        const parsedValue = parseUnits(ethValue as `${number}`, 18).toString();
         dispatch(
           safeActionsAsync.createSafeTransactionThunk({
             signer,
             safeAddress: selectedSafeAddress,
             safeTransactionData: {
               to: receiver,
-              value: parsedValue,
+              value: parsedValue as string,
               data: '0x',
             },
           }),
@@ -170,9 +171,10 @@ function SafeWithdraw() {
           });
       } else {
         const smartContractAddress = supportedTokens.filter(elem=> elem.value === token)[0].smartContract as string;
+        const parsedValue = parseUnits(ethValue as `${number}`, 18).toString() as unknown;
         dispatch(
           safeActionsAsync.createSafeContractTransaction({
-            data: createSendTokensTransactionData(receiver as `0x${string}`, parsedValue),
+            data: createSendTokensTransactionData(receiver as `0x${string}`, parsedValue as bigint),
             signer,
             safeAddress: selectedSafeAddress,
             smartContractAddress,
