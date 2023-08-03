@@ -1,9 +1,20 @@
 import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
-import { initialState } from './initialState';
+import SafeApiKit, { AddSafeDelegateProps, AllTransactionsOptions, DeleteSafeDelegateProps, GetSafeDelegateProps } from '@safe-global/api-kit';
+import Safe, { EthersAdapter, SafeAccountConfig } from '@safe-global/protocol-kit';
+import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types';
+import { gnosis } from '@wagmi/core/chains';
 import { ethers } from 'ethers';
-import SafeApiKit, { AddSafeDelegateProps, AllTransactionsOptions, DeleteSafeDelegateProps, GetSafeDelegateProps } from '@safe-global/api-kit'
-import Safe, { EthersAdapter, SafeAccountConfig, SafeFactory } from '@safe-global/protocol-kit';
-import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
+import {
+  Address,
+  WalletClient,
+  createPublicClient,
+  http,
+  toBytes,
+  toHex
+} from 'viem';
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_MANAGEMENT_MODULE, HOPR_NODE_STAKE_FACTORY } from '../../../../config';
+import hoprNodeStakeFactoryAbi from '../../../abi/nodeStakeFactoryAbi.json';
+import { initialState } from './initialState';
 
 const SERVICE_URL = 'https://safe-transaction.stage.hoprtech.net/';
 
@@ -20,17 +31,6 @@ const createSafeApiService = async (signer: ethers.providers.JsonRpcSigner) => {
   return safeService;
 };
 
-const createSafeFactory = async (signer: ethers.providers.JsonRpcSigner) => {
-  const adapter = new EthersAdapter({
-    ethers,
-    signerOrProvider: signer,
-  });
-
-  const safeFactory = await SafeFactory.create({ ethAdapter: adapter });
-
-  return safeFactory;
-};
-
 const createSafeSDK = async (signer: ethers.providers.JsonRpcSigner, safeAddress: string) => {
   const sdkAdapter = new EthersAdapter({
     ethers,
@@ -45,49 +45,50 @@ const createSafeSDK = async (signer: ethers.providers.JsonRpcSigner, safeAddress
   return safeAccount;
 };
 
-const createSafeThunk = createAsyncThunk(
-  'safe/createSafe',
-  async (payload: { signer: ethers.providers.JsonRpcSigner }, { rejectWithValue }) => {
-    try {
-      const safeFactory = await createSafeFactory(payload.signer);
-      const signerAddress = await payload.signer.getAddress();
-      const safeAccountConfig: SafeAccountConfig = {
-        owners: [signerAddress],
-        threshold: 1,
-      };
-      const safeAccount = await safeFactory.deploySafe({ safeAccountConfig });
-      const safeAddress = await safeAccount.getAddress();
-      return safeAddress;
-    } catch (e) {
-      return rejectWithValue(e);
-    }
-  },
-);
-
 const createSafeWithConfigThunk = createAsyncThunk(
   'safe/createSafeWithConfig',
   async (
     payload: {
-      signer: ethers.providers.JsonRpcSigner;
+      walletClient: WalletClient;
       config: SafeAccountConfig;
     },
     { rejectWithValue },
   ) => {
     try {
-      const safeFactory = await createSafeFactory(payload.signer);
-
       // The saltNonce is used to calculate a deterministic address for the new Safe contract.
       // This way, even if the same Safe configuration is used multiple times,
       // each deployment will result in a new, unique Safe contract.
       const saltNonce = Date.now().toString();
 
-      const safeAccount = await safeFactory.deploySafe({
-        safeAccountConfig: payload.config,
-        saltNonce,
+      const publicClient = createPublicClient({
+        chain: gnosis,
+        transport: http(),
       });
 
-      const safeAddress = await safeAccount.getAddress();
-      return safeAddress;
+      const {
+        result,
+        request,
+      } = await publicClient.simulateContract({
+        account: payload.walletClient.account,
+        address: HOPR_NODE_STAKE_FACTORY,
+        abi: hoprNodeStakeFactoryAbi,
+        functionName: 'clone',
+        args: [
+          HOPR_NODE_MANAGEMENT_MODULE,
+          payload.config.owners,
+          saltNonce,
+          toHex(new Uint8Array(toBytes(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS)), { size: 32 }),
+        ],
+      });
+
+      await payload.walletClient.writeContract(request);
+
+      const [moduleProxy, safeAddress] = result as [Address, Address];
+
+      return {
+        moduleProxy,
+        safeAddress,
+      };
     } catch (e) {
       return rejectWithValue(e);
     }
@@ -510,14 +511,9 @@ const getSafeDelegatesThunk = createAsyncThunk(
 );
 
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
-  builder.addCase(createSafeThunk.fulfilled, (state, action) => {
-    if (action.payload) {
-      state.selectedSafeAddress = action.payload;
-    }
-  });
   builder.addCase(createSafeWithConfigThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.selectedSafeAddress = action.payload;
+      state.selectedSafeAddress = action.payload.safeAddress;
     }
   });
   builder.addCase(getSafesByOwnerThunk.fulfilled, (state, action) => {
@@ -549,7 +545,6 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
 };
 
 export const actionsAsync = {
-  createSafeThunk,
   createSafeWithConfigThunk,
   getSafesByOwnerThunk,
   addOwnerToSafeThunk,

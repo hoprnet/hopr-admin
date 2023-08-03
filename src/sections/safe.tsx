@@ -10,9 +10,8 @@ import { useEthersSigner } from '../hooks';
 import { utils } from 'ethers';
 import { observePendingSafeTransactions } from '../hooks/useWatcher/safeTransactions';
 import { appActions } from '../store/slices/app';
-import { Address, encodeFunctionData, formatEther } from 'viem';
-import { erc20ABI, useContractRead } from 'wagmi';
-import { SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types';
+import { Address, formatEther } from 'viem';
+import { erc20ABI, useContractRead, useWalletClient } from 'wagmi';
 import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, mHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../config';
 import { createApproveTransactionData } from '../utils/blockchain';
 
@@ -25,6 +24,7 @@ function SafeSection() {
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
   const { account } = useAppSelector((store) => store.web3);
   const signer = useEthersSigner();
+  const { data: walletClient } = useWalletClient()
   const [threshold, set_threshold] = useState(1);
   const [owners, set_owners] = useState('');
 
@@ -127,29 +127,20 @@ function SafeSection() {
       />
       <button
         onClick={() => {
-          if (signer) {
+          if (walletClient) {
             dispatch(
               safeActionsAsync.createSafeWithConfigThunk({
                 config: {
                   owners: owners.split(','),
                   threshold,
                 },
-                signer,
+                walletClient,
               }),
             );
           }
         }}
       >
         create safe with config
-      </button>
-      <button
-        onClick={() => {
-          if (signer) {
-            dispatch(safeActionsAsync.createSafeThunk({ signer }));
-          }
-        }}
-      >
-        create new default safe
       </button>
       <h2>create tx proposal to yourself on selected safe</h2>
       <button

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { nanoid } from '@reduxjs/toolkit';
-import { ethers } from 'ethers';
 
 // Components
 import {
@@ -25,21 +24,22 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { safeActionsAsync } from '../../store/slices/safe';
 import { useAppDispatch } from '../../store';
+import { WalletClient } from 'viem';
 
 type OwnersAndConfirmationsProps = {
   account: `0x${string}`;
-  signer: ethers.providers.JsonRpcSigner | undefined;
+  walletClient: WalletClient | null | undefined;
   set_step: (step: number) => void;
 };
 
 const OwnersAndConfirmations = ({
   account,
-  signer,
+  walletClient,
   set_step,
 }: OwnersAndConfirmationsProps) => {
   const dispatch = useAppDispatch();
   const [loading, set_loading] = useState(false);
-  const [error, set_error] = useState<any>('');
+  const [error, set_error] = useState<unknown>('');
   const [owners, set_owners] = useState<{ id: string; address: string }[]>([]);
   const [threshold, set_threshold] = useState(1);
 
@@ -82,7 +82,7 @@ const OwnersAndConfirmations = ({
   };
 
   const handleContinueClick = async () => {
-    if (!signer) return;
+    if (!walletClient) return;
 
     const config = {
       owners: owners.map((owner) => owner.address),
@@ -95,7 +95,7 @@ const OwnersAndConfirmations = ({
       await dispatch(
         safeActionsAsync.createSafeWithConfigThunk({
           config,
-          signer,
+          walletClient,
         }),
       ).unwrap();
       set_step(1);
@@ -193,7 +193,7 @@ const OwnersAndConfirmations = ({
         {loading && <CircularProgress />}
         {error && (
           <StyledError>
-            <strong>There was an error:</strong> {error}
+            <strong>There was an error:</strong> {JSON.stringify(error)}
           </StyledError>
         )}
       </>

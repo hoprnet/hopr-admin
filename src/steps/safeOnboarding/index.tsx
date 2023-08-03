@@ -5,15 +5,15 @@ import { useAppSelector } from '../../store';
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
-import { useEthersSigner } from '../../hooks';
 
 import OwnersAndConfirmations from './ownersAndConfirmations';
 import FundsToSafe from './fundsToSafe';
 import SafeDeployed from './safeDeployed';
+import { useWalletClient } from 'wagmi';
 
 function SafeOnboarding() {
   const account = useAppSelector((store) => store.web3.account) as `0x${string}`;
-  const signer = useEthersSigner();
+  const { data: walletClient } = useWalletClient()
   const [step, set_step] = useState(0);
 
   if (!account) {
@@ -39,7 +39,7 @@ function SafeOnboarding() {
       >
         <OwnersAndConfirmations
           account={account}
-          signer={signer}
+          walletClient={walletClient}
           set_step={set_step}
         />
       </Section>
