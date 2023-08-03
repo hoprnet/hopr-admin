@@ -74,7 +74,7 @@ type InitialState = {
   tickets: { data: GetTicketsResponseType | null; isFetching: boolean };
   tokens: { data: GetTokenResponseType[]; isFetching: boolean };
   version: { data: string | null; isFetching: boolean };
-  transactions: string[];
+  transactions: { data: string[]; isFetching: boolean };
   pings: (PingNodeResponseType & { peerId: string })[];
   metrics: {
     data: {
@@ -171,7 +171,10 @@ export const initialState: InitialState = {
     data: null,
     isFetching: false,
   },
-  transactions: [],
+  transactions: {
+    data: [],
+    isFetching: false,
+  },
   pings: [],
   metrics: {
     data: {

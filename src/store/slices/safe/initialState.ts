@@ -27,7 +27,8 @@ export const initialState: InitialState = {
     isFetching: false,
   },
   info: {
-    data: null, isFetching: false, 
+    data: null,
+    isFetching: false,
   },
   delegates: {
     data: null,

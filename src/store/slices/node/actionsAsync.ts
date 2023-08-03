@@ -1,4 +1,4 @@
-import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
+import { ActionReducerMapBuilder, createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 import {
   type AliasPayloadType,
@@ -22,6 +22,7 @@ import {
   utils
 } from '@hoprnet/hopr-sdk';
 import { parseMetrics } from '../../../utils/metrics';
+import { RootState } from '../..';
 
 const { APIError } = utils;
 const {
@@ -58,19 +59,25 @@ const {
   withdraw,
 } = api;
 
-const getInfoThunk = createAsyncThunk('node/getInfo', async (payload: BasePayloadType, { rejectWithValue }) => {
-  try {
-    const info = await getInfo(payload);
-    return info;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+const getInfoThunk = createAsyncThunk(
+  'node/getInfo',
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    getState,
+  }) => {
+    try {
+      const info = await getInfo(payload);
+      return info;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  }
-});
+  },
+);
 
 const getAddressesThunk = createAsyncThunk('node/getAccount', async (payload: BasePayloadType, { rejectWithValue }) => {
   try {
@@ -86,19 +93,34 @@ const getAddressesThunk = createAsyncThunk('node/getAccount', async (payload: Ba
   }
 });
 
-const getAliasesThunk = createAsyncThunk('node/getAliases', async (payload: BasePayloadType, { rejectWithValue }) => {
-  try {
-    const aliases = await getAliases(payload);
-    return aliases;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+const getAliasesThunk = createAsyncThunk<Record<string, string> | undefined, BasePayloadType, { state: RootState }>(
+  'node/getAliases',
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    getState,
+    dispatch,
+  }) => {
+    const isFetching = getState().node.aliases.isFetching;
+    console.log('Reached getAliasesThunk', isFetching);
+    if (isFetching) {
+      console.log('REJECTED');
+      throw new Error('Already fetching aliases');
     }
-  }
-});
+    dispatch(setAliasesFetching(true));
+    try {
+      console.log('Executing getAliasesThunk', isFetching);
+      const aliases = await getAliases(payload);
+      return aliases;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
+    }
+  },
+);
 
 const getBalancesThunk = createAsyncThunk('node/getBalances', async (payload: BasePayloadType, { rejectWithValue }) => {
   try {
@@ -559,10 +581,24 @@ const getPrometheusMetricsThunk = createAsyncThunk(
   },
 );
 
+// Helper action to update the isFetching state
+const setAliasesFetching = createAction<boolean>('node/setAliasesFetching');
+const setInfoFetching = createAction<boolean>('node/setInfoFetching');
+const setStatusFetching = createAction<boolean>('node/setStatusFetching');
+const setAddressesFetching = createAction<boolean>('node/setAddressesFetching');
+const setBalancesFetching = createAction<boolean>('node/setBalancesFetching');
+const setChannelsFetching = createAction<boolean>('node/setChannelsFetching');
+const setPeersFetching = createAction<boolean>('node/setPeersFetching');
+const setPeerInfoFetching = createAction<boolean>('node/setPeerInfoFetching');
+const setEntryNodesFetching = createAction<boolean>('node/setEntryNodesFetching');
+const setSettingsFetching = createAction<boolean>('node/setSettingsFetching');
+const setStatisticsFetching = createAction<boolean>('node/setStatisticsFetching');
+const setTicketsFetching = createAction<boolean>('node/setTicketsFetching');
+const setTokensFetching = createAction<boolean>('node/setTokensFetching');
+const setVersionFetching = createAction<boolean>('node/setVersionFetching');
+
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
-  builder.addCase(getInfoThunk.pending, (state, action) => {
-    state.info.isFetching = true;
-  });
+  // getInfo
   builder.addCase(getInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.info.data = action.payload;
@@ -572,9 +608,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getInfoThunk.rejected, (state, action) => {
     state.info.isFetching = false;
   });
-  builder.addCase(getAddressesThunk.pending, (state, action) => {
-    state.addresses.isFetching = true;
-  });
+  // getAddresses
   builder.addCase(getAddressesThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.addresses.data = action.payload;
@@ -584,9 +618,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getAddressesThunk.rejected, (state, action) => {
     state.addresses.isFetching = false;
   });
-  builder.addCase(getAliasesThunk.pending, (state, action) => {
-    state.aliases.isFetching = true;
-  });
+  // getAliases
   builder.addCase(getAliasesThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.aliases.data = action.payload;
@@ -596,9 +628,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getAliasesThunk.rejected, (state, action) => {
     state.aliases.isFetching = false;
   });
-  builder.addCase(getBalancesThunk.pending, (state, action) => {
-    state.balances.isFetching = true;
-  });
+  // getBalances
   builder.addCase(getBalancesThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.balances = {
@@ -613,9 +643,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getBalancesThunk.rejected, (state, action) => {
     state.balances.isFetching = false;
   });
-  builder.addCase(getChannelsThunk.pending, (state, action) => {
-    state.channels.isFetching = true;
-  });
+  // getChannels
   builder.addCase(getChannelsThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.channels.data = action.payload;
@@ -625,9 +653,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getChannelsThunk.rejected, (state, action) => {
     state.channels.isFetching = false;
   });
-  builder.addCase(getPeersThunk.pending, (state, action) => {
-    state.peers.isFetching = true;
-  });
+  // getPeers
   builder.addCase(getPeersThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.peers.data = action.payload;
@@ -637,9 +663,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getPeersThunk.rejected, (state, action) => {
     state.peers.isFetching = false;
   });
-  builder.addCase(getPeerInfoThunk.pending, (state, action) => {
-    state.peerInfo.isFetching = true;
-  });
+  // getPeerInfo
   builder.addCase(getPeerInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.peerInfo.data = action.payload;
@@ -649,9 +673,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getPeerInfoThunk.rejected, (state, action) => {
     state.peerInfo.isFetching = false;
   });
-  builder.addCase(getSettingsThunk.pending, (state, action) => {
-    state.settings.isFetching = true;
-  });
+  // getSettings
   builder.addCase(getSettingsThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.settings.data = action.payload;
@@ -661,9 +683,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getSettingsThunk.rejected, (state, action) => {
     state.settings.isFetching = false;
   });
-  builder.addCase(getStatisticsThunk.pending, (state, action) => {
-    state.statistics.isFetching = true;
-  });
+  // getStatistics
   builder.addCase(getStatisticsThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.statistics.data = action.payload;
@@ -673,9 +693,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getStatisticsThunk.rejected, (state, action) => {
     state.statistics.isFetching = false;
   });
-  builder.addCase(getTicketsThunk.pending, (state, action) => {
-    state.tickets.isFetching = true;
-  });
+  // getTickets
   builder.addCase(getTicketsThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.tickets.data = action.payload;
@@ -685,9 +703,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getTicketsThunk.rejected, (state, action) => {
     state.tickets.isFetching = false;
   });
-  builder.addCase(getTokenThunk.pending, (state, action) => {
-    state.tokens.isFetching = true;
-  });
+  // getTokenThunk
   builder.addCase(getTokenThunk.fulfilled, (state, action) => {
     if (action.payload) {
       const tokenExists = state.tokens.data?.findIndex((token) => token.id === action.payload?.id);
@@ -703,9 +719,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getTokenThunk.rejected, (state, action) => {
     state.tokens.isFetching = false;
   });
-  builder.addCase(getEntryNodesThunk.pending, (state, action) => {
-    state.entryNodes.isFetching = true;
-  });
+  // getEntryNodes
   builder.addCase(getEntryNodesThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.entryNodes.data = action.payload;
@@ -715,9 +729,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getEntryNodesThunk.rejected, (state, action) => {
     state.entryNodes.isFetching = false;
   });
-  builder.addCase(getVersionThunk.pending, (state, action) => {
-    state.version.isFetching = true;
-  });
+  // getVersion
   builder.addCase(getVersionThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.version.data = action.payload;
@@ -727,9 +739,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getVersionThunk.rejected, (state, action) => {
     state.version.isFetching = false;
   });
-  builder.addCase(getAliasThunk.pending, (state, action) => {
-    state.aliases.isFetching = true;
-  });
+  // getAlias
   builder.addCase(getAliasThunk.fulfilled, (state, action) => {
     if (action.payload) {
       if (state.aliases.data) {
@@ -743,6 +753,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getAliasThunk.rejected, (state, action) => {
     state.aliases.isFetching = false;
   });
+  // setAlias
   builder.addCase(setAliasThunk.fulfilled, (state, action) => {
     if (action.payload) {
       if (state.aliases.data) {
@@ -751,22 +762,34 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
         state.aliases.data = { [action.payload.alias]: action.payload.peerId };
       }
     }
+    state.aliases.isFetching = false;
   });
+  builder.addCase(setAliasThunk.rejected, (state, action) => {
+    state.aliases.isFetching = false;
+  });
+  // removeAlias
   builder.addCase(removeAliasThunk.fulfilled, (state, action) => {
     if (action.payload && state.aliases.data) {
       if (state.aliases.data) {
         delete state.aliases.data[action.payload.alias];
       }
     }
+    state.aliases.isFetching = false;
   });
+  builder.addCase(removeAliasThunk.rejected, (state, action) => {
+    state.aliases.isFetching = false;
+  });
+  // withdraw
   builder.addCase(withdrawThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.transactions.push(action.payload);
+      state.transactions.data.push(action.payload);
     }
+    state.transactions.isFetching = false;
   });
-  builder.addCase(getChannelThunk.pending, (state, action) => {
-    state.channels.isFetching = true;
+  builder.addCase(withdrawThunk.rejected, (state, action) => {
+    state.transactions.isFetching = false;
   });
+  // getChannels
   builder.addCase(getChannelThunk.fulfilled, (state, action) => {
     if (action.payload) {
       const {
@@ -821,9 +844,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getChannelThunk.rejected, (state, action) => {
     state.channels.isFetching = false;
   });
-  builder.addCase(getChannelTicketsThunk.pending, (state, action) => {
-    state.tickets.isFetching = true;
-  });
+  // getChannelTickets
   builder.addCase(getChannelTicketsThunk.fulfilled, (state, action) => {
     if (action.payload) {
       for (const updatedTicket of action.payload) {
@@ -851,6 +872,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getChannelTicketsThunk.rejected, (state, action) => {
     state.tickets.isFetching = false;
   });
+  // sendMessage
   builder.addCase(sendMessageThunk.pending, (state, action) => {
     if (action.meta) {
       state.messagesSent.push({
@@ -883,6 +905,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
       }
     }
   });
+  // signedMessages
   builder.addCase(signThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.signedMessages.push({
@@ -891,6 +914,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
       });
     }
   });
+  // pingNode
   builder.addCase(pingNodeThunk.fulfilled, (state, action) => {
     if (action.payload) {
       const pingExists = state.pings.findIndex((ping) => ping.peerId === action.payload?.peerId);
@@ -908,9 +932,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
       }
     }
   });
-  builder.addCase(deleteTokenThunk.pending, (state, action) => {
-    state.tokens.isFetching = true;
-  });
+  // deleteToken
   builder.addCase(deleteTokenThunk.fulfilled, (state, action) => {
     if (action.payload?.deleted) {
       state.tokens.data = state.tokens.data.filter((token) => token.id !== action.payload?.id);
@@ -920,9 +942,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(deleteTokenThunk.rejected, (state, action) => {
     state.tokens.isFetching = false;
   });
-  builder.addCase(getPrometheusMetricsThunk.pending, (state, action) => {
-    state.metrics.isFetching = true;
-  });
+  // getPrometheusMetrics
   builder.addCase(getPrometheusMetricsThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.metrics.data.raw = action.payload;
@@ -934,6 +954,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     state.metrics.isFetching = false;
   });
 };
+// TODO: now that we removed the updating isFetching in the pending case, we have to use the actions created to update it
 
 export const actionsAsync = {
   getInfoThunk,

@@ -1,9 +1,16 @@
-import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
+import { ActionReducerMapBuilder, SerializedError, createAsyncThunk } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 import { ethers } from 'ethers';
-import SafeApiKit, { AddSafeDelegateProps, AllTransactionsOptions, DeleteSafeDelegateProps, GetSafeDelegateProps } from '@safe-global/api-kit'
+import SafeApiKit, {
+  AddSafeDelegateProps,
+  AllTransactionsOptions,
+  DeleteSafeDelegateProps,
+  GetSafeDelegateProps,
+  OwnerResponse
+} from '@safe-global/api-kit';
 import Safe, { EthersAdapter, SafeAccountConfig, SafeFactory } from '@safe-global/protocol-kit';
 import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
+import { RootState } from '../..';
 
 const SERVICE_URL = 'https://safe-transaction-gnosis-chain.safe.global/';
 
@@ -94,14 +101,25 @@ const createSafeWithConfigThunk = createAsyncThunk(
   },
 );
 
-const getSafesByOwnerThunk = createAsyncThunk(
+const getSafesByOwnerThunk = createAsyncThunk<
+  OwnerResponse | undefined,
+  { signer: ethers.providers.JsonRpcSigner },
+  { state: RootState }
+>(
   'safe/getSafesByOwner',
   async (
     payload: {
       signer: ethers.providers.JsonRpcSigner;
     },
-    { rejectWithValue },
+    {
+      rejectWithValue,
+      getState,
+    },
   ) => {
+    const isFetching = getState().safe.safesByOwner.isFetching;
+    if (isFetching) {
+      return;
+    }
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const signerAddress = await payload.signer.getAddress();

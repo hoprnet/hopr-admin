@@ -58,6 +58,49 @@ const nodeSlice = createSlice({
     closeLogsWebsocket() {
       // state changes in node middleware
     },
+    // Action to update the isFetching state
+    setAliasesFetching(state, action: PayloadAction<boolean>) {
+      state.aliases.isFetching = action.payload;
+    },
+    setInfoFetching(state, action: PayloadAction<boolean>) {
+      state.info.isFetching = action.payload;
+    },
+    setStatusFetching(state, action: PayloadAction<boolean>) {
+      state.status.isFetching = action.payload;
+    },
+    setAddressesFetching(state, action: PayloadAction<boolean>) {
+      state.addresses.isFetching = action.payload;
+    },
+    setBalancesFetching(state, action: PayloadAction<boolean>) {
+      state.balances.isFetching = action.payload;
+    },
+    setChannelsFetching(state, action: PayloadAction<boolean>) {
+      state.channels.isFetching = action.payload;
+    },
+    setPeersFetching(state, action: PayloadAction<boolean>) {
+      state.peers.isFetching = action.payload;
+    },
+    setPeerInfoFetching(state, action: PayloadAction<boolean>) {
+      state.peerInfo.isFetching = action.payload;
+    },
+    setEntryNodesFetching(state, action: PayloadAction<boolean>) {
+      state.entryNodes.isFetching = action.payload;
+    },
+    setSettingsFetching(state, action: PayloadAction<boolean>) {
+      state.settings.isFetching = action.payload;
+    },
+    setStatisticsFetching(state, action: PayloadAction<boolean>) {
+      state.statistics.isFetching = action.payload;
+    },
+    setTicketsFetching(state, action: PayloadAction<boolean>) {
+      state.tickets.isFetching = action.payload;
+    },
+    setTokensFetching(state, action: PayloadAction<boolean>) {
+      state.tokens.isFetching = action.payload;
+    },
+    setVersionFetching(state, action: PayloadAction<boolean>) {
+      state.version.isFetching = action.payload;
+    },
   },
   extraReducers: (builder) => createExtraReducers(builder),
 });
