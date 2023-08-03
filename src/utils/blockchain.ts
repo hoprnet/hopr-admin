@@ -9,3 +9,13 @@ export const createApproveTransactionData = (spender: Address, value: bigint) =>
   });
   return approveData;
 };
+
+export const createSendTokensTransactionData = (recipient: Address, amount: string) => {
+  const approveData = encodeFunctionData({
+    abi: erc20ABI,
+    functionName: 'transfer',
+    args: [recipient, amount],
+  });
+  return approveData;
+};
+

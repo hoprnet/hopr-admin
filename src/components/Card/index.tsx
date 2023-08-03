@@ -3,7 +3,7 @@ import { Paper } from '@mui/material';
 
 const SPaper = styled(Paper)`
   width: 100%;
-  max-width: 1024px;
+  max-width: 800px;
   margin: 16px;
   padding: 16px;
   display: flex;
@@ -42,7 +42,6 @@ const Children = styled.div`
 
 `;
 
-
 type CardProps = {
   image?: {
     src: string;
@@ -55,10 +54,6 @@ type CardProps = {
   descriptionLeft?: boolean;
   children?: JSX.Element;
 };
-
-
-
-
 
 const Card = ({
   image,
