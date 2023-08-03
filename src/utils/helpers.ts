@@ -14,13 +14,13 @@ export const exportToCsv = <T extends object>(data: T[], filename: string) => {
 };
 
 export const exportToFile = <T extends object>(data: string, filename: string, type: string) => {
-  const csvContent = `data:${type};charset=utf-8,` + data;
-  const encodedUri = encodeURI(csvContent);
-  const link = document.createElement('a');
-  link.setAttribute('href', encodedUri);
-  link.setAttribute('download', filename);
-  document.body.appendChild(link);
-  link.click();
+  const blob = new Blob([data], { type });
+  const elem = window.document.createElement('a');
+  elem.href = window.URL.createObjectURL(blob);
+  elem.download = filename;
+  document.body.appendChild(elem);
+  elem.click();
+  document.body.removeChild(elem);
 };
 
 /**
