@@ -7,7 +7,6 @@ import Toolbar from '@mui/material/Toolbar';
 import { ethers } from 'ethers';
 import { useBalance } from 'wagmi';
 import { utils } from 'ethers';
-import WithdrawModal from '../../sections/safeWithdrawCamilo';
 
 const drawerWidth = 232;
 
