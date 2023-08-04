@@ -13,7 +13,7 @@ import {
   CircularProgress,
   TextField,
   Tooltip
-} from '@mui/material'
+} from '@mui/material';
 
 import { SendMessagePayloadType } from '@hoprnet/hopr-sdk';
 import CloseIcon from '@mui/icons-material/Close';

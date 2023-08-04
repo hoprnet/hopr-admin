@@ -7,9 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 // HOPR Components
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
-
-//Mui
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AddAliasIcon from '../../future-hopr-lib-components/Icons/AddAlias'
 
 type CreateAliasModalProps = {
   handleRefresh: () => void;
@@ -125,7 +123,7 @@ export const CreateAliasModal = ({
   return (
     <>
       <IconButton
-        iconComponent={<AddCircleOutlineIcon />}
+        iconComponent={<AddAliasIcon />}
         tooltipText="Add new alias"
         onClick={handleOpenModal}
       />

@@ -8,8 +8,9 @@ import { utils } from 'ethers';
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
 import { SubpageTitle } from '../../components/SubpageTitle';
-import { OpenChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
+import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+import CloseChannelIcon from '../../future-hopr-lib-components/Icons/CloseChannel';
 
 // Mui
 import {
@@ -23,9 +24,10 @@ import {
   Table,
   TableHead,
   Paper
-} from '@mui/material'
+} from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import GetAppIcon from '@mui/icons-material/GetApp';
+
 
 function ChannelsPage() {
   const dispatch = useAppDispatch();
@@ -75,9 +77,9 @@ function ChannelsPage() {
 
   useEffect(() => {
     const currentHash = window.location.hash;
-    const defaultHash = currentHash === '#incoming' || currentHash === '#outgoing' ? currentHash : '#incoming';
+    const defaultHash = currentHash === '#incoming' || currentHash === '#outgoing' ? currentHash : '#outgoing';
 
-    const defaultTabIndex = defaultHash === '#outgoing' ? 1 : 0;
+    const defaultTabIndex = defaultHash === '#outgoing' ? 0 : 1;
     set_tabIndex(defaultTabIndex);
     handleHash(defaultTabIndex);
 
@@ -186,7 +188,15 @@ function ChannelsPage() {
         refreshFunction={handleRefresh}
         actions={
           <>
-            <OpenChannelModal type={'open'} />
+            <OpenOrFundChannelModal 
+              type={'open'} 
+            />
+            <OpenOrFundChannelModal 
+              type={'fund'} 
+              title="Fund outgoing channel"
+              modalBtnText="Fund outgoing channel"
+              actionBtnText="Fund outgoing channel"
+            />
             <IconButton
               iconComponent={<GetAppIcon />}
               tooltipText={`Export ${tabLabel} channels as a CSV`}
@@ -235,9 +245,9 @@ function ChannelsPage() {
                   <TableCell>{channel.status}</TableCell>
                   <TableCell>{utils.formatEther(channel.balance)} mHOPR</TableCell>
                   <TableCell>
-                    <OpenChannelModal
+                    <OpenOrFundChannelModal
                       peerId={channel.peerId}
-                      title="Open Outgoing Channel"
+                      title="Open outgoing channel"
                       type={'open'}
                     />
                   </TableCell>
@@ -259,22 +269,24 @@ function ChannelsPage() {
                   <TableCell>{channel.status}</TableCell>
                   <TableCell>{utils.formatEther(channel.balance)} mHOPR</TableCell>
                   <TableCell>
-                    <button onClick={() => handleCloseChannels('outgoing', channel.peerId, channel.channelId)}>
-                      Close
-                    </button>
+                    <OpenOrFundChannelModal
+                      peerId={channel.peerId}
+                      title="Fund outgoing channel"
+                      modalBtnText="Fund outgoing channel"
+                      actionBtnText="Fund outgoing channel"
+                      type="fund"
+                      channelId={channel.channelId}
+                    />
+                    <IconButton
+                      iconComponent={<CloseChannelIcon />}
+                      tooltipText={`Close outgoing channel`}
+                      onClick={() => handleCloseChannels('outgoing', channel.peerId, channel.channelId)}
+                    />
                     {closingStates[channel.channelId]?.closing && <CircularProgress />}
                     {closingStates[channel.channelId]?.closeSuccess && <div>Close Success</div>}
                     {closingStates[channel.channelId]?.closeErrors.map((error, index) => (
                       <div key={index}>{error.error}</div>
                     ))}
-                    <hr />
-                    <OpenChannelModal
-                      peerId={channel.peerId}
-                      title="Fund Channel"
-                      modalBtnText="Fund"
-                      actionBtnText="Fund"
-                      channelId={channel.channelId}
-                    />
                   </TableCell>
                 </TableRow>
               ))}

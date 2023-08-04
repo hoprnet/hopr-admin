@@ -8,7 +8,7 @@ import styled from '@emotion/styled';
 import Section from '../../future-hopr-lib-components/Section';
 import { SubpageTitle } from '../../components/SubpageTitle';
 import { CreateAliasModal } from '../../components/Modal/AddAliasModal';
-import { OpenChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
+import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
 import { SendMessageModal } from '../../components/Modal/SendMessageModal';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 
@@ -166,7 +166,7 @@ function PeersPage() {
                     handleRefresh={handleRefresh}
                     peerId={peer.peerId}
                   />
-                  <OpenChannelModal
+                  <OpenOrFundChannelModal
                     peerId={peer.peerId}
                     type={'open'}
                   />

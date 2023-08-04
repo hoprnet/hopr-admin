@@ -10,8 +10,9 @@ import Section from '../../future-hopr-lib-components/Section';
 import { SubpageTitle } from '../../components/SubpageTitle';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import { CreateAliasModal } from '../../components/Modal/AddAliasModal';
-import { OpenChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
+import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
 import { SendMessageModal } from '../../components/Modal/SendMessageModal';
+import RemoveAliasIcon from '../../future-hopr-lib-components/Icons/RemoveAlias'
 
 //Mui
 import {
@@ -22,7 +23,7 @@ import {
   TableContainer,
   TableHead,
   TableRow
-} from '@mui/material'
+} from '@mui/material';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 
@@ -153,6 +154,13 @@ function AliasesPage() {
                 <TableCell>{peerId}</TableCell>
                 <TableCell>{alias}</TableCell>
                 <TableCell>
+                  <OpenOrFundChannelModal
+                    peerId={peerId}
+                    type={'open'}
+                  />
+                  <SendMessageModal 
+                    peerId={peerId}
+                  />
                   <DeleteAliasButton
                     onSuccess={() => {
                       set_deleteSuccess(true);
@@ -170,11 +178,6 @@ function AliasesPage() {
                     }}
                     alias={alias}
                   />
-                  <OpenChannelModal
-                    peerId={peerId}
-                    type={'open'}
-                  />
-                  <SendMessageModal peerId={peerId} />
                 </TableCell>
               </TableRow>
             ))}
@@ -210,7 +213,10 @@ function DeleteAliasButton({
   const loginData = useAppSelector((selector) => selector.auth.loginData);
 
   return (
-    <button
+    <IconButton
+      iconComponent={<RemoveAliasIcon />}
+      aria-label="delete alias"
+      tooltipText={'Delete alias'}
       onClick={() => {
         if (loginData.apiEndpoint && loginData.apiToken) {
           dispatch(
@@ -227,9 +233,7 @@ function DeleteAliasButton({
             .catch((e) => onError(e));
         }
       }}
-    >
-      delete
-    </button>
+    />
   );
 }
 
