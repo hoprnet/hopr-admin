@@ -49,7 +49,6 @@ const createSafeSDK = async (signer: ethers.providers.JsonRpcSigner, safeAddress
   return safeAccount;
 };
 
-
 const getRequestOfMultisigTransaction = (transaction: SafeMultisigTransactionResponse) => {
   if (transaction.data) {
     try {
@@ -71,7 +70,6 @@ const getRequestOfMultisigTransaction = (transaction: SafeMultisigTransactionRes
     return 'Rejection';
   }
 };
-
 
 const getSourceOfMultisigTransaction = (transaction: CustomSafeMultisigTransactionResponse) => {
   // if there are no signatures this is from a delegate
@@ -677,8 +675,11 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     if (action.payload) {
       // add business logic: source, request
       state.pendingTransactions = {
-        ...action.payload, results: action.payload.results.map(result => ({
-          ...result, source: getSourceOfMultisigTransaction(result), request: getRequestOfMultisigTransaction(result), 
+        ...action.payload,
+        results: action.payload.results.map((result) => ({
+          ...result,
+          source: getSourceOfMultisigTransaction(result),
+          request: getRequestOfMultisigTransaction(result),
         })),
       };
     }

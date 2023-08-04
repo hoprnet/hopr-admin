@@ -7,11 +7,15 @@ import {
 } from '@safe-global/api-kit';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 
-export type CustomSafeMultisigTransactionResponse = (SafeMultisigTransactionResponse & { source?: string; request?: string; })
-export type CustomSafeMultisigTransactionListResponse = (SafeMultisigTransactionListResponse & {
-  results: CustomSafeMultisigTransactionResponse[];
-})
-| null
+export type CustomSafeMultisigTransactionResponse = SafeMultisigTransactionResponse & {
+  source?: string;
+  request?: string;
+};
+export type CustomSafeMultisigTransactionListResponse =
+  | (SafeMultisigTransactionListResponse & {
+      results: CustomSafeMultisigTransactionResponse[];
+    })
+  | null;
 
 type InitialState = {
   selectedSafeAddress: string | null;

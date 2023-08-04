@@ -50,7 +50,7 @@ import { Address, decodeFunctionData, formatEther, formatUnits } from 'viem';
 import { useEthersSigner } from '../hooks';
 import { calculateTimeInGMT, formatDateToUserTimezone, formatTimeToUserTimezone } from '../utils/date';
 import { truncateEthereumAddress } from '../utils/helpers';
-import { CustomSafeMultisigTransactionListResponse, CustomSafeMultisigTransactionResponse } from '../store/slices/safe/initialState';
+import { CustomSafeMultisigTransactionListResponse, CustomSafeMultisigTransactionResponse } from '../store/slices/safe/initialState'
 
 const StyledContainer = styled(Paper)`
   min-width: 800px;
