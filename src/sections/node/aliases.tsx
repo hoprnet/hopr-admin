@@ -12,7 +12,7 @@ import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import { CreateAliasModal } from '../../components/Modal/AddAliasModal';
 import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
 import { SendMessageModal } from '../../components/Modal/SendMessageModal';
-import RemoveAliasIcon from '../../future-hopr-lib-components/Icons/RemoveAlias';
+import RemoveAliasIcon from '../../future-hopr-lib-components/Icons/RemoveAlias'
 
 //Mui
 import {
@@ -23,7 +23,7 @@ import {
   TableContainer,
   TableHead,
   TableRow
-} from '@mui/material'
+} from '@mui/material';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 
@@ -74,6 +74,7 @@ function AliasesPage() {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleCSVUpload = (parsedData: any[]) => {
     for (const data of parsedData) {
       if (data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken) {
@@ -158,7 +159,9 @@ function AliasesPage() {
                     peerId={peerId}
                     type={'open'}
                   />
-                  <SendMessageModal peerId={peerId} />
+                  <SendMessageModal 
+                    peerId={peerId}
+                  />
                   <DeleteAliasButton
                     onSuccess={() => {
                       set_deleteSuccess(true);
