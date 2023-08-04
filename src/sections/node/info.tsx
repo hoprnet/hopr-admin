@@ -1,13 +1,13 @@
 import styled from '@emotion/styled';
-import { useAppDispatch, useAppSelector } from '../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { utils } from 'ethers';
 
 // HOPR Components
-import Section from '../future-hopr-lib-components/Section';
+import Section from '../../future-hopr-lib-components/Section';
 import { useEffect } from 'react';
-import { actionsAsync } from '../store/slices/node/actionsAsync';
-import { TableExtended } from '../future-hopr-lib-components/Table/columed-data';
-import { SubpageTitle } from '../components/SubpageTitle';
+import { actionsAsync } from '../../store/slices/node/actionsAsync';
+import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
+import { SubpageTitle } from '../../components/SubpageTitle';
 
 function InfoPage() {
   const dispatch = useAppDispatch();

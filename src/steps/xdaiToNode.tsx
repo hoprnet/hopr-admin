@@ -17,7 +17,7 @@ import GrayButton from '../future-hopr-lib-components/Button/gray';
 import Section from '../future-hopr-lib-components/Section';
 import { useEthersSigner } from '../hooks';
 import { safeActionsAsync } from '../store/slices/safe';
-import Card from './components/Card';
+import Card from '../components/Card';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 
 const StyledForm = styled.div`

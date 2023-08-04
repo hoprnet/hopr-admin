@@ -24,7 +24,7 @@ import {
   Text
 } from './styled';
 import Button from '../../future-hopr-lib-components/Button';
-import Card from '../components/Card';
+import Card from '../../components/Card';
 
 const wxhoprSmartContractAddress = '0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1';
 

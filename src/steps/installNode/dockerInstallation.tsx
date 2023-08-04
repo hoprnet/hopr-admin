@@ -4,8 +4,8 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import Button from '../../future-hopr-lib-components/Button';
 import GrayButton from '../../future-hopr-lib-components/Button/gray';
-import Card from '../components/Card';
-import CodeCopyBox from '../components/CodeCopyBox';
+import Card from '../../components/Card';
+import CodeCopyBox from '../../components/CodeCopyBox';
 import { useNavigate } from 'react-router-dom';
 
 const docker_image = 'gcr.io/hoprassociation/hoprd:1.93.5';
@@ -25,6 +25,12 @@ const StyledGrayButton = styled(GrayButton)`
   height: 39px;
 `;
 
+const Children = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+`;
+
 const DockerInstallation = () => {
   const navigate = useNavigate();
   const [address, set_address] = useState('');
@@ -35,7 +41,7 @@ const DockerInstallation = () => {
       lightBlue
     >
       <Card title="Docker Installation">
-        <>
+        <Children>
           <Subtitle>1. Run one of these commands</Subtitle>
           <div>
             <span>Run HOPRd</span>
@@ -52,6 +58,7 @@ const DockerInstallation = () => {
             type="text"
             label="Node Address"
             placeholder="Your address..."
+            fullWidth
             value={address}
             onChange={(e) => set_address(e.target.value)}
           />
@@ -59,7 +66,7 @@ const DockerInstallation = () => {
             <StyledGrayButton onClick={() => navigate(-1)}>Back</StyledGrayButton>
             <Button>Confirm</Button>
           </ButtonContainer>
-        </>
+        </Children>
       </Card>
     </Section>
   );

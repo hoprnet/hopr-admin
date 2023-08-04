@@ -20,3 +20,12 @@ export function truncateEthereumAddress(address: string) {
   if (!match) return address;
   return `${match[1]}…${match[2]}`;
 }
+
+export const createSendTokensTransactionData = (recipient: Address, amount: bigint) => {
+  const transferData = encodeFunctionData({
+    abi: erc20ABI,
+    functionName: 'transfer',
+    args: [recipient, amount],
+  });
+  return transferData;
+};

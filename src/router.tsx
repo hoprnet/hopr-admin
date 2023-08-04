@@ -9,23 +9,24 @@ import { nodeActions, nodeActionsAsync } from './store/slices/node';
 
 // Sections
 import Section1 from './components/ConnectNode/modal';
-import SectionLogs from './sections/logs';
+import SectionLogs from './sections/node/logs';
 import SectionWeb3 from './sections/web3';
 import SectionSafe from './sections/safe';
-import AliasesPage from './sections/aliases';
-import InfoPage from './sections/info';
-import MessagesPage from './sections/messages';
-import PeersPage from './sections/peers';
-import TicketsPage from './sections/tickets';
-import ChannelsPage from './sections/channels';
-import MetricsPage from './sections/metrics';
+import AliasesPage from './sections/node/aliases';
+import InfoPage from './sections/node/info';
+import MessagesPage from './sections/node/messages';
+import PeersPage from './sections/node/peers';
+import TicketsPage from './sections/node/tickets';
+import ChannelsPage from './sections/node/channels';
+import MetricsPage from './sections/node/metrics';
 import SafeStakingPage from './sections/safeStaking';
-import SettingsPage from './sections/settings';
+import SettingsPage from './sections/node/settings';
 import AddNode from './steps/installNode/addNode';
 import SelectNodeType from './steps/installNode/selectNodeType';
 import WrapperPage from './sections/wrapper';
 import XdaiToNodePage from './steps/xdaiToNode';
 import StakingScreen from './sections/staking-screen';
+import SafeWithdraw from './sections/safeWithdraw';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -51,7 +52,7 @@ import SavingsIcon from '@mui/icons-material/Savings';
 import NodeIcon from '@mui/icons-material/Router';
 import NetworkingIcon from '@mui/icons-material/Diversity3';
 import DevelopIcon from '@mui/icons-material/Code';
-import PingPage from './sections/ping';
+import PingPage from './sections/node/ping';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -62,10 +63,10 @@ import ConnectSafe from './components/ConnectSafe';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import SafeOnboarding from './steps/safeOnboarding';
 import NoNodeAdded from './sections/noNodeAdded';
-import SafeSettings from './sections/safeSettings';
 import StakingLandingPage from './sections/stakingLandingPage';
 import NodeAdded from './sections/nodeAdded';
 import SafeActions from './sections/actions';
+import WalletIcon from '@mui/icons-material/Wallet';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -114,13 +115,13 @@ export const applicationMapNode: ApplicationMapType = [
         element: <MetricsPage />,
         loginNeeded: 'node',
       },
-      {
-        name: 'Configuration',
-        path: 'configuration',
-        icon: <SettingsIcon />,
-        element: <SettingsPage />,
-        loginNeeded: 'node',
-      },
+      // {
+      //   name: 'Configuration',
+      //   path: 'configuration',
+      //   icon: <SettingsIcon />,
+      //   element: <SettingsPage />,
+      //   loginNeeded: 'node',
+      // },
     ],
   },
   {
@@ -230,17 +231,17 @@ export const applicationMapWeb3: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
+        name: 'Withdraw',
+        path: 'withdraw',
+        icon: <WalletIcon />,
+        element: <SafeWithdraw />,
+        loginNeeded: 'web3',
+      },
+      {
         name: 'Wrapper',
         path: 'wrapper',
         icon: <PaidIcon />,
         element: <WrapperPage />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Safe Settings',
-        path: 'safe-settings',
-        icon: <LockIcon />,
-        element: <SafeSettings />,
         loginNeeded: 'web3',
       },
     ],
@@ -311,6 +312,8 @@ export const applicationMap: ApplicationMapType = createApplicationMap();
 const LayoutEnhanced = () => {
   const dispatch = useAppDispatch();
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
+  const account = useAppSelector((selector) => selector.web3.account);
+  const isConnected = useAppSelector((selector) => selector.web3.status.connected);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [searchParams, set_searchParams] = useSearchParams();
   const apiEndpoint = searchParams.get('apiEndpoint');
@@ -381,7 +384,7 @@ const LayoutEnhanced = () => {
           {(environment === 'dev' || environment === 'node') && <ConnectNode />}
         </>
       }
-      drawerRight={nodeConnected && <InfoBar />}
+      drawerRight={(isConnected || nodeConnected) && <InfoBar />}
     />
   );
 };
