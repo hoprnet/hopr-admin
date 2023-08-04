@@ -31,26 +31,25 @@ import Section from '../future-hopr-lib-components/Section';
 
 // LIBS
 import styled from '@emotion/styled';
-import {
-  AllTransactionsListResponse,
-  EthereumTxWithTransfersResponse,
-  SafeModuleTransactionWithTransfersResponse,
-  SafeMultisigTransactionListResponse,
-  SafeMultisigTransactionWithTransfersResponse
-} from '@safe-global/api-kit';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { default as dayjs } from 'dayjs';
-import { erc20ABI, erc4626ABI, erc721ABI, useAccount } from 'wagmi';
-import safeABI from '../abi/safeAbi.json';
+import { erc20ABI, useAccount } from 'wagmi';
 
 // HOOKS
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
-import { Address, decodeFunctionData, formatEther, formatUnits } from 'viem';
+import { Address, decodeFunctionData, formatEther } from 'viem';
 import { useEthersSigner } from '../hooks';
+import {
+  CustomAllTransactionsListResponse,
+  CustomEthereumTxWithTransfersResponse,
+  CustomSafeModuleTransactionWithTransfersResponse,
+  CustomSafeMultisigTransactionListResponse,
+  CustomSafeMultisigTransactionResponse,
+  CustomSafeMultisigTransactionWithTransfersResponse
+} from '../store/slices/safe/initialState';
 import { calculateTimeInGMT, formatDateToUserTimezone, formatTimeToUserTimezone } from '../utils/date';
 import { truncateEthereumAddress } from '../utils/helpers';
-import { CustomSafeMultisigTransactionListResponse, CustomSafeMultisigTransactionResponse } from '../store/slices/safe/initialState'
 
 const StyledContainer = styled(Paper)`
   min-width: 800px;
@@ -512,47 +511,16 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
   );
 };
 
-function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersResponse }) {
+function EthereumTransactionRow(props: { transaction: CustomEthereumTxWithTransfersResponse }) {
   const { transaction } = props;
   const [open, set_open] = useState(false);
   const [date, set_date] = useState<string>();
   const [time, set_time] = useState<string>();
-  const [value, set_value] = useState<string>();
-  const [currency, set_currency] = useState<string>();
-  const [source, set_source] = useState<string>();
 
   useEffect(() => {
     set_date(formatDateToUserTimezone(transaction.executionDate));
     set_time(formatTimeToUserTimezone(transaction.executionDate));
-    set_value(getValueFromHistoryTransaction(transaction));
-    set_currency(getCurrencyFromHistoryTransaction(transaction));
-    set_source(getSourceFromEthereumTransaction(transaction));
   }, []);
-
-  const getValueFromHistoryTransaction = (transaction: EthereumTxWithTransfersResponse) => {
-    if (!transaction.transfers.at(0)?.tokenAddress) {
-      // native transfer
-      return formatEther(BigInt(transaction.transfers.at(0)?.value ?? 0));
-    }
-
-    const units = transaction.transfers.at(0)?.tokenInfo?.decimals ?? 18;
-    const value = formatUnits(BigInt(transaction.transfers.at(0)?.value ?? 0), units);
-    return value;
-  };
-
-  const getCurrencyFromHistoryTransaction = (transaction: EthereumTxWithTransfersResponse) => {
-    if (!transaction.transfers.at(0)?.tokenAddress) {
-      // native transfer
-      return 'xDai';
-    }
-    const currency = transaction.transfers.at(0)?.tokenInfo?.symbol;
-    return currency;
-  };
-
-  const getSourceFromEthereumTransaction = (transaction: EthereumTxWithTransfersResponse) => {
-    const source = transaction.from;
-    return source;
-  };
 
   return (
     <>
@@ -568,11 +536,15 @@ function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersRes
           {date}
         </TableCell>
         <TableCell align="right">{time}</TableCell>
-        <TableCell align="right">{truncateEthereumAddress(source ?? '')}</TableCell>
-        <TableCell align="right">Received</TableCell>
+        <TableCell align="right">
+          <TruncatedEthereumAddressWithTooltip address={transaction.source} />
+        </TableCell>
+        <TableCell align="right">{transaction.request}</TableCell>
         <TableCell align="right">{`${
-          value && value.length > 18 ? value.slice(0, 18).concat('...') : value
-        } ${currency}`}</TableCell>
+          transaction.value && transaction.value.length > 18
+            ? transaction.value.slice(0, 18).concat('...')
+            : transaction.value
+        } ${transaction.currency}`}</TableCell>
       </StyledHistoryTableRow>
       <StyledHistoryTableRow>
         <StyledCollapsibleCell colSpan={6}>
@@ -623,65 +595,16 @@ function EthereumTransactionRow(props: { transaction: EthereumTxWithTransfersRes
   );
 }
 
-function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWithTransfersResponse }) {
+function MultisigTransactionRow(props: { transaction: CustomSafeMultisigTransactionWithTransfersResponse }) {
   const { transaction } = props;
   const [open, set_open] = useState(false);
   const [date, set_date] = useState<string>();
   const [time, set_time] = useState<string>();
-  const [value, set_value] = useState<string>();
-  const [currency, set_currency] = useState<string>();
-  const [source, set_source] = useState<string>();
-  const [request, set_request] = useState<string>();
 
   useEffect(() => {
     set_date(formatDateToUserTimezone(transaction.executionDate ?? transaction.submissionDate));
     set_time(formatTimeToUserTimezone(transaction.executionDate ?? transaction.submissionDate));
-    set_value(getValueFromHistoryTransaction(transaction));
-    set_currency(getCurrencyFromHistoryTransaction(transaction));
-    set_source(getSourceFromMultisigTransaction(transaction));
-    set_request(getRequest(transaction));
   }, []);
-
-  const getValueFromHistoryTransaction = (transaction: SafeMultisigTransactionWithTransfersResponse) => {
-    const value = formatEther(BigInt(transaction.transfers.at(0)?.value ?? 0));
-    return value;
-  };
-
-  const getCurrencyFromHistoryTransaction = (transaction: SafeMultisigTransactionWithTransfersResponse) => {
-    if (!transaction.transfers.at(0)?.tokenAddress) {
-      return 'xDai';
-    }
-
-    const currency = transaction.transfers.at(0)?.tokenInfo.symbol;
-    return currency;
-  };
-
-  const getSourceFromMultisigTransaction = (transaction: SafeMultisigTransactionWithTransfersResponse) => {
-    const source = transaction.confirmations?.at(0)?.owner;
-    return source;
-  };
-
-  const getRequest = (transaction: SafeMultisigTransactionResponse) => {
-    if (transaction.data) {
-      try {
-        const decodedData = decodeFunctionData({
-          data: transaction.data as Address,
-          // could be any sc so not sure on the abi
-          abi: [...erc20ABI, ...erc4626ABI, ...erc721ABI, ...safeABI],
-        });
-        return decodedData.functionName;
-      } catch (e) {
-        // if the function is not from an abi stated above
-        // the data may not decode
-        return 'Could not decode';
-      }
-    } else if (BigInt(transaction.value)) {
-      return 'Sent';
-    } else {
-      // if a multisig transaction has no data or value it is probably a rejection
-      return 'Rejection';
-    }
-  };
 
   return (
     <>
@@ -701,13 +624,13 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
         </TableCell>
         <TableCell>{time}</TableCell>
         <TableCell align="right">
-          <TruncatedEthereumAddressWithTooltip address={source ?? ''} />
+          <TruncatedEthereumAddressWithTooltip address={transaction.source} />
         </TableCell>
-        <TableCell align="right">{request}</TableCell>
+        <TableCell align="right">{transaction.request}</TableCell>
         <TableCell
           colSpan={2}
           align="right"
-        >{`${value && value.length > 10 ? value.slice(0, 10).concat('...') : value} ${currency}`}</TableCell>
+        >{`${transaction.value && transaction.value.length > 10 ? transaction.value.slice(0, 10).concat('...') : transaction.value} ${transaction.currency}`}</TableCell>
       </StyledHistoryTableRow>
       <StyledHistoryTableRow className={!transaction.isExecuted ? 'rejected' : ''}>
         <StyledCollapsibleCell colSpan={6}>
@@ -804,31 +727,16 @@ function MultisigTransactionRow(props: { transaction: SafeMultisigTransactionWit
   );
 }
 
-function ModuleTransactionRow(props: { transaction: SafeModuleTransactionWithTransfersResponse }) {
+function ModuleTransactionRow(props: { transaction: CustomSafeModuleTransactionWithTransfersResponse }) {
   const { transaction } = props;
   const [open, set_open] = useState(false);
   const [date, set_date] = useState<string>();
   const [time, set_time] = useState<string>();
-  const [value, set_value] = useState<string>();
-  const [currency, set_currency] = useState<string>();
 
   useEffect(() => {
     set_date(formatDateToUserTimezone(transaction.executionDate));
     set_time(formatTimeToUserTimezone(transaction.executionDate));
-    set_value(getValueFromHistoryTransaction(transaction));
-    set_currency(getCurrencyFromHistoryTransaction(transaction));
   }, []);
-
-  const getValueFromHistoryTransaction = (transaction: SafeModuleTransactionWithTransfersResponse) => {
-    const units = transaction.transfers.at(0)?.tokenInfo.decimals ?? 18;
-    const value = formatUnits(BigInt(transaction.transfers.at(0)?.value ?? 0), units);
-    return value;
-  };
-
-  const getCurrencyFromHistoryTransaction = (transaction: SafeModuleTransactionWithTransfersResponse) => {
-    const currency = transaction.transfers.at(0)?.tokenInfo.symbol;
-    return currency;
-  };
 
   return (
     <>
@@ -847,20 +755,24 @@ function ModuleTransactionRow(props: { transaction: SafeModuleTransactionWithTra
           {date}
         </TableCell>
         <TableCell align="right">{time}</TableCell>
-        <TableCell align="right">-</TableCell>
-        <TableCell align="right">{transaction.module}</TableCell>
+        <TableCell align="right">
+          <TruncatedEthereumAddressWithTooltip address={transaction.source} />
+        </TableCell>
+        <TableCell align="right">{transaction.request}</TableCell>
         <TableCell align="right">{`${
-          value && value.length > 18 ? value.slice(0, 18).concat('...') : value
-        } ${currency}`}</TableCell>
+          transaction.value && transaction.value.length > 18
+            ? transaction.value.slice(0, 18).concat('...')
+            : transaction.value
+        } ${transaction.currency}`}</TableCell>
       </StyledHistoryTableRow>
     </>
   );
 }
 
-function TransactionHistoryRow(props: { transaction: AllTransactionsListResponse['results'][0] }) {
+function TransactionHistoryRow(props: { transaction: NonNullable<CustomAllTransactionsListResponse>['results'][0] }) {
   const { transaction } = props;
 
-  const getTransactionTypeRow = (transaction: AllTransactionsListResponse['results'][0]) => {
+  const getTransactionTypeRow = (transaction: NonNullable<CustomAllTransactionsListResponse>['results'][0]) => {
     if (transaction.txType === 'ETHEREUM_TRANSACTION') {
       return <EthereumTransactionRow transaction={transaction} />;
     } else if (transaction.txType === 'MULTISIG_TRANSACTION') {
@@ -963,12 +875,12 @@ const PendingTransactionsTable = () => {
 
   const sortByDate = (pendingTransactions: CustomSafeMultisigTransactionListResponse) => {
     if (!pendingTransactions?.count) return null;
-    const sortedCopy: SafeMultisigTransactionListResponse = JSON.parse(JSON.stringify(pendingTransactions.results));
+    const sortedCopy: CustomSafeMultisigTransactionListResponse = JSON.parse(JSON.stringify(pendingTransactions));
 
     // sort from oldest date to newest
-    return sortedCopy.results.sort(
+    return sortedCopy?.results.sort(
       (prevDay, nextDay) => dayjs(prevDay.submissionDate).valueOf() - dayjs(nextDay.submissionDate).valueOf(),
-    );
+    ) as CustomSafeMultisigTransactionResponse[];
   };
 
   return !selectedSafeAddress ? (
