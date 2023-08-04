@@ -28,6 +28,7 @@ import WrapperPage from './sections/wrapper';
 import XdaiToNodePage from './steps/xdaiToNode';
 import SafeTransactionHistoryPage from './sections/safeTransactionHistory';
 import StakingScreen from './sections/staking-screen';
+import SafeWithdraw from './sections/safeWithdraw';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -67,6 +68,7 @@ import NoNodeAdded from './sections/noNodeAdded';
 import SafeSettings from './sections/safeSettings';
 import StakingLandingPage from './sections/stakingLandingPage';
 import NodeAdded from './sections/nodeAdded';
+import WalletIcon from '@mui/icons-material/Wallet';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -235,6 +237,13 @@ export const applicationMapWeb3: ApplicationMapType = [
         path: 'safe/transaction-history',
         icon: <ReceiptIcon />,
         element: <SafeTransactionHistoryPage />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Withdraw',
+        path: 'withdraw',
+        icon: <WalletIcon />,
+        element: <SafeWithdraw />,
         loginNeeded: 'web3',
       },
       {

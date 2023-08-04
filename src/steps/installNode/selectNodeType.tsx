@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
 import Section from '../../future-hopr-lib-components/Section';
 import Button from '../../future-hopr-lib-components/Button';
-import Card from '../components/Card';
+import Card from '../../components/Card';
 
 const NodeContainer = styled.div`
   display: flex;
   gap: 2.5rem;
+  justify-content: center;
 `;
 
 const Node = styled.div`
@@ -55,6 +56,8 @@ const StyledButton = styled(Button)`
   align-self: center;
   text-transform: uppercase;
 `;
+
+const Children = styled.div``;
 
 const SelectNodeType = () => {
   return (

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useBalance, useContractWrite, usePrepareContractWrite, useAccount } from 'wagmi';
 import { parseUnits } from 'viem';
 import wrapperAbi from '../abi/wrapperAbi.json';
+import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS } from '../../config'
 
 import styled from '@emotion/styled';
 import {
@@ -141,35 +142,31 @@ function WrapperPage() {
   const [swapDirection, set_swapDirection] = useState<'xHOPR_to_wxHOPR' | 'wxHOPR_to_xHOPR'>('xHOPR_to_wxHOPR');
   const { address } = useAccount();
 
-  const xhoprSmartContractAddress = '0xD057604A14982FE8D88c5fC25Aac3267eA142a08';
-  const wxhoprSmartContractAddress = '0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1';
-  const hoprWrapperSmartContractAddress = '0x097707143e01318734535676cfe2e5cF8b656ae8';
-
   // Fetch balance data
   const { data: xHOPR_balance } = useBalance({
     address,
-    token: xhoprSmartContractAddress,
+    token: xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     watch: true,
   });
   const { data: wxHOPR_balance } = useBalance({
     address,
-    token: wxhoprSmartContractAddress,
+    token: wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     watch: true,
   });
 
   // Prepare contract write configurations
   const { config: xHOPR_to_wxHOPR_config } = usePrepareContractWrite({
-    address: xhoprSmartContractAddress,
+    address: xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     abi: wrapperAbi,
     functionName: 'transferAndCall',
-    args: [hoprWrapperSmartContractAddress, parseUnits(xhoprValue as NumberLiteral, 18), '0x'],
+    args: [wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS, parseUnits(xhoprValue as NumberLiteral, 18), '0x'],
   });
 
   const { config: wxHOPR_to_xHOPR_config } = usePrepareContractWrite({
-    address: wxhoprSmartContractAddress,
+    address: wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     abi: wrapperAbi,
     functionName: 'transfer',
-    args: [hoprWrapperSmartContractAddress, parseUnits(wxhoprValue as NumberLiteral, 18)],
+    args: [wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS, parseUnits(wxhoprValue as NumberLiteral, 18)],
   });
 
   // Perform contract writes and retrieve data.

@@ -14,7 +14,7 @@ import {
   Text
 } from './styled';
 import Button from '../../future-hopr-lib-components/Button';
-import Card from '../components/Card';
+import Card from '../../components/Card';
 import { IconButton, MenuItem, Select, TextField } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 

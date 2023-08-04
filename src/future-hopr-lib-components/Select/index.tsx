@@ -44,6 +44,7 @@ const Section: React.FC<Props> = (props) => {
       <Select
         labelId="select-small"
         id="select-small"
+        size={props.size}
         value={props.value}
         onChange={props.onChange}
         label={props.label}
