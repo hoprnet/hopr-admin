@@ -1,6 +1,6 @@
 import { Container, FlexContainer, Text } from '../steps/safeOnboarding/styled';
 import { MenuItem, Select, TextField } from '@mui/material';
-import { safeActionsAsync, safeActions } from '../store/slices/safe';
+import { safeActionsAsync } from '../store/slices/safe';
 import { useAppDispatch, useAppSelector } from '../store';
 import { useEthersSigner } from '../hooks';
 import { useState, useEffect } from 'react';
