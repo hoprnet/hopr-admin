@@ -24,6 +24,11 @@ export const parseMetrics = (data: string) => {
       key = string[2];
       type = tmp[i].replace(`# TYPE ${key} `, '');
       parsed[key].type = type;
+    } else if (string[0].includes('hoprd_mgauge_version{version=')) {
+      const version = string[0].replace('hoprd_mgauge_version{version="', '').replace('"}', '');
+      parsed['hoprd_mgauge_version'].data.push(version);
+      parsed['hoprd_mgauge_version'].categories.push('');
+      parsed['hoprd_mgauge_version'].length = 1;
     } else {
       parsed[lastKey].data.push(parseInt(string[1]));
       const category = string[0].replace(lastKey, '');

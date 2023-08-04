@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { nodeActionsAsync } from '../store/slices/node';
-import { useAppDispatch, useAppSelector } from '../store';
+import { nodeActionsAsync } from '../../store/slices/node';
+import { useAppDispatch, useAppSelector } from '../../store';
 
-import AbbreviatedPeerId from '../components/AbbreviatedPeerId';
-import Section from '../future-hopr-lib-components/Section';
+import AbbreviatedPeerId from '../../components/AbbreviatedPeerId';
+import Section from '../../future-hopr-lib-components/Section';
 import TextField from '@mui/material/TextField';
 
 function PingPage() {

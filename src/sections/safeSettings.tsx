@@ -153,9 +153,7 @@ function SafeSettings() {
       <h2>Remove Owner</h2>
       <Container column>
         {safe?.owners.map((address, id) => (
-          <RemoveOwnerDiv 
-            key={`remove-ownner_${id}`}
-          >
+          <RemoveOwnerDiv key={`remove-ownner_${id}`}>
             <p>{address}</p>
             <Button onClick={() => removeOwner(address)}>Remove</Button>
           </RemoveOwnerDiv>

@@ -1,21 +1,23 @@
 import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
+
+// HOPR Components
+import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
+import Checkbox from '../../future-hopr-lib-components/Toggles/Checkbox';
+import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+
+// Mui
 import {
-  Dialog,
   DialogTitle,
-  DialogContent,
   DialogActions,
-  Button,
   CircularProgress,
-  Stack,
   TextField,
   Tooltip
 } from '@mui/material';
-import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
+
 import { SendMessagePayloadType } from '@hoprnet/hopr-sdk';
-import Checkbox from '../../future-hopr-lib-components/Toggles/Checkbox';
-import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -153,7 +155,12 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
 
   return (
     <>
-      <button onClick={handleOpenModal}>Send Message</button>
+      <IconButton
+        iconComponent={<ForwardToInboxIcon />}
+        tooltipText="Send Message"
+        onClick={handleOpenModal}
+      />
+
       <SDialog
         open={openModal}
         onClose={handleCloseModal}
