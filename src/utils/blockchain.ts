@@ -11,10 +11,10 @@ export const createApproveTransactionData = (spender: Address, value: bigint) =>
 };
 
 export const createSendTokensTransactionData = (recipient: Address, amount: bigint) => {
-  const approveData = encodeFunctionData({
+  const transferData = encodeFunctionData({
     abi: erc20ABI,
     functionName: 'transfer',
     args: [recipient, amount],
   });
-  return approveData;
+  return transferData;
 };
