@@ -21,7 +21,7 @@ type AdditionalFieldsForPendingActions = {
 type AdditionalFieldsForHistoryActions = AdditionalFieldsForPendingActions & {
   currency: string;
   value: string;
-}
+};
 
 export type CustomSafeMultisigTransactionResponse = SafeMultisigTransactionResponse & AdditionalFieldsForPendingActions;
 
@@ -31,19 +31,18 @@ export type CustomSafeMultisigTransactionListResponse =
     })
   | null;
 
+export type CustomSafeModuleTransactionWithTransfersResponse = SafeModuleTransactionWithTransfersResponse &
+  AdditionalFieldsForHistoryActions;
 
-export type CustomSafeModuleTransactionWithTransfersResponse = SafeModuleTransactionWithTransfersResponse  & AdditionalFieldsForHistoryActions
+export type CustomSafeMultisigTransactionWithTransfersResponse = SafeMultisigTransactionWithTransfersResponse &
+  AdditionalFieldsForHistoryActions;
 
-export type CustomSafeMultisigTransactionWithTransfersResponse = SafeMultisigTransactionWithTransfersResponse  & AdditionalFieldsForHistoryActions
-
-export type CustomEthereumTxWithTransfersResponse = EthereumTxWithTransfersResponse  & AdditionalFieldsForHistoryActions
+export type CustomEthereumTxWithTransfersResponse = EthereumTxWithTransfersResponse & AdditionalFieldsForHistoryActions;
 
 export type CustomAllTransactionsResponse = Array<
-  (
-    | CustomSafeModuleTransactionWithTransfersResponse
-    | CustomSafeMultisigTransactionWithTransfersResponse
-    | CustomEthereumTxWithTransfersResponse
-  )
+  | CustomSafeModuleTransactionWithTransfersResponse
+  | CustomSafeMultisigTransactionWithTransfersResponse
+  | CustomEthereumTxWithTransfersResponse
 >;
 
 export type CustomAllTransactionsListResponse =

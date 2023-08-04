@@ -49,7 +49,7 @@ import {
   CustomSafeMultisigTransactionWithTransfersResponse
 } from '../store/slices/safe/initialState';
 import { calculateTimeInGMT, formatDateToUserTimezone, formatTimeToUserTimezone } from '../utils/date';
-import { truncateEthereumAddress } from '../utils/helpers';
+import { truncateEthereumAddress } from '../utils/blockchain';
 
 const StyledContainer = styled(Paper)`
   min-width: 800px;
@@ -630,7 +630,11 @@ function MultisigTransactionRow(props: { transaction: CustomSafeMultisigTransact
         <TableCell
           colSpan={2}
           align="right"
-        >{`${transaction.value && transaction.value.length > 10 ? transaction.value.slice(0, 10).concat('...') : transaction.value} ${transaction.currency}`}</TableCell>
+        >{`${
+            transaction.value && transaction.value.length > 10
+              ? transaction.value.slice(0, 10).concat('...')
+              : transaction.value
+          } ${transaction.currency}`}</TableCell>
       </StyledHistoryTableRow>
       <StyledHistoryTableRow className={!transaction.isExecuted ? 'rejected' : ''}>
         <StyledCollapsibleCell colSpan={6}>
