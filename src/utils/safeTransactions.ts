@@ -1,9 +1,9 @@
-import { AllTransactionsListResponse, EthereumTxWithTransfersResponse, SafeModuleTransactionWithTransfersResponse, SafeMultisigTransactionWithTransfersResponse } from "@safe-global/api-kit";
-import { SafeMultisigTransactionResponse } from "@safe-global/safe-core-sdk-types";
-import { Address, decodeFunctionData, formatEther, formatUnits } from "viem";
-import { erc20ABI, erc4626ABI, erc721ABI } from "wagmi";
+import { AllTransactionsListResponse, EthereumTxWithTransfersResponse, SafeModuleTransactionWithTransfersResponse, SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-kit'
+import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
+import { Address, decodeFunctionData, formatEther, formatUnits } from 'viem';
+import { erc20ABI, erc4626ABI, erc721ABI } from 'wagmi';
 import safeABI from '../abi/safeAbi.json';
-import { truncateEthereumAddress } from "./blockchain";
+import { truncateEthereumAddress } from './blockchain';
 
 export const getRequestOfPendingTransaction = (transaction: SafeMultisigTransactionResponse) => {
   if (transaction.data) {
@@ -21,13 +21,14 @@ export const getRequestOfPendingTransaction = (transaction: SafeMultisigTransact
     }
   } else if (BigInt(transaction.value)) {
     return 'Sent';
-  } if (transaction.safe === transaction.to && !BigInt(transaction.value)) {
-    // this should be a rejection tx if there is no value 
+  }
+  if (transaction.safe === transaction.to && !BigInt(transaction.value)) {
+    // this should be a rejection tx if there is no value
     // and no call data and the destination is the same address
     return 'Rejection';
   } else {
     // unknown request
-    '-'
+    ('-');
   }
 };
 

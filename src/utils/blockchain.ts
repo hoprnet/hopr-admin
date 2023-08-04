@@ -10,7 +10,6 @@ export const createApproveTransactionData = (spender: Address, value: bigint) =>
   return approveData;
 };
 
-
 export function truncateEthereumAddress(address: string) {
   // Captures 0x + 4 characters, then the last 4 characters.
   if (!address) return;
