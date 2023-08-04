@@ -49,7 +49,7 @@ function ChannelsPage() {
     >
   >({});
   const tabLabel = tabIndex === 0 ? 'outgoing' : 'incoming';
-  const channelsData = tabIndex === 0 ? channels?.incoming : channels?.outgoing;
+  const channelsData = tabIndex === 0 ? channels?.outgoing : channels?.incoming;
 
   const [queryParams, set_queryParams] = useState('');
 
