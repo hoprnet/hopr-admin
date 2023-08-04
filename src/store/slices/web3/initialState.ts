@@ -9,8 +9,19 @@ export const initialState = {
   chainId: null as string | null,
   chain: null as string | null,
   blockNumber: '',
-  balances: {
-    xDAI: null,
-    xHOPR: null,
+  balance: {
+    xDai: {
+      native: null,
+      parsed: null
+    },
+    xHopr: {
+      native: null,
+      parsed: null
+    },
+    wxHopr: {
+      native: null,
+      parsed: null
+    },
+    isFetching: false,
   },
 };

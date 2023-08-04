@@ -29,6 +29,18 @@ const web3Slice = createSlice({
     setHasCommunityNFT(state, action: PayloadAction<boolean>) {
       state.hasCommunityNFT = action.payload;
     },
+    setWalletBalance_xDai(state, action) {
+      state.balance.xDai.native = action.payload ? action.payload : null;
+      state.balance.xDai.parsed = action.payload ? action.payload : null;
+    },
+    setWalletBalance_xHopr(state, action) {
+      state.balance.xHopr.native = action.payload ? action.payload : null;
+      state.balance.xHopr.parsed = action.payload ? action.payload : null;
+    },
+    setWalletBalance_wxHopr(state, action) {
+      state.balance.wxHopr.native = action.payload ? action.payload : null;
+      state.balance.wxHopr.parsed = action.payload ? action.payload : null;
+    },
   },
   extraReducers: (builder) => createExtraReducers(builder),
 });
