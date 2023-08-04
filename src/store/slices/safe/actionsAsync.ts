@@ -1,9 +1,13 @@
 import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
-import { initialState } from './initialState';
+import { CustomSafeMultisigTransactionResponse, initialState } from './initialState';
 import { ethers } from 'ethers';
 import SafeApiKit, { AddSafeDelegateProps, AllTransactionsOptions, DeleteSafeDelegateProps, GetSafeDelegateProps } from '@safe-global/api-kit'
 import Safe, { EthersAdapter, SafeAccountConfig, SafeFactory } from '@safe-global/protocol-kit';
 import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
+import { truncateEthereumAddress } from '../../../utils/helpers';
+import { Address, decodeFunctionData } from 'viem';
+import { erc20ABI, erc4626ABI, erc721ABI } from 'wagmi';
+import safeABI from '../../../abi/safeAbi.json';
 
 const SERVICE_URL = 'https://safe-transaction-gnosis-chain.safe.global/';
 
@@ -43,6 +47,39 @@ const createSafeSDK = async (signer: ethers.providers.JsonRpcSigner, safeAddress
   });
 
   return safeAccount;
+};
+
+
+const getRequestOfMultisigTransaction = (transaction: SafeMultisigTransactionResponse) => {
+  if (transaction.data) {
+    try {
+      const decodedData = decodeFunctionData({
+        data: transaction.data as Address,
+        // could be any sc so not sure on the abi
+        abi: [...erc20ABI, ...erc4626ABI, ...erc721ABI, ...safeABI],
+      });
+      return decodedData.functionName;
+    } catch (e) {
+      // if the function is not from an abi stated above
+      // the data may not decode
+      return 'Could not decode';
+    }
+  } else if (BigInt(transaction.value)) {
+    return 'Sent';
+  } else {
+    // this should be a rejection tx if there is no value and no call data
+    return 'Rejection';
+  }
+};
+
+
+const getSourceOfMultisigTransaction = (transaction: CustomSafeMultisigTransactionResponse) => {
+  // if there are no signatures this is from a delegate
+  if (!transaction.confirmations?.length) {
+    return '-';
+  }
+
+  return truncateEthereumAddress(transaction.confirmations.at(0)?.owner ?? '');
 };
 
 const createSafeThunk = createAsyncThunk(
@@ -638,7 +675,12 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   });
   builder.addCase(getPendingSafeTransactionsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.pendingTransactions = action.payload;
+      // add business logic: source, request
+      state.pendingTransactions = {
+        ...action.payload, results: action.payload.results.map(result => ({
+          ...result, source: getSourceOfMultisigTransaction(result), request: getRequestOfMultisigTransaction(result), 
+        })),
+      };
     }
   });
   builder.addCase(getSafeDelegatesThunk.fulfilled, (state, action) => {

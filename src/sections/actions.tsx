@@ -50,6 +50,7 @@ import { Address, decodeFunctionData, formatEther, formatUnits } from 'viem';
 import { useEthersSigner } from '../hooks';
 import { calculateTimeInGMT, formatDateToUserTimezone, formatTimeToUserTimezone } from '../utils/date';
 import { truncateEthereumAddress } from '../utils/helpers';
+import { CustomSafeMultisigTransactionListResponse, CustomSafeMultisigTransactionResponse } from '../store/slices/safe/initialState';
 
 const StyledContainer = styled(Paper)`
   min-width: 800px;
@@ -301,14 +302,12 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
   }
 };
 
-const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTransactionResponse }) => {
+const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisigTransactionResponse }) => {
   const { address } = useAccount();
   const safeNonce = useAppSelector((state) => state.safe.info?.nonce);
   const signer = useEthersSigner();
   const dispatch = useAppDispatch();
   const [open, set_open] = useState(false);
-  const [source, set_source] = useState<string>();
-  const [request, set_request] = useState<string>();
   // value can represent token value or json params of data
   const [value, set_value] = useState<string>();
   const [currency, set_currency] = useState<string>();
@@ -318,8 +317,6 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
 
   useEffect(() => {
     if (signer && transaction) {
-      set_source(getSourceOfTransaction(transaction));
-      set_request(getRequest(transaction));
       getValueFromTransaction(transaction, signer).then((value) => set_value(value?.toString()));
       getCurrencyFromTransaction(transaction, signer).then((currency) => set_currency(currency));
       set_dateInGMT(calculateTimeInGMT(transaction.submissionDate));
@@ -338,37 +335,6 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
     }
 
     return 'Awaiting confirmation';
-  };
-
-  const getRequest = (transaction: SafeMultisigTransactionResponse) => {
-    if (transaction.data) {
-      try {
-        const decodedData = decodeFunctionData({
-          data: transaction.data as Address,
-          // could be any sc so not sure on the abi
-          abi: [...erc20ABI, ...erc4626ABI, ...erc721ABI, ...safeABI],
-        });
-        return decodedData.functionName;
-      } catch (e) {
-        // if the function is not from an abi stated above
-        // the data may not decode
-        return 'Could not decode';
-      }
-    } else if (BigInt(transaction.value)) {
-      return 'Sent';
-    } else {
-      // this should be a rejection tx if there is no value and no call data
-      return 'Rejection';
-    }
-  };
-
-  const getSourceOfTransaction = (transaction: SafeMultisigTransactionResponse) => {
-    // if there are no signatures this is from a delegate
-    if (!transaction.confirmations?.length) {
-      return '-';
-    }
-
-    return truncateEthereumAddress(transaction.confirmations.at(0)?.owner ?? '');
   };
 
   const getCurrencyFromTransaction = async (
@@ -469,8 +435,8 @@ const PendingTransactionRow = ({ transaction }: { transaction: SafeMultisigTrans
             <span>{dateInUserTimezone}</span>
           </Tooltip>
         </TableCell>
-        <TableCell align="left">{source}</TableCell>
-        <TableCell align="left">{request}</TableCell>
+        <TableCell align="left">{transaction.source}</TableCell>
+        <TableCell align="left">{transaction.request}</TableCell>
         <TableCell align="left">{`${
           value && value.length > 18 ? value.slice(0, 18).concat('...') : value
         } ${currency}`}</TableCell>
@@ -995,9 +961,9 @@ const PendingTransactionsTable = () => {
     };
   }, [selectedSafeAddress]);
 
-  const sortByDate = (pendingTransactions: SafeMultisigTransactionListResponse) => {
-    if (!pendingTransactions.count) return null;
-    const sortedCopy: SafeMultisigTransactionListResponse = JSON.parse(JSON.stringify(pendingTransactions));
+  const sortByDate = (pendingTransactions: CustomSafeMultisigTransactionListResponse) => {
+    if (!pendingTransactions?.count) return null;
+    const sortedCopy: SafeMultisigTransactionListResponse = JSON.parse(JSON.stringify(pendingTransactions.results));
 
     // sort from oldest date to newest
     return sortedCopy.results.sort(
