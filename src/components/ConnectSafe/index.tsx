@@ -10,7 +10,7 @@ import { useEthersSigner } from '../../hooks';
 import { Button, Menu, MenuItem } from '@mui/material';
 import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
 import { appActions } from '../../store/slices/app';
-import { truncateEthereumAddress } from '../../utils/helpers';
+import { truncateEthereumAddress } from '../../utils/blockchain';
 
 const AppBarContainer = styled(Button)`
   align-items: center;
@@ -36,19 +36,6 @@ const AppBarContainer = styled(Button)`
       filter: opacity(0.5);
     }
   }
-`;
-
-const Content = styled.div`
-  font-family: 'Source Code Pro';
-  font-size: 18px;
-  width: 170px;
-  display: flex;
-  align-items: flex-start;
-  flex-direction: row;
-  justify-content: space-evenly;
-  font-size: 14px;
-  gap: 10px;
-  color: #414141;
 `;
 
 const DropdownArrow = styled.img`

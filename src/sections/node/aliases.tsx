@@ -74,6 +74,7 @@ function AliasesPage() {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleCSVUpload = (parsedData: any[]) => {
     for (const data of parsedData) {
       if (data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken) {
