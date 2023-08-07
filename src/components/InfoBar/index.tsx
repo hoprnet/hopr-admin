@@ -31,7 +31,7 @@ const SDrawer = styled(Drawer)`
   }
   &.node {
     .MuiDrawer-paper {
-      background: #ffffa059;
+      background: white;
       border: 0;
     }
   }
@@ -61,6 +61,7 @@ const Web3Container = styled.div`
   padding: 1rem;
   font-size: 10px;
   margin-right: 8px;
+  box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
 `;
 
 const FlexColumn = styled.div`
