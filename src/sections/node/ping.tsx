@@ -74,7 +74,6 @@ function PingPage() {
 
   return (
     <Section
-      yellowLight
       fullHeightMin
     >
       <h2>Ping</h2>

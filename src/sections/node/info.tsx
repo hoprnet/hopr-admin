@@ -98,7 +98,6 @@ function InfoPage() {
     <Section
       className="Section--selectNode"
       id="Section--selectNode"
-      yellowLight
       fullHeightMin
     >
       <SubpageTitle
@@ -108,7 +107,7 @@ function InfoPage() {
       />
       <TableExtended
         title="Software"
-        style={{ marginBottom: '32px' }}
+        style={{ marginBottom: '42px' }}
       >
         <tbody>
           <tr>
@@ -124,7 +123,7 @@ function InfoPage() {
 
       <TableExtended
         title="Network"
-        style={{ marginBottom: '32px' }}
+        style={{ marginBottom: '42px' }}
       >
         <tbody>
           <tr>
@@ -152,7 +151,7 @@ function InfoPage() {
 
       <TableExtended
         title="Balances"
-        style={{ marginBottom: '32px' }}
+        style={{ marginBottom: '42px' }}
       >
         <tbody>
           <tr>
@@ -168,7 +167,7 @@ function InfoPage() {
 
       <TableExtended
         title="Addresses"
-        style={{ marginBottom: '32px' }}
+        style={{ marginBottom: '42px' }}
       >
         <tbody>
           <tr>
@@ -192,7 +191,7 @@ function InfoPage() {
 
       <TableExtended
         title="Channels"
-        style={{ marginBottom: '32px' }}
+        style={{ marginBottom: '42px' }}
       >
         <tbody>
           <tr>
@@ -208,7 +207,7 @@ function InfoPage() {
 
       <TableExtended
         title="Peers on the network"
-        style={{ marginBottom: '32px' }}
+        style={{ marginBottom: '42px' }}
       >
         <tbody>
           <tr>
@@ -223,7 +222,7 @@ function InfoPage() {
       </TableExtended>
       <TableExtended
         title="Tickets"
-        style={{ marginBottom: '32px' }}
+        style={{ marginBottom: '42px' }}
       >
         <tbody>
           <tr>
@@ -270,7 +269,7 @@ function InfoPage() {
       </TableExtended>
       <TableExtended
         title="Aliases"
-        style={{ marginBottom: '32px' }}
+        style={{ marginBottom: '42px' }}
       >
         <tbody>
           <tr>

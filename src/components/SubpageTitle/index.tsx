@@ -28,12 +28,12 @@ const Content = styled.div`
   }
   .left {
   }
+  h2 {
+    color: #414141;
+  }
 `;
 
 const SIconButton = styled(IconButton)`
-  svg {
-    color: #04049f;
-  }
   &.Mui-disabled {
     svg {
       background-color: transparent;

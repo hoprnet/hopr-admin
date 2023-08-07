@@ -123,7 +123,6 @@ function SettingsPage() {
     <Section
       className="Section--settings"
       id="Section--settings"
-      yellowLight
       fullHeightMin
     >
       <SubpageTitle

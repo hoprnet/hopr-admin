@@ -15,7 +15,7 @@ type SubpageTitleProps = {
 
 const SIconButton = styled(MuiIconButton)`
   svg {
-    color: #04049f;
+    color: #000050;
   }
   &.Mui-disabled {
     svg {

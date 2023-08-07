@@ -67,7 +67,6 @@ function TicketsPage() {
     <Section
       className="Section--tickets"
       id="Section--tickets"
-      yellowLight
       fullHeightMin
     >
       <SubpageTitle

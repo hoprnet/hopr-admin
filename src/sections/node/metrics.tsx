@@ -64,7 +64,6 @@ function MetricsPage() {
 
   return (
     <Section
-      yellowLight
       fullHeightMin
     >
       <SubpageTitle

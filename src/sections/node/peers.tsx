@@ -101,7 +101,6 @@ function PeersPage() {
 
   return (
     <Section
-      yellowLight
       fullHeightMin
     >
       <SubpageTitle

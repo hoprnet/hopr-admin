@@ -51,12 +51,12 @@ const StyledListSubheader = styled(ListSubheader)`
 const StyledListItemButton = styled(ListItemButton)`
   height: 48px;
   &.Mui-selected {
-    color: #0000b4;
+    color: #000050;
     .MuiTypography-root {
       font-weight: bold;
     }
     .MuiListItemIcon-root {
-      color: #0000b4;
+      color: #000050;
     }
   }
 ` as typeof ListItemButton;
