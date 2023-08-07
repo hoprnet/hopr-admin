@@ -14,7 +14,7 @@ import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { gnosis, localhost } from 'viem/chains';
 import { Button, Menu, MenuItem } from '@mui/material';
-import { truncateEthereumAddress } from '../../utils/helpers';
+import { truncateEthereumAddress } from '../../utils/blockchain';
 
 const AppBarContainer = styled(Button)`
   align-items: center;

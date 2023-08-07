@@ -1,6 +1,6 @@
 import { Container, FlexContainer, Text } from '../steps/safeOnboarding/styled';
 import { MenuItem, Select, TextField } from '@mui/material';
-import { safeActionsAsync, safeActions } from '../store/slices/safe';
+import { safeActionsAsync } from '../store/slices/safe';
 import { useAppDispatch, useAppSelector } from '../store';
 import { useEthersSigner } from '../hooks';
 import { useState, useEffect } from 'react';
@@ -18,7 +18,6 @@ function SafeSettings() {
   const dispatch = useAppDispatch();
   const safe = useAppSelector((state) => state.safe.info);
   const safeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
-
   const signer = useEthersSigner();
   const [threshold, set_threshold] = useState(safe?.threshold || 0);
   const [newOwner, set_newOwner] = useState('');

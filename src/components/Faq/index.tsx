@@ -4,7 +4,7 @@ import {
   AccordionSummary,
   Card,
   Chip
-} from '@mui/material';
+} from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import styled from '@emotion/styled';
 import { useState } from 'react';

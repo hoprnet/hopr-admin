@@ -21,12 +21,10 @@ import ChannelsPage from './sections/node/channels';
 import MetricsPage from './sections/node/metrics';
 import SafeStakingPage from './sections/safeStaking';
 import SettingsPage from './sections/node/settings';
-import SafeQueue from './sections/safePendingTransactions';
 import AddNode from './steps/installNode/addNode';
 import SelectNodeType from './steps/installNode/selectNodeType';
 import WrapperPage from './sections/wrapper';
 import XdaiToNodePage from './steps/xdaiToNode';
-import SafeTransactionHistoryPage from './sections/safeTransactionHistory';
 import StakingScreen from './sections/staking-screen';
 import SafeWithdraw from './sections/safeWithdraw';
 
@@ -65,9 +63,9 @@ import ConnectSafe from './components/ConnectSafe';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import SafeOnboarding from './steps/safeOnboarding';
 import NoNodeAdded from './sections/noNodeAdded';
-import SafeSettings from './sections/safeSettings';
 import StakingLandingPage from './sections/stakingLandingPage';
 import NodeAdded from './sections/nodeAdded';
+import SafeActions from './sections/actions';
 import WalletIcon from '@mui/icons-material/Wallet';
 
 export type ApplicationMapType = {
@@ -212,10 +210,10 @@ export const applicationMapWeb3: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
-        name: 'Pending transactions',
-        path: 'safe/pending-transactions',
+        name: 'Actions',
+        path: 'safe/actions',
         icon: <SwapVertIcon />,
-        element: <SafeQueue />,
+        element: <SafeActions />,
         loginNeeded: 'web3',
       },
       {
@@ -233,13 +231,6 @@ export const applicationMapWeb3: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
-        name: 'Transaction history',
-        path: 'safe/transaction-history',
-        icon: <ReceiptIcon />,
-        element: <SafeTransactionHistoryPage />,
-        loginNeeded: 'web3',
-      },
-      {
         name: 'Withdraw',
         path: 'withdraw',
         icon: <WalletIcon />,
@@ -251,13 +242,6 @@ export const applicationMapWeb3: ApplicationMapType = [
         path: 'wrapper',
         icon: <PaidIcon />,
         element: <WrapperPage />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Safe Settings',
-        path: 'safe-settings',
-        icon: <LockIcon />,
-        element: <SafeSettings />,
         loginNeeded: 'web3',
       },
     ],

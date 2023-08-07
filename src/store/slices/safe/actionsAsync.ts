@@ -1,9 +1,17 @@
 import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
-import { initialState } from './initialState';
-import { ethers } from 'ethers';
 import SafeApiKit, { AddSafeDelegateProps, AllTransactionsOptions, DeleteSafeDelegateProps, GetSafeDelegateProps } from '@safe-global/api-kit'
 import Safe, { EthersAdapter, SafeAccountConfig, SafeFactory } from '@safe-global/protocol-kit';
 import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
+import { ethers } from 'ethers';
+import { initialState } from './initialState';
+import {
+  getCurrencyFromHistoryTransaction,
+  getRequestFromHistoryTransaction,
+  getRequestOfPendingTransaction,
+  getSourceFromHistoryTransaction,
+  getSourceOfPendingTransaction,
+  getValueFromHistoryTransaction
+} from '../../../utils/safeTransactions';
 
 const SERVICE_URL = 'https://safe-transaction-gnosis-chain.safe.global/';
 
@@ -478,7 +486,10 @@ const getAllSafeTransactionsThunk = createAsyncThunk(
   ) => {
     try {
       const safeApi = await createSafeApiService(payload.signer);
-      const transactions = await safeApi.getAllTransactions(payload.safeAddress, payload.options);
+      const transactions = await safeApi.getAllTransactions(payload.safeAddress, {
+        ...payload.options,
+        executed: true,
+      });
       return transactions;
     } catch (e) {
       return rejectWithValue(e);
@@ -580,6 +591,32 @@ const getSafeDelegatesThunk = createAsyncThunk(
   },
 );
 
+const getToken = createAsyncThunk(
+  'safe/getToken',
+  async (payload: { tokenAddress: string; signer: ethers.providers.JsonRpcSigner }, { rejectWithValue }) => {
+    try {
+      const safeApi = await createSafeApiService(payload.signer);
+      const token = await safeApi.getToken(payload.tokenAddress);
+      return token;
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  },
+);
+
+const getTokenList = createAsyncThunk(
+  'safe/getTokenList',
+  async (payload: { signer: ethers.providers.JsonRpcSigner }, { rejectWithValue }) => {
+    try {
+      const safeApi = await createSafeApiService(payload.signer);
+      const tokenList = await safeApi.getTokenList();
+      return tokenList;
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  },
+);
+
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   builder.addCase(createSafeThunk.fulfilled, (state, action) => {
     if (action.payload) {
@@ -604,17 +641,39 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   });
   builder.addCase(getAllSafeTransactionsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.allTransactions = action.payload;
+      state.allTransactions = {
+        ...action.payload,
+        results: action.payload.results.map((result) => ({
+          ...result,
+          source: getSourceFromHistoryTransaction(result) ?? '',
+          request: getRequestFromHistoryTransaction(result) ?? '',
+          currency: getCurrencyFromHistoryTransaction(result) ?? '',
+          value: getValueFromHistoryTransaction(result) ?? '',
+        })),
+      };
     }
   });
   builder.addCase(getPendingSafeTransactionsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.pendingTransactions = action.payload;
+      // add business logic: source, request
+      state.pendingTransactions = {
+        ...action.payload,
+        results: action.payload.results.map((result) => ({
+          ...result,
+          source: getSourceOfPendingTransaction(result) ?? '',
+          request: getRequestOfPendingTransaction(result) ?? '',
+        })),
+      };
     }
   });
   builder.addCase(getSafeDelegatesThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.delegates = action.payload;
+    }
+  });
+  builder.addCase(getTokenList.fulfilled, (state, action) => {
+    if (action.payload) {
+      state.tokenList = action.payload;
     }
   });
 };
@@ -635,6 +694,8 @@ export const actionsAsync = {
   addSafeDelegateThunk,
   removeSafeDelegateThunk,
   getSafeDelegatesThunk,
+  getToken,
+  getTokenList,
   updateSafeThresholdThunk,
   createSafeContractTransaction,
 };

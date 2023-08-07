@@ -1,19 +1,16 @@
-import { useEffect, useState } from 'react';
-import styled from '@emotion/styled';
-import { DialogTitle, TextField, DialogActions, InputAdornment } from '@mui/material';
+import { DialogActions, DialogTitle, InputAdornment, TextField } from '@mui/material';
+import { ethers } from 'ethers';
+import { useState } from 'react';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
-import { ethers } from 'ethers';
 
 // HOPR Components
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
-import AddChannelIcon from '../../future-hopr-lib-components/Icons/AddChannel'
-import FundChannelIcon from '../../future-hopr-lib-components/Icons/FundChannel'
-
+import AddChannelIcon from '../../future-hopr-lib-components/Icons/AddChannel';
+import FundChannelIcon from '../../future-hopr-lib-components/Icons/FundChannel';
 
 // Mui
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import CloseIcon from '@mui/icons-material/Close';
 import HubIcon from '@mui/icons-material/Hub';
 
@@ -100,14 +97,16 @@ export const OpenOrFundChannelModal = ({
     );
   };
 
-
-  const icon = () =>{
-    switch(type) {
-      case 'open': return <AddChannelIcon />;
-      case 'fund': return <FundChannelIcon />;
-      default: return <HubIcon />;
+  const icon = () => {
+    switch (type) {
+    case 'open':
+      return <AddChannelIcon />;
+    case 'fund':
+      return <FundChannelIcon />;
+    default:
+      return <HubIcon />;
     }
-  }
+  };
 
   return (
     <>
