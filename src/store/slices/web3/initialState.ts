@@ -11,16 +11,16 @@ export const initialState = {
   blockNumber: '',
   balance: {
     xDai: {
-      native: null,
-      parsed: null,
+      value: null as string | null,
+      formatted: null as string | null,
     },
     xHopr: {
-      native: null,
-      parsed: null,
+      value: null as  string | null,
+      formatted: null as string | null,
     },
     wxHopr: {
-      native: null,
-      parsed: null,
+      value: null as string | null,
+      formatted: null as string | null,
     },
     isFetching: false,
   },

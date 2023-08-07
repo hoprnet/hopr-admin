@@ -9,16 +9,16 @@ type InitialState = {
   delegates: SafeDelegateListResponse | null;
   balance: {
     xDai: {
-      native: string | null;
-      parsed: string | null;
+      value: string | null;
+      formatted: string | null;
     };
     xHopr: {
-      native: string | null;
-      parsed: string | null;
+      value:  string | null;
+      formatted: string | null;
     };
     wxHopr: {
-      native: string | null;
-      parsed: string | null;
+      value: string | null;
+      formatted: string | null;
     };
     isFetching: boolean;
   };
@@ -33,16 +33,16 @@ export const initialState: InitialState = {
   delegates: null,
   balance: {
     xDai: {
-      native: null,
-      parsed: null,
+      value: null,
+      formatted: null,
     },
     xHopr: {
-      native: null,
-      parsed: null,
+      value: null,
+      formatted: null,
     },
     wxHopr: {
-      native: null,
-      parsed: null,
+      value: null,
+      formatted: null,
     },
     isFetching: false,
   },

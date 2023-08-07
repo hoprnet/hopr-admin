@@ -172,9 +172,9 @@ export default function InfoBar(props: Props) {
             <>
               <InfoTitle>Safe</InfoTitle>
               <Safe>
-                <p>{truncateBalance3Decimals(walletBalance.wxHopr.parsed) ?? 0}</p>
-                <p>{truncateBalance3Decimals(walletBalance.xHopr.parsed) ?? 0}</p>
-                <p>{truncateBalance3Decimals(walletBalance.xDai.parsed) ?? 0}</p>
+                <p>{truncateBalance3Decimals(walletBalance.wxHopr.formatted) ?? 0}</p>
+                <p>{truncateBalance3Decimals(walletBalance.xHopr.formatted) ?? 0}</p>
+                <p>{truncateBalance3Decimals(walletBalance.xDai.formatted) ?? 0}</p>
               </Safe>
             </>
           )}
@@ -182,9 +182,9 @@ export default function InfoBar(props: Props) {
         <div>
           <InfoTitle>Wallet</InfoTitle>
           <Wallet>
-            <p>{truncateBalance3Decimals(safeBalance.wxHopr.parsed) ?? 0}</p>
-            <p>{truncateBalance3Decimals(safeBalance.xHopr.parsed) ?? 0}</p>
-            <p>{truncateBalance3Decimals(safeBalance.xDai.parsed) ?? 0}</p>
+            <p>{truncateBalance3Decimals(safeBalance.wxHopr.formatted) ?? 0}</p>
+            <p>{truncateBalance3Decimals(safeBalance.xHopr.formatted) ?? 0}</p>
+            <p>{truncateBalance3Decimals(safeBalance.xDai.formatted) ?? 0}</p>
           </Wallet>
         </div>
       </Web3Container>
