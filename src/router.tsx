@@ -238,13 +238,6 @@ export const applicationMapWeb3: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
-        name: 'Withdraw',
-        path: 'withdraw',
-        icon: <WalletIcon />,
-        element: <SafeWithdraw />,
-        loginNeeded: 'web3',
-      },
-      {
         name: 'Wrapper',
         path: 'wrapper',
         icon: <PaidIcon />,
