@@ -1,4 +1,14 @@
 import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { nodeActionsAsync } from '../../store/slices/node';
+
+// HOPR Components
+import { SubpageTitle } from '../../components/SubpageTitle';
+import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
+import Section from '../../future-hopr-lib-components/Section';
+import Select from '../../future-hopr-lib-components/Select';
+
+// Mui
 import {
   TableHead,
   TableRow,
@@ -9,10 +19,6 @@ import {
   Switch,
   SelectChangeEvent
 } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../store';
-import Section from '../future-hopr-lib-components/Section';
-import Select from '../future-hopr-lib-components/Select';
-import { nodeActionsAsync } from '../store/slices/node';
 
 function SettingsPage() {
   const dispatch = useAppDispatch();
@@ -27,6 +33,10 @@ function SettingsPage() {
   });
 
   useEffect(() => {
+    handleRefresh();
+  }, [loginData]);
+
+  const handleRefresh = () => {
     if (loginData.apiEndpoint && loginData.apiToken) {
       dispatch(
         nodeActionsAsync.getSettingsThunk({
@@ -35,7 +45,7 @@ function SettingsPage() {
         }),
       );
     }
-  }, [loginData]);
+  };
 
   useEffect(() => {
     if (settings) {
@@ -116,50 +126,48 @@ function SettingsPage() {
       yellow
       fullHeightMin
     >
-      <h2>Settings</h2>
-      <TableContainer>
-        <Table
-          sx={{ minWidth: 650 }}
-          aria-label="settings table"
-        >
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>Include Recipient</TableCell>
-              <TableCell>
-                False
-                <Switch
-                  checked={localSettings.includeRecipient}
-                  onChange={handleIncludeRecipientChange}
-                  color="primary"
-                />{' '}
-                True
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>Strategy</TableCell>
-              <TableCell>
-                <Select
-                  label={'Strategy'}
-                  values={strategies}
-                  disabled={!localSettings}
-                  value={localSettings.strategy}
-                  onChange={handleStrategyChange}
-                  style={{ width: '100%' }}
-                  renderValue={() => {
-                    return getValueLabel(localSettings.strategy!);
-                  }}
-                />
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <SubpageTitle
+        title="Configuration"
+        refreshFunction={handleRefresh}
+      />
+      <TableExtended
+        title="Node"
+        style={{ marginBottom: '32px' }}
+      >
+        <tbody>
+          <tr>
+            <th>Include Recipient</th>
+            <td>
+              False
+              <Switch
+                checked={localSettings.includeRecipient}
+                onChange={handleIncludeRecipientChange}
+                color="primary"
+              />{' '}
+              True
+            </td>
+          </tr>
+          <tr>
+            <th>Strategy</th>
+            <td>
+              <Select
+                size="small"
+                values={strategies}
+                disabled={!localSettings}
+                value={localSettings.strategy}
+                onChange={handleStrategyChange}
+                style={{
+                  width: '200px',
+                  margin: 0,
+                }}
+                renderValue={() => {
+                  return getValueLabel(localSettings.strategy!);
+                }}
+              />
+            </td>
+          </tr>
+        </tbody>
+      </TableExtended>
       <button
         style={{ marginTop: '1rem' }}
         onClick={handleSaveSettings}

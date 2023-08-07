@@ -9,18 +9,18 @@ import { nodeActions, nodeActionsAsync } from './store/slices/node';
 
 // Sections
 import Section1 from './components/ConnectNode/modal';
-import SectionLogs from './sections/logs';
+import SectionLogs from './sections/node/logs';
 import SectionWeb3 from './sections/web3';
 import SectionSafe from './sections/safe';
-import AliasesPage from './sections/aliases';
-import InfoPage from './sections/info';
-import MessagesPage from './sections/messages';
-import PeersPage from './sections/peers';
-import TicketsPage from './sections/tickets';
-import ChannelsPage from './sections/channels';
-import MetricsPage from './sections/metrics';
+import AliasesPage from './sections/node/aliases';
+import InfoPage from './sections/node/info';
+import MessagesPage from './sections/node/messages';
+import PeersPage from './sections/node/peers';
+import TicketsPage from './sections/node/tickets';
+import ChannelsPage from './sections/node/channels';
+import MetricsPage from './sections/node/metrics';
 import SafeStakingPage from './sections/safeStaking';
-import SettingsPage from './sections/settings';
+import SettingsPage from './sections/node/settings';
 import SafeQueue from './sections/safePendingTransactions';
 import AddNode from './steps/installNode/addNode';
 import SelectNodeType from './steps/installNode/selectNodeType';
@@ -54,7 +54,7 @@ import SavingsIcon from '@mui/icons-material/Savings';
 import NodeIcon from '@mui/icons-material/Router';
 import NetworkingIcon from '@mui/icons-material/Diversity3';
 import DevelopIcon from '@mui/icons-material/Code';
-import PingPage from './sections/ping';
+import PingPage from './sections/node/ping';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -117,13 +117,13 @@ export const applicationMapNode: ApplicationMapType = [
         element: <MetricsPage />,
         loginNeeded: 'node',
       },
-      {
-        name: 'Configuration',
-        path: 'configuration',
-        icon: <SettingsIcon />,
-        element: <SettingsPage />,
-        loginNeeded: 'node',
-      },
+      // {
+      //   name: 'Configuration',
+      //   path: 'configuration',
+      //   icon: <SettingsIcon />,
+      //   element: <SettingsPage />,
+      //   loginNeeded: 'node',
+      // },
     ],
   },
   {
