@@ -8,7 +8,7 @@ import {
   useConnect,
   useDisconnect,
   useBalance
-} from 'wagmi';
+} from 'wagmi'
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -76,8 +76,6 @@ export default function WagmiUpdater() {
     token: xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     watch: true,
   }).data?.formatted;
-
-  
 
   return <></>;
 }
