@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
-import {
-  xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
-  wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
-} from '../../../config'
-
+import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
 
 // wagmi
-import { useNetwork, useAccount, useConnect, useDisconnect, useBalance } from 'wagmi';
+import {
+  useNetwork,
+  useAccount,
+  useConnect,
+  useDisconnect,
+  useBalance
+} from 'wagmi';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -41,7 +43,6 @@ export default function WagmiUpdater() {
     }
   }, [isConnected, chain]);
 
-
   // Balances
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress);
   const account = useAppSelector((selector) => selector.web3.account) as `0x${string}`;
@@ -75,6 +76,8 @@ export default function WagmiUpdater() {
     token: xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     watch: true,
   }).data?.formatted;
+
+  
 
   return <></>;
 }

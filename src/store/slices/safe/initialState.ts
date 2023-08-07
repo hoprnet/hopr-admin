@@ -11,16 +11,16 @@ type InitialState = {
     xDai: {
       native: string | null;
       parsed: string | null;
-    },
+    };
     xHopr: {
       native: string | null;
       parsed: string | null;
-    },
+    };
     wxHopr: {
       native: string | null;
       parsed: string | null;
-    },
-    isFetching: boolean,
+    };
+    isFetching: boolean;
   };
 };
 
@@ -34,15 +34,15 @@ export const initialState: InitialState = {
   balance: {
     xDai: {
       native: null,
-      parsed: null
+      parsed: null,
     },
     xHopr: {
       native: null,
-      parsed: null
+      parsed: null,
     },
     wxHopr: {
       native: null,
-      parsed: null
+      parsed: null,
     },
     isFetching: false,
   },

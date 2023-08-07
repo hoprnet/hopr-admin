@@ -12,15 +12,15 @@ export const initialState = {
   balance: {
     xDai: {
       native: null,
-      parsed: null
+      parsed: null,
     },
     xHopr: {
       native: null,
-      parsed: null
+      parsed: null,
     },
     wxHopr: {
       native: null,
-      parsed: null
+      parsed: null,
     },
     isFetching: false,
   },
