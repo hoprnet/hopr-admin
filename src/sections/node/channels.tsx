@@ -180,7 +180,7 @@ function ChannelsPage() {
     <Section
       className="Channels--aliases"
       id="Channels--aliases"
-      yellow
+      yellowLight
       fullHeightMin
     >
       <SubpageTitle

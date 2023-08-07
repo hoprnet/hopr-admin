@@ -12,7 +12,7 @@ function SectionLogs() {
     <Section
       className="Section--logs"
       id="Section--logs"
-      yellow
+      yellowLight
       fullHeightMin
     >
       <SubpageTitle title="Logs" />

@@ -31,7 +31,8 @@ const SDrawer = styled(Drawer)`
   }
   &.node {
     .MuiDrawer-paper {
-      background: #ffffa0;
+      background: #ffffa059;
+      border: 0;
     }
   }
   &.web3 {
@@ -111,7 +112,17 @@ const SafeContainer = styled.div<{ show: boolean }>`
 
 const Safe = styled(Balance)``;
 
-const Wallet = styled(Balance)``;
+const DataContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const Wallet = styled(Balance)`
+  flex-grow: 1;
+  p.double {
+    line-height: 2;
+  }
+`;
 
 export default function InfoBar(props: Props) {
   const {
@@ -179,38 +190,75 @@ export default function InfoBar(props: Props) {
             </>
           )}
         </SafeContainer>
-        <div>
+        <DataContainer>
           <InfoTitle>Wallet</InfoTitle>
           <Wallet>
             <p>{truncateBalance3Decimals(safeBalance.wxHopr.formatted) ?? 0}</p>
             <p>{truncateBalance3Decimals(safeBalance.xHopr.formatted) ?? 0}</p>
             <p>{truncateBalance3Decimals(safeBalance.xDai.formatted) ?? 0}</p>
           </Wallet>
-        </div>
+        </DataContainer>
       </Web3Container>
     </>
   );
 
   const nodeDrawer = (
-    <div>
-      <Title>Status</Title>
-      <Data>{info?.connectivityStatus}</Data>
-
-      <Title>xDai balance</Title>
-      <Data>{balances?.native && utils.formatEther(balances.native)}</Data>
-
-      <Title>mHOPR balance</Title>
-      <Data>{balances?.hopr && utils.formatEther(balances.hopr)}</Data>
-
-      <Title>Peers seen in the network</Title>
-      <Data>{peers?.announced?.length || '-'}</Data>
-
-      <Title>Outgoing Chanels</Title>
-      <Data>{channels?.outgoing?.length || '-'}</Data>
-
-      <Title>Incoming Chanels</Title>
-      <Data>{channels?.incoming?.length || '-'}</Data>
-    </div>
+    <>
+    <br />
+    <Web3Container>
+      <Icons>
+        <IconAndText>
+          <IconContainer>
+          </IconContainer>
+          <Text>Status</Text>
+        </IconAndText>
+        <IconAndText>
+          <IconContainer>
+            <Icon
+              src="/assets/xHoprIcon.svg"
+              alt="xHOPR Icon"
+            />
+          </IconContainer>
+          <Text>xHOPR</Text>
+        </IconAndText>
+        <IconAndText>
+          <IconContainer>
+            <Icon
+              src="/assets/xDaiIcon.svg"
+              alt="xDai Icon"
+            />
+          </IconContainer>
+          <Text>xDAI</Text>
+        </IconAndText>
+        <IconAndText>
+          <IconContainer>
+          </IconContainer>
+          <Text>Peers</Text>
+        </IconAndText>
+        <IconAndText>
+          <IconContainer>
+          </IconContainer>
+          <Text>Outgoing Chanels</Text>
+        </IconAndText>
+        <IconAndText>
+          <IconContainer>
+          </IconContainer>
+          <Text>Incoming Chanels</Text>
+        </IconAndText>
+      </Icons>
+      <DataContainer>
+        <InfoTitle>Node</InfoTitle>
+        <Wallet>
+          <p>{info?.connectivityStatus}</p>
+          <p>{balances.native?.formatted ?? '-'}</p>
+          <p>{balances.hopr?.formatted ?? '-'}</p>
+          <p>{peers?.announced?.length || '-'}</p>
+          <p className='double'>{channels?.outgoing?.length || '-'}</p>
+          <p className='double'>{channels?.incoming?.length || '-'}</p>
+        </Wallet>
+      </DataContainer>
+    </Web3Container>
+  </>
   );
 
   return (

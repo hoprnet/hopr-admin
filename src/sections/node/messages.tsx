@@ -55,7 +55,7 @@ const messages = () => {
 
   return (
     <Section
-      yellow
+      yellowLight
       fullHeightMin
     >
       <SubpageTitle

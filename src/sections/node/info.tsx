@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { utils } from 'ethers';
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
@@ -26,7 +25,7 @@ function InfoPage() {
 
   useEffect(() => {
     fetchInfoData();
-  }, []);
+  }, [apiEndpoint, apiToken]);
 
   const fetchInfoData = () => {
     if (apiEndpoint && apiToken) {
@@ -99,7 +98,7 @@ function InfoPage() {
     <Section
       className="Section--selectNode"
       id="Section--selectNode"
-      yellow
+      yellowLight
       fullHeightMin
     >
       <SubpageTitle
@@ -158,11 +157,11 @@ function InfoPage() {
         <tbody>
           <tr>
             <th>Native</th>
-            <td>{balances?.native && utils.formatEther(balances.native)} xDai</td>
+            <td>{balances.native?.formatted} xDai</td>
           </tr>
           <tr>
             <th>Hopr</th>
-            <td>{balances?.hopr && utils.formatEther(balances.hopr)} wxHOPR</td>
+            <td>{balances.hopr?.formatted} wxHOPR</td>
           </tr>
         </tbody>
       </TableExtended>

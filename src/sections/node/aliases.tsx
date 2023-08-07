@@ -109,7 +109,7 @@ function AliasesPage() {
     <Section
       className="Section--aliases"
       id="Section--aliases"
-      yellow
+      yellowLight
       fullHeightMin
     >
       <SubpageTitle

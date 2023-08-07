@@ -8,6 +8,9 @@ const SSection = styled.section`
   &.section--yellow {
     --section-background: #ffffa0;
   }
+  &.section--yellow-light {
+    --section-background: #ffffa059;
+  }
   &.section--dark-gray {
     --section-background: #414141;
     color: #fff;
@@ -73,6 +76,7 @@ interface SectionProps {
   className?: string;
   gradient?: boolean;
   yellow?: boolean;
+  yellowLight?: boolean;
   darkGradient?: boolean;
   lightBlueGradient?: boolean;
   lightBlue?: boolean;
@@ -95,6 +99,7 @@ const Section: React.FC<SectionProps> = (props) => {
         props.className && props.className,
         props.gradient && 'section--gradient',
         props.yellow && 'section--yellow',
+        props.yellowLight && 'section--yellow-light',
         props.darkGradient && 'section--dark-gradient',
         props.lightBlueGradient && 'section--light-blue-gradient',
         props.lightBlue && 'section--light-blue',
