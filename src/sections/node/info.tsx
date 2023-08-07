@@ -101,7 +101,7 @@ function InfoPage() {
       fullHeightMin
     >
       <SubpageTitle
-        title="Info"
+        title="INFO"
         refreshFunction={fetchInfoData}
         reloading={balances.reloading}
       />

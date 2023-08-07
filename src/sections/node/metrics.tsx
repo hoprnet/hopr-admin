@@ -63,11 +63,9 @@ function MetricsPage() {
   }
 
   return (
-    <Section
-      fullHeightMin
-    >
+    <Section fullHeightMin>
       <SubpageTitle
-        title="Metrics"
+        title="METRICS"
         refreshFunction={handleRefresh}
         actions={
           <>

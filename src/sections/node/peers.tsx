@@ -100,11 +100,9 @@ function PeersPage() {
   };
 
   return (
-    <Section
-      fullHeightMin
-    >
+    <Section fullHeightMin>
       <SubpageTitle
-        title={`Peers seen in the network (${peers?.announced?.length || '-'})`}
+        title={`PEERS (${peers?.announced?.length || '-'})`}
         refreshFunction={handleRefresh}
         actions={
           <>

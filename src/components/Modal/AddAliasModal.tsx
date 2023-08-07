@@ -7,7 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 // HOPR Components
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
-import AddAliasIcon from '../../future-hopr-lib-components/Icons/AddAlias'
+import AddAliasIcon from '../../future-hopr-lib-components/Icons/AddAlias';
 
 type CreateAliasModalProps = {
   handleRefresh: () => void;

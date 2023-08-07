@@ -13,7 +13,7 @@ type InitialState = {
       formatted: string | null;
     };
     xHopr: {
-      value:  string | null;
+      value: string | null;
       formatted: string | null;
     };
     wxHopr: {

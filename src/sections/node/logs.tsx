@@ -14,7 +14,7 @@ function SectionLogs() {
       id="Section--logs"
       fullHeightMin
     >
-      <SubpageTitle title="Logs" />
+      <SubpageTitle title="LOGS" />
       {logs.map((log) => (
         <LogLine
           log={log}

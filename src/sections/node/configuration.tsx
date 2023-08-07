@@ -126,7 +126,7 @@ function SettingsPage() {
       fullHeightMin
     >
       <SubpageTitle
-        title="Configuration"
+        title="CONFIGURATION"
         refreshFunction={handleRefresh}
       />
       <TableExtended

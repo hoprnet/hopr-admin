@@ -79,27 +79,63 @@ export default function WagmiUpdater() {
   }).data;
 
   useEffect(() => {
-    if (xDAI_balance) dispatch(web3Actions.setWalletBalance_xDai({...xDAI_balance, value: xDAI_balance.value.toString()}));
+    if (xDAI_balance)
+      dispatch(
+        web3Actions.setWalletBalance_xDai({
+          ...xDAI_balance,
+          value: xDAI_balance.value.toString(),
+        }),
+      );
   }, [xDAI_balance]);
 
   useEffect(() => {
-    if (wxHopr_balance) dispatch(web3Actions.setWalletBalance_wxHopr({...wxHopr_balance, value: wxHopr_balance.value.toString()}));
+    if (wxHopr_balance)
+      dispatch(
+        web3Actions.setWalletBalance_wxHopr({
+          ...wxHopr_balance,
+          value: wxHopr_balance.value.toString(),
+        }),
+      );
   }, [wxHopr_balance]);
 
   useEffect(() => {
-    if (xHopr_balance) dispatch(web3Actions.setWalletBalance_xHopr({...xHopr_balance, value: xHopr_balance.value.toString()}));
+    if (xHopr_balance)
+      dispatch(
+        web3Actions.setWalletBalance_xHopr({
+          ...xHopr_balance,
+          value: xHopr_balance.value.toString(),
+        }),
+      );
   }, [xHopr_balance]);
 
   useEffect(() => {
-    if (safe_xDAI_balance) dispatch(safeActions.setSafeBalance_xDai({...safe_xDAI_balance, value: safe_xDAI_balance.value.toString()}))
+    if (safe_xDAI_balance)
+      dispatch(
+        safeActions.setSafeBalance_xDai({
+          ...safe_xDAI_balance,
+          value: safe_xDAI_balance.value.toString(),
+        }),
+      );
   }, [safe_xDAI_balance]);
 
   useEffect(() => {
-    if (safe_wxHopr_balance) dispatch(safeActions.setSafeBalance_wxHopr({...safe_wxHopr_balance, value: safe_wxHopr_balance.value.toString()}));
+    if (safe_wxHopr_balance)
+      dispatch(
+        safeActions.setSafeBalance_wxHopr({
+          ...safe_wxHopr_balance,
+          value: safe_wxHopr_balance.value.toString(),
+        }),
+      );
   }, [safe_wxHopr_balance]);
 
   useEffect(() => {
-    if (safe_xHopr_balance) dispatch(safeActions.setSafeBalance_xHopr({...safe_xHopr_balance, value: safe_xHopr_balance.value.toString()}));
+    if (safe_xHopr_balance)
+      dispatch(
+        safeActions.setSafeBalance_xHopr({
+          ...safe_xHopr_balance,
+          value: safe_xHopr_balance.value.toString(),
+        }),
+      );
   }, [safe_xHopr_balance]);
 
   return <></>;

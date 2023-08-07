@@ -24,10 +24,9 @@ import {
   Table,
   TableHead,
   Paper
-} from '@mui/material';
+} from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress';
 import GetAppIcon from '@mui/icons-material/GetApp';
-
 
 function ChannelsPage() {
   const dispatch = useAppDispatch();
@@ -183,15 +182,13 @@ function ChannelsPage() {
       fullHeightMin
     >
       <SubpageTitle
-        title={`Channels`}
+        title={`CHANNELS`}
         refreshFunction={handleRefresh}
         actions={
           <>
-            <OpenOrFundChannelModal 
-              type={'open'} 
-            />
-            <OpenOrFundChannelModal 
-              type={'fund'} 
+            <OpenOrFundChannelModal type={'open'} />
+            <OpenOrFundChannelModal
+              type={'fund'}
               title="Fund outgoing channel"
               modalBtnText="Fund outgoing channel"
               actionBtnText="Fund outgoing channel"

@@ -20,7 +20,7 @@ import TicketsPage from './sections/node/tickets';
 import ChannelsPage from './sections/node/channels';
 import MetricsPage from './sections/node/metrics';
 import SafeStakingPage from './sections/safeStaking';
-import SettingsPage from './sections/node/settings';
+import ConfigurationPage from './sections/node/configuration';
 import SafeQueue from './sections/safePendingTransactions';
 import AddNode from './steps/installNode/addNode';
 import SelectNodeType from './steps/installNode/selectNodeType';
@@ -69,6 +69,7 @@ import SafeSettings from './sections/safeSettings';
 import StakingLandingPage from './sections/stakingLandingPage';
 import NodeAdded from './sections/nodeAdded';
 import WalletIcon from '@mui/icons-material/Wallet';
+import Ticket from './future-hopr-lib-components/Icons/Ticket';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -121,7 +122,7 @@ export const applicationMapNode: ApplicationMapType = [
         name: 'CONFIGURATION',
         path: 'configuration',
         icon: <SettingsIcon />,
-        element: <SettingsPage />,
+        element: <ConfigurationPage />,
         loginNeeded: 'node',
       },
     ],

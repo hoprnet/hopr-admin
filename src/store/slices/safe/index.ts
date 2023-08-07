@@ -5,7 +5,7 @@ import { actionsAsync, createExtraReducers } from './actionsAsync';
 const safeSlice = createSlice({
   name: 'safe',
   initialState,
-  reducers: { 
+  reducers: {
     resetState: (state) => {
       state.selectedSafeAddress = null;
       state.info = null;

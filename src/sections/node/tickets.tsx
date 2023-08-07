@@ -70,7 +70,7 @@ function TicketsPage() {
       fullHeightMin
     >
       <SubpageTitle
-        title="Tickets"
+        title="TICKETS"
         refreshFunction={handleRefresh}
         actions={
           <>

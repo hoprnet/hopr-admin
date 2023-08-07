@@ -15,7 +15,7 @@ export const initialState = {
       formatted: null as string | null,
     },
     xHopr: {
-      value: null as  string | null,
+      value: null as string | null,
       formatted: null as string | null,
     },
     wxHopr: {

@@ -23,7 +23,7 @@ const StyledDrawer = styled(MuiDrawer)`
     padding-top: 59px;
     transition: width 0.4s ease-out;
     overflow-x: hidden;
-    background: #3C64A5;
+    background: #3c64a5;
     color: white;
     scrollbar-width: none;
     &::-webkit-scrollbar {
@@ -50,7 +50,7 @@ const StyledListSubheader = styled(ListSubheader)`
   height: 64px;
   letter-spacing: 0.2px;
   user-select: none;
-  background: #3C64A5;
+  background: #3c64a5;
 `;
 
 const StyledListItemButton = styled(ListItemButton)`
@@ -58,6 +58,10 @@ const StyledListItemButton = styled(ListItemButton)`
   color: white;
   .MuiSvgIcon-root {
     color: white;
+  }
+  svg {
+    width: 24px;
+    height: 24px;
   }
   &.Mui-selected {
     color: #0000b4;

@@ -31,6 +31,9 @@ const Content = styled.div`
   h2 {
     color: #414141;
   }
+  .MuiSvgIcon-root {
+    color: #000050;
+  }
 `;
 
 const SIconButton = styled(IconButton)`

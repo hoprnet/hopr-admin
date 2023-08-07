@@ -8,9 +8,8 @@ import { ethers } from 'ethers';
 
 // HOPR Components
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
-import AddChannelIcon from '../../future-hopr-lib-components/Icons/AddChannel'
-import FundChannelIcon from '../../future-hopr-lib-components/Icons/FundChannel'
-
+import AddChannelIcon from '../../future-hopr-lib-components/Icons/AddChannel';
+import FundChannelIcon from '../../future-hopr-lib-components/Icons/FundChannel';
 
 // Mui
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
@@ -100,14 +99,16 @@ export const OpenOrFundChannelModal = ({
     );
   };
 
-
-  const icon = () =>{
-    switch(type) {
-      case 'open': return <AddChannelIcon />;
-      case 'fund': return <FundChannelIcon />;
-      default: return <HubIcon />;
+  const icon = () => {
+    switch (type) {
+    case 'open':
+      return <AddChannelIcon />;
+    case 'fund':
+      return <FundChannelIcon />;
+    default:
+      return <HubIcon />;
     }
-  }
+  };
 
   return (
     <>
