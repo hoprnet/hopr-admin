@@ -161,7 +161,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
   const dispatch = useAppDispatch();
   const { address } = useAccount();
   const safeNonce = useAppSelector((state) => state.safe.info?.nonce);
-  const transactionAfterSafeNonce = safeNonce !== transaction.nonce
+  const transactionAfterSafeNonce = safeNonce !== transaction.nonce;
   const [userAction, set_userAction] = useState<'EXECUTE' | 'SIGN' | null>(null);
   const [isLoadingApproving, set_isLoadingApproving] = useState<boolean>(false);
   const [isLoadingExecuting, set_isLoadingExecuting] = useState<boolean>(false);
@@ -169,9 +169,9 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
 
   useEffect(() => {
     if (address) {
-      set_userAction(getUserActionForPendingTransaction(transaction, address))
+      set_userAction(getUserActionForPendingTransaction(transaction, address));
     }
-  }, [address, transaction])
+  }, [address, transaction]);
 
   // TODO: remove this isLoading functions when isLoading is moved to redux
   const executeTx = (transaction: SafeMultisigTransactionResponse) => {
@@ -311,9 +311,9 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
 
   useEffect(() => {
     if (address) {
-      set_userAction(getUserActionForPendingTransaction(transaction, address))
+      set_userAction(getUserActionForPendingTransaction(transaction, address));
     }
-  }, [address, transaction])
+  }, [address, transaction]);
 
   const getTransactionStatus = () => {
     if (userAction === 'EXECUTE') {

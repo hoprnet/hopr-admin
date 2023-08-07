@@ -1,4 +1,4 @@
-import { AllTransactionsListResponse, EthereumTxWithTransfersResponse, SafeModuleTransactionWithTransfersResponse, SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-kit';
+import { AllTransactionsListResponse, EthereumTxWithTransfersResponse, SafeModuleTransactionWithTransfersResponse, SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-kit'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { Address, decodeFunctionData, formatEther, formatUnits } from 'viem';
 import { erc20ABI, erc4626ABI, erc721ABI } from 'wagmi';
@@ -46,33 +46,37 @@ export const getSourceOfPendingTransaction = (transaction: SafeMultisigTransacti
   return truncateEthereumAddress(transaction.confirmations.at(0)?.owner ?? '');
 };
 
-export const getUserActionForPendingTransaction = (transaction: SafeMultisigTransactionResponse, ownerAddress: string): "EXECUTE" | "SIGN" | null => {
-  if (!ownerAddress) return null
+export const getUserActionForPendingTransaction = (
+  transaction: SafeMultisigTransactionResponse,
+  ownerAddress: string,
+): 'EXECUTE' | 'SIGN' | null => {
+  if (!ownerAddress) return null;
 
   const transactionHasEnoughSignatures = (transaction.confirmations?.length ?? 0) >= transaction.confirmationsRequired;
 
   if (transactionHasEnoughSignatures) {
-    return 'EXECUTE'
+    return 'EXECUTE';
   }
 
-  const ownerHasSignedTransaction = transaction?.confirmations?.find((confirmation) => confirmation.owner === ownerAddress);
+  const ownerHasSignedTransaction = transaction?.confirmations?.find(
+    (confirmation) => confirmation.owner === ownerAddress,
+  );
 
   if (ownerHasSignedTransaction) {
     // transaction does not have enough signatures and owner has already signed
     // can only wait for more signatures
-    return null
+    return null;
   }
 
-  const oneSignaturePending = transaction.confirmationsRequired - (transaction.confirmations?.length ?? 0)
+  const oneSignaturePending = transaction.confirmationsRequired - (transaction.confirmations?.length ?? 0);
 
   if (oneSignaturePending) {
-    return 'EXECUTE'
+    return 'EXECUTE';
   }
 
   // more than 1 signature is pending and owner has not signed
-  return 'SIGN'
-}
-
+  return 'SIGN';
+};
 
 /**
  * Ethereum transactions
