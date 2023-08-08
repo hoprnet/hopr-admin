@@ -1,4 +1,10 @@
-import { AllTransactionsListResponse, EthereumTxWithTransfersResponse, SafeModuleTransactionWithTransfersResponse, SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-kit'
+import {
+  AllTransactionsListResponse,
+  EthereumTxWithTransfersResponse,
+  SafeInfoResponse,
+  SafeModuleTransactionWithTransfersResponse,
+  SafeMultisigTransactionWithTransfersResponse
+} from '@safe-global/api-kit'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { Address, decodeFunctionData, formatEther, formatUnits } from 'viem';
 import { erc20ABI, erc4626ABI, erc721ABI } from 'wagmi';
@@ -77,6 +83,18 @@ export const getUserActionForPendingTransaction = (
   // more than 1 signature is pending and owner has not signed
   return 'SIGN';
 };
+
+export const getUserCanSkipProposal = (safeInfo: SafeInfoResponse | null) => {
+  if (!safeInfo) {
+    return false
+  }
+  
+  if (safeInfo.threshold === 1) {
+    return true
+  } 
+
+  return false
+}
 
 /**
  * Ethereum transactions
