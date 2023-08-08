@@ -28,7 +28,8 @@ const getCommunityNftsOwnedByAccount = createAsyncThunk(
           variables,
         }),
       });
-      const responseJson: { data: { account: { ownedBoosts: { id: string; uri: string }[] } } | null } = await response.json();
+      const responseJson: { data: { account: { ownedBoosts: { id: string; uri: string }[] } } | null } =
+        await response.json();
 
       return responseJson.data;
     } catch (e) {
