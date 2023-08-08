@@ -1,4 +1,3 @@
-import { environment } from '../../../../config';
 import type {
   GetStatisticsResponseType,
   AccountResponseType,
@@ -27,7 +26,6 @@ export type Message = {
 type WebsocketConnectionStatus = 'connecting' | 'connected' | 'error' | null;
 
 type InitialState = {
-  // info: GetInfoResponseType | null;
   info: {
     data: GetInfoResponseType | null;
     isFetching: boolean;

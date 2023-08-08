@@ -1,4 +1,10 @@
-import { ActionReducerMapBuilder, createAction, createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  ActionReducerMapBuilder,
+  AnyAction,
+  ThunkDispatch,
+  createAction,
+  createAsyncThunk
+} from '@reduxjs/toolkit'
 import { initialState } from './initialState';
 import {
   type AliasPayloadType,
@@ -31,7 +37,10 @@ import {
   GetChannelTicketsResponseType,
   GetChannelsResponseType,
   api,
-  utils
+  utils,
+  FundChannelsResponseType,
+  OpenChannelResponseType,
+  CreateTokenResponseType
 } from '@hoprnet/hopr-sdk';
 import { parseMetrics } from '../../../utils/metrics';
 import { RootState } from '../..';
@@ -76,12 +85,7 @@ const getInfoThunk = createAsyncThunk<GetInfoResponseType | undefined, BasePaylo
   async (payload: BasePayloadType, {
     rejectWithValue,
     dispatch,
-    getState,
   }) => {
-    const isFetching = getState().node.info.isFetching;
-    if (isFetching) {
-      throw new Error('Already fetching info');
-    }
     dispatch(setInfoFetching(true));
     try {
       const info = await getInfo(payload);
@@ -95,6 +99,14 @@ const getInfoThunk = createAsyncThunk<GetInfoResponseType | undefined, BasePaylo
       }
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.info.isFetching;
+    console.log('getInfo isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getInfo request');
+      return false;
+    }
+  } },
 );
 
 const getAddressesThunk = createAsyncThunk<
@@ -105,40 +117,41 @@ const getAddressesThunk = createAsyncThunk<
   | undefined,
   BasePayloadType,
   { state: RootState }
->('node/getAccount', async (payload: BasePayloadType, {
-  rejectWithValue,
-  dispatch,
-  getState,
-}) => {
-  const isFetching = getState().node.addresses.isFetching;
-  if (isFetching) {
-    throw new Error('Already fetching addresses');
-  }
-  dispatch(setAddressesFetching(true));
-  try {
-    const addresses = await getAddresses(payload);
-    return addresses;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+>(
+  'node/getAccount',
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setAddressesFetching(true));
+    try {
+      const addresses = await getAddresses(payload);
+      return addresses;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  }
-});
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.addresses.isFetching;
+    console.log('address', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getAddresses request');
+      return false;
+    }
+  } },
+);
 
 const getAliasesThunk = createAsyncThunk<GetAliasesResponseType | undefined, BasePayloadType, { state: RootState }>(
   'node/getAliases',
   async (payload: BasePayloadType, {
     rejectWithValue,
-    getState,
     dispatch,
   }) => {
-    const isFetching = getState().node.aliases.isFetching;
-    if (isFetching) {
-      throw new Error('Already fetching aliases');
-    }
     dispatch(setAliasesFetching(true));
     try {
       const aliases = await getAliases(payload);
@@ -152,73 +165,88 @@ const getAliasesThunk = createAsyncThunk<GetAliasesResponseType | undefined, Bas
       }
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.aliases.isFetching;
+    console.log('aliases', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getAlias request');
+      return false;
+    }
+  } },
 );
 
 const getBalancesThunk = createAsyncThunk<
   { hopr: string; native: string } | undefined,
   BasePayloadType,
-  { state: RootState }
->('node/getBalances', async (payload: BasePayloadType, {
-  rejectWithValue,
-  dispatch,
-  getState,
-}) => {
-  const isFetching = getState().node.balances.isFetching;
-  if (isFetching) {
-    throw new Error('Already fetching balances');
-  }
-  dispatch(setBalancesFetching(true));
-  try {
-    const balances = await getBalances(payload);
-    return balances;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+  { state: RootState; dispatch: ThunkDispatch<RootState, unknown, AnyAction> }
+>(
+  'node/getBalances',
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setBalancesFetching(true));
+    try {
+      const balances = await getBalances(payload);
+      return balances;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  }
-});
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.balances.isFetching;
+    console.log('balances', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getBalances request');
+      return false;
+    }
+  } },
+);
 
 const getChannelsThunk = createAsyncThunk<
   GetChannelsResponseType | undefined,
   GetPeersPayloadType,
   { state: RootState }
->('node/getChannels', async (payload: BasePayloadType, {
-  rejectWithValue,
-  dispatch,
-  getState,
-}) => {
-  const isFetching = getState().node.channels.isFetching;
-  if (isFetching) {
-    throw new Error('Already fetching channels');
-  }
-  dispatch(setChannelsFetching(true));
-  try {
-    const channels = await getChannels(payload);
-    return channels;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+>(
+  'node/getChannels',
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setChannelsFetching(true));
+    try {
+      const channels = await getChannels(payload);
+      return channels;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  }
-});
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.channels.isFetching;
+    console.log('channels is Fetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getChannels request');
+      return false;
+    }
+  } },
+);
 
 const getPeersThunk = createAsyncThunk<GetPeersResponseType | undefined, GetPeersPayloadType, { state: RootState }>(
   'node/getPeers',
   async (payload: GetPeersPayloadType, {
     rejectWithValue,
     dispatch,
-    getState,
   }) => {
-    const isFetching = getState().node.peers.isFetching;
-    if (isFetching) {
-      throw new Error('Already fetching peers');
-    }
     dispatch(setPeersFetching(true));
     try {
       const peers = await getPeers(payload);
@@ -232,46 +260,55 @@ const getPeersThunk = createAsyncThunk<GetPeersResponseType | undefined, GetPeer
       }
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.peers.isFetching;
+    console.log('peers is Fetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getPeers request');
+      return false;
+    }
+  } },
 );
 
 const getPeerInfoThunk = createAsyncThunk<
   GetPeerInfoResponseType | undefined,
   GetPeerInfoPayloadType,
   { state: RootState }
->('node/getPeerInfo', async (payload: GetPeerInfoPayloadType, {
-  rejectWithValue,
-  dispatch,
-  getState,
-}) => {
-  const isFetching = getState().node.peerInfo.isFetching;
-  if (isFetching) {
-    throw new Error('Already fetching peerInfo');
-  }
-  dispatch(setPeerInfoFetching(true));
-  try {
-    const peerInfo = await getPeerInfo(payload);
-    return peerInfo;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+>(
+  'node/getPeerInfo',
+  async (payload: GetPeerInfoPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setPeerInfoFetching(true));
+    try {
+      const peerInfo = await getPeerInfo(payload);
+      return peerInfo;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  }
-});
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.peerInfo.isFetching;
+    console.log('PeerInfo isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getPeerInfo request');
+      return false;
+    }
+  } },
+);
 
 const getSettingsThunk = createAsyncThunk<GetSettingsResponseType | undefined, BasePayloadType, { state: RootState }>(
   'node/getSettings',
   async (payload: BasePayloadType, {
     rejectWithValue,
     dispatch,
-    getState,
   }) => {
-    const isFetching = getState().node.settings.isFetching;
-    if (isFetching) {
-      throw new Error('Already fetching balances');
-    }
     dispatch(setSettingsFetching(true));
     try {
       const settings = await getSettings(payload);
@@ -285,46 +322,55 @@ const getSettingsThunk = createAsyncThunk<GetSettingsResponseType | undefined, B
       }
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.settings.isFetching;
+    console.log('settings', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getSettings request');
+      return false;
+    }
+  } },
 );
 
 const getStatisticsThunk = createAsyncThunk<
   GetStatisticsResponseType | undefined,
   BasePayloadType,
   { state: RootState }
->('node/getStatistics', async (payload: BasePayloadType, {
-  rejectWithValue,
-  dispatch,
-  getState,
-}) => {
-  const isFetching = getState().node.statistics.isFetching;
-  if (isFetching) {
-    throw new Error('Already fetching statistics');
-  }
-  dispatch(setStatisticsFetching(true));
-  try {
-    const statistics = await getStatistics(payload);
-    return statistics;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+>(
+  'node/getStatistics',
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setStatisticsFetching(true));
+    try {
+      const statistics = await getStatistics(payload);
+      return statistics;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  }
-});
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.statistics.isFetching;
+    console.log('statistics', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getStatistics request');
+      return false;
+    }
+  } },
+);
 
 const getTicketsThunk = createAsyncThunk<GetTicketsResponseType | undefined, BasePayloadType, { state: RootState }>(
   'node/getTickets',
   async (payload: BasePayloadType, {
     rejectWithValue,
     dispatch,
-    getState,
   }) => {
-    const isFetching = getState().node.tickets.isFetching;
-    if (isFetching) {
-      throw new Error('Already fetching tickets');
-    }
     dispatch(setTicketsFetching(true));
     try {
       const tickets = await getTickets(payload);
@@ -338,6 +384,14 @@ const getTicketsThunk = createAsyncThunk<GetTicketsResponseType | undefined, Bas
       }
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.tickets.isFetching;
+    console.log('tickets isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getTickets request');
+      return false;
+    }
+  } },
 );
 
 const getTokenThunk = createAsyncThunk<GetTokenResponseType | undefined, BasePayloadType, { state: RootState }>(
@@ -345,12 +399,7 @@ const getTokenThunk = createAsyncThunk<GetTokenResponseType | undefined, BasePay
   async (payload: BasePayloadType, {
     rejectWithValue,
     dispatch,
-    getState,
   }) => {
-    const isFetching = getState().node.tokens.isFetching;
-    if (isFetching) {
-      throw new Error('Already fetching tokens');
-    }
     dispatch(setTokensFetching(true));
     try {
       const token = await getToken(payload);
@@ -364,46 +413,55 @@ const getTokenThunk = createAsyncThunk<GetTokenResponseType | undefined, BasePay
       }
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.tokens.isFetching;
+    console.log('tokens isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getTokens request');
+      return false;
+    }
+  } },
 );
 
 const getEntryNodesThunk = createAsyncThunk<
   GetEntryNodesResponseType | undefined,
   BasePayloadType,
   { state: RootState }
->('node/getEntryNodes', async (payload: BasePayloadType, {
-  rejectWithValue,
-  dispatch,
-  getState,
-}) => {
-  const isFetching = getState().node.entryNodes.isFetching;
-  if (isFetching) {
-    throw new Error('Already fetching entry nodes');
-  }
-  dispatch(setEntryNodesFetching(true));
-  try {
-    const entryNodes = await getEntryNodes(payload);
-    return entryNodes;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+>(
+  'node/getEntryNodes',
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setEntryNodesFetching(true));
+    try {
+      const entryNodes = await getEntryNodes(payload);
+      return entryNodes;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  }
-});
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.entryNodes.isFetching;
+    console.log('entryNodes isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getEntryNodes request');
+      return false;
+    }
+  } },
+);
 
 const getVersionThunk = createAsyncThunk<string | undefined, BasePayloadType, { state: RootState }>(
   'node/getVersion',
   async (payload: BasePayloadType, {
     rejectWithValue,
     dispatch,
-    getState,
   }) => {
-    const isFetching = getState().node.version.isFetching;
-    if (isFetching) {
-      throw new Error('Already fetching version');
-    }
     dispatch(setVersionFetching(true));
     try {
       const version = await getVersion(payload);
@@ -417,6 +475,14 @@ const getVersionThunk = createAsyncThunk<string | undefined, BasePayloadType, { 
       }
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.version.isFetching;
+    console.log('version isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getVersion request');
+      return false;
+    }
+  } },
 );
 
 const withdrawThunk = createAsyncThunk<string | undefined, WithdrawPayloadType, { state: RootState }>(
@@ -426,10 +492,6 @@ const withdrawThunk = createAsyncThunk<string | undefined, WithdrawPayloadType, 
     dispatch,
     getState,
   }) => {
-    const isFetching = getState().node.transactions.isFetching;
-    if (isFetching) {
-      throw new Error('Already fetching transactions');
-    }
     dispatch(setTransactionsFetching(true));
     try {
       const res = await withdraw(payload);
@@ -443,6 +505,14 @@ const withdrawThunk = createAsyncThunk<string | undefined, WithdrawPayloadType, 
       }
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.transactions.isFetching;
+    console.log('transactions isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling withdraw request');
+      return false;
+    }
+  } },
 );
 
 const getAliasThunk = createAsyncThunk<
@@ -453,75 +523,82 @@ const getAliasThunk = createAsyncThunk<
   | undefined,
   AliasPayloadType,
   { state: RootState }
->('node/getAlias', async (payload: AliasPayloadType, {
-  rejectWithValue,
-  dispatch,
-  getState,
-}) => {
-  const isFetching = getState().node.aliases.isFetching;
-  if (isFetching) {
-    throw new Error('Already fetching aliases');
-  }
-  dispatch(setAliasesFetching(true));
-  try {
-    const res = await getAlias(payload);
-    return {
-      peerId: res,
-      alias: payload.alias,
-    };
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+>(
+  'node/getAlias',
+  async (payload: AliasPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setAliasesFetching(true));
+    try {
+      const res = await getAlias(payload);
+      return {
+        peerId: res,
+        alias: payload.alias,
+      };
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  }
-});
-// FIXME: If this request is called and right after (but before finishing) the refresh aliases is triggered, it wont load the new Alias
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.aliases.isFetching;
+    console.log('aliases isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getAlias request');
+      return false;
+    }
+  } },
+);
+
 const setAliasThunk = createAsyncThunk<
   { peerId: string; alias: string } | undefined,
   SetAliasPayloadType,
   { state: RootState }
->('node/setAlias', async (payload: SetAliasPayloadType, {
-  rejectWithValue,
-  dispatch,
-  getState,
-}) => {
-  const isFetching = getState().node.aliases.isFetching;
-  if (isFetching) {
-    throw new Error('Already fetching aliases');
-  }
-  dispatch(setAliasesFetching(true));
-  try {
-    const res = await setAlias(payload);
-    if (res) {
-      return {
-        peerId: payload.peerId,
-        alias: payload.alias,
-      };
+>(
+  'node/setAlias',
+  async (payload: SetAliasPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setAliasesFetching(true));
+    try {
+      const res = await setAlias(payload);
+      if (res) {
+        return {
+          peerId: payload.peerId,
+          alias: payload.alias,
+        };
+      }
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.aliases.isFetching;
+    console.log('aliases isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling setAliases request');
+      return false;
     }
-  }
-});
+  } },
+);
 
 const removeAliasThunk = createAsyncThunk<{ alias: string } | undefined, AliasPayloadType, { state: RootState }>(
   'node/removeAlias',
   async (payload: AliasPayloadType, {
     rejectWithValue,
     dispatch,
-    getState,
   }) => {
-    const isFetching = getState().node.aliases.isFetching;
-    if (isFetching) {
-      throw new Error('Already fetching aliases');
-    }
     dispatch(setAliasesFetching(true));
     try {
       const res = await removeAlias(payload);
@@ -537,11 +614,31 @@ const removeAliasThunk = createAsyncThunk<{ alias: string } | undefined, AliasPa
       }
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.aliases.isFetching;
+    console.log('aliases isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling removeAlias request');
+      return false;
+    }
+  } },
 );
 
-const closeChannelThunk = createAsyncThunk(
+const closeChannelThunk = createAsyncThunk<
+  | {
+      channelStatus: string;
+      receipt?: string | undefined;
+    }
+  | undefined,
+  CloseChannelPayloadType,
+  { state: RootState }
+>(
   'node/closeChannel',
-  async (payload: CloseChannelPayloadType, { rejectWithValue }) => {
+  async (payload: CloseChannelPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setChannelsFetching(true));
     try {
       const res = await closeChannel(payload);
       return res;
@@ -554,11 +651,27 @@ const closeChannelThunk = createAsyncThunk(
       }
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.channels.isFetching;
+    console.log('channels isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling closeChannelThunk request');
+      return false;
+    }
+  } },
 );
 
-const fundChannelsThunk = createAsyncThunk(
+const fundChannelsThunk = createAsyncThunk<
+  FundChannelsResponseType | undefined,
+  FundChannelsPayloadType,
+  { state: RootState }
+>(
   'node/fundChannels',
-  async (payload: FundChannelsPayloadType, { rejectWithValue }) => {
+  async (payload: FundChannelsPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setChannelsFetching(true));
     try {
       const res = await fundChannels(payload);
       return res;
@@ -571,65 +684,93 @@ const fundChannelsThunk = createAsyncThunk(
       }
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.channels.isFetching;
+    console.log(isFetching, 'channels');
+    if (isFetching) {
+      console.log('Cancelling getAlias request');
+      return false;
+    }
+  } },
 );
 
 const getChannelThunk = createAsyncThunk<
   GetChannelResponseType | undefined,
   GetChannelPayloadType,
   { state: RootState }
->('node/getChannel', async (payload: GetChannelPayloadType, {
-  rejectWithValue,
-  dispatch,
-  getState,
-}) => {
-  const isFetching = getState().node.channels.isFetching;
-  if (isFetching) {
-    throw new Error('Already fetching channels');
-  }
-  dispatch(setChannelsFetching(true));
-  try {
-    const res = await getChannel(payload);
-    return res;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+>(
+  'node/getChannel',
+  async (payload: GetChannelPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setChannelsFetching(true));
+    try {
+      const res = await getChannel(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  }
-});
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.channels.isFetching;
+    console.log(isFetching, 'channels');
+    if (isFetching) {
+      console.log('Cancelling getCannels request');
+      return false;
+    }
+  } },
+);
 
 const getChannelTicketsThunk = createAsyncThunk<
   GetChannelTicketsResponseType | undefined,
   PeerIdPayloadType,
   { state: RootState }
->('node/getChannelTickets', async (payload: PeerIdPayloadType, {
-  rejectWithValue,
-  dispatch,
-  getState,
-}) => {
-  const isFetching = getState().node.tickets.isFetching;
-  if (isFetching) {
-    throw new Error('Already fetching tickets');
-  }
-  dispatch(setTicketsFetching(true));
-  try {
-    const res = await getChannelTickets(payload);
-    return res;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+>(
+  'node/getChannelTickets',
+  async (payload: PeerIdPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setTicketsFetching(true));
+    try {
+      const res = await getChannelTickets(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  }
-});
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.tickets.isFetching;
+    console.log('tickets tickets:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getChannelTickets request');
+      return false;
+    }
+  } },
+);
 
-const openChannelThunk = createAsyncThunk(
+const openChannelThunk = createAsyncThunk<
+  OpenChannelResponseType | undefined,
+  OpenChannelPayloadType,
+  { state: RootState }
+>(
   'node/openChannel',
-  async (payload: OpenChannelPayloadType, { rejectWithValue }) => {
+  async (payload: OpenChannelPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setChannelsFetching(true));
     try {
       const res = await openChannel(payload);
       return res;
@@ -642,11 +783,23 @@ const openChannelThunk = createAsyncThunk(
       }
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.channels.isFetching;
+    console.log('channels isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling openChannel request');
+      return false;
+    }
+  } },
 );
 
-const redeemChannelTicketsThunk = createAsyncThunk(
+const redeemChannelTicketsThunk = createAsyncThunk<boolean | undefined, PeerIdPayloadType, { state: RootState }>(
   'node/redeemChannelTickets',
-  async (payload: PeerIdPayloadType, { rejectWithValue }) => {
+  async (payload: PeerIdPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setTicketsFetching(true));
     try {
       const res = await redeemChannelTickets(payload);
       return res;
@@ -659,6 +812,14 @@ const redeemChannelTicketsThunk = createAsyncThunk(
       }
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.tickets.isFetching;
+    console.log('tickets isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling redeemChannelTickets request');
+      return false;
+    }
+  } },
 );
 
 const sendMessageThunk = createAsyncThunk(
@@ -712,9 +873,13 @@ const pingNodeThunk = createAsyncThunk('node/pingNode', async (payload: PingNode
   }
 });
 
-const setSettingThunk = createAsyncThunk(
+const setSettingThunk = createAsyncThunk<boolean | undefined, SetSettingPayloadType, { state: RootState }>(
   'node/setSetting',
-  async (payload: SetSettingPayloadType, { rejectWithValue }) => {
+  async (payload: SetSettingPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setSettingsFetching(true));
     try {
       const res = await setSetting(payload);
       return res;
@@ -727,12 +892,23 @@ const setSettingThunk = createAsyncThunk(
       }
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.settings.isFetching;
+    console.log('settings isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling setSettings request');
+      return false;
+    }
+  } },
 );
 
-// FIXME: Should this have cases to handle fulfilled or rejected state of thunk?
-const redeemTicketsThunk = createAsyncThunk(
+const redeemTicketsThunk = createAsyncThunk<boolean | undefined, BasePayloadType, { state: RootState }>(
   'node/redeemTickets',
-  async (payload: BasePayloadType, { rejectWithValue }) => {
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setTicketsFetching(true));
     try {
       const res = await redeemTickets(payload);
       return res;
@@ -745,12 +921,27 @@ const redeemTicketsThunk = createAsyncThunk(
       }
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.tickets.isFetching;
+    console.log('tickets isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling redeemTickets request');
+      return false;
+    }
+  } },
 );
 
-// FIXME: Same?
-const createTokenThunk = createAsyncThunk(
+const createTokenThunk = createAsyncThunk<
+  CreateTokenResponseType | undefined,
+  CreateTokenPayloadType,
+  { state: RootState }
+>(
   'node/createToken',
-  async (payload: CreateTokenPayloadType, { rejectWithValue }) => {
+  async (payload: CreateTokenPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setTokensFetching(true));
     try {
       const res = await createToken(payload);
       return res;
@@ -763,49 +954,58 @@ const createTokenThunk = createAsyncThunk(
       }
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.tokens.isFetching;
+    console.log('tokens isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling createToken request');
+      return false;
+    }
+  } },
 );
 
 const deleteTokenThunk = createAsyncThunk<
   { deleted: boolean; id: string } | undefined,
   DeleteTokenPayloadType,
   { state: RootState }
->('node/deleteToken', async (payload: DeleteTokenPayloadType, {
-  rejectWithValue,
-  dispatch,
-  getState,
-}) => {
-  const isFetching = getState().node.tokens.isFetching;
-  if (isFetching) {
-    throw new Error('Already fetching tokens');
-  }
-  dispatch(setTokensFetching(true));
-  try {
-    const res = await deleteToken(payload);
-    return {
-      deleted: res,
-      id: payload.id,
-    };
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+>(
+  'node/deleteToken',
+  async (payload: DeleteTokenPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setTokensFetching(true));
+    try {
+      const res = await deleteToken(payload);
+      return {
+        deleted: res,
+        id: payload.id,
+      };
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  }
-});
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.tokens.isFetching;
+    console.log('token isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling deleteToken request');
+      return false;
+    }
+  } },
+);
 
 const getPrometheusMetricsThunk = createAsyncThunk<string | undefined, BasePayloadType, { state: RootState }>(
   'node/getPrometheusMetrics',
   async (payload: BasePayloadType, {
     rejectWithValue,
     dispatch,
-    getState,
   }) => {
-    const isFetching = getState().node.metrics.isFetching;
-    if (isFetching) {
-      throw new Error('Already fetching metrics');
-    }
     dispatch(setMetricsFetching(true));
     try {
       const res = await getMetrics(payload);
@@ -819,6 +1019,14 @@ const getPrometheusMetricsThunk = createAsyncThunk<string | undefined, BasePaylo
       }
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.metrics.isFetching;
+    console.log('metrics isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getPrometheusMetrics request');
+      return false;
+    }
+  } },
 );
 
 // Helper action to update the isFetching state
@@ -924,6 +1132,13 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getSettingsThunk.rejected, (state, action) => {
     state.settings.isFetching = false;
   });
+  // setSettings
+  builder.addCase(setSettingThunk.fulfilled, (state, action) => {
+    state.settings.isFetching = false;
+  });
+  builder.addCase(setSettingThunk.rejected, (state, action) => {
+    state.settings.isFetching = false;
+  });
   // getStatistics
   builder.addCase(getStatisticsThunk.fulfilled, (state, action) => {
     if (action.payload) {
@@ -944,6 +1159,13 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getTicketsThunk.rejected, (state, action) => {
     state.tickets.isFetching = false;
   });
+  // redeemTicketsThunk
+  builder.addCase(redeemTicketsThunk.fulfilled, (state, action) => {
+    state.tickets.isFetching = false;
+  });
+  builder.addCase(redeemTicketsThunk.rejected, (state, action) => {
+    state.tickets.isFetching = false;
+  });
   // getTokenThunk
   builder.addCase(getTokenThunk.fulfilled, (state, action) => {
     if (action.payload) {
@@ -958,6 +1180,13 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     state.tokens.isFetching = false;
   });
   builder.addCase(getTokenThunk.rejected, (state, action) => {
+    state.tokens.isFetching = false;
+  });
+  // createToken
+  builder.addCase(createTokenThunk.fulfilled, (state, action) => {
+    state.tokens.isFetching = false;
+  });
+  builder.addCase(createTokenThunk.rejected, (state, action) => {
     state.tokens.isFetching = false;
   });
   // getEntryNodes
@@ -1194,6 +1423,27 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getPrometheusMetricsThunk.rejected, (state, action) => {
     state.metrics.isFetching = false;
   });
+  // closeChannel
+  builder.addCase(closeChannelThunk.fulfilled, (state, action) => {
+    state.channels.isFetching = false;
+  });
+  builder.addCase(closeChannelThunk.rejected, (state, action) => {
+    state.channels.isFetching = false;
+  });
+  // fundChannels
+  builder.addCase(fundChannelsThunk.fulfilled, (state, action) => {
+    state.channels.isFetching = false;
+  });
+  builder.addCase(fundChannelsThunk.rejected, (state, action) => {
+    state.channels.isFetching = false;
+  });
+  // redeemChannelTickets
+  builder.addCase(redeemChannelTicketsThunk.fulfilled, (state, action) => {
+    state.tickets.isFetching = false;
+  });
+  builder.addCase(redeemChannelTicketsThunk.rejected, (state, action) => {
+    state.tickets.isFetching = false;
+  });
 };
 
 export const actionsAsync = {
@@ -1203,6 +1453,7 @@ export const actionsAsync = {
   getBalancesThunk,
   getChannelsThunk,
   getPeersThunk,
+  getPeerInfoThunk,
   getSettingsThunk,
   getStatisticsThunk,
   getTicketsThunk,
