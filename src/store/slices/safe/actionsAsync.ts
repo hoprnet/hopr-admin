@@ -502,9 +502,9 @@ const createAndExecuteTransactionThunk = createAsyncThunk(
         nonce: nextSafeNonce,
       } });
       const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
-      const isValidTx = await safeSDK.isValidTransaction(safeTransaction)
+      const isValidTx = await safeSDK.isValidTransaction(safeTransaction);
       if (!isValidTx) {
-        throw Error('Transaction is not valid')
+        throw Error('Transaction is not valid');
       }
       // execute safe transaction
       await safeSDK.executeTransaction(safeTransaction);
