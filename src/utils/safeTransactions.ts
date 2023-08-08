@@ -4,7 +4,7 @@ import {
   SafeInfoResponse,
   SafeModuleTransactionWithTransfersResponse,
   SafeMultisigTransactionWithTransfersResponse
-} from '@safe-global/api-kit'
+} from '@safe-global/api-kit';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { Address, decodeFunctionData, formatEther, formatUnits } from 'viem';
 import { erc20ABI, erc4626ABI, erc721ABI } from 'wagmi';
@@ -86,15 +86,15 @@ export const getUserActionForPendingTransaction = (
 
 export const getUserCanSkipProposal = (safeInfo: SafeInfoResponse | null) => {
   if (!safeInfo) {
-    return false
+    return false;
   }
-  
-  if (safeInfo.threshold === 1) {
-    return true
-  } 
 
-  return false
-}
+  if (safeInfo.threshold === 1) {
+    return true;
+  }
+
+  return false;
+};
 
 /**
  * Ethereum transactions

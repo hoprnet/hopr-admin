@@ -191,7 +191,8 @@ function XdaiToNode() {
           data: '0x',
         },
       }),
-    ) .unwrap()
+    )
+      .unwrap()
       .then(() => {
         set_isExecutionLoading(false);
       })
