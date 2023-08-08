@@ -493,14 +493,8 @@ const createAndExecuteTransactionThunk = createAsyncThunk(
   ) => {
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
-      const safeApi = await createSafeApiService(payload.signer);
-      // gets next nonce considering pending txs
-      const nextSafeNonce = await safeApi.getNextNonce(payload.safeAddress);
       // create safe transaction
-      const safeTransaction = await safeSDK.createTransaction({ safeTransactionData: {
-        ...payload.safeTransactionData,
-        nonce: nextSafeNonce,
-      } });
+      const safeTransaction = await safeSDK.createTransaction({ safeTransactionData: payload.safeTransactionData });
       const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
       const isValidTx = await safeSDK.isValidTransaction(safeTransaction);
       if (!isValidTx) {
