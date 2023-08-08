@@ -184,7 +184,7 @@ function SafeSection() {
                 onClick={() => {
                   if (signer) {
                     dispatch(
-                      safeActionsAsync.executeTransactionThunk({
+                      safeActionsAsync.executePendingTransactionThunk({
                         signer,
                         safeAddress: transaction.safe,
                         safeTransaction: transaction,

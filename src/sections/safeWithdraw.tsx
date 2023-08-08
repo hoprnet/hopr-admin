@@ -203,15 +203,15 @@ function SafeWithdraw() {
 
       if (safeTx) {
         await dispatch(
-          safeActionsAsync.executeTransactionThunk({
+          safeActionsAsync.executePendingTransactionThunk({
             safeAddress: selectedSafeAddress,
             signer,
             safeTransaction: safeTx,
           }),
         )
           .unwrap()
-          .then((res) => {
-            console.log('executeTransactionThunk success', res);
+          .then((res: unknown) => {
+            console.log('executePendingTransactionThunk success', res);
           })
           .finally(() => {
             set_isExecuting(false);

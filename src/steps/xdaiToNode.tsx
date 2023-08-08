@@ -9,7 +9,6 @@ import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 
 // components
-import { SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-kit';
 import { useEffect, useState } from 'react';
 import { parseUnits } from 'viem';
 import Button from '../future-hopr-lib-components/Button';
@@ -123,7 +122,7 @@ function XdaiToNode() {
     if (signer && Number(xdaiValue) && selectedSafeAddress && nodeNativeAddress) {
       set_isLoading(true);
       dispatch(
-        safeActionsAsync.createSafeTransactionThunk({
+        safeActionsAsync.createAndExecuteTransactionThunk({
           signer,
           safeAddress: selectedSafeAddress,
           safeTransactionData: {
@@ -155,7 +154,7 @@ function XdaiToNode() {
 
       if (safeTx) {
         dispatch(
-          safeActionsAsync.executeTransactionThunk({
+          safeActionsAsync.executePendingTransactionThunk({
             safeAddress: selectedSafeAddress,
             signer,
             safeTransaction: safeTx,

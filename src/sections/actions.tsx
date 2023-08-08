@@ -178,7 +178,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
     if (signer) {
       set_isLoadingExecuting(true);
       dispatch(
-        safeActionsAsync.executeTransactionThunk({
+        safeActionsAsync.executePendingTransactionThunk({
           safeAddress: transaction.safe,
           signer,
           safeTransaction: transaction,
