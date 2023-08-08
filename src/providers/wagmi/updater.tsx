@@ -1,19 +1,13 @@
 import { useEffect } from 'react';
-import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
+import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
 
 // wagmi
-import {
-  useNetwork,
-  useAccount,
-  useConnect,
-  useDisconnect,
-  useBalance
-} from 'wagmi'
+import { useAccount, useBalance, useNetwork } from 'wagmi';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../store';
-import { web3Actions, web3ActionsAsync } from '../../store/slices/web3';
 import { safeActions } from '../../store/slices/safe';
+import { web3Actions, web3ActionsAsync } from '../../store/slices/web3';
 
 export default function WagmiUpdater() {
   const dispatch = useAppDispatch();
