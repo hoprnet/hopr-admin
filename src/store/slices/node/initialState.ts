@@ -37,8 +37,14 @@ type InitialState = {
   };
   aliases: GetAliasesResponseType | null;
   balances: {
-    hopr: string | null;
-    native: string | null;
+    hopr: {
+      value: string | null;
+      formatted: string | null;
+    };
+    native: {
+      value: string | null;
+      formatted: string | null;
+    };
     reloading: boolean;
   };
   channels: GetChannelsResponseType | null;
@@ -91,8 +97,14 @@ export const initialState: InitialState = {
   },
   aliases: null,
   balances: {
-    native: null,
-    hopr: null,
+    hopr: {
+      value: null,
+      formatted: null,
+    },
+    native: {
+      value: null,
+      formatted: null,
+    },
     reloading: false,
   },
   channels: null,

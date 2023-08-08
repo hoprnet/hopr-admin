@@ -73,11 +73,8 @@ function PingPage() {
   };
 
   return (
-    <Section
-      yellow
-      fullHeightMin
-    >
-      <h2>Ping</h2>
+    <Section fullHeightMin>
+      <h2>PING</h2>
       <TextField
         type="text"
         label="Peer ID"

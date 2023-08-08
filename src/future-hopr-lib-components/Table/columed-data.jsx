@@ -72,12 +72,13 @@ export const Table = styled.table`
 
 export function TableExtended(props) {
   const Content = styled.div`
+    color: #414141;
     width: 100%;
     .title {
-      color: #010188;
+      color: #414141;
       margin-bottom: 8px;
       font-size: 18px;
-      font-weight: 600;
+      font-weight: 700;
     }
   `;
 

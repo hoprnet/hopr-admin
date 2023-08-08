@@ -57,6 +57,21 @@ type InitialState = {
   tokenList: TokenInfoListResponse | null;
   info: SafeInfoResponse | null;
   delegates: SafeDelegateListResponse | null;
+  balance: {
+    xDai: {
+      value: string | null;
+      formatted: string | null;
+    };
+    xHopr: {
+      value: string | null;
+      formatted: string | null;
+    };
+    wxHopr: {
+      value: string | null;
+      formatted: string | null;
+    };
+    isFetching: boolean;
+  };
 };
 
 export const initialState: InitialState = {
@@ -67,4 +82,19 @@ export const initialState: InitialState = {
   tokenList: null,
   info: null,
   delegates: null,
+  balance: {
+    xDai: {
+      value: null,
+      formatted: null,
+    },
+    xHopr: {
+      value: null,
+      formatted: null,
+    },
+    wxHopr: {
+      value: null,
+      formatted: null,
+    },
+    isFetching: false,
+  },
 };

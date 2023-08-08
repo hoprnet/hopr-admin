@@ -67,11 +67,10 @@ function TicketsPage() {
     <Section
       className="Section--tickets"
       id="Section--tickets"
-      yellow
       fullHeightMin
     >
       <SubpageTitle
-        title="Tickets"
+        title="TICKETS"
         refreshFunction={handleRefresh}
         actions={
           <>

@@ -20,7 +20,7 @@ import TicketsPage from './sections/node/tickets';
 import ChannelsPage from './sections/node/channels';
 import MetricsPage from './sections/node/metrics';
 import SafeStakingPage from './sections/safeStaking';
-import SettingsPage from './sections/node/settings';
+import ConfigurationPage from './sections/node/configuration';
 import AddNode from './steps/installNode/addNode';
 import SelectNodeType from './steps/installNode/selectNodeType';
 import WrapperPage from './sections/wrapper';
@@ -67,6 +67,7 @@ import StakingLandingPage from './sections/stakingLandingPage';
 import NodeAdded from './sections/nodeAdded';
 import SafeActions from './sections/actions';
 import WalletIcon from '@mui/icons-material/Wallet';
+import Ticket from './future-hopr-lib-components/Icons/Ticket';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -83,82 +84,82 @@ export type ApplicationMapType = {
 
 export const applicationMapNode: ApplicationMapType = [
   {
-    groupName: 'Node',
+    groupName: 'NODE',
     path: 'node',
     icon: <NodeIcon />,
     items: [
       {
-        name: 'Info',
+        name: 'INFO',
         path: 'info',
         icon: <InfoIcon />,
         element: <InfoPage />,
         loginNeeded: 'node',
       },
       {
-        name: 'Logs',
+        name: 'LOGS',
         path: 'logs',
         icon: <TerminalIcon />,
         element: <SectionLogs />,
         loginNeeded: 'node',
       },
       {
-        name: 'Tickets',
+        name: 'TICKETS',
         path: 'tickets',
         icon: <ConfirmationNumberIcon />,
         element: <TicketsPage />,
         loginNeeded: 'node',
       },
       {
-        name: 'Metrics',
+        name: 'METRICS',
         path: 'metrics',
         icon: <BarChartIcon />,
         element: <MetricsPage />,
         loginNeeded: 'node',
       },
-      // {
-      //   name: 'Configuration',
-      //   path: 'configuration',
-      //   icon: <SettingsIcon />,
-      //   element: <SettingsPage />,
-      //   loginNeeded: 'node',
-      // },
+      {
+        name: 'CONFIGURATION',
+        path: 'configuration',
+        icon: <SettingsIcon />,
+        element: <ConfigurationPage />,
+        loginNeeded: 'node',
+      },
     ],
   },
   {
-    groupName: 'Networking',
+    groupName: 'NETWORKING',
     path: 'networking',
     icon: <NetworkingIcon />,
     items: [
       {
-        name: 'Ping',
+        name: 'PING',
         path: 'ping',
         icon: <RssFeedIcon />,
         element: <PingPage />,
         loginNeeded: 'node',
       },
       {
-        name: 'Peers',
+        name: 'PEERS',
         path: 'peers',
         icon: <LanIcon />,
         element: <PeersPage />,
         loginNeeded: 'node',
       },
       {
-        name: 'Aliases',
+        name: 'ALIASES',
         path: 'aliases',
         icon: <ContactPhone />,
         element: <AliasesPage />,
         loginNeeded: 'node',
       },
       {
-        name: 'Messages',
+        name: 'MESSAGES',
         path: 'messages',
         icon: <MailIcon />,
         element: <MessagesPage />,
         loginNeeded: 'node',
       },
       {
-        name: 'Channels',
+        name: 'CHANNELS',
         path: 'channels',
         icon: <HubIcon />,
         element: <ChannelsPage />,

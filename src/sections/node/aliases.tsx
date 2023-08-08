@@ -110,11 +110,10 @@ function AliasesPage() {
     <Section
       className="Section--aliases"
       id="Section--aliases"
-      yellow
       fullHeightMin
     >
       <SubpageTitle
-        title={`Aliases`}
+        title={`ALIASES`}
         refreshFunction={handleRefresh}
         actions={
           <>

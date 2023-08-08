@@ -54,12 +54,9 @@ const messages = () => {
   }, []);
 
   return (
-    <Section
-      yellow
-      fullHeightMin
-    >
+    <Section fullHeightMin>
       <SubpageTitle
-        title={`Messages`}
+        title={`MESSAGES`}
         actions={
           <>
             <SendMessageModal />

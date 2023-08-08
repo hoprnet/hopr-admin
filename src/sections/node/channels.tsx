@@ -179,11 +179,10 @@ function ChannelsPage() {
     <Section
       className="Channels--aliases"
       id="Channels--aliases"
-      yellow
       fullHeightMin
     >
       <SubpageTitle
-        title={`Channels`}
+        title={`CHANNELS`}
         refreshFunction={handleRefresh}
         actions={
           <>

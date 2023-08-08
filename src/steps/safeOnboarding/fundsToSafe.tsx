@@ -3,13 +3,14 @@ import { formatEther, parseEther, parseUnits } from 'viem';
 import { useAppSelector } from '../../store';
 import {
   erc20ABI,
-  useBalance,
   useContractWrite,
   usePrepareContractWrite,
   usePrepareSendTransaction,
   useSendTransaction
 } from 'wagmi';
+import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
 
+// HOPR Components
 import {
   ButtonContainer,
   Lowercase,
@@ -26,8 +27,6 @@ import {
 import Button from '../../future-hopr-lib-components/Button';
 import Card from '../../components/Card';
 
-const wxhoprSmartContractAddress = '0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1';
-
 type Address = `0x${string}`;
 type NumberLiteral = `${number}`;
 
@@ -41,16 +40,10 @@ const FundsToSafe = ({
   set_step,
 }: FundsToSafeProps) => {
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress);
+  const walletBalance = useAppSelector((store) => store.web3.balance);
 
   const [xdaiValue, set_xdaiValue] = useState('');
   const [wxhoprValue, set_wxhoprValue] = useState('');
-
-  const { data: xDAI_balance } = useBalance({ address: account });
-  const { data: wxHOPR_balance } = useBalance({
-    address: account,
-    token: wxhoprSmartContractAddress,
-    watch: true,
-  });
 
   const { config: xDAI_to_safe_config } = usePrepareSendTransaction({
     to: selectedSafeAddress ?? undefined,
@@ -58,7 +51,7 @@ const FundsToSafe = ({
   });
 
   const { config: wxHOPR_to_safe_config } = usePrepareContractWrite({
-    address: wxhoprSmartContractAddress,
+    address: wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     abi: erc20ABI,
     functionName: 'transfer',
     args: [selectedSafeAddress as Address, parseUnits(wxhoprValue as NumberLiteral, 18)],
@@ -71,24 +64,24 @@ const FundsToSafe = ({
       set_xdaiValue('');
       set_wxhoprValue('');
     }
-  }, [account, xDAI_balance, wxHOPR_balance]);
+  }, [account, walletBalance.xDai.formatted, walletBalance.wxHopr.formatted]);
 
   const updateBalances = () => {
-    if (account && xDAI_balance && wxHOPR_balance) {
-      set_xdaiValue(formatEther(xDAI_balance?.value - parseUnits(`${0.002}`, 18)));
-      set_wxhoprValue(wxHOPR_balance.formatted);
+    if (account && walletBalance.xDai.value && walletBalance.wxHopr.formatted) {
+      set_xdaiValue(formatEther(BigInt(walletBalance.xDai.value) - parseUnits(`${0.002}`, 18)));
+      set_wxhoprValue(walletBalance.wxHopr.formatted);
     }
   };
 
   const setMax_xDAI = () => {
-    if (xDAI_balance) {
-      set_xdaiValue(formatEther(xDAI_balance?.value - parseUnits(`${0.002}`, 18)));
+    if (walletBalance.xDai.value) {
+      set_xdaiValue(formatEther(BigInt(walletBalance.xDai.value) - parseUnits(`${0.002}`, 18)));
     }
   };
 
   const setMax_wxHOPR = () => {
-    if (wxHOPR_balance) {
-      set_wxhoprValue(wxHOPR_balance.formatted);
+    if (walletBalance.wxHopr.formatted) {
+      set_wxhoprValue(walletBalance.wxHopr.formatted);
     }
   };
 

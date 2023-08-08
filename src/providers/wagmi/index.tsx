@@ -1,17 +1,30 @@
 import { JSXElementConstructor, ReactElement, ReactFragment, ReactPortal } from 'react';
+import Updater from './updater';
 
 // wagmi
 import { gnosis } from '@wagmi/core/chains';
-import { WagmiConfig, createConfig } from 'wagmi';
+import { publicProvider } from 'wagmi/providers/public';
+import { WagmiConfig, createConfig, configureChains } from 'wagmi';
 import { createPublicClient, http } from 'viem';
-import Updater from './updater';
+
+//wagmi connectors
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
+
+const {
+  chains,
+  publicClient,
+  webSocketPublicClient,
+} = configureChains([gnosis], [publicProvider()], {
+  pollingInterval: 30_000,
+  stallTimeout: 5_000,
+  rank: true,
+});
 
 const config = createConfig({
   autoConnect: true,
-  publicClient: createPublicClient({
-    chain: gnosis,
-    transport: http(),
-  }),
+  connectors: [new MetaMaskConnector({ chains })],
+  publicClient,
+  webSocketPublicClient,
 });
 
 export default function WagmiProvider(props: {

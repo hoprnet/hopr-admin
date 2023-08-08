@@ -23,7 +23,8 @@ const StyledDrawer = styled(MuiDrawer)`
     padding-top: 59px;
     transition: width 0.4s ease-out;
     overflow-x: hidden;
-
+    background: #3c64a5;
+    color: white;
     scrollbar-width: none;
     &::-webkit-scrollbar {
       display: none;
@@ -37,27 +38,50 @@ const StyledDrawer = styled(MuiDrawer)`
         width: ${drawerWidth}px;
       `}
   }
+  hr {
+    border-color: rgb(255 255 255 / 50%);
+  }
 `;
 
 const StyledListSubheader = styled(ListSubheader)`
   align-items: center;
-  color: #777;
+  color: white;
   display: flex;
   height: 64px;
   letter-spacing: 0.2px;
   user-select: none;
+  background: #3c64a5;
 `;
 
 const StyledListItemButton = styled(ListItemButton)`
   height: 48px;
+  color: white;
+  .MuiSvgIcon-root {
+    color: white;
+  }
+  svg {
+    width: 24px;
+    height: 24px;
+  }
   &.Mui-selected {
     color: #0000b4;
+    text-decoration: underline;
+    background-color: rgba(255, 255, 255, 0.45);
     .MuiTypography-root {
       font-weight: bold;
+    }
+    .MuiSvgIcon-root {
+      color: #0000b4;
     }
     .MuiListItemIcon-root {
       color: #0000b4;
     }
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+  }
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.3);
   }
 ` as typeof ListItemButton;
 

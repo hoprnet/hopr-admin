@@ -12,10 +12,9 @@ function SectionLogs() {
     <Section
       className="Section--logs"
       id="Section--logs"
-      yellow
       fullHeightMin
     >
-      <SubpageTitle title="Logs" />
+      <SubpageTitle title="LOGS" />
       {logs.map((log) => (
         <LogLine
           log={log}
