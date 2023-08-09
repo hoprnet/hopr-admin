@@ -5,13 +5,10 @@ import { useWatcher } from '../../hooks';
 
 // Mui
 import IconButton from '@mui/material/IconButton';
-//import Menu from '@mui/material/Menu';
+import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Badge from '@mui/material/Badge';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-
-// Hopr Components
-import Menu from '../Menu';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -44,7 +41,9 @@ const SIconButton = styled(IconButton)`
 `;
 
 const StyledMenuItem = styled(MenuItem)`
-  padding-right: 23px;
+  padding-right: 21px;
+  white-space: break-spaces;
+  font-size: 14px;
   &:not(:last-child) {
     border-bottom: 1px solid #8f8f8f;
   }
@@ -55,9 +54,9 @@ const StyledMenuItem = styled(MenuItem)`
       content: '';
       display: block;
       position: relative;
-      width: 8px;
+      width: 18px;
       height: 8px;
-      left: 13px;
+      right: -14px;
       -moz-border-radius: 7.5px;
       -webkit-border-radius: 7.5px;
       border-radius: 7.5px;
@@ -92,18 +91,6 @@ export default function NotificationBar() {
     dispatch(appActions.markSeenAllNotifications());
   };
 
-  // useEffect(() => {
-  //   if(open) {
-  //     document.body.classList.add(
-  //       'menu-opened'
-  //     );
-  //   } else {
-  //     document.body.classList.remove(
-  //       'menu-opened'
-  //     );
-  //   }
-  // }, [open]);
-
   return (
     <Container>
       <SBadge
@@ -127,6 +114,15 @@ export default function NotificationBar() {
         MenuListProps={{
           'aria-labelledby': 'notification-menu-button',
           className: 'notification-menu-list',
+        }}
+        disableScrollLock={true}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
         }}
       >
         {notifications.length > 0 && (

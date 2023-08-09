@@ -165,6 +165,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
         open={openModal}
         onClose={handleCloseModal}
         fullWidth={true}
+        disableScrollLock={true}
       >
         <TopBar>
           <DialogTitle>Send Message</DialogTitle>

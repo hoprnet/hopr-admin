@@ -19,6 +19,7 @@ body {
   font-family: 'Source Code Pro', monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-y: scroll!important;
 }
 
 code {
@@ -37,6 +38,10 @@ input {
 }
 
 /* Menus */
+.notification-menu-list {
+  max-width: 300px;
+}
+
 ul.notification-menu-list,
 ul.connect-node-menu-list,
 ul.safe-menu-list {
@@ -57,8 +62,8 @@ ul.safe-menu-list > li {
 }
 
 body.menu-opened .InfoBar {
-  width: 250px;
-  padding-right: 17px;
+  /* width: 250px;
+  padding-right: 17px; */
 }
 
 
@@ -67,3 +72,21 @@ body.menu-opened .InfoBar {
  /*   margin-right: 250px; */
   }
 }
+
+/*
+body::-webkit-scrollbar {
+  width: 17px;
+}
+body::-webkit-scrollbar-track {
+  background: #ffffa0;
+ 
+}
+body::-webkit-scrollbar-thumb {
+  background: #3c64a5;
+  border-radius: 10px;
+  border: 3px solid #ffffa0;
+}
+body::-webkit-scrollbar-thumb:hover {
+  background: #000050;
+}
+*/

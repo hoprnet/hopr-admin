@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import Modal from '../../future-hopr-lib-components/Modal';
 import WalletButton from '../../future-hopr-lib-components/Button/wallet-button';
-import Menu from '../Menu';
+import { Menu } from '@mui/material';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -189,6 +189,7 @@ export default function ConnectWeb3({
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleCloseMenu}
+                disableScrollLock={true}
               >
                 <MenuItem onClick={handleDisconnectMM}>Disconnect</MenuItem>
               </Menu>

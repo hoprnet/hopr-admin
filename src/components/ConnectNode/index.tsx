@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 
 // Components
 import Modal from './modal';
-import Menu from '../Menu';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -13,7 +12,7 @@ import { nodeActions } from '../../store/slices/node';
 import { appActions } from '../../store/slices/app';
 
 //MUI
-import { Button, MenuItem, CircularProgress } from '@mui/material';
+import { Button, Menu, MenuItem, CircularProgress } from '@mui/material';
 
 const Container = styled(Button)`
   align-items: center;
@@ -181,6 +180,7 @@ export default function ConnectNode() {
                 'aria-labelledby': 'connect-node-menu-button',
                 className: 'connect-node-menu-list',
               }}
+              disableScrollLock={true}
             >
               <MenuItem onClick={handleModalOpen}>Change node</MenuItem>
               <MenuItem onClick={() => handleLogout()}>Disconnect</MenuItem>

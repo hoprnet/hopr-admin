@@ -118,6 +118,7 @@ export const OpenOrFundChannelModal = ({
       <SDialog
         open={openChannelModal}
         onClose={handleCloseModal}
+        disableScrollLock={true}
       >
         <TopBar>
           <DialogTitle>{title ? title : 'Open Outgoing Channel'}</DialogTitle>

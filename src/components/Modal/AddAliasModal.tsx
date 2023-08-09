@@ -138,6 +138,7 @@ export const CreateAliasModal = ({
       <SDialog
         open={openModal}
         onClose={handleCloseModal}
+        disableScrollLock={true}
       >
         <TopBar>
           <DialogTitle>Add Alias</DialogTitle>
