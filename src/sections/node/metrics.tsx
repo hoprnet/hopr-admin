@@ -24,7 +24,7 @@ const TableTitle = styled.p`
 `;
 
 function MetricsPage() {
-  const metrics = useAppSelector((selector) => selector.node.metrics);
+  const metrics = useAppSelector((selector) => selector.node.metrics.data);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const {
     apiEndpoint,
@@ -50,7 +50,7 @@ function MetricsPage() {
 
   function renderMetricsTable(parsedMetrics: any) {
     const render: any[] = [];
-    for (const [key, value] of Object.entries(metrics.data.parsed)) {
+    for (const [key, value] of Object.entries(metrics.parsed)) {
       if (value.length === 1)
         render.push(
           <tr key={key}>
@@ -73,25 +73,25 @@ function MetricsPage() {
               iconComponent={<GetAppIcon />}
               tooltipText="Download metrics as a text file"
               onClick={() => {
-                exportToFile(metrics.data.raw ? metrics.data.raw : 'error', 'metrics.txt', 'text/txt');
+                exportToFile(metrics.raw ? metrics.raw : 'error', 'metrics.txt', 'text/txt');
               }}
             />
           </>
         }
       />
-      <TableExtended width1stColumn={'400px'}>{renderMetricsTable(metrics.data?.parsed)}</TableExtended>
+      <TableExtended width1stColumn={'400px'}>{renderMetricsTable(metrics?.parsed)}</TableExtended>
       <br />
       <br />
       <br />
 
       <TableTitle>Measures total time it takes to ping a single node (seconds)</TableTitle>
       <Chart
-        options={{ xaxis: { categories: metrics.data?.parsed?.core_histogram_ping_time_seconds?.categories
-          ? metrics.data?.parsed?.core_histogram_ping_time_seconds?.categories
+        options={{ xaxis: { categories: metrics?.parsed?.core_histogram_ping_time_seconds?.categories
+          ? metrics?.parsed?.core_histogram_ping_time_seconds?.categories
           : [] } }}
         series={[
-          { data: metrics.data?.parsed?.core_histogram_ping_time_seconds?.data
-            ? metrics.data?.parsed?.core_histogram_ping_time_seconds?.data
+          { data: metrics?.parsed?.core_histogram_ping_time_seconds?.data
+            ? metrics?.parsed?.core_histogram_ping_time_seconds?.data
             : [] },
         ]}
         type="bar"
@@ -104,12 +104,12 @@ function MetricsPage() {
 
       <TableTitle>Time it takes for a node to start up</TableTitle>
       <Chart
-        options={{ xaxis: { categories: metrics.data?.parsed?.hoprd_histogram_startup_time_seconds?.categories
-          ? metrics.data?.parsed?.hoprd_histogram_startup_time_seconds?.categories
+        options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_startup_time_seconds?.categories
+          ? metrics?.parsed?.hoprd_histogram_startup_time_seconds?.categories
           : [] } }}
         series={[
-          { data: metrics.data?.parsed?.hoprd_histogram_startup_time_seconds?.data
-            ? metrics.data?.parsed?.hoprd_histogram_startup_time_seconds?.data
+          { data: metrics?.parsed?.hoprd_histogram_startup_time_seconds?.data
+            ? metrics?.parsed?.hoprd_histogram_startup_time_seconds?.data
             : [] },
         ]}
         type="bar"
@@ -122,12 +122,12 @@ function MetricsPage() {
 
       <TableTitle>Time it takes for a node to transition to the GREEN network state</TableTitle>
       <Chart
-        options={{ xaxis: { categories: metrics.data?.parsed?.hoprd_histogram_time_to_green_second?.categories
-          ? metrics.data?.parsed?.hoprd_histogram_time_to_green_seconds?.categories
+        options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_time_to_green_second?.categories
+          ? metrics?.parsed?.hoprd_histogram_time_to_green_seconds?.categories
           : [] } }}
         series={[
-          { data: metrics.data?.parsed?.hoprd_histogram_time_to_green_seconds?.data
-            ? metrics.data?.parsed?.hoprd_histogram_time_to_green_seconds?.data
+          { data: metrics?.parsed?.hoprd_histogram_time_to_green_seconds?.data
+            ? metrics?.parsed?.hoprd_histogram_time_to_green_seconds?.data
             : [] },
         ]}
         type="bar"
@@ -140,12 +140,12 @@ function MetricsPage() {
 
       <TableTitle>Histogram of measured received message latencies</TableTitle>
       <Chart
-        options={{ xaxis: { categories: metrics.data?.parsed?.hoprd_histogram_message_latency_ms?.categories
-          ? metrics.data?.parsed?.hoprd_histogram_message_latency_ms?.categories
+        options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_message_latency_ms?.categories
+          ? metrics?.parsed?.hoprd_histogram_message_latency_ms?.categories
           : [] } }}
         series={[
-          { data: metrics.data?.parsed?.hoprd_histogram_message_latency_ms?.data
-            ? metrics.data?.parsed?.hoprd_histogram_message_latency_ms?.data
+          { data: metrics?.parsed?.hoprd_histogram_message_latency_ms?.data
+            ? metrics?.parsed?.hoprd_histogram_message_latency_ms?.data
             : [] },
         ]}
         type="bar"
@@ -158,12 +158,12 @@ function MetricsPage() {
 
       <TableTitle>Number different peer types by quality</TableTitle>
       <Chart
-        options={{ xaxis: { categories: metrics.data?.parsed?.core_mgauge_peers_by_quality?.categories
-          ? metrics.data?.parsed?.core_mgauge_peers_by_quality?.categories
+        options={{ xaxis: { categories: metrics?.parsed?.core_mgauge_peers_by_quality?.categories
+          ? metrics?.parsed?.core_mgauge_peers_by_quality?.categories
           : [] } }}
         series={[
-          { data: metrics.data?.parsed?.core_mgauge_peers_by_quality?.data
-            ? metrics.data?.parsed?.core_mgauge_peers_by_quality?.data
+          { data: metrics?.parsed?.core_mgauge_peers_by_quality?.data
+            ? metrics?.parsed?.core_mgauge_peers_by_quality?.data
             : [] },
         ]}
         type="bar"

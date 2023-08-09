@@ -20,7 +20,7 @@ export const CreateAliasModal = ({
 }: CreateAliasModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const aliases = useAppSelector((selector) => selector.node.aliases);
+  const aliases = useAppSelector((selector) => selector.node.aliases.data);
   const [error, set_error] = useState<{
     status: string | undefined;
     error: string | undefined;

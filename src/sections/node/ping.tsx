@@ -14,7 +14,7 @@ function PingPage() {
   const [invalidPeerId, set_invalidPeerId] = useState(false);
 
   const pings = useAppSelector((selector) => selector.node.pings);
-  const aliases = useAppSelector((selector) => selector.node.aliases);
+  const aliases = useAppSelector((selector) => selector.node.aliases.data);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const {
     apiEndpoint,
@@ -34,14 +34,14 @@ function PingPage() {
   }, []);
 
   const isAlias = (alias: string) => {
-    if (aliases.data) {
-      return !!aliases.data[alias];
+    if (aliases) {
+      return !!aliases[alias];
     } else return false;
   };
 
   const validatePeerId = (peerId: string) => {
-    if (aliases.data && isAlias(peerId)) {
-      return aliases.data[peerId];
+    if (aliases && isAlias(peerId)) {
+      return aliases[peerId];
     }
     return peerId;
   };

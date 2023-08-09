@@ -13,8 +13,8 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 function TicketsPage() {
   const dispatch = useAppDispatch();
-  const tickets = useAppSelector((selector) => selector.node.tickets);
-  const statistics = useAppSelector((selector) => selector.node.statistics);
+  const tickets = useAppSelector((selector) => selector.node.tickets.data);
+  const statistics = useAppSelector((selector) => selector.node.statistics.data);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const [redeemErrors, set_redeemErrors] = useState<{ status: string | undefined; error: string | undefined }[]>([]);
   const [redeeming, set_redeeming] = useState(false);
@@ -97,43 +97,43 @@ function TicketsPage() {
         <tbody>
           <tr>
             <th>Pending count</th>
-            <td>{statistics.data?.pending}</td>
+            <td>{statistics?.pending}</td>
           </tr>
           <tr>
             <th>Unredeemed count</th>
-            <td>{statistics.data?.unredeemed}</td>
+            <td>{statistics?.unredeemed}</td>
           </tr>
           <tr>
             <th>Unredeemed value</th>
-            <td>{statistics.data?.unredeemedValue}</td>
+            <td>{statistics?.unredeemedValue}</td>
           </tr>
           <tr>
             <th>Redeemed count</th>
-            <td>{statistics.data?.redeemed}</td>
+            <td>{statistics?.redeemed}</td>
           </tr>
           <tr>
             <th>Redeemed value</th>
-            <td>{statistics.data?.redeemedValue}</td>
+            <td>{statistics?.redeemedValue}</td>
           </tr>
           <tr>
             <th>Losing tickets count</th>
-            <td>{statistics.data?.losingTickets}</td>
+            <td>{statistics?.losingTickets}</td>
           </tr>
           <tr>
             <th>Win proportion</th>
-            <td>{statistics.data?.winProportion}</td>
+            <td>{statistics?.winProportion}</td>
           </tr>
           <tr>
             <th>Neglected count</th>
-            <td>{statistics.data?.neglected}</td>
+            <td>{statistics?.neglected}</td>
           </tr>
           <tr>
             <th>Rejected count</th>
-            <td>{statistics.data?.rejected}</td>
+            <td>{statistics?.rejected}</td>
           </tr>
           <tr>
             <th>Rejected value</th>
-            <td>{statistics.data?.rejectedValue}</td>
+            <td>{statistics?.rejectedValue}</td>
           </tr>
         </tbody>
       </TableExtended>

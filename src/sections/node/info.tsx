@@ -16,13 +16,13 @@ function InfoPage() {
   } = useAppSelector((selector) => selector.auth.loginData);
   const balances = useAppSelector((selector) => selector.node.balances.data);
   const balancesFetching = useAppSelector((selector) => selector.node.balances.isFetching);
-  const addresses = useAppSelector((selector) => selector.node.addresses);
-  const channels = useAppSelector((selector) => selector.node.channels);
-  const version = useAppSelector((selector) => selector.node.version);
-  const info = useAppSelector((selector) => selector.node.info);
-  const peers = useAppSelector((selector) => selector.node.peers);
-  const aliases = useAppSelector((selector) => selector.node.aliases);
-  const statistics = useAppSelector((selector) => selector.node.statistics);
+  const addresses = useAppSelector((selector) => selector.node.addresses.data);
+  const channels = useAppSelector((selector) => selector.node.channels.data);
+  const version = useAppSelector((selector) => selector.node.version.data);
+  const info = useAppSelector((selector) => selector.node.info.data);
+  const peers = useAppSelector((selector) => selector.node.peers.data);
+  const aliases = useAppSelector((selector) => selector.node.aliases.data);
+  const statistics = useAppSelector((selector) => selector.node.statistics.data);
 
   useEffect(() => {
     fetchInfoData();
@@ -113,11 +113,11 @@ function InfoPage() {
         <tbody>
           <tr>
             <th>Version</th>
-            <td>{version.data?.replaceAll('"', '')}</td>
+            <td>{version?.replaceAll('"', '')}</td>
           </tr>
           <tr>
             <th>Environment</th>
-            <td>{info.data?.environment}</td>
+            <td>{info?.environment}</td>
           </tr>
         </tbody>
       </TableExtended>
@@ -129,23 +129,23 @@ function InfoPage() {
         <tbody>
           <tr>
             <th>Eligible</th>
-            <td>{info.data?.isEligible ? 'Yes' : 'No'}</td>
+            <td>{info?.isEligible ? 'Yes' : 'No'}</td>
           </tr>
           <tr>
             <th>Network</th>
-            <td>{info.data?.network}</td>
+            <td>{info?.network}</td>
           </tr>
           <tr>
             <th>Connectivity status</th>
-            <td>{info.data?.connectivityStatus}</td>
+            <td>{info?.connectivityStatus}</td>
           </tr>
           <tr>
             <th>Announced address</th>
-            <td>{info.data?.announcedAddress}</td>
+            <td>{info?.announcedAddress}</td>
           </tr>
           <tr>
             <th>Listening address</th>
-            <td>{info.data?.listeningAddress}</td>
+            <td>{info?.listeningAddress}</td>
           </tr>
         </tbody>
       </TableExtended>
@@ -173,19 +173,19 @@ function InfoPage() {
         <tbody>
           <tr>
             <th>PeerId</th>
-            <td>{addresses.data?.hopr}</td>
+            <td>{addresses?.hopr}</td>
           </tr>
           <tr>
             <th>Native</th>
-            <td>{addresses.data?.native}</td>
+            <td>{addresses?.native}</td>
           </tr>
           <tr>
             <th>hoprToken</th>
-            <td>{info.data?.hoprToken}</td>
+            <td>{info?.hoprToken}</td>
           </tr>
           <tr>
             <th>hoprChannels</th>
-            <td>{info.data?.hoprChannels}</td>
+            <td>{info?.hoprChannels}</td>
           </tr>
         </tbody>
       </TableExtended>
@@ -197,11 +197,11 @@ function InfoPage() {
         <tbody>
           <tr>
             <th>Incoming</th>
-            <td>{channels.data?.incoming.filter((channel) => channel.status === 'Open').length}</td>
+            <td>{channels?.incoming.filter((channel) => channel.status === 'Open').length}</td>
           </tr>
           <tr>
             <th>Outgoing</th>
-            <td>{channels.data?.outgoing.filter((channel) => channel.status === 'Open').length}</td>
+            <td>{channels?.outgoing.filter((channel) => channel.status === 'Open').length}</td>
           </tr>
         </tbody>
       </TableExtended>
@@ -213,11 +213,11 @@ function InfoPage() {
         <tbody>
           <tr>
             <th>Announced</th>
-            <td>{peers.data?.announced.length}</td>
+            <td>{peers?.announced.length}</td>
           </tr>
           <tr>
             <th>Connected</th>
-            <td>{peers.data?.connected.length}</td>
+            <td>{peers?.connected.length}</td>
           </tr>
         </tbody>
       </TableExtended>
@@ -228,43 +228,43 @@ function InfoPage() {
         <tbody>
           <tr>
             <th>Pending count</th>
-            <td>{statistics.data?.pending}</td>
+            <td>{statistics?.pending}</td>
           </tr>
           <tr>
             <th>Unredeemed count</th>
-            <td>{statistics.data?.unredeemed}</td>
+            <td>{statistics?.unredeemed}</td>
           </tr>
           <tr>
             <th>Unredeemed value</th>
-            <td>{statistics.data?.unredeemedValue}</td>
+            <td>{statistics?.unredeemedValue}</td>
           </tr>
           <tr>
             <th>Redeemed count</th>
-            <td>{statistics.data?.redeemed}</td>
+            <td>{statistics?.redeemed}</td>
           </tr>
           <tr>
             <th>Redeemed value</th>
-            <td>{statistics.data?.redeemedValue}</td>
+            <td>{statistics?.redeemedValue}</td>
           </tr>
           <tr>
             <th>Losing tickets count</th>
-            <td>{statistics.data?.losingTickets}</td>
+            <td>{statistics?.losingTickets}</td>
           </tr>
           <tr>
             <th>Win proportion</th>
-            <td>{statistics.data?.winProportion}</td>
+            <td>{statistics?.winProportion}</td>
           </tr>
           <tr>
             <th>Neglected count</th>
-            <td>{statistics.data?.neglected}</td>
+            <td>{statistics?.neglected}</td>
           </tr>
           <tr>
             <th>Rejected count</th>
-            <td>{statistics.data?.rejected}</td>
+            <td>{statistics?.rejected}</td>
           </tr>
           <tr>
             <th>Rejected value</th>
-            <td>{statistics.data?.rejectedValue}</td>
+            <td>{statistics?.rejectedValue}</td>
           </tr>
         </tbody>
       </TableExtended>
@@ -275,7 +275,7 @@ function InfoPage() {
         <tbody>
           <tr>
             <th>Count</th>
-            <td>{Object.keys(aliases.data ?? {}).length}</td>
+            <td>{Object.keys(aliases ?? {}).length}</td>
           </tr>
         </tbody>
       </TableExtended>

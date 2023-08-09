@@ -56,7 +56,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
   const nonAutomaticPathTooltip = 'Disable `automatic path` to enable `Number of hops`';
 
   const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const aliases = useAppSelector((selector) => selector.node.aliases);
+  const aliases = useAppSelector((selector) => selector.node.aliases.data);
 
   useEffect(() => {
     switch (sendMode) {
@@ -141,14 +141,14 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
   };
 
   const isAlias = (alias: string) => {
-    if (aliases.data) {
-      return !!aliases.data[alias];
+    if (aliases) {
+      return !!aliases[alias];
     } else return false;
   };
 
   const validatePeerId = (receiver: string) => {
-    if (aliases.data && isAlias(receiver)) {
-      return aliases.data[receiver];
+    if (aliases && isAlias(receiver)) {
+      return aliases[receiver];
     }
     return receiver;
   };
