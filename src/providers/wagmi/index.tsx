@@ -11,10 +11,8 @@ import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 
 // No way to tell what the ethereum request can be so has to be any
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type EthereumProvider = { request(...args: any): Promise<any> }
-type WindowWithEthereum = { ethereum: EthereumProvider};
-
-
+type EthereumProvider = { request(...args: any): Promise<any> };
+type WindowWithEthereum = { ethereum: EthereumProvider };
 
 const {
   chains,
@@ -36,7 +34,7 @@ const config = createConfig({
   autoConnect: true,
   connectors: [new MetaMaskConnector({ chains })],
   publicClient: (chain) => {
-    if (typeof window !== 'undefined' && typeof (window as unknown as WindowWithEthereum).ethereum !== 'undefined') {  
+    if (typeof window !== 'undefined' && typeof (window as unknown as WindowWithEthereum).ethereum !== 'undefined') {
       return walletClient;
     }
 
