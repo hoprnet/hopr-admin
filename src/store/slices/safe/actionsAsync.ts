@@ -444,7 +444,7 @@ const confirmTransactionThunk = createAsyncThunk(
   },
 );
 
-const executeTransactionThunk = createAsyncThunk(
+const executePendingTransactionThunk = createAsyncThunk(
   'safe/executeTransactionProposal',
   async (
     payload: {
@@ -468,6 +468,91 @@ const executeTransactionThunk = createAsyncThunk(
         }),
       );
       return true;
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  },
+);
+
+/**
+ * Creates a safe transaction and executes, skips proposing.
+ * This only works if the safe has threshold of 1
+ */
+const createAndExecuteTransactionThunk = createAsyncThunk(
+  'safe/createAndExecuteTransaction',
+  async (
+    payload: {
+      signer: ethers.providers.JsonRpcSigner;
+      safeAddress: string;
+      safeTransactionData: SafeTransactionDataPartial;
+    },
+    {
+      rejectWithValue,
+      dispatch,
+    },
+  ) => {
+    try {
+      const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
+      // create safe transaction
+      const safeTransaction = await safeSDK.createTransaction({ safeTransactionData: payload.safeTransactionData });
+      const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
+      const isValidTx = await safeSDK.isValidTransaction(safeTransaction);
+      if (!isValidTx) {
+        throw Error('Transaction is not valid');
+      }
+      // execute safe transaction
+      await safeSDK.executeTransaction(safeTransaction);
+      // re fetch all txs
+      dispatch(
+        getAllSafeTransactionsThunk({
+          safeAddress: payload.safeAddress,
+          signer: payload.signer,
+        }),
+      );
+      return safeTxHash;
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  },
+);
+
+const createAndExecuteContractTransactionThunk = createAsyncThunk(
+  'safe/createAndExecuteContractTransaction',
+  async (
+    payload: {
+      signer: ethers.providers.JsonRpcSigner;
+      safeAddress: string;
+      smartContractAddress: string;
+      data: string;
+    },
+    {
+      rejectWithValue,
+      dispatch,
+    },
+  ) => {
+    try {
+      const {
+        smartContractAddress,
+        data,
+        signer,
+        safeAddress,
+      } = payload;
+
+      const safeTransactionData: SafeTransactionDataPartial = {
+        to: smartContractAddress,
+        data,
+        value: '0',
+      };
+
+      const safeTxHash = await dispatch(
+        createAndExecuteTransactionThunk({
+          signer,
+          safeAddress: safeAddress,
+          safeTransactionData,
+        }),
+      ).unwrap();
+
+      return safeTxHash;
     } catch (e) {
       return rejectWithValue(e);
     }
@@ -689,7 +774,7 @@ export const actionsAsync = {
   createSafeRejectionTransactionThunk,
   createSafeTransactionThunk,
   getSafeInfoThunk,
-  executeTransactionThunk,
+  executePendingTransactionThunk,
   getPendingSafeTransactionsThunk,
   addSafeDelegateThunk,
   removeSafeDelegateThunk,
@@ -698,4 +783,6 @@ export const actionsAsync = {
   getTokenList,
   updateSafeThresholdThunk,
   createSafeContractTransaction,
+  createAndExecuteTransactionThunk,
+  createAndExecuteContractTransactionThunk,
 };

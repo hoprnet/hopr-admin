@@ -9,7 +9,6 @@ import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 
 // components
-import { SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-kit';
 import { useEffect, useState } from 'react';
 import { parseUnits } from 'viem';
 import Button from '../future-hopr-lib-components/Button';
@@ -19,6 +18,8 @@ import { useEthersSigner } from '../hooks';
 import { safeActionsAsync } from '../store/slices/safe';
 import Card from '../components/Card';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
+import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../utils/safeTransactions';
+import { useAccount } from 'wagmi';
 
 const StyledForm = styled.div`
   width: 100%;
@@ -100,11 +101,18 @@ const StyledApproveButton = styled(Button)`
 
 function XdaiToNode() {
   const dispatch = useAppDispatch();
+  // injected states
   const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions);
+  const safeInfo = useAppSelector((state) => state.safe.info);
   const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
   const { native: nodeNativeAddress } = useAppSelector((state) => state.node.addresses);
+  const { address } = useAccount();
+  // local states
+  const [userCanSkipProposal, set_userCanSkipProposal] = useState(false);
+  const [userAction, set_userAction] = useState<'EXECUTE' | 'SIGN' | null>(null);
   const [xdaiValue, set_xdaiValue] = useState<string>('');
-  const [isLoading, set_isLoading] = useState<boolean>();
+  const [isProposalLoading, set_isProposalLoading] = useState<boolean>();
+  const [isExecutionLoading, set_isExecutionLoading] = useState<boolean>();
   const [proposedTxHash, set_proposedTxHash] = useState<string>();
   const [proposedTx, set_proposedTx] = useState<SafeMultisigTransactionResponse>();
 
@@ -113,15 +121,20 @@ function XdaiToNode() {
   useEffect(() => {
     if (proposedTxHash) {
       const foundProposedTx = pendingTransactions?.results.find((tx) => tx.safeTxHash === proposedTxHash);
-      if (foundProposedTx) {
+      if (foundProposedTx && address) {
         set_proposedTx(foundProposedTx);
+        set_userAction(getUserActionForPendingTransaction(foundProposedTx, address));
       }
     }
-  }, [pendingTransactions, proposedTxHash]);
+  }, [pendingTransactions, proposedTxHash, address]);
+
+  useEffect(() => {
+    set_userCanSkipProposal(getUserCanSkipProposal(safeInfo));
+  }, [safeInfo]);
 
   const proposeTx = () => {
     if (signer && Number(xdaiValue) && selectedSafeAddress && nodeNativeAddress) {
-      set_isLoading(true);
+      set_isProposalLoading(true);
       dispatch(
         safeActionsAsync.createSafeTransactionThunk({
           signer,
@@ -136,10 +149,10 @@ function XdaiToNode() {
         .unwrap()
         .then((safeTxHash) => {
           set_proposedTxHash(safeTxHash);
-          set_isLoading(false);
+          set_isProposalLoading(false);
         })
         .catch(() => {
-          set_isLoading(false);
+          set_isProposalLoading(false);
         });
     }
   };
@@ -152,10 +165,9 @@ function XdaiToNode() {
         }
         return false;
       });
-
       if (safeTx) {
         dispatch(
-          safeActionsAsync.executeTransactionThunk({
+          safeActionsAsync.executePendingTransactionThunk({
             safeAddress: selectedSafeAddress,
             signer,
             safeTransaction: safeTx,
@@ -165,11 +177,28 @@ function XdaiToNode() {
     }
   };
 
-  const transactionHasEnoughApprovals = () => {
-    if (!proposedTx) return false;
-    if (!proposedTx.confirmations) return false;
+  const createAndExecuteTx = () => {
+    if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeNativeAddress) return;
+    set_isExecutionLoading(true);
 
-    return proposedTx.confirmations.length >= proposedTx.confirmationsRequired;
+    dispatch(
+      safeActionsAsync.createAndExecuteTransactionThunk({
+        signer,
+        safeAddress: selectedSafeAddress,
+        safeTransactionData: {
+          to: nodeNativeAddress,
+          value: parseUnits(xdaiValue as `${number}`, 18).toString(),
+          data: '0x',
+        },
+      }),
+    )
+      .unwrap()
+      .then(() => {
+        set_isExecutionLoading(false);
+      })
+      .catch(() => {
+        set_isExecutionLoading(false);
+      });
   };
 
   const getErrorsForSafeTx = ({ customValidator }: { customValidator?: () => { errors: string[] } }) => {
@@ -187,6 +216,12 @@ function XdaiToNode() {
       errors.push('node is required');
     }
 
+    // only require xDai value if there
+    // is no proposed tx
+    if (!xdaiValue && !proposedTx) {
+      errors.push('xDai value is required');
+    }
+
     if (customValidator) {
       const customErrors = customValidator();
       errors.push(...customErrors.errors);
@@ -202,7 +237,8 @@ function XdaiToNode() {
 
   const getErrorsForExecuteButton = () =>
     getErrorsForSafeTx({ customValidator: () => {
-      return transactionHasEnoughApprovals() ? { errors: [] } : { errors: ['transaction requires more approvals'] };
+      // no user action means the user can not do anything
+      return !userAction ? { errors: [] } : { errors: ['transaction requires more approvals'] };
     } });
 
   return (
@@ -246,13 +282,13 @@ function XdaiToNode() {
           {!!proposedTx && (
             <StyledPendingSafeTransactions>
               <StyledDescription>
-                {transactionHasEnoughApprovals()
+                {userAction === 'EXECUTE'
                   ? 'transaction has been approved by all required owners'
                   : `transaction is pending ${
                     (proposedTx?.confirmationsRequired ?? 0) - (proposedTx?.confirmations?.length ?? 0)
                   } approvals`}
               </StyledDescription>
-              {!transactionHasEnoughApprovals() && (
+              {userAction === 'SIGN' && (
                 <StyledApproveButton
                   onClick={() => {
                     if (signer && proposedTx) {
@@ -273,7 +309,7 @@ function XdaiToNode() {
           )}
           <StyledButtonGroup>
             <StyledGrayButton>back</StyledGrayButton>
-            {!proposedTx ? (
+            {!userCanSkipProposal ? (
               <Tooltip title={getErrorsForApproveButton().at(0)}>
                 <span>
                   {' '}
@@ -291,7 +327,8 @@ function XdaiToNode() {
                   {' '}
                   <StyledBlueButton
                     disabled={!!getErrorsForExecuteButton().length}
-                    onClick={executeTx}
+                    // no need to propose tx with only 1 threshold
+                    onClick={proposedTx ? executeTx : createAndExecuteTx}
                   >
                     execute
                   </StyledBlueButton>
@@ -299,7 +336,8 @@ function XdaiToNode() {
               </Tooltip>
             )}
           </StyledButtonGroup>
-          {isLoading && <p>Signing transaction with nonce...</p>}
+          {isProposalLoading && <p>Signing transaction with nonce...</p>}
+          {isExecutionLoading && <p>Executing transaction with nonce...</p>}
         </div>
       </Card>
     </Section>

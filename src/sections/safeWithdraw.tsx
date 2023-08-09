@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { useSearchParams } from 'react-router-dom';
-import { SafeMultisigTransactionWithTransfersResponse } from '@safe-global/api-kit';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { parseUnits } from 'viem';
 import { useAppDispatch, useAppSelector } from '../store';
@@ -12,7 +11,6 @@ import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS
 
 // components
 import Button from '../future-hopr-lib-components/Button';
-import GrayButton from '../future-hopr-lib-components/Button/gray';
 import Section from '../future-hopr-lib-components/Section';
 import Card from '../components/Card';
 
@@ -21,6 +19,8 @@ import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Select from '../future-hopr-lib-components/Select';
 import { SelectChangeEvent } from '@mui/material/Select';
+import { useAccount } from 'wagmi';
+import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../utils/safeTransactions';
 
 const StyledForm = styled.div`
   width: 100%;
@@ -88,11 +88,6 @@ const StyledPendingSafeTransactions = styled.div`
   flex-direction: column;
 `;
 
-const StyledApproveButton = styled(Button)`
-  align-self: flex-start;
-  text-transform: uppercase;
-`;
-
 const InputWithLabel = styled.div`
   display: flex;
   flex-direction: row;
@@ -116,16 +111,23 @@ const supportedTokens = [
     smartContract: xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
   },
 ];
+
 const supportedTokensValues = supportedTokens.map((elem) => elem.value);
 type SupportedTokens = (typeof supportedTokensValues)[number];
-const isSupportedToken = (x: any): x is SupportedTokens => supportedTokensValues.includes(x);
+const isSupportedToken = (x: string | null): x is SupportedTokens => (x ? supportedTokensValues.includes(x) : false);
 
 function SafeWithdraw() {
   const dispatch = useAppDispatch();
+  // hooks
   const [searchParams, setSearchParams] = useSearchParams();
   const tokenParam = searchParams.get('token');
   const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions);
   const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
+  const safeInfo = useAppSelector((state) => state.safe.info);
+  const { address } = useAccount();
+  // local state
+  const [userCanSkipProposal, set_userCanSkipProposal] = useState(false);
+  const [userAction, set_userAction] = useState<'EXECUTE' | 'SIGN' | null>(null);
   const [ethValue, set_ethValue] = useState<string>('');
   const [receiver, set_receiver] = useState<string>('');
   const [token, set_token] = useState<SupportedTokens>(isSupportedToken(tokenParam) ? tokenParam : 'xdai');
@@ -139,11 +141,16 @@ function SafeWithdraw() {
   useEffect(() => {
     if (proposedTxHash) {
       const foundProposedTx = pendingTransactions?.results.find((tx) => tx.safeTxHash === proposedTxHash);
-      if (foundProposedTx) {
+      if (foundProposedTx && address) {
         set_proposedTx(foundProposedTx);
+        set_userAction(getUserActionForPendingTransaction(foundProposedTx, address));
       }
     }
-  }, [pendingTransactions, proposedTxHash]);
+  }, [pendingTransactions, proposedTxHash, address]);
+
+  useEffect(() => {
+    set_userCanSkipProposal(getUserCanSkipProposal(safeInfo));
+  }, [safeInfo]);
 
   const proposeTx = () => {
     if (signer && Number(ethValue) && selectedSafeAddress) {
@@ -203,15 +210,15 @@ function SafeWithdraw() {
 
       if (safeTx) {
         await dispatch(
-          safeActionsAsync.executeTransactionThunk({
+          safeActionsAsync.executePendingTransactionThunk({
             safeAddress: selectedSafeAddress,
             signer,
             safeTransaction: safeTx,
           }),
         )
           .unwrap()
-          .then((res) => {
-            console.log('executeTransactionThunk success', res);
+          .then((res: unknown) => {
+            console.log('executePendingTransactionThunk success', res);
           })
           .finally(() => {
             set_isExecuting(false);
@@ -222,11 +229,49 @@ function SafeWithdraw() {
     }
   };
 
-  const transactionHasEnoughApprovals = () => {
-    if (!proposedTx) return false;
-    if (!proposedTx.confirmations) return false;
-
-    return proposedTx.confirmations.length >= proposedTx.confirmationsRequired;
+  const createAndExecuteTx = () => {
+    if (signer && Number(ethValue) && selectedSafeAddress) {
+      set_isExecuting(true);
+      if (token === 'xdai') {
+        const parsedValue = parseUnits(ethValue as `${number}`, 18).toString();
+        dispatch(
+          safeActionsAsync.createAndExecuteTransactionThunk({
+            signer,
+            safeAddress: selectedSafeAddress,
+            safeTransactionData: {
+              to: receiver,
+              value: parsedValue as string,
+              data: '0x',
+            },
+          }),
+        )
+          .unwrap()
+          .then((safeTxHash) => {
+            set_proposedTxHash(safeTxHash);
+          })
+          .finally(() => {
+            set_isExecuting(false);
+          });
+      } else {
+        const smartContractAddress = supportedTokens.filter((elem) => elem.value === token)[0].smartContract as string;
+        const parsedValue = parseUnits(ethValue as `${number}`, 18).toString() as unknown;
+        dispatch(
+          safeActionsAsync.createAndExecuteContractTransactionThunk({
+            data: createSendTokensTransactionData(receiver as `0x${string}`, parsedValue as bigint),
+            signer,
+            safeAddress: selectedSafeAddress,
+            smartContractAddress,
+          }),
+        )
+          .unwrap()
+          .then((safeTxHash) => {
+            set_proposedTxHash(safeTxHash);
+          })
+          .finally(() => {
+            set_isExecuting(false);
+          });
+      }
+    }
   };
 
   const getErrorsForSafeTx = ({ customValidator }: { customValidator?: () => { errors: string[] } }) => {
@@ -244,6 +289,12 @@ function SafeWithdraw() {
       errors.push('receiver is required');
     }
 
+    // only require xDai value if there
+    // is no proposed tx
+    if (!ethValue && !proposedTx) {
+      errors.push('xDai value is required');
+    }
+
     if (customValidator) {
       const customErrors = customValidator();
       errors.push(...customErrors.errors);
@@ -259,7 +310,8 @@ function SafeWithdraw() {
 
   const getErrorsForExecuteButton = () =>
     getErrorsForSafeTx({ customValidator: () => {
-      return transactionHasEnoughApprovals() ? { errors: [] } : { errors: ['transaction requires more approvals'] };
+      // no user action means the user can not do anything
+      return !userAction ? { errors: [] } : { errors: ['transaction requires more approvals'] };
     } });
 
   const handleChangeToken = (event: SelectChangeEvent<unknown>) => {
@@ -270,17 +322,18 @@ function SafeWithdraw() {
     }
   };
 
-  const handleApprove = () => {
-    if (signer && proposedTx) {
-      dispatch(
-        safeActionsAsync.confirmTransactionThunk({
-          signer,
-          safeAddress: proposedTx.safe,
-          safeTransactionHash: proposedTx.safeTxHash,
-        }),
-      );
-    }
-  };
+  // multiple owners is out of scope for initial version
+  // const handleApprove = () => {
+  //   if (signer && proposedTx) {
+  //     dispatch(
+  //       safeActionsAsync.confirmTransactionThunk({
+  //         signer,
+  //         safeAddress: proposedTx.safe,
+  //         safeTransactionHash: proposedTx.safeTxHash,
+  //       }),
+  //     );
+  //   }
+  // };
 
   return (
     <Section
@@ -346,7 +399,7 @@ function SafeWithdraw() {
           {!!proposedTx && (
             <StyledPendingSafeTransactions>
               <StyledDescription>
-                {transactionHasEnoughApprovals()
+                {userAction === 'EXECUTE'
                   ? 'transaction has been approved by required owners, now can be executed'
                   : `transaction is pending ${
                     (proposedTx?.confirmationsRequired ?? 0) - (proposedTx?.confirmations?.length ?? 0)
@@ -359,7 +412,7 @@ function SafeWithdraw() {
             </StyledPendingSafeTransactions>
           )}
           <StyledButtonGroup>
-            {!proposedTx ? (
+            {!userCanSkipProposal ? (
               <Tooltip title={isSigning ? 'Signing transation' : getErrorsForApproveButton().at(0)}>
                 <span>
                   <StyledBlueButton
@@ -375,7 +428,8 @@ function SafeWithdraw() {
                 <span>
                   <StyledBlueButton
                     disabled={!!getErrorsForExecuteButton().length || isExecuting}
-                    onClick={executeTx}
+                    // no need to propose tx with only 1 threshold
+                    onClick={proposedTx ? executeTx : createAndExecuteTx}
                   >
                     Execute
                   </StyledBlueButton>
