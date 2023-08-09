@@ -102,9 +102,7 @@ const getInfoThunk = createAsyncThunk<GetInfoResponseType | undefined, BasePaylo
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.info.isFetching;
-    console.log('getInfo isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling getInfo request');
       return false;
     }
   } },
@@ -139,9 +137,7 @@ const getAddressesThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.addresses.isFetching;
-    console.log('address', isFetching);
     if (isFetching) {
-      console.log('Cancelling getAddresses request');
       return false;
     }
   } },
@@ -168,9 +164,7 @@ const getAliasesThunk = createAsyncThunk<GetAliasesResponseType | undefined, Bas
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.aliases.isFetching;
-    console.log('aliases', isFetching);
     if (isFetching) {
-      console.log('Cancelling getAlias request');
       return false;
     }
   } },
@@ -201,9 +195,7 @@ const getBalancesThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.balances.isFetching;
-    console.log('balances', isFetching);
     if (isFetching) {
-      console.log('Cancelling getBalances request');
       return false;
     }
   } },
@@ -234,9 +226,7 @@ const getChannelsThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.channels.isFetching;
-    console.log('channels is Fetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling getChannels request');
       return false;
     }
   } },
@@ -263,9 +253,7 @@ const getPeersThunk = createAsyncThunk<GetPeersResponseType | undefined, GetPeer
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.peers.isFetching;
-    console.log('peers is Fetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling getPeers request');
       return false;
     }
   } },
@@ -296,9 +284,7 @@ const getPeerInfoThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.peerInfo.isFetching;
-    console.log('PeerInfo isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling getPeerInfo request');
       return false;
     }
   } },
@@ -325,9 +311,7 @@ const getSettingsThunk = createAsyncThunk<GetSettingsResponseType | undefined, B
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.settings.isFetching;
-    console.log('settings', isFetching);
     if (isFetching) {
-      console.log('Cancelling getSettings request');
       return false;
     }
   } },
@@ -358,9 +342,7 @@ const getStatisticsThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.statistics.isFetching;
-    console.log('statistics', isFetching);
     if (isFetching) {
-      console.log('Cancelling getStatistics request');
       return false;
     }
   } },
@@ -387,9 +369,7 @@ const getTicketsThunk = createAsyncThunk<GetTicketsResponseType | undefined, Bas
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.tickets.isFetching;
-    console.log('tickets isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling getTickets request');
       return false;
     }
   } },
@@ -416,9 +396,7 @@ const getTokenThunk = createAsyncThunk<GetTokenResponseType | undefined, BasePay
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.tokens.isFetching;
-    console.log('tokens isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling getTokens request');
       return false;
     }
   } },
@@ -449,9 +427,7 @@ const getEntryNodesThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.entryNodes.isFetching;
-    console.log('entryNodes isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling getEntryNodes request');
       return false;
     }
   } },
@@ -478,9 +454,7 @@ const getVersionThunk = createAsyncThunk<string | undefined, BasePayloadType, { 
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.version.isFetching;
-    console.log('version isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling getVersion request');
       return false;
     }
   } },
@@ -491,7 +465,6 @@ const withdrawThunk = createAsyncThunk<string | undefined, WithdrawPayloadType, 
   async (payload: WithdrawPayloadType, {
     rejectWithValue,
     dispatch,
-    getState,
   }) => {
     dispatch(setTransactionsFetching(true));
     try {
@@ -508,9 +481,7 @@ const withdrawThunk = createAsyncThunk<string | undefined, WithdrawPayloadType, 
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.transactions.isFetching;
-    console.log('transactions isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling withdraw request');
       return false;
     }
   } },
@@ -548,9 +519,7 @@ const getAliasThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.aliases.isFetching;
-    console.log('aliases isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling getAlias request');
       return false;
     }
   } },
@@ -586,9 +555,7 @@ const setAliasThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.aliases.isFetching;
-    console.log('aliases isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling setAliases request');
       return false;
     }
   } },
@@ -617,9 +584,7 @@ const removeAliasThunk = createAsyncThunk<{ alias: string } | undefined, AliasPa
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.aliases.isFetching;
-    console.log('aliases isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling removeAlias request');
       return false;
     }
   } },
@@ -654,9 +619,7 @@ const closeChannelThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.channels.isFetching;
-    console.log('channels isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling closeChannelThunk request');
       return false;
     }
   } },
@@ -687,9 +650,7 @@ const fundChannelsThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.channels.isFetching;
-    console.log(isFetching, 'channels');
     if (isFetching) {
-      console.log('Cancelling getAlias request');
       return false;
     }
   } },
@@ -720,9 +681,7 @@ const getChannelThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.channels.isFetching;
-    console.log(isFetching, 'channels');
     if (isFetching) {
-      console.log('Cancelling getCannels request');
       return false;
     }
   } },
@@ -753,9 +712,7 @@ const getChannelTicketsThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.tickets.isFetching;
-    console.log('tickets tickets:', isFetching);
     if (isFetching) {
-      console.log('Cancelling getChannelTickets request');
       return false;
     }
   } },
@@ -786,9 +743,7 @@ const openChannelThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.channels.isFetching;
-    console.log('channels isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling openChannel request');
       return false;
     }
   } },
@@ -815,9 +770,7 @@ const redeemChannelTicketsThunk = createAsyncThunk<boolean | undefined, PeerIdPa
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.tickets.isFetching;
-    console.log('tickets isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling redeemChannelTickets request');
       return false;
     }
   } },
@@ -895,9 +848,7 @@ const setSettingThunk = createAsyncThunk<boolean | undefined, SetSettingPayloadT
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.settings.isFetching;
-    console.log('settings isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling setSettings request');
       return false;
     }
   } },
@@ -924,9 +875,7 @@ const redeemTicketsThunk = createAsyncThunk<boolean | undefined, BasePayloadType
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.tickets.isFetching;
-    console.log('tickets isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling redeemTickets request');
       return false;
     }
   } },
@@ -957,9 +906,7 @@ const createTokenThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.tokens.isFetching;
-    console.log('tokens isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling createToken request');
       return false;
     }
   } },
@@ -993,9 +940,7 @@ const deleteTokenThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.tokens.isFetching;
-    console.log('token isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling deleteToken request');
       return false;
     }
   } },
@@ -1022,9 +967,7 @@ const getPrometheusMetricsThunk = createAsyncThunk<string | undefined, BasePaylo
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().node.metrics.isFetching;
-    console.log('metrics isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling getPrometheusMetrics request');
       return false;
     }
   } },

@@ -97,9 +97,7 @@ const createSafeThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.selectedSafeAddress.isFetching;
-    console.log('selectedSafeAddress isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling createSafe request');
       return false;
     }
   } },
@@ -146,9 +144,7 @@ const createSafeWithConfigThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.selectedSafeAddress.isFetching;
-    console.log('selectedSafeAddress isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling createSafeWithConfig request');
       return false;
     }
   } },
@@ -181,9 +177,7 @@ const getSafesByOwnerThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.safesByOwner.isFetching;
-    console.log('safeByOwner isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling getSafeByOwner request');
       return false;
     }
   } },
@@ -247,9 +241,7 @@ const addOwnerToSafeThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.info.isFetching;
-    console.log('info isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling addOwnerToSafe request');
       return false;
     }
   } },
@@ -312,9 +304,7 @@ const removeOwnerFromSafeThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.info.isFetching;
-    console.log('info isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling removeOwnerFromSafe request');
       return false;
     }
   } },
@@ -373,9 +363,7 @@ const updateSafeThresholdThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.info.isFetching;
-    console.log('info isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling updateSafeThershold request');
       return false;
     }
   } },
@@ -471,9 +459,7 @@ const createSafeTransactionThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.createTransaction.isFetching;
-    console.log('createTransaction isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling createSafeTransaction request');
       return false;
     }
   } },
@@ -526,9 +512,7 @@ const createSafeContractTransaction = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.createTransaction.isFetching;
-    console.log('createTransaction isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling createSafeContractTransaction request');
       return false;
     }
   } },
@@ -582,9 +566,7 @@ const createSafeRejectionTransactionThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.rejectTransaction.isFetching;
-    console.log('rejectTransaction isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling createSafeRejectTransaction request');
       return false;
     }
   } },
@@ -627,9 +609,7 @@ const confirmTransactionThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.confirmTransaction.isFetching;
-    console.log('confirmTransaction isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling confirmTransaction request');
       return false;
     }
   } },
@@ -674,9 +654,7 @@ const executePendingTransactionThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.executeTransaction.isFetching;
-    console.log('executeTransaction isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling executeTransaction request');
       return false;
     }
   } },
@@ -735,9 +713,7 @@ const createAndExecuteTransactionThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.executeTransaction.isFetching;
-    console.log('executeTransaction isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling createAndExecuteTransaction request');
       return false;
     }
   } },
@@ -796,9 +772,7 @@ const createAndExecuteContractTransactionThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.executeTransaction.isFetching;
-    console.log('executeTransaction isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling createAndExecuteContractTransaction request');
       return false;
     }
   } },
@@ -839,9 +813,7 @@ const getAllSafeTransactionsThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.allTransactions.isFetching;
-    console.log('allTransactions isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling getAllSafeTransactions request');
       return false;
     }
   } },
@@ -877,9 +849,7 @@ const getPendingSafeTransactionsThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.pendingTransactions.isFetching;
-    console.log('pendingTransactions isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling getPendingTransactions request');
       return false;
     }
   } },
@@ -924,9 +894,7 @@ const addSafeDelegateThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.addDelegate.isFetching;
-    console.log('addDelegate isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling addSafeDelegates request');
       return false;
     }
   } },
@@ -968,9 +936,7 @@ const removeSafeDelegateThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.removeDelegate.isFetching;
-    console.log('removeDelegate isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling removeSafeDelegate request');
       return false;
     }
   } },
@@ -1000,9 +966,7 @@ const getSafeDelegatesThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.delegates.isFetching;
-    console.log('delegates isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling getSafeDelegates request');
       return false;
     }
   } },
@@ -1032,9 +996,7 @@ const getToken = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.token.isFetching;
-    console.log('token isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling getToken request');
       return false;
     }
   } },
@@ -1063,9 +1025,7 @@ const getTokenList = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const isFetching = getState().safe.tokenList.isFetching;
-    console.log('tokenList isFetching:', isFetching);
     if (isFetching) {
-      console.log('Cancelling getTokenList request');
       return false;
     }
   } },
