@@ -28,7 +28,8 @@ const getCommunityNftsOwnedByAccount = createAsyncThunk(
           variables,
         }),
       });
-      const responseJson: { data: { account: { ownedBoosts: { id: string; uri: string }[] } } } = await response.json();
+      const responseJson: { data: { account: { ownedBoosts: { id: string; uri: string }[] } } | null } =
+        await response.json();
 
       return responseJson.data;
     } catch (e) {
@@ -41,7 +42,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getCommunityNftsOwnedByAccount.fulfilled, (state, action) => {
     if (action.payload) {
       // if any community nft comes back then the account has an a community nft
-      state.hasCommunityNFT = !!action.payload.account.ownedBoosts.length;
+      state.hasCommunityNFT = !!action.payload.account?.ownedBoosts.length;
     }
   });
 };
