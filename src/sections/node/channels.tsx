@@ -1,3 +1,18 @@
+import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { actionsAsync } from '../../store/slices/node/actionsAsync';
+import { useNavigate } from 'react-router-dom';
+import { exportToCsv } from '../../utils/helpers';
+import { utils } from 'ethers';
+
+// HOPR Components
+import Section from '../../future-hopr-lib-components/Section';
+import { SubpageTitle } from '../../components/SubpageTitle';
+import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
+import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+import CloseChannelIcon from '../../future-hopr-lib-components/Icons/CloseChannel';
+
+// Mui
 import {
   Box,
   Tabs,
@@ -10,20 +25,13 @@ import {
   TableHead,
   Paper
 } from '@mui/material'
-import Section from '../future-hopr-lib-components/Section';
-import { useAppDispatch, useAppSelector } from '../store';
-import { useEffect, useState } from 'react';
-import { actionsAsync } from '../store/slices/node/actionsAsync';
-import { useNavigate } from 'react-router-dom';
-import { exportToCsv } from '../utils/helpers';
 import CircularProgress from '@mui/material/CircularProgress';
-import { ethers } from 'ethers';
-import { OpenChannelModal } from '../components/Modal/OpenOrFundChannelModal';
+import GetAppIcon from '@mui/icons-material/GetApp';
 
 function ChannelsPage() {
   const dispatch = useAppDispatch();
-  const channels = useAppSelector((selector) => selector.node.channels);
-  const aliases = useAppSelector((selector) => selector.node.aliases);
+  const channels = useAppSelector((selector) => selector.node.channels.data);
+  const aliases = useAppSelector((selector) => selector.node.aliases.data);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const [tabIndex, set_tabIndex] = useState(0);
   const [closingStates, set_closingStates] = useState<
@@ -39,6 +47,8 @@ function ChannelsPage() {
       }
     >
   >({});
+  const tabLabel = tabIndex === 0 ? 'outgoing' : 'incoming';
+  const channelsData = tabIndex === 0 ? channels?.outgoing : channels?.incoming;
 
   const [queryParams, set_queryParams] = useState('');
 
@@ -50,7 +60,7 @@ function ChannelsPage() {
   };
 
   const handleHash = (newTabIndex: number) => {
-    const newHash = newTabIndex === 0 ? 'incoming' : 'outgoing';
+    const newHash = newTabIndex === 0 ? 'outgoing' : 'incoming';
     navigate(`?${queryParams}#${newHash}`, { replace: true });
   };
 
@@ -66,14 +76,16 @@ function ChannelsPage() {
 
   useEffect(() => {
     const currentHash = window.location.hash;
-    const defaultHash = currentHash === '#incoming' || currentHash === '#outgoing' ? currentHash : '#incoming';
+    const defaultHash = currentHash === '#incoming' || currentHash === '#outgoing' ? currentHash : '#outgoing';
 
-    const defaultTabIndex = defaultHash === '#outgoing' ? 1 : 0;
+    const defaultTabIndex = defaultHash === '#outgoing' ? 0 : 1;
     set_tabIndex(defaultTabIndex);
     handleHash(defaultTabIndex);
 
     handleRefresh();
   }, [queryParams]);
+
+  useEffect(() => {}, [tabIndex]);
 
   const handleRefresh = () => {
     dispatch(
@@ -91,8 +103,8 @@ function ChannelsPage() {
   };
 
   const getAliasByPeerId = (peerId: string): string => {
-    if (aliases.data) {
-      for (const [alias, id] of Object.entries(aliases.data)) {
+    if (aliases) {
+      for (const [alias, id] of Object.entries(aliases)) {
         if (id === peerId) {
           return alias;
         }
@@ -101,30 +113,18 @@ function ChannelsPage() {
     return peerId; // Return the peerId if alias not found for the given peerId
   };
 
-  const exportToCsvButton = () => {
-    const tabLabel = tabIndex === 0 ? 'incoming' : 'outgoing';
-    const channelsData = tabIndex === 0 ? channels.data?.incoming : channels.data?.outgoing;
-
-    return (
-      <button
-        disabled={!channelsData || Object.keys(channelsData).length === 0}
-        onClick={() => {
-          if (channelsData) {
-            exportToCsv(
-              Object.entries(channelsData).map(([, channel]) => ({
-                channelId: channel.channelId,
-                peerId: channel.peerId,
-                status: channel.status,
-                dedicatedFunds: channel.balance,
-              })),
-              `${tabLabel}-channels.csv`,
-            );
-          }
-        }}
-      >
-        export
-      </button>
-    );
+  const handleExport = () => {
+    if (channelsData) {
+      exportToCsv(
+        Object.entries(channelsData).map(([, channel]) => ({
+          channelId: channel.channelId,
+          peerId: channel.peerId,
+          status: channel.status,
+          dedicatedFunds: channel.balance,
+        })),
+        `${tabLabel}-channels.csv`,
+      );
+    }
   };
 
   const handleCloseChannels = (direction: 'incoming' | 'outgoing', peerId: string, channelId: string) => {
@@ -179,25 +179,40 @@ function ChannelsPage() {
     <Section
       className="Channels--aliases"
       id="Channels--aliases"
-      yellow
       fullHeightMin
     >
-      <h2>
-        Channels
-        <button onClick={handleRefresh}>Refresh</button>
-      </h2>
+      <SubpageTitle
+        title={`CHANNELS`}
+        refreshFunction={handleRefresh}
+        actions={
+          <>
+            <OpenOrFundChannelModal type={'open'} />
+            <OpenOrFundChannelModal
+              type={'fund'}
+              title="Fund outgoing channel"
+              modalBtnText="Fund outgoing channel"
+              actionBtnText="Fund outgoing channel"
+            />
+            <IconButton
+              iconComponent={<GetAppIcon />}
+              tooltipText={`Export ${tabLabel} channels as a CSV`}
+              disabled={!channelsData || Object.keys(channelsData).length === 0}
+              onClick={handleExport}
+            />
+          </>
+        }
+      />
       <Box sx={{ borderColor: 'divider' }}>
         <Tabs
           value={tabIndex}
           onChange={handleTabChange}
           centered
         >
-          <Tab label="Incoming" />
           <Tab label="Outgoing" />
+          <Tab label="Incoming" />
         </Tabs>
       </Box>
-      {exportToCsvButton()}
-      {tabIndex === 1 && <OpenChannelModal />}
+
       <TableContainer component={Paper}>
         <Table
           sx={{ minWidth: 650 }}
@@ -212,9 +227,9 @@ function ChannelsPage() {
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
-          {tabIndex === 0 && (
+          {tabIndex === 1 && (
             <TableBody>
-              {Object.entries(channels.data?.incoming ?? []).map(([, channel], key) => (
+              {Object.entries(channels?.incoming ?? []).map(([, channel], key) => (
                 <TableRow key={key}>
                   <TableCell
                     component="th"
@@ -224,20 +239,21 @@ function ChannelsPage() {
                   </TableCell>
                   <TableCell>{getAliasByPeerId(channel.peerId)}</TableCell>
                   <TableCell>{channel.status}</TableCell>
-                  <TableCell>{ethers.utils.formatEther(channel.balance)} mHOPR</TableCell>
+                  <TableCell>{utils.formatEther(channel.balance)} mHOPR</TableCell>
                   <TableCell>
-                    <OpenChannelModal
+                    <OpenOrFundChannelModal
                       peerId={channel.peerId}
-                      title="Open Outgoing Channel.data"
+                      title="Open outgoing channel"
+                      type={'open'}
                     />
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           )}
-          {tabIndex === 1 && (
+          {tabIndex === 0 && (
             <TableBody>
-              {Object.entries(channels.data?.outgoing ?? []).map(([, channel], key) => (
+              {Object.entries(channels?.outgoing ?? []).map(([, channel], key) => (
                 <TableRow key={key}>
                   <TableCell
                     component="th"
@@ -247,24 +263,26 @@ function ChannelsPage() {
                   </TableCell>
                   <TableCell>{getAliasByPeerId(channel.peerId)}</TableCell>
                   <TableCell>{channel.status}</TableCell>
-                  <TableCell>{ethers.utils.formatEther(channel.balance)} mHOPR</TableCell>
+                  <TableCell>{utils.formatEther(channel.balance)} mHOPR</TableCell>
                   <TableCell>
-                    <button onClick={() => handleCloseChannels('outgoing', channel.peerId, channel.channelId)}>
-                      Close
-                    </button>
+                    <OpenOrFundChannelModal
+                      peerId={channel.peerId}
+                      title="Fund outgoing channel"
+                      modalBtnText="Fund outgoing channel"
+                      actionBtnText="Fund outgoing channel"
+                      type="fund"
+                      channelId={channel.channelId}
+                    />
+                    <IconButton
+                      iconComponent={<CloseChannelIcon />}
+                      tooltipText={`Close outgoing channel`}
+                      onClick={() => handleCloseChannels('outgoing', channel.peerId, channel.channelId)}
+                    />
                     {closingStates[channel.channelId]?.closing && <CircularProgress />}
                     {closingStates[channel.channelId]?.closeSuccess && <div>Close Success</div>}
                     {closingStates[channel.channelId]?.closeErrors.map((error, index) => (
                       <div key={index}>{error.error}</div>
                     ))}
-                    <hr />
-                    <OpenChannelModal
-                      peerId={channel.peerId}
-                      title="Fund Channel.data"
-                      modalBtnText="Fund"
-                      actionBtnText="Fund"
-                      channelId={channel.channelId}
-                    />
                   </TableCell>
                 </TableRow>
               ))}

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import type { Log } from '../../types';
 import AbbreviatedPeerId from '../AbbreviatedPeerId';
-import JazzIcon from '../../future-hopr-lib-components/JazzIcon';
+import JazzIcon from '../../future-hopr-lib-components/Icons/JazzIcon';
 import { Tooltip } from '@mui/material';
 
 const LogLineContainer = styled.div`

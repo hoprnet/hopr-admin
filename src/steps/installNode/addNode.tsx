@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import Section from '../../future-hopr-lib-components/Section';
 import Button from '../../future-hopr-lib-components/Button';
 import GrayButton from '../../future-hopr-lib-components/Button/gray';
-import Card from '../components/Card';
+import Card from '../../components/Card';
 import { useNavigate } from 'react-router-dom';
 
 const ButtonContainer = styled.div`

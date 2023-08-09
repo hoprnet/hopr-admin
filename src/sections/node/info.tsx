@@ -1,13 +1,12 @@
 import styled from '@emotion/styled';
-import { useAppDispatch, useAppSelector } from '../store';
-import { utils } from 'ethers';
+import { useAppDispatch, useAppSelector } from '../../store';
 
 // HOPR Components
-import Section from '../future-hopr-lib-components/Section';
+import Section from '../../future-hopr-lib-components/Section';
 import { useEffect } from 'react';
-import { actionsAsync } from '../store/slices/node/actionsAsync';
-import { TableExtended } from '../future-hopr-lib-components/Table/columed-data';
-import { SubpageTitle } from '../components/SubpageTitle';
+import { actionsAsync } from '../../store/slices/node/actionsAsync';
+import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
+import { SubpageTitle } from '../../components/SubpageTitle';
 
 function InfoPage() {
   const dispatch = useAppDispatch();
@@ -27,7 +26,7 @@ function InfoPage() {
 
   useEffect(() => {
     fetchInfoData();
-  }, []);
+  }, [apiEndpoint, apiToken]);
 
   const fetchInfoData = () => {
     if (apiEndpoint && apiToken) {
@@ -100,17 +99,16 @@ function InfoPage() {
     <Section
       className="Section--selectNode"
       id="Section--selectNode"
-      yellow
       fullHeightMin
     >
       <SubpageTitle
-        title="Info"
+        title="INFO"
         refreshFunction={fetchInfoData}
         reloading={balancesFetching}
       />
       <TableExtended
         title="Software"
-        style={{ marginBottom: '32px' }}
+        style={{ marginBottom: '42px' }}
       >
         <tbody>
           <tr>
@@ -126,7 +124,7 @@ function InfoPage() {
 
       <TableExtended
         title="Network"
-        style={{ marginBottom: '32px' }}
+        style={{ marginBottom: '42px' }}
       >
         <tbody>
           <tr>
@@ -154,23 +152,23 @@ function InfoPage() {
 
       <TableExtended
         title="Balances"
-        style={{ marginBottom: '32px' }}
+        style={{ marginBottom: '42px' }}
       >
         <tbody>
           <tr>
             <th>Native</th>
-            <td>{balances.native && utils.formatEther(balances.native)} xDai</td>
+            <td>{balances.native?.formatted} xDai</td>
           </tr>
           <tr>
             <th>Hopr</th>
-            <td>{balances.hopr && utils.formatEther(balances.hopr)} wxHOPR</td>
+            <td>{balances.hopr?.formatted} wxHOPR</td>
           </tr>
         </tbody>
       </TableExtended>
 
       <TableExtended
         title="Addresses"
-        style={{ marginBottom: '32px' }}
+        style={{ marginBottom: '42px' }}
       >
         <tbody>
           <tr>
@@ -194,7 +192,7 @@ function InfoPage() {
 
       <TableExtended
         title="Channels"
-        style={{ marginBottom: '32px' }}
+        style={{ marginBottom: '42px' }}
       >
         <tbody>
           <tr>
@@ -210,7 +208,7 @@ function InfoPage() {
 
       <TableExtended
         title="Peers on the network"
-        style={{ marginBottom: '32px' }}
+        style={{ marginBottom: '42px' }}
       >
         <tbody>
           <tr>
@@ -225,7 +223,7 @@ function InfoPage() {
       </TableExtended>
       <TableExtended
         title="Tickets"
-        style={{ marginBottom: '32px' }}
+        style={{ marginBottom: '42px' }}
       >
         <tbody>
           <tr>
@@ -272,7 +270,7 @@ function InfoPage() {
       </TableExtended>
       <TableExtended
         title="Aliases"
-        style={{ marginBottom: '32px' }}
+        style={{ marginBottom: '42px' }}
       >
         <tbody>
           <tr>

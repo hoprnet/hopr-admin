@@ -5,15 +5,14 @@ import { useAppDispatch, useAppSelector } from '../store';
 import { safeActionsAsync } from '../store/slices/safe';
 
 // HOPR Components
+import { utils } from 'ethers';
+import { Address, formatEther } from 'viem';
+import { erc20ABI, useContractRead } from 'wagmi';
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, mHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../config';
 import Section from '../future-hopr-lib-components/Section';
 import { useEthersSigner } from '../hooks';
-import { utils } from 'ethers';
 import { observePendingSafeTransactions } from '../hooks/useWatcher/safeTransactions';
 import { appActions } from '../store/slices/app';
-import { Address, encodeFunctionData, formatEther } from 'viem';
-import { erc20ABI, useContractRead } from 'wagmi';
-import { SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, mHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../config';
 import { createApproveTransactionData } from '../utils/blockchain';
 
 // Maximum possible value for uint256
@@ -188,7 +187,7 @@ function SafeSection() {
                 onClick={() => {
                   if (signer) {
                     dispatch(
-                      safeActionsAsync.executeTransactionThunk({
+                      safeActionsAsync.executePendingTransactionThunk({
                         signer,
                         safeAddress: transaction.safe,
                         safeTransaction: transaction,

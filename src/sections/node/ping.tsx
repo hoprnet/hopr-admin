@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { nodeActionsAsync } from '../store/slices/node';
-import { useAppDispatch, useAppSelector } from '../store';
+import { nodeActionsAsync } from '../../store/slices/node';
+import { useAppDispatch, useAppSelector } from '../../store';
 
-import AbbreviatedPeerId from '../components/AbbreviatedPeerId';
-import Section from '../future-hopr-lib-components/Section';
+import AbbreviatedPeerId from '../../components/AbbreviatedPeerId';
+import Section from '../../future-hopr-lib-components/Section';
 import TextField from '@mui/material/TextField';
 
 function PingPage() {
@@ -73,11 +73,8 @@ function PingPage() {
   };
 
   return (
-    <Section
-      yellow
-      fullHeightMin
-    >
-      <h2>Ping</h2>
+    <Section fullHeightMin>
+      <h2>PING</h2>
       <TextField
         type="text"
         label="Peer ID"

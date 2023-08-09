@@ -1,12 +1,10 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import { useAppDispatch, useAppSelector } from '../../store';
-import Drawer from '@mui/material/Drawer';
+import { useAppSelector } from '../../store';
 import styled from '@emotion/styled';
+
+// Mui
+import Drawer from '@mui/material/Drawer';
+import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import { ethers } from 'ethers';
-import { useBalance } from 'wagmi';
-import { utils } from 'ethers';
 
 const drawerWidth = 232;
 
@@ -32,7 +30,8 @@ const SDrawer = styled(Drawer)`
   }
   &.node {
     .MuiDrawer-paper {
-      background: #ffffa0;
+      background: white;
+      border: 0;
     }
   }
   &.web3 {
@@ -61,6 +60,8 @@ const Web3Container = styled.div`
   padding: 1rem;
   font-size: 10px;
   margin-right: 8px;
+  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 3px 0px rgba(0, 0, 0, 0.12);
 `;
 
 const FlexColumn = styled.div`
@@ -112,7 +113,17 @@ const SafeContainer = styled.div<{ show: boolean }>`
 
 const Safe = styled(Balance)``;
 
-const Wallet = styled(Balance)``;
+const DataContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Wallet = styled(Balance)`
+  flex-grow: 1;
+  p.double {
+    line-height: 2;
+  }
+`;
 
 export default function InfoBar(props: Props) {
   const channels = useAppSelector((selector) => selector.node.channels.data);
@@ -123,41 +134,11 @@ export default function InfoBar(props: Props) {
   const account = useAppSelector((selector) => selector.web3.account) as `0x${string}`;
   const web3Connected = useAppSelector((selector) => selector.web3.status.connected);
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
-  const wxhoprSmartContractAddress = '0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1';
-  const xhoprSmartContractAddress = '0xD057604A14982FE8D88c5fC25Aac3267eA142a08';
+  const walletBalance = useAppSelector((store) => store.web3.balance);
+  const safeBalance = useAppSelector((store) => store.safe.balance.data);
 
-  const { data: xDAI_balance } = useBalance({
-    address: account,
-    watch: true,
-  });
-  const { data: wxHOPR_balance } = useBalance({
-    address: account,
-    token: wxhoprSmartContractAddress,
-    watch: true,
-  });
-  const { data: xHOPR_balance } = useBalance({
-    address: account,
-    token: xhoprSmartContractAddress,
-    watch: true,
-  });
-
-  const safeXdaiBalance = useBalance({
-    address: selectedSafeAddress as `0x${string}`,
-    watch: true,
-  }).data?.formatted;
-  const safeWxHoprBalance = useBalance({
-    address: selectedSafeAddress as `0x${string}`,
-    token: wxhoprSmartContractAddress,
-    watch: true,
-  }).data?.formatted;
-  const safexHoprBalance = useBalance({
-    address: selectedSafeAddress as `0x${string}`,
-    token: xhoprSmartContractAddress,
-    watch: true,
-  }).data?.formatted;
-
-  const truncateBalance3Decimals = (value: string | undefined) => {
-    if (typeof value !== 'undefined' && value.includes('.')) {
+  const truncateBalance3Decimals = (value: string | undefined | null) => {
+    if (value && value.includes('.')) {
       const [before, after] = value.split('.');
       return `${before}.${after.substring(0, 2)}`;
     }
@@ -202,45 +183,78 @@ export default function InfoBar(props: Props) {
             <>
               <InfoTitle>Safe</InfoTitle>
               <Safe>
-                <p>{truncateBalance3Decimals(safeWxHoprBalance) ?? 0}</p>
-                <p>{truncateBalance3Decimals(safexHoprBalance) ?? 0}</p>
-                <p>{truncateBalance3Decimals(safeXdaiBalance) ?? 0}</p>
+                <p>{truncateBalance3Decimals(safeBalance.wxHopr.formatted) ?? '-'}</p>
+                <p>{truncateBalance3Decimals(safeBalance.xHopr.formatted) ?? '-'}</p>
+                <p>{truncateBalance3Decimals(safeBalance.xDai.formatted) ?? '-'}</p>
               </Safe>
             </>
           )}
         </SafeContainer>
-        <div>
+        <DataContainer>
           <InfoTitle>Wallet</InfoTitle>
           <Wallet>
-            <p>{truncateBalance3Decimals(wxHOPR_balance?.formatted) ?? 0}</p>
-            <p>{truncateBalance3Decimals(xHOPR_balance?.formatted) ?? 0}</p>
-            <p>{truncateBalance3Decimals(xDAI_balance?.formatted) ?? 0}</p>
+            <p>{truncateBalance3Decimals(walletBalance.wxHopr.formatted) ?? '-'}</p>
+            <p>{truncateBalance3Decimals(walletBalance.xHopr.formatted) ?? '-'}</p>
+            <p>{truncateBalance3Decimals(walletBalance.xDai.formatted) ?? '-'}</p>
           </Wallet>
-        </div>
+        </DataContainer>
       </Web3Container>
     </>
   );
 
   const nodeDrawer = (
-    <div>
-      <Title>Status</Title>
-      <Data>{info?.connectivityStatus}</Data>
-
-      <Title>xDai balance</Title>
-      <Data>{balances.native && utils.formatEther(balances.native)}</Data>
-
-      <Title>mHOPR balance</Title>
-      <Data>{balances.hopr && utils.formatEther(balances.hopr)}</Data>
-
-      <Title>Peers seen in the network</Title>
-      <Data>{peers?.announced?.length || '-'}</Data>
-
-      <Title>Outgoing Chanels</Title>
-      <Data>{channels?.outgoing?.length || '-'}</Data>
-
-      <Title>Incoming Chanels</Title>
-      <Data>{channels?.incoming?.length || '-'}</Data>
-    </div>
+    <>
+      <br />
+      <Web3Container>
+        <Icons>
+          <IconAndText>
+            <IconContainer></IconContainer>
+            <Text>Status</Text>
+          </IconAndText>
+          <IconAndText>
+            <IconContainer>
+              <Icon
+                src="/assets/xHoprIcon.svg"
+                alt="xHOPR Icon"
+              />
+            </IconContainer>
+            <Text>xHOPR</Text>
+          </IconAndText>
+          <IconAndText>
+            <IconContainer>
+              <Icon
+                src="/assets/xDaiIcon.svg"
+                alt="xDai Icon"
+              />
+            </IconContainer>
+            <Text>xDAI</Text>
+          </IconAndText>
+          <IconAndText>
+            <IconContainer></IconContainer>
+            <Text>Peers</Text>
+          </IconAndText>
+          <IconAndText>
+            <IconContainer></IconContainer>
+            <Text>Outgoing Chanels</Text>
+          </IconAndText>
+          <IconAndText>
+            <IconContainer></IconContainer>
+            <Text>Incoming Chanels</Text>
+          </IconAndText>
+        </Icons>
+        <DataContainer>
+          <InfoTitle>Node</InfoTitle>
+          <Wallet>
+            <p>{info?.connectivityStatus}</p>
+            <p>{balances.native?.formatted ?? '-'}</p>
+            <p>{balances.hopr?.formatted ?? '-'}</p>
+            <p>{peers?.announced?.length || '-'}</p>
+            <p className="double">{channels?.outgoing?.length || '-'}</p>
+            <p className="double">{channels?.incoming?.length || '-'}</p>
+          </Wallet>
+        </DataContainer>
+      </Web3Container>
+    </>
   );
 
   return (

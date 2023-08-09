@@ -14,6 +14,18 @@ const safeSlice = createSlice({
       state.info.data = null;
       state.delegates.data = null;
     },
+    setSafeBalance_xDai(state, action) {
+      state.balance.data.xDai.value = action.payload ? action.payload.value : null;
+      state.balance.data.xDai.formatted = action.payload ? action.payload.formatted : null;
+    },
+    setSafeBalance_xHopr(state, action) {
+      state.balance.data.xHopr.value = action.payload ? action.payload.value : null;
+      state.balance.data.xHopr.formatted = action.payload ? action.payload.formatted : null;
+    },
+    setSafeBalance_wxHopr(state, action) {
+      state.balance.data.wxHopr.value = action.payload ? action.payload.value : null;
+      state.balance.data.wxHopr.formatted = action.payload ? action.payload.formatted : null;
+    },
     setInfoFetching(state, action: PayloadAction<boolean>) {
       state.info.isFetching = action.payload;
     },

@@ -40,7 +40,16 @@ type InitialState = {
   };
   aliases: { data: GetAliasesResponseType | null; isFetching: boolean };
   balances: {
-    data: { hopr: string | null; native: string | null };
+    data: {
+      hopr: {
+        value: string | null;
+        formatted: string | null;
+      };
+      native: {
+        value: string | null;
+        formatted: string | null;
+      };
+    };
     isFetching: boolean;
   };
   channels: {
@@ -112,8 +121,14 @@ export const initialState: InitialState = {
   },
   balances: {
     data: {
-      native: null,
-      hopr: null,
+      hopr: {
+        value: null,
+        formatted: null,
+      },
+      native: {
+        value: null,
+        formatted: null,
+      },
     },
     isFetching: false,
   },

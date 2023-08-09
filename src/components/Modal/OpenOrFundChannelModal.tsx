@@ -1,27 +1,36 @@
-import { useEffect, useState } from 'react';
-import styled from '@emotion/styled';
-import { DialogTitle, TextField, DialogActions, InputAdornment } from '@mui/material';
+import { DialogActions, DialogTitle, InputAdornment, TextField } from '@mui/material';
+import { ethers } from 'ethers';
+import { useState } from 'react';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
-import { ethers } from 'ethers';
-import CloseIcon from '@mui/icons-material/Close';
 
-type OpenChannelModalProps = {
+// HOPR Components
+import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+import AddChannelIcon from '../../future-hopr-lib-components/Icons/AddChannel';
+import FundChannelIcon from '../../future-hopr-lib-components/Icons/FundChannel';
+
+// Mui
+import CloseIcon from '@mui/icons-material/Close';
+import HubIcon from '@mui/icons-material/Hub';
+
+type OpenOrFundChannelModalProps = {
   peerId?: string;
   channelId?: string;
   modalBtnText?: string;
   actionBtnText?: string;
   title?: string;
+  type?: 'open' | 'fund';
 };
 
-export const OpenChannelModal = ({
+export const OpenOrFundChannelModal = ({
   channelId,
   title,
   modalBtnText,
   actionBtnText,
+  type,
   ...props
-}: OpenChannelModalProps) => {
+}: OpenOrFundChannelModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const [openChannelModal, set_openChannelModal] = useState(false);
@@ -88,9 +97,24 @@ export const OpenChannelModal = ({
     );
   };
 
+  const icon = () => {
+    switch (type) {
+    case 'open':
+      return <AddChannelIcon />;
+    case 'fund':
+      return <FundChannelIcon />;
+    default:
+      return <HubIcon />;
+    }
+  };
+
   return (
     <>
-      <button onClick={handleOpenChannelDialog}>{modalBtnText ? modalBtnText : 'Open Channel'}</button>
+      <IconButton
+        iconComponent={icon()}
+        tooltipText={modalBtnText ? modalBtnText : 'Open outgoing channel'}
+        onClick={handleOpenChannelDialog}
+      />
       <SDialog
         open={openChannelModal}
         onClose={handleCloseModal}

@@ -22,15 +22,21 @@ const Content = styled.div`
     display: flex;
     align-items: center;
     gap: 16px;
+    .actions {
+      display: flex;
+    }
   }
   .left {
+  }
+  h2 {
+    color: #414141;
+  }
+  .MuiSvgIcon-root {
+    color: #000050;
   }
 `;
 
 const SIconButton = styled(IconButton)`
-  svg {
-    color: #04049f;
-  }
   &.Mui-disabled {
     svg {
       background-color: transparent;

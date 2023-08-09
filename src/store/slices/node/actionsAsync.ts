@@ -44,6 +44,7 @@ import {
 } from '@hoprnet/hopr-sdk';
 import { parseMetrics } from '../../../utils/metrics';
 import { RootState } from '../..';
+import { formatEther } from 'viem';
 
 const { APIError } = utils;
 const {
@@ -1080,13 +1081,17 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   // getBalances
   builder.addCase(getBalancesThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.balances = {
-        data: {
-          native: action.payload.native,
-          hopr: action.payload.hopr,
+      state.balances.data = {
+        native: {
+          value: action.payload.native,
+          formatted: formatEther(BigInt(action.payload.native)),
         },
-        isFetching: false,
+        hopr: {
+          value: action.payload.hopr,
+          formatted: formatEther(BigInt(action.payload.hopr)),
+        },
       };
+      state.balances.isFetching = false;
     }
   });
   builder.addCase(getBalancesThunk.rejected, (state, action) => {

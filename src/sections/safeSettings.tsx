@@ -1,6 +1,6 @@
 import { Container, FlexContainer, Text } from '../steps/safeOnboarding/styled';
 import { MenuItem, Select, TextField } from '@mui/material';
-import { safeActionsAsync, safeActions } from '../store/slices/safe';
+import { safeActionsAsync } from '../store/slices/safe';
 import { useAppDispatch, useAppSelector } from '../store';
 import { useEthersSigner } from '../hooks';
 import { useState, useEffect } from 'react';
@@ -41,7 +41,6 @@ function SafeSettings() {
 
   const fetchInitialStateForSigner = async () => {
     if (signer && safeAddress) {
-      dispatch(safeActions.resetState());
       dispatch(
         safeActionsAsync.getSafeInfoThunk({
           signer,
@@ -153,8 +152,8 @@ function SafeSettings() {
       </Container>
       <h2>Remove Owner</h2>
       <Container column>
-        {safe?.owners.map((address, idx) => (
-          <RemoveOwnerDiv>
+        {safe?.owners.map((address, id) => (
+          <RemoveOwnerDiv key={`remove-ownner_${id}`}>
             <p>{address}</p>
             <Button onClick={() => removeOwner(address)}>Remove</Button>
           </RemoveOwnerDiv>

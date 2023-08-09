@@ -25,6 +25,8 @@
     "apexcharts": "^3.41.0",
     "dayjs": "^1.11.9",
     "ethers": "5.7.2",
+    "graphql": "^16.7.1",
+    "graphql-request": "^6.1.0",
     "md5": "^2.3.0",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",
