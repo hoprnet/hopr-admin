@@ -1,62 +1,52 @@
-import { JSXElementConstructor, ReactElement, ReactFragment, ReactPortal } from 'react';
 import Updater from './updater';
 
 // wagmi
 import { gnosis } from '@wagmi/core/chains';
-import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc';
+import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
-import { ethers } from 'ethers';
-import { Chain, WagmiConfig, configureChains, createConfig } from 'wagmi';
 
 //wagmi connectors
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import { createWalletClient, custom, publicActions } from 'viem';
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 
-type WindowWithWallet = { ethereum: ethers.providers.ExternalProvider };
+// No way to tell what the ethereum request can be so has to be any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type EthereumProvider = { request(...args: any): Promise<any> }
+type WindowWithEthereum = { ethereum: EthereumProvider};
 
-const walletProvider = (chain: Chain) => {
-  if (typeof window !== 'undefined' && typeof (window as unknown as WindowWithWallet).ethereum !== 'undefined') {
-    const provider = new ethers.providers.Web3Provider((window as unknown as WindowWithWallet).ethereum, {
-      chainId: chain.id,
-      name: chain.network,
-      ensAddress: chain.contracts?.ensRegistry?.address,
-    }); 
 
-    return provider
-  }
-
-  // no web3 found in window
-  return null;
-};
-
-const client = createWalletClient({
-  chain: gnosis,
-  transport: custom((window as unknown as WindowWithWallet).ethereum as any),
-}).extend(publicActions)
 
 const {
   chains,
+  publicClient,
   webSocketPublicClient,
-} = configureChains(
-  [gnosis],
-  [publicProvider()],
-  {
-    pollingInterval: 30_000,
-    stallTimeout: 5_000,
-    rank: true,
-  },
-);
+} = configureChains([gnosis], [publicProvider()], {
+  pollingInterval: 30_000,
+  stallTimeout: 5_000,
+  rank: true,
+});
+
+// create a special client that sends rpc calls through wallet
+const walletClient = createWalletClient({
+  chain: gnosis,
+  transport: custom((window as unknown as WindowWithEthereum).ethereum),
+}).extend(publicActions);
 
 const config = createConfig({
   autoConnect: true,
   connectors: [new MetaMaskConnector({ chains })],
-  publicClient: client,
+  publicClient: (chain) => {
+    if (typeof window !== 'undefined' && typeof (window as unknown as WindowWithEthereum).ethereum !== 'undefined') {  
+      return walletClient;
+    }
+
+    // no ethereum found in window
+    return publicClient(chain);
+  },
   webSocketPublicClient,
 });
 
-export default function WagmiProvider(props: {
-  children: ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | null | undefined;
-}) {
+export default function WagmiProvider(props: React.PropsWithChildren) {
   return (
     <WagmiConfig config={config}>
       {props.children}
