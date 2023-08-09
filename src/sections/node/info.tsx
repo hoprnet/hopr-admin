@@ -17,12 +17,19 @@ function InfoPage() {
   const balances = useAppSelector((selector) => selector.node.balances.data);
   const balancesFetching = useAppSelector((selector) => selector.node.balances.isFetching);
   const addresses = useAppSelector((selector) => selector.node.addresses.data);
+  const addressesFetching = useAppSelector((selector) => selector.node.addresses.isFetching);
   const channels = useAppSelector((selector) => selector.node.channels.data);
+  const channelsFetching = useAppSelector((selector) => selector.node.channels.isFetching);
   const version = useAppSelector((selector) => selector.node.version.data);
+  const versionFetching = useAppSelector((selector) => selector.node.version.isFetching);
   const info = useAppSelector((selector) => selector.node.info.data);
+  const infoFetching = useAppSelector((selector) => selector.node.info.isFetching);
   const peers = useAppSelector((selector) => selector.node.peers.data);
+  const peersFetching = useAppSelector((selector) => selector.node.peers.isFetching);
   const aliases = useAppSelector((selector) => selector.node.aliases.data);
+  const aliasesFetching = useAppSelector((selector) => selector.node.aliases.isFetching);
   const statistics = useAppSelector((selector) => selector.node.statistics.data);
+  const statisticsFetching = useAppSelector((selector) => selector.node.statistics.isFetching);
 
   useEffect(() => {
     fetchInfoData();
@@ -81,6 +88,18 @@ function InfoPage() {
     }
   };
 
+  // This will allow us to improve readability on the reloading prop for SubpageTitle
+  const isFetchingAnyData = [
+    balancesFetching,
+    addressesFetching,
+    channelsFetching,
+    versionFetching,
+    infoFetching,
+    peersFetching,
+    aliasesFetching,
+    statisticsFetching,
+  ].includes(true);
+
   // check if user is logged in
   if (!apiEndpoint || !apiToken) {
     return (
@@ -104,7 +123,7 @@ function InfoPage() {
       <SubpageTitle
         title="INFO"
         refreshFunction={fetchInfoData}
-        reloading={balancesFetching}
+        reloading={isFetchingAnyData}
       />
       <TableExtended
         title="Software"

@@ -24,6 +24,7 @@ function SettingsPage() {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const settings = useAppSelector((selector) => selector.node.settings.data);
+  const settingsFetching = useAppSelector((selector) => selector.node.settings.isFetching);
   const [localSettings, set_localSettings] = useState<{
     includeRecipient?: boolean;
     strategy?: string;
@@ -128,6 +129,7 @@ function SettingsPage() {
       <SubpageTitle
         title="CONFIGURATION"
         refreshFunction={handleRefresh}
+        reloading={settingsFetching}
       />
       <TableExtended
         title="Node"

@@ -25,6 +25,7 @@ const TableTitle = styled.p`
 
 function MetricsPage() {
   const metrics = useAppSelector((selector) => selector.node.metrics.data);
+  const metricsFetching = useAppSelector((selector) => selector.node.metrics.isFetching);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const {
     apiEndpoint,
@@ -67,6 +68,7 @@ function MetricsPage() {
       <SubpageTitle
         title="METRICS"
         refreshFunction={handleRefresh}
+        reloading={metricsFetching}
         actions={
           <>
             <IconButton

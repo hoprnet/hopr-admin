@@ -14,7 +14,9 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 function TicketsPage() {
   const dispatch = useAppDispatch();
   const tickets = useAppSelector((selector) => selector.node.tickets.data);
+  const ticketsFetching = useAppSelector((selector) => selector.node.tickets.isFetching);
   const statistics = useAppSelector((selector) => selector.node.statistics.data);
+  const statisticsFetching = useAppSelector((selector) => selector.node.statistics.isFetching);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const [redeemErrors, set_redeemErrors] = useState<{ status: string | undefined; error: string | undefined }[]>([]);
   const [redeeming, set_redeeming] = useState(false);
@@ -72,6 +74,7 @@ function TicketsPage() {
       <SubpageTitle
         title="TICKETS"
         refreshFunction={handleRefresh}
+        reloading={ticketsFetching || statisticsFetching}
         actions={
           <>
             <IconButton

@@ -30,6 +30,7 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 function AliasesPage() {
   const dispatch = useAppDispatch();
   const aliases = useAppSelector((selector) => selector.node.aliases.data);
+  const aliasesFetching = useAppSelector((selector) => selector.node.aliases.isFetching);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const [importSuccess, set_importSuccess] = useState(false);
   const [deleteSuccess, set_deleteSuccess] = useState(false);
@@ -115,6 +116,7 @@ function AliasesPage() {
       <SubpageTitle
         title={`ALIASES`}
         refreshFunction={handleRefresh}
+        reloading={aliasesFetching}
         actions={
           <>
             <CreateAliasModal handleRefresh={handleRefresh} />

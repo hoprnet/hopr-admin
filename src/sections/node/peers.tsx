@@ -41,7 +41,9 @@ function PeersPage() {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const peers = useAppSelector((selector) => selector.node.peers.data);
+  const peersFetching = useAppSelector((selector) => selector.node.peers.isFetching);
   const aliases = useAppSelector((selector) => selector.node.aliases.data);
+  const aliasesFetching = useAppSelector((selector) => selector.node.aliases.isFetching);
 
   useEffect(() => {
     handleRefresh();
@@ -104,6 +106,7 @@ function PeersPage() {
       <SubpageTitle
         title={`PEERS (${peers?.announced?.length || '-'})`}
         refreshFunction={handleRefresh}
+        reloading={peersFetching || aliasesFetching}
         actions={
           <>
             <IconButton

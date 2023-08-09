@@ -31,6 +31,7 @@ import GetAppIcon from '@mui/icons-material/GetApp';
 function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((selector) => selector.node.channels.data);
+  const channelsFetching = useAppSelector((selector) => selector.node.channels.isFetching);
   const aliases = useAppSelector((selector) => selector.node.aliases.data);
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const [tabIndex, set_tabIndex] = useState(0);
@@ -184,6 +185,7 @@ function ChannelsPage() {
       <SubpageTitle
         title={`CHANNELS`}
         refreshFunction={handleRefresh}
+        reloading={channelsFetching}
         actions={
           <>
             <OpenOrFundChannelModal type={'open'} />
