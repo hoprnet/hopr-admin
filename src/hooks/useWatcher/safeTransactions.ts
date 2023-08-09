@@ -1,6 +1,6 @@
 import { SafeMultisigTransactionListResponse } from '@safe-global/api-kit';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
-import ethers from 'ethers';
+import { ethers } from 'ethers';
 import { safeActionsAsync } from '../../store/slices/safe';
 import { useAppDispatch } from '../../store';
 import { sendNotification } from './notifications';
