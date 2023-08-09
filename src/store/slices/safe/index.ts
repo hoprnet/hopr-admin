@@ -62,8 +62,11 @@ const safeSlice = createSlice({
     setRemoveDelegateFetching(state, action: PayloadAction<boolean>) {
       state.removeDelegate.isFetching = action.payload;
     },
-    setSafeTransaction(state, action: PayloadAction<boolean>) {
-      state.createTransaction.isFetching = action.payload;
+    setTokenListFetching(state, action: PayloadAction<boolean>) {
+      state.tokenList.isFetching = action.payload;
+    },
+    setTokenFetching(state, action: PayloadAction<boolean>) {
+      state.token.isFetching = action.payload;
     },
   },
   extraReducers: (builder) => createExtraReducers(builder),

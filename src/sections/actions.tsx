@@ -343,7 +343,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
       }),
     ).unwrap();
 
-    if (!token.name && !token.symbol) {
+    if (!token || (!token.name && !token.symbol)) {
       // this is not a token contract
       return JSON.stringify(transaction.dataDecoded);
     }
@@ -367,7 +367,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
       }),
     ).unwrap();
 
-    if (!token.name && !token.symbol) {
+    if (!token || (!token.name && !token.symbol)) {
       // this is not a token contract
       return JSON.stringify(transaction.dataDecoded);
     }

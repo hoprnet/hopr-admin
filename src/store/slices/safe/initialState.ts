@@ -62,7 +62,8 @@ type InitialState = {
   executeTransaction: { isFetching: boolean };
   addDelegate: { isFetching: boolean };
   removeDelegate: { isFetching: boolean };
-  tokenList: TokenInfoListResponse | null;
+  tokenList: { data: TokenInfoListResponse | null; isFetching: boolean };
+  token: { isFetching: boolean };
   balance: {
     data: {
       xDai: {
@@ -113,7 +114,11 @@ export const initialState: InitialState = {
   executeTransaction: { isFetching: false },
   addDelegate: { isFetching: false },
   removeDelegate: { isFetching: false },
-  tokenList: null,
+  tokenList: {
+    data: null,
+    isFetching: false,
+  },
+  token: { isFetching: false },
   balance: {
     data: {
       xDai: {

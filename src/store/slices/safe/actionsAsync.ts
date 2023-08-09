@@ -12,7 +12,9 @@ import SafeApiKit, {
   SafeInfoResponse,
   SafeMultisigTransactionListResponse,
   SignatureResponse,
-  AllTransactionsListResponse
+  AllTransactionsListResponse,
+  TokenInfoListResponse,
+  TokenInfoResponse
 } from '@safe-global/api-kit';
 import Safe, { EthersAdapter, SafeAccountConfig, SafeFactory } from '@safe-global/protocol-kit';
 import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionData, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
@@ -1006,9 +1008,20 @@ const getSafeDelegatesThunk = createAsyncThunk<
   } },
 );
 
-const getToken = createAsyncThunk(
+const getToken = createAsyncThunk<
+  TokenInfoResponse | undefined,
+  {
+    tokenAddress: string;
+    signer: ethers.providers.JsonRpcSigner;
+  },
+  { state: RootState }
+>(
   'safe/getToken',
-  async (payload: { tokenAddress: string; signer: ethers.providers.JsonRpcSigner }, { rejectWithValue }) => {
+  async (payload: { tokenAddress: string; signer: ethers.providers.JsonRpcSigner }, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setTokenFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const token = await safeApi.getToken(payload.tokenAddress);
@@ -1017,11 +1030,29 @@ const getToken = createAsyncThunk(
       return rejectWithValue(e);
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().safe.token.isFetching;
+    console.log('token isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getToken request');
+      return false;
+    }
+  } },
 );
 
-const getTokenList = createAsyncThunk(
+const getTokenList = createAsyncThunk<
+  TokenInfoListResponse | undefined,
+  {
+    signer: ethers.providers.JsonRpcSigner;
+  },
+  { state: RootState }
+>(
   'safe/getTokenList',
-  async (payload: { signer: ethers.providers.JsonRpcSigner }, { rejectWithValue }) => {
+  async (payload: { signer: ethers.providers.JsonRpcSigner }, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setTokenListFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const tokenList = await safeApi.getTokenList();
@@ -1030,6 +1061,14 @@ const getTokenList = createAsyncThunk(
       return rejectWithValue(e);
     }
   },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().safe.tokenList.isFetching;
+    console.log('tokenList isFetching:', isFetching);
+    if (isFetching) {
+      console.log('Cancelling getTokenList request');
+      return false;
+    }
+  } },
 );
 
 // Helper actions to update the isFetching state
@@ -1045,6 +1084,8 @@ const setRejectTransactionFetching = createAction<boolean>('node/setRejectTransa
 const setExecuteTransactionFetching = createAction<boolean>('node/setExecuteTransactionFetching');
 const setAddDelegateFetching = createAction<boolean>('node/setAddDelegateFetching');
 const setRemoveDelegateFetching = createAction<boolean>('node/setRemoveDelegateFetching');
+const setTokenListFetching = createAction<boolean>('node/setTokenListFetching');
+const setTokenFetching = createAction<boolean>('node/setTokenFetching');
 
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   // CreateSafe
@@ -1206,10 +1247,22 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getSafeDelegatesThunk.rejected, (state, action) => {
     state.delegates.isFetching = false;
   });
+  // GetTokenList
   builder.addCase(getTokenList.fulfilled, (state, action) => {
     if (action.payload) {
-      state.tokenList = action.payload;
+      state.tokenList.data = action.payload;
     }
+    state.tokenList.isFetching = false;
+  });
+  builder.addCase(getTokenList.rejected, (state) => {
+    state.tokenList.isFetching = false;
+  });
+  // GetToken
+  builder.addCase(getToken.fulfilled, (state) => {
+    state.token.isFetching = false;
+  });
+  builder.addCase(getToken.rejected, (state) => {
+    state.token.isFetching = false;
   });
 };
 
