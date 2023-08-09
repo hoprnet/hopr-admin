@@ -23,7 +23,7 @@ const safeSlice = createSlice({
     setSafeByOwnerFetching(state, action: PayloadAction<boolean>) {
       state.safesByOwner.isFetching = action.payload;
     },
-    setSafeTransactionsFetching(state, action: PayloadAction<boolean>) {
+    setSafeAllTransactionsFetching(state, action: PayloadAction<boolean>) {
       state.allTransactions.isFetching = action.payload;
     },
     setSafePendingTransactionsFetching(state, action: PayloadAction<boolean>) {
@@ -31,6 +31,27 @@ const safeSlice = createSlice({
     },
     setSafeDelegatesFetching(state, action: PayloadAction<boolean>) {
       state.delegates.isFetching = action.payload;
+    },
+    setCreateTransactionFetching(state, action: PayloadAction<boolean>) {
+      state.createTransaction.isFetching = action.payload;
+    },
+    setConfirmTransactionFetching(state, action: PayloadAction<boolean>) {
+      state.confirmTransaction.isFetching = action.payload;
+    },
+    setRejectTransactionFetching(state, action: PayloadAction<boolean>) {
+      state.rejectTransaction.isFetching = action.payload;
+    },
+    setExecuteTransactionFetching(state, action: PayloadAction<boolean>) {
+      state.rejectTransaction.isFetching = action.payload;
+    },
+    setAddDelegateFetching(state, action: PayloadAction<boolean>) {
+      state.addDelegate.isFetching = action.payload;
+    },
+    setRemoveDelegateFetching(state, action: PayloadAction<boolean>) {
+      state.removeDelegate.isFetching = action.payload;
+    },
+    setSafeTransaction(state, action: PayloadAction<boolean>) {
+      state.createTransaction.isFetching = action.payload;
     },
   },
   extraReducers: (builder) => createExtraReducers(builder),

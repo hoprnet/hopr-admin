@@ -7,6 +7,12 @@ type InitialState = {
   pendingTransactions: { data: SafeMultisigTransactionListResponse | null; isFetching: boolean };
   info: { data: SafeInfoResponse | null; isFetching: boolean };
   delegates: { data: SafeDelegateListResponse | null; isFetching: boolean };
+  createTransaction: { isFetching: boolean };
+  confirmTransaction: { isFetching: boolean };
+  rejectTransaction: { isFetching: boolean };
+  executeTransaction: { isFetching: boolean };
+  addDelegate: { isFetching: boolean };
+  removeDelegate: { isFetching: boolean };
 };
 
 export const initialState: InitialState = {
@@ -34,4 +40,10 @@ export const initialState: InitialState = {
     data: null,
     isFetching: false,
   },
+  createTransaction: { isFetching: false },
+  confirmTransaction: { isFetching: false },
+  rejectTransaction: { isFetching: false },
+  executeTransaction: { isFetching: false },
+  addDelegate: { isFetching: false },
+  removeDelegate: { isFetching: false },
 };
