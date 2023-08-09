@@ -33,11 +33,8 @@ type InitialState = {
     isFetching: boolean;
   };
   status: {
-    data: {
-      initiating: boolean;
-      initiated: boolean;
-    };
-    isFetching: boolean;
+    initiating: boolean;
+    initiated: boolean;
   };
   addresses: {
     data: { hopr: string | null; native: string | null };
@@ -101,11 +98,8 @@ export const initialState: InitialState = {
     isFetching: false,
   },
   status: {
-    data: {
-      initiating: false,
-      initiated: false,
-    },
-    isFetching: false,
+    initiating: false,
+    initiated: false,
   },
   addresses: {
     data: {

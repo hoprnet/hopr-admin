@@ -9,12 +9,12 @@ const nodeSlice = createSlice({
     resetState: () => initialState,
     setInitiating(state) {
       console.log('SDK initiating');
-      state.status.data.initiating = true;
+      state.status.initiating = true;
     },
     setInitiated(state) {
       console.log('SDK setInitiated');
-      state.status.data.initiating = false;
-      state.status.data.initiated = true;
+      state.status.initiating = false;
+      state.status.initiated = true;
     },
     setInfo(state, action) {
       state.info = action.payload;
@@ -65,8 +65,8 @@ const nodeSlice = createSlice({
     setInfoFetching(state, action: PayloadAction<boolean>) {
       state.info.isFetching = action.payload;
     },
-    setStatusFetching(state, action: PayloadAction<boolean>) {
-      state.status.isFetching = action.payload;
+    setMetricsFetching(state, action: PayloadAction<boolean>) {
+      state.metrics.isFetching = action.payload;
     },
     setAddressesFetching(state, action: PayloadAction<boolean>) {
       state.addresses.isFetching = action.payload;
@@ -100,6 +100,9 @@ const nodeSlice = createSlice({
     },
     setVersionFetching(state, action: PayloadAction<boolean>) {
       state.version.isFetching = action.payload;
+    },
+    setTransactionsFetching(state, action: PayloadAction<boolean>) {
+      state.transactions.isFetching = action.payload;
     },
   },
   extraReducers: (builder) => createExtraReducers(builder),
