@@ -526,16 +526,19 @@ function EthereumTransactionRow(props: { transaction: CustomEthereumTxWithTransf
           </IconButton>
           {date}
         </TableCell>
-        <TableCell align="right">{time}</TableCell>
+        <TableCell>{time}</TableCell>
         <TableCell align="right">
           <TruncatedEthereumAddressWithTooltip address={transaction.source} />
         </TableCell>
         <TableCell align="right">{transaction.request}</TableCell>
-        <TableCell align="right">{`${
-          transaction.value && transaction.value.length > 18
-            ? transaction.value.slice(0, 18).concat('...')
-            : transaction.value
-        } ${transaction.currency}`}</TableCell>
+        <TableCell
+          align="right"
+          colSpan={2}
+        >{`${
+            transaction.value && transaction.value.length > 18
+              ? transaction.value.slice(0, 18).concat('...')
+              : transaction.value
+          } ${transaction.currency}`}</TableCell>
       </StyledHistoryTableRow>
       <StyledHistoryTableRow>
         <StyledCollapsibleCell colSpan={6}>

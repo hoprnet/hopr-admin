@@ -16,12 +16,12 @@ export const formatTimeToUserTimezone = (date: string) => {
   dayjs.extend(timezone);
   // guess user timezone;
   const userTimezone = dayjs.tz.guess();
-  const formattedDate = dayjs(date).tz(userTimezone).format('HH:MM');
+  const formattedDate = dayjs(date).tz(userTimezone).format('HH:mm');
   return formattedDate;
 };
 
 export const calculateTimeInGMT = (date: string) => {
   dayjs.extend(utc);
-  const timeInGMT = `${dayjs(date).utc().format('YYYY-MM-DD HH:MM')} GMT ${dayjs(date).utc().format('Z')}`;
+  const timeInGMT = `${dayjs(date).utc().format('YYYY-MM-DD HH:mm')} GMT ${dayjs(date).utc().format('Z')}`;
   return timeInGMT;
 };
