@@ -18,7 +18,7 @@ import { useAppSelector } from '../../store';
 const SLayout = styled.div`
   &.webapp {
     .Section.full-height-min {
-      min-height: calc(100vh - 60px - 80px);
+      min-height: calc(100vh - 60px - 80px + 40px);
     }
   }
 `;
@@ -49,7 +49,7 @@ const Content = styled.div<ContentType>`
   ${(props) =>
     props.drawerRight &&
     css`
-      @media screen and (min-width: 600px) {
+      @media screen and (min-width: 740px) {
         margin-right: 233px;
       }
     `}
@@ -108,7 +108,7 @@ const Layout: React.FC<{
         />
       )}
       <Content
-        className="Content"
+        className={`Content ${drawerRight ? 'drawerRight' : ''}`}
         openedNavigationDrawer={openedNavigationDrawer}
         drawerRight={!!drawerRight}
       >

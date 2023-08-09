@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import Modal from '../../future-hopr-lib-components/Modal';
 import WalletButton from '../../future-hopr-lib-components/Button/wallet-button';
+import Menu from '../Menu';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -13,7 +14,7 @@ import { safeActions } from '../../store/slices/safe';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { gnosis, localhost } from 'viem/chains';
-import { Button, Menu, MenuItem } from '@mui/material';
+import { Button, MenuItem } from '@mui/material';
 import { truncateEthereumAddress } from '../../utils/blockchain';
 
 const AppBarContainer = styled(Button)`
@@ -188,7 +189,6 @@ export default function ConnectWeb3({
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleCloseMenu}
-                disableScrollLock={true}
               >
                 <MenuItem onClick={handleDisconnectMM}>Disconnect</MenuItem>
               </Menu>

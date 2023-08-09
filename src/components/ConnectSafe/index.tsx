@@ -7,10 +7,11 @@ import { safeActions, safeActionsAsync } from '../../store/slices/safe';
 
 import { useEthersSigner } from '../../hooks';
 
-import { Button, Menu, MenuItem } from '@mui/material';
+import { Button, MenuItem } from '@mui/material';
 import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
 import { appActions } from '../../store/slices/app';
 import { truncateEthereumAddress } from '../../utils/blockchain';
+import Menu from '../Menu';
 
 const AppBarContainer = styled(Button)`
   align-items: center;
@@ -182,7 +183,6 @@ export default function ConnectSafe() {
               vertical: 'top',
               horizontal: 'left',
             }}
-            disableScrollLock={true}
             MenuListProps={{
               'aria-labelledby': 'safe-menu-button',
               className: 'safe-menu-list',

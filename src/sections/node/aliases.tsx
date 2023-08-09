@@ -111,6 +111,7 @@ function AliasesPage() {
       className="Section--aliases"
       id="Section--aliases"
       fullHeightMin
+      yellow
     >
       <SubpageTitle
         title={`ALIASES`}
@@ -128,72 +129,78 @@ function AliasesPage() {
           </>
         }
       />
-
-      <TableContainer component={Paper}>
-        <Table
-          sx={{ minWidth: 650 }}
-          aria-label="aliases table"
-        >
-          <TableHead>
-            <TableRow>
-              <TableCell>Id</TableCell>
-              <TableCell>Peer Id</TableCell>
-              <TableCell>Alias</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {Object.entries(aliases ?? {}).map(([alias, peerId], key) => (
-              <TableRow key={key}>
-                <TableCell
-                  component="th"
-                  scope="row"
-                >
-                  {key}
-                </TableCell>
-                <TableCell>{peerId}</TableCell>
-                <TableCell>{alias}</TableCell>
-                <TableCell>
-                  <OpenOrFundChannelModal
-                    peerId={peerId}
-                    type={'open'}
-                  />
-                  <SendMessageModal peerId={peerId} />
-                  <DeleteAliasButton
-                    onSuccess={() => {
-                      set_deleteSuccess(true);
-                    }}
-                    onError={(e) => {
-                      set_deleteSuccess(false);
-                      set_deleteErrors([
-                        ...deleteErrors,
-                        {
-                          alias: String(alias),
-                          error: e.error,
-                          status: e.status,
-                        },
-                      ]);
-                    }}
-                    alias={alias}
-                  />
-                </TableCell>
+      <Paper
+        style={{
+          padding: '24px',
+          width: 'calc( 100% - 48px )',
+        }}
+      >
+        <TableContainer component={Paper}>
+          <Table
+            sx={{ minWidth: 650 }}
+            aria-label="aliases table"
+          >
+            <TableHead>
+              <TableRow>
+                <TableCell>Id</TableCell>
+                <TableCell>Peer Id</TableCell>
+                <TableCell>Alias</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <p>{!!importSuccess && 'Imported aliases!'}</p>
-      {importErrors.map((error, index) => (
-        <p key={index}>
-          {error.error}: failed to import alias: {error.alias}
-        </p>
-      ))}
-      <p>{!!deleteSuccess && 'Deleted alias!'}</p>
-      {deleteErrors.map((error, index) => (
-        <p key={index}>
-          {error.error}: failed to delete alias: {error.alias}
-        </p>
-      ))}
+            </TableHead>
+            <TableBody>
+              {Object.entries(aliases ?? {}).map(([alias, peerId], key) => (
+                <TableRow key={key}>
+                  <TableCell
+                    component="th"
+                    scope="row"
+                  >
+                    {key}
+                  </TableCell>
+                  <TableCell>{peerId}</TableCell>
+                  <TableCell>{alias}</TableCell>
+                  <TableCell>
+                    <OpenOrFundChannelModal
+                      peerId={peerId}
+                      type={'open'}
+                    />
+                    <SendMessageModal peerId={peerId} />
+                    <DeleteAliasButton
+                      onSuccess={() => {
+                        set_deleteSuccess(true);
+                      }}
+                      onError={(e) => {
+                        set_deleteSuccess(false);
+                        set_deleteErrors([
+                          ...deleteErrors,
+                          {
+                            alias: String(alias),
+                            error: e.error,
+                            status: e.status,
+                          },
+                        ]);
+                      }}
+                      alias={alias}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <p>{!!importSuccess && 'Imported aliases!'}</p>
+        {importErrors.map((error, index) => (
+          <p key={index}>
+            {error.error}: failed to import alias: {error.alias}
+          </p>
+        ))}
+        <p>{!!deleteSuccess && 'Deleted alias!'}</p>
+        {deleteErrors.map((error, index) => (
+          <p key={index}>
+            {error.error}: failed to delete alias: {error.alias}
+          </p>
+        ))}
+      </Paper>
     </Section>
   );
 }

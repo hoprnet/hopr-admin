@@ -2,9 +2,13 @@ import { useEffect, useState } from 'react';
 import { nodeActionsAsync } from '../../store/slices/node';
 import { useAppDispatch, useAppSelector } from '../../store';
 
+// HOPR Components
 import AbbreviatedPeerId from '../../components/AbbreviatedPeerId';
 import Section from '../../future-hopr-lib-components/Section';
 import TextField from '@mui/material/TextField';
+
+// Mui
+import { Paper } from '@mui/material';
 
 function PingPage() {
   const dispatch = useAppDispatch();

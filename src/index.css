@@ -36,6 +36,7 @@ input {
   font-family: inherit;
 }
 
+/* Menus */
 ul.notification-menu-list,
 ul.connect-node-menu-list,
 ul.safe-menu-list {
@@ -53,4 +54,16 @@ ul.safe-menu-list {
 ul.safe-menu-list > li {
   display: flex;
   justify-content: center;
+}
+
+body.menu-opened .InfoBar {
+  width: 250px;
+  padding-right: 17px;
+}
+
+
+@media screen and (min-width: 740px) {
+  body.menu-opened .drawerRight {
+ /*   margin-right: 250px; */
+  }
 }

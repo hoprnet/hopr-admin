@@ -13,6 +13,7 @@ import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 
 // Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
+import { Paper } from '@mui/material';
 
 const TableTitle = styled.p`
   font-family: 'Source Code Pro';
@@ -63,7 +64,10 @@ function MetricsPage() {
   }
 
   return (
-    <Section fullHeightMin>
+    <Section
+      fullHeightMin
+      yellow
+    >
       <SubpageTitle
         title="METRICS"
         refreshFunction={handleRefresh}
@@ -79,100 +83,107 @@ function MetricsPage() {
           </>
         }
       />
-      <TableExtended width1stColumn={'400px'}>{renderMetricsTable(metrics?.parsed)}</TableExtended>
-      <br />
-      <br />
-      <br />
-
-      <TableTitle>Measures total time it takes to ping a single node (seconds)</TableTitle>
-      <Chart
-        options={{ xaxis: { categories: metrics?.parsed?.core_histogram_ping_time_seconds?.categories
-          ? metrics?.parsed?.core_histogram_ping_time_seconds?.categories
-          : [] } }}
-        series={[
-          { data: metrics?.parsed?.core_histogram_ping_time_seconds?.data
-            ? metrics?.parsed?.core_histogram_ping_time_seconds?.data
-            : [] },
-        ]}
-        type="bar"
-        height={300}
+      <Paper
         style={{
-          maxWidth: '100%',
-          width: '100%',
+          padding: '24px',
+          width: 'calc( 100% - 48px )',
         }}
-      />
+      >
+        <TableExtended width1stColumn={'400px'}>{renderMetricsTable(metrics?.parsed)}</TableExtended>
+        <br />
+        <br />
+        <br />
 
-      <TableTitle>Time it takes for a node to start up</TableTitle>
-      <Chart
-        options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_startup_time_seconds?.categories
-          ? metrics?.parsed?.hoprd_histogram_startup_time_seconds?.categories
-          : [] } }}
-        series={[
-          { data: metrics?.parsed?.hoprd_histogram_startup_time_seconds?.data
-            ? metrics?.parsed?.hoprd_histogram_startup_time_seconds?.data
-            : [] },
-        ]}
-        type="bar"
-        height={300}
-        style={{
-          maxWidth: '100%',
-          width: '100%',
-        }}
-      />
+        <TableTitle>Measures total time it takes to ping a single node (seconds)</TableTitle>
+        <Chart
+          options={{ xaxis: { categories: metrics?.parsed?.core_histogram_ping_time_seconds?.categories
+            ? metrics?.parsed?.core_histogram_ping_time_seconds?.categories
+            : [] } }}
+          series={[
+            { data: metrics?.parsed?.core_histogram_ping_time_seconds?.data
+              ? metrics?.parsed?.core_histogram_ping_time_seconds?.data
+              : [] },
+          ]}
+          type="bar"
+          height={300}
+          style={{
+            maxWidth: '100%',
+            width: '100%',
+          }}
+        />
 
-      <TableTitle>Time it takes for a node to transition to the GREEN network state</TableTitle>
-      <Chart
-        options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_time_to_green_second?.categories
-          ? metrics?.parsed?.hoprd_histogram_time_to_green_seconds?.categories
-          : [] } }}
-        series={[
-          { data: metrics?.parsed?.hoprd_histogram_time_to_green_seconds?.data
-            ? metrics?.parsed?.hoprd_histogram_time_to_green_seconds?.data
-            : [] },
-        ]}
-        type="bar"
-        height={300}
-        style={{
-          maxWidth: '100%',
-          width: '100%',
-        }}
-      />
+        <TableTitle>Time it takes for a node to start up</TableTitle>
+        <Chart
+          options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_startup_time_seconds?.categories
+            ? metrics?.parsed?.hoprd_histogram_startup_time_seconds?.categories
+            : [] } }}
+          series={[
+            { data: metrics?.parsed?.hoprd_histogram_startup_time_seconds?.data
+              ? metrics?.parsed?.hoprd_histogram_startup_time_seconds?.data
+              : [] },
+          ]}
+          type="bar"
+          height={300}
+          style={{
+            maxWidth: '100%',
+            width: '100%',
+          }}
+        />
 
-      <TableTitle>Histogram of measured received message latencies</TableTitle>
-      <Chart
-        options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_message_latency_ms?.categories
-          ? metrics?.parsed?.hoprd_histogram_message_latency_ms?.categories
-          : [] } }}
-        series={[
-          { data: metrics?.parsed?.hoprd_histogram_message_latency_ms?.data
-            ? metrics?.parsed?.hoprd_histogram_message_latency_ms?.data
-            : [] },
-        ]}
-        type="bar"
-        height={300}
-        style={{
-          maxWidth: '100%',
-          width: '100%',
-        }}
-      />
+        <TableTitle>Time it takes for a node to transition to the GREEN network state</TableTitle>
+        <Chart
+          options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_time_to_green_second?.categories
+            ? metrics?.parsed?.hoprd_histogram_time_to_green_seconds?.categories
+            : [] } }}
+          series={[
+            { data: metrics?.parsed?.hoprd_histogram_time_to_green_seconds?.data
+              ? metrics?.parsed?.hoprd_histogram_time_to_green_seconds?.data
+              : [] },
+          ]}
+          type="bar"
+          height={300}
+          style={{
+            maxWidth: '100%',
+            width: '100%',
+          }}
+        />
 
-      <TableTitle>Number different peer types by quality</TableTitle>
-      <Chart
-        options={{ xaxis: { categories: metrics?.parsed?.core_mgauge_peers_by_quality?.categories
-          ? metrics?.parsed?.core_mgauge_peers_by_quality?.categories
-          : [] } }}
-        series={[
-          { data: metrics?.parsed?.core_mgauge_peers_by_quality?.data
-            ? metrics?.parsed?.core_mgauge_peers_by_quality?.data
-            : [] },
-        ]}
-        type="bar"
-        height={300}
-        style={{
-          maxWidth: '100%',
-          width: '100%',
-        }}
-      />
+        <TableTitle>Histogram of measured received message latencies</TableTitle>
+        <Chart
+          options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_message_latency_ms?.categories
+            ? metrics?.parsed?.hoprd_histogram_message_latency_ms?.categories
+            : [] } }}
+          series={[
+            { data: metrics?.parsed?.hoprd_histogram_message_latency_ms?.data
+              ? metrics?.parsed?.hoprd_histogram_message_latency_ms?.data
+              : [] },
+          ]}
+          type="bar"
+          height={300}
+          style={{
+            maxWidth: '100%',
+            width: '100%',
+          }}
+        />
+
+        <TableTitle>Number different peer types by quality</TableTitle>
+        <Chart
+          options={{ xaxis: { categories: metrics?.parsed?.core_mgauge_peers_by_quality?.categories
+            ? metrics?.parsed?.core_mgauge_peers_by_quality?.categories
+            : [] } }}
+          series={[
+            { data: metrics?.parsed?.core_mgauge_peers_by_quality?.data
+              ? metrics?.parsed?.core_mgauge_peers_by_quality?.data
+              : [] },
+          ]}
+          type="bar"
+          height={300}
+          style={{
+            maxWidth: '100%',
+            width: '100%',
+          }}
+        />
+      </Paper>
     </Section>
   );
 }

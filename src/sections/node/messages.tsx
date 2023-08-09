@@ -54,7 +54,10 @@ const messages = () => {
   }, []);
 
   return (
-    <Section fullHeightMin>
+    <Section
+      fullHeightMin
+      yellow
+    >
       <SubpageTitle
         title={`MESSAGES`}
         actions={
@@ -63,48 +66,55 @@ const messages = () => {
           </>
         }
       />
-      <TableContainer component={Paper}>
-        <StyledTable
-          sx={{ minWidth: 650 }}
-          aria-label="aliases table"
-        >
-          <TableHead>
-            <TableRow>
-              <TableCell>id</TableCell>
-              <TableCell>message</TableCell>
-              <TableCell>actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {messages.map((message, index) => {
-              const date = new Date(message.createdAt).toString();
-              return (
-                <TableRow
-                  key={message.id}
-                  className={`message-${message.seen ? 'unseen' : 'seen'}`}
-                >
-                  <TableCell
-                    component="th"
-                    scope="row"
+      <Paper
+        style={{
+          padding: '24px',
+          width: 'calc( 100% - 48px )',
+        }}
+      >
+        <TableContainer component={Paper}>
+          <StyledTable
+            sx={{ minWidth: 650 }}
+            aria-label="aliases table"
+          >
+            <TableHead>
+              <TableRow>
+                <TableCell>id</TableCell>
+                <TableCell>message</TableCell>
+                <TableCell>actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {messages.map((message, index) => {
+                const date = new Date(message.createdAt).toString();
+                return (
+                  <TableRow
+                    key={message.id}
+                    className={`message-${message.seen ? 'unseen' : 'seen'}`}
                   >
-                    {index}
-                  </TableCell>
-                  <TableCell style={{ overflowWrap: 'anywhere' }}>
-                    <Tooltip title={date}>
-                      <span>{message.body}</span>
-                    </Tooltip>
-                  </TableCell>
-                  <TableCell>
-                    <button onClick={() => dispatch(nodeActions.toggleMessageSeen(message))}>
-                      Mark as {message.seen ? 'unseen' : 'seen'}
-                    </button>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </StyledTable>
-      </TableContainer>
+                    <TableCell
+                      component="th"
+                      scope="row"
+                    >
+                      {index}
+                    </TableCell>
+                    <TableCell style={{ overflowWrap: 'anywhere' }}>
+                      <Tooltip title={date}>
+                        <span>{message.body}</span>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>
+                      <button onClick={() => dispatch(nodeActions.toggleMessageSeen(message))}>
+                        Mark as {message.seen ? 'unseen' : 'seen'}
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </StyledTable>
+        </TableContainer>
+      </Paper>
     </Section>
   );
 };

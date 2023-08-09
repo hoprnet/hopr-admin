@@ -100,7 +100,10 @@ function PeersPage() {
   };
 
   return (
-    <Section fullHeightMin>
+    <Section
+      fullHeightMin
+      yellow
+    >
       <SubpageTitle
         title={`PEERS (${peers?.announced?.length || '-'})`}
         refreshFunction={handleRefresh}
@@ -115,65 +118,72 @@ function PeersPage() {
           </>
         }
       />
-      <TableContainer component={Paper}>
-        <StyledTable
-          sx={{ minWidth: 650 }}
-          aria-label="aliases table"
-        >
-          <TableHead>
-            <TableRow>
-              <TableCell>#</TableCell>
-              <TableCell>Peer Id</TableCell>
-              <TableCell>Alias</TableCell>
-              <TableCell>Elegible</TableCell>
-              <TableCell>Multiaddrs</TableCell>
-              <TableCell>Last seen</TableCell>
-              <TableCell>Quality</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {Object.entries(peers?.announced ?? {}).map(([id, peer]) => (
-              <TableRow key={id}>
-                <TableCell
-                  component="th"
-                  scope="row"
-                >
-                  {id}
-                </TableCell>
-                <TableCell>{peer.peerId}</TableCell>
-                <TableCell>{getAliasByPeerId(peer.peerId)}</TableCell>
-                <TableCell>
-                  {peers?.connected.some((connectedPeer) => connectedPeer.peerId === peer.peerId).toString()}
-                </TableCell>
-                <TableCell>{peer.multiAddr}</TableCell>
-                <TableCell>
-                  {new Date(peer.lastSeen).toLocaleString('en-US', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    timeZoneName: 'short',
-                  })}
-                </TableCell>
-                <TableCell>{peer.quality}</TableCell>
-                <TableCell>
-                  <CreateAliasModal
-                    handleRefresh={handleRefresh}
-                    peerId={peer.peerId}
-                  />
-                  <OpenOrFundChannelModal
-                    peerId={peer.peerId}
-                    type={'open'}
-                  />
-                  <SendMessageModal peerId={peer.peerId} />
-                </TableCell>
+      <Paper
+        style={{
+          padding: '24px',
+          width: 'calc( 100% - 48px )',
+        }}
+      >
+        <TableContainer component={Paper}>
+          <StyledTable
+            sx={{ minWidth: 650 }}
+            aria-label="aliases table"
+          >
+            <TableHead>
+              <TableRow>
+                <TableCell>#</TableCell>
+                <TableCell>Peer Id</TableCell>
+                <TableCell>Alias</TableCell>
+                <TableCell>Elegible</TableCell>
+                <TableCell>Multiaddrs</TableCell>
+                <TableCell>Last seen</TableCell>
+                <TableCell>Quality</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </StyledTable>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {Object.entries(peers?.announced ?? {}).map(([id, peer]) => (
+                <TableRow key={id}>
+                  <TableCell
+                    component="th"
+                    scope="row"
+                  >
+                    {id}
+                  </TableCell>
+                  <TableCell>{peer.peerId}</TableCell>
+                  <TableCell>{getAliasByPeerId(peer.peerId)}</TableCell>
+                  <TableCell>
+                    {peers?.connected.some((connectedPeer) => connectedPeer.peerId === peer.peerId).toString()}
+                  </TableCell>
+                  <TableCell>{peer.multiAddr}</TableCell>
+                  <TableCell>
+                    {new Date(peer.lastSeen).toLocaleString('en-US', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      timeZoneName: 'short',
+                    })}
+                  </TableCell>
+                  <TableCell>{peer.quality}</TableCell>
+                  <TableCell>
+                    <CreateAliasModal
+                      handleRefresh={handleRefresh}
+                      peerId={peer.peerId}
+                    />
+                    <OpenOrFundChannelModal
+                      peerId={peer.peerId}
+                      type={'open'}
+                    />
+                    <SendMessageModal peerId={peer.peerId} />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </StyledTable>
+        </TableContainer>
+      </Paper>
     </Section>
   );
 }

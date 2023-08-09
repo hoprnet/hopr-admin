@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useWatcher } from '../../hooks';
+
 // Mui
 import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
+//import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Badge from '@mui/material/Badge';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+
+// Hopr Components
+import Menu from '../Menu';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -87,6 +91,18 @@ export default function NotificationBar() {
     setAnchorEl(null);
     dispatch(appActions.markSeenAllNotifications());
   };
+
+  // useEffect(() => {
+  //   if(open) {
+  //     document.body.classList.add(
+  //       'menu-opened'
+  //     );
+  //   } else {
+  //     document.body.classList.remove(
+  //       'menu-opened'
+  //     );
+  //   }
+  // }, [open]);
 
   return (
     <Container>
