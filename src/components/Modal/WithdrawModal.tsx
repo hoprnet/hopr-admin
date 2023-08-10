@@ -10,7 +10,7 @@ import {
   MenuItem,
   Button as MuiButton,
   TextField
-} from '@mui/material'
+} from '@mui/material';
 import Button from '../../future-hopr-lib-components/Button';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
 
@@ -133,7 +133,9 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
 
   return (
     <>
-      <IconButton onClick={handleOpenModal}><WalletIcon /></IconButton>
+      <IconButton onClick={handleOpenModal}>
+        <WalletIcon />
+      </IconButton>
       <SDialog
         open={openModal}
         onClose={handleCloseModal}
@@ -172,11 +174,7 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <MaxButton
-                      onClick={setMaxAmount}
-                    >
-                        Max
-                    </MaxButton>
+                    <MaxButton onClick={setMaxAmount}>Max</MaxButton>
                   </InputAdornment>
                 ),
                 inputProps: { min: 0 },
@@ -193,13 +191,13 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
             {isLoading && <CircularProgress />}
             {transactionHash && (
               <p>
-                  Check your transaction{' '}
+                Check your transaction{' '}
                 <GnosisLink
                   href={`https://gnosisscan.io/tx/${transactionHash}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                    here
+                  here
                   <LaunchIcon />
                 </GnosisLink>
               </p>

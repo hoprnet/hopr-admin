@@ -157,11 +157,15 @@ function InfoPage() {
         <tbody>
           <tr>
             <th>Native</th>
-            <td>{balances.native?.formatted} xDai <WithdrawModal initialCurrency='NATIVE'/> </td>
+            <td>
+              {balances.native?.formatted} xDai <WithdrawModal initialCurrency="NATIVE" />{' '}
+            </td>
           </tr>
           <tr>
             <th>Hopr</th>
-            <td>{balances.hopr?.formatted} wxHOPR <WithdrawModal initialCurrency='HOPR'/> </td>
+            <td>
+              {balances.hopr?.formatted} wxHOPR <WithdrawModal initialCurrency="HOPR" />{' '}
+            </td>
           </tr>
         </tbody>
       </TableExtended>
