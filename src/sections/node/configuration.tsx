@@ -7,6 +7,7 @@ import { SubpageTitle } from '../../components/SubpageTitle';
 import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
 import Section from '../../future-hopr-lib-components/Section';
 import Select from '../../future-hopr-lib-components/Select';
+import Button from '../../future-hopr-lib-components/Button';
 
 // Mui
 import { Paper, Switch, SelectChangeEvent } from '@mui/material';
@@ -165,12 +166,12 @@ function SettingsPage() {
             </tr>
           </tbody>
         </TableExtended>
-        <button
-          style={{ marginTop: '1rem' }}
+        <Button
+          style={{ marginTop: '1rem', float: 'right' }}
           onClick={handleSaveSettings}
         >
           Save
-        </button>
+        </Button>
       </Paper>
     </Section>
   );

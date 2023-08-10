@@ -155,7 +155,7 @@ function PeersPage() {
                     {id}
                   </TableCell>
                   <TableCell>{peer.peerId}</TableCell>
-                  <TableCell>{getAliasByPeerId(peer.peerId)}</TableCell>
+                  <TableCell>{aliases && getAliasByPeerId(peer.peerId)}</TableCell>
                   <TableCell>
                     {peers?.connected.some((connectedPeer) => connectedPeer.peerId === peer.peerId).toString()}
                   </TableCell>

@@ -4,10 +4,12 @@ import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import CloseIcon from '@mui/icons-material/Close';
+import { sendNotification } from '../../hooks/useWatcher/notifications';
 
 // HOPR Components
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import RssFeedIcon from '@mui/icons-material/RssFeed';
+import Button from '../../future-hopr-lib-components/Button'
 
 type PingModalProps = {
   peerId?: string;
@@ -16,11 +18,6 @@ type PingModalProps = {
 export const PingModal = (props: PingModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const [error, set_error] = useState<{
-    status: string | undefined;
-    error: string | undefined;
-  }>();
-  const [success, set_success] = useState(false);
   const [peerId, set_peerId] = useState<string>(props.peerId ? props.peerId : '');
   const [openModal, setOpenModal] = useState(false);
 
@@ -53,16 +50,36 @@ export const PingModal = (props: PingModalProps) => {
         }),
       )
         .unwrap()
-        .then(() => {
-          set_success(true);
-          set_error(undefined);
+        .then((resp: any) => {
+          const msg = `Ping of ${peerId} succeded with latency of ${resp.latency}ms`;
+          console.log(msg, resp);
+          sendNotification({
+            notificationPayload: {
+              source: 'node',
+              name: msg,
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { 
+              message: msg,
+            },
+            dispatch
+          });
         })
         .catch((e) => {
-          console.log(e.error);
-          set_success(false);
-          set_error({
-            error: e.error,
-            status: e.status,
+          const errMsg = `Ping of ${peerId} failed`;
+          console.log(errMsg, e.error);
+          sendNotification({
+            notificationPayload: {
+              source: 'node',
+              name: errMsg,
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { 
+              message: errMsg,
+            },
+            dispatch
           });
         })
         .finally(() => {
@@ -103,12 +120,13 @@ export const PingModal = (props: PingModalProps) => {
           />
         </SDialogContent>
         <DialogActions>
-          <button
+          <Button
             disabled={peerId.length === 0}
             onClick={handlePing}
+            style={{ marginRight: '16px', marginBottom: '6px', marginTop: '-6px' }}
           >
             Ping
-          </button>
+          </Button>
         </DialogActions>
       </SDialog>
     </>

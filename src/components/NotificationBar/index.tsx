@@ -45,6 +45,7 @@ const StyledMenuItem = styled(MenuItem)`
   max-width: 350px;
   padding-right: 21px;
   white-space: break-spaces;
+  overflow-wrap: anywhere;
   font-size: 14px;
   &:not(:last-child) {
     border-bottom: 1px solid #8f8f8f;

@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
 import Checkbox from '../../future-hopr-lib-components/Toggles/Checkbox';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+import Button from '../../future-hopr-lib-components/Button'
 
 // Mui
 import {
@@ -243,7 +244,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
           </PathOrHops>
         </SDialogContent>
         <DialogActions>
-          <button
+          <Button
             onClick={handleSendMessage}
             disabled={
               (!automaticPath && numberOfHops === '' && path === '') || message.length === 0 || receiver.length === 0
@@ -254,7 +255,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
             }}
           >
             Send
-          </button>
+          </Button>
         </DialogActions>
         <StatusContainer>
           {loader && <CircularProgress />}
