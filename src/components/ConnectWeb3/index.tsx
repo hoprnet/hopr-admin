@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import Modal from '../../future-hopr-lib-components/Modal';
 import WalletButton from '../../future-hopr-lib-components/Button/wallet-button';
-import { Menu } from '@mui/material';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -14,7 +13,7 @@ import { safeActions } from '../../store/slices/safe';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { gnosis, localhost } from 'viem/chains';
-import { Button, MenuItem } from '@mui/material';
+import { Button, Menu, MenuItem } from '@mui/material';
 import { truncateEthereumAddress } from '../../utils/blockchain';
 
 const AppBarContainer = styled(Button)`
