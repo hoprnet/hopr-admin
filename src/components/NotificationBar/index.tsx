@@ -4,11 +4,15 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useWatcher } from '../../hooks';
 
 // Mui
-import IconButton from '@mui/material/IconButton';
+import MuiIconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Badge from '@mui/material/Badge';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+// HOPR Components
+import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -30,7 +34,7 @@ const SBadge = styled(Badge)`
   }
 `;
 
-const SIconButton = styled(IconButton)`
+const SIconButton = styled(MuiIconButton)`
   width: 100%;
   height: 100%;
   border-radius: 0;
@@ -40,7 +44,7 @@ const SIconButton = styled(IconButton)`
   }
 `;
 
-const StyledMenuItem = styled(MenuItem)`
+const SMenuItem = styled(MenuItem)`
   width: 100%;
   max-width: 350px;
   padding-right: 21px;
@@ -71,6 +75,10 @@ const StyledMenuItem = styled(MenuItem)`
     background-color: rgb(255 143 143 / 39%);
     cursor: default;
     pointer-events: none;
+    justify-content: space-between;
+    button {
+      pointer-events: all;
+    }
   }
 `;
 
@@ -129,15 +137,20 @@ export default function NotificationBar() {
         }}
       >
         {notifications.length > 0 && (
-          <StyledMenuItem className={'informational'}>
+          <SMenuItem className={'informational'}>
             Notifications are stored locally.
             <br />
             They will delete on refresh.
-          </StyledMenuItem>
+            <IconButton
+              iconComponent={<DeleteIcon />}
+              tooltipText="Clear"
+              onClick={()=>{dispatch(appActions.clearNotifications());}}
+            />
+          </SMenuItem>
         )}
         {notifications.length > 0 ? (
           notifications.map((notification) => (
-            <StyledMenuItem
+            <SMenuItem
               className={!notification.interacted ? 'unreadMenuItem' : ''}
               key={notification.id}
               onClick={() => {
@@ -148,10 +161,10 @@ export default function NotificationBar() {
               }}
             >
               {notification.name}
-            </StyledMenuItem>
+            </SMenuItem>
           ))
         ) : (
-          <StyledMenuItem>No notifications</StyledMenuItem>
+          <SMenuItem>No notifications</SMenuItem>
         )}
       </Menu>
     </Container>
