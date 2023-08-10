@@ -10,7 +10,7 @@ import { sendNotification } from '../../hooks/useWatcher/notifications';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import AddChannelIcon from '../../future-hopr-lib-components/Icons/AddChannel';
 import FundChannelIcon from '../../future-hopr-lib-components/Icons/FundChannel';
-import Button from '../../future-hopr-lib-components/Button'
+import Button from '../../future-hopr-lib-components/Button';
 
 // Mui
 import CloseIcon from '@mui/icons-material/Close';
@@ -61,7 +61,7 @@ export const OpenOrFundChannelModal = ({
         }),
       )
         .unwrap()
-        .then(()=>{
+        .then(() => {
           const msg = `Channel to ${peerId} is ${type === 'open' ? 'opened' : 'funded'}`;
           sendNotification({
             notificationPayload: {
@@ -70,10 +70,8 @@ export const OpenOrFundChannelModal = ({
               url: null,
               timeout: null,
             },
-            toastPayload: { 
-              message: msg,
-            },
-            dispatch
+            toastPayload: { message: msg },
+            dispatch,
           });
         })
         .catch((e) => {
@@ -86,10 +84,8 @@ export const OpenOrFundChannelModal = ({
               url: null,
               timeout: null,
             },
-            toastPayload: { 
-              message: errMsg,
-            },
-            dispatch
+            toastPayload: { message: errMsg },
+            dispatch,
           });
         });
     };
@@ -181,7 +177,11 @@ export const OpenOrFundChannelModal = ({
           <Button
             onClick={handleAction}
             disabled={!amount || parseFloat(amount) <= 0 || !peerId}
-            style={{ marginRight: '16px', marginBottom: '6px', marginTop: '-6px' }}
+            style={{
+              marginRight: '16px',
+              marginBottom: '6px',
+              marginTop: '-6px',
+            }}
           >
             {actionBtnText ? actionBtnText : 'Open Channel'}
           </Button>

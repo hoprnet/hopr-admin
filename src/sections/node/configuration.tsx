@@ -167,7 +167,10 @@ function SettingsPage() {
           </tbody>
         </TableExtended>
         <Button
-          style={{ marginTop: '1rem', float: 'right' }}
+          style={{
+            marginTop: '1rem',
+            float: 'right',
+          }}
           onClick={handleSaveSettings}
         >
           Save

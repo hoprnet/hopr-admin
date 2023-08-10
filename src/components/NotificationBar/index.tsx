@@ -144,7 +144,9 @@ export default function NotificationBar() {
             <IconButton
               iconComponent={<DeleteIcon />}
               tooltipText="Clear"
-              onClick={()=>{dispatch(appActions.clearNotifications());}}
+              onClick={() => {
+                dispatch(appActions.clearNotifications());
+              }}
             />
           </SMenuItem>
         )}

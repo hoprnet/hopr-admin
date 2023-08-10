@@ -10,7 +10,7 @@ import { sendNotification } from '../../hooks/useWatcher/notifications';
 // HOPR Components
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import AddAliasIcon from '../../future-hopr-lib-components/Icons/AddAlias';
-import Button from '../../future-hopr-lib-components/Button'
+import Button from '../../future-hopr-lib-components/Button';
 
 type CreateAliasModalProps = {
   handleRefresh: () => void;
@@ -77,10 +77,8 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
               url: null,
               timeout: null,
             },
-            toastPayload: { 
-              message: `Alias ${modal.alias} added to ${modal.peerId}`,
-            },
-            dispatch
+            toastPayload: { message: `Alias ${modal.alias} added to ${modal.peerId}` },
+            dispatch,
           });
         })
         .catch((e) => {
@@ -93,7 +91,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
               timeout: null,
             },
             toastPayload: { message: `Alias ${modal.alias} failed to add.` },
-            dispatch
+            dispatch,
           });
         })
         .finally(() => {
@@ -141,14 +139,18 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
             value={modal.alias}
             error={duplicateAlias}
             helperText={duplicateAlias ? 'This is a duplicate alias!' : ''}
-            style={{ minHeight: '79px'}}
+            style={{ minHeight: '79px' }}
           />
         </SDialogContent>
         <DialogActions>
           <Button
             disabled={modal.alias.length === 0 || modal.peerId.length === 0}
             onClick={handleAddAlias}
-            style={{ marginRight: '16px', marginBottom: '6px', marginTop: '-6px' }}
+            style={{
+              marginRight: '16px',
+              marginBottom: '6px',
+              marginTop: '-6px',
+            }}
           >
             Add
           </Button>

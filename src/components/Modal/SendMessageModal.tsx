@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
 import Checkbox from '../../future-hopr-lib-components/Toggles/Checkbox';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
-import Button from '../../future-hopr-lib-components/Button'
+import Button from '../../future-hopr-lib-components/Button';
 
 // Mui
 import {

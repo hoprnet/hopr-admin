@@ -9,7 +9,7 @@ import { sendNotification } from '../../hooks/useWatcher/notifications';
 // HOPR Components
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import RssFeedIcon from '@mui/icons-material/RssFeed';
-import Button from '../../future-hopr-lib-components/Button'
+import Button from '../../future-hopr-lib-components/Button';
 
 type PingModalProps = {
   peerId?: string;
@@ -60,10 +60,8 @@ export const PingModal = (props: PingModalProps) => {
               url: null,
               timeout: null,
             },
-            toastPayload: { 
-              message: msg,
-            },
-            dispatch
+            toastPayload: { message: msg },
+            dispatch,
           });
         })
         .catch((e) => {
@@ -76,10 +74,8 @@ export const PingModal = (props: PingModalProps) => {
               url: null,
               timeout: null,
             },
-            toastPayload: { 
-              message: errMsg,
-            },
-            dispatch
+            toastPayload: { message: errMsg },
+            dispatch,
           });
         })
         .finally(() => {
@@ -123,7 +119,11 @@ export const PingModal = (props: PingModalProps) => {
           <Button
             disabled={peerId.length === 0}
             onClick={handlePing}
-            style={{ marginRight: '16px', marginBottom: '6px', marginTop: '-6px' }}
+            style={{
+              marginRight: '16px',
+              marginBottom: '6px',
+              marginTop: '-6px',
+            }}
           >
             Ping
           </Button>
