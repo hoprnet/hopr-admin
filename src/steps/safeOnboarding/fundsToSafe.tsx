@@ -36,7 +36,7 @@ import {
 import multiSendAbi from '../../abi/multiSendAbi.json';
 
 const wxhoprSmartContractAddress = '0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1';
-const multiSendSmartContractAddress = '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526';
+const multiSendSmartContractAddress = '0x9641d764fc13c8B624c04430C7356C1C7C8102e2';
 
 type Address = `0x${string}`;
 type NumberLiteral = `${number}`;
