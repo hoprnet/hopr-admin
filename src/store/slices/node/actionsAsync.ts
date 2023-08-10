@@ -604,7 +604,7 @@ const closeChannelThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setChannelsFetching(true));
+    dispatch(setCloseChannelFetching(true));
     try {
       const res = await closeChannel(payload);
       return res;
@@ -618,7 +618,7 @@ const closeChannelThunk = createAsyncThunk<
     }
   },
   { condition: (_payload, { getState }) => {
-    const isFetching = getState().node.channels.isFetching;
+    const isFetching = getState().node.closeChannel.isFetching;
     if (isFetching) {
       return false;
     }
@@ -755,7 +755,7 @@ const redeemChannelTicketsThunk = createAsyncThunk<boolean | undefined, PeerIdPa
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setTicketsFetching(true));
+    dispatch(setRedeemTicketsFetching(true));
     try {
       const res = await redeemChannelTickets(payload);
       return res;
@@ -769,7 +769,7 @@ const redeemChannelTicketsThunk = createAsyncThunk<boolean | undefined, PeerIdPa
     }
   },
   { condition: (_payload, { getState }) => {
-    const isFetching = getState().node.tickets.isFetching;
+    const isFetching = getState().node.redeemTickets.isFetching;
     if (isFetching) {
       return false;
     }
@@ -860,7 +860,7 @@ const redeemTicketsThunk = createAsyncThunk<boolean | undefined, BasePayloadType
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setTicketsFetching(true));
+    dispatch(setRedeemTicketsFetching(true));
     try {
       const res = await redeemTickets(payload);
       return res;
@@ -874,7 +874,7 @@ const redeemTicketsThunk = createAsyncThunk<boolean | undefined, BasePayloadType
     }
   },
   { condition: (_payload, { getState }) => {
-    const isFetching = getState().node.tickets.isFetching;
+    const isFetching = getState().node.redeemTickets.isFetching;
     if (isFetching) {
       return false;
     }
@@ -989,6 +989,8 @@ const setTicketsFetching = createAction<boolean>('node/setTicketsFetching');
 const setTokensFetching = createAction<boolean>('node/setTokensFetching');
 const setVersionFetching = createAction<boolean>('node/setVersionFetching');
 const setTransactionsFetching = createAction<boolean>('node/setTransactionsFetching');
+const setCloseChannelFetching = createAction<boolean>('node/setCloseChannelFetching');
+const setRedeemTicketsFetching = createAction<boolean>('node/setRedeemTicketsFetching');
 
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   // getInfo
@@ -1109,10 +1111,10 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   });
   // redeemTicketsThunk
   builder.addCase(redeemTicketsThunk.fulfilled, (state, action) => {
-    state.tickets.isFetching = false;
+    state.redeemTickets.isFetching = false;
   });
   builder.addCase(redeemTicketsThunk.rejected, (state, action) => {
-    state.tickets.isFetching = false;
+    state.redeemTickets.isFetching = false;
   });
   // getTokenThunk
   builder.addCase(getTokenThunk.fulfilled, (state, action) => {
@@ -1373,10 +1375,10 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   });
   // closeChannel
   builder.addCase(closeChannelThunk.fulfilled, (state, action) => {
-    state.channels.isFetching = false;
+    state.closeChannel.isFetching = false;
   });
   builder.addCase(closeChannelThunk.rejected, (state, action) => {
-    state.channels.isFetching = false;
+    state.closeChannel.isFetching = false;
   });
   // fundChannels
   builder.addCase(fundChannelsThunk.fulfilled, (state, action) => {
@@ -1387,10 +1389,10 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   });
   // redeemChannelTickets
   builder.addCase(redeemChannelTicketsThunk.fulfilled, (state, action) => {
-    state.tickets.isFetching = false;
+    state.redeemTickets.isFetching = false;
   });
   builder.addCase(redeemChannelTicketsThunk.rejected, (state, action) => {
-    state.tickets.isFetching = false;
+    state.redeemTickets.isFetching = false;
   });
 };
 

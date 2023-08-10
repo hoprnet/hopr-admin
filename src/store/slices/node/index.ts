@@ -104,6 +104,12 @@ const nodeSlice = createSlice({
     setTransactionsFetching(state, action: PayloadAction<boolean>) {
       state.transactions.isFetching = action.payload;
     },
+    setCloseChannelFetching(state, action: PayloadAction<boolean>) {
+      state.closeChannel.isFetching = action.payload;
+    },
+    setRedeemTicketsFetching(state, action: PayloadAction<boolean>) {
+      state.redeemTickets.isFetching = action.payload;
+    },
   },
   extraReducers: (builder) => createExtraReducers(builder),
 });

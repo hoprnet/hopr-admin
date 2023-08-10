@@ -97,6 +97,8 @@ type InitialState = {
   };
   messagesWebsocketStatus: WebsocketConnectionStatus;
   logsWebsocketStatus: WebsocketConnectionStatus;
+  closeChannel: { isFetching: boolean };
+  redeemTickets: { isFetching: boolean };
 };
 
 export const initialState: InitialState = {
@@ -192,4 +194,6 @@ export const initialState: InitialState = {
   },
   messagesWebsocketStatus: null,
   logsWebsocketStatus: null,
+  closeChannel: { isFetching: false },
+  redeemTickets: { isFetching: false },
 };
