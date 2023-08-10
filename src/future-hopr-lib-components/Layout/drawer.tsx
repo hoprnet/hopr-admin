@@ -50,8 +50,8 @@ const StyledListSubheader = styled(ListSubheader)`
   letter-spacing: 0.2px;
   user-select: none;
   /* background: #3c64a5; */
-    /* color: white; */
-    color: #777; 
+  /* color: white; */
+  color: #777;
 `;
 
 const StyledListItemButton = styled(ListItemButton)`

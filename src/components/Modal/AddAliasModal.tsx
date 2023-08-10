@@ -25,7 +25,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
   const [success, set_success] = useState(false);
   const [modal, set_modal] = useState<{ peerId: string; alias: string }>({
     alias: '',
-    peerId: props.peerId? props.peerId : '',
+    peerId: props.peerId ? props.peerId : '',
   });
   const [duplicateAlias, set_duplicateAlias] = useState(false);
   const [openModal, setOpenModal] = useState(false);
@@ -68,7 +68,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
   const handleCloseModal = () => {
     setOpenModal(false);
     set_modal({
-      peerId: props.peerId? props.peerId : '',
+      peerId: props.peerId ? props.peerId : '',
       alias: '',
     });
   };

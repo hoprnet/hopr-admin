@@ -13,7 +13,7 @@ import { SendMessageModal } from '../../components/Modal/SendMessageModal';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 
 //  Modals
-import { PingModal } from '../../components/Modal/PingModal'
+import { PingModal } from '../../components/Modal/PingModal';
 
 //Mui
 import {
