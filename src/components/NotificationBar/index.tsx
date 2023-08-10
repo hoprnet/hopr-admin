@@ -41,6 +41,8 @@ const SIconButton = styled(IconButton)`
 `;
 
 const StyledMenuItem = styled(MenuItem)`
+  width: 100%;
+  max-width: 350px;
   padding-right: 21px;
   white-space: break-spaces;
   font-size: 14px;
@@ -53,10 +55,10 @@ const StyledMenuItem = styled(MenuItem)`
     &:after {
       content: '';
       display: block;
-      position: relative;
-      width: 18px;
+      position: absolute;
+      width: 8px;
       height: 8px;
-      right: -14px;
+      right: 11px;
       -moz-border-radius: 7.5px;
       -webkit-border-radius: 7.5px;
       border-radius: 7.5px;
@@ -148,7 +150,7 @@ export default function NotificationBar() {
             </StyledMenuItem>
           ))
         ) : (
-          <MenuItem>No notifications</MenuItem>
+          <StyledMenuItem>No notifications</StyledMenuItem>
         )}
       </Menu>
     </Container>

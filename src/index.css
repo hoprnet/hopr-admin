@@ -38,10 +38,6 @@ input {
 }
 
 /* Menus */
-.notification-menu-list {
-  max-width: 300px;
-}
-
 ul.notification-menu-list,
 ul.connect-node-menu-list,
 ul.safe-menu-list {

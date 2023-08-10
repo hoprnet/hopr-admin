@@ -9,10 +9,13 @@ const { APIError } = utils;
 import Section from '../../future-hopr-lib-components/Section';
 import { SubpageTitle } from '../../components/SubpageTitle';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
-import { CreateAliasModal } from '../../components/Modal/AddAliasModal';
-import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
 import { SendMessageModal } from '../../components/Modal/SendMessageModal';
 import RemoveAliasIcon from '../../future-hopr-lib-components/Icons/RemoveAlias';
+
+// Modals
+import { PingModal } from '../../components/Modal/PingModal';
+import { CreateAliasModal } from '../../components/Modal/AddAliasModal';
+import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
 
 //Mui
 import {
@@ -165,6 +168,7 @@ function AliasesPage() {
                       type={'open'}
                     />
                     <SendMessageModal peerId={peerId} />
+                    <PingModal peerId={peerId} />
                     <DeleteAliasButton
                       onSuccess={() => {
                         set_deleteSuccess(true);

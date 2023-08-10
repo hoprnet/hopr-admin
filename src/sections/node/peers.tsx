@@ -12,6 +12,9 @@ import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannel
 import { SendMessageModal } from '../../components/Modal/SendMessageModal';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 
+//  Modals
+import { PingModal } from '../../components/Modal/PingModal'
+
 //Mui
 import {
   Paper,
@@ -109,6 +112,7 @@ function PeersPage() {
         refreshFunction={handleRefresh}
         actions={
           <>
+            <PingModal />
             <IconButton
               iconComponent={<GetAppIcon />}
               tooltipText="Export seen peers as a CSV"
@@ -168,6 +172,7 @@ function PeersPage() {
                   </TableCell>
                   <TableCell>{peer.quality}</TableCell>
                   <TableCell>
+                    <PingModal peerId={peer.peerId} />
                     <CreateAliasModal
                       handleRefresh={handleRefresh}
                       peerId={peer.peerId}

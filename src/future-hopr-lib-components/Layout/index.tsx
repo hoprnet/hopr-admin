@@ -111,7 +111,9 @@ const Layout: React.FC<{
         className={`Content ${drawerRight ? 'drawerRight' : ''}`}
         openedNavigationDrawer={openedNavigationDrawer}
         drawerRight={!!drawerRight}
-      > <div>
+      >
+        {' '}
+        <div>
           <Outlet />
         </div>
         {/* {children} */}

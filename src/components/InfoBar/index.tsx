@@ -46,18 +46,15 @@ const Web3Container = styled.div`
     0px 1px 3px 0px rgba(0, 0, 0, 0.12);
 `;
 
-const FlexColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
 const IconContainer = styled.div`
   height: 1rem;
   width: 1rem;
 `;
 
-const Icons = styled(FlexColumn)`
-  margin-top: 2rem;
+const Icons = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 38px;
 `;
 
 const IconAndText = styled.div`
@@ -84,7 +81,9 @@ const InfoTitle = styled.p`
   margin-top: 20px;
 `;
 
-const Balance = styled(FlexColumn)`
+const Balance = styled.div`
+  display: flex;
+  flex-direction: column;
   background-color: #ddeaff;
   text-align: right;
   padding: 0rem 1rem;

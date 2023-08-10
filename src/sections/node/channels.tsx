@@ -8,9 +8,12 @@ import { utils } from 'ethers';
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
 import { SubpageTitle } from '../../components/SubpageTitle';
-import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import CloseChannelIcon from '../../future-hopr-lib-components/Icons/CloseChannel';
+
+// Modals
+import { PingModal } from '../../components/Modal/PingModal';
+import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
 
 // Mui
 import {
@@ -248,6 +251,7 @@ function ChannelsPage() {
                     <TableCell>{channel.status}</TableCell>
                     <TableCell>{utils.formatEther(channel.balance)} mHOPR</TableCell>
                     <TableCell>
+                      <PingModal peerId={channel.peerId} />
                       <OpenOrFundChannelModal
                         peerId={channel.peerId}
                         title="Open outgoing channel"
@@ -272,6 +276,7 @@ function ChannelsPage() {
                     <TableCell>{channel.status}</TableCell>
                     <TableCell>{utils.formatEther(channel.balance)} mHOPR</TableCell>
                     <TableCell>
+                      <PingModal peerId={channel.peerId} />
                       <OpenOrFundChannelModal
                         peerId={channel.peerId}
                         title="Fund outgoing channel"
