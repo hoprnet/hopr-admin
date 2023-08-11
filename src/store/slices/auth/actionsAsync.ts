@@ -36,27 +36,30 @@ export const loginThunk = createAsyncThunk<
           force: true,
         }),
       ).unwrap();
-            
+
       const addresses = await dispatch(
         nodeActionsAsync.getAddressesThunk({
           payload: {
             apiToken,
             apiEndpoint,
-          }, force: true, 
+          },
+          force: true,
         }),
       ).unwrap();
-  
+
       const minimumNodeBalance = parseEther('0.001');
-  
+
       if (nodeBalances?.native !== undefined && BigInt(nodeBalances.native) < minimumNodeBalance) {
-        return rejectWithValue(`Your xDai balance seems to low to operate the node.\nPlease top up your node.\nAddress: ${addresses?.native}`);
+        return rejectWithValue(
+          `Your xDai balance seems to low to operate the node.\nPlease top up your node.\nAddress: ${addresses?.native}`,
+        );
       }
-  
+
       // stringify to make sure that
       // the error is serializable
       return rejectWithValue('Unknown error: ' + JSON.stringify(e));
     } catch (unknownError) {
-      // getting balance and addresses failed 
+      // getting balance and addresses failed
       // no way to tell if the balance is low
       return rejectWithValue('Error fetching: ' + JSON.stringify(unknownError));
     }
@@ -79,11 +82,11 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(loginThunk.rejected, (state, meta) => {
     state.status.connecting = false;
     if (meta.payload) {
-      state.status.error = 'Unable to connect.\n\n' + meta.payload 
-    } else if(meta.error.message) {
-      state.status.error = 'Unable to connect.\n\n' + meta.error.message 
+      state.status.error = 'Unable to connect.\n\n' + meta.payload;
+    } else if (meta.error.message) {
+      state.status.error = 'Unable to connect.\n\n' + meta.error.message;
     } else {
-      state.status.error = 'Unable to connect.\n\n' + 'Unknown error'
+      state.status.error = 'Unable to connect.\n\n' + 'Unknown error';
     }
   });
 };

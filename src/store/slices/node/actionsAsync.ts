@@ -114,7 +114,7 @@ const getAddressesThunk = createAsyncThunk<
       native: string;
     }
   | undefined,
-  {payload: BasePayloadType, force?: boolean },
+  { payload: BasePayloadType; force?: boolean },
   { state: RootState }
 >(
   'node/getAccount',
@@ -139,7 +139,7 @@ const getAddressesThunk = createAsyncThunk<
     if (_payload.force) {
       return true;
     }
-    
+
     const isFetching = getState().node.addresses.isFetching;
     if (isFetching) {
       return false;
@@ -176,7 +176,7 @@ const getAliasesThunk = createAsyncThunk<GetAliasesResponseType | undefined, Bas
 
 const getBalancesThunk = createAsyncThunk<
   { hopr: string; native: string } | undefined,
-  {payload: BasePayloadType, force?: boolean },
+  { payload: BasePayloadType; force?: boolean },
   { state: RootState; dispatch: ThunkDispatch<RootState, unknown, AnyAction> }
 >(
   'node/getBalances',

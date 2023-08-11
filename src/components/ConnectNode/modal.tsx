@@ -232,7 +232,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         if (!error) navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
         props.handleClose();
       }
-    } catch (e) { 
+    } catch (e) {
       // error is handled in redux
     }
   };
