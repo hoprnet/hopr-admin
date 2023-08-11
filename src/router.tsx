@@ -367,7 +367,7 @@ const LayoutEnhanced = () => {
         web3: true,
       }}
       className={environment}
-      drawerType={environment === 'web3' && 'blue'}
+      drawerType={environment === 'web3' ? 'blue' : undefined}
       itemsNavbarRight={
         <>
           <NotificationBar />

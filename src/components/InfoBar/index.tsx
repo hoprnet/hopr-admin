@@ -38,7 +38,7 @@ const Web3Container = styled.div`
   display: flex;
   gap: 1rem;
   min-height: 80px;
-  min-width: 185px;
+  min-width: 200px;
   padding: 1rem;
   font-size: 12px;
   margin-right: 8px;
