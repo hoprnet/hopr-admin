@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { nodeActionsAsync } from '../store/slices/node';
-import { useAppDispatch, useAppSelector } from '../store';
+import { nodeActionsAsync } from '../../store/slices/node';
+import { useAppDispatch, useAppSelector } from '../../store';
 
-import AbbreviatedPeerId from '../components/AbbreviatedPeerId';
-import Section from '../future-hopr-lib-components/Section';
+import AbbreviatedPeerId from '../../components/AbbreviatedPeerId';
+import Section from '../../future-hopr-lib-components/Section';
 import TextField from '@mui/material/TextField';
 
 function PingPage() {
@@ -13,9 +13,9 @@ function PingPage() {
   const [pinged, set_pinged] = useState(false);
   const [invalidPeerId, set_invalidPeerId] = useState(false);
 
-  const pings = useAppSelector((selector) => selector.node.pings);
-  const aliases = useAppSelector((selector) => selector.node.aliases);
-  const loginData = useAppSelector((selector) => selector.auth.loginData);
+  const pings = useAppSelector((store) => store.node.pings);
+  const aliases = useAppSelector((store) => store.node.aliases.data);
+  const loginData = useAppSelector((store) => store.auth.loginData);
   const {
     apiEndpoint,
     apiToken,
@@ -73,11 +73,8 @@ function PingPage() {
   };
 
   return (
-    <Section
-      yellow
-      fullHeightMin
-    >
-      <h2>Ping</h2>
+    <Section fullHeightMin>
+      <h2>PING</h2>
       <TextField
         type="text"
         label="Peer ID"

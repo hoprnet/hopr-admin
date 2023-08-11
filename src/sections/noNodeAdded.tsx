@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import { useBalance } from 'wagmi';
 import { useAppSelector } from '../store';
 import styled from '@emotion/styled';
 
@@ -219,20 +218,9 @@ const StakingCard = ({
   );
 };
 
-const wxhoprSmartContractAddress = '0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1';
-
 const NoNodeAdded = () => {
-  const selectedSafeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress) as `0x${string}`;
-
-  const { data: xDAI_balance } = useBalance({
-    address: selectedSafeAddress,
-    watch: true,
-  });
-  const { data: wxHOPR_balance } = useBalance({
-    address: selectedSafeAddress ?? undefined,
-    token: wxhoprSmartContractAddress,
-    watch: true,
-  });
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as `0x${string}`;
+  const safeBalance = useAppSelector((store) => store.safe.balance.data);
 
   return (
     <Section
@@ -281,7 +269,7 @@ const NoNodeAdded = () => {
           <StakingCard
             id="wxhopr-total-stake"
             title="wxHOPR Total Stake"
-            value={wxHOPR_balance?.formatted || '-'}
+            value={safeBalance.wxHopr.formatted || '-'}
             chip={{
               label: '+12%/24h',
               color: 'success',
@@ -306,7 +294,7 @@ const NoNodeAdded = () => {
           <StakingCard
             id="xdai-in-safe"
             title="xDAI in Safe"
-            value={xDAI_balance?.formatted || '-'}
+            value={safeBalance.xDai.formatted || '-'}
             buttons={[
               {
                 text: 'FUND SAFE',

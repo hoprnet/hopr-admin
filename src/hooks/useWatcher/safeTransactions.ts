@@ -1,6 +1,6 @@
 import { SafeMultisigTransactionListResponse } from '@safe-global/api-kit';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
-import ethers from 'ethers';
+import { ethers } from 'ethers';
 import { safeActionsAsync } from '../../store/slices/safe';
 import { useAppDispatch } from '../../store';
 import { sendNotification } from './notifications';
@@ -84,7 +84,7 @@ export const observePendingSafeTransactions = ({
         notificationPayload: {
           name: `Pending transaction`,
           source: 'node',
-          url: 'hub/safe/pending-transactions',
+          url: 'hub/safe/actions',
           timeout: null,
         },
         toastPayload: { message: `Pending transaction to ${newData?.to}` },

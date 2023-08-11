@@ -4,7 +4,7 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import Button from '../../future-hopr-lib-components/Button';
 import GrayButton from '../../future-hopr-lib-components/Button/gray';
-import Card from '../components/Card';
+import Card from '../../components/Card';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { useEthersSigner } from '../../hooks';
@@ -23,8 +23,8 @@ const StyledGrayButton = styled(GrayButton)`
 
 const NodeAddress = () => {
   const dispatch = useAppDispatch();
-  const safeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
-  const account = useAppSelector((state) => state.web3.account);
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const account = useAppSelector((store) => store.web3.account);
   const navigate = useNavigate();
   const signer = useEthersSigner();
   const [address, set_address] = useState('');

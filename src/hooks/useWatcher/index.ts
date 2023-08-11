@@ -17,7 +17,7 @@ export const useWatcher = ({ intervalDuration = 15000 }: { intervalDuration?: nu
   } = useAppSelector((store) => store.auth.loginData);
   const messages = useAppSelector((store) => store.node.messages);
   const connected = useAppSelector((store) => store.auth.status.connected);
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const signer = useEthersSigner();
   // redux previous states, this can be updated from anywhere in the app
   const prevChannels = useAppSelector((store) => store.app.previousStates.prevChannels);

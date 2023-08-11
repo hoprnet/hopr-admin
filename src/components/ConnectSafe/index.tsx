@@ -10,7 +10,7 @@ import { useEthersSigner } from '../../hooks';
 import { Button, Menu, MenuItem } from '@mui/material';
 import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
 import { appActions } from '../../store/slices/app';
-import { truncateEthereumAddress } from '../../utils/helpers';
+import { truncateEthereumAddress } from '../../utils/blockchain';
 
 const AppBarContainer = styled(Button)`
   align-items: center;
@@ -38,19 +38,6 @@ const AppBarContainer = styled(Button)`
   }
 `;
 
-const Content = styled.div`
-  font-family: 'Source Code Pro';
-  font-size: 18px;
-  width: 170px;
-  display: flex;
-  align-items: flex-start;
-  flex-direction: row;
-  justify-content: space-evenly;
-  font-size: 14px;
-  gap: 10px;
-  color: #414141;
-`;
-
 const DropdownArrow = styled.img`
   align-self: center;
 `;
@@ -76,9 +63,9 @@ const SafeAddress = styled.div`
 export default function ConnectSafe() {
   const dispatch = useAppDispatch();
   const signer = useEthersSigner();
-  const connected = useAppSelector((selector) => selector.web3.status);
-  const safes = useAppSelector((selector) => selector.safe.safesByOwner);
-  const safeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress);
+  const connected = useAppSelector((store) => store.web3.status);
+  const safes = useAppSelector((store) => store.safe.safesByOwner.data);
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
 
@@ -195,6 +182,7 @@ export default function ConnectSafe() {
               vertical: 'top',
               horizontal: 'left',
             }}
+            disableScrollLock={true}
             MenuListProps={{
               'aria-labelledby': 'safe-menu-button',
               className: 'safe-menu-list',

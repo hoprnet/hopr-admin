@@ -9,25 +9,24 @@ import { nodeActions, nodeActionsAsync } from './store/slices/node';
 
 // Sections
 import Section1 from './components/ConnectNode/modal';
-import SectionLogs from './sections/logs';
+import SectionLogs from './sections/node/logs';
 import SectionWeb3 from './sections/web3';
 import SectionSafe from './sections/safe';
-import AliasesPage from './sections/aliases';
-import InfoPage from './sections/info';
-import MessagesPage from './sections/messages';
-import PeersPage from './sections/peers';
-import TicketsPage from './sections/tickets';
-import ChannelsPage from './sections/channels';
-import MetricsPage from './sections/metrics';
+import AliasesPage from './sections/node/aliases';
+import InfoPage from './sections/node/info';
+import MessagesPage from './sections/node/messages';
+import PeersPage from './sections/node/peers';
+import TicketsPage from './sections/node/tickets';
+import ChannelsPage from './sections/node/channels';
+import MetricsPage from './sections/node/metrics';
 import SafeStakingPage from './sections/safeStaking';
-import SettingsPage from './sections/settings';
-import SafeQueue from './sections/safePendingTransactions';
+import ConfigurationPage from './sections/node/configuration';
 import AddNode from './steps/installNode/addNode';
 import SelectNodeType from './steps/installNode/selectNodeType';
 import WrapperPage from './sections/wrapper';
 import XdaiToNodePage from './steps/xdaiToNode';
-import SafeTransactionHistoryPage from './sections/safeTransactionHistory';
 import StakingScreen from './sections/staking-screen';
+import SafeWithdraw from './sections/safeWithdraw';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -53,7 +52,7 @@ import SavingsIcon from '@mui/icons-material/Savings';
 import NodeIcon from '@mui/icons-material/Router';
 import NetworkingIcon from '@mui/icons-material/Diversity3';
 import DevelopIcon from '@mui/icons-material/Code';
-import PingPage from './sections/ping';
+import PingPage from './sections/node/ping';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -66,6 +65,9 @@ import SafeOnboarding from './steps/safeOnboarding';
 import NoNodeAdded from './sections/noNodeAdded';
 import StakingLandingPage from './sections/stakingLandingPage';
 import NodeAdded from './sections/nodeAdded';
+import SafeActions from './sections/actions';
+import WalletIcon from '@mui/icons-material/Wallet';
+import Ticket from './future-hopr-lib-components/Icons/Ticket';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -82,82 +84,82 @@ export type ApplicationMapType = {
 
 export const applicationMapNode: ApplicationMapType = [
   {
-    groupName: 'Node',
+    groupName: 'NODE',
     path: 'node',
     icon: <NodeIcon />,
     items: [
       {
-        name: 'Info',
+        name: 'INFO',
         path: 'info',
         icon: <InfoIcon />,
         element: <InfoPage />,
         loginNeeded: 'node',
       },
       {
-        name: 'Logs',
+        name: 'LOGS',
         path: 'logs',
         icon: <TerminalIcon />,
         element: <SectionLogs />,
         loginNeeded: 'node',
       },
       {
-        name: 'Tickets',
+        name: 'TICKETS',
         path: 'tickets',
         icon: <ConfirmationNumberIcon />,
         element: <TicketsPage />,
         loginNeeded: 'node',
       },
       {
-        name: 'Metrics',
+        name: 'METRICS',
         path: 'metrics',
         icon: <BarChartIcon />,
         element: <MetricsPage />,
         loginNeeded: 'node',
       },
       {
-        name: 'Configuration',
+        name: 'CONFIGURATION',
         path: 'configuration',
         icon: <SettingsIcon />,
-        element: <SettingsPage />,
+        element: <ConfigurationPage />,
         loginNeeded: 'node',
       },
     ],
   },
   {
-    groupName: 'Networking',
+    groupName: 'NETWORKING',
     path: 'networking',
     icon: <NetworkingIcon />,
     items: [
       {
-        name: 'Ping',
+        name: 'PING',
         path: 'ping',
         icon: <RssFeedIcon />,
         element: <PingPage />,
         loginNeeded: 'node',
       },
       {
-        name: 'Peers',
+        name: 'PEERS',
         path: 'peers',
         icon: <LanIcon />,
         element: <PeersPage />,
         loginNeeded: 'node',
       },
       {
-        name: 'Aliases',
+        name: 'ALIASES',
         path: 'aliases',
         icon: <ContactPhone />,
         element: <AliasesPage />,
         loginNeeded: 'node',
       },
       {
-        name: 'Messages',
+        name: 'MESSAGES',
         path: 'messages',
         icon: <MailIcon />,
         element: <MessagesPage />,
         loginNeeded: 'node',
       },
       {
-        name: 'Channels',
+        name: 'CHANNELS',
         path: 'channels',
         icon: <HubIcon />,
         element: <ChannelsPage />,
@@ -209,10 +211,10 @@ export const applicationMapWeb3: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
-        name: 'Pending transactions',
-        path: 'safe/pending-transactions',
+        name: 'Actions',
+        path: 'safe/actions',
         icon: <SwapVertIcon />,
-        element: <SafeQueue />,
+        element: <SafeActions />,
         loginNeeded: 'web3',
       },
       {
@@ -230,10 +232,10 @@ export const applicationMapWeb3: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
-        name: 'Transaction history',
-        path: 'safe/transaction-history',
-        icon: <ReceiptIcon />,
-        element: <SafeTransactionHistoryPage />,
+        name: 'Withdraw',
+        path: 'withdraw',
+        icon: <WalletIcon />,
+        element: <SafeWithdraw />,
         loginNeeded: 'web3',
       },
       {
@@ -311,6 +313,8 @@ export const applicationMap: ApplicationMapType = createApplicationMap();
 const LayoutEnhanced = () => {
   const dispatch = useAppDispatch();
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
+  const account = useAppSelector((store) => store.web3.account);
+  const isConnected = useAppSelector((store) => store.web3.status.connected);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [searchParams, set_searchParams] = useSearchParams();
   const apiEndpoint = searchParams.get('apiEndpoint');
@@ -381,7 +385,7 @@ const LayoutEnhanced = () => {
           {(environment === 'dev' || environment === 'node') && <ConnectNode />}
         </>
       }
-      drawerRight={nodeConnected && <InfoBar />}
+      drawerRight={(isConnected || nodeConnected) && <InfoBar />}
     />
   );
 };

@@ -14,7 +14,7 @@ import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { gnosis, localhost } from 'viem/chains';
 import { Button, Menu, MenuItem } from '@mui/material';
-import { truncateEthereumAddress } from '../../utils/helpers';
+import { truncateEthereumAddress } from '../../utils/blockchain';
 
 const AppBarContainer = styled(Button)`
   align-items: center;
@@ -22,7 +22,7 @@ const AppBarContainer = styled(Button)`
   cursor: pointer;
   height: 59px;
   justify-content: center;
-  width: 220px;
+  width: 285px;
   border-radius: 0;
   & .image-container {
     height: 50px;
@@ -83,8 +83,8 @@ export default function ConnectWeb3({
   const { connect } = useConnect({ connector: new InjectedConnector({ chains: [localhost, gnosis] }) });
   const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
-  const account = useAppSelector((selector) => selector.web3.account);
-  const chain = useAppSelector((selector) => selector.web3.chain);
+  const account = useAppSelector((store) => store.web3.account);
+  const chain = useAppSelector((store) => store.web3.chain);
   const [currentAccount, set_currentAccount] = useState('');
 
   const containerRef = useRef<HTMLButtonElement>(null);
@@ -188,6 +188,7 @@ export default function ConnectWeb3({
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleCloseMenu}
+                disableScrollLock={true}
               >
                 <MenuItem onClick={handleDisconnectMM}>Disconnect</MenuItem>
               </Menu>

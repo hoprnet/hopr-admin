@@ -13,7 +13,7 @@ export const exportToCsv = <T extends object>(data: T[], filename: string) => {
   link.click();
 };
 
-export const exportToFile = <T extends object>(data: string, filename: string, type: string) => {
+export const exportToFile = (data: string, filename: string, type: string) => {
   const csvContent = `data:${type};charset=utf-8,` + data;
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement('a');
@@ -32,17 +32,6 @@ function convertArrayToCsv<T extends object>(data: T[]) {
   const header = Object.keys(data[0]).join(',');
   const rows = data.map((obj) => Object.values(obj).join(','));
   return [header, ...rows].join('\n');
-}
-
-export function truncateEthereumAddress(address: string) {
-  // Captures 0x + 4 characters, then the last 4 characters.
-  if (!address) return;
-
-  const truncateRegex = /^(0x[a-zA-Z0-9]{4})[a-zA-Z0-9]+([a-zA-Z0-9]{4})$/;
-
-  const match = address.match(truncateRegex);
-  if (!match) return address;
-  return `${match[1]}…${match[2]}`;
 }
 
 export function truncateHOPRPeerId(peerId: string) {

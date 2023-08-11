@@ -1,28 +1,24 @@
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../store';
-import { actionsAsync } from '../store/slices/node/actionsAsync';
-import { exportToFile } from '../utils/helpers';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { actionsAsync } from '../../store/slices/node/actionsAsync';
+import { exportToFile } from '../../utils/helpers';
 
 // HOPR Components
-import { TableExtended } from '../future-hopr-lib-components/Table/columed-data';
-import { SubpageTitle } from '../components/SubpageTitle';
-import Section from '../future-hopr-lib-components/Section';
-import IconButton from '../future-hopr-lib-components/Button/IconButton';
+import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
+import { SubpageTitle } from '../../components/SubpageTitle';
+import Section from '../../future-hopr-lib-components/Section';
+import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
-//Mui
-import CircularProgress from '@mui/material/CircularProgress';
-
 function TicketsPage() {
   const dispatch = useAppDispatch();
-  const tickets = useAppSelector((selector) => selector.node.tickets);
-  const statistics = useAppSelector((selector) => selector.node.statistics);
-  const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const [redeemSuccess, set_redeemSuccess] = useState(false);
+  const tickets = useAppSelector((store) => store.node.tickets.data);
+  const ticketsFetching = useAppSelector((store) => store.node.tickets.isFetching);
+  const statistics = useAppSelector((store) => store.node.statistics.data);
+  const statisticsFetching = useAppSelector((store) => store.node.statistics.isFetching);
+  const loginData = useAppSelector((store) => store.auth.loginData);
   const [redeemErrors, set_redeemErrors] = useState<{ status: string | undefined; error: string | undefined }[]>([]);
-  const [showStatistics, set_showStatistics] = useState(false);
-  const [showTickets, set_showTickets] = useState(false);
   const [redeeming, set_redeeming] = useState(false);
 
   useEffect(() => {
@@ -55,12 +51,10 @@ function TicketsPage() {
       .unwrap()
       .then(() => {
         set_redeeming(false);
-        set_redeemSuccess(true);
         handleRefresh();
       })
       .catch((e) => {
         set_redeeming(false);
-        set_redeemSuccess(false);
         set_redeemErrors([
           ...redeemErrors,
           {
@@ -75,12 +69,12 @@ function TicketsPage() {
     <Section
       className="Section--tickets"
       id="Section--tickets"
-      yellow
       fullHeightMin
     >
       <SubpageTitle
-        title="Tickets"
+        title="TICKETS"
         refreshFunction={handleRefresh}
+        reloading={ticketsFetching || statisticsFetching}
         actions={
           <>
             <IconButton

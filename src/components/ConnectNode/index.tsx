@@ -90,7 +90,7 @@ export default function ConnectNode() {
   const connected = useAppSelector((store) => store.auth.status.connected);
   const connecting = useAppSelector((store) => store.auth.status.connecting);
   const error = useAppSelector((store) => store.auth.status.error);
-  const peerId = useAppSelector((store) => store.node.addresses.hopr);
+  const peerId = useAppSelector((store) => store.node.addresses.data.hopr);
   const localName = useAppSelector((store) => store.auth.loginData.localName);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
 
@@ -180,6 +180,7 @@ export default function ConnectNode() {
                 'aria-labelledby': 'connect-node-menu-button',
                 className: 'connect-node-menu-list',
               }}
+              disableScrollLock={true}
             >
               <MenuItem onClick={handleModalOpen}>Change node</MenuItem>
               <MenuItem onClick={() => handleLogout()}>Disconnect</MenuItem>

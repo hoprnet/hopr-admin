@@ -1,9 +1,20 @@
 import { useEffect, useState } from 'react';
-import { useBalance, useContractWrite, usePrepareContractWrite, useAccount } from 'wagmi';
+import styled from '@emotion/styled';
+import { useContractWrite, usePrepareContractWrite, useAccount } from 'wagmi';
 import { parseUnits } from 'viem';
 import wrapperAbi from '../abi/wrapperAbi.json';
+import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS } from '../../config'
 
-import styled from '@emotion/styled';
+// Redux
+import { useAppSelector } from '../store';
+
+// HOPR Components
+import Button from '../future-hopr-lib-components/Button';
+import Section from '../future-hopr-lib-components/Section';
+
+// Mui
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import LaunchIcon from '@mui/icons-material/Launch';
 import {
   IconButton,
   Paper,
@@ -11,11 +22,6 @@ import {
   InputAdornment,
   Button as MuiButton
 } from '@mui/material'
-import Button from '../future-hopr-lib-components/Button';
-import Section from '../future-hopr-lib-components/Section';
-
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import LaunchIcon from '@mui/icons-material/Launch';
 
 const StyledPaper = styled(Paper)`
   padding: 2rem;
@@ -140,36 +146,21 @@ function WrapperPage() {
   const [wxhoprValue, set_wxhoprValue] = useState('');
   const [swapDirection, set_swapDirection] = useState<'xHOPR_to_wxHOPR' | 'wxHOPR_to_xHOPR'>('xHOPR_to_wxHOPR');
   const { address } = useAccount();
-
-  const xhoprSmartContractAddress = '0xD057604A14982FE8D88c5fC25Aac3267eA142a08';
-  const wxhoprSmartContractAddress = '0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1';
-  const hoprWrapperSmartContractAddress = '0x097707143e01318734535676cfe2e5cF8b656ae8';
-
-  // Fetch balance data
-  const { data: xHOPR_balance } = useBalance({
-    address,
-    token: xhoprSmartContractAddress,
-    watch: true,
-  });
-  const { data: wxHOPR_balance } = useBalance({
-    address,
-    token: wxhoprSmartContractAddress,
-    watch: true,
-  });
+  const walletBalance = useAppSelector((store) => store.web3.balance);
 
   // Prepare contract write configurations
   const { config: xHOPR_to_wxHOPR_config } = usePrepareContractWrite({
-    address: xhoprSmartContractAddress,
+    address: xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     abi: wrapperAbi,
     functionName: 'transferAndCall',
-    args: [hoprWrapperSmartContractAddress, parseUnits(xhoprValue as NumberLiteral, 18), '0x'],
+    args: [wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS, parseUnits(xhoprValue as NumberLiteral, 18), '0x'],
   });
 
   const { config: wxHOPR_to_xHOPR_config } = usePrepareContractWrite({
-    address: wxhoprSmartContractAddress,
+    address: wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     abi: wrapperAbi,
     functionName: 'transfer',
-    args: [hoprWrapperSmartContractAddress, parseUnits(wxhoprValue as NumberLiteral, 18)],
+    args: [wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS, parseUnits(wxhoprValue as NumberLiteral, 18)],
   });
 
   // Perform contract writes and retrieve data.
@@ -204,9 +195,9 @@ function WrapperPage() {
   };
 
   const updateBalances = () => {
-    if (address && xHOPR_balance && wxHOPR_balance) {
-      set_xhoprValue(xHOPR_balance.formatted);
-      set_wxhoprValue(wxHOPR_balance.formatted);
+    if (address && walletBalance.xHopr.formatted && walletBalance.wxHopr.formatted) {
+      set_xhoprValue(walletBalance.xHopr.formatted);
+      set_wxhoprValue(walletBalance.wxHopr.formatted);
     }
   };
 
@@ -214,7 +205,7 @@ function WrapperPage() {
     if (is_xHOPR_to_wxHOPR_success || is_wxHOPR_to_xHOPR_success) {
       updateBalances();
     }
-  }, [xHOPR_balance, wxHOPR_balance]);
+  }, [walletBalance.xHopr.formatted, walletBalance.wxHopr.formatted]);
 
   useEffect(() => {
     if (address) {
@@ -223,18 +214,18 @@ function WrapperPage() {
       set_xhoprValue('');
       set_wxhoprValue('');
     }
-  }, [address, xHOPR_balance, wxHOPR_balance]);
+  }, [address, walletBalance.xHopr.formatted, walletBalance.wxHopr.formatted]);
 
   // Set the maximum value for xHOPR on input field.
   const setMax_xHOPR = () => {
-    if (xHOPR_balance) {
-      set_xhoprValue(xHOPR_balance.formatted);
+    if (walletBalance.xHopr.formatted) {
+      set_xhoprValue(walletBalance.xHopr.formatted);
     }
   };
 
   const setMax_wxHOPR = () => {
-    if (wxHOPR_balance) {
-      set_wxhoprValue(wxHOPR_balance.formatted);
+    if (walletBalance.wxHopr.formatted) {
+      set_wxhoprValue(walletBalance.wxHopr.formatted);
     }
   };
 
@@ -310,7 +301,7 @@ function WrapperPage() {
               ),
               inputProps: {
                 min: 0,
-                max: wxHOPR_balance,
+                max: walletBalance.wxHopr.formatted,
               },
             }}
           />

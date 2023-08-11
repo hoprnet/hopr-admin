@@ -5,6 +5,10 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import CloseIcon from '@mui/icons-material/Close';
 
+// HOPR Components
+import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+import AddAliasIcon from '../../future-hopr-lib-components/Icons/AddAlias';
+
 type CreateAliasModalProps = {
   handleRefresh: () => void;
   peerId?: string;
@@ -15,8 +19,8 @@ export const CreateAliasModal = ({
   peerId,
 }: CreateAliasModalProps) => {
   const dispatch = useAppDispatch();
-  const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const aliases = useAppSelector((selector) => selector.node.aliases);
+  const loginData = useAppSelector((store) => store.auth.loginData);
+  const aliases = useAppSelector((store) => store.node.aliases.data);
   const [error, set_error] = useState<{
     status: string | undefined;
     error: string | undefined;
@@ -118,7 +122,11 @@ export const CreateAliasModal = ({
 
   return (
     <>
-      <button onClick={handleOpenModal}>Add New Alias</button>
+      <IconButton
+        iconComponent={<AddAliasIcon />}
+        tooltipText="Add new alias"
+        onClick={handleOpenModal}
+      />
       {duplicateAlias && (
         <Alert
           severity="warning"

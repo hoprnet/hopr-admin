@@ -1,3 +1,18 @@
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { actionsAsync } from '../../store/slices/node/actionsAsync';
+import { exportToCsv } from '../../utils/helpers';
+import styled from '@emotion/styled';
+
+// HOPR Components
+import Section from '../../future-hopr-lib-components/Section';
+import { SubpageTitle } from '../../components/SubpageTitle';
+import { CreateAliasModal } from '../../components/Modal/AddAliasModal';
+import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
+import { SendMessageModal } from '../../components/Modal/SendMessageModal';
+import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+
+//Mui
 import {
   Paper,
   Table,
@@ -7,15 +22,7 @@ import {
   TableHead,
   TableRow
 } from '@mui/material'
-import { useEffect } from 'react';
-import Section from '../future-hopr-lib-components/Section';
-import { useAppDispatch, useAppSelector } from '../store';
-import { actionsAsync } from '../store/slices/node/actionsAsync';
-import { exportToCsv } from '../utils/helpers';
-import { styled } from '@mui/material/styles';
-import { CreateAliasModal } from '../components/Modal/AddAliasModal';
-import { OpenChannelModal } from '../components/Modal/OpenOrFundChannelModal';
-import { SendMessageModal } from '../components/Modal/SendMessageModal';
+import GetAppIcon from '@mui/icons-material/GetApp';
 
 const StyledTable = styled(Table)`
   td {
@@ -32,9 +39,11 @@ const StyledTable = styled(Table)`
 
 function PeersPage() {
   const dispatch = useAppDispatch();
-  const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const peers = useAppSelector((selector) => selector.node.peers);
-  const aliases = useAppSelector((selector) => selector.node.aliases);
+  const loginData = useAppSelector((store) => store.auth.loginData);
+  const peers = useAppSelector((store) => store.node.peers.data);
+  const peersFetching = useAppSelector((store) => store.node.peers.isFetching);
+  const aliases = useAppSelector((store) => store.node.aliases.data);
+  const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
 
   useEffect(() => {
     handleRefresh();
@@ -75,35 +84,40 @@ function PeersPage() {
     return formattedAddress;
   };
 
+  const handleExport = () => {
+    if (peers?.announced) {
+      exportToCsv(
+        peers.announced.map((peer) => ({
+          peerId: peer.peerId,
+          quality: peer.quality,
+          multiAddr: peer.multiAddr,
+          heartbeats: peer.heartbeats,
+          lastSeen: peer.lastSeen,
+          backoff: peer.backoff,
+          isNew: peer.isNew,
+        })),
+        'peers.csv',
+      );
+    }
+  };
+
   return (
-    <Section
-      yellow
-      fullHeightMin
-    >
-      <h2>
-        Peers seen in the network ({peers?.announced?.length || '-'}) <button onClick={handleRefresh}>Refresh</button>
-      </h2>
-      <button
-        disabled={!peers?.announced || Object.keys(peers.announced).length === 0}
-        onClick={() => {
-          if (peers?.announced) {
-            exportToCsv(
-              peers.announced.map((peer) => ({
-                peerId: peer.peerId,
-                quality: peer.quality,
-                multiAddr: peer.multiAddr,
-                heartbeats: peer.heartbeats,
-                lastSeen: peer.lastSeen,
-                backoff: peer.backoff,
-                isNew: peer.isNew,
-              })),
-              'peers.csv',
-            );
-          }
-        }}
-      >
-        export
-      </button>
+    <Section fullHeightMin>
+      <SubpageTitle
+        title={`PEERS (${peers?.announced?.length || '-'})`}
+        refreshFunction={handleRefresh}
+        reloading={peersFetching || aliasesFetching}
+        actions={
+          <>
+            <IconButton
+              iconComponent={<GetAppIcon />}
+              tooltipText="Export seen peers as a CSV"
+              disabled={!peers?.announced || Object.keys(peers.announced).length === 0}
+              onClick={handleExport}
+            />
+          </>
+        }
+      />
       <TableContainer component={Paper}>
         <StyledTable
           sx={{ minWidth: 650 }}
@@ -152,7 +166,10 @@ function PeersPage() {
                     handleRefresh={handleRefresh}
                     peerId={peer.peerId}
                   />
-                  <OpenChannelModal peerId={peer.peerId} />
+                  <OpenOrFundChannelModal
+                    peerId={peer.peerId}
+                    type={'open'}
+                  />
                   <SendMessageModal peerId={peer.peerId} />
                 </TableCell>
               </TableRow>

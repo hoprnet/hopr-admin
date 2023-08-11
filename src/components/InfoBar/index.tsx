@@ -1,12 +1,12 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import { useAppDispatch, useAppSelector } from '../../store';
-import Drawer from '@mui/material/Drawer';
+import { useAppSelector } from '../../store';
 import styled from '@emotion/styled';
-import Toolbar from '@mui/material/Toolbar';
-import { utils } from 'ethers';
 
-const drawerWidth = 160;
+// Mui
+import Drawer from '@mui/material/Drawer';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+
+const drawerWidth = 232;
 
 interface Props {}
 
@@ -24,9 +24,21 @@ const AppBarFiller = styled(Toolbar)`
 const SDrawer = styled(Drawer)`
   .MuiDrawer-paper {
     box-sizing: border-box;
-    width: 161px;
-    background: #ffffa0;
+    width: 233px;
     font-size: 13px;
+    overflow-x: hidden;
+  }
+  &.node {
+    .MuiDrawer-paper {
+      background: white;
+      border: 0;
+    }
+  }
+  &.web3 {
+    .MuiDrawer-paper {
+      background: #edfbff;
+      border: 0;
+    }
   }
 `;
 
@@ -38,35 +50,211 @@ const Data = styled.div`
   margin-bottom: 24px;
 `;
 
+const Web3Container = styled.div`
+  background-color: #cadeff;
+  border-radius: 1rem;
+  display: flex;
+  gap: 1rem;
+  min-height: 80px;
+  min-width: 185px;
+  padding: 1rem;
+  font-size: 10px;
+  margin-right: 8px;
+  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+`;
+
+const FlexColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const IconContainer = styled.div`
+  height: 1rem;
+  width: 1rem;
+`;
+
+const Icons = styled(FlexColumn)`
+  margin-top: 2rem;
+`;
+
+const IconAndText = styled.div`
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+`;
+
+const Icon = styled.img`
+  display: block;
+  height: 100%;
+  width: 100%;
+`;
+
+const Text = styled.p`
+  font-weight: 600;
+`;
+
+const InfoTitle = styled.p`
+  text-transform: uppercase;
+  font-weight: 600;
+`;
+
+const Balance = styled(FlexColumn)`
+  background-color: #ddeaff;
+  text-align: right;
+  padding: 0rem 1rem;
+  border-radius: 1rem 1rem 1rem 1rem;
+`;
+
+const SafeContainer = styled.div<{ show: boolean }>`
+  visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
+  width: 56px;
+`;
+
+const Safe = styled(Balance)``;
+
+const DataContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Wallet = styled(Balance)`
+  flex-grow: 1;
+  p.double {
+    line-height: 2;
+  }
+`;
+
 export default function InfoBar(props: Props) {
-  const {
-    balances,
-    peers,
-    info,
-    channels,
-  } = useAppSelector((state) => state.node);
+  const channels = useAppSelector((store) => store.node.channels.data);
+  const peers = useAppSelector((store) => store.node.peers.data);
+  const balances = useAppSelector((store) => store.node.balances.data);
+  const info = useAppSelector((store) => store.node.info.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const account = useAppSelector((store) => store.web3.account) as `0x${string}`;
+  const web3Connected = useAppSelector((store) => store.web3.status.connected);
+  const nodeConnected = useAppSelector((store) => store.auth.status.connected);
+  const walletBalance = useAppSelector((store) => store.web3.balance);
+  const safeBalance = useAppSelector((store) => store.safe.balance.data);
 
-  const drawer = (
-    <div>
-      <AppBarFiller />
-      <Title>Status</Title>
-      <Data>{info?.connectivityStatus}</Data>
+  const truncateBalance3Decimals = (value: string | undefined | null) => {
+    if (value && value.includes('.')) {
+      const [before, after] = value.split('.');
+      return `${before}.${after.substring(0, 2)}`;
+    }
+    return value;
+  };
 
-      <Title>xDai balance</Title>
-      <Data>{balances?.native && utils.formatEther(balances.native)}</Data>
+  const web3Drawer = (
+    <>
+      <br />
+      <Web3Container>
+        <Icons>
+          <IconAndText>
+            <IconContainer>
+              <Icon
+                src="/assets/wxHoprIcon.svg"
+                alt="wxHOPR Icon"
+              />
+            </IconContainer>
+            <Text>wxHOPR</Text>
+          </IconAndText>
+          <IconAndText>
+            <IconContainer>
+              <Icon
+                src="/assets/xHoprIcon.svg"
+                alt="xHOPR Icon"
+              />
+            </IconContainer>
+            <Text>xHOPR</Text>
+          </IconAndText>
+          <IconAndText>
+            <IconContainer>
+              <Icon
+                src="/assets/xDaiIcon.svg"
+                alt="xDai Icon"
+              />
+            </IconContainer>
+            <Text>xDAI</Text>
+          </IconAndText>
+        </Icons>
+        <SafeContainer show={!!selectedSafeAddress}>
+          {selectedSafeAddress && (
+            <>
+              <InfoTitle>Safe</InfoTitle>
+              <Safe>
+                <p>{truncateBalance3Decimals(safeBalance.wxHopr.formatted) ?? '-'}</p>
+                <p>{truncateBalance3Decimals(safeBalance.xHopr.formatted) ?? '-'}</p>
+                <p>{truncateBalance3Decimals(safeBalance.xDai.formatted) ?? '-'}</p>
+              </Safe>
+            </>
+          )}
+        </SafeContainer>
+        <DataContainer>
+          <InfoTitle>Wallet</InfoTitle>
+          <Wallet>
+            <p>{truncateBalance3Decimals(walletBalance.wxHopr.formatted) ?? '-'}</p>
+            <p>{truncateBalance3Decimals(walletBalance.xHopr.formatted) ?? '-'}</p>
+            <p>{truncateBalance3Decimals(walletBalance.xDai.formatted) ?? '-'}</p>
+          </Wallet>
+        </DataContainer>
+      </Web3Container>
+    </>
+  );
 
-      <Title>mHOPR balance</Title>
-      <Data>{balances?.hopr && utils.formatEther(balances.hopr)}</Data>
-
-      <Title>Peers seen in the network</Title>
-      <Data>{peers?.announced?.length || '-'}</Data>
-
-      <Title>Outgoing Chanels</Title>
-      <Data>{channels?.outgoing?.length || '-'}</Data>
-
-      <Title>Incoming Chanels</Title>
-      <Data>{channels?.incoming?.length || '-'}</Data>
-    </div>
+  const nodeDrawer = (
+    <>
+      <br />
+      <Web3Container>
+        <Icons>
+          <IconAndText>
+            <IconContainer></IconContainer>
+            <Text>Status</Text>
+          </IconAndText>
+          <IconAndText>
+            <IconContainer>
+              <Icon
+                src="/assets/xHoprIcon.svg"
+                alt="xHOPR Icon"
+              />
+            </IconContainer>
+            <Text>xHOPR</Text>
+          </IconAndText>
+          <IconAndText>
+            <IconContainer>
+              <Icon
+                src="/assets/xDaiIcon.svg"
+                alt="xDai Icon"
+              />
+            </IconContainer>
+            <Text>xDAI</Text>
+          </IconAndText>
+          <IconAndText>
+            <IconContainer></IconContainer>
+            <Text>Peers</Text>
+          </IconAndText>
+          <IconAndText>
+            <IconContainer></IconContainer>
+            <Text>Outgoing Chanels</Text>
+          </IconAndText>
+          <IconAndText>
+            <IconContainer></IconContainer>
+            <Text>Incoming Chanels</Text>
+          </IconAndText>
+        </Icons>
+        <DataContainer>
+          <InfoTitle>Node</InfoTitle>
+          <Wallet>
+            <p>{info?.connectivityStatus}</p>
+            <p>{balances.native?.formatted ?? '-'}</p>
+            <p>{balances.hopr?.formatted ?? '-'}</p>
+            <p>{peers?.announced?.length || '-'}</p>
+            <p className="double">{channels?.outgoing?.length || '-'}</p>
+            <p className="double">{channels?.incoming?.length || '-'}</p>
+          </Wallet>
+        </DataContainer>
+      </Web3Container>
+    </>
   );
 
   return (
@@ -84,8 +272,11 @@ export default function InfoBar(props: Props) {
           variant="permanent"
           anchor={'right'}
           open
+          className={`${web3Connected ? 'web3' : ''} ${nodeConnected ? 'node' : ''}`}
         >
-          {drawer}
+          <AppBarFiller />
+          {web3Connected && web3Drawer}
+          {nodeConnected && !web3Connected && nodeDrawer}
         </SDrawer>
       </Box>
     </Container>

@@ -91,6 +91,7 @@ const Overlay = styled.div`
       width: calc(100% - 32px);
       word-wrap: break-word;
       padding-bottom: 16px;
+      white-space: pre-wrap;
     }
   }
 `;

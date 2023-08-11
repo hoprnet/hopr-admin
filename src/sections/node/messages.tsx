@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import styled from '@emotion/styled';
 
 // Store
-import { useAppDispatch, useAppSelector } from '../store';
-import { nodeActions } from '../store/slices/node';
-import { actionsAsync } from '../store/slices/node/actionsAsync';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { nodeActions } from '../../store/slices/node';
+import { actionsAsync } from '../../store/slices/node/actionsAsync';
 
-// mui
+// Mui
 import {
   Paper,
   Table,
@@ -19,8 +19,9 @@ import {
 } from '@mui/material'
 
 // HOPR components
-import Section from '../future-hopr-lib-components/Section';
-import { SendMessageModal } from '../components/Modal/SendMessageModal';
+import Section from '../../future-hopr-lib-components/Section';
+import { SendMessageModal } from '../../components/Modal/SendMessageModal';
+import { SubpageTitle } from '../../components/SubpageTitle';
 
 const StyledTable = styled(Table)`
   td {
@@ -31,14 +32,11 @@ const StyledTable = styled(Table)`
   }
 `;
 const messages = () => {
-  const {
-    messages,
-    aliases,
-  } = useAppSelector((selector) => selector.node);
+  const messages = useAppSelector((store) => store.node.messages);
   const {
     apiEndpoint,
     apiToken,
-  } = useAppSelector((selector) => selector.auth.loginData);
+  } = useAppSelector((store) => store.auth.loginData);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -53,13 +51,15 @@ const messages = () => {
   }, []);
 
   return (
-    <Section
-      yellow
-      fullHeightMin
-    >
-      <h2>Send Message</h2>
-      <SendMessageModal />
-      <h2>Messages</h2>
+    <Section fullHeightMin>
+      <SubpageTitle
+        title={`MESSAGES`}
+        actions={
+          <>
+            <SendMessageModal />
+          </>
+        }
+      />
       <TableContainer component={Paper}>
         <StyledTable
           sx={{ minWidth: 650 }}

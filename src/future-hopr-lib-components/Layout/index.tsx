@@ -13,6 +13,7 @@ import Drawer from './drawer';
 
 // Types
 import { ApplicationMapType } from '../../router';
+import { useAppSelector } from '../../store';
 
 const SLayout = styled.div`
   &.webapp {
@@ -49,7 +50,7 @@ const Content = styled.div<ContentType>`
     props.drawerRight &&
     css`
       @media screen and (min-width: 600px) {
-        margin-right: 161px;
+        margin-right: 233px;
       }
     `}
 `;
@@ -80,6 +81,8 @@ const Layout: React.FC<{
 }) => {
   // Determine if the device is a mobile device based on the screen width
   const isMobile = useMediaQuery('(max-width: 500px)');
+  const account = useAppSelector((store) => store.web3.account);
+  const isConnected = useAppSelector((store) => store.auth.status.connected);
 
   // Set the initial state of the drawer based on the device type
   // If it's a mobile device, set the drawer to be closed by default
@@ -96,7 +99,6 @@ const Layout: React.FC<{
         set_openedNavigationDrawer={set_openedNavigationDrawer}
         openedNavigationDrawer={openedNavigationDrawer}
       />
-
       {drawer && (
         <Drawer
           drawerItems={drawerItems}

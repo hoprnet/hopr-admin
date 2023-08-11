@@ -2,7 +2,6 @@ import styled from '@emotion/styled';
 import { ReactNode } from 'react';
 import { truncateHOPRPeerId } from '../utils/helpers';
 import { useAppSelector } from '../store';
-import { useBalance } from 'wagmi';
 
 import Button from '../future-hopr-lib-components/Button';
 import Section from '../future-hopr-lib-components/Section';
@@ -252,14 +251,9 @@ const GrayCard = ({
 };
 
 const NodeAdded = () => {
-  const selectedSafeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress) as `0x${string}`;
-  const nodeNativeAddress = useAppSelector((selector) => selector.node.addresses.native);
-  const nodeHoprAddress = useAppSelector((selector) => selector.node.addresses.hopr);
-
-  const { data: xDAI_balance } = useBalance({
-    address: selectedSafeAddress,
-    watch: true,
-  });
+  const nodeNativeAddress = useAppSelector((store) => store.node.addresses.data.native);
+  const nodeHoprAddress = useAppSelector((store) => store.node.addresses.data.hopr);
+  const safeBalance = useAppSelector((store) => store.safe.balance.data);
 
   return (
     <Section
@@ -374,7 +368,7 @@ const NodeAdded = () => {
           <GrayCard
             id="xdai"
             title="xDAI"
-            value={xDAI_balance?.formatted ?? '0'}
+            value={safeBalance.xDai.formatted ?? '-'}
             buttons={[
               {
                 text: 'Send to node',
