@@ -320,33 +320,37 @@ const LayoutEnhanced = () => {
     );
     if (!apiToken) return;
     const useNode = async () => {
-      const loginInfo = await dispatch(
-        authActionsAsync.loginThunk({
-          apiEndpoint,
-          apiToken,
-        }),
-      ).unwrap();
-      if (loginInfo) {
-        dispatch(
-          nodeActionsAsync.getInfoThunk({
-            apiToken,
+      try {
+        const loginInfo = await dispatch(
+          authActionsAsync.loginThunk({
             apiEndpoint,
-          }),
-        );
-        dispatch(
-          nodeActionsAsync.getAddressesThunk({
             apiToken,
-            apiEndpoint,
           }),
-        );
-        dispatch(
-          nodeActionsAsync.getAliasesThunk({
-            apiToken,
-            apiEndpoint,
-          }),
-        );
-        dispatch(nodeActions.initializeMessagesWebsocket());
-        dispatch(nodeActions.initializeLogsWebsocket());
+        ).unwrap();
+        if (loginInfo) {
+          dispatch(
+            nodeActionsAsync.getInfoThunk({
+              apiToken,
+              apiEndpoint,
+            }),
+          );
+          dispatch(
+            nodeActionsAsync.getAddressesThunk({ payload: {
+              apiToken,
+              apiEndpoint,
+            } }),
+          );
+          dispatch(
+            nodeActionsAsync.getAliasesThunk({
+              apiToken,
+              apiEndpoint,
+            }),
+          );
+          dispatch(nodeActions.initializeMessagesWebsocket());
+          dispatch(nodeActions.initializeLogsWebsocket());
+        }
+      } catch (e) {
+        // error is handled on redux
       }
     };
     useNode();

@@ -194,43 +194,46 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
       apiToken,
       apiEndpoint,
     });
-
     dispatch(authActions.resetState());
     dispatch(nodeActions.resetState());
     dispatch(appActions.resetNodeState());
     dispatch(nodeActions.closeMessagesWebsocket());
     dispatch(nodeActions.closeLogsWebsocket());
-    const loginInfo = await dispatch(
-      authActionsAsync.loginThunk({
-        apiEndpoint,
-        apiToken,
-      }),
-    ).unwrap();
-    if (loginInfo) {
-      dispatch(
-        authActions.useNodeData({
+    try {
+      const loginInfo = await dispatch(
+        authActionsAsync.loginThunk({
           apiEndpoint,
           apiToken,
-          localName,
         }),
-      );
-      dispatch(
-        nodeActionsAsync.getAddressesThunk({
-          apiToken,
-          apiEndpoint,
-        }),
-      );
-      dispatch(
-        nodeActionsAsync.getAliasesThunk({
-          apiToken,
-          apiEndpoint,
-        }),
-      );
-      dispatch(nodeActions.setInfo(loginInfo));
-      dispatch(nodeActions.initializeMessagesWebsocket());
-      dispatch(nodeActions.initializeLogsWebsocket());
-      if (!error) navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
-      props.handleClose();
+      ).unwrap();
+      if (loginInfo) {
+        dispatch(
+          authActions.useNodeData({
+            apiEndpoint,
+            apiToken,
+            localName,
+          }),
+        );
+        dispatch(
+          nodeActionsAsync.getAddressesThunk({ payload: {
+            apiToken,
+            apiEndpoint,
+          } }),
+        );
+        dispatch(
+          nodeActionsAsync.getAliasesThunk({
+            apiToken,
+            apiEndpoint,
+          }),
+        );
+        dispatch(nodeActions.setInfo(loginInfo));
+        dispatch(nodeActions.initializeMessagesWebsocket());
+        dispatch(nodeActions.initializeLogsWebsocket());
+        if (!error) navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
+        props.handleClose();
+      }
+    } catch (e) { 
+      // error is handled in redux
     }
   };
 

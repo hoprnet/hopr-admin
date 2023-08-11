@@ -42,10 +42,10 @@ function InfoPage() {
   const fetchInfoData = () => {
     if (apiEndpoint && apiToken) {
       dispatch(
-        actionsAsync.getBalancesThunk({
+        actionsAsync.getBalancesThunk({ payload: {
           apiEndpoint,
           apiToken,
-        }),
+        } }),
       );
       dispatch(
         actionsAsync.getChannelsThunk({
@@ -54,10 +54,10 @@ function InfoPage() {
         }),
       );
       dispatch(
-        actionsAsync.getAddressesThunk({
+        actionsAsync.getAddressesThunk({ payload: {
           apiEndpoint,
           apiToken,
-        }),
+        } }),
       );
       dispatch(
         actionsAsync.getVersionThunk({
