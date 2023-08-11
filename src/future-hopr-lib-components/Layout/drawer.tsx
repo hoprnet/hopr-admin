@@ -38,7 +38,7 @@ const StyledDrawer = styled(MuiDrawer)`
   }
 
   &.type-blue {
-    .MuiDrawer-paper{
+    .MuiDrawer-paper {
       background: #000050;
       color: white;
     }
@@ -51,9 +51,6 @@ const StyledDrawer = styled(MuiDrawer)`
     }
     .StyledListItemButton {
       color: white;
-      .MuiSvgIcon-root {
-        color: white;
-      }
       &.Mui-selected {
         &:hover {
           background-color: rgba(255, 255, 255, 0.3);
@@ -62,6 +59,9 @@ const StyledDrawer = styled(MuiDrawer)`
       &:hover {
         background-color: rgba(255, 255, 255, 0.3);
       }
+    }
+    .MuiSvgIcon-root {
+      color: white;
     }
   }
 `;
@@ -84,14 +84,13 @@ const StyledListItemButton = styled(ListItemButton)`
   &.Mui-selected {
     color: #0000b4;
     background-color: rgba(255, 255, 255, 0.45);
-    text-decoration: underline 2px rgb(0, 0, 180);
+    text-decoration: underline 2px rgb(255, 255, 255);
     text-underline-offset: 4px;
     .MuiTypography-root {
       font-weight: bold;
     }
     .MuiSvgIcon-root,
     .MuiListItemIcon-root {
-      color: #0000b4;
       color: #0000b4;
     }
   }
@@ -156,14 +155,14 @@ const Drawer = ({
           <List
             subheader={
               openedNavigationDrawer ? (
-                <StyledListSubheader className='StyledListSubheader'>{group.groupName}</StyledListSubheader>
+                <StyledListSubheader className="StyledListSubheader">{group.groupName}</StyledListSubheader>
               ) : (
                 <Tooltip
                   title={`Group: ${group.groupName.toLowerCase()}`}
                   placement="right"
                 >
-                  <StyledListSubheader className='StyledListSubheader'>
-                    <ListItemIcon className='ListItemIcon'>{group.icon}</ListItemIcon>
+                  <StyledListSubheader className="StyledListSubheader">
+                    <ListItemIcon className="ListItemIcon">{group.icon}</ListItemIcon>
                   </StyledListSubheader>
                 </Tooltip>
               )
@@ -181,10 +180,10 @@ const Drawer = ({
                   selected={location.pathname === `/${group.path}/${item.path}`}
                   disabled={!item.element || (item.loginNeeded && !drawerLoginState?.[item.loginNeeded])}
                   onClick={handleButtonClick}
-                  className='StyledListItemButton'
+                  className="StyledListItemButton"
                 >
-                  <ListItemIcon className='ListItemIcon'>{item.icon}</ListItemIcon>
-                  <ListItemText className='ListItemText'>{item.name}</ListItemText>
+                  <ListItemIcon className="ListItemIcon">{item.icon}</ListItemIcon>
+                  <ListItemText className="ListItemText">{item.name}</ListItemText>
                 </StyledListItemButton>
               </Tooltip>
             ))}

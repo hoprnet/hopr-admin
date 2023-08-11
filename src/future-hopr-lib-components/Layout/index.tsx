@@ -79,7 +79,7 @@ const Layout: React.FC<{
   webapp,
   drawerLoginState,
   drawerRight,
-  drawerType
+  drawerType,
 }) => {
   // Determine if the device is a mobile device based on the screen width
   const isMobile = useMediaQuery('(max-width: 500px)');
