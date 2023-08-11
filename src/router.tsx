@@ -366,6 +366,8 @@ const LayoutEnhanced = () => {
         node: nodeConnected,
         web3: true,
       }}
+      className={environment}
+      drawerType={environment === 'web3' && 'blue'}
       itemsNavbarRight={
         <>
           <NotificationBar />

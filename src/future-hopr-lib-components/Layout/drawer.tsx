@@ -23,8 +23,6 @@ const StyledDrawer = styled(MuiDrawer)`
     padding-top: 59px;
     transition: width 0.4s ease-out;
     overflow-x: hidden;
-    /* background: #3c64a5;
-    color: white; */
     scrollbar-width: none;
     &::-webkit-scrollbar {
       display: none;
@@ -38,9 +36,34 @@ const StyledDrawer = styled(MuiDrawer)`
         width: ${drawerWidth}px;
       `}
   }
-  /* hr {
-    border-color: rgb(255 255 255 / 50%);
-  } */
+
+  &.type-blue {
+    .MuiDrawer-paper{
+      background: #000050;
+      color: white;
+    }
+    hr {
+      border-color: rgb(255 255 255 / 50%);
+    }
+    .StyledListSubheader {
+      background: #000050;
+      color: white;
+    }
+    .StyledListItemButton {
+      color: white;
+      .MuiSvgIcon-root {
+        color: white;
+      }
+      &.Mui-selected {
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.3);
+        }
+      }
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
 `;
 
 const StyledListSubheader = styled(ListSubheader)`
@@ -49,17 +72,11 @@ const StyledListSubheader = styled(ListSubheader)`
   height: 64px;
   letter-spacing: 0.2px;
   user-select: none;
-  /* background: #3c64a5; */
-  /* color: white; */
   color: #777;
 `;
 
 const StyledListItemButton = styled(ListItemButton)`
   height: 48px;
-  /* color: white;
-  .MuiSvgIcon-root {
-    color: white;
-  } */
   svg {
     width: 24px;
     height: 24px;
@@ -77,13 +94,7 @@ const StyledListItemButton = styled(ListItemButton)`
       color: #0000b4;
       color: #0000b4;
     }
-    /* &:hover {
-      background-color: rgba(255, 255, 255, 0.3);
-    } */
   }
-  /* &:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-  } */
 ` as typeof ListItemButton;
 
 type DrawerProps = {
@@ -93,6 +104,7 @@ type DrawerProps = {
     web3?: boolean;
   };
   openedNavigationDrawer: boolean;
+  drawerType?: 'blue' | 'white';
   set_openedNavigationDrawer: (openedNavigationDrawer: boolean) => void;
 };
 
@@ -101,6 +113,7 @@ const Drawer = ({
   drawerLoginState,
   openedNavigationDrawer,
   set_openedNavigationDrawer,
+  drawerType,
 }: DrawerProps) => {
   const location = useLocation();
   const searchParams = location.search;
@@ -135,6 +148,7 @@ const Drawer = ({
       variant={drawerVariant}
       open={openedNavigationDrawer}
       onClose={() => set_openedNavigationDrawer(false)}
+      className={drawerType === 'blue' ? 'type-blue' : 'type-white'}
     >
       {drawerItems.map((group) => (
         <div key={group.groupName}>
@@ -142,14 +156,14 @@ const Drawer = ({
           <List
             subheader={
               openedNavigationDrawer ? (
-                <StyledListSubheader>{group.groupName}</StyledListSubheader>
+                <StyledListSubheader className='StyledListSubheader'>{group.groupName}</StyledListSubheader>
               ) : (
                 <Tooltip
                   title={`Group: ${group.groupName.toLowerCase()}`}
                   placement="right"
                 >
-                  <StyledListSubheader>
-                    <ListItemIcon>{group.icon}</ListItemIcon>
+                  <StyledListSubheader className='StyledListSubheader'>
+                    <ListItemIcon className='ListItemIcon'>{group.icon}</ListItemIcon>
                   </StyledListSubheader>
                 </Tooltip>
               )
@@ -167,9 +181,10 @@ const Drawer = ({
                   selected={location.pathname === `/${group.path}/${item.path}`}
                   disabled={!item.element || (item.loginNeeded && !drawerLoginState?.[item.loginNeeded])}
                   onClick={handleButtonClick}
+                  className='StyledListItemButton'
                 >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText>{item.name}</ListItemText>
+                  <ListItemIcon className='ListItemIcon'>{item.icon}</ListItemIcon>
+                  <ListItemText className='ListItemText'>{item.name}</ListItemText>
                 </StyledListItemButton>
               </Tooltip>
             ))}

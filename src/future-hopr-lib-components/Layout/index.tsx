@@ -66,6 +66,7 @@ const Layout: React.FC<{
     node?: boolean;
     web3?: boolean;
   };
+  drawerType?: 'blue' | 'white';
   drawerItems: ApplicationMapType;
   drawerRight?: React.ReactNode;
 }> = ({
@@ -78,6 +79,7 @@ const Layout: React.FC<{
   webapp,
   drawerLoginState,
   drawerRight,
+  drawerType
 }) => {
   // Determine if the device is a mobile device based on the screen width
   const isMobile = useMediaQuery('(max-width: 500px)');
@@ -89,7 +91,7 @@ const Layout: React.FC<{
   const [openedNavigationDrawer, set_openedNavigationDrawer] = useState(!isMobile);
 
   return (
-    <SLayout className={`Layout${webapp ? ' webapp' : ''}`}>
+    <SLayout className={`Layout${webapp ? ' webapp' : ''} ${className}`}>
       <NavBar
         mainLogo="/logo.svg"
         mainLogoAlt="hopr logo"
@@ -101,6 +103,7 @@ const Layout: React.FC<{
       />
       {drawer && (
         <Drawer
+          drawerType={drawerType}
           drawerItems={drawerItems}
           drawerLoginState={drawerLoginState}
           set_openedNavigationDrawer={set_openedNavigationDrawer}
