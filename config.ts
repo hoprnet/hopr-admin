@@ -1,4 +1,4 @@
-export const environment:('dev' | 'node' | 'web3') = 'web3';
+export const environment:('dev' | 'node' | 'web3') = 'dev';
 
 // Smart Contracts
 export const HOPR_CHANNELS_SMART_CONTRACT_ADDRESS = '0xfabee463f31e39ec8952bbfb4490c41103bf573e';
