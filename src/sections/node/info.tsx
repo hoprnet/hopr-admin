@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
 import { SubpageTitle } from '../../components/SubpageTitle';
+import WithdrawModal from '../../components/Modal/WithdrawModal';
 
 function InfoPage() {
   const dispatch = useAppDispatch();
@@ -176,11 +177,15 @@ function InfoPage() {
         <tbody>
           <tr>
             <th>Native</th>
-            <td>{balances.native?.formatted} xDai</td>
+            <td>
+              {balances.native?.formatted} xDai <WithdrawModal initialCurrency="NATIVE" />{' '}
+            </td>
           </tr>
           <tr>
             <th>Hopr</th>
-            <td>{balances.hopr?.formatted} wxHOPR</td>
+            <td>
+              {balances.hopr?.formatted} wxHOPR <WithdrawModal initialCurrency="HOPR" />{' '}
+            </td>
           </tr>
         </tbody>
       </TableExtended>
