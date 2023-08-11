@@ -103,7 +103,7 @@ type DrawerProps = {
     web3?: boolean;
   };
   openedNavigationDrawer: boolean;
-  drawerType?: 'blue' | 'white';
+  drawerType?: 'blue' | 'white' | false;
   set_openedNavigationDrawer: (openedNavigationDrawer: boolean) => void;
 };
 
