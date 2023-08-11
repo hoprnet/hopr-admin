@@ -50,50 +50,89 @@ export type CustomAllTransactionsListResponse =
   | null;
 
 type InitialState = {
-  selectedSafeAddress: string | null;
-  safesByOwner: string[];
-  allTransactions: CustomAllTransactionsListResponse | null;
-  pendingTransactions: CustomSafeMultisigTransactionListResponse;
-  tokenList: TokenInfoListResponse | null;
-  info: SafeInfoResponse | null;
-  delegates: SafeDelegateListResponse | null;
+  selectedSafeAddress: { data: string | null; isFetching: boolean };
+  safesByOwner: { data: string[]; isFetching: boolean };
+  allTransactions: { data: CustomAllTransactionsListResponse | null; isFetching: boolean };
+  pendingTransactions: { data: CustomSafeMultisigTransactionListResponse | null; isFetching: boolean };
+  info: { data: SafeInfoResponse | null; isFetching: boolean };
+  delegates: { data: SafeDelegateListResponse | null; isFetching: boolean };
+  createTransaction: { isFetching: boolean };
+  confirmTransaction: { isFetching: boolean };
+  rejectTransaction: { isFetching: boolean };
+  executeTransaction: { isFetching: boolean };
+  addDelegate: { isFetching: boolean };
+  removeDelegate: { isFetching: boolean };
+  tokenList: { data: TokenInfoListResponse | null; isFetching: boolean };
+  token: { isFetching: boolean };
   balance: {
-    xDai: {
-      value: string | null;
-      formatted: string | null;
-    };
-    xHopr: {
-      value: string | null;
-      formatted: string | null;
-    };
-    wxHopr: {
-      value: string | null;
-      formatted: string | null;
+    data: {
+      xDai: {
+        value: string | null;
+        formatted: string | null;
+      };
+      xHopr: {
+        value: string | null;
+        formatted: string | null;
+      };
+      wxHopr: {
+        value: string | null;
+        formatted: string | null;
+      };
     };
     isFetching: boolean;
   };
 };
 
 export const initialState: InitialState = {
-  selectedSafeAddress: null,
-  safesByOwner: [],
-  allTransactions: null,
-  pendingTransactions: null,
-  tokenList: null,
-  info: null,
-  delegates: null,
+  selectedSafeAddress: {
+    data: null,
+    isFetching: false,
+  },
+  safesByOwner: {
+    data: [],
+    isFetching: false,
+  },
+  allTransactions: {
+    data: null,
+    isFetching: false,
+  },
+  pendingTransactions: {
+    data: null,
+    isFetching: false,
+  },
+  info: {
+    data: null,
+    isFetching: false,
+  },
+  delegates: {
+    data: null,
+    isFetching: false,
+  },
+  createTransaction: { isFetching: false },
+  confirmTransaction: { isFetching: false },
+  rejectTransaction: { isFetching: false },
+  executeTransaction: { isFetching: false },
+  addDelegate: { isFetching: false },
+  removeDelegate: { isFetching: false },
+  tokenList: {
+    data: null,
+    isFetching: false,
+  },
+  token: { isFetching: false },
   balance: {
-    xDai: {
-      value: null,
-      formatted: null,
-    },
-    xHopr: {
-      value: null,
-      formatted: null,
-    },
-    wxHopr: {
-      value: null,
-      formatted: null,
+    data: {
+      xDai: {
+        value: null,
+        formatted: null,
+      },
+      xHopr: {
+        value: null,
+        formatted: null,
+      },
+      wxHopr: {
+        value: null,
+        formatted: null,
+      },
     },
     isFetching: false,
   },

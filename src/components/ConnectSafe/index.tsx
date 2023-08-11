@@ -63,9 +63,9 @@ const SafeAddress = styled.div`
 export default function ConnectSafe() {
   const dispatch = useAppDispatch();
   const signer = useEthersSigner();
-  const connected = useAppSelector((selector) => selector.web3.status);
-  const safes = useAppSelector((selector) => selector.safe.safesByOwner);
-  const safeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress);
+  const connected = useAppSelector((store) => store.web3.status);
+  const safes = useAppSelector((store) => store.safe.safesByOwner.data);
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
 

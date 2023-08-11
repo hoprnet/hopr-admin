@@ -21,6 +21,9 @@ const MAX_UINT256 = BigInt(2 ** 256) - BigInt(1);
 function SafeSection() {
   const dispatch = useAppDispatch();
   const safe = useAppSelector((store) => store.safe);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
+  const safesByOwner = useAppSelector((store) => store.safe.safesByOwner.data);
+  const allTransactions = useAppSelector((store) => store.safe.allTransactions.data);
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
   const { account } = useAppSelector((store) => store.web3);
   const signer = useEthersSigner();
@@ -31,7 +34,7 @@ function SafeSection() {
     address: mHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     abi: erc20ABI,
     functionName: 'allowance',
-    args: [safe.selectedSafeAddress as Address, HOPR_CHANNELS_SMART_CONTRACT_ADDRESS],
+    args: [selectedSafeAddress, HOPR_CHANNELS_SMART_CONTRACT_ADDRESS],
   });
 
   useEffect(() => {
@@ -65,7 +68,7 @@ function SafeSection() {
     >
       <h1>Safe</h1>
       <h2>existing safes</h2>
-      {safe.safesByOwner.map((safeAddress) => (
+      {safesByOwner.map((safeAddress) => (
         <button
           key={safeAddress}
           onClick={() => {
@@ -152,13 +155,13 @@ function SafeSection() {
       </button>
       <h2>create tx proposal to yourself on selected safe</h2>
       <button
-        disabled={!safe.selectedSafeAddress}
+        disabled={!selectedSafeAddress}
         onClick={async () => {
-          if (safe.selectedSafeAddress && signer) {
+          if (selectedSafeAddress && signer) {
             const signerAddress = await signer.getAddress();
             dispatch(
               safeActionsAsync.createSafeTransactionThunk({
-                safeAddress: safe.selectedSafeAddress,
+                safeAddress: selectedSafeAddress,
                 signer,
                 safeTransactionData: {
                   value: utils.parseEther('0.001').toString(),
@@ -173,7 +176,7 @@ function SafeSection() {
         create tx proposal
       </button>
       <h2>transactions actions</h2>
-      {safe.allTransactions?.results.map((transaction, key) => (
+      {allTransactions?.results.map((transaction, key) => (
         <div key={key}>
           <p>
             {transaction.txType} {transaction.to}
@@ -218,14 +221,14 @@ function SafeSection() {
       <h2>approve hopr token to hopr channels</h2>
       <span>allowance: {formatEther(BigInt(allowanceData?.toString() ?? '0'))}</span>
       <button
-        disabled={!safe.selectedSafeAddress || !signer}
+        disabled={!selectedSafeAddress || !signer}
         onClick={() => {
-          if (signer && safe.selectedSafeAddress) {
+          if (signer && selectedSafeAddress) {
             dispatch(
               safeActionsAsync.createSafeContractTransaction({
                 data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, MAX_UINT256),
                 signer,
-                safeAddress: safe.selectedSafeAddress,
+                safeAddress: selectedSafeAddress,
                 smartContractAddress: mHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
               }),
             );

@@ -39,7 +39,7 @@ const FundsToSafe = ({
   account,
   set_step,
 }: FundsToSafeProps) => {
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const walletBalance = useAppSelector((store) => store.web3.balance);
 
   const [xdaiValue, set_xdaiValue] = useState('');

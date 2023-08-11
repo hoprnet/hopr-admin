@@ -160,7 +160,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
   const signer = useEthersSigner();
   const dispatch = useAppDispatch();
   const { address } = useAccount();
-  const safeNonce = useAppSelector((state) => state.safe.info?.nonce);
+  const safeNonce = useAppSelector((store) => store.safe.info.data?.nonce);
   const transactionAfterSafeNonce = safeNonce !== transaction.nonce;
   const [userAction, set_userAction] = useState<'EXECUTE' | 'SIGN' | null>(null);
   const [isLoadingApproving, set_isLoadingApproving] = useState<boolean>(false);
@@ -287,7 +287,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
 
 const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisigTransactionResponse }) => {
   const { address } = useAccount();
-  const safeNonce = useAppSelector((state) => state.safe.info?.nonce);
+  const safeNonce = useAppSelector((store) => store.safe.info.data?.nonce);
   const signer = useEthersSigner();
   const dispatch = useAppDispatch();
   const [open, set_open] = useState(false);
@@ -343,7 +343,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
       }),
     ).unwrap();
 
-    if (!token.name && !token.symbol) {
+    if (!token || (!token.name && !token.symbol)) {
       // this is not a token contract
       return JSON.stringify(transaction.dataDecoded);
     }
@@ -367,7 +367,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
       }),
     ).unwrap();
 
-    if (!token.name && !token.symbol) {
+    if (!token || (!token.name && !token.symbol)) {
       // this is not a token contract
       return JSON.stringify(transaction.dataDecoded);
     }
@@ -787,8 +787,8 @@ function TransactionHistoryRow(props: { transaction: NonNullable<CustomAllTransa
 
 function TransactionHistoryTable() {
   const dispatch = useAppDispatch();
-  const safeTransactions = useAppSelector((state) => state.safe.allTransactions);
-  const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
+  const safeTransactions = useAppSelector((store) => store.safe.allTransactions.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const signer = useEthersSigner();
 
   const fetchAllSafeTransaction = () => {
@@ -841,8 +841,8 @@ function TransactionHistoryTable() {
 
 const PendingTransactionsTable = () => {
   const dispatch = useAppDispatch();
-  const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions);
-  const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
+  const pendingTransactions = useAppSelector((store) => store.safe.pendingTransactions.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const signer = useEthersSigner();
 
   useEffect(() => {

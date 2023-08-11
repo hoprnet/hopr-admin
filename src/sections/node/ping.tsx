@@ -13,9 +13,9 @@ function PingPage() {
   const [pinged, set_pinged] = useState(false);
   const [invalidPeerId, set_invalidPeerId] = useState(false);
 
-  const pings = useAppSelector((selector) => selector.node.pings);
-  const aliases = useAppSelector((selector) => selector.node.aliases);
-  const loginData = useAppSelector((selector) => selector.auth.loginData);
+  const pings = useAppSelector((store) => store.node.pings);
+  const aliases = useAppSelector((store) => store.node.aliases.data);
+  const loginData = useAppSelector((store) => store.auth.loginData);
   const {
     apiEndpoint,
     apiToken,

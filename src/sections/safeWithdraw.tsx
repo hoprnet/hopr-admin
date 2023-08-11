@@ -121,9 +121,9 @@ function SafeWithdraw() {
   // hooks
   const [searchParams, setSearchParams] = useSearchParams();
   const tokenParam = searchParams.get('token');
-  const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions);
-  const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
-  const safeInfo = useAppSelector((state) => state.safe.info);
+  const pendingTransactions = useAppSelector((store) => store.safe.pendingTransactions.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const safeInfo = useAppSelector((store) => store.safe.info.data);
   const { address } = useAccount();
   // local state
   const [userCanSkipProposal, set_userCanSkipProposal] = useState(false);

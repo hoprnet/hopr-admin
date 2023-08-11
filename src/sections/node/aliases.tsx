@@ -29,8 +29,9 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 
 function AliasesPage() {
   const dispatch = useAppDispatch();
-  const aliases = useAppSelector((selector) => selector.node.aliases);
-  const loginData = useAppSelector((selector) => selector.auth.loginData);
+  const aliases = useAppSelector((store) => store.node.aliases.data);
+  const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
+  const loginData = useAppSelector((store) => store.auth.loginData);
   const [importSuccess, set_importSuccess] = useState(false);
   const [deleteSuccess, set_deleteSuccess] = useState(false);
   const [importErrors, set_importErrors] = useState<
@@ -115,6 +116,7 @@ function AliasesPage() {
       <SubpageTitle
         title={`ALIASES`}
         refreshFunction={handleRefresh}
+        reloading={aliasesFetching}
         actions={
           <>
             <CreateAliasModal handleRefresh={handleRefresh} />
@@ -208,7 +210,7 @@ function DeleteAliasButton({
   onSuccess: () => void;
 }) {
   const dispatch = useAppDispatch();
-  const loginData = useAppSelector((selector) => selector.auth.loginData);
+  const loginData = useAppSelector((store) => store.auth.loginData);
 
   return (
     <IconButton
@@ -237,7 +239,7 @@ function DeleteAliasButton({
 
 function CreateAliasForm() {
   const dispatch = useAppDispatch();
-  const loginData = useAppSelector((selector) => selector.auth.loginData);
+  const loginData = useAppSelector((store) => store.auth.loginData);
   const [error, set_error] = useState<{
     status: string | undefined;
     error: string | undefined;

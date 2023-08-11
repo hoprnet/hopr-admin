@@ -39,8 +39,8 @@ export default function WagmiUpdater() {
   }, [isConnected, chain]);
 
   // Balances
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress);
-  const account = useAppSelector((selector) => selector.web3.account) as `0x${string}`;
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const account = useAppSelector((store) => store.web3.account) as `0x${string}`;
 
   const { data: xDAI_balance } = useBalance({
     address: account,

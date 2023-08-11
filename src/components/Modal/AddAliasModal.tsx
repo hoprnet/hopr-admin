@@ -19,8 +19,8 @@ export const CreateAliasModal = ({
   peerId,
 }: CreateAliasModalProps) => {
   const dispatch = useAppDispatch();
-  const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const aliases = useAppSelector((selector) => selector.node.aliases);
+  const loginData = useAppSelector((store) => store.auth.loginData);
+  const aliases = useAppSelector((store) => store.node.aliases.data);
   const [error, set_error] = useState<{
     status: string | undefined;
     error: string | undefined;
