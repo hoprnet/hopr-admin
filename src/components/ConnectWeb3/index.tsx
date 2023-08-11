@@ -200,6 +200,7 @@ export default function ConnectWeb3({
         open={chooseWalletModal}
         onClose={handleClose}
         title="CONNECT A WALLET"
+        disableScrollLock={true}
       >
         <ConnectWalletContent>
           <WalletButton

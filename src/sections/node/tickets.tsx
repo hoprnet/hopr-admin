@@ -11,6 +11,9 @@ import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
+// Mui
+import { Paper } from '@mui/material';
+
 function TicketsPage() {
   const dispatch = useAppDispatch();
   const tickets = useAppSelector((store) => store.node.tickets.data);
@@ -70,6 +73,7 @@ function TicketsPage() {
       className="Section--tickets"
       id="Section--tickets"
       fullHeightMin
+      yellow
     >
       <SubpageTitle
         title="TICKETS"
@@ -93,53 +97,60 @@ function TicketsPage() {
           </>
         }
       />
-      <TableExtended
-        title="Ticket statistics"
-        style={{ marginBottom: '32px' }}
+      <Paper
+        style={{
+          padding: '24px',
+          width: 'calc( 100% - 48px )',
+        }}
       >
-        <tbody>
-          <tr>
-            <th>Pending count</th>
-            <td>{statistics?.pending}</td>
-          </tr>
-          <tr>
-            <th>Unredeemed count</th>
-            <td>{statistics?.unredeemed}</td>
-          </tr>
-          <tr>
-            <th>Unredeemed value</th>
-            <td>{statistics?.unredeemedValue}</td>
-          </tr>
-          <tr>
-            <th>Redeemed count</th>
-            <td>{statistics?.redeemed}</td>
-          </tr>
-          <tr>
-            <th>Redeemed value</th>
-            <td>{statistics?.redeemedValue}</td>
-          </tr>
-          <tr>
-            <th>Losing tickets count</th>
-            <td>{statistics?.losingTickets}</td>
-          </tr>
-          <tr>
-            <th>Win proportion</th>
-            <td>{statistics?.winProportion}</td>
-          </tr>
-          <tr>
-            <th>Neglected count</th>
-            <td>{statistics?.neglected}</td>
-          </tr>
-          <tr>
-            <th>Rejected count</th>
-            <td>{statistics?.rejected}</td>
-          </tr>
-          <tr>
-            <th>Rejected value</th>
-            <td>{statistics?.rejectedValue}</td>
-          </tr>
-        </tbody>
-      </TableExtended>
+        <TableExtended
+          title="Ticket statistics"
+          style={{ marginBottom: '32px' }}
+        >
+          <tbody>
+            <tr>
+              <th>Pending count</th>
+              <td>{statistics?.pending}</td>
+            </tr>
+            <tr>
+              <th>Unredeemed count</th>
+              <td>{statistics?.unredeemed}</td>
+            </tr>
+            <tr>
+              <th>Unredeemed value</th>
+              <td>{statistics?.unredeemedValue}</td>
+            </tr>
+            <tr>
+              <th>Redeemed count</th>
+              <td>{statistics?.redeemed}</td>
+            </tr>
+            <tr>
+              <th>Redeemed value</th>
+              <td>{statistics?.redeemedValue}</td>
+            </tr>
+            <tr>
+              <th>Losing tickets count</th>
+              <td>{statistics?.losingTickets}</td>
+            </tr>
+            <tr>
+              <th>Win proportion</th>
+              <td>{statistics?.winProportion}</td>
+            </tr>
+            <tr>
+              <th>Neglected count</th>
+              <td>{statistics?.neglected}</td>
+            </tr>
+            <tr>
+              <th>Rejected count</th>
+              <td>{statistics?.rejected}</td>
+            </tr>
+            <tr>
+              <th>Rejected value</th>
+              <td>{statistics?.rejectedValue}</td>
+            </tr>
+          </tbody>
+        </TableExtended>
+      </Paper>
     </Section>
   );
 }

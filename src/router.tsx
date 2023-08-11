@@ -36,13 +36,11 @@ import NotificationBar from './components/NotificationBar';
 import InfoBar from './components/InfoBar';
 
 // Icons
-import CableIcon from '@mui/icons-material/Cable';
 import InfoIcon from '@mui/icons-material/Info';
 import LanIcon from '@mui/icons-material/Lan';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import SettingsIcon from '@mui/icons-material/Settings';
 import TerminalIcon from '@mui/icons-material/Terminal';
-import RssFeedIcon from '@mui/icons-material/RssFeed';
 import MailIcon from '@mui/icons-material/Mail';
 import HubIcon from '@mui/icons-material/Hub';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
@@ -52,7 +50,6 @@ import SavingsIcon from '@mui/icons-material/Savings';
 import NodeIcon from '@mui/icons-material/Router';
 import NetworkingIcon from '@mui/icons-material/Diversity3';
 import DevelopIcon from '@mui/icons-material/Code';
-import PingPage from './sections/node/ping';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -60,7 +57,6 @@ import DockerInstallation from './steps/installNode/dockerInstallation';
 import NodeAddress from './steps/installNode/nodeAddress';
 import PaidIcon from '@mui/icons-material/Paid';
 import ConnectSafe from './components/ConnectSafe';
-import ReceiptIcon from '@mui/icons-material/Receipt';
 import SafeOnboarding from './steps/safeOnboarding';
 import NoNodeAdded from './sections/noNodeAdded';
 import StakingLandingPage from './sections/stakingLandingPage';
@@ -130,13 +126,6 @@ export const applicationMapNode: ApplicationMapType = [
     path: 'networking',
     icon: <NetworkingIcon />,
     items: [
-      {
-        name: 'PING',
-        path: 'ping',
-        icon: <RssFeedIcon />,
-        element: <PingPage />,
-        loginNeeded: 'node',
-      },
       {
         name: 'PEERS',
         path: 'peers',
@@ -377,6 +366,8 @@ const LayoutEnhanced = () => {
         node: nodeConnected,
         web3: true,
       }}
+      className={environment}
+      drawerType={environment === 'web3' ? 'blue' : undefined}
       itemsNavbarRight={
         <>
           <NotificationBar />

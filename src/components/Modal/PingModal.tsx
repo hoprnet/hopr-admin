@@ -3,94 +3,78 @@ import { DialogTitle, TextField, DialogActions, Alert } from '@mui/material';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
-import { appActions } from '../../store/slices/app';
 import CloseIcon from '@mui/icons-material/Close';
 import { sendNotification } from '../../hooks/useWatcher/notifications';
 
 // HOPR Components
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
-import AddAliasIcon from '../../future-hopr-lib-components/Icons/AddAlias';
+import RssFeedIcon from '@mui/icons-material/RssFeed';
 import Button from '../../future-hopr-lib-components/Button';
 
-type CreateAliasModalProps = {
-  handleRefresh: () => void;
+type PingModalProps = {
   peerId?: string;
 };
 
-export const CreateAliasModal = (props: CreateAliasModalProps) => {
+export const PingModal = (props: PingModalProps) => {
   const dispatch = useAppDispatch();
-  const loginData = useAppSelector((store) => store.auth.loginData);
-  const aliases = useAppSelector((store) => store.node.aliases.data);
-  const [modal, set_modal] = useState<{ peerId: string; alias: string }>({
-    alias: '',
-    peerId: props.peerId ? props.peerId : '',
-  });
-  const [duplicateAlias, set_duplicateAlias] = useState(false);
+  const loginData = useAppSelector((selector) => selector.auth.loginData);
+  const [peerId, set_peerId] = useState<string>(props.peerId ? props.peerId : '');
   const [openModal, setOpenModal] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const {
-      name,
-      value,
-    } = event.target;
-    duplicateAlias && set_duplicateAlias(false);
-    set_modal({
-      ...modal,
-      [name]: value,
-    });
+    set_peerId(event.target.value);
   };
+
+  const setPropPeerId = () => {
+    if (peerId) set_peerId(peerId);
+  };
+  useEffect(setPropPeerId, []);
 
   const handleOpenModal = () => {
     setOpenModal(true);
   };
 
   const handleCloseModal = () => {
-    set_duplicateAlias(false);
     setOpenModal(false);
-    set_modal({
-      peerId: props.peerId ? props.peerId : '',
-      alias: '',
-    });
+    set_peerId('');
+    setPropPeerId();
   };
 
-  const handleAddAlias = () => {
-    if (aliases && Object.keys(aliases).includes(modal.alias)) {
-      set_duplicateAlias(true);
-      return;
-    }
+  const handlePing = () => {
     if (loginData.apiEndpoint && loginData.apiToken) {
       dispatch(
-        actionsAsync.setAliasThunk({
-          alias: modal.alias,
-          peerId: modal.peerId,
+        actionsAsync.pingNodeThunk({
+          peerId,
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
         }),
       )
         .unwrap()
-        .then(() => {
-          props.handleRefresh();
+        .then((resp: any) => {
+          const msg = `Ping of ${peerId} succeded with latency of ${resp.latency}ms`;
+          console.log(msg, resp);
           sendNotification({
             notificationPayload: {
               source: 'node',
-              name: `Alias ${modal.alias} added to ${modal.peerId}`,
+              name: msg,
               url: null,
               timeout: null,
             },
-            toastPayload: { message: `Alias ${modal.alias} added to ${modal.peerId}` },
+            toastPayload: { message: msg },
             dispatch,
           });
         })
         .catch((e) => {
-          console.log(`Alias ${modal.alias} failed to add.`, e.error);
+          const errMsg = `Ping of ${peerId} failed`;
+          console.log(errMsg, e.error);
           sendNotification({
             notificationPayload: {
               source: 'node',
-              name: `Alias ${modal.alias} failed to add.`,
+              name: errMsg,
               url: null,
               timeout: null,
             },
-            toastPayload: { message: `Alias ${modal.alias} failed to add.` },
+            toastPayload: { message: errMsg },
             dispatch,
           });
         })
@@ -103,8 +87,8 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
   return (
     <>
       <IconButton
-        iconComponent={<AddAliasIcon />}
-        tooltipText="Add new alias"
+        iconComponent={<RssFeedIcon />}
+        tooltipText="Ping node"
         onClick={handleOpenModal}
       />
       <SDialog
@@ -113,7 +97,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
         disableScrollLock={true}
       >
         <TopBar>
-          <DialogTitle>Add Alias</DialogTitle>
+          <DialogTitle>Ping node</DialogTitle>
           <SIconButton
             aria-label="close modal"
             onClick={handleCloseModal}
@@ -128,31 +112,20 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
             label="Peer ID"
             placeholder="16Uiu2HA..."
             onChange={handleChange}
-            value={modal.peerId}
-          />
-          <TextField
-            type="text"
-            name="alias"
-            label="Alias"
-            placeholder="Alias"
-            onChange={handleChange}
-            value={modal.alias}
-            error={duplicateAlias}
-            helperText={duplicateAlias ? 'This is a duplicate alias!' : ''}
-            style={{ minHeight: '79px' }}
+            value={peerId}
           />
         </SDialogContent>
         <DialogActions>
           <Button
-            disabled={modal.alias.length === 0 || modal.peerId.length === 0}
-            onClick={handleAddAlias}
+            disabled={peerId.length === 0}
+            onClick={handlePing}
             style={{
               marginRight: '16px',
               marginBottom: '6px',
               marginTop: '-6px',
             }}
           >
-            Add
+            Ping
           </Button>
         </DialogActions>
       </SDialog>

@@ -268,6 +268,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
       onClose={handleClose}
       title="CONNECT NODE"
       maxWidth={'580px'}
+      disableScrollLock={true}
     >
       <LocalNodesContainer>
         <Select
