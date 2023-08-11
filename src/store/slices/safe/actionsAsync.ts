@@ -1,15 +1,21 @@
 import { ActionReducerMapBuilder, createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import SafeApiKit, {
-  AddSafeDelegateProps, AllTransactionsListResponse, AllTransactionsOptions, DeleteSafeDelegateProps, GetSafeDelegateProps, OwnerResponse,
+  AddSafeDelegateProps,
+  AllTransactionsListResponse,
+  AllTransactionsOptions,
+  DeleteSafeDelegateProps,
+  GetSafeDelegateProps,
+  OwnerResponse,
   SafeDelegateListResponse,
   SafeDelegateResponse,
   SafeInfoResponse,
   SafeMultisigTransactionListResponse,
-  SignatureResponse, TokenInfoListResponse,
+  SignatureResponse,
+  TokenInfoListResponse,
   TokenInfoResponse
 } from '@safe-global/api-kit';
 import Safe, { EthersAdapter, SafeAccountConfig } from '@safe-global/protocol-kit';
-import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionData, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types';
+import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionData, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
 import { gnosis } from '@wagmi/core/chains';
 import { ethers } from 'ethers';
 import {
@@ -19,9 +25,9 @@ import {
   http,
   toBytes,
   toHex
-} from 'viem';
+} from 'viem'
 import { RootState } from '../..';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_MANAGEMENT_MODULE, HOPR_NODE_STAKE_FACTORY } from '../../../../config';
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_MANAGEMENT_MODULE, HOPR_NODE_STAKE_FACTORY } from '../../../../config'
 import hoprNodeStakeFactoryAbi from '../../../abi/nodeStakeFactoryAbi.json';
 import {
   getCurrencyFromHistoryTransaction,
@@ -63,10 +69,11 @@ const createSafeSDK = async (signer: ethers.providers.JsonRpcSigner, safeAddress
 };
 
 const createSafeWithConfigThunk = createAsyncThunk<
-{
-  moduleProxy: string,
-  safeAddress: string,
-}| undefined,
+  | {
+      moduleProxy: string;
+      safeAddress: string;
+    }
+  | undefined,
   {
     walletClient: WalletClient;
     config: SafeAccountConfig;
