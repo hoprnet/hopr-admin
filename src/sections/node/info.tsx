@@ -187,15 +187,11 @@ function InfoPage() {
           <tbody>
             <tr>
               <th>Native</th>
-              <td>
-                {balances.native?.formatted} xDai
-              </td>
+              <td>{balances.native?.formatted} xDai</td>
             </tr>
             <tr>
               <th>Hopr</th>
-              <td>
-                {balances.hopr?.formatted} wxHOPR
-              </td>
+              <td>{balances.hopr?.formatted} wxHOPR</td>
             </tr>
           </tbody>
         </TableExtended>
