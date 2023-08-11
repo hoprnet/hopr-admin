@@ -9,7 +9,7 @@ import { SubpageTitle } from '../../components/SubpageTitle';
 import { Paper } from '@mui/material';
 
 function SectionLogs() {
-  const { logs } = useAppSelector((selector) => selector.node);
+  const { logs } = useAppSelector((store) => store.node);
 
   return (
     <Section

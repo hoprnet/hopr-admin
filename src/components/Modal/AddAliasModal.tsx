@@ -19,8 +19,8 @@ type CreateAliasModalProps = {
 
 export const CreateAliasModal = (props: CreateAliasModalProps) => {
   const dispatch = useAppDispatch();
-  const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const aliases = useAppSelector((selector) => selector.node.aliases);
+  const loginData = useAppSelector((store) => store.auth.loginData);
+  const aliases = useAppSelector((store) => store.node.aliases.data);
   const [modal, set_modal] = useState<{ peerId: string; alias: string }>({
     alias: '',
     peerId: props.peerId ? props.peerId : '',

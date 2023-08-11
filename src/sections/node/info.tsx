@@ -10,21 +10,30 @@ import { useEffect } from 'react';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
 import { SubpageTitle } from '../../components/SubpageTitle';
+import WithdrawModal from '../../components/Modal/WithdrawModal';
 
 function InfoPage() {
   const dispatch = useAppDispatch();
   const {
     apiEndpoint,
     apiToken,
-  } = useAppSelector((selector) => selector.auth.loginData);
-  const balances = useAppSelector((selector) => selector.node.balances);
-  const addresses = useAppSelector((selector) => selector.node.addresses);
-  const channels = useAppSelector((selector) => selector.node.channels);
-  const version = useAppSelector((selector) => selector.node.version);
-  const info = useAppSelector((selector) => selector.node.info);
-  const peers = useAppSelector((selector) => selector.node.peers);
-  const aliases = useAppSelector((selector) => selector.node.aliases);
-  const statistics = useAppSelector((selector) => selector.node.statistics);
+  } = useAppSelector((store) => store.auth.loginData);
+  const balances = useAppSelector((store) => store.node.balances.data);
+  const balancesFetching = useAppSelector((store) => store.node.balances.isFetching);
+  const addresses = useAppSelector((store) => store.node.addresses.data);
+  const addressesFetching = useAppSelector((store) => store.node.addresses.isFetching);
+  const channels = useAppSelector((store) => store.node.channels.data);
+  const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
+  const version = useAppSelector((store) => store.node.version.data);
+  const versionFetching = useAppSelector((store) => store.node.version.isFetching);
+  const info = useAppSelector((store) => store.node.info.data);
+  const infoFetching = useAppSelector((store) => store.node.info.isFetching);
+  const peers = useAppSelector((store) => store.node.peers.data);
+  const peersFetching = useAppSelector((store) => store.node.peers.isFetching);
+  const aliases = useAppSelector((store) => store.node.aliases.data);
+  const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
+  const statistics = useAppSelector((store) => store.node.statistics.data);
+  const statisticsFetching = useAppSelector((store) => store.node.statistics.isFetching);
 
   useEffect(() => {
     fetchInfoData();
@@ -83,6 +92,18 @@ function InfoPage() {
     }
   };
 
+  // This will allow us to improve readability on the reloading prop for SubpageTitle
+  const isFetchingAnyData = [
+    balancesFetching,
+    addressesFetching,
+    channelsFetching,
+    versionFetching,
+    infoFetching,
+    peersFetching,
+    aliasesFetching,
+    statisticsFetching,
+  ].includes(true);
+
   // check if user is logged in
   if (!apiEndpoint || !apiToken) {
     return (
@@ -107,7 +128,7 @@ function InfoPage() {
       <SubpageTitle
         title="INFO"
         refreshFunction={fetchInfoData}
-        reloading={balances.reloading}
+        reloading={isFetchingAnyData}
       />
       <Paper
         style={{
@@ -166,11 +187,15 @@ function InfoPage() {
           <tbody>
             <tr>
               <th>Native</th>
-              <td>{balances.native?.formatted} xDai</td>
+              <td>
+                {balances.native?.formatted} xDai
+              </td>
             </tr>
             <tr>
               <th>Hopr</th>
-              <td>{balances.hopr?.formatted} wxHOPR</td>
+              <td>
+                {balances.hopr?.formatted} wxHOPR
+              </td>
             </tr>
           </tbody>
         </TableExtended>

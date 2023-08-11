@@ -83,8 +83,8 @@ export default function ConnectWeb3({
   const { connect } = useConnect({ connector: new InjectedConnector({ chains: [localhost, gnosis] }) });
   const { isConnected } = useAccount();
   const { disconnect } = useDisconnect();
-  const account = useAppSelector((selector) => selector.web3.account);
-  const chain = useAppSelector((selector) => selector.web3.chain);
+  const account = useAppSelector((store) => store.web3.account);
+  const chain = useAppSelector((store) => store.web3.chain);
   const [currentAccount, set_currentAccount] = useState('');
 
   const containerRef = useRef<HTMLButtonElement>(null);

@@ -219,8 +219,8 @@ const StakingCard = ({
 };
 
 const NoNodeAdded = () => {
-  const selectedSafeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress) as `0x${string}`;
-  const safeBalance = useAppSelector((store) => store.safe.balance);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as `0x${string}`;
+  const safeBalance = useAppSelector((store) => store.safe.balance.data);
 
   return (
     <Section

@@ -16,8 +16,9 @@ const RemoveOwnerDiv = styled.div`
 
 function SafeSettings() {
   const dispatch = useAppDispatch();
-  const safe = useAppSelector((state) => state.safe.info);
-  const safeAddress = useAppSelector((state) => state.safe.selectedSafeAddress);
+  const safe = useAppSelector((store) => store.safe.info.data);
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+
   const signer = useEthersSigner();
   const [threshold, set_threshold] = useState(safe?.threshold || 0);
   const [newOwner, set_newOwner] = useState('');

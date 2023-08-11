@@ -34,7 +34,7 @@ export const OpenOrFundChannelModal = ({
   ...props
 }: OpenOrFundChannelModalProps) => {
   const dispatch = useAppDispatch();
-  const loginData = useAppSelector((selector) => selector.auth.loginData);
+  const loginData = useAppSelector((store) => store.auth.loginData);
   const [openChannelModal, set_openChannelModal] = useState(false);
   const [amount, set_amount] = useState('');
   const [peerId, set_peerId] = useState(props.peerId ? props.peerId : '');

@@ -89,7 +89,7 @@ export default function NotificationBar() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const searchParams = useLocation()?.search;
-  const { notifications } = useAppSelector((state) => state.app);
+  const { notifications } = useAppSelector((store) => store.app);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 

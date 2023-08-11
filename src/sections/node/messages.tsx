@@ -32,14 +32,11 @@ const StyledTable = styled(Table)`
   }
 `;
 const messages = () => {
-  const {
-    messages,
-    aliases,
-  } = useAppSelector((selector) => selector.node);
+  const messages = useAppSelector((store) => store.node.messages);
   const {
     apiEndpoint,
     apiToken,
-  } = useAppSelector((selector) => selector.auth.loginData);
+  } = useAppSelector((store) => store.auth.loginData);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
