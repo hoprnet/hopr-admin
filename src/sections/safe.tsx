@@ -21,9 +21,9 @@ const MAX_UINT256 = BigInt(2 ** 256) - BigInt(1);
 function SafeSection() {
   const dispatch = useAppDispatch();
   const safe = useAppSelector((store) => store.safe);
-  const selectedSafeAddress = useAppSelector((selector) => selector.safe.selectedSafeAddress.data) as Address;
-  const safesByOwner = useAppSelector((selector) => selector.safe.safesByOwner.data);
-  const allTransactions = useAppSelector((selector) => selector.safe.allTransactions.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
+  const safesByOwner = useAppSelector((store) => store.safe.safesByOwner.data);
+  const allTransactions = useAppSelector((store) => store.safe.allTransactions.data);
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
   const { account } = useAppSelector((store) => store.web3);
   const signer = useEthersSigner();

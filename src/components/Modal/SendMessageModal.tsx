@@ -55,8 +55,8 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
 
   const nonAutomaticPathTooltip = 'Disable `automatic path` to enable `Number of hops`';
 
-  const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const aliases = useAppSelector((selector) => selector.node.aliases.data);
+  const loginData = useAppSelector((store) => store.auth.loginData);
+  const aliases = useAppSelector((store) => store.node.aliases.data);
 
   useEffect(() => {
     switch (sendMode) {

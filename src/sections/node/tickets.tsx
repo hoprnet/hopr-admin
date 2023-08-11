@@ -13,11 +13,11 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 function TicketsPage() {
   const dispatch = useAppDispatch();
-  const tickets = useAppSelector((selector) => selector.node.tickets.data);
-  const ticketsFetching = useAppSelector((selector) => selector.node.tickets.isFetching);
-  const statistics = useAppSelector((selector) => selector.node.statistics.data);
-  const statisticsFetching = useAppSelector((selector) => selector.node.statistics.isFetching);
-  const loginData = useAppSelector((selector) => selector.auth.loginData);
+  const tickets = useAppSelector((store) => store.node.tickets.data);
+  const ticketsFetching = useAppSelector((store) => store.node.tickets.isFetching);
+  const statistics = useAppSelector((store) => store.node.statistics.data);
+  const statisticsFetching = useAppSelector((store) => store.node.statistics.isFetching);
+  const loginData = useAppSelector((store) => store.auth.loginData);
   const [redeemErrors, set_redeemErrors] = useState<{ status: string | undefined; error: string | undefined }[]>([]);
   const [redeeming, set_redeeming] = useState(false);
 

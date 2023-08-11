@@ -6,7 +6,7 @@ import Section from '../../future-hopr-lib-components/Section';
 import { SubpageTitle } from '../../components/SubpageTitle';
 
 function SectionLogs() {
-  const { logs } = useAppSelector((selector) => selector.node);
+  const { logs } = useAppSelector((store) => store.node);
 
   return (
     <Section

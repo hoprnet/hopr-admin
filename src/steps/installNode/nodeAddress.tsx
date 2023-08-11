@@ -23,8 +23,8 @@ const StyledGrayButton = styled(GrayButton)`
 
 const NodeAddress = () => {
   const dispatch = useAppDispatch();
-  const safeAddress = useAppSelector((state) => state.safe.selectedSafeAddress.data);
-  const account = useAppSelector((state) => state.web3.account);
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const account = useAppSelector((store) => store.web3.account);
   const navigate = useNavigate();
   const signer = useEthersSigner();
   const [address, set_address] = useState('');

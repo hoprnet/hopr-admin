@@ -160,7 +160,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
   const signer = useEthersSigner();
   const dispatch = useAppDispatch();
   const { address } = useAccount();
-  const safeNonce = useAppSelector((state) => state.safe.info.data?.nonce);
+  const safeNonce = useAppSelector((store) => store.safe.info.data?.nonce);
   const transactionAfterSafeNonce = safeNonce !== transaction.nonce;
   const [userAction, set_userAction] = useState<'EXECUTE' | 'SIGN' | null>(null);
   const [isLoadingApproving, set_isLoadingApproving] = useState<boolean>(false);
@@ -287,7 +287,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
 
 const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisigTransactionResponse }) => {
   const { address } = useAccount();
-  const safeNonce = useAppSelector((state) => state.safe.info.data?.nonce);
+  const safeNonce = useAppSelector((store) => store.safe.info.data?.nonce);
   const signer = useEthersSigner();
   const dispatch = useAppDispatch();
   const [open, set_open] = useState(false);
@@ -787,8 +787,8 @@ function TransactionHistoryRow(props: { transaction: NonNullable<CustomAllTransa
 
 function TransactionHistoryTable() {
   const dispatch = useAppDispatch();
-  const safeTransactions = useAppSelector((state) => state.safe.allTransactions.data);
-  const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress.data);
+  const safeTransactions = useAppSelector((store) => store.safe.allTransactions.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const signer = useEthersSigner();
 
   const fetchAllSafeTransaction = () => {
@@ -841,8 +841,8 @@ function TransactionHistoryTable() {
 
 const PendingTransactionsTable = () => {
   const dispatch = useAppDispatch();
-  const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions.data);
-  const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress.data);
+  const pendingTransactions = useAppSelector((store) => store.safe.pendingTransactions.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const signer = useEthersSigner();
 
   useEffect(() => {

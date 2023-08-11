@@ -24,9 +24,9 @@ const TableTitle = styled.p`
 `;
 
 function MetricsPage() {
-  const metrics = useAppSelector((selector) => selector.node.metrics.data);
-  const metricsFetching = useAppSelector((selector) => selector.node.metrics.isFetching);
-  const loginData = useAppSelector((selector) => selector.auth.loginData);
+  const metrics = useAppSelector((store) => store.node.metrics.data);
+  const metricsFetching = useAppSelector((store) => store.node.metrics.isFetching);
+  const loginData = useAppSelector((store) => store.auth.loginData);
   const {
     apiEndpoint,
     apiToken,

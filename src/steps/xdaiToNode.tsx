@@ -102,10 +102,10 @@ const StyledApproveButton = styled(Button)`
 function XdaiToNode() {
   const dispatch = useAppDispatch();
   // injected states
-  const pendingTransactions = useAppSelector((state) => state.safe.pendingTransactions.data);
-  const safeInfo = useAppSelector((state) => state.safe.info.data);
-  const selectedSafeAddress = useAppSelector((state) => state.safe.selectedSafeAddress.data);
-  const { native: nodeNativeAddress } = useAppSelector((state) => state.node.addresses.data);
+  const pendingTransactions = useAppSelector((store) => store.safe.pendingTransactions.data);
+  const safeInfo = useAppSelector((store) => store.safe.info.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const { native: nodeNativeAddress } = useAppSelector((store) => store.node.addresses.data);
   const { address } = useAccount();
   // local states
   const [userCanSkipProposal, set_userCanSkipProposal] = useState(false);

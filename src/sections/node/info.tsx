@@ -13,23 +13,23 @@ function InfoPage() {
   const {
     apiEndpoint,
     apiToken,
-  } = useAppSelector((selector) => selector.auth.loginData);
-  const balances = useAppSelector((selector) => selector.node.balances.data);
-  const balancesFetching = useAppSelector((selector) => selector.node.balances.isFetching);
-  const addresses = useAppSelector((selector) => selector.node.addresses.data);
-  const addressesFetching = useAppSelector((selector) => selector.node.addresses.isFetching);
-  const channels = useAppSelector((selector) => selector.node.channels.data);
-  const channelsFetching = useAppSelector((selector) => selector.node.channels.isFetching);
-  const version = useAppSelector((selector) => selector.node.version.data);
-  const versionFetching = useAppSelector((selector) => selector.node.version.isFetching);
-  const info = useAppSelector((selector) => selector.node.info.data);
-  const infoFetching = useAppSelector((selector) => selector.node.info.isFetching);
-  const peers = useAppSelector((selector) => selector.node.peers.data);
-  const peersFetching = useAppSelector((selector) => selector.node.peers.isFetching);
-  const aliases = useAppSelector((selector) => selector.node.aliases.data);
-  const aliasesFetching = useAppSelector((selector) => selector.node.aliases.isFetching);
-  const statistics = useAppSelector((selector) => selector.node.statistics.data);
-  const statisticsFetching = useAppSelector((selector) => selector.node.statistics.isFetching);
+  } = useAppSelector((store) => store.auth.loginData);
+  const balances = useAppSelector((store) => store.node.balances.data);
+  const balancesFetching = useAppSelector((store) => store.node.balances.isFetching);
+  const addresses = useAppSelector((store) => store.node.addresses.data);
+  const addressesFetching = useAppSelector((store) => store.node.addresses.isFetching);
+  const channels = useAppSelector((store) => store.node.channels.data);
+  const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
+  const version = useAppSelector((store) => store.node.version.data);
+  const versionFetching = useAppSelector((store) => store.node.version.isFetching);
+  const info = useAppSelector((store) => store.node.info.data);
+  const infoFetching = useAppSelector((store) => store.node.info.isFetching);
+  const peers = useAppSelector((store) => store.node.peers.data);
+  const peersFetching = useAppSelector((store) => store.node.peers.isFetching);
+  const aliases = useAppSelector((store) => store.node.aliases.data);
+  const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
+  const statistics = useAppSelector((store) => store.node.statistics.data);
+  const statisticsFetching = useAppSelector((store) => store.node.statistics.isFetching);
 
   useEffect(() => {
     fetchInfoData();

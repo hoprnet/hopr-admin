@@ -39,11 +39,11 @@ const StyledTable = styled(Table)`
 
 function PeersPage() {
   const dispatch = useAppDispatch();
-  const loginData = useAppSelector((selector) => selector.auth.loginData);
-  const peers = useAppSelector((selector) => selector.node.peers.data);
-  const peersFetching = useAppSelector((selector) => selector.node.peers.isFetching);
-  const aliases = useAppSelector((selector) => selector.node.aliases.data);
-  const aliasesFetching = useAppSelector((selector) => selector.node.aliases.isFetching);
+  const loginData = useAppSelector((store) => store.auth.loginData);
+  const peers = useAppSelector((store) => store.node.peers.data);
+  const peersFetching = useAppSelector((store) => store.node.peers.isFetching);
+  const aliases = useAppSelector((store) => store.node.aliases.data);
+  const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
 
   useEffect(() => {
     handleRefresh();

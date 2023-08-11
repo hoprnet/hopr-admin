@@ -251,8 +251,8 @@ const GrayCard = ({
 };
 
 const NodeAdded = () => {
-  const nodeNativeAddress = useAppSelector((selector) => selector.node.addresses.data.native);
-  const nodeHoprAddress = useAppSelector((selector) => selector.node.addresses.data.hopr);
+  const nodeNativeAddress = useAppSelector((store) => store.node.addresses.data.native);
+  const nodeHoprAddress = useAppSelector((store) => store.node.addresses.data.hopr);
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
 
   return (
