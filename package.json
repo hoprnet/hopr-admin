@@ -44,6 +44,8 @@
     "dev": "vite",
     "dev:clean": "npm run dev -- --force",
     "build": "tsc && vite build",
+    "build-hub": "node ./scripts/prepare-build-hub.js && tsc && vite build",
+    "build-node": "node ./scripts/prepare-build-node.js && tsc && vite build",
     "serve": "vite preview --port 3000",
     "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx ./src",
     "format": "yarn prettier --write ./src",
