@@ -72,12 +72,10 @@ const ButtonContainer = styled.div`
   gap: 1rem;
 `;
 
-
 const StyledGrayButton = styled(GrayButton)`
   border: 1px solid black;
   height: 39px;
 `;
-
 
 const Instruction = (props: { num: number; description?: string; children?: JSX.Element }) => {
   return (
@@ -96,25 +94,30 @@ export default function SetupNodePage() {
       fullHeightMin
       lightBlue
     >
-      <Card title="Set up your node" description='Follow the instructions below to set up your HOPR node.'>
+      <Card
+        title="Set up your node"
+        description="Follow the instructions below to set up your HOPR node."
+      >
         <Content>
           <StepsContainer>
             <Instruction num={1}>
               <div>
                 <p>Set up your HOPR using this instructions: </p>
                 <p>
-                  <StyledLink to={`https://docs.hoprnet.org/node/start-here`}>
-                    here.                    
-                  </StyledLink>
+                  <StyledLink to={`https://docs.hoprnet.org/node/start-here`}>here.</StyledLink>
                 </p>
                 <Content>
                   <CodeContainer>
                     <span>install hoprd</span>
-                    <CodeCopyBox code={`BLINDTEXT  docker run -e RESPONSE_TIMEOUT=10000 -e DISCOVERY_PLATFORM_API_ENDPOINT=https://discovery.rpch.tech -e PORT=8080 -e DATA_DIR=app -e CLIENT=eager-rice-current-same-surrounded`} />
+                    <CodeCopyBox
+                      code={`BLINDTEXT  docker run -e RESPONSE_TIMEOUT=10000 -e DISCOVERY_PLATFORM_API_ENDPOINT=https://discovery.rpch.tech -e PORT=8080 -e DATA_DIR=app -e CLIENT=eager-rice-current-same-surrounded`}
+                    />
                   </CodeContainer>
                   <CodeContainer>
                     <span>run hoprd</span>
-                    <CodeCopyBox code={`BLINDTEXT docker run -e RESPONSE_TIMEOUT=10000 -e DISCOVERY_PLATFORM_API_ENDPOINT=https://discovery.rpch.tech -e PORT=8080 -e DATA_DIR=app -e CLIENT=eager-rice-current-same-surrounded`} />
+                    <CodeCopyBox
+                      code={`BLINDTEXT docker run -e RESPONSE_TIMEOUT=10000 -e DISCOVERY_PLATFORM_API_ENDPOINT=https://discovery.rpch.tech -e PORT=8080 -e DATA_DIR=app -e CLIENT=eager-rice-current-same-surrounded`}
+                    />
                   </CodeContainer>
                 </Content>
               </div>

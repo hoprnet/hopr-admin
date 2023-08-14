@@ -289,8 +289,8 @@ export const applicationMapDev: ApplicationMapType = [
       {
         name: 'Set up your node',
         path: 'setup-your-node',
-        icon: <AddBoxIcon/>,
-        element: <SetupNodePage/>,
+        icon: <AddBoxIcon />,
+        element: <SetupNodePage />,
         loginNeeded: 'web3',
       },
       {
