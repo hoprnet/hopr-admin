@@ -1112,18 +1112,17 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   // redeemTicketsThunk
   builder.addCase(redeemTicketsThunk.fulfilled, (state, action) => {
     state.redeemTickets.isFetching = false;
-    state.redeemTickets.error = {
-      error: undefined,
-      status: undefined,
-    };
+    state.redeemTickets.error = undefined;
   });
   builder.addCase(redeemTicketsThunk.rejected, (state, action) => {
     state.redeemTickets.isFetching = false;
     // Assign the error to the errors state
-    state.redeemTickets.error = action.payload as {
-      status: string | undefined;
-      error: string | undefined;
-    };
+    state.redeemTickets.error = (
+      action.payload as {
+        status: string | undefined;
+        error: string | undefined;
+      }
+    ).error;
   });
   // getTokenThunk
   builder.addCase(getTokenThunk.fulfilled, (state, action) => {

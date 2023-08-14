@@ -100,10 +100,7 @@ type InitialState = {
   closeChannel: { isFetching: boolean };
   redeemTickets: {
     isFetching: boolean;
-    error: {
-      status: string | undefined;
-      error: string | undefined;
-    };
+    error: string | undefined;
   };
 };
 
@@ -203,9 +200,6 @@ export const initialState: InitialState = {
   closeChannel: { isFetching: false },
   redeemTickets: {
     isFetching: false,
-    error: {
-      error: undefined,
-      status: undefined,
-    },
+    error: undefined,
   },
 };
