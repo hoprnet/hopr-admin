@@ -1,4 +1,4 @@
-var fs = require('fs');
+const fs = require('fs');
 configPath = `${__dirname.replace('scripts', 'config.ts')}`;
 
 
