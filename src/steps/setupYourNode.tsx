@@ -30,7 +30,7 @@ const InstructionContent = styled.div`
   flex-direction: column;
   align-items: center;
   text-align: center;
-  min-width: 400px;
+  min-width: 200px;
 `;
 
 const NumberWithBackground = styled.div`
