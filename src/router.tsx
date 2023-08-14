@@ -335,7 +335,7 @@ const LayoutEnhanced = () => {
             }),
           );
           dispatch(
-            nodeActionsAsync.getAddressesThunk({ 
+            nodeActionsAsync.getAddressesThunk({
               apiToken,
               apiEndpoint,
             }),

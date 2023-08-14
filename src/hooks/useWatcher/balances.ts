@@ -87,7 +87,7 @@ export const observeNodeBalances = ({
       if (!apiToken || !apiEndpoint) return;
 
       return await dispatch(
-        nodeActionsAsync.getBalancesThunk({ 
+        nodeActionsAsync.getBalancesThunk({
           apiEndpoint,
           apiToken,
         }),

@@ -114,11 +114,11 @@ const getAddressesThunk = createAsyncThunk<
       native: string;
     }
   | undefined,
-  BasePayloadType & {force?: boolean },
+  BasePayloadType & { force?: boolean },
   { state: RootState }
 >(
   'node/getAccount',
-  async (payload , {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
