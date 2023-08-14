@@ -2,12 +2,14 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import checker from 'vite-plugin-checker';
 import svgrPlugin from 'vite-plugin-svgr';
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
+import nodePolyfills from 'vite-plugin-node-stdlib-browser'
 
 // https://vitejs.dev/config/
 export default defineConfig(() => {
   return {
     plugins: [
+      // adds browser polyfills of Node.js built-in libraries
+      nodePolyfills(),
       // import svg
       svgrPlugin(),
       // linter
@@ -18,20 +20,9 @@ export default defineConfig(() => {
       // emotion setup with react
       react({
         jsxImportSource: '@emotion/react',
-        babel: {plugins: ['@emotion/babel-plugin']},
+        babel: { plugins: ['@emotion/babel-plugin'] },
       }),
     ],
-    optimizeDeps: {esbuildOptions: {
-      // Node.js global to browser globalThis
-      define: {global: 'globalThis'},
-      // Enable esbuild polyfill plugins
-      plugins: [
-        NodeGlobalsPolyfillPlugin({
-          buffer: true,
-          process: true,
-        }),
-      ],
-    }},
-    build: {outDir: 'build'},
+    build: { outDir: 'build' },
   };
 });
