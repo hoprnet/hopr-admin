@@ -29,7 +29,8 @@ const {
   rank: true,
 });
 
-const walletIsInBrowser = (typeof window !== 'undefined' && typeof (window as unknown as WindowWithEthereum).ethereum !== 'undefined');
+const walletIsInBrowser =
+  typeof window !== 'undefined' && typeof (window as unknown as WindowWithEthereum).ethereum !== 'undefined';
 
 const config = createConfig({
   autoConnect: true,
@@ -53,12 +54,12 @@ export default function WagmiProvider(props: React.PropsWithChildren) {
 
   useEffect(() => {
     dispatch(web3Actions.setWalletPresent(walletIsInBrowser));
-  }, [walletIsInBrowser]); 
+  }, [walletIsInBrowser]);
 
   return (
     <WagmiConfig config={config}>
       {props.children}
-      {walletIsInBrowser && <Updater /> }
+      {walletIsInBrowser && <Updater />}
     </WagmiConfig>
   );
 }

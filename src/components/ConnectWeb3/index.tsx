@@ -80,7 +80,10 @@ export default function ConnectWeb3({
   const dispatch = useAppDispatch();
   const [chooseWalletModal, set_chooseWalletModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
-  const { connect, error } = useConnect({ connector: new InjectedConnector({ chains: [localhost, gnosis] }) });
+  const {
+    connect,
+    error,
+  } = useConnect({ connector: new InjectedConnector({ chains: [localhost, gnosis] }) });
   const { disconnect } = useDisconnect();
   const account = useAppSelector((store) => store.web3.account);
   const isConnected = useAppSelector((store) => store.web3.status.connected);
@@ -121,8 +124,8 @@ export default function ConnectWeb3({
   }, [account]);
 
   useEffect(() => {
-    if(error) set_localError(JSON.stringify(error))
-    else set_localError(false)
+    if (error) set_localError(JSON.stringify(error));
+    else set_localError(false);
   }, [error]);
 
   const handleClose = () => {
@@ -130,7 +133,9 @@ export default function ConnectWeb3({
       onClose();
     }
     set_chooseWalletModal(false);
-    setTimeout(()=>{set_localError(false);}, 250);
+    setTimeout(() => {
+      set_localError(false);
+    }, 250);
   };
 
   const handleConnectToMetaMask = () => {
@@ -207,12 +212,11 @@ export default function ConnectWeb3({
       <Modal
         open={chooseWalletModal}
         onClose={handleClose}
-        title={localError ? 'ERROR' : "CONNECT A WALLET"}
+        title={localError ? 'ERROR' : 'CONNECT A WALLET'}
         disableScrollLock={true}
-        style={{height: '270px'}}
-      > 
-        {
-          !localError &&
+        style={{ height: '270px' }}
+      >
+        {!localError && (
           <ConnectWalletContent>
             <WalletButton
               onClick={handleConnectToMetaMask}
@@ -223,15 +227,9 @@ export default function ConnectWeb3({
               understand the Disclaimer.
             </p>
           </ConnectWalletContent>
-        }
-        {
-          localError && !walletPresent &&
-          <p>Wallet was not detected. Please install a wallet, e.g. MetaMask</p>
-        }
-        {
-          localError && walletPresent &&
-          <p>{localError}</p>
-        }
+        )}
+        {localError && !walletPresent && <p>Wallet was not detected. Please install a wallet, e.g. MetaMask</p>}
+        {localError && walletPresent && <p>{localError}</p>}
       </Modal>
     </>
   );
