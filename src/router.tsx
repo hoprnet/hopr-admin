@@ -8,7 +8,6 @@ import { authActions, authActionsAsync } from './store/slices/auth';
 import { nodeActions, nodeActionsAsync } from './store/slices/node';
 
 // Sections
-import Section1 from './components/ConnectNode/modal';
 import SectionLogs from './sections/node/logs';
 import SectionWeb3 from './sections/web3';
 import SectionSafe from './sections/safe';
@@ -27,6 +26,7 @@ import WrapperPage from './sections/wrapper';
 import XdaiToNodePage from './steps/xdaiToNode';
 import StakingScreen from './sections/staking-screen';
 import SafeWithdraw from './sections/safeWithdraw';
+import UpdateNodePage from './steps/updateNode';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -63,7 +63,7 @@ import StakingLandingPage from './sections/stakingLandingPage';
 import NodeAdded from './sections/nodeAdded';
 import SafeActions from './sections/actions';
 import WalletIcon from '@mui/icons-material/Wallet';
-import Ticket from './future-hopr-lib-components/Icons/Ticket';
+import { Sync } from '@mui/icons-material';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -280,6 +280,13 @@ export const applicationMapDev: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
+        name: 'Update your node',
+        path: 'update-your-node',
+        icon: <AddBoxIcon />,
+        element: <UpdateNodePage />,
+        loginNeeded: 'web3',
+      },
+      {
         name: 'xdai to node',
         path: 'xdai-to-node',
         icon: <AddBoxIcon />,
@@ -302,10 +309,9 @@ export const applicationMap: ApplicationMapType = createApplicationMap();
 const LayoutEnhanced = () => {
   const dispatch = useAppDispatch();
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
-  const account = useAppSelector((store) => store.web3.account);
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const loginData = useAppSelector((store) => store.auth.loginData);
-  const [searchParams, set_searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const apiEndpoint = searchParams.get('apiEndpoint');
   const apiToken = searchParams.get('apiToken');
 

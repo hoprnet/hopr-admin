@@ -44,7 +44,7 @@ const Modal: React.FC<Props> = (props) => {
     title,
     children,
     maxWidth,
-    disableScrollLock
+    disableScrollLock,
   } = props;
 
   const handleClose = (event: {}) => {
