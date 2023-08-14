@@ -114,11 +114,11 @@ const getAddressesThunk = createAsyncThunk<
       native: string;
     }
   | undefined,
-  { payload: BasePayloadType; force?: boolean },
+  BasePayloadType & {force?: boolean },
   { state: RootState }
 >(
   'node/getAccount',
-  async ({ payload }, {
+  async (payload , {
     rejectWithValue,
     dispatch,
   }) => {
@@ -176,11 +176,11 @@ const getAliasesThunk = createAsyncThunk<GetAliasesResponseType | undefined, Bas
 
 const getBalancesThunk = createAsyncThunk<
   { hopr: string; native: string } | undefined,
-  { payload: BasePayloadType; force?: boolean },
+  BasePayloadType & { force?: boolean },
   { state: RootState; dispatch: ThunkDispatch<RootState, unknown, AnyAction> }
 >(
   'node/getBalances',
-  async ({ payload }, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {

@@ -87,10 +87,10 @@ export const observeNodeBalances = ({
       if (!apiToken || !apiEndpoint) return;
 
       return await dispatch(
-        nodeActionsAsync.getBalancesThunk({ payload: {
+        nodeActionsAsync.getBalancesThunk({ 
           apiEndpoint,
           apiToken,
-        } }),
+        }),
       ).unwrap();
     },
     isDataDifferent: (newNodeBalances) => JSON.stringify(previousState) !== JSON.stringify(newNodeBalances),

@@ -29,20 +29,16 @@ export const loginThunk = createAsyncThunk<
     try {
       const nodeBalances = await dispatch(
         nodeActionsAsync.getBalancesThunk({
-          payload: {
-            apiEndpoint,
-            apiToken,
-          },
+          apiEndpoint,
+          apiToken,
           force: true,
         }),
       ).unwrap();
 
       const addresses = await dispatch(
         nodeActionsAsync.getAddressesThunk({
-          payload: {
-            apiToken,
-            apiEndpoint,
-          },
+          apiToken,
+          apiEndpoint,
           force: true,
         }),
       ).unwrap();

@@ -335,10 +335,10 @@ const LayoutEnhanced = () => {
             }),
           );
           dispatch(
-            nodeActionsAsync.getAddressesThunk({ payload: {
+            nodeActionsAsync.getAddressesThunk({ 
               apiToken,
               apiEndpoint,
-            } }),
+            }),
           );
           dispatch(
             nodeActionsAsync.getAliasesThunk({
