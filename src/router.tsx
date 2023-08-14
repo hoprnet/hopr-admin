@@ -63,7 +63,7 @@ import StakingLandingPage from './sections/stakingLandingPage';
 import NodeAdded from './sections/nodeAdded';
 import SafeActions from './sections/actions';
 import WalletIcon from '@mui/icons-material/Wallet';
-import { Sync } from '@mui/icons-material';
+import SetupNodePage from './steps/setupYourNode';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -284,6 +284,13 @@ export const applicationMapDev: ApplicationMapType = [
         path: 'update-your-node',
         icon: <AddBoxIcon />,
         element: <UpdateNodePage />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Set up your node',
+        path: 'setup-your-node',
+        icon: <AddBoxIcon/>,
+        element: <SetupNodePage/>,
         loginNeeded: 'web3',
       },
       {
