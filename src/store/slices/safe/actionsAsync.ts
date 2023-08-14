@@ -156,13 +156,10 @@ const getSafesByOwnerThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/getSafesByOwner',
-  async (
-    payload,
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(setSafeByOwnerFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
