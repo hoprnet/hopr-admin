@@ -21,9 +21,11 @@ export default function WhatYouWillNeedPage() {
       fullHeightMin
       lightBlue
     >
-      <Card title="what you will need" description='It will take 20 minutes to join the network waitlist. Before starting make sure you have got the required tokens.'>
+      <Card
+        title="what you will need"
+        description="It will take 20 minutes to join the network waitlist. Before starting make sure you have got the required tokens."
+      >
         <Content>
-          
           <ConfirmButton>Confirm</ConfirmButton>
         </Content>
       </Card>
