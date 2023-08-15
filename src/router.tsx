@@ -64,7 +64,7 @@ import NodeAdded from './sections/nodeAdded';
 import SafeActions from './sections/actions';
 import WalletIcon from '@mui/icons-material/Wallet';
 import SetupNodePage from './steps/setupYourNode';
-import JoinWaitListPage from './steps/joinWaitlist';
+// import JoinWaitlistPage from './steps/joinWaitlist';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -294,13 +294,13 @@ export const applicationMapDev: ApplicationMapType = [
         element: <SetupNodePage />,
         loginNeeded: 'web3',
       },
-      {
-        name: 'Join the waitlist',
-        path: 'join-waitlist',
-        icon: <AddBoxIcon />,
-        element: <JoinWaitListPage />,
-        loginNeeded: 'web3',
-      },
+      // {
+      //   name: 'Join the waitlist',
+      //   path: 'join-waitlist',
+      //   icon: <AddBoxIcon />,
+      //   element: <JoinWaitlistPage />,
+      //   loginNeeded: 'web3',
+      // },
       {
         name: 'xdai to node',
         path: 'xdai-to-node',
