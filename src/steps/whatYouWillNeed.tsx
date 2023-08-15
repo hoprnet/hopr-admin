@@ -65,7 +65,7 @@ const CenteredFlex = styled.div`
   p {
     align-self: flex-start;
   }
-`
+`;
 
 const OverlappingSVGs = ({
   firstSVG,

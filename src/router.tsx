@@ -293,12 +293,12 @@ export const applicationMapDev: ApplicationMapType = [
         icon: <AddBoxIcon />,
         element: <SetupNodePage />,
         loginNeeded: 'web3',
-      },  
+      },
       {
         name: 'What you will need',
         path: 'what-you-will-need',
         icon: <AddBoxIcon />,
-        element: <WhatYouWillNeedPage/>,
+        element: <WhatYouWillNeedPage />,
         loginNeeded: 'web3',
       },
       {
