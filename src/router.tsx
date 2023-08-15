@@ -63,7 +63,7 @@ import StakingLandingPage from './sections/stakingLandingPage';
 import NodeAdded from './sections/nodeAdded';
 import SafeActions from './sections/actions';
 import WalletIcon from '@mui/icons-material/Wallet';
-import { Sync } from '@mui/icons-material';
+import SetupNodePage from './steps/setupYourNode';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -287,6 +287,13 @@ export const applicationMapDev: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
+        name: 'Set up your node',
+        path: 'setup-your-node',
+        icon: <AddBoxIcon />,
+        element: <SetupNodePage />,
+        loginNeeded: 'web3',
+      },
+      {
         name: 'xdai to node',
         path: 'xdai-to-node',
         icon: <AddBoxIcon />,
@@ -326,33 +333,37 @@ const LayoutEnhanced = () => {
     );
     if (!apiToken) return;
     const useNode = async () => {
-      const loginInfo = await dispatch(
-        authActionsAsync.loginThunk({
-          apiEndpoint,
-          apiToken,
-        }),
-      ).unwrap();
-      if (loginInfo) {
-        dispatch(
-          nodeActionsAsync.getInfoThunk({
-            apiToken,
+      try {
+        const loginInfo = await dispatch(
+          authActionsAsync.loginThunk({
             apiEndpoint,
-          }),
-        );
-        dispatch(
-          nodeActionsAsync.getAddressesThunk({
             apiToken,
-            apiEndpoint,
           }),
-        );
-        dispatch(
-          nodeActionsAsync.getAliasesThunk({
-            apiToken,
-            apiEndpoint,
-          }),
-        );
-        dispatch(nodeActions.initializeMessagesWebsocket());
-        dispatch(nodeActions.initializeLogsWebsocket());
+        ).unwrap();
+        if (loginInfo) {
+          dispatch(
+            nodeActionsAsync.getInfoThunk({
+              apiToken,
+              apiEndpoint,
+            }),
+          );
+          dispatch(
+            nodeActionsAsync.getAddressesThunk({
+              apiToken,
+              apiEndpoint,
+            }),
+          );
+          dispatch(
+            nodeActionsAsync.getAliasesThunk({
+              apiToken,
+              apiEndpoint,
+            }),
+          );
+          dispatch(nodeActions.initializeMessagesWebsocket());
+          dispatch(nodeActions.initializeLogsWebsocket());
+        }
+      } catch (e) {
+        // error is handled on redux
       }
     };
     useNode();

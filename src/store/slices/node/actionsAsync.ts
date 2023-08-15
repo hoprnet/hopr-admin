@@ -114,11 +114,11 @@ const getAddressesThunk = createAsyncThunk<
       native: string;
     }
   | undefined,
-  BasePayloadType,
+  BasePayloadType & { force?: boolean },
   { state: RootState }
 >(
   'node/getAccount',
-  async (payload: BasePayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -136,6 +136,10 @@ const getAddressesThunk = createAsyncThunk<
     }
   },
   { condition: (_payload, { getState }) => {
+    if (_payload.force) {
+      return true;
+    }
+
     const isFetching = getState().node.addresses.isFetching;
     if (isFetching) {
       return false;
@@ -172,11 +176,11 @@ const getAliasesThunk = createAsyncThunk<GetAliasesResponseType | undefined, Bas
 
 const getBalancesThunk = createAsyncThunk<
   { hopr: string; native: string } | undefined,
-  BasePayloadType,
+  BasePayloadType & { force?: boolean },
   { state: RootState; dispatch: ThunkDispatch<RootState, unknown, AnyAction> }
 >(
   'node/getBalances',
-  async (payload: BasePayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -194,6 +198,10 @@ const getBalancesThunk = createAsyncThunk<
     }
   },
   { condition: (_payload, { getState }) => {
+    if (_payload.force) {
+      return true;
+    }
+
     const isFetching = getState().node.balances.isFetching;
     if (isFetching) {
       return false;

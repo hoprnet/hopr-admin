@@ -28,7 +28,7 @@ import {
   getValueFromHistoryTransaction
 } from '../../../utils/safeTransactions';
 
-const SERVICE_URL = 'https://safe-transaction-gnosis-chain.safe.global/';
+const SERVICE_URL = 'https://safe-transaction-gnosis-chain.safe.global';
 
 const createSafeApiService = async (signer: ethers.providers.JsonRpcSigner) => {
   const adapter = new EthersAdapter({
@@ -156,15 +156,10 @@ const getSafesByOwnerThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/getSafesByOwner',
-  async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-    },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(setSafeByOwnerFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
