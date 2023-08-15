@@ -12,7 +12,7 @@ import GetAppIcon from '@mui/icons-material/GetApp';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 // Mui
-import { Paper } from '@mui/material';
+import { Paper, Tooltip } from '@mui/material';
 
 function TicketsPage() {
   const dispatch = useAppDispatch();
@@ -109,43 +109,63 @@ function TicketsPage() {
         >
           <tbody>
             <tr>
-              <th>Pending</th>
+              <Tooltip title="The number of tickets earned by another node in a channel connected to you which have yet to be redeemed. These must be redeemed by another node.">
+                <th>Pending</th>
+              </Tooltip>
               <td>{statistics?.pending}</td>
             </tr>
             <tr>
-              <th>Unredeemed</th>
+              <Tooltip title="The number of tickets earned by your node that have yet to be redeemed.">
+                <th>Unredeemed</th>
+              </Tooltip>
               <td>{statistics?.unredeemed}</td>
             </tr>
             <tr>
-              <th>Unredeemed value</th>
+              <Tooltip title="The value of all your unredeemed tickets in HOPR tokens.">
+                <th>Unredeemed value</th>
+              </Tooltip>
               <td>{statistics?.unredeemedValue}</td>
             </tr>
             <tr>
-              <th>Redeemed</th>
+              <Tooltip title="The number of tickets redeemed by your node.">
+                <th>Redeemed</th>
+              </Tooltip>
               <td>{statistics?.redeemed}</td>
             </tr>
             <tr>
-              <th>Redeemed value</th>
+              <Tooltip title="The value of all your redeemed tickets.">
+                <th>Redeemed value</th>
+              </Tooltip>
               <td>{statistics?.redeemedValue}</td>
             </tr>
             <tr>
-              <th>Losing tickets</th>
+              <Tooltip title="The number of tickets which were empty (do not contain HOPR).">
+                <th>Losing tickets</th>
+              </Tooltip>
               <td>{statistics?.losingTickets}</td>
             </tr>
             <tr>
-              <th>Win proportion</th>
+              <Tooltip title="The percentage of tickets earned by your node that were winning.">
+                <th>Win proportion</th>
+              </Tooltip>
               <td>{statistics?.winProportion}</td>
             </tr>
             <tr>
-              <th>Neglected</th>
+              <Tooltip title="The number of tickets lost due to channels closing without ticket redemption.">
+                <th>Neglected</th>
+              </Tooltip>
               <td>{statistics?.neglected}</td>
             </tr>
             <tr>
-              <th>Rejected</th>
+              <Tooltip title="The number of tickets which were rejected by the network due to suspicious activity or lack of eligibility.">
+                <th>Rejected</th>
+              </Tooltip>
               <td>{statistics?.rejected}</td>
             </tr>
             <tr>
-              <th>Rejected value</th>
+              <Tooltip title="The value of your rejected tickets in HOPR tokens.">
+                <th>Rejected value</th>
+              </Tooltip>
               <td>{statistics?.rejectedValue}</td>
             </tr>
           </tbody>

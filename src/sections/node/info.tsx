@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from '../../store';
 
 // Mui
-import { Paper } from '@mui/material';
+import { Paper, Tooltip } from '@mui/material';
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
@@ -140,11 +140,15 @@ function InfoPage() {
         >
           <tbody>
             <tr>
-              <th>Version</th>
+              <Tooltip title="The version of HOPR your node is running.">
+                <th>Version</th>
+              </Tooltip>
               <td>{version?.replaceAll('"', '')}</td>
             </tr>
             <tr>
-              <th>Environment</th>
+              <Tooltip title="The environment your node is running in.">
+                <th>Environment</th>
+              </Tooltip>
               <td>{info?.environment}</td>
             </tr>
           </tbody>
@@ -156,23 +160,47 @@ function InfoPage() {
         >
           <tbody>
             <tr>
-              <th>Eligible</th>
+              <Tooltip title="Whether or not your node is eligible to connect to the Monte Rosa network.">
+                <th>Eligible</th>
+              </Tooltip>
               <td>{info?.isEligible ? 'Yes' : 'No'}</td>
             </tr>
             <tr>
-              <th>Blockchain Network</th>
+              <Tooltip title="The blockchain network your node is using for on-chain transactions.">
+                <th>Blockchain Network</th>
+              </Tooltip>
               <td>{info?.network}</td>
             </tr>
             <tr>
-              <th>Connectivity status</th>
+              <Tooltip
+                title={
+                  <span>
+                    {[
+                      'Unknown: Node has just been started recently',
+                      <br />,
+                      'Red: No connection',
+                      <br />,
+                      'Orange: low-quality connection',
+                      <br />,
+                      'Yellow/Green: High-quality node',
+                    ]}
+                  </span>
+                }
+              >
+                <th>Connectivity status</th>
+              </Tooltip>
               <td>{info?.connectivityStatus}</td>
             </tr>
             <tr>
-              <th>Announced address</th>
+              <Tooltip title="The address your node announces to make itself reachable for other nodes.">
+                <th>Announced address</th>
+              </Tooltip>
               <td>{info?.announcedAddress}</td>
             </tr>
             <tr>
-              <th>Listening address</th>
+              <Tooltip title="The address your node uses to listen for incoming connections.">
+                <th>Listening address</th>
+              </Tooltip>
               <td>{info?.listeningAddress}</td>
             </tr>
           </tbody>
@@ -184,11 +212,15 @@ function InfoPage() {
         >
           <tbody>
             <tr>
-              <th>Native</th>
+              <Tooltip title="The amount of xDAI stored on your node">
+                <th>Native</th>
+              </Tooltip>
               <td>{balances.native?.formatted} xDai</td>
             </tr>
             <tr>
-              <th>Hopr</th>
+              <Tooltip title="The amount of wxHOPR tokens stored on your node">
+                <th>Hopr</th>
+              </Tooltip>
               <td>{balances.hopr?.formatted} wxHOPR</td>
             </tr>
           </tbody>
@@ -200,19 +232,27 @@ function InfoPage() {
         >
           <tbody>
             <tr>
-              <th>HOPR Address</th>
+              <Tooltip title="Your node's HOPR address, used by other node's to identify your node and send it messages (equivalent to a public key). ">
+                <th>HOPR Address</th>
+              </Tooltip>
               <td>{addresses?.hopr}</td>
             </tr>
             <tr>
-              <th>Node Eth Address</th>
+              <Tooltip title="Your node's Ethereum address, this is where you send your node tokens/funds.">
+                <th>Node Eth Address</th>
+              </Tooltip>
               <td>{addresses?.native}</td>
             </tr>
             <tr>
-              <th>hoprToken</th>
+              <Tooltip title="The contract address of the HOPR token.">
+                <th>hoprToken</th>
+              </Tooltip>
               <td>{info?.hoprToken}</td>
             </tr>
             <tr>
-              <th>hoprChannels</th>
+              <Tooltip title="The contract address of the hoprChannels smart contract.">
+                <th>hoprChannels</th>
+              </Tooltip>
               <td>{info?.hoprChannels}</td>
             </tr>
           </tbody>
@@ -224,11 +264,15 @@ function InfoPage() {
         >
           <tbody>
             <tr>
-              <th>Incoming</th>
+              <Tooltip title="The number of incoming channels connected to your node.">
+                <th>Incoming</th>
+              </Tooltip>
               <td>{channels?.incoming.filter((channel) => channel.status === 'Open').length}</td>
             </tr>
             <tr>
-              <th>Outgoing</th>
+              <Tooltip title="The number of outgoing channels connected to your node.">
+                <th>Outgoing</th>
+              </Tooltip>
               <td>{channels?.outgoing.filter((channel) => channel.status === 'Open').length}</td>
             </tr>
           </tbody>
@@ -240,11 +284,15 @@ function InfoPage() {
         >
           <tbody>
             <tr>
-              <th>Announced</th>
+              <Tooltip title="The number of announced nodes on the network visible to your node.">
+                <th>Announced</th>
+              </Tooltip>
               <td>{peers?.announced.length}</td>
             </tr>
             <tr>
-              <th>Connected</th>
+              <Tooltip title="The number of nodes on the network your node can reach.">
+                <th>Connected</th>
+              </Tooltip>
               <td>{peers?.connected.length}</td>
             </tr>
           </tbody>
@@ -255,43 +303,63 @@ function InfoPage() {
         >
           <tbody>
             <tr>
-              <th>Pending</th>
+              <Tooltip title="The number of tickets earned by another node in a channel connected to you which have yet to be redeemed.">
+                <th>Pending</th>
+              </Tooltip>
               <td>{statistics?.pending}</td>
             </tr>
             <tr>
-              <th>Unredeemed</th>
+              <Tooltip title="The number of tickets earned by your node that have yet to be redeemed.">
+                <th>Unredeemed</th>
+              </Tooltip>
               <td>{statistics?.unredeemed}</td>
             </tr>
             <tr>
-              <th>Unredeemed value</th>
+              <Tooltip title="The value of all your unredeemed tickets in HOPR tokens.">
+                <th>Unredeemed value</th>
+              </Tooltip>
               <td>{statistics?.unredeemedValue}</td>
             </tr>
             <tr>
-              <th>Redeemed</th>
+              <Tooltip title="The number of tickets redeemed by your node.">
+                <th>Redeemed</th>
+              </Tooltip>
               <td>{statistics?.redeemed}</td>
             </tr>
             <tr>
-              <th>Redeemed value</th>
+              <Tooltip title="The value of all your redeemed tickets.">
+                <th>Redeemed value</th>
+              </Tooltip>
               <td>{statistics?.redeemedValue}</td>
             </tr>
             <tr>
-              <th>Losing tickets</th>
+              <Tooltip title="The number of tickets which were empty.">
+                <th>Losing tickets</th>
+              </Tooltip>
               <td>{statistics?.losingTickets}</td>
             </tr>
             <tr>
-              <th>Win proportion</th>
+              <Tooltip title="The percentage of tickets earned by your node that were winning.">
+                <th>Win proportion</th>
+              </Tooltip>
               <td>{statistics?.winProportion}</td>
             </tr>
             <tr>
-              <th>Neglected</th>
+              <Tooltip title="The number of tickets lost due to channels closing without ticket redemption.">
+                <th>Neglected</th>
+              </Tooltip>
               <td>{statistics?.neglected}</td>
             </tr>
             <tr>
-              <th>Rejected</th>
+              <Tooltip title="The number of tickets which were rejected by the network due to suspicious activity or lack of eligibility.">
+                <th>Rejected</th>
+              </Tooltip>
               <td>{statistics?.rejected}</td>
             </tr>
             <tr>
-              <th>Rejected value</th>
+              <Tooltip title="The value of your rejected tickets in HOPR tokens.">
+                <th>Rejected value</th>
+              </Tooltip>
               <td>{statistics?.rejectedValue}</td>
             </tr>
           </tbody>

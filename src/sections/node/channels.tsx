@@ -26,8 +26,9 @@ import {
   TableContainer,
   Table,
   TableHead,
-  Paper
-} from '@mui/material'
+  Paper,
+  Tooltip
+} from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import GetAppIcon from '@mui/icons-material/GetApp';
 
@@ -233,9 +234,15 @@ function ChannelsPage() {
             <TableHead>
               <TableRow>
                 <TableCell>Id</TableCell>
-                <TableCell>Peer Id</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Dedicated Funds</TableCell>
+                <Tooltip title="This node's HOPR address, used by other nodes to identify your node and send it messages.">
+                  <TableCell>Peer Id</TableCell>
+                </Tooltip>
+                <Tooltip title="The status of this channel.">
+                  <TableCell>Status</TableCell>
+                </Tooltip>
+                <Tooltip title="The amount of wxHOPR in this channel.">
+                  <TableCell>Dedicated Funds</TableCell>
+                </Tooltip>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>

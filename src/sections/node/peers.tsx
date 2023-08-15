@@ -23,7 +23,8 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  Tooltip
 } from '@mui/material'
 import GetAppIcon from '@mui/icons-material/GetApp';
 
@@ -139,13 +140,27 @@ function PeersPage() {
             <TableHead>
               <TableRow>
                 <TableCell>#</TableCell>
-                <TableCell>Peer Id</TableCell>
-                <TableCell>Alias</TableCell>
-                <TableCell>Elegible</TableCell>
-                <TableCell>Multiaddrs</TableCell>
-                <TableCell>Last seen</TableCell>
-                <TableCell>Quality</TableCell>
-                <TableCell>Actions</TableCell>
+                <Tooltip title="This node's HOPR address. This is what other nodes use to identify your node on the network (equivalent to a public key).">
+                  <TableCell>Peer Id</TableCell>
+                </Tooltip>
+                <Tooltip title="The alias you have set for this node.">
+                  <TableCell>Alias</TableCell>
+                </Tooltip>
+                <Tooltip title="Whether or not this node is eligible to participate in the network.">
+                  <TableCell>Elegible</TableCell>
+                </Tooltip>
+                <Tooltip title="A single address used to represent the many protocols used to communicate with this node.">
+                  <TableCell>Multiaddrs</TableCell>
+                </Tooltip>
+                <Tooltip title="When this node was last seen by your node.">
+                  <TableCell>Last seen</TableCell>
+                </Tooltip>
+                <Tooltip title="The quality of your connection to this node.">
+                  <TableCell>Quality</TableCell>
+                </Tooltip>
+                <Tooltip title="Message, ping or manage this peer.">
+                  <TableCell>Actions</TableCell>
+                </Tooltip>
               </TableRow>
             </TableHead>
             <TableBody>

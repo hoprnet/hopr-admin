@@ -13,7 +13,7 @@ import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 
 // Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
-import { Paper } from '@mui/material';
+import { Paper, Tooltip } from '@mui/material';
 
 const TableTitle = styled.p`
   font-family: 'Source Code Pro';
@@ -97,7 +97,9 @@ function MetricsPage() {
         <br />
         <br />
 
-        <TableTitle>Total ping time</TableTitle>
+        <Tooltip title="Displays the total time a single ping takes to complete (seconds).">
+          <TableTitle>Total ping time</TableTitle>
+        </Tooltip>
         <Chart
           options={{ xaxis: { categories: metrics?.parsed?.core_histogram_ping_time_seconds?.categories
             ? metrics?.parsed?.core_histogram_ping_time_seconds?.categories
@@ -115,7 +117,9 @@ function MetricsPage() {
           }}
         />
 
-        <TableTitle>Start-up time</TableTitle>
+        <Tooltip title="Displays the start-up time for your node (seconds).">
+          <TableTitle>Start-up time</TableTitle>
+        </Tooltip>
         <Chart
           options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_startup_time_seconds?.categories
             ? metrics?.parsed?.hoprd_histogram_startup_time_seconds?.categories
@@ -133,7 +137,9 @@ function MetricsPage() {
           }}
         />
 
-        <TableTitle>Time to reach high-level connection</TableTitle>
+        <Tooltip title="Displays the time it takes your node to reach a GREEN connection status (seconds).">
+          <TableTitle>Time to reach high-level connection</TableTitle>
+        </Tooltip>
         <Chart
           options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_time_to_green_second?.categories
             ? metrics?.parsed?.hoprd_histogram_time_to_green_seconds?.categories
@@ -151,7 +157,9 @@ function MetricsPage() {
           }}
         />
 
-        <TableTitle>Received message latencies</TableTitle>
+        <Tooltip title="Displays the latencies of received messages (seconds).">
+          <TableTitle>Received message latencies</TableTitle>
+        </Tooltip>
         <Chart
           options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_message_latency_ms?.categories
             ? metrics?.parsed?.hoprd_histogram_message_latency_ms?.categories
@@ -169,7 +177,9 @@ function MetricsPage() {
           }}
         />
 
-        <TableTitle>Peers by quality</TableTitle>
+        <Tooltip title="Displays your visible peers categorized by their connection quality.">
+          <TableTitle>Peers by quality</TableTitle>
+        </Tooltip>
         <Chart
           options={{ xaxis: { categories: metrics?.parsed?.core_mgauge_peers_by_quality?.categories
             ? metrics?.parsed?.core_mgauge_peers_by_quality?.categories

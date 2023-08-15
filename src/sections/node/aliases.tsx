@@ -25,7 +25,8 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  Tooltip
 } from '@mui/material'
 import GetAppIcon from '@mui/icons-material/GetApp';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
@@ -148,8 +149,12 @@ function AliasesPage() {
             <TableHead>
               <TableRow>
                 <TableCell>Id</TableCell>
-                <TableCell>Peer Id</TableCell>
-                <TableCell>Alias</TableCell>
+                <Tooltip title="Your node's HOPR address, used by other nodes to identify your node and send it messages.">
+                  <TableCell>Peer Id</TableCell>
+                </Tooltip>
+                <Tooltip title="The alias you have set for this node.">
+                  <TableCell>Alias</TableCell>
+                </Tooltip>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
