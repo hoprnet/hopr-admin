@@ -109,11 +109,11 @@ function TicketsPage() {
         >
           <tbody>
             <tr>
-              <th>Pending count</th>
+              <th>Pending</th>
               <td>{statistics?.pending}</td>
             </tr>
             <tr>
-              <th>Unredeemed count</th>
+              <th>Unredeemed</th>
               <td>{statistics?.unredeemed}</td>
             </tr>
             <tr>
@@ -121,7 +121,7 @@ function TicketsPage() {
               <td>{statistics?.unredeemedValue}</td>
             </tr>
             <tr>
-              <th>Redeemed count</th>
+              <th>Redeemed</th>
               <td>{statistics?.redeemed}</td>
             </tr>
             <tr>
@@ -129,7 +129,7 @@ function TicketsPage() {
               <td>{statistics?.redeemedValue}</td>
             </tr>
             <tr>
-              <th>Losing tickets count</th>
+              <th>Losing tickets</th>
               <td>{statistics?.losingTickets}</td>
             </tr>
             <tr>
@@ -137,11 +137,11 @@ function TicketsPage() {
               <td>{statistics?.winProportion}</td>
             </tr>
             <tr>
-              <th>Neglected count</th>
+              <th>Neglected</th>
               <td>{statistics?.neglected}</td>
             </tr>
             <tr>
-              <th>Rejected count</th>
+              <th>Rejected</th>
               <td>{statistics?.rejected}</td>
             </tr>
             <tr>

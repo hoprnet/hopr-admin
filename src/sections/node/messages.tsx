@@ -76,9 +76,9 @@ const messages = () => {
           >
             <TableHead>
               <TableRow>
-                <TableCell>id</TableCell>
-                <TableCell>message</TableCell>
-                <TableCell>actions</TableCell>
+                <TableCell>Id</TableCell>
+                <TableCell>Message</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

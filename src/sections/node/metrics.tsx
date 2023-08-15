@@ -50,6 +50,7 @@ function MetricsPage() {
     }
   };
 
+  // We have to change names to the copy value
   function renderMetricsTable(parsedMetrics: any) {
     const render: any[] = [];
     for (const [key, value] of Object.entries(metrics.parsed)) {
@@ -96,7 +97,7 @@ function MetricsPage() {
         <br />
         <br />
 
-        <TableTitle>Measures total time it takes to ping a single node (seconds)</TableTitle>
+        <TableTitle>Total ping time</TableTitle>
         <Chart
           options={{ xaxis: { categories: metrics?.parsed?.core_histogram_ping_time_seconds?.categories
             ? metrics?.parsed?.core_histogram_ping_time_seconds?.categories
@@ -114,7 +115,7 @@ function MetricsPage() {
           }}
         />
 
-        <TableTitle>Time it takes for a node to start up</TableTitle>
+        <TableTitle>Start-up time</TableTitle>
         <Chart
           options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_startup_time_seconds?.categories
             ? metrics?.parsed?.hoprd_histogram_startup_time_seconds?.categories
@@ -132,7 +133,7 @@ function MetricsPage() {
           }}
         />
 
-        <TableTitle>Time it takes for a node to transition to the GREEN network state</TableTitle>
+        <TableTitle>Time to reach high-level connection</TableTitle>
         <Chart
           options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_time_to_green_second?.categories
             ? metrics?.parsed?.hoprd_histogram_time_to_green_seconds?.categories
@@ -150,7 +151,7 @@ function MetricsPage() {
           }}
         />
 
-        <TableTitle>Histogram of measured received message latencies</TableTitle>
+        <TableTitle>Received message latencies</TableTitle>
         <Chart
           options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_message_latency_ms?.categories
             ? metrics?.parsed?.hoprd_histogram_message_latency_ms?.categories
@@ -168,7 +169,7 @@ function MetricsPage() {
           }}
         />
 
-        <TableTitle>Number different peer types by quality</TableTitle>
+        <TableTitle>Peers by quality</TableTitle>
         <Chart
           options={{ xaxis: { categories: metrics?.parsed?.core_mgauge_peers_by_quality?.categories
             ? metrics?.parsed?.core_mgauge_peers_by_quality?.categories

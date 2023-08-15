@@ -160,7 +160,7 @@ function InfoPage() {
               <td>{info?.isEligible ? 'Yes' : 'No'}</td>
             </tr>
             <tr>
-              <th>Network</th>
+              <th>Blockchain Network</th>
               <td>{info?.network}</td>
             </tr>
             <tr>
@@ -200,11 +200,11 @@ function InfoPage() {
         >
           <tbody>
             <tr>
-              <th>PeerId</th>
+              <th>HOPR Address</th>
               <td>{addresses?.hopr}</td>
             </tr>
             <tr>
-              <th>Native</th>
+              <th>Node Eth Address</th>
               <td>{addresses?.native}</td>
             </tr>
             <tr>
@@ -235,7 +235,7 @@ function InfoPage() {
         </TableExtended>
 
         <TableExtended
-          title="Peers on the network"
+          title="Nodes on the network"
           style={{ marginBottom: '42px' }}
         >
           <tbody>
@@ -255,11 +255,11 @@ function InfoPage() {
         >
           <tbody>
             <tr>
-              <th>Pending count</th>
+              <th>Pending</th>
               <td>{statistics?.pending}</td>
             </tr>
             <tr>
-              <th>Unredeemed count</th>
+              <th>Unredeemed</th>
               <td>{statistics?.unredeemed}</td>
             </tr>
             <tr>
@@ -267,7 +267,7 @@ function InfoPage() {
               <td>{statistics?.unredeemedValue}</td>
             </tr>
             <tr>
-              <th>Redeemed count</th>
+              <th>Redeemed</th>
               <td>{statistics?.redeemed}</td>
             </tr>
             <tr>
@@ -275,7 +275,7 @@ function InfoPage() {
               <td>{statistics?.redeemedValue}</td>
             </tr>
             <tr>
-              <th>Losing tickets count</th>
+              <th>Losing tickets</th>
               <td>{statistics?.losingTickets}</td>
             </tr>
             <tr>
@@ -283,11 +283,11 @@ function InfoPage() {
               <td>{statistics?.winProportion}</td>
             </tr>
             <tr>
-              <th>Neglected count</th>
+              <th>Neglected</th>
               <td>{statistics?.neglected}</td>
             </tr>
             <tr>
-              <th>Rejected count</th>
+              <th>Rejected</th>
               <td>{statistics?.rejected}</td>
             </tr>
             <tr>
