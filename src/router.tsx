@@ -64,6 +64,7 @@ import NodeAdded from './sections/nodeAdded';
 import SafeActions from './sections/actions';
 import WalletIcon from '@mui/icons-material/Wallet';
 import SetupNodePage from './steps/setupYourNode';
+import WhatYouWillNeedPage from './steps/whatYouWillNeed';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -291,6 +292,13 @@ export const applicationMapDev: ApplicationMapType = [
         path: 'setup-your-node',
         icon: <AddBoxIcon />,
         element: <SetupNodePage />,
+        loginNeeded: 'web3',
+      },  
+      {
+        name: 'What you will need',
+        path: 'what-you-will-need',
+        icon: <AddBoxIcon />,
+        element: <WhatYouWillNeedPage/>,
         loginNeeded: 'web3',
       },
       {
