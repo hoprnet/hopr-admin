@@ -64,6 +64,7 @@ import NodeAdded from './sections/nodeAdded';
 import SafeActions from './sections/actions';
 import WalletIcon from '@mui/icons-material/Wallet';
 import SetupNodePage from './steps/setupYourNode';
+import AddedToWhitelist from './steps/addedToWhitelist';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -291,6 +292,13 @@ export const applicationMapDev: ApplicationMapType = [
         path: 'setup-your-node',
         icon: <AddBoxIcon />,
         element: <SetupNodePage />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Added to whitelist',
+        path: 'added-to-whitelist',
+        icon: <AddBoxIcon />,
+        element: <AddedToWhitelist />,
         loginNeeded: 'web3',
       },
       {
