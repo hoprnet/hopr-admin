@@ -50,6 +50,7 @@ function TicketsPage() {
         apiToken: loginData.apiToken!,
       }),
     );
+    handleRefresh();
   };
 
   return (
