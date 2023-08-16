@@ -16,7 +16,8 @@ import InfoPage from './sections/node/info';
 import MessagesPage from './sections/node/messages';
 import PeersPage from './sections/node/peers';
 import TicketsPage from './sections/node/tickets';
-import ChannelsPage from './sections/node/channels';
+import ChannelsPageIncoming from './sections/node/channelsIncoming';
+import ChannelsPageOutgoing from './sections/node/channelsOutgoing';
 import MetricsPage from './sections/node/metrics';
 import SafeStakingPage from './sections/safeStaking';
 import ConfigurationPage from './sections/node/configuration';
@@ -151,10 +152,17 @@ export const applicationMapNode: ApplicationMapType = [
         loginNeeded: 'node',
       },
       {
-        name: 'CHANNELS',
-        path: 'channels',
+        name: 'INCOMING CHANNELS',
+        path: 'channels-INCOMING',
         icon: <HubIcon />,
-        element: <ChannelsPage />,
+        element: <ChannelsPageIncoming />,
+        loginNeeded: 'node',
+      },
+      {
+        name: 'OUTGOING CHANNELS',
+        path: 'channels-OUTGOING',
+        icon: <HubIcon />,
+        element: <ChannelsPageOutgoing />,
         loginNeeded: 'node',
       },
     ],

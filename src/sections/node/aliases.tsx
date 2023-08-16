@@ -19,15 +19,6 @@ import { CreateAliasModal } from '../../components/Modal/AddAliasModal';
 import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
 
 //Mui
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow
-} from '@mui/material'
 import GetAppIcon from '@mui/icons-material/GetApp';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 
@@ -177,6 +168,7 @@ function AliasesPage() {
           {key: 'peerId', name: 'Peer Id', search: true, tooltip: true, maxWidth: '60px' },
           {key: 'actions', name: 'Actions', search: false, width: '168px', maxWidth: '168px' },
         ]}
+        loading={parsedTableData.length === 0 && aliasesFetching}
       />
     </Section>
   );

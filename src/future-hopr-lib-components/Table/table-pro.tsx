@@ -120,7 +120,8 @@ const STextField = styled(TextField)`
 interface Props {
   data: any[],
   header: any[],
-  search?: boolean
+  search?: boolean,
+  loading?: boolean,
 }
 
 export default function CustomPaginationActionsTable(props: Props) {
@@ -263,7 +264,7 @@ export default function CustomPaginationActionsTable(props: Props) {
             <>
               <TableRow style={{ height: 57 }}>
                 <STableCell colSpan={props.header.length}>
-                  No entries
+                  {props.loading ? 'Loading...' : 'No entries'}
                 </STableCell>
               </TableRow>
               <TableRow style={{ height: 57 * (rowsPerPage - 1) }}>
