@@ -171,9 +171,10 @@ function AliasesPage() {
       />
       <TablePro
         data={parsedTableData}
+        search={true}
         header={[
-          {key: 'alias', name: 'Alias', search: true, tooltip: true },
-          {key: 'peerId', name: 'Peer Id', search: true, tooltip: true },
+          {key: 'alias', name: 'Alias', search: true, tooltip: true, maxWidth: '0px' },
+          {key: 'peerId', name: 'Peer Id', search: true, tooltip: true, maxWidth: '60px' },
           {key: 'actions', name: 'Actions', search: false, width: '168px', maxWidth: '168px' },
         ]}
       />

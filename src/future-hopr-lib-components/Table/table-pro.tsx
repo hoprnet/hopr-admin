@@ -1,6 +1,8 @@
-import * as React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import styled from '@emotion/styled';
+import _debounce from 'lodash/debounce';
 
+// Mui
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -16,6 +18,8 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import Tooltip from '@mui/material/Tooltip'
+import TextField from '@mui/material/TextField'
+
 
 interface TablePaginationActionsProps {
   count: number;
@@ -27,14 +31,8 @@ interface TablePaginationActionsProps {
   ) => void;
 }
 
-
 const STable = styled(Table)`
-  /* table-layout: fixed; */
- // width: 350px;
-  /* table-layout: fixed; */
-  /*  min-width: 400px;
-  max-width: 400px; */
-  /* width: 100%;  */
+
 `
 
 const STableCell = styled(TableCell)`
@@ -42,36 +40,12 @@ const STableCell = styled(TableCell)`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-
-  /* span {
-    max-width: 446px;
-  } */
-  /* overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap; */
+  padding: 8px 16px;
 
   &.actions{ 
-    /* max-width: 164px; */
     overflow: unset;
-    /* text-overflow: unset; */
-    /* width: auto; */
-  //  width: 250px;
-    /*  max-width: 80px;
-    min-width: 80px; 
-    
-    white-space: nowrap;  */
   }
- /*  &.wrap {
-    text-wrap: wrap;
-    overflow-wrap: anywhere;
-  }
-  span {
-    white-space: nowrap; 
-    text-overflow:ellipsis; 
-    overflow: hidden;
-  } */
 `
-
 
 function TablePaginationActions(props: TablePaginationActionsProps) {
   const theme = useTheme();
@@ -129,62 +103,116 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   );
 }
 
-
-const TableHeader = styled.div`
+const OverTable = styled.div`
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+`
+
+const STextField = styled(TextField)`
+  flex-grow: 1;
+  margin: 0px 16px;
 `
 
 interface Props {
   data: any[],
   header: any[],
+  search?: boolean
 }
 
 export default function CustomPaginationActionsTable(props: Props) {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [page, set_Page] = React.useState(0);
+  const [rowsPerPage, set_RowsPerPage] = React.useState(10);
+  const [searchPhrase, set_searchPhrase] = React.useState('');
+  const [filteredData, set_filteredData] = React.useState<any[]>([]);
+
+  useEffect(() => {
+    filterData(searchPhrase);
+  }, [props.data]);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.data.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - filteredData.length) : 0;
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number,
   ) => {
-    setPage(newPage);
+    set_Page(newPage);
   };
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    set_RowsPerPage(parseInt(event.target.value, 10));
+    set_Page(0);
   };
 
-  console.log('props', props);
+  const debounceFn = useCallback(
+    _debounce(filterData, 150), 
+    [props.data]
+  );
+
+  function handleSearchChange(event: { target: { value: string }; }) {
+    let search: string = event.target.value;
+    set_searchPhrase(search);
+    debounceFn(search);
+  };
+
+  function filterData(searchPhrase: string) {
+    set_Page(0);
+    
+    let data = props.data;
+    let filterBy = props.header.map(elem => elem.search === true && elem.key);
+    filterBy = filterBy.filter(elem => elem);
+
+    // SearchPhrase filter
+    if (!searchPhrase || searchPhrase === '' ) {
+      set_filteredData(data);
+      return;
+    }
+    const filtered = data.filter(elem => {
+      for(let i = 0; i < filterBy.length; i++) {
+        if (elem[filterBy[i]].toLowerCase().includes(searchPhrase.toLowerCase())) return true;
+      }
+    });
+    set_filteredData(filtered);
+    return;
+  }
+
 
   return (
     <TableContainer component={Paper}>
+      <OverTable>
+        {
+          props.search &&
+          <STextField
+            label="Search"
+            variant="standard"
+            value={searchPhrase}
+            onChange={handleSearchChange}
+          />
+        }
+        <TablePagination
+          rowsPerPageOptions={[10, 50, { label: 'All', value: -1 }]}
+          colSpan={props.header.length-1}
+          count={filteredData.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          SelectProps={{
+            inputProps: {
+              'aria-label': 'rows per page',
+            },
+            native: true,
+          }}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          ActionsComponent={TablePaginationActions}
+          component={'div'}
+        />
+      </OverTable>
       <STable aria-label="custom pagination table">
         <thead>
-          <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[10, 50, { label: 'All', value: -1 }]}
-                colSpan={props.header.length}
-                count={props.data.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                SelectProps={{
-                  inputProps: {
-                    'aria-label': 'rows per page',
-                  },
-                  native: true,
-                }}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                ActionsComponent={TablePaginationActions}
-              />
-          </TableRow>
           <TableRow>
               {
                 props.header.map(headElem => (
@@ -200,8 +228,8 @@ export default function CustomPaginationActionsTable(props: Props) {
         </thead>
         <TableBody>
           {(rowsPerPage > 0
-            ? props.data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : props.data
+            ? filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            : filteredData
           ).map((row) => (
             <TableRow key={row.name}>
               {

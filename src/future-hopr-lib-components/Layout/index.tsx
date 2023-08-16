@@ -88,7 +88,7 @@ const Layout: React.FC<{
 
   // Set the initial state of the drawer based on the device type
   // If it's a mobile device, set the drawer to be closed by default
-  const [openedNavigationDrawer, set_openedNavigationDrawer] = useState(!isMobile);
+  const [openedNavigationDrawer, set_openedNavigationDrawer] = useState(false);
 
   return (
     <SLayout className={`Layout${webapp ? ' webapp' : ''} ${className}`}>
