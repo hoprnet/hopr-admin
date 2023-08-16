@@ -19,7 +19,6 @@ import { safeActionsAsync } from '../store/slices/safe';
 import Card from '../components/Card';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../utils/safeTransactions';
-import { useAccount } from 'wagmi';
 
 const StyledForm = styled.div`
   width: 100%;
@@ -106,7 +105,7 @@ function XdaiToNode() {
   const safeInfo = useAppSelector((store) => store.safe.info.data);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const { native: nodeNativeAddress } = useAppSelector((store) => store.node.addresses.data);
-  const { address } = useAccount();
+  const address = useAppSelector((store) => store.web3.account);
   // local states
   const [userCanSkipProposal, set_userCanSkipProposal] = useState(false);
   const [userAction, set_userAction] = useState<'EXECUTE' | 'SIGN' | null>(null);

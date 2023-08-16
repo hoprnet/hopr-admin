@@ -19,7 +19,6 @@ import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Select from '../future-hopr-lib-components/Select';
 import { SelectChangeEvent } from '@mui/material/Select';
-import { useAccount } from 'wagmi';
 import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../utils/safeTransactions';
 
 const StyledForm = styled.div`
@@ -124,7 +123,7 @@ function SafeWithdraw() {
   const pendingTransactions = useAppSelector((store) => store.safe.pendingTransactions.data);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const safeInfo = useAppSelector((store) => store.safe.info.data);
-  const { address } = useAccount();
+  const address = useAppSelector((store) => store.web3.account);
   // local state
   const [userCanSkipProposal, set_userCanSkipProposal] = useState(false);
   const [userAction, set_userAction] = useState<'EXECUTE' | 'SIGN' | null>(null);

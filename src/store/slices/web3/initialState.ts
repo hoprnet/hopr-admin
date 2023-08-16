@@ -9,6 +9,7 @@ export const initialState = {
   chainId: null as string | null,
   chain: null as string | null,
   blockNumber: '',
+  walletPresent: false as boolean,
   balance: {
     xDai: {
       value: null as string | null,

@@ -33,7 +33,7 @@ import Section from '../future-hopr-lib-components/Section';
 import styled from '@emotion/styled';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { default as dayjs } from 'dayjs';
-import { erc20ABI, useAccount } from 'wagmi';
+import { erc20ABI } from 'wagmi';
 
 // HOOKS
 import { ethers } from 'ethers';
@@ -159,7 +159,7 @@ const TruncatedEthereumAddressWithTooltip = ({ address }: { address: string }) =
 const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionResponse }) => {
   const signer = useEthersSigner();
   const dispatch = useAppDispatch();
-  const { address } = useAccount();
+  const address = useAppSelector((store) => store.web3.account);
   const safeNonce = useAppSelector((store) => store.safe.info.data?.nonce);
   const transactionAfterSafeNonce = safeNonce !== transaction.nonce;
   const [userAction, set_userAction] = useState<'EXECUTE' | 'SIGN' | null>(null);
@@ -286,7 +286,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
 };
 
 const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisigTransactionResponse }) => {
-  const { address } = useAccount();
+  const address = useAppSelector((store) => store.web3.account);
   const safeNonce = useAppSelector((store) => store.safe.info.data?.nonce);
   const signer = useEthersSigner();
   const dispatch = useAppDispatch();
