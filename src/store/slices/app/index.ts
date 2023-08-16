@@ -80,6 +80,9 @@ const appSlice = createSlice({
           : notification,
       );
     },
+    clearNotifications: (state) => {
+      state.notifications = [];
+    },
     markSeenAllNotifications: (state) => {
       state.notifications = state.notifications.map((notification) => ({
         ...notification,

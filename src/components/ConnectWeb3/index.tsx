@@ -10,7 +10,7 @@ import { appActions } from '../../store/slices/app';
 import { safeActions } from '../../store/slices/safe';
 
 // wagmi
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { gnosis, localhost } from 'viem/chains';
 import { Button, Menu, MenuItem } from '@mui/material';
@@ -80,13 +80,17 @@ export default function ConnectWeb3({
   const dispatch = useAppDispatch();
   const [chooseWalletModal, set_chooseWalletModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
-  const { connect } = useConnect({ connector: new InjectedConnector({ chains: [localhost, gnosis] }) });
-  const { isConnected } = useAccount();
+  const {
+    connect,
+    error,
+  } = useConnect({ connector: new InjectedConnector({ chains: [localhost, gnosis] }) });
   const { disconnect } = useDisconnect();
   const account = useAppSelector((store) => store.web3.account);
+  const isConnected = useAppSelector((store) => store.web3.status.connected);
   const chain = useAppSelector((store) => store.web3.chain);
+  const walletPresent = useAppSelector((store) => store.web3.walletPresent);
+  const [localError, set_localError] = useState<false | string>(false);
   const [currentAccount, set_currentAccount] = useState('');
-
   const containerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -119,15 +123,24 @@ export default function ConnectWeb3({
     }
   }, [account]);
 
+  useEffect(() => {
+    if (error) set_localError(JSON.stringify(error));
+    else set_localError(false);
+  }, [error]);
+
   const handleClose = () => {
     if (onClose) {
       onClose();
     }
     set_chooseWalletModal(false);
+    setTimeout(() => {
+      set_localError(false);
+    }, 250);
   };
 
   const handleConnectToMetaMask = () => {
     dispatch(web3Actions.setLoading(true));
+
     connect();
     if (isConnected) {
       handleClose();
@@ -199,18 +212,24 @@ export default function ConnectWeb3({
       <Modal
         open={chooseWalletModal}
         onClose={handleClose}
-        title="CONNECT A WALLET"
+        title={localError ? 'ERROR' : 'CONNECT A WALLET'}
+        disableScrollLock={true}
+        style={{ height: '270px' }}
       >
-        <ConnectWalletContent>
-          <WalletButton
-            onClick={handleConnectToMetaMask}
-            wallet="metamask"
-          />
-          <p>
-            By connecting a wallet, you agree to HOPR’s Terms of Service and acknowledge that you have read and
-            understand the Disclaimer.
-          </p>
-        </ConnectWalletContent>
+        {!localError && (
+          <ConnectWalletContent>
+            <WalletButton
+              onClick={handleConnectToMetaMask}
+              wallet="metamask"
+            />
+            <p>
+              By connecting a wallet, you agree to HOPR’s Terms of Service and acknowledge that you have read and
+              understand the Disclaimer.
+            </p>
+          </ConnectWalletContent>
+        )}
+        {localError && !walletPresent && <p>Wallet was not detected. Please install a wallet, e.g. MetaMask</p>}
+        {localError && walletPresent && <p>{localError}</p>}
       </Modal>
     </>
   );

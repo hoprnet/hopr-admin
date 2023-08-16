@@ -1,4 +1,9 @@
+import { useEffect } from 'react';
 import Updater from './updater';
+
+// Store
+import { useAppDispatch } from '../../store';
+import { web3Actions } from '../../store/slices/web3';
 
 // wagmi
 import { gnosis } from '@wagmi/core/chains';
@@ -24,18 +29,18 @@ const {
   rank: true,
 });
 
-// create a special client that sends rpc calls through wallet
-const walletClient = createWalletClient({
-  chain: gnosis,
-  transport: custom((window as unknown as WindowWithEthereum).ethereum),
-}).extend(publicActions);
+const walletIsInBrowser =
+  typeof window !== 'undefined' && typeof (window as unknown as WindowWithEthereum).ethereum !== 'undefined';
 
 const config = createConfig({
   autoConnect: true,
   connectors: [new MetaMaskConnector({ chains })],
   publicClient: (chain) => {
-    if (typeof window !== 'undefined' && typeof (window as unknown as WindowWithEthereum).ethereum !== 'undefined') {
-      return walletClient;
+    if (walletIsInBrowser) {
+      return createWalletClient({
+        chain: gnosis,
+        transport: custom((window as unknown as WindowWithEthereum).ethereum),
+      }).extend(publicActions);
     }
 
     // no ethereum found in window
@@ -45,10 +50,16 @@ const config = createConfig({
 });
 
 export default function WagmiProvider(props: React.PropsWithChildren) {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(web3Actions.setWalletPresent(walletIsInBrowser));
+  }, [walletIsInBrowser]);
+
   return (
     <WagmiConfig config={config}>
       {props.children}
-      <Updater />
+      {walletIsInBrowser && <Updater />}
     </WagmiConfig>
   );
 }

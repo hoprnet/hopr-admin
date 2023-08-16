@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectProps } from '@mui/material/Select';
+import SelectMui, { SelectProps as SelectMuiProps } from '@mui/material/Select';
 import { Tooltip, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -28,7 +28,7 @@ const SFormControl = styled(FormControl)`
   }
 `;
 
-interface Props extends SelectProps {
+interface Props extends SelectMuiProps {
   removeValue?: (value: number) => void;
   removeValueTooltip?: string;
   values?: {
@@ -37,11 +37,11 @@ interface Props extends SelectProps {
   }[];
 }
 
-const Section: React.FC<Props> = (props) => {
+const Select: React.FC<Props> = (props) => {
   return (
     <SFormControl style={props.style}>
       <InputLabel id="select-small">{props.label}</InputLabel>
-      <Select
+      <SelectMui
         labelId="select-small"
         id="select-small"
         size={props.size}
@@ -65,8 +65,7 @@ const Section: React.FC<Props> = (props) => {
                     className="removeValue"
                     onClick={(event) => {
                       event.stopPropagation();
-                      // @ts-ignore
-                      props.removeValue(elem.value);
+                      props?.removeValue?.(Number(elem.value));
                     }}
                   >
                     <DeleteIcon />
@@ -75,9 +74,9 @@ const Section: React.FC<Props> = (props) => {
               )}
             </MenuItem>
           ))}
-      </Select>
+      </SelectMui>
     </SFormControl>
   );
 };
 
-export default Section;
+export default Select;

@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useWatcher } from '../../hooks';
+
 // Mui
-import IconButton from '@mui/material/IconButton';
+import MuiIconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Badge from '@mui/material/Badge';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+// HOPR Components
+import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -29,7 +34,7 @@ const SBadge = styled(Badge)`
   }
 `;
 
-const SIconButton = styled(IconButton)`
+const SIconButton = styled(MuiIconButton)`
   width: 100%;
   height: 100%;
   border-radius: 0;
@@ -39,8 +44,13 @@ const SIconButton = styled(IconButton)`
   }
 `;
 
-const StyledMenuItem = styled(MenuItem)`
-  padding-right: 23px;
+const SMenuItem = styled(MenuItem)`
+  width: 100%;
+  max-width: 350px;
+  padding-right: 21px;
+  white-space: break-spaces;
+  overflow-wrap: anywhere;
+  font-size: 14px;
   &:not(:last-child) {
     border-bottom: 1px solid #8f8f8f;
   }
@@ -50,10 +60,10 @@ const StyledMenuItem = styled(MenuItem)`
     &:after {
       content: '';
       display: block;
-      position: relative;
+      position: absolute;
       width: 8px;
       height: 8px;
-      left: 13px;
+      right: 11px;
       -moz-border-radius: 7.5px;
       -webkit-border-radius: 7.5px;
       border-radius: 7.5px;
@@ -65,6 +75,10 @@ const StyledMenuItem = styled(MenuItem)`
     background-color: rgb(255 143 143 / 39%);
     cursor: default;
     pointer-events: none;
+    justify-content: space-between;
+    button {
+      pointer-events: all;
+    }
   }
 `;
 
@@ -112,17 +126,33 @@ export default function NotificationBar() {
           'aria-labelledby': 'notification-menu-button',
           className: 'notification-menu-list',
         }}
+        disableScrollLock={true}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
       >
         {notifications.length > 0 && (
-          <StyledMenuItem className={'informational'}>
+          <SMenuItem className={'informational'}>
             Notifications are stored locally.
             <br />
             They will delete on refresh.
-          </StyledMenuItem>
+            <IconButton
+              iconComponent={<DeleteIcon />}
+              tooltipText="Clear"
+              onClick={() => {
+                dispatch(appActions.clearNotifications());
+              }}
+            />
+          </SMenuItem>
         )}
         {notifications.length > 0 ? (
           notifications.map((notification) => (
-            <StyledMenuItem
+            <SMenuItem
               className={!notification.interacted ? 'unreadMenuItem' : ''}
               key={notification.id}
               onClick={() => {
@@ -133,10 +163,10 @@ export default function NotificationBar() {
               }}
             >
               {notification.name}
-            </StyledMenuItem>
+            </SMenuItem>
           ))
         ) : (
-          <MenuItem>No notifications</MenuItem>
+          <SMenuItem>No notifications</SMenuItem>
         )}
       </Menu>
     </Container>

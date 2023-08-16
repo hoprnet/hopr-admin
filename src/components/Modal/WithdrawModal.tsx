@@ -75,8 +75,8 @@ type WithdrawModalProps = {
 const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
   // hooks
   const dispatch = useAppDispatch();
-  const hoprBalance = useAppSelector((state) => state.node.balances.hopr);
-  const nativeBalance = useAppSelector((state) => state.node.balances.native);
+  const hoprBalance = useAppSelector((state) => state.node.balances.data.hopr);
+  const nativeBalance = useAppSelector((state) => state.node.balances.data.native);
   const {
     apiEndpoint,
     apiToken,

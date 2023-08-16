@@ -38,9 +38,9 @@ const SSection = styled.section`
   background: var(--section-background);
 
   &.full-height-min {
-    min-height: calc(100vh - 68px - 170px);
+    min-height: calc(100vh - 68px - 170px + 48px);
     @media (max-width: 850px) {
-      min-height: calc(100vh - 68px - 294px);
+      min-height: calc(100vh - 68px - 294px + 48px);
     }
   }
   &.full-height {
@@ -55,7 +55,7 @@ const SSection = styled.section`
     padding-right: 16px;
   }
   padding-bottom: 40px;
-  padding-top: 40px;
+  //  padding-top: 40px;
 `;
 
 const Content = styled.div`

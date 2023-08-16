@@ -44,6 +44,7 @@ const Modal: React.FC<Props> = (props) => {
     title,
     children,
     maxWidth,
+    disableScrollLock,
   } = props;
 
   const handleClose = (event: {}) => {
@@ -56,6 +57,7 @@ const Modal: React.FC<Props> = (props) => {
       onClose={handleClose}
       open={open}
       maxWidthCss={maxWidth}
+      disableScrollLock={disableScrollLock}
     >
       <Row>
         <div className="modal-title">{title}</div>

@@ -2,52 +2,34 @@ import { useAppSelector } from '../../store';
 import styled from '@emotion/styled';
 
 // Mui
-import Drawer from '@mui/material/Drawer';
-import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-
-const drawerWidth = 232;
 
 interface Props {}
 
-const Container = styled(Box)`
-  display: none;
-  @media screen and (min-width: 600px) {
-    display: flex;
-  }
-`;
-
 const AppBarFiller = styled(Toolbar)`
-  min-height: 59px !important;
+  min-height: 20px !important;
 `;
 
-const SDrawer = styled(Drawer)`
-  .MuiDrawer-paper {
-    box-sizing: border-box;
-    width: 233px;
-    font-size: 13px;
-    overflow-x: hidden;
-  }
+const SInfoBar = styled.div`
+  display: none;
+  width: 233px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow-x: hidden;
   &.node {
-    .MuiDrawer-paper {
-      background: white;
-      border: 0;
-    }
+    background: #ffffa0;
+    border: 0;
   }
   &.web3 {
-    .MuiDrawer-paper {
-      background: #edfbff;
-      border: 0;
-    }
+    background: #edfbff;
+    border: 0;
   }
-`;
-
-const Title = styled.div`
-  font-weight: 700;
-`;
-
-const Data = styled.div`
-  margin-bottom: 24px;
+  @media (min-width: 740px) {
+    display: block;
+  }
 `;
 
 const Web3Container = styled.div`
@@ -56,17 +38,12 @@ const Web3Container = styled.div`
   display: flex;
   gap: 1rem;
   min-height: 80px;
-  min-width: 185px;
+  min-width: 200px;
   padding: 1rem;
-  font-size: 10px;
+  font-size: 12px;
   margin-right: 8px;
   box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
     0px 1px 3px 0px rgba(0, 0, 0, 0.12);
-`;
-
-const FlexColumn = styled.div`
-  display: flex;
-  flex-direction: column;
 `;
 
 const IconContainer = styled.div`
@@ -74,8 +51,10 @@ const IconContainer = styled.div`
   width: 1rem;
 `;
 
-const Icons = styled(FlexColumn)`
-  margin-top: 2rem;
+const Icons = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 38px;
 `;
 
 const IconAndText = styled.div`
@@ -97,9 +76,14 @@ const Text = styled.p`
 const InfoTitle = styled.p`
   text-transform: uppercase;
   font-weight: 600;
+  margin-right: 5px;
+  margin-bottom: 4px;
+  margin-top: 20px;
 `;
 
-const Balance = styled(FlexColumn)`
+const Balance = styled.div`
+  display: flex;
+  flex-direction: column;
   background-color: #ddeaff;
   text-align: right;
   padding: 0rem 1rem;
@@ -120,8 +104,15 @@ const DataContainer = styled.div`
 
 const Wallet = styled(Balance)`
   flex-grow: 1;
+  &.nodeOnly {
+    width: 66px;
+  }
   p.double {
     line-height: 2;
+  }
+  p {
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 `;
 
@@ -244,7 +235,7 @@ export default function InfoBar(props: Props) {
         </Icons>
         <DataContainer>
           <InfoTitle>Node</InfoTitle>
-          <Wallet>
+          <Wallet className="nodeOnly">
             <p>{info?.connectivityStatus}</p>
             <p>{balances.native?.formatted ?? '-'}</p>
             <p>{balances.hopr?.formatted ?? '-'}</p>
@@ -258,27 +249,10 @@ export default function InfoBar(props: Props) {
   );
 
   return (
-    <Container sx={{ display: 'flex' }}>
-      <Box
-        component="nav"
-        sx={{
-          width: { sm: drawerWidth },
-          flexShrink: { sm: 0 },
-        }}
-        aria-label="mailbox folders"
-      >
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        <SDrawer
-          variant="permanent"
-          anchor={'right'}
-          open
-          className={`${web3Connected ? 'web3' : ''} ${nodeConnected ? 'node' : ''}`}
-        >
-          <AppBarFiller />
-          {web3Connected && web3Drawer}
-          {nodeConnected && !web3Connected && nodeDrawer}
-        </SDrawer>
-      </Box>
-    </Container>
+    <SInfoBar className={`InfoBar ${web3Connected ? 'web3' : ''} ${nodeConnected ? 'node' : ''}`}>
+      <AppBarFiller />
+      {web3Connected && web3Drawer}
+      {nodeConnected && !web3Connected && nodeDrawer}
+    </SInfoBar>
   );
 }
