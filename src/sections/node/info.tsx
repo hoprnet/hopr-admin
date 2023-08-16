@@ -128,7 +128,7 @@ function InfoPage() {
         title="INFO"
         refreshFunction={fetchInfoData}
         reloading={isFetchingAnyData}
-        actions={<WithdrawModal/>}
+        actions={<WithdrawModal />}
       />
       <Paper
         style={{

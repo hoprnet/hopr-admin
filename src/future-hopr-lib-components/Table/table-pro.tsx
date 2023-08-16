@@ -17,23 +17,17 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
-import Tooltip from '@mui/material/Tooltip'
-import TextField from '@mui/material/TextField'
-
+import Tooltip from '@mui/material/Tooltip';
+import TextField from '@mui/material/TextField';
 
 interface TablePaginationActionsProps {
   count: number;
   page: number;
   rowsPerPage: number;
-  onPageChange: (
-    event: React.MouseEvent<HTMLButtonElement>,
-    newPage: number,
-  ) => void;
+  onPageChange: (event: React.MouseEvent<HTMLButtonElement>, newPage: number) => void;
 }
 
-const STable = styled(Table)`
-
-`
+const STable = styled(Table)``;
 
 const STableCell = styled(TableCell)`
   max-width: 0;
@@ -41,19 +35,22 @@ const STableCell = styled(TableCell)`
   text-overflow: ellipsis;
   white-space: nowrap;
   padding: 8px 16px;
-  max-width: calc( 100% - 168px);
-  &.actions{ 
+  max-width: calc(100% - 168px);
+  &.actions {
     overflow: unset;
   }
-`
+`;
 
 function TablePaginationActions(props: TablePaginationActionsProps) {
   const theme = useTheme();
-  const { count, page, rowsPerPage, onPageChange } = props;
+  const {
+    count,
+    page,
+    rowsPerPage,
+    onPageChange,
+  } = props;
 
-  const handleFirstPageButtonClick = (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
+  const handleFirstPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     onPageChange(event, 0);
   };
 
@@ -70,7 +67,12 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   };
 
   return (
-    <Box sx={{ flexShrink: 0, ml: 2.5 }}>
+    <Box
+      sx={{
+        flexShrink: 0,
+        ml: 2.5,
+      }}
+    >
       <IconButton
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
@@ -110,18 +112,18 @@ const OverTable = styled.div`
   &.searchIncluded {
     justify-content: space-between;
   }
-`
+`;
 
 const STextField = styled(TextField)`
   flex-grow: 1;
   margin: 0px 16px;
-`
+`;
 
 interface Props {
-  data: any[],
-  header: any[],
-  search?: boolean,
-  loading?: boolean,
+  data: any[];
+  header: any[];
+  search?: boolean;
+  loading?: boolean;
 }
 
 export default function CustomPaginationActionsTable(props: Props) {
@@ -135,48 +137,39 @@ export default function CustomPaginationActionsTable(props: Props) {
   }, [props.data]);
 
   // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - filteredData.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - filteredData.length) : 0;
 
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number,
-  ) => {
+  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     set_Page(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     set_RowsPerPage(parseInt(event.target.value, 10));
     set_Page(0);
   };
 
-  const debounceFn = useCallback(
-    _debounce(filterData, 150), 
-    [props.data]
-  );
+  const debounceFn = useCallback(_debounce(filterData, 150), [props.data]);
 
-  function handleSearchChange(event: { target: { value: string }; }) {
-    let search: string = event.target.value;
+  function handleSearchChange(event: { target: { value: string } }) {
+    const search: string = event.target.value;
     set_searchPhrase(search);
     debounceFn(search);
-  };
+  }
 
   function filterData(searchPhrase: string) {
     set_Page(0);
 
-    let data = props.data;
-    let filterBy = props.header.map(elem => elem.search === true && elem.key);
-    filterBy = filterBy.filter(elem => elem);
+    const data = props.data;
+    let filterBy = props.header.map((elem) => elem.search === true && elem.key);
+    filterBy = filterBy.filter((elem) => elem);
 
     // SearchPhrase filter
-    if (!searchPhrase || searchPhrase === '' ) {
+    if (!searchPhrase || searchPhrase === '') {
       set_filteredData(data);
       return;
     }
-    const filtered = data.filter(elem => {
-      for(let i = 0; i < filterBy.length; i++) {
+    const filtered = data.filter((elem) => {
+      for (let i = 0; i < filterBy.length; i++) {
         if (elem[filterBy[i]].toLowerCase().includes(searchPhrase.toLowerCase())) return true;
       }
     });
@@ -184,31 +177,32 @@ export default function CustomPaginationActionsTable(props: Props) {
     return;
   }
 
-
   return (
     <TableContainer component={Paper}>
-      <OverTable
-        className={`OverTable ${props.search ? 'searchIncluded' : ''}`}
-      >
-        {
-          props.search &&
+      <OverTable className={`OverTable ${props.search ? 'searchIncluded' : ''}`}>
+        {props.search && (
           <STextField
             label="Search"
             variant="standard"
             value={searchPhrase}
             onChange={handleSearchChange}
           />
-        }
+        )}
         <TablePagination
-          rowsPerPageOptions={[10, 50, { label: 'All', value: -1 }]}
-          colSpan={props.header.length-1}
+          rowsPerPageOptions={[
+            10,
+            50,
+            {
+              label: 'All',
+              value: -1,
+            },
+          ]}
+          colSpan={props.header.length - 1}
           count={filteredData.length}
           rowsPerPage={rowsPerPage}
           page={page}
           SelectProps={{
-            inputProps: {
-              'aria-label': 'rows per page',
-            },
+            inputProps: { 'aria-label': 'rows per page' },
             native: true,
           }}
           onPageChange={handleChangePage}
@@ -220,16 +214,14 @@ export default function CustomPaginationActionsTable(props: Props) {
       <STable aria-label="custom pagination table">
         <thead>
           <TableRow>
-              {
-                props.header.map(headElem => (
-                  <STableCell 
-                    className={`TableCell TableCellHeader`}
-                    width={headElem.width}
-                  >
-                    {headElem.name}
-                  </STableCell>
-                ))
-              }
+            {props.header.map((headElem) => (
+              <STableCell
+                className={`TableCell TableCellHeader`}
+                width={headElem.width}
+              >
+                {headElem.name}
+              </STableCell>
+            ))}
           </TableRow>
         </thead>
         <TableBody>
@@ -238,40 +230,34 @@ export default function CustomPaginationActionsTable(props: Props) {
             : filteredData
           ).map((row) => (
             <TableRow key={row.name}>
-              {
-                props.header.map(headElem => (
-                  <STableCell 
-                    className={`TableCell ${headElem.key} ${headElem.wrap ? 'wrap' : ''} ${headElem.maxWidth ? 'wrap' : ''}`}
-                    width={headElem.width}
-                    style={{maxWidth: headElem.maxWidth}}
-                  >
-                    {
-                      headElem.tooltip ?
-                      <Tooltip
-                        title={row[headElem.key]}
-                      >
-                        {row[headElem.key]}
-                      </Tooltip>
-                      :
-                      row[headElem.key]
-                    }
-                  </STableCell>
-                ))
-              }
+              {props.header.map((headElem) => (
+                <STableCell
+                  className={`TableCell ${headElem.key} ${headElem.wrap ? 'wrap' : ''} ${
+                    headElem.maxWidth ? 'wrap' : ''
+                  }`}
+                  width={headElem.width}
+                  style={{ maxWidth: headElem.maxWidth }}
+                >
+                  {headElem.tooltip ? (
+                    <Tooltip title={row[headElem.key]}>{row[headElem.key]}</Tooltip>
+                  ) : (
+                    row[headElem.key]
+                  )}
+                </STableCell>
+              ))}
             </TableRow>
           ))}
-          {!props.data || props.data.length === 0 && 
-            <>
-              <TableRow style={{ height: 57 }}>
-                <STableCell colSpan={props.header.length}>
-                  {props.loading ? 'Loading...' : 'No entries'}
-                </STableCell>
-              </TableRow>
-              <TableRow style={{ height: 57 * (rowsPerPage - 1) }}>
-                <STableCell colSpan={props.header.length} />
-              </TableRow>
-            </>
-          }
+          {!props.data ||
+            (props.data.length === 0 && (
+              <>
+                <TableRow style={{ height: 57 }}>
+                  <STableCell colSpan={props.header.length}>{props.loading ? 'Loading...' : 'No entries'}</STableCell>
+                </TableRow>
+                <TableRow style={{ height: 57 * (rowsPerPage - 1) }}>
+                  <STableCell colSpan={props.header.length} />
+                </TableRow>
+              </>
+            ))}
           {emptyRows > 0 && (
             <TableRow style={{ height: 57 * emptyRows }}>
               <STableCell colSpan={props.header.length} />

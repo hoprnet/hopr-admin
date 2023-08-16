@@ -9,7 +9,7 @@ import {
   MenuItem,
   Button as MuiButton,
   TextField
-} from '@mui/material';
+} from '@mui/material'
 import Button from '../../future-hopr-lib-components/Button';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
@@ -133,7 +133,7 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
 
   return (
     <>
-      <IconButton 
+      <IconButton
         iconComponent={<WalletIcon />}
         tooltipText="Withdraw tokens"
         onClick={handleOpenModal}

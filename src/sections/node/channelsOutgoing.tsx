@@ -90,7 +90,7 @@ function ChannelsPage() {
     handleRefresh();
   }, [queryParams]);
 
-  useEffect(() => { }, [tabIndex]);
+  useEffect(() => {}, [tabIndex]);
 
   const handleRefresh = () => {
     dispatch(
@@ -181,11 +181,31 @@ function ChannelsPage() {
   };
 
   const header = [
-    { key: 'key', name: 'key' },
-    { key: 'peerId', name: 'Peer Id', search: true },
-    { key: 'status', name: 'Status', search: true },
-    { key: 'funds', name: 'Dedicated Funds' },
-    { key: 'actions', name: 'Actions', search: false, width: '168px', maxWidth: '168px' },
+    {
+      key: 'key',
+      name: 'key',
+    },
+    {
+      key: 'peerId',
+      name: 'Peer Id',
+      search: true,
+    },
+    {
+      key: 'status',
+      name: 'Status',
+      search: true,
+    },
+    {
+      key: 'funds',
+      name: 'Dedicated Funds',
+    },
+    {
+      key: 'actions',
+      name: 'Actions',
+      search: false,
+      width: '168px',
+      maxWidth: '168px',
+    },
   ];
 
   const parsedTableData = Object.entries(channels?.incoming ?? []).map(([, channel], key) => {
@@ -194,30 +214,31 @@ function ChannelsPage() {
       peerId: getAliasByPeerId(channel.peerId),
       status: channel.status,
       funds: `${utils.formatEther(channel.balance)} mHOPR`,
-      actions: <>
-        <PingModal peerId={channel.peerId} />
-        <OpenOrFundChannelModal
-          peerId={channel.peerId}
-          title="Fund outgoing channel"
-          modalBtnText="Fund outgoing channel"
-          actionBtnText="Fund outgoing channel"
-          type="fund"
-          channelId={channel.channelId}
-        />
-        <IconButton
-          iconComponent={<CloseChannelIcon />}
-          tooltipText={`Close outgoing channel`}
-          onClick={() => handleCloseChannels('outgoing', channel.peerId, channel.channelId)}
-        />
-        {closingStates[channel.channelId]?.closing && <CircularProgress />}
-        {closingStates[channel.channelId]?.closeSuccess && <div>Close Success</div>}
-        {closingStates[channel.channelId]?.closeErrors.map((error, index) => (
-          <div key={index}>{error.error}</div>
-        ))}
-      </>
-    }
+      actions: (
+        <>
+          <PingModal peerId={channel.peerId} />
+          <OpenOrFundChannelModal
+            peerId={channel.peerId}
+            title="Fund outgoing channel"
+            modalBtnText="Fund outgoing channel"
+            actionBtnText="Fund outgoing channel"
+            type="fund"
+            channelId={channel.channelId}
+          />
+          <IconButton
+            iconComponent={<CloseChannelIcon />}
+            tooltipText={`Close outgoing channel`}
+            onClick={() => handleCloseChannels('outgoing', channel.peerId, channel.channelId)}
+          />
+          {closingStates[channel.channelId]?.closing && <CircularProgress />}
+          {closingStates[channel.channelId]?.closeSuccess && <div>Close Success</div>}
+          {closingStates[channel.channelId]?.closeErrors.map((error, index) => (
+            <div key={index}>{error.error}</div>
+          ))}
+        </>
+      ),
+    };
   });
-
 
   return (
     <Section
@@ -254,7 +275,6 @@ function ChannelsPage() {
         search
         loading={parsedTableData.length === 0 && channelsFetching}
       />
-
     </Section>
   );
 }

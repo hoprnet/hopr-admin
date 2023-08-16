@@ -35,7 +35,7 @@ interface Props extends SelectMuiProps {
     value: string | number;
     name: string | number | null;
   }[];
-  native?: boolean
+  native?: boolean;
 }
 
 const Select: React.FC<Props> = (props) => {

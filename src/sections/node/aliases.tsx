@@ -107,34 +107,35 @@ function AliasesPage() {
       key,
       alias,
       peerId,
-      actions: <>
-        <OpenOrFundChannelModal
-          peerId={peerId}
-          type={'open'}
-        />
-        <SendMessageModal peerId={peerId} />
-        <PingModal peerId={peerId} />
-        <DeleteAliasButton
-          onSuccess={() => {
-            set_deleteSuccess(true);
-          }}
-          onError={(e) => {
-            set_deleteSuccess(false);
-            set_deleteErrors([
-              ...deleteErrors,
-              {
-                alias: String(alias),
-                error: e.error,
-                status: e.status,
-              },
-            ]);
-          }}
-          alias={alias}
-        />
-      </>
-    }
+      actions: (
+        <>
+          <OpenOrFundChannelModal
+            peerId={peerId}
+            type={'open'}
+          />
+          <SendMessageModal peerId={peerId} />
+          <PingModal peerId={peerId} />
+          <DeleteAliasButton
+            onSuccess={() => {
+              set_deleteSuccess(true);
+            }}
+            onError={(e) => {
+              set_deleteSuccess(false);
+              set_deleteErrors([
+                ...deleteErrors,
+                {
+                  alias: String(alias),
+                  error: e.error,
+                  status: e.status,
+                },
+              ]);
+            }}
+            alias={alias}
+          />
+        </>
+      ),
+    };
   });
-
 
   return (
     <Section
@@ -164,9 +165,27 @@ function AliasesPage() {
         data={parsedTableData}
         search={true}
         header={[
-          {key: 'alias', name: 'Alias', search: true, tooltip: true, maxWidth: '0px' },
-          {key: 'peerId', name: 'Peer Id', search: true, tooltip: true, maxWidth: '60px' },
-          {key: 'actions', name: 'Actions', search: false, width: '168px', maxWidth: '168px' },
+          {
+            key: 'alias',
+            name: 'Alias',
+            search: true,
+            tooltip: true,
+            maxWidth: '0px',
+          },
+          {
+            key: 'peerId',
+            name: 'Peer Id',
+            search: true,
+            tooltip: true,
+            maxWidth: '60px',
+          },
+          {
+            key: 'actions',
+            name: 'Actions',
+            search: false,
+            width: '168px',
+            maxWidth: '168px',
+          },
         ]}
         loading={parsedTableData.length === 0 && aliasesFetching}
       />

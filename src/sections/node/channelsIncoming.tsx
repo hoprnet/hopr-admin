@@ -90,7 +90,7 @@ function ChannelsPage() {
     handleRefresh();
   }, [queryParams]);
 
-  useEffect(() => { }, [tabIndex]);
+  useEffect(() => {}, [tabIndex]);
 
   const handleRefresh = () => {
     dispatch(
@@ -181,11 +181,33 @@ function ChannelsPage() {
   };
 
   const headerIncomming = [
-    { key: 'key', name: '#' },
-    { key: 'peerId', name: 'Peer Id', search: true, maxWidth: '568px' },
-    { key: 'status', name: 'Status', maxWidth: '368px' },
-    { key: 'funds', name: 'Dedicated Funds', maxWidth: '68px' },
-    { key: 'actions', name: 'Actions', search: false, width: '168px', maxWidth: '168px' },
+    {
+      key: 'key',
+      name: '#',
+    },
+    {
+      key: 'peerId',
+      name: 'Peer Id',
+      search: true,
+      maxWidth: '568px',
+    },
+    {
+      key: 'status',
+      name: 'Status',
+      maxWidth: '368px',
+    },
+    {
+      key: 'funds',
+      name: 'Dedicated Funds',
+      maxWidth: '68px',
+    },
+    {
+      key: 'actions',
+      name: 'Actions',
+      search: false,
+      width: '168px',
+      maxWidth: '168px',
+    },
   ];
 
   const parsedTableDataIncomming = Object.entries(channels?.incoming ?? []).map(([, channel], key) => {
@@ -194,17 +216,18 @@ function ChannelsPage() {
       peerId: getAliasByPeerId(channel.peerId),
       status: channel.status,
       funds: `${utils.formatEther(channel.balance)} mHOPR`,
-      actions: <>
-        <PingModal peerId={channel.peerId} />
-        <OpenOrFundChannelModal
-          peerId={channel.peerId}
-          title="Open outgoing channel"
-          type={'open'}
-        />
-      </>
-    }
+      actions: (
+        <>
+          <PingModal peerId={channel.peerId} />
+          <OpenOrFundChannelModal
+            peerId={channel.peerId}
+            title="Open outgoing channel"
+            type={'open'}
+          />
+        </>
+      ),
+    };
   });
-  
 
   return (
     <Section

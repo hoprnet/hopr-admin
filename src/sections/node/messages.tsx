@@ -31,19 +31,30 @@ const messages = () => {
   }, []);
 
   const header = [
-    { key: 'body', name: 'Message'},
-    { key: 'actions', name: 'Actions', search: false, width: '168px', maxWidth: '168px' },
+    {
+      key: 'body',
+      name: 'Message',
+    },
+    {
+      key: 'actions',
+      name: 'Actions',
+      search: false,
+      width: '168px',
+      maxWidth: '168px',
+    },
   ];
 
   const parsedTableData = messages.map((message) => {
     return {
       body: message.body,
-      actions: <>
-        <button onClick={() => dispatch(nodeActions.toggleMessageSeen(message))}>
-          Mark as {message.seen ? 'unseen' : 'seen'}
-        </button>
-      </>
-    }
+      actions: (
+        <>
+          <button onClick={() => dispatch(nodeActions.toggleMessageSeen(message))}>
+            Mark as {message.seen ? 'unseen' : 'seen'}
+          </button>
+        </>
+      ),
+    };
   });
 
   return (

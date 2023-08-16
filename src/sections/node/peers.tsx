@@ -84,20 +84,49 @@ function PeersPage() {
   };
 
   const header = [
-    { key: 'number', name: '#' },
-    { key: 'alias', name: 'Alias', search: true, maxWidth: '60px' },
-    { key: 'peerId', name: 'Peer Id', search: true, tooltip: true, maxWidth: '160px' },
-    { key: 'lastSeen', name: 'Last seen', tooltip: true, maxWidth: '60px' },
-    { key: 'quality', name: 'Quality', maxWidth: '30px' },
-    { key: 'actions', name: 'Actions', search: false, width: '168px', maxWidth: '168px' },
+    {
+      key: 'number',
+      name: '#',
+    },
+    {
+      key: 'alias',
+      name: 'Alias',
+      search: true,
+      maxWidth: '60px',
+    },
+    {
+      key: 'peerId',
+      name: 'Peer Id',
+      search: true,
+      tooltip: true,
+      maxWidth: '160px',
+    },
+    {
+      key: 'lastSeen',
+      name: 'Last seen',
+      tooltip: true,
+      maxWidth: '60px',
+    },
+    {
+      key: 'quality',
+      name: 'Quality',
+      maxWidth: '30px',
+    },
+    {
+      key: 'actions',
+      name: 'Actions',
+      search: false,
+      width: '168px',
+      maxWidth: '168px',
+    },
   ];
 
-  const parsedTableData = Object.entries(peers?.announced ?? {}).map(([id, peer])=> {
+  const parsedTableData = Object.entries(peers?.announced ?? {}).map(([id, peer]) => {
     return {
       number: id,
       alias: aliases && getAliasByPeerId(peer.peerId),
       peerId: peer.peerId,
-      quality: (peer.quality).toFixed(2),
+      quality: peer.quality.toFixed(2),
       lastSeen: new Date(peer.lastSeen).toLocaleString('en-US', {
         year: 'numeric',
         month: '2-digit',
@@ -106,21 +135,22 @@ function PeersPage() {
         minute: '2-digit',
         timeZoneName: 'short',
       }),
-      actions: <>
-        <PingModal peerId={peer.peerId} />
-        <CreateAliasModal
-          handleRefresh={handleRefresh}
-          peerId={peer.peerId}
-        />
-        <OpenOrFundChannelModal
-          peerId={peer.peerId}
-          type={'open'}
-        />
-        <SendMessageModal peerId={peer.peerId} />
-      </>
-    }
+      actions: (
+        <>
+          <PingModal peerId={peer.peerId} />
+          <CreateAliasModal
+            handleRefresh={handleRefresh}
+            peerId={peer.peerId}
+          />
+          <OpenOrFundChannelModal
+            peerId={peer.peerId}
+            type={'open'}
+          />
+          <SendMessageModal peerId={peer.peerId} />
+        </>
+      ),
+    };
   });
-
 
   return (
     <Section
