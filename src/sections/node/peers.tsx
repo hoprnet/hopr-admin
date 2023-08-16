@@ -11,34 +11,13 @@ import { CreateAliasModal } from '../../components/Modal/AddAliasModal';
 import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
 import { SendMessageModal } from '../../components/Modal/SendMessageModal';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 //  Modals
 import { PingModal } from '../../components/Modal/PingModal';
 
 //Mui
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow
-} from '@mui/material'
 import GetAppIcon from '@mui/icons-material/GetApp';
-
-const StyledTable = styled(Table)`
-  td {
-    overflow-wrap: anywhere;
-  }
-  th {
-    font-weight: 600;
-  }
-  th,
-  td {
-    font-size: 12px;
-  }
-`;
 
 function PeersPage() {
   const dispatch = useAppDispatch();
@@ -104,6 +83,45 @@ function PeersPage() {
     }
   };
 
+  const header = [
+    { key: 'number', name: '#' },
+    { key: 'alias', name: 'Alias', search: true, maxWidth: '60px' },
+    { key: 'peerId', name: 'Peer Id', search: true, tooltip: true, maxWidth: '160px' },
+    { key: 'lastSeen', name: 'Last seen', tooltip: true, maxWidth: '60px' },
+    { key: 'quality', name: 'Quality', maxWidth: '30px' },
+    { key: 'actions', name: 'Actions', search: false, width: '168px', maxWidth: '168px' },
+  ];
+
+  const parsedTableData = Object.entries(peers?.announced ?? {}).map(([id, peer])=> {
+    return {
+      number: id,
+      alias: aliases && getAliasByPeerId(peer.peerId),
+      peerId: peer.peerId,
+      quality: (peer.quality).toFixed(2),
+      lastSeen: new Date(peer.lastSeen).toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZoneName: 'short',
+      }),
+      actions: <>
+        <PingModal peerId={peer.peerId} />
+        <CreateAliasModal
+          handleRefresh={handleRefresh}
+          peerId={peer.peerId}
+        />
+        <OpenOrFundChannelModal
+          peerId={peer.peerId}
+          type={'open'}
+        />
+        <SendMessageModal peerId={peer.peerId} />
+      </>
+    }
+  });
+
+
   return (
     <Section
       fullHeightMin
@@ -125,73 +143,11 @@ function PeersPage() {
           </>
         }
       />
-      <Paper
-        style={{
-          padding: '24px',
-          width: 'calc( 100% - 48px )',
-        }}
-      >
-        <TableContainer component={Paper}>
-          <StyledTable
-            sx={{ minWidth: 650 }}
-            aria-label="aliases table"
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell>#</TableCell>
-                <TableCell>Peer Id</TableCell>
-                <TableCell>Alias</TableCell>
-                <TableCell>Elegible</TableCell>
-                <TableCell>Multiaddrs</TableCell>
-                <TableCell>Last seen</TableCell>
-                <TableCell>Quality</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {Object.entries(peers?.announced ?? {}).map(([id, peer]) => (
-                <TableRow key={id}>
-                  <TableCell
-                    component="th"
-                    scope="row"
-                  >
-                    {id}
-                  </TableCell>
-                  <TableCell>{peer.peerId}</TableCell>
-                  <TableCell>{aliases && getAliasByPeerId(peer.peerId)}</TableCell>
-                  <TableCell>
-                    {peers?.connected.some((connectedPeer) => connectedPeer.peerId === peer.peerId).toString()}
-                  </TableCell>
-                  <TableCell>{peer.multiAddr}</TableCell>
-                  <TableCell>
-                    {new Date(peer.lastSeen).toLocaleString('en-US', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      timeZoneName: 'short',
-                    })}
-                  </TableCell>
-                  <TableCell>{peer.quality}</TableCell>
-                  <TableCell>
-                    <PingModal peerId={peer.peerId} />
-                    <CreateAliasModal
-                      handleRefresh={handleRefresh}
-                      peerId={peer.peerId}
-                    />
-                    <OpenOrFundChannelModal
-                      peerId={peer.peerId}
-                      type={'open'}
-                    />
-                    <SendMessageModal peerId={peer.peerId} />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </StyledTable>
-        </TableContainer>
-      </Paper>
+      <TablePro
+        data={parsedTableData}
+        search={true}
+        header={header}
+      />
     </Section>
   );
 }

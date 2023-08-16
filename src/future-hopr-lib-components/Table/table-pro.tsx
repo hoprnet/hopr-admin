@@ -41,7 +41,7 @@ const STableCell = styled(TableCell)`
   text-overflow: ellipsis;
   white-space: nowrap;
   padding: 8px 16px;
-
+  max-width: calc( 100% - 168px);
   &.actions{ 
     overflow: unset;
   }
@@ -106,7 +106,10 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 const OverTable = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  &.searchIncluded {
+    justify-content: space-between;
+  }
 `
 
 const STextField = styled(TextField)`
@@ -161,7 +164,7 @@ export default function CustomPaginationActionsTable(props: Props) {
 
   function filterData(searchPhrase: string) {
     set_Page(0);
-    
+
     let data = props.data;
     let filterBy = props.header.map(elem => elem.search === true && elem.key);
     filterBy = filterBy.filter(elem => elem);
@@ -183,7 +186,9 @@ export default function CustomPaginationActionsTable(props: Props) {
 
   return (
     <TableContainer component={Paper}>
-      <OverTable>
+      <OverTable
+        className={`OverTable ${props.search ? 'searchIncluded' : ''}`}
+      >
         {
           props.search &&
           <STextField
@@ -254,8 +259,20 @@ export default function CustomPaginationActionsTable(props: Props) {
               }
             </TableRow>
           ))}
+          {!props.data || props.data.length === 0 && 
+            <>
+              <TableRow style={{ height: 57 }}>
+                <STableCell colSpan={props.header.length}>
+                  No entries
+                </STableCell>
+              </TableRow>
+              <TableRow style={{ height: 57 * (rowsPerPage - 1) }}>
+                <STableCell colSpan={props.header.length} />
+              </TableRow>
+            </>
+          }
           {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
+            <TableRow style={{ height: 57 * emptyRows }}>
               <STableCell colSpan={props.header.length} />
             </TableRow>
           )}

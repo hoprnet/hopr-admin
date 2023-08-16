@@ -5,7 +5,6 @@ import WalletIcon from '@mui/icons-material/Wallet';
 import {
   CircularProgress,
   DialogTitle,
-  IconButton,
   InputAdornment,
   MenuItem,
   Button as MuiButton,
@@ -13,6 +12,7 @@ import {
 } from '@mui/material';
 import Button from '../../future-hopr-lib-components/Button';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
+import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 
 import CloseIcon from '@mui/icons-material/Close';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -133,12 +133,15 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
 
   return (
     <>
-      <IconButton onClick={handleOpenModal}>
-        <WalletIcon />
-      </IconButton>
+      <IconButton 
+        iconComponent={<WalletIcon />}
+        tooltipText="Withdraw tokens"
+        onClick={handleOpenModal}
+      />
       <SDialog
         open={openModal}
         onClose={handleCloseModal}
+        disableScrollLock={true}
       >
         <TopBar>
           <DialogTitle>Withdraw tokens</DialogTitle>
