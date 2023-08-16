@@ -7,15 +7,16 @@ import {
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const StyledCard = styled(Card)`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 01rem;
   max-width: 15rem;
   padding: 1rem;
-  margin-top: 4rem;
+  margin-top: 0.5rem;
 
   &.blue {
     background-color: #daf8ff;
@@ -57,11 +58,11 @@ const StyledAccordion = styled(Accordion)`
 
 const AccordionTitle = styled(AccordionSummary)`
   border-bottom: 2px solid #414141;
-  height: 3rem;
+  height: 7rem;
   padding: 0;
 
   &.Mui-expanded {
-    min-height: 3rem;
+    min-height: 7rem;
   }
 
   &.blue {
@@ -101,11 +102,11 @@ type FaqProps = {
   }[];
 };
 
-const Faq = ({
+export default function FAQ({
   variant,
   label,
   data,
-}: FaqProps) => {
+}: FaqProps) {
   const [expandedId, set_expandedId] = useState<number | false>(false);
 
   const handleAccordionClick = (id: number) => {
@@ -139,6 +140,4 @@ const Faq = ({
       ))}
     </StyledCard>
   );
-};
-
-export default Faq;
+}

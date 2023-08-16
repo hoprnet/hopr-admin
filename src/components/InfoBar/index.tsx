@@ -3,6 +3,19 @@ import styled from '@emotion/styled';
 
 // Mui
 import Toolbar from '@mui/material/Toolbar';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+
+import FAQ from '../Faq';
+import infoDataRaw from '../Faq/info.json'; // Import your info.json data
+
+type InfoData = {
+  [routePath: string]: {
+    id: number;
+    title: string;
+    content: string;
+  }[];
+};
 
 interface Props {}
 
@@ -127,6 +140,9 @@ export default function InfoBar(props: Props) {
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const walletBalance = useAppSelector((store) => store.web3.balance);
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
+  const currentRoute = useLocation().pathname;
+
+  const infoData: InfoData = infoDataRaw;
 
   const truncateBalance3Decimals = (value: string | undefined | null) => {
     if (value && value.includes('.')) {
@@ -134,6 +150,11 @@ export default function InfoBar(props: Props) {
       return `${before}.${after.substring(0, 2)}`;
     }
     return value;
+  };
+
+  const pageHasFAQ = () => {
+    if (infoData[currentRoute]) return true;
+    return false;
   };
 
   const web3Drawer = (
@@ -253,6 +274,13 @@ export default function InfoBar(props: Props) {
       <AppBarFiller />
       {web3Connected && web3Drawer}
       {nodeConnected && !web3Connected && nodeDrawer}
+      {nodeConnected && pageHasFAQ() && (
+        <FAQ
+          data={infoData[currentRoute]}
+          label={currentRoute.split('/')[currentRoute.split('/').length - 1]}
+          variant="blue"
+        />
+      )}
     </SInfoBar>
   );
 }
