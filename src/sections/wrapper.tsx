@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { useContractWrite, usePrepareContractWrite, useAccount } from 'wagmi';
+import { useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { parseUnits } from 'viem';
 import wrapperAbi from '../abi/wrapperAbi.json';
 import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS } from '../../config'
@@ -145,7 +145,7 @@ function WrapperPage() {
   const [xhoprValue, set_xhoprValue] = useState('');
   const [wxhoprValue, set_wxhoprValue] = useState('');
   const [swapDirection, set_swapDirection] = useState<'xHOPR_to_wxHOPR' | 'wxHOPR_to_xHOPR'>('xHOPR_to_wxHOPR');
-  const { address } = useAccount();
+  const address = useAppSelector((store) => store.web3.account);
   const walletBalance = useAppSelector((store) => store.web3.balance);
 
   // Prepare contract write configurations
