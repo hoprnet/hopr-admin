@@ -11,6 +11,7 @@ import { SubpageTitle } from '../../components/SubpageTitle';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import { SendMessageModal } from '../../components/Modal/SendMessageModal';
 import RemoveAliasIcon from '../../future-hopr-lib-components/Icons/RemoveAlias';
+import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 // Modals
 import { PingModal } from '../../components/Modal/PingModal';
@@ -110,6 +111,40 @@ function AliasesPage() {
     }
   };
 
+  const parsedTableData = Object.entries(aliases ?? {}).map(([alias, peerId], key) => {
+    return {
+      key,
+      alias,
+      peerId,
+      actions: <>
+        <OpenOrFundChannelModal
+          peerId={peerId}
+          type={'open'}
+        />
+        <SendMessageModal peerId={peerId} />
+        <PingModal peerId={peerId} />
+        <DeleteAliasButton
+          onSuccess={() => {
+            set_deleteSuccess(true);
+          }}
+          onError={(e) => {
+            set_deleteSuccess(false);
+            set_deleteErrors([
+              ...deleteErrors,
+              {
+                alias: String(alias),
+                error: e.error,
+                status: e.status,
+              },
+            ]);
+          }}
+          alias={alias}
+        />
+      </>
+    }
+  });
+
+
   return (
     <Section
       className="Section--aliases"
@@ -134,79 +169,14 @@ function AliasesPage() {
           </>
         }
       />
-      <Paper
-        style={{
-          padding: '24px',
-          width: 'calc( 100% - 48px )',
-        }}
-      >
-        <TableContainer component={Paper}>
-          <Table
-            sx={{ minWidth: 650 }}
-            aria-label="aliases table"
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell>Id</TableCell>
-                <TableCell>Peer Id</TableCell>
-                <TableCell>Alias</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {Object.entries(aliases ?? {}).map(([alias, peerId], key) => (
-                <TableRow key={key}>
-                  <TableCell
-                    component="th"
-                    scope="row"
-                  >
-                    {key}
-                  </TableCell>
-                  <TableCell>{peerId}</TableCell>
-                  <TableCell>{alias}</TableCell>
-                  <TableCell>
-                    <OpenOrFundChannelModal
-                      peerId={peerId}
-                      type={'open'}
-                    />
-                    <SendMessageModal peerId={peerId} />
-                    <PingModal peerId={peerId} />
-                    <DeleteAliasButton
-                      onSuccess={() => {
-                        set_deleteSuccess(true);
-                      }}
-                      onError={(e) => {
-                        set_deleteSuccess(false);
-                        set_deleteErrors([
-                          ...deleteErrors,
-                          {
-                            alias: String(alias),
-                            error: e.error,
-                            status: e.status,
-                          },
-                        ]);
-                      }}
-                      alias={alias}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <p>{!!importSuccess && 'Imported aliases!'}</p>
-        {importErrors.map((error, index) => (
-          <p key={index}>
-            {error.error}: failed to import alias: {error.alias}
-          </p>
-        ))}
-        <p>{!!deleteSuccess && 'Deleted alias!'}</p>
-        {deleteErrors.map((error, index) => (
-          <p key={index}>
-            {error.error}: failed to delete alias: {error.alias}
-          </p>
-        ))}
-      </Paper>
+      <TablePro
+        data={parsedTableData}
+        header={[
+          {key: 'alias', name: 'Alias', search: true, tooltip: true },
+          {key: 'peerId', name: 'Peer Id', search: true, tooltip: true },
+          {key: 'actions', name: 'Actions', search: false, width: '168px', maxWidth: '168px' },
+        ]}
+      />
     </Section>
   );
 }

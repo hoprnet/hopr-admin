@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 
 // Mui
@@ -5,7 +6,6 @@ import { Paper } from '@mui/material';
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
-import { useEffect } from 'react';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
 import { SubpageTitle } from '../../components/SubpageTitle';
