@@ -165,7 +165,7 @@ const getSafesByOwnerThunk = createAsyncThunk<
       return false;
     }
   } },
-);9
+);
 
 const addOwnerToSafeThunk = createAsyncThunk<
   SafeTransactionData | undefined,
