@@ -1,15 +1,15 @@
-import styled from '@emotion/styled'
+import styled from '@emotion/styled';
 import MuiTooltip, { TooltipProps } from '@mui/material/Tooltip';
 
 interface Props extends TooltipProps {
-    notWide?: boolean
+  notWide?: boolean;
 }
 
 const Tooltip: React.FC<Props> = (props) => {
   return (
-    <MuiTooltip 
-        classes={{ popper: `STooltip ${props.className} ${props.notWide ? 'notWide' : ''}` }}
-        {...props}
+    <MuiTooltip
+      classes={{ popper: `STooltip ${props.className} ${props.notWide ? 'notWide' : ''}` }}
+      {...props}
     />
   );
 };
