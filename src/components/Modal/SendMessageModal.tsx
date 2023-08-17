@@ -86,6 +86,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
       apiEndpoint: loginData.apiEndpoint,
       body: message,
       recipient: validatedReceiver,
+      tag: 1
     };
     if (numberOfHops !== '') {
       messagePayload.hops = numberOfHops;

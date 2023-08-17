@@ -1222,20 +1222,20 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     if (action.payload) {
       const {
         balance,
-        channelId,
+        id,
         peerId,
         status,
         type,
       } = action.payload;
       // find channel if it already exists
-      const channelIndex = state.channels.data?.[type].findIndex((channel) => channel.channelId === channelId);
+      const channelIndex = state.channels.data?.[type].findIndex((channel) => channel.id === id);
 
       if (state.channels.data) {
         if (channelIndex) {
           // update channel
           state.channels.data[type][channelIndex] = {
             balance,
-            channelId,
+            id,
             peerId,
             status,
             type,
@@ -1244,7 +1244,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
           // add new channel
           state.channels.data[type].push({
             balance,
-            channelId,
+            id,
             peerId,
             status,
             type,
@@ -1258,7 +1258,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
           [type]: [
             {
               balance,
-              channelId,
+              id,
               peerId,
               status,
               type,
@@ -1351,11 +1351,13 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
         state.pings[pingExists] = {
           latency: action.payload.latency,
           peerId: action.payload.peerId,
+          reportedVersion: action.payload.reportedVersion,
         };
       } else {
         state.pings.push({
           latency: action.payload.latency,
           peerId: action.payload.peerId,
+          reportedVersion: action.payload.reportedVersion,
         });
       }
     }

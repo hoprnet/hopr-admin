@@ -1,16 +1,14 @@
 import type {
   GetStatisticsResponseType,
-  AccountResponseType,
   GetAliasesResponseType,
   GetChannelsResponseType,
   GetInfoResponseType,
-  GetPeerInfoResponseType,
   GetPeersResponseType,
   GetSettingsResponseType,
   GetTicketsResponseType,
   GetTokenResponseType,
   GetEntryNodesResponseType,
-  PingNodeResponseType
+  PingPeerResponseType
 } from '@hoprnet/hopr-sdk';
 
 export type Message = {
@@ -79,7 +77,7 @@ type InitialState = {
   tokens: { data: GetTokenResponseType[]; isFetching: boolean };
   version: { data: string | null; isFetching: boolean };
   transactions: { data: string[]; isFetching: boolean };
-  pings: (PingNodeResponseType & { peerId: string })[];
+  pings: (PingPeerResponseType & { peerId: string })[];
   metrics: {
     data: {
       raw: string | null;
