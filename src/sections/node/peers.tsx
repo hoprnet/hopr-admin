@@ -11,6 +11,7 @@ import { CreateAliasModal } from '../../components/Modal/AddAliasModal';
 import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
 import { SendMessageModal } from '../../components/Modal/SendMessageModal';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
 
 //  Modals
 import { PingModal } from '../../components/Modal/PingModal';
@@ -23,8 +24,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-  Tooltip
+  TableRow
 } from '@mui/material'
 import GetAppIcon from '@mui/icons-material/GetApp';
 
@@ -140,27 +140,62 @@ function PeersPage() {
             <TableHead>
               <TableRow>
                 <TableCell>#</TableCell>
-                <Tooltip title="This node's HOPR address. This is what other nodes use to identify your node on the network (equivalent to a public key).">
-                  <TableCell>Peer Id</TableCell>
-                </Tooltip>
-                <Tooltip title="The alias you have set for this node.">
-                  <TableCell>Alias</TableCell>
-                </Tooltip>
-                <Tooltip title="Whether or not this node is eligible to participate in the network.">
-                  <TableCell>Elegible</TableCell>
-                </Tooltip>
-                <Tooltip title="A single address used to represent the many protocols used to communicate with this node.">
-                  <TableCell>Multiaddrs</TableCell>
-                </Tooltip>
-                <Tooltip title="When this node was last seen by your node.">
-                  <TableCell>Last seen</TableCell>
-                </Tooltip>
-                <Tooltip title="The quality of your connection to this node.">
-                  <TableCell>Quality</TableCell>
-                </Tooltip>
-                <Tooltip title="Message, ping or manage this peer.">
-                  <TableCell>Actions</TableCell>
-                </Tooltip>
+                <TableCell>
+                  <Tooltip
+                    title="This node's HOPR address. This is what other nodes use to identify your node on the network (equivalent to a public key)."
+                    notWide
+                  >
+                    <span>Peer Id</span>
+                  </Tooltip>
+                </TableCell>
+                <TableCell>
+                  <Tooltip
+                    title="The alias you have set for this node."
+                    notWide
+                  >
+                    <span>Alias</span>
+                  </Tooltip>
+                </TableCell>
+                <TableCell>
+                  <Tooltip
+                    title="Whether or not this node is eligible to participate in the network."
+                    notWide
+                  >
+                    <span>Elegible</span>
+                  </Tooltip>
+                </TableCell>
+                <TableCell>
+                  <Tooltip
+                    title="A single address used to represent the many protocols used to communicate with this node."
+                    notWide
+                  >
+                    <span>Multiaddrs</span>
+                  </Tooltip>
+                </TableCell>
+                <TableCell>
+                  <Tooltip
+                    title="When this node was last seen by your node."
+                    notWide
+                  >
+                    <span>Last seen</span>
+                  </Tooltip>
+                </TableCell>
+                <TableCell>
+                  <Tooltip
+                    title="The quality of your connection to this node."
+                    notWide
+                  >
+                    <span>Quality</span>
+                  </Tooltip>
+                </TableCell>
+                <TableCell>
+                  <Tooltip
+                    title="Message, ping or manage this peer."
+                    notWide
+                  >
+                    <span>Actions</span>
+                  </Tooltip>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

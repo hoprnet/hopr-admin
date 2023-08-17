@@ -10,6 +10,7 @@ import Section from '../../future-hopr-lib-components/Section';
 import { SubpageTitle } from '../../components/SubpageTitle';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import CloseChannelIcon from '../../future-hopr-lib-components/Icons/CloseChannel';
+import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
 
 // Modals
 import { PingModal } from '../../components/Modal/PingModal';
@@ -26,9 +27,8 @@ import {
   TableContainer,
   Table,
   TableHead,
-  Paper,
-  Tooltip
-} from '@mui/material';
+  Paper
+} from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress';
 import GetAppIcon from '@mui/icons-material/GetApp';
 
@@ -234,16 +234,33 @@ function ChannelsPage() {
             <TableHead>
               <TableRow>
                 <TableCell>Id</TableCell>
-                <Tooltip title="This node's HOPR address, used by other nodes to identify your node and send it messages.">
-                  <TableCell>Peer Id</TableCell>
-                </Tooltip>
-                <Tooltip title="The status of this channel.">
-                  <TableCell>Status</TableCell>
-                </Tooltip>
-                <Tooltip title="The amount of wxHOPR in this channel.">
-                  <TableCell>Dedicated Funds</TableCell>
-                </Tooltip>
-                <TableCell>Actions</TableCell>
+                <TableCell>
+                  <Tooltip
+                    title="This node's HOPR address, used by other nodes to identify your node and send it messages."
+                    notWide
+                  >
+                    <span>Peer Id</span>
+                  </Tooltip>
+                </TableCell>
+                <TableCell>
+                  <Tooltip
+                    title="The status of this channel."
+                    notWide
+                  >
+                    <span>Status</span>
+                  </Tooltip>
+                </TableCell>
+                <TableCell>
+                  <Tooltip
+                    title="The amount of wxHOPR in this channel."
+                    notWide
+                  >
+                    <span>Dedicated Funds</span>
+                  </Tooltip>
+                </TableCell>
+                <TableCell>
+                  <span>Actions</span>
+                </TableCell>
               </TableRow>
             </TableHead>
             {tabIndex === 1 && (

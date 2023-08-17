@@ -7,9 +7,6 @@ import AbbreviatedPeerId from '../../components/AbbreviatedPeerId';
 import Section from '../../future-hopr-lib-components/Section';
 import TextField from '@mui/material/TextField';
 
-// Mui
-import { Paper } from '@mui/material';
-
 function PingPage() {
   const dispatch = useAppDispatch();
   const [peerId, set_peerId] = useState('');

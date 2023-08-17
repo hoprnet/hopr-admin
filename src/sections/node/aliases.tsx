@@ -25,11 +25,11 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-  Tooltip
+  TableRow
 } from '@mui/material'
 import GetAppIcon from '@mui/icons-material/GetApp';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
+import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
 
 function AliasesPage() {
   const dispatch = useAppDispatch();
@@ -149,12 +149,22 @@ function AliasesPage() {
             <TableHead>
               <TableRow>
                 <TableCell>Id</TableCell>
-                <Tooltip title="Your node's HOPR address, used by other nodes to identify your node and send it messages.">
-                  <TableCell>Peer Id</TableCell>
-                </Tooltip>
-                <Tooltip title="The alias you have set for this node.">
-                  <TableCell>Alias</TableCell>
-                </Tooltip>
+                <TableCell>
+                  <Tooltip
+                    title="Your node's HOPR address, used by other nodes to identify your node and send it messages."
+                    notWide
+                  >
+                    <span>Peer Id</span>
+                  </Tooltip>
+                </TableCell>
+                <TableCell>
+                  <Tooltip
+                    title="The alias you have set for this node."
+                    notWide
+                  >
+                    <span>Alias</span>
+                  </Tooltip>
+                </TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>

@@ -13,7 +13,8 @@ import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 
 // Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
-import { Paper, Tooltip } from '@mui/material';
+import { Paper } from '@mui/material';
+import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
 
 const metricsHashMap = {
   connect_counter_client_relayed_packets: { tooltipText: 'The number of packets sent by your node which were relayed through a PRN (TURN client).' },
@@ -123,15 +124,24 @@ function MetricsPage() {
     }
   };
 
+  const isTooltipTextString = (tooltipText: string | JSX.Element): boolean => {
+    return typeof tooltipText === 'string';
+  };
+
   function renderMetricsTable() {
     const render: any[] = [];
     for (const [key, value] of Object.entries(metrics.parsed)) {
       if (value.length === 1) {
         render.push(
           <tr key={key}>
-            <Tooltip title={metricsHashMap[key]?.tooltipText}>
-              <th>{value.name}</th>
-            </Tooltip>
+            <th>
+              <Tooltip
+                title={metricsHashMap[key]?.tooltipText}
+                notWide={isTooltipTextString(metricsHashMap[key]?.tooltipText)}
+              >
+                <span>{value.name}</span>
+              </Tooltip>
+            </th>
             <td>{value.data[0]}</td>
           </tr>,
         );
@@ -172,9 +182,14 @@ function MetricsPage() {
         <br />
         <br />
 
-        <Tooltip title="Displays the total time a single ping takes to complete (seconds).">
-          <TableTitle>Total ping time</TableTitle>
-        </Tooltip>
+        <TableTitle>
+          <Tooltip
+            title="Displays the total time a single ping takes to complete (seconds)."
+            notWide
+          >
+            <span>Total ping time</span>
+          </Tooltip>
+        </TableTitle>
         <Chart
           options={{ xaxis: { categories: metrics?.parsed?.core_histogram_ping_time_seconds?.categories
             ? metrics?.parsed?.core_histogram_ping_time_seconds?.categories
@@ -192,9 +207,14 @@ function MetricsPage() {
           }}
         />
 
-        <Tooltip title="Displays the start-up time for your node (seconds).">
-          <TableTitle>Start-up time</TableTitle>
-        </Tooltip>
+        <TableTitle>
+          <Tooltip
+            title="Displays the start-up time for your node (seconds)."
+            notWide
+          >
+            <span>Start-up time</span>
+          </Tooltip>
+        </TableTitle>
         <Chart
           options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_startup_time_seconds?.categories
             ? metrics?.parsed?.hoprd_histogram_startup_time_seconds?.categories
@@ -212,9 +232,14 @@ function MetricsPage() {
           }}
         />
 
-        <Tooltip title="Displays the time it takes your node to reach a GREEN connection status (seconds).">
-          <TableTitle>Time to reach high-level connection</TableTitle>
-        </Tooltip>
+        <TableTitle>
+          <Tooltip
+            title="Displays the time it takes your node to reach a GREEN connection status (seconds)."
+            notWide
+          >
+            <span>Time to reach high-level connection</span>
+          </Tooltip>
+        </TableTitle>
         <Chart
           options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_time_to_green_second?.categories
             ? metrics?.parsed?.hoprd_histogram_time_to_green_seconds?.categories
@@ -232,7 +257,10 @@ function MetricsPage() {
           }}
         />
 
-        <Tooltip title="Displays the latencies of received messages (seconds).">
+        <Tooltip
+          title="Displays the latencies of received messages (seconds)."
+          notWide
+        >
           <TableTitle>Received message latencies</TableTitle>
         </Tooltip>
         <Chart
@@ -252,7 +280,10 @@ function MetricsPage() {
           }}
         />
 
-        <Tooltip title="Displays your visible peers categorized by their connection quality.">
+        <Tooltip
+          title="Displays your visible peers categorized by their connection quality."
+          notWide
+        >
           <TableTitle>Peers by quality</TableTitle>
         </Tooltip>
         <Chart

@@ -14,12 +14,12 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
-  Tooltip
+  TableRow
 } from '@mui/material'
 
 // HOPR components
 import Section from '../../future-hopr-lib-components/Section';
+import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
 import { SendMessageModal } from '../../components/Modal/SendMessageModal';
 import { SubpageTitle } from '../../components/SubpageTitle';
 
@@ -96,7 +96,10 @@ const messages = () => {
                       {index}
                     </TableCell>
                     <TableCell style={{ overflowWrap: 'anywhere' }}>
-                      <Tooltip title={date}>
+                      <Tooltip
+                        title={date}
+                        notWide
+                      >
                         <span>{message.body}</span>
                       </Tooltip>
                     </TableCell>
