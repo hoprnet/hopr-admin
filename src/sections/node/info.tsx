@@ -1,7 +1,10 @@
 import { useAppDispatch, useAppSelector } from '../../store';
 
 // Mui
-import { Paper, Tooltip } from '@mui/material';
+import { 
+  Paper,
+  //Tooltip 
+} from '@mui/material';
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
@@ -9,6 +12,7 @@ import { useEffect } from 'react';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
 import { SubpageTitle } from '../../components/SubpageTitle';
+import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width'
 
 function InfoPage() {
   const dispatch = useAppDispatch();
@@ -140,9 +144,14 @@ function InfoPage() {
         >
           <tbody>
             <tr>
-              <Tooltip title="The version of HOPR your node is running.">
-                <th>Version</th>
-              </Tooltip>
+              <th>
+                <Tooltip
+                  title="The version of HOPR your node is running."
+                  notWide
+                >
+                  <span>Version</span>
+                </Tooltip>
+              </th>
               <td>{version?.replaceAll('"', '')}</td>
             </tr>
             <tr>

@@ -13,11 +13,13 @@ import { useLocation } from 'react-router-dom';
 const StyledCard = styled(Card)`
   display: flex;
   flex-direction: column;
-  gap: 01rem;
-  max-width: 15rem;
-  padding: 1rem;
-  margin-top: 0.5rem;
-
+  width: 190px;
+  font-size: 12px;
+  border-radius: 1rem;
+  margin-right: 8px;
+  padding: 8px;
+  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 3px 0px rgba(0, 0, 0, 0.12);
   &.blue {
     background-color: #daf8ff;
   }
@@ -56,27 +58,31 @@ const StyledAccordion = styled(Accordion)`
   }
 `;
 
-const AccordionTitle = styled(AccordionSummary)`
+const SAccordionSummary = styled(AccordionSummary)`
   border-bottom: 2px solid #414141;
-  height: 7rem;
   padding: 0;
 
   &.Mui-expanded {
-    min-height: 7rem;
+    min-height: 48px;
   }
-
   &.blue {
     background-color: #daf8ff;
   }
   &.pink {
     background-color: #ffe7e7;
   }
+  .MuiAccordionSummary-content,
+  .Mui-expanded {
+    margin: 4px 2px;
+  }
 `;
+
 const Title = styled.h3`
   color: #414141;
   font-weight: 700;
   margin: 0;
 `;
+
 const AccordionContent = styled(AccordionDetails)`
   margin: 0;
   padding: 0.75rem 0;
@@ -88,8 +94,10 @@ const AccordionContent = styled(AccordionDetails)`
     background-color: #ffe7e7;
   }
 `;
+
 const Content = styled.div`
   color: #414141;
+  overflow-wrap: break-word;
 `;
 
 type FaqProps = {
@@ -127,12 +135,12 @@ export default function FAQ({
           expanded={expandedId === faqItem.id}
           onChange={() => handleAccordionClick(faqItem.id)}
         >
-          <AccordionTitle
-            className={`Title ${variant}`}
+          <SAccordionSummary
+            className={`SAccordionSummary ${variant}`}
             expandIcon={<ExpandMoreIcon />}
           >
             <Title>{faqItem.title}</Title>
-          </AccordionTitle>
+          </SAccordionSummary>
           <AccordionContent className={`Content ${variant}`}>
             <Content>{faqItem.content}</Content>
           </AccordionContent>
