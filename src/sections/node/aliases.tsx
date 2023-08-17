@@ -11,6 +11,7 @@ import { SubpageTitle } from '../../components/SubpageTitle';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import { SendMessageModal } from '../../components/Modal/SendMessageModal';
 import RemoveAliasIcon from '../../future-hopr-lib-components/Icons/RemoveAlias';
+import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 // Modals
 import { PingModal } from '../../components/Modal/PingModal';
@@ -18,18 +19,8 @@ import { CreateAliasModal } from '../../components/Modal/AddAliasModal';
 import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
 
 //Mui
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow
-} from '@mui/material'
 import GetAppIcon from '@mui/icons-material/GetApp';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
-import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
 
 function AliasesPage() {
   const dispatch = useAppDispatch();
@@ -111,6 +102,41 @@ function AliasesPage() {
     }
   };
 
+  const parsedTableData = Object.entries(aliases ?? {}).map(([alias, peerId], key) => {
+    return {
+      key,
+      alias,
+      peerId,
+      actions: (
+        <>
+          <OpenOrFundChannelModal
+            peerId={peerId}
+            type={'open'}
+          />
+          <SendMessageModal peerId={peerId} />
+          <PingModal peerId={peerId} />
+          <DeleteAliasButton
+            onSuccess={() => {
+              set_deleteSuccess(true);
+            }}
+            onError={(e) => {
+              set_deleteSuccess(false);
+              set_deleteErrors([
+                ...deleteErrors,
+                {
+                  alias: String(alias),
+                  error: e.error,
+                  status: e.status,
+                },
+              ]);
+            }}
+            alias={alias}
+          />
+        </>
+      ),
+    };
+  });
+
   return (
     <Section
       className="Section--aliases"
@@ -135,93 +161,34 @@ function AliasesPage() {
           </>
         }
       />
-      <Paper
-        style={{
-          padding: '24px',
-          width: 'calc( 100% - 48px )',
-        }}
-      >
-        <TableContainer component={Paper}>
-          <Table
-            sx={{ minWidth: 650 }}
-            aria-label="aliases table"
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell>Id</TableCell>
-                <TableCell>
-                  <Tooltip
-                    title="Your node's HOPR address, used by other nodes to identify your node and send it messages."
-                    notWide
-                  >
-                    <span>Peer Id</span>
-                  </Tooltip>
-                </TableCell>
-                <TableCell>
-                  <Tooltip
-                    title="The alias you have set for this node."
-                    notWide
-                  >
-                    <span>Alias</span>
-                  </Tooltip>
-                </TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {Object.entries(aliases ?? {}).map(([alias, peerId], key) => (
-                <TableRow key={key}>
-                  <TableCell
-                    component="th"
-                    scope="row"
-                  >
-                    {key}
-                  </TableCell>
-                  <TableCell>{peerId}</TableCell>
-                  <TableCell>{alias}</TableCell>
-                  <TableCell>
-                    <OpenOrFundChannelModal
-                      peerId={peerId}
-                      type={'open'}
-                    />
-                    <SendMessageModal peerId={peerId} />
-                    <PingModal peerId={peerId} />
-                    <DeleteAliasButton
-                      onSuccess={() => {
-                        set_deleteSuccess(true);
-                      }}
-                      onError={(e) => {
-                        set_deleteSuccess(false);
-                        set_deleteErrors([
-                          ...deleteErrors,
-                          {
-                            alias: String(alias),
-                            error: e.error,
-                            status: e.status,
-                          },
-                        ]);
-                      }}
-                      alias={alias}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <p>{!!importSuccess && 'Imported aliases!'}</p>
-        {importErrors.map((error, index) => (
-          <p key={index}>
-            {error.error}: failed to import alias: {error.alias}
-          </p>
-        ))}
-        <p>{!!deleteSuccess && 'Deleted alias!'}</p>
-        {deleteErrors.map((error, index) => (
-          <p key={index}>
-            {error.error}: failed to delete alias: {error.alias}
-          </p>
-        ))}
-      </Paper>
+      <TablePro
+        data={parsedTableData}
+        search={true}
+        header={[
+          {
+            key: 'alias',
+            name: 'Alias',
+            search: true,
+            tooltip: true,
+            maxWidth: '0px',
+          },
+          {
+            key: 'peerId',
+            name: 'Peer Id',
+            search: true,
+            tooltip: true,
+            maxWidth: '60px',
+          },
+          {
+            key: 'actions',
+            name: 'Actions',
+            search: false,
+            width: '168px',
+            maxWidth: '168px',
+          },
+        ]}
+        loading={parsedTableData.length === 0 && aliasesFetching}
+      />
     </Section>
   );
 }

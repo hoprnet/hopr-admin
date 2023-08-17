@@ -1,36 +1,16 @@
 import { useEffect } from 'react';
-import styled from '@emotion/styled';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
 import { nodeActions } from '../../store/slices/node';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 
-// Mui
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow
-} from '@mui/material'
-
 // HOPR components
 import Section from '../../future-hopr-lib-components/Section';
-import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
 import { SendMessageModal } from '../../components/Modal/SendMessageModal';
 import { SubpageTitle } from '../../components/SubpageTitle';
+import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
-const StyledTable = styled(Table)`
-  td {
-    overflow-wrap: anywhere;
-  }
-  th {
-    font-weight: 600;
-  }
-`;
 const messages = () => {
   const messages = useAppSelector((store) => store.node.messages);
   const {
@@ -50,6 +30,33 @@ const messages = () => {
     }
   }, []);
 
+  const header = [
+    {
+      key: 'body',
+      name: 'Message',
+    },
+    {
+      key: 'actions',
+      name: 'Actions',
+      search: false,
+      width: '168px',
+      maxWidth: '168px',
+    },
+  ];
+
+  const parsedTableData = messages.map((message) => {
+    return {
+      body: message.body,
+      actions: (
+        <>
+          <button onClick={() => dispatch(nodeActions.toggleMessageSeen(message))}>
+            Mark as {message.seen ? 'unseen' : 'seen'}
+          </button>
+        </>
+      ),
+    };
+  });
+
   return (
     <Section
       fullHeightMin
@@ -63,58 +70,10 @@ const messages = () => {
           </>
         }
       />
-      <Paper
-        style={{
-          padding: '24px',
-          width: 'calc( 100% - 48px )',
-        }}
-      >
-        <TableContainer component={Paper}>
-          <StyledTable
-            sx={{ minWidth: 650 }}
-            aria-label="aliases table"
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell>Id</TableCell>
-                <TableCell>Message</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {messages.map((message, index) => {
-                const date = new Date(message.createdAt).toString();
-                return (
-                  <TableRow
-                    key={message.id}
-                    className={`message-${message.seen ? 'unseen' : 'seen'}`}
-                  >
-                    <TableCell
-                      component="th"
-                      scope="row"
-                    >
-                      {index}
-                    </TableCell>
-                    <TableCell style={{ overflowWrap: 'anywhere' }}>
-                      <Tooltip
-                        title={date}
-                        notWide
-                      >
-                        <span>{message.body}</span>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell>
-                      <button onClick={() => dispatch(nodeActions.toggleMessageSeen(message))}>
-                        Mark as {message.seen ? 'unseen' : 'seen'}
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </StyledTable>
-        </TableContainer>
-      </Paper>
+      <TablePro
+        data={parsedTableData}
+        header={header}
+      />
     </Section>
   );
 };
