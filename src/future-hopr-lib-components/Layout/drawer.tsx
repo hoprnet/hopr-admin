@@ -52,6 +52,7 @@ const StyledDrawer = styled(MuiDrawer)`
     .StyledListItemButton {
       color: white;
       &.Mui-selected {
+        text-decoration: underline 2px rgb(255, 255, 255);
         &:hover {
           background-color: rgba(255, 255, 255, 0.3);
         }
@@ -84,7 +85,7 @@ const StyledListItemButton = styled(ListItemButton)`
   &.Mui-selected {
     color: #0000b4;
     background-color: rgba(255, 255, 255, 0.45);
-    text-decoration: underline 2px rgb(255, 255, 255);
+    text-decoration: underline 2px #0000b4;
     text-underline-offset: 4px;
     .MuiTypography-root {
       font-weight: bold;

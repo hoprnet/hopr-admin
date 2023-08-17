@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 
 // Mui
@@ -5,10 +6,10 @@ import { Paper } from '@mui/material';
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
-import { useEffect } from 'react';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
 import { SubpageTitle } from '../../components/SubpageTitle';
+import WithdrawModal from '../../components/Modal/WithdrawModal';
 
 function InfoPage() {
   const dispatch = useAppDispatch();
@@ -127,6 +128,7 @@ function InfoPage() {
         title="INFO"
         refreshFunction={fetchInfoData}
         reloading={isFetchingAnyData}
+        actions={<WithdrawModal />}
       />
       <Paper
         style={{
