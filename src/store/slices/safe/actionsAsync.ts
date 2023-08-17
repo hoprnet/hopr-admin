@@ -14,7 +14,7 @@ import SafeApiKit, {
   TokenInfoListResponse,
   TokenInfoResponse
 } from '@safe-global/api-kit';
-import Safe, { EthersAdapter, SafeAccountConfig } from '@safe-global/protocol-kit';
+import Safe, { ContractNetworksConfig, EthersAdapter, SafeAccountConfig } from '@safe-global/protocol-kit';
 import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionData, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
 import { gnosis } from '@wagmi/core/chains';
 import { ethers } from 'ethers';
@@ -22,6 +22,7 @@ import {
   Address,
   WalletClient,
   createPublicClient,
+  encodePacked,
   http,
   toBytes,
   toHex
@@ -29,6 +30,7 @@ import {
 import { RootState } from '../..';
 import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_MANAGEMENT_MODULE, HOPR_NODE_STAKE_FACTORY } from '../../../../config'
 import hoprNodeStakeFactoryAbi from '../../../abi/nodeStakeFactoryAbi.json';
+import hoprNodeManagementModuleAbi from '../../../abi/nodeManagementModuleAbi.json';
 import {
   getCurrencyFromHistoryTransaction,
   getRequestFromHistoryTransaction,
@@ -60,84 +62,25 @@ const createSafeSDK = async (signer: ethers.providers.JsonRpcSigner, safeAddress
     signerOrProvider: signer,
   });
 
+  const contractNetworks: ContractNetworksConfig = { '100': {
+    safeMasterCopyAddress: '0xc962E67D9490E154D81181879ddf4CD3b65D2132',
+    createCallAddress: '0x9b35Af71d77eaf8d7e40252370304687390A1A52',
+    fallbackHandlerAddress: '0x2a15DE4410d4c8af0A7b6c12803120f43C42B820',
+    multiSendAddress: '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526',
+    multiSendCallOnlyAddress: '0x9641d764fc13c8B624c04430C7356C1C7C8102e2',
+    safeProxyFactoryAddress: '0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67',
+    signMessageLibAddress: '0x58FCe385Ed16beB4BCE49c8DF34c7d6975807520',
+    simulateTxAccessorAddress: '0x3d4BA2E0884aa488718476ca2FB8Efc291A46199',
+  } };
+
   const safeAccount = await Safe.create({
+    contractNetworks,
     ethAdapter: sdkAdapter,
     safeAddress: safeAddress,
   });
 
   return safeAccount;
 };
-
-const createSafeWithConfigThunk = createAsyncThunk<
-  | {
-      moduleProxy: string;
-      safeAddress: string;
-    }
-  | undefined,
-  {
-    walletClient: WalletClient;
-    config: SafeAccountConfig;
-  },
-  { state: RootState }
->(
-  'safe/createSafeWithConfig',
-  async (
-    payload: {
-      walletClient: WalletClient;
-      config: SafeAccountConfig;
-    },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    dispatch(setSelectedSafeFetching(true));
-    try {
-      // The saltNonce is used to calculate a deterministic address for the new Safe contract.
-      // This way, even if the same Safe configuration is used multiple times,
-      // each deployment will result in a new, unique Safe contract.
-      const saltNonce = Date.now().toString();
-
-      const publicClient = createPublicClient({
-        chain: gnosis,
-        transport: http(),
-      });
-
-      const {
-        result,
-        request,
-      } = await publicClient.simulateContract({
-        account: payload.walletClient.account,
-        address: HOPR_NODE_STAKE_FACTORY,
-        abi: hoprNodeStakeFactoryAbi,
-        functionName: 'clone',
-        args: [
-          HOPR_NODE_MANAGEMENT_MODULE,
-          payload.config.owners,
-          saltNonce,
-          toHex(new Uint8Array(toBytes(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS)), { size: 32 }),
-        ],
-      });
-
-      await payload.walletClient.writeContract(request);
-
-      const [moduleProxy, safeAddress] = result as [Address, Address];
-
-      return {
-        moduleProxy,
-        safeAddress,
-      };
-    } catch (e) {
-      return rejectWithValue(e);
-    }
-  },
-  { condition: (_payload, { getState }) => {
-    const isFetching = getState().safe.selectedSafeAddress.isFetching;
-    if (isFetching) {
-      return false;
-    }
-  } },
-);
 
 const getSafesByOwnerThunk = createAsyncThunk<
   OwnerResponse | undefined,
@@ -1015,6 +958,121 @@ const getTokenList = createAsyncThunk<
   } },
 );
 
+// SC staking functions
+
+/**
+ * Next version of create safe with HOPR_NODE_STAKE_FACTORY .clone
+ * */
+const createSafeWithConfigThunk = createAsyncThunk<
+  | {
+      moduleProxy: string;
+      safeAddress: string;
+    }
+  | undefined,
+  {
+    walletClient: WalletClient;
+    config: SafeAccountConfig;
+  },
+  { state: RootState }
+>(
+  'safe/createSafeWithConfig',
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setSelectedSafeFetching(true));
+    try {
+      // The saltNonce is used to calculate a deterministic address for the new Safe contract.
+      // This way, even if the same Safe configuration is used multiple times,
+      // each deployment will result in a new, unique Safe contract.
+      const saltNonce = Date.now().toString();
+
+      const publicClient = createPublicClient({
+        chain: gnosis,
+        transport: http(),
+      });
+
+      const {
+        result,
+        request,
+      } = await publicClient.simulateContract({
+        account: payload.walletClient.account,
+        address: HOPR_NODE_STAKE_FACTORY,
+        abi: hoprNodeStakeFactoryAbi,
+        functionName: 'clone',
+        args: [
+          HOPR_NODE_MANAGEMENT_MODULE,
+          payload.config.owners,
+          saltNonce,
+          toHex(new Uint8Array(toBytes(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS)), { size: 32 }),
+        ],
+      });
+
+      await payload.walletClient.writeContract(request);
+
+      const [moduleProxy, safeAddress] = result as [Address, Address];
+
+      return {
+        moduleProxy,
+        safeAddress,
+      };
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().safe.selectedSafeAddress.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
+);
+
+const includeNodeNodeModuleThunk = createAsyncThunk<
+  boolean | undefined,
+  {
+    walletClient: WalletClient;
+    moduleAddress: Address;
+    nodeAddress: Address;
+  },
+  { state: RootState }
+>('safe/includeNodeNodeModule', async (payload, {
+  rejectWithValue,
+  dispatch,
+}) => {
+  dispatch(setSelectedSafeFetching(true));
+  try {
+    const publicClient = createPublicClient({
+      chain: gnosis,
+      transport: http(),
+    });
+
+    const {
+      result,
+      request,
+    } = await publicClient.simulateContract({
+      account: payload.walletClient.account,
+      address: payload.moduleAddress,
+      abi: hoprNodeManagementModuleAbi,
+      functionName: 'includeNode',
+      args: [
+        encodePacked(
+          ['address', 'uint8', 'uint8', 'uint8', 'uint8[]'],
+          [payload.nodeAddress, 1, 2, 1, [0, 0, 0, 0, 0, 0, 0, 0, 0]],
+        ),
+      ],
+    });
+
+    console.log(result, request);
+
+    // await payload.walletClient.writeContract(request);
+
+    return true;
+  } catch (e) {
+    return rejectWithValue(e);
+  }
+});
+
 // Helper actions to update the isFetching state
 const setInfoFetching = createAction<boolean>('node/setSafeInfoFetching');
 const setSelectedSafeFetching = createAction<boolean>('node/setSelectedSafeFetching');
@@ -1035,7 +1093,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   // CreateSafeWithConfig
   builder.addCase(createSafeWithConfigThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.selectedSafeAddress.data = action.payload.moduleProxy;
+      state.selectedSafeAddress.data = action.payload.safeAddress;
     }
     state.selectedSafeAddress.isFetching = false;
   });
@@ -1077,6 +1135,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getSafeInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.selectedSafeAddress.data = action.payload.address;
+      console.log({ info: action.payload });
       state.info.data = action.payload;
     }
     state.selectedSafeAddress.isFetching = false;
@@ -1221,4 +1280,5 @@ export const actionsAsync = {
   createSafeContractTransaction,
   createAndExecuteTransactionThunk,
   createAndExecuteContractTransactionThunk,
+  includeNodeNodeModuleThunk,
 };

@@ -25,11 +25,13 @@ function SafeSection() {
   const safesByOwner = useAppSelector((store) => store.safe.safesByOwner.data);
   const allTransactions = useAppSelector((store) => store.safe.allTransactions.data);
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
+  const safeModules = useAppSelector((state) => state.safe.info.data?.modules);
   const { account } = useAppSelector((store) => store.web3);
   const signer = useEthersSigner();
   const { data: walletClient } = useWalletClient();
   const [threshold, set_threshold] = useState(1);
   const [owners, set_owners] = useState('');
+  const [nodeAddress, set_nodeAddress] = useState('');
 
   const { data: allowanceData } = useContractRead({
     address: mHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
@@ -143,7 +145,48 @@ function SafeSection() {
           }
         }}
       >
-        create safe with config
+        EXPERIMENTAL: create safe with config
+      </button>
+      <h2>add node to node module</h2>
+      <label htmlFor="nodeAddress">node address</label>
+      <input
+        id="nodeAddress"
+        value={nodeAddress}
+        type="text"
+        onChange={(event) => {
+          set_nodeAddress(event.target.value);
+        }}
+      />
+      <button
+        disabled={!selectedSafeAddress}
+        onClick={() => {
+          if (signer && selectedSafeAddress) {
+            dispatch(
+              safeActionsAsync.getSafeInfoThunk({
+                safeAddress: selectedSafeAddress,
+                signer,
+              }),
+            );
+          }
+        }}
+      >
+        get info for recently created safe
+      </button>
+      <button
+        disabled={!safeModules?.length}
+        onClick={() => {
+          if (walletClient && selectedSafeAddress && safeModules?.at(0)) {
+            dispatch(
+              safeActionsAsync.includeNodeNodeModuleThunk({
+                moduleAddress: safeModules.at(0) as Address,
+                nodeAddress: nodeAddress as Address,
+                walletClient,
+              }),
+            );
+          }
+        }}
+      >
+        EXPERIMENTAL: add node to module
       </button>
       <h2>create tx proposal to yourself on selected safe</h2>
       <button
