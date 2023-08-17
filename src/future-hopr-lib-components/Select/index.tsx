@@ -51,6 +51,7 @@ const Select: React.FC<Props> = (props) => {
         label={props.label}
         disabled={props.disabled}
         native={props.native}
+        MenuProps={{ disableScrollLock: true }}
       >
         {props.values &&
           props.values.map((elem, index) => (

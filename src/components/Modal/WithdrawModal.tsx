@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
-import WalletIcon from '@mui/icons-material/Wallet';
 import {
   CircularProgress,
   DialogTitle,
@@ -15,6 +14,7 @@ import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 
 import CloseIcon from '@mui/icons-material/Close';
+import WithdrawIcon from '../../future-hopr-lib-components/Icons/Withdraw';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { nodeActionsAsync } from '../../store/slices/node';
 import { parseEther } from 'viem';
@@ -134,7 +134,7 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
   return (
     <>
       <IconButton
-        iconComponent={<WalletIcon />}
+        iconComponent={<WithdrawIcon />}
         tooltipText="Withdraw tokens"
         onClick={handleOpenModal}
       />

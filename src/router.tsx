@@ -28,11 +28,23 @@ import XdaiToNodePage from './steps/xdaiToNode';
 import StakingScreen from './sections/staking-screen';
 import SafeWithdraw from './sections/safeWithdraw';
 import UpdateNodePage from './steps/updateNode';
+import SetupNodePage from './steps/setupYourNode';
+import AddedToWhitelist from './steps/addedToWhitelist';
+import JoinWaitlistPage from './steps/joinWaitlist';
+import WhatYouWillNeedPage from './steps/whatYouWillNeed';
+import DockerInstallation from './steps/installNode/dockerInstallation';
+import NodeAddress from './steps/installNode/nodeAddress';
+import SafeOnboarding from './steps/safeOnboarding';
+import NodeAdded from './sections/nodeAdded';
+import SafeActions from './sections/actions';
+import NoNodeAdded from './sections/noNodeAdded';
+import StakingLandingPage from './sections/stakingLandingPage';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
 import ConnectWeb3 from './components/ConnectWeb3';
 import ConnectNode from './components/ConnectNode';
+import ConnectSafe from './components/ConnectSafe';
 import NotificationBar from './components/NotificationBar';
 import InfoBar from './components/InfoBar';
 
@@ -54,20 +66,10 @@ import DevelopIcon from '@mui/icons-material/Code';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import AddBoxIcon from '@mui/icons-material/AddBox';
-import DockerInstallation from './steps/installNode/dockerInstallation';
-import NodeAddress from './steps/installNode/nodeAddress';
 import PaidIcon from '@mui/icons-material/Paid';
-import ConnectSafe from './components/ConnectSafe';
-import SafeOnboarding from './steps/safeOnboarding';
-import NoNodeAdded from './sections/noNodeAdded';
-import StakingLandingPage from './sections/stakingLandingPage';
-import NodeAdded from './sections/nodeAdded';
-import SafeActions from './sections/actions';
 import WalletIcon from '@mui/icons-material/Wallet';
-import SetupNodePage from './steps/setupYourNode';
-import AddedToWhitelist from './steps/addedToWhitelist';
-import JoinWaitlistPage from './steps/joinWaitlist';
-import WhatYouWillNeedPage from './steps/whatYouWillNeed';
+import IncomingChannelsIcon from './future-hopr-lib-components/Icons/IncomingChannels';
+import OutgoingChannelsIcon from './future-hopr-lib-components/Icons/OutgoingChannels';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -154,14 +156,14 @@ export const applicationMapNode: ApplicationMapType = [
       {
         name: 'INCOMING CHANNELS',
         path: 'channels-INCOMING',
-        icon: <HubIcon />,
+        icon: <IncomingChannelsIcon />,
         element: <ChannelsPageIncoming />,
         loginNeeded: 'node',
       },
       {
         name: 'OUTGOING CHANNELS',
         path: 'channels-OUTGOING',
-        icon: <HubIcon />,
+        icon: <OutgoingChannelsIcon />,
         element: <ChannelsPageOutgoing />,
         loginNeeded: 'node',
       },
