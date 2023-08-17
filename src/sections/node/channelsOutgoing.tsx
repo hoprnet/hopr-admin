@@ -183,21 +183,24 @@ function ChannelsPage() {
   const header = [
     {
       key: 'key',
-      name: 'key',
+      name: '#',
     },
     {
       key: 'peerId',
       name: 'Peer Id',
       search: true,
+      tooltip: true,
     },
     {
       key: 'status',
       name: 'Status',
       search: true,
+      tooltip: true,
     },
     {
       key: 'funds',
       name: 'Dedicated Funds',
+      tooltip: true,
     },
     {
       key: 'actions',
@@ -208,7 +211,7 @@ function ChannelsPage() {
     },
   ];
 
-  const parsedTableData = Object.entries(channels?.incoming ?? []).map(([, channel], key) => {
+  const parsedTableData = Object.entries(channels?.outgoing ?? []).map(([, channel], key) => {
     return {
       key: key,
       peerId: getAliasByPeerId(channel.peerId),

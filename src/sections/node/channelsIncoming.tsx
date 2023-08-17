@@ -190,16 +190,19 @@ function ChannelsPage() {
       name: 'Peer Id',
       search: true,
       maxWidth: '568px',
+      tooltip: true,
     },
     {
       key: 'status',
       name: 'Status',
       maxWidth: '368px',
+      tooltip: true,
     },
     {
       key: 'funds',
       name: 'Dedicated Funds',
       maxWidth: '68px',
+      tooltip: true,
     },
     {
       key: 'actions',
