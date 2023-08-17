@@ -49,8 +49,11 @@ function TicketsPage() {
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
       }),
-    );
-    handleRefresh();
+    )
+      .unwrap()
+      .then(() => {
+        handleRefresh();
+      });
   };
 
   return (
