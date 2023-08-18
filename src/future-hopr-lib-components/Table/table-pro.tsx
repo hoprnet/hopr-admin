@@ -2,6 +2,9 @@ import React, { useCallback, useEffect } from 'react';
 import styled from '@emotion/styled';
 import _debounce from 'lodash/debounce';
 
+// HOPR
+import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
+
 // Mui
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -17,7 +20,6 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
-import Tooltip from '@mui/material/Tooltip';
 import TextField from '@mui/material/TextField';
 
 interface TablePaginationActionsProps {
@@ -239,7 +241,12 @@ export default function CustomPaginationActionsTable(props: Props) {
                   style={{ maxWidth: headElem.maxWidth }}
                 >
                   {headElem.tooltip ? (
-                    <Tooltip title={row[headElem.key]}>{row[headElem.key]}</Tooltip>
+                    <Tooltip
+                      title={row[headElem.key]}
+                      notWide
+                    >
+                      {row[headElem.key]}
+                    </Tooltip>
                   ) : (
                     row[headElem.key]
                   )}

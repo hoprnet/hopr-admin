@@ -9,7 +9,6 @@ import { utils } from 'ethers';
 import Section from '../../future-hopr-lib-components/Section';
 import { SubpageTitle } from '../../components/SubpageTitle';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
-import CloseChannelIcon from '../../future-hopr-lib-components/Icons/CloseChannel';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 // Modals
@@ -17,19 +16,6 @@ import { PingModal } from '../../components/Modal/PingModal';
 import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
 
 // Mui
-import {
-  Box,
-  Tabs,
-  Tab,
-  TableRow,
-  TableCell,
-  TableBody,
-  TableContainer,
-  Table,
-  TableHead,
-  Paper
-} from '@mui/material'
-import CircularProgress from '@mui/material/CircularProgress';
 import GetAppIcon from '@mui/icons-material/GetApp';
 
 function ChannelsPage() {

@@ -3,6 +3,19 @@ import styled from '@emotion/styled';
 
 // Mui
 import Toolbar from '@mui/material/Toolbar';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+
+import FAQ from '../Faq';
+import infoDataRaw from '../Faq/info.json'; // Import your info.json data
+
+type InfoData = {
+  [routePath: string]: {
+    id: number;
+    title: string;
+    content: string;
+  }[];
+};
 
 interface Props {}
 
@@ -19,6 +32,7 @@ const SInfoBar = styled.div`
   height: 100vh;
   box-sizing: border-box;
   overflow-x: hidden;
+  padding-top: 48px;
   &.node {
     background: #ffffa0;
     border: 0;
@@ -28,7 +42,9 @@ const SInfoBar = styled.div`
     border: 0;
   }
   @media (min-width: 740px) {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
   }
 `;
 
@@ -99,7 +115,7 @@ const Data = styled.div`
   background-color: #ddeaff;
   text-align: right;
   padding: 0 8px;
-  width: calc( 56px - 2 * 8px);
+  width: calc(56px - 2 * 8px);
   border-radius: 1rem 1rem 1rem 1rem;
   flex-grow: 1;
   &.nodeOnly {
@@ -119,13 +135,13 @@ const truncateBalanceto5charsWhenNoDecimals = (value: string | number | undefine
   try {
     if (value && BigInt(value)) {
       if (BigInt(value) > BigInt(1e9)) {
-        return '1e9+'
+        return '1e9+';
       } else if (BigInt(value) >= BigInt(1e6)) {
         // @ts-ignore
-        let tmp = (parseInt(value) / 1e6).toString();
-        if(tmp.includes('.')){
+        const tmp = (parseInt(value) / 1e6).toString();
+        if (tmp.includes('.')) {
           const [before, after] = tmp.split('.');
-          if (before.length === 3) return before + 'm'
+          if (before.length === 3) return before + 'm';
           return `${before}.${after.substring(0, 1)}m`;
         } else {
           if (tmp.length === 3) return `${tmp}3m`;
@@ -133,10 +149,10 @@ const truncateBalanceto5charsWhenNoDecimals = (value: string | number | undefine
         }
       } else if (BigInt(value) > BigInt(99999)) {
         // @ts-ignore
-        let tmp = (parseInt(value) / 1e3).toString();
-        if(tmp.includes('.')){
+        const tmp = (parseInt(value) / 1e3).toString();
+        if (tmp.includes('.')) {
           const [before, after] = tmp.split('.');
-          if (before.length === 3) return before + 'k'
+          if (before.length === 3) return before + 'k';
           return `${before}.${after.substring(0, 1)}k`;
         } else {
           if (tmp.length === 3) return `${tmp}k`;
@@ -146,7 +162,7 @@ const truncateBalanceto5charsWhenNoDecimals = (value: string | number | undefine
       return value;
     }
   } catch (e) {
-    console.warn('Error while paring data to BigInt for InfoBar')
+    console.warn('Error while paring data to BigInt for InfoBar');
   }
   return value;
 };
@@ -157,17 +173,23 @@ export default function InfoBar(props: Props) {
   const balances = useAppSelector((store) => store.node.balances.data);
   const info = useAppSelector((store) => store.node.info.data);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
-  const account = useAppSelector((store) => store.web3.account) as `0x${string}`;
   const web3Connected = useAppSelector((store) => store.web3.status.connected);
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const walletBalance = useAppSelector((store) => store.web3.balance);
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
+  const currentRoute = useLocation().pathname;
+
+  const infoData: InfoData = infoDataRaw;
+
+  const pageHasFAQ = () => {
+    if (infoData[currentRoute]) return true;
+    return false;
+  };
 
   const web3Drawer = (
     <>
-      <br />
       <Web3Container>
-      <TitleColumn className='web3'>
+        <TitleColumn className="web3">
           <IconAndText>
             <IconContainer>
               <Icon
@@ -203,7 +225,7 @@ export default function InfoBar(props: Props) {
               <Data>
                 <p>{safeBalance.wxHopr.formatted ?? '-'}</p>
                 <p>{safeBalance.xHopr.formatted ?? '-'}</p>
-                <p>{safeBalance.xDai.formatted ?? '-'}</p> 
+                <p>{safeBalance.xDai.formatted ?? '-'}</p>
               </Data>
             </>
           )}
@@ -222,9 +244,8 @@ export default function InfoBar(props: Props) {
 
   const nodeDrawer = (
     <>
-      <br />
       <Web3Container>
-        <TitleColumn className='node'>
+        <TitleColumn className="node">
           <IconAndText>
             <IconContainer></IconContainer>
             <Text>Status</Text>
@@ -277,9 +298,15 @@ export default function InfoBar(props: Props) {
 
   return (
     <SInfoBar className={`InfoBar ${web3Connected ? 'web3' : ''} ${nodeConnected ? 'node' : ''}`}>
-      <AppBarFiller />
       {web3Connected && web3Drawer}
       {nodeConnected && !web3Connected && nodeDrawer}
+      {nodeConnected && pageHasFAQ() && (
+        <FAQ
+          data={infoData[currentRoute]}
+          label={currentRoute.split('/')[currentRoute.split('/').length - 1]}
+          variant="blue"
+        />
+      )}
     </SInfoBar>
   );
 }

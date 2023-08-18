@@ -11,6 +11,7 @@ import { CreateAliasModal } from '../../components/Modal/AddAliasModal';
 import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
 import { SendMessageModal } from '../../components/Modal/SendMessageModal';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 //  Modals

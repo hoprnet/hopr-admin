@@ -17,18 +17,6 @@ import { PingModal } from '../../components/Modal/PingModal';
 import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
 
 // Mui
-import {
-  Box,
-  Tabs,
-  Tab,
-  TableRow,
-  TableCell,
-  TableBody,
-  TableContainer,
-  Table,
-  TableHead,
-  Paper
-} from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress';
 import GetAppIcon from '@mui/icons-material/GetApp';
 
