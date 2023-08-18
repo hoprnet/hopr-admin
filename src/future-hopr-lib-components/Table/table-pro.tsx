@@ -243,7 +243,6 @@ export default function CustomPaginationActionsTable(props: Props) {
                   {headElem.tooltip ? (
                     <Tooltip
                       title={row[headElem.key]}
-                      notWide
                     >
                       {row[headElem.key]}
                     </Tooltip>

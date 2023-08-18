@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 
 // Mui
 import { Tooltip, IconButton as MuiIconButton } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 
 type SubpageTitleProps = {
   reloading?: boolean;
@@ -11,6 +12,7 @@ type SubpageTitleProps = {
   tooltipText?: string;
   className?: string;
   style?: Object;
+  pending?: boolean;
 };
 
 const SIconButton = styled(MuiIconButton)`
@@ -24,6 +26,7 @@ const SIconButton = styled(MuiIconButton)`
     svg {
       background-color: transparent;
       color: rgba(0, 0, 0, 0.26);
+      fill: rgba(0, 0, 0, 0.26);
     }
   }
   &.reloading {
@@ -39,6 +42,16 @@ const SIconButton = styled(MuiIconButton)`
   }
 `;
 
+const SCircularProgress = styled(CircularProgress)`
+  position: absolute;
+  &.pending,
+  &.pending > svg {
+    width: 20px!important;
+    height: 20px!important;
+    color: #1976d2;
+  }
+`
+
 export const IconButton = ({
   reloading,
   tooltipText,
@@ -47,6 +60,7 @@ export const IconButton = ({
   onClick,
   iconComponent,
   disabled,
+  pending,
 }: SubpageTitleProps) => {
   return (
     <Tooltip
@@ -55,11 +69,12 @@ export const IconButton = ({
       style={style}
     >
       <SIconButton
-        disabled={disabled}
+        disabled={disabled || pending}
         className={`${reloading ? 'reloading' : ''}`}
         onClick={onClick}
       >
         {iconComponent}
+        { pending && <SCircularProgress className={'pending'}/> }
       </SIconButton>
     </Tooltip>
   );

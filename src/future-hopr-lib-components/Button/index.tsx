@@ -1,12 +1,14 @@
 import { forwardRef, Ref } from 'react';
 import styled from '@emotion/styled';
 import MuiButton, { ButtonProps } from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 
 type StyledButtonProps = ButtonProps & {
   imageOnly?: boolean;
   size70?: boolean;
   standardWidth?: boolean;
   fade?: boolean;
+  pending?: boolean;
   nofade?: boolean;
   target?: string;
 };
@@ -80,6 +82,12 @@ const StyledButton = styled(MuiButton)<StyledButtonProps>`
   }
 `;
 
+const SCircularProgress = styled(CircularProgress)`
+  width: 30px!important;
+  height: 30px!important;
+  position: absolute;
+`
+
 const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>) => {
   const {
     imageOnly,
@@ -88,6 +96,7 @@ const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>
     fade,
     children,
     nofade,
+    pending,
     ...rest
   } = props;
 
@@ -109,8 +118,10 @@ const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>
       {...rest}
       ref={ref}
       className={classNames}
+      disabled={props.disabled || pending}
     >
       {children}
+      { pending && <SCircularProgress/> }
     </StyledButton>
   );
 });

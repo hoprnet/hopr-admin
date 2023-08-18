@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
+import { trackGoal } from 'fathom-client';
 
 // Stores
 import { authActions, authActionsAsync } from '../../store/slices/auth';
@@ -230,6 +231,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         dispatch(nodeActions.initializeMessagesWebsocket());
         dispatch(nodeActions.initializeLogsWebsocket());
         if (!error) navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
+        trackGoal('LOGIN_TO_NODE', 1);
         props.handleClose();
       }
     } catch (e) {
