@@ -83,10 +83,10 @@ const StyledButton = styled(MuiButton)<StyledButtonProps>`
 `;
 
 const SCircularProgress = styled(CircularProgress)`
-  width: 30px!important;
-  height: 30px!important;
+  width: 30px !important;
+  height: 30px !important;
   position: absolute;
-`
+`;
 
 const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>) => {
   const {
@@ -121,7 +121,7 @@ const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>
       disabled={props.disabled || pending}
     >
       {children}
-      { pending && <SCircularProgress/> }
+      {pending && <SCircularProgress />}
     </StyledButton>
   );
 });

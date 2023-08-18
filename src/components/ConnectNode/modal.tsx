@@ -231,11 +231,12 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         dispatch(nodeActions.initializeMessagesWebsocket());
         dispatch(nodeActions.initializeLogsWebsocket());
         if (!error) navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
-        trackGoal('LOGIN_TO_NODE', 1);
+        trackGoal('IZUWDE9K', 1);
         props.handleClose();
       }
     } catch (e) {
       // error is handled in redux
+      trackGoal('WWH3JCEH', 1);
     }
   };
 

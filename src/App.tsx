@@ -1,4 +1,4 @@
-import { useEffect } from 'react' 
+import { useEffect } from 'react';
 import { ThemeProvider } from '@mui/material';
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
@@ -12,12 +12,9 @@ import * as Fathom from 'fathom-client';
 import { environment } from '../config';
 
 function App() {
-
   useEffect(() => {
-    if(environment === 'node') {
-      Fathom.load('MJISRYNH', {
-        url: "https://cdn-eu.usefathom.com/script.js",
-      });
+    if (environment === 'node') {
+      Fathom.load('MJISRYNH', { url: 'https://cdn-eu.usefathom.com/script.js' });
     }
   }, []);
 

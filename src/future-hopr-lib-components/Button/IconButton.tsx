@@ -46,11 +46,11 @@ const SCircularProgress = styled(CircularProgress)`
   position: absolute;
   &.pending,
   &.pending > svg {
-    width: 20px!important;
-    height: 20px!important;
+    width: 20px !important;
+    height: 20px !important;
     color: #1976d2;
   }
-`
+`;
 
 export const IconButton = ({
   reloading,
@@ -74,7 +74,7 @@ export const IconButton = ({
         onClick={onClick}
       >
         {iconComponent}
-        { pending && <SCircularProgress className={'pending'}/> }
+        {pending && <SCircularProgress className={'pending'} />}
       </SIconButton>
     </Tooltip>
   );
