@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import styled from '@emotion/styled'
 import { ThemeProvider } from '@mui/material';
 import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
@@ -10,6 +11,14 @@ import { ToastContainer } from 'react-toastify';
 import theme from './theme';
 import * as Fathom from 'fathom-client';
 import { environment } from '../config';
+import packageJson from '../package.json'
+
+const VersionComponent = styled.div`
+  position: fixed;
+  bottom: 4px;
+  right: 4px;
+  font-size: 10px;
+`
 
 function App() {
   useEffect(() => {
@@ -27,6 +36,9 @@ function App() {
             limit={10}
           />
           <RouterProvider router={router} />
+          <VersionComponent>
+            Version: {packageJson.version}
+          </VersionComponent>
         </ThemeProvider>
       </WagmiProvider>
     </Provider>
