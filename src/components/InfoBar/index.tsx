@@ -44,7 +44,7 @@ const SInfoBar = styled.div`
   @media (min-width: 740px) {
     display: flex;
     flex-direction: column;
-    gap: 24px
+    gap: 24px;
   }
 `;
 
