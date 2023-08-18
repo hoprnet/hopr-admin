@@ -88,7 +88,7 @@ body::-webkit-scrollbar-thumb:hover {
 */
 
  /* Tooltips */
-.STooltip.notWide.MuiTooltip-popper[data-popper-placement*="bottom"] > .MuiTooltip-tooltip{
+.STooltip.MuiPopper-root.MuiTooltip-popper[data-popper-placement*="bottom"] > .MuiTooltip-tooltip.MuiTooltip-tooltipPlacementBottom{
   margin-top: 4px;
 }
 

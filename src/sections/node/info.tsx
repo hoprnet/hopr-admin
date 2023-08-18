@@ -198,17 +198,13 @@ function InfoPage() {
               <th>
                 <Tooltip
                   title={
-                    <span>
-                      {[
-                        'Unknown: Node has just been started recently',
-                        <br />,
-                        'Red: No connection',
-                        <br />,
-                        'Orange: low-quality connection',
-                        <br />,
-                        'Yellow/Green: High-quality node',
-                      ]}
-                    </span>
+                    <ul style={{margin: 0, padding: '0 0 0 16px'}}>
+                      <span style={{margin:  '0 0 0 -16px'}}>Possible statuses:</span>
+                      <li>Unknown: Node has just been started recently</li>
+                      <li>Red: No connection</li>
+                      <li>Orange: low-quality connection</li>
+                      <li>Yellow/Green: High-quality node</li>
+                    </ul>
                   }
                 >
                   <span>Connectivity status</span>

@@ -32,6 +32,7 @@ const SInfoBar = styled.div`
   height: 100vh;
   box-sizing: border-box;
   overflow-x: hidden;
+  padding-top: 48px;
   &.node {
     background: #ffffa0;
     border: 0;
@@ -41,7 +42,9 @@ const SInfoBar = styled.div`
     border: 0;
   }
   @media (min-width: 740px) {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 24px
   }
 `;
 
@@ -185,7 +188,6 @@ export default function InfoBar(props: Props) {
 
   const web3Drawer = (
     <>
-      <br />
       <Web3Container>
         <TitleColumn className="web3">
           <IconAndText>
@@ -242,7 +244,6 @@ export default function InfoBar(props: Props) {
 
   const nodeDrawer = (
     <>
-      <br />
       <Web3Container>
         <TitleColumn className="node">
           <IconAndText>
@@ -297,7 +298,6 @@ export default function InfoBar(props: Props) {
 
   return (
     <SInfoBar className={`InfoBar ${web3Connected ? 'web3' : ''} ${nodeConnected ? 'node' : ''}`}>
-      <AppBarFiller />
       {web3Connected && web3Drawer}
       {nodeConnected && !web3Connected && nodeDrawer}
       {nodeConnected && pageHasFAQ() && (

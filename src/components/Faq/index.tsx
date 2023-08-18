@@ -13,7 +13,7 @@ import { useLocation } from 'react-router-dom';
 const StyledCard = styled(Card)`
   display: flex;
   flex-direction: column;
-  width: 190px;
+  width: 206px;
   font-size: 12px;
   border-radius: 1rem;
   margin-right: 8px;
@@ -72,7 +72,7 @@ const SAccordionSummary = styled(AccordionSummary)`
     background-color: #ffe7e7;
   }
   .MuiAccordionSummary-content,
-  .Mui-expanded {
+  .MuiAccordionSummary-content.Mui-expanded {
     margin: 4px 2px;
   }
 `;

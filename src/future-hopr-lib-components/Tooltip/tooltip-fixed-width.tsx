@@ -6,10 +6,11 @@ interface Props extends TooltipProps {
 }
 
 const Tooltip: React.FC<Props> = (props) => {
+  const { className, notWide, ...rest} = props;
   return (
     <MuiTooltip
-      classes={{ popper: `STooltip ${props.className} ${props.notWide ? 'notWide' : ''}` }}
-      {...props}
+      classes={{ popper: `STooltip ${className} ${notWide ? 'notWide' : ''}` }}
+      {...rest}
     />
   );
 };
