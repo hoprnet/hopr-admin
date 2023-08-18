@@ -25,19 +25,6 @@ function ChannelsPage() {
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [tabIndex, set_tabIndex] = useState(0);
-  const [closingStates, set_closingStates] = useState<
-    Record<
-      string,
-      {
-        closing: boolean;
-        closeSuccess: boolean;
-        closeErrors: {
-          status: string | undefined;
-          error: string | undefined;
-        }[];
-      }
-    >
-  >({});
   const tabLabel = tabIndex === 0 ? 'outgoing' : 'incoming';
   const channelsData = tabIndex === 0 ? channels?.outgoing : channels?.incoming;
 
@@ -108,7 +95,7 @@ function ChannelsPage() {
     if (channelsData) {
       exportToCsv(
         Object.entries(channelsData).map(([, channel]) => ({
-          channelId: channel.channelId,
+          channelId: channel.id,
           peerId: channel.peerId,
           status: channel.status,
           dedicatedFunds: channel.balance,
@@ -116,54 +103,6 @@ function ChannelsPage() {
         `${tabLabel}-channels.csv`,
       );
     }
-  };
-
-  const handleCloseChannels = (direction: 'incoming' | 'outgoing', peerId: string, channelId: string) => {
-    set_closingStates((prevStates) => ({
-      ...prevStates,
-      [channelId]: {
-        closing: true,
-        closeSuccess: false,
-        closeErrors: [],
-      },
-    }));
-
-    dispatch(
-      actionsAsync.closeChannelThunk({
-        apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
-        direction: direction,
-        peerId: peerId,
-      }),
-    )
-      .unwrap()
-      .then(() => {
-        set_closingStates((prevStates) => ({
-          ...prevStates,
-          [channelId]: {
-            closing: false,
-            closeSuccess: true,
-            closeErrors: [],
-          },
-        }));
-        handleRefresh();
-      })
-      .catch((e) => {
-        set_closingStates((prevStates) => ({
-          ...prevStates,
-          [channelId]: {
-            closing: false,
-            closeSuccess: false,
-            closeErrors: [
-              ...(prevStates[channelId]?.closeErrors || []),
-              {
-                error: e.error,
-                status: e.status,
-              },
-            ],
-          },
-        }));
-      });
   };
 
   const headerIncomming = [

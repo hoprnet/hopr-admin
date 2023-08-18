@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
-import { AccountResponseType, GetChannelsResponseType, GetInfoResponseType } from '@hoprnet/hopr-sdk';
+import { GetBalancesResponseType, GetChannelsResponseType, GetInfoResponseType } from '@hoprnet/hopr-sdk';
 import { WatcherMessage } from '../../../hooks/useWatcher/messages';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 
@@ -95,7 +95,7 @@ const appSlice = createSlice({
     setPrevNodeInfo: (state, action: PayloadAction<GetInfoResponseType | null>) => {
       state.previousStates.prevNodeInfo = action.payload;
     },
-    setPrevNodeBalances: (state, action: PayloadAction<AccountResponseType | null>) => {
+    setPrevNodeBalances: (state, action: PayloadAction<GetBalancesResponseType | null>) => {
       state.previousStates.prevNodeBalances = action.payload;
     },
     setPrevMessage: (state, action: PayloadAction<WatcherMessage>) => {

@@ -110,7 +110,7 @@ function ChannelsPage() {
     if (channelsData) {
       exportToCsv(
         Object.entries(channelsData).map(([, channel]) => ({
-          channelId: channel.channelId,
+          channelId: channel.id,
           peerId: channel.peerId,
           status: channel.status,
           dedicatedFunds: channel.balance,
@@ -120,7 +120,7 @@ function ChannelsPage() {
     }
   };
 
-  const handleCloseChannels = (direction: 'incoming' | 'outgoing', peerId: string, channelId: string) => {
+  const handleCloseChannels = (channelId: string) => {
     set_closingStates((prevStates) => ({
       ...prevStates,
       [channelId]: {
@@ -134,8 +134,7 @@ function ChannelsPage() {
       actionsAsync.closeChannelThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-        direction: direction,
-        peerId: peerId,
+        channelId: channelId,
       }),
     )
       .unwrap()
@@ -214,16 +213,16 @@ function ChannelsPage() {
             modalBtnText="Fund outgoing channel"
             actionBtnText="Fund outgoing channel"
             type="fund"
-            channelId={channel.channelId}
+            channelId={channel.id}
           />
           <IconButton
             iconComponent={<CloseChannelIcon />}
             tooltipText={`Close outgoing channel`}
-            onClick={() => handleCloseChannels('outgoing', channel.peerId, channel.channelId)}
+            onClick={() => handleCloseChannels(channel.id)}
           />
-          {closingStates[channel.channelId]?.closing && <CircularProgress />}
-          {closingStates[channel.channelId]?.closeSuccess && <div>Close Success</div>}
-          {closingStates[channel.channelId]?.closeErrors.map((error, index) => (
+          {closingStates[channel.id]?.closing && <CircularProgress />}
+          {closingStates[channel.id]?.closeSuccess && <div>Close Success</div>}
+          {closingStates[channel.id]?.closeErrors.map((error, index) => (
             <div key={index}>{error.error}</div>
           ))}
         </>

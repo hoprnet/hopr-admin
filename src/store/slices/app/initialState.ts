@@ -1,4 +1,4 @@
-import type { AccountResponseType, GetChannelsResponseType, GetInfoResponseType } from '@hoprnet/hopr-sdk';
+import type { GetBalancesResponseType, GetChannelsResponseType, GetInfoResponseType } from '@hoprnet/hopr-sdk';
 import type { WatcherMessage } from '../../../hooks/useWatcher/messages';
 import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 
@@ -15,7 +15,7 @@ type InitialState = {
   previousStates: {
     prevChannels: GetChannelsResponseType | null;
     prevNodeInfo: GetInfoResponseType | null;
-    prevNodeBalances: AccountResponseType | null;
+    prevNodeBalances: GetBalancesResponseType | null;
     prevMessage: WatcherMessage;
     prevPendingSafeTransaction: SafeMultisigTransactionResponse | null;
   };
