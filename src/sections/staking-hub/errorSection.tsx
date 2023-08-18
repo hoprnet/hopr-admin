@@ -1,5 +1,5 @@
 // HOPR Components
-import Section from '../future-hopr-lib-components/Section';
+import Section from '../../future-hopr-lib-components/Section';
 
 function SectionError() {
   return (

@@ -198,9 +198,12 @@ function InfoPage() {
               <th>
                 <Tooltip
                   title={
-                    <ul style={{
-                      margin: 0, padding: '0 0 0 16px', 
-                    }}>
+                    <ul
+                      style={{
+                        margin: 0,
+                        padding: '0 0 0 16px',
+                      }}
+                    >
                       <span style={{ margin: '0 0 0 -16px' }}>Possible statuses:</span>
                       <li>Unknown: Node has just been started recently</li>
                       <li>Red: No connection</li>

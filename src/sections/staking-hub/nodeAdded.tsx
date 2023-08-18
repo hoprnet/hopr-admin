@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import { ReactNode } from 'react';
-import { truncateHOPRPeerId } from '../utils/helpers';
-import { useAppSelector } from '../store';
+import { truncateHOPRPeerId } from '../../utils/helpers';
+import { useAppSelector } from '../../store';
 
-import Button from '../future-hopr-lib-components/Button';
-import Section from '../future-hopr-lib-components/Section';
+import Button from '../../future-hopr-lib-components/Button';
+import Section from '../../future-hopr-lib-components/Section';
 import { Card, Chip, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 

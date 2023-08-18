@@ -90,6 +90,7 @@ export default function ConnectNode() {
   const connected = useAppSelector((store) => store.auth.status.connected);
   const connecting = useAppSelector((store) => store.auth.status.connecting);
   const error = useAppSelector((store) => store.auth.status.error);
+  const openLoginModalToNode = useAppSelector((store) => store.auth.helper.openLoginModalToNode);
   const peerId = useAppSelector((store) => store.node.addresses.data.hopr);
   const localName = useAppSelector((store) => store.auth.loginData.localName);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
@@ -113,6 +114,10 @@ export default function ConnectNode() {
   useEffect(() => {
     if (error) set_modalVisible(true);
   }, [error]);
+
+  useEffect(() => {
+    if (openLoginModalToNode) set_modalVisible(true);
+  }, [openLoginModalToNode]);
 
   const handleLogout = () => {
     dispatch(authActions.resetState());

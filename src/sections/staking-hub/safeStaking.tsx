@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import styled from '@emotion/styled';
-import Section from '../future-hopr-lib-components/Section';
-import Typography from '../future-hopr-lib-components/Typography';
-import Button from '../future-hopr-lib-components/Button/gray';
-import ConnectWeb3 from '../components/ConnectWeb3';
-import { useAppSelector } from '../store';
+import Section from '../../future-hopr-lib-components/Section';
+import Typography from '../../future-hopr-lib-components/Typography';
+import Button from '../../future-hopr-lib-components/Button/gray';
+import ConnectWeb3 from '../../components/ConnectWeb3';
+import { useAppSelector } from '../../store';
 
 const Title = styled(Typography)`
   color: #ffffff;

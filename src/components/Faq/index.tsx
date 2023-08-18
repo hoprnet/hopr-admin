@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   Accordion,
   AccordionDetails,
@@ -7,8 +8,6 @@ import {
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 
 const StyledCard = styled(Card)`
   display: flex;
@@ -116,6 +115,10 @@ export default function FAQ({
   data,
 }: FaqProps) {
   const [expandedId, set_expandedId] = useState<number | false>(false);
+
+  useEffect(() => {
+    set_expandedId(false);
+  }, [data]);
 
   const handleAccordionClick = (id: number) => {
     set_expandedId((prevId) => {

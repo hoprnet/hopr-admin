@@ -3,23 +3,23 @@ import styled from '@emotion/styled';
 import { useSearchParams } from 'react-router-dom';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { parseUnits } from 'viem';
-import { useAppDispatch, useAppSelector } from '../store';
-import { safeActionsAsync } from '../store/slices/safe';
-import { createSendTokensTransactionData } from '../utils/blockchain';
-import { useEthersSigner } from '../hooks';
-import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../config';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { safeActionsAsync } from '../../store/slices/safe';
+import { createSendTokensTransactionData } from '../../utils/blockchain';
+import { useEthersSigner } from '../../hooks';
+import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
 
 // components
-import Button from '../future-hopr-lib-components/Button';
-import Section from '../future-hopr-lib-components/Section';
-import Card from '../components/Card';
+import Button from '../../future-hopr-lib-components/Button';
+import Section from '../../future-hopr-lib-components/Section';
+import Card from '../../components/Card';
 
 // Mui
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
-import Select from '../future-hopr-lib-components/Select';
+import Select from '../../future-hopr-lib-components/Select';
 import { SelectChangeEvent } from '@mui/material/Select';
-import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../utils/safeTransactions';
+import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../../utils/safeTransactions';
 
 const StyledForm = styled.div`
   width: 100%;
