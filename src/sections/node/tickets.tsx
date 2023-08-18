@@ -21,9 +21,9 @@ function TicketsPage() {
   const ticketsFetching = useAppSelector((store) => store.node.tickets.isFetching);
   const statistics = useAppSelector((store) => store.node.statistics.data);
   const statisticsFetching = useAppSelector((store) => store.node.statistics.isFetching);
+  const redeemTicketsFetching = useAppSelector((store) => store.node.redeemTickets.isFetching);
+  const redeemTicketsErrors = useAppSelector((store) => store.node.redeemTickets.error);
   const loginData = useAppSelector((store) => store.auth.loginData);
-  const [redeemErrors, set_redeemErrors] = useState<{ status: string | undefined; error: string | undefined }[]>([]);
-  const [redeeming, set_redeeming] = useState(false);
 
   useEffect(() => {
     handleRefresh();
@@ -45,7 +45,6 @@ function TicketsPage() {
   };
 
   const handleRedeemAllTickets = () => {
-    set_redeeming(true);
     dispatch(
       actionsAsync.redeemTicketsThunk({
         apiEndpoint: loginData.apiEndpoint!,
@@ -54,18 +53,7 @@ function TicketsPage() {
     )
       .unwrap()
       .then(() => {
-        set_redeeming(false);
         handleRefresh();
-      })
-      .catch((e) => {
-        set_redeeming(false);
-        set_redeemErrors([
-          ...redeemErrors,
-          {
-            error: e.error,
-            status: e.status,
-          },
-        ]);
       });
   };
 
@@ -85,7 +73,7 @@ function TicketsPage() {
             <IconButton
               iconComponent={<ExitToAppIcon />}
               tooltipText="Redeem all tickets"
-              reloading={redeeming}
+              reloading={redeemTicketsFetching}
               onClick={handleRedeemAllTickets}
             />
             <IconButton
