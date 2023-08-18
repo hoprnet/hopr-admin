@@ -9,26 +9,13 @@ import { utils } from 'ethers';
 import Section from '../../future-hopr-lib-components/Section';
 import { SubpageTitle } from '../../components/SubpageTitle';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
-import CloseChannelIcon from '../../future-hopr-lib-components/Icons/CloseChannel';
+import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 // Modals
 import { PingModal } from '../../components/Modal/PingModal';
 import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
 
 // Mui
-import {
-  Box,
-  Tabs,
-  Tab,
-  TableRow,
-  TableCell,
-  TableBody,
-  TableContainer,
-  Table,
-  TableHead,
-  Paper
-} from '@mui/material'
-import CircularProgress from '@mui/material/CircularProgress';
 import GetAppIcon from '@mui/icons-material/GetApp';
 
 function ChannelsPage() {
@@ -179,6 +166,58 @@ function ChannelsPage() {
       });
   };
 
+  const headerIncomming = [
+    {
+      key: 'key',
+      name: '#',
+    },
+    {
+      key: 'peerId',
+      name: 'Peer Id',
+      search: true,
+      maxWidth: '568px',
+      tooltip: true,
+    },
+    {
+      key: 'status',
+      name: 'Status',
+      maxWidth: '368px',
+      tooltip: true,
+    },
+    {
+      key: 'funds',
+      name: 'Dedicated Funds',
+      maxWidth: '68px',
+      tooltip: true,
+    },
+    {
+      key: 'actions',
+      name: 'Actions',
+      search: false,
+      width: '168px',
+      maxWidth: '168px',
+    },
+  ];
+
+  const parsedTableDataIncomming = Object.entries(channels?.incoming ?? []).map(([, channel], key) => {
+    return {
+      key: key,
+      peerId: getAliasByPeerId(channel.peerId),
+      status: channel.status,
+      funds: `${utils.formatEther(channel.balance)} mHOPR`,
+      actions: (
+        <>
+          <PingModal peerId={channel.peerId} />
+          <OpenOrFundChannelModal
+            peerId={channel.peerId}
+            title="Open outgoing channel"
+            type={'open'}
+          />
+        </>
+      ),
+    };
+  });
+
   return (
     <Section
       className="Channels--aliases"
@@ -187,18 +226,11 @@ function ChannelsPage() {
       yellow
     >
       <SubpageTitle
-        title={`CHANNELS`}
+        title={`INCOMING CHANNELS`}
         refreshFunction={handleRefresh}
         reloading={channelsFetching}
         actions={
           <>
-            <OpenOrFundChannelModal type={'open'} />
-            <OpenOrFundChannelModal
-              type={'fund'}
-              title="Fund outgoing channel"
-              modalBtnText="Fund outgoing channel"
-              actionBtnText="Fund outgoing channel"
-            />
             <IconButton
               iconComponent={<GetAppIcon />}
               tooltipText={`Export ${tabLabel} channels as a CSV`}
@@ -208,103 +240,12 @@ function ChannelsPage() {
           </>
         }
       />
-      <Paper
-        style={{
-          padding: '24px',
-          width: 'calc( 100% - 48px )',
-        }}
-      >
-        <Box sx={{ borderColor: 'divider' }}>
-          <Tabs
-            value={tabIndex}
-            onChange={handleTabChange}
-            centered
-          >
-            <Tab label="Outgoing" />
-            <Tab label="Incoming" />
-          </Tabs>
-        </Box>
-
-        <TableContainer component={Paper}>
-          <Table
-            sx={{ minWidth: 650 }}
-            aria-label="aliases table"
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell>Id</TableCell>
-                <TableCell>Peer Id</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Dedicated Funds</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            {tabIndex === 1 && (
-              <TableBody>
-                {Object.entries(channels?.incoming ?? []).map(([, channel], key) => (
-                  <TableRow key={key}>
-                    <TableCell
-                      component="th"
-                      scope="row"
-                    >
-                      {key}
-                    </TableCell>
-                    <TableCell>{getAliasByPeerId(channel.peerId)}</TableCell>
-                    <TableCell>{channel.status}</TableCell>
-                    <TableCell>{utils.formatEther(channel.balance)} mHOPR</TableCell>
-                    <TableCell>
-                      <PingModal peerId={channel.peerId} />
-                      <OpenOrFundChannelModal
-                        peerId={channel.peerId}
-                        title="Open outgoing channel"
-                        type={'open'}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            )}
-            {tabIndex === 0 && (
-              <TableBody>
-                {Object.entries(channels?.outgoing ?? []).map(([, channel], key) => (
-                  <TableRow key={key}>
-                    <TableCell
-                      component="th"
-                      scope="row"
-                    >
-                      {key}
-                    </TableCell>
-                    <TableCell>{getAliasByPeerId(channel.peerId)}</TableCell>
-                    <TableCell>{channel.status}</TableCell>
-                    <TableCell>{utils.formatEther(channel.balance)} mHOPR</TableCell>
-                    <TableCell>
-                      <PingModal peerId={channel.peerId} />
-                      <OpenOrFundChannelModal
-                        peerId={channel.peerId}
-                        title="Fund outgoing channel"
-                        modalBtnText="Fund outgoing channel"
-                        actionBtnText="Fund outgoing channel"
-                        type="fund"
-                        channelId={channel.channelId}
-                      />
-                      <IconButton
-                        iconComponent={<CloseChannelIcon />}
-                        tooltipText={`Close outgoing channel`}
-                        onClick={() => handleCloseChannels('outgoing', channel.peerId, channel.channelId)}
-                      />
-                      {closingStates[channel.channelId]?.closing && <CircularProgress />}
-                      {closingStates[channel.channelId]?.closeSuccess && <div>Close Success</div>}
-                      {closingStates[channel.channelId]?.closeErrors.map((error, index) => (
-                        <div key={index}>{error.error}</div>
-                      ))}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            )}
-          </Table>
-        </TableContainer>
-      </Paper>
+      <TablePro
+        data={parsedTableDataIncomming}
+        header={headerIncomming}
+        search
+        loading={parsedTableDataIncomming.length === 0 && channelsFetching}
+      />
     </Section>
   );
 }

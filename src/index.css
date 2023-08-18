@@ -86,3 +86,12 @@ body::-webkit-scrollbar-thumb:hover {
   background: #000050;
 }
 */
+
+ /* Tooltips */
+.STooltip.MuiPopper-root.MuiTooltip-popper[data-popper-placement*="bottom"] > .MuiTooltip-tooltip.MuiTooltip-tooltipPlacementBottom{
+  margin-top: 4px;
+}
+
+.STooltip.notWide .MuiTooltip-tooltip {
+  width: 160px;
+}
