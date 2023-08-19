@@ -13,7 +13,8 @@ import Section from '../future-hopr-lib-components/Section';
 import { useEthersSigner } from '../hooks';
 import { observePendingSafeTransactions } from '../hooks/useWatcher/safeTransactions';
 import { appActions } from '../store/slices/app';
-import { createApproveTransactionData } from '../utils/blockchain';
+import { createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../utils/blockchain';
+import { nodeManagementModuleAbi } from '../abi/nodeManagementModuleAbi';
 
 // Maximum possible value for uint256
 const MAX_UINT256 = BigInt(2 ** 256) - BigInt(1);
@@ -32,12 +33,24 @@ function SafeSection() {
   const [threshold, set_threshold] = useState(1);
   const [owners, set_owners] = useState('');
   const [nodeAddress, set_nodeAddress] = useState('');
+  const [includeNodeResponse, set_includeNodeResponse] = useState('')
+
 
   const { data: allowanceData } = useContractRead({
     address: mHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     abi: erc20ABI,
     functionName: 'allowance',
     args: [selectedSafeAddress, HOPR_CHANNELS_SMART_CONTRACT_ADDRESS],
+    enabled: !!selectedSafeAddress,
+  });
+
+  const { data: isNodeResponse } = useContractRead({
+    address: safeModules ? safeModules.at(0) as Address : '0x',
+    abi: nodeManagementModuleAbi,
+    functionName: 'isNode',
+    args: [nodeAddress],
+    enabled: !!safeModules?.at(0) && !!nodeAddress && !!includeNodeResponse,
+    watch: true,
   });
 
   useEffect(() => {
@@ -132,6 +145,23 @@ function SafeSection() {
       />
       <button
         onClick={() => {
+          if (signer) {
+            dispatch(
+              safeActionsAsync.createVanillaSafeWithConfigThunk({
+                config: {
+                  owners: owners.split(','),
+                  threshold,
+                },
+                signer,
+              }),
+            );
+          }
+        }}
+      >
+        create vanilla safe with config
+      </button>
+      <button
+        onClick={() => {
           if (walletClient) {
             dispatch(
               safeActionsAsync.createSafeWithConfigThunk({
@@ -175,19 +205,24 @@ function SafeSection() {
       <button
         disabled={!safeModules?.length}
         onClick={() => {
-          if (walletClient && selectedSafeAddress && safeModules?.at(0)) {
+          if (signer && selectedSafeAddress && safeModules && safeModules.at(0) && nodeAddress) {
             dispatch(
-              safeActionsAsync.includeNodeNodeModuleThunk({
-                moduleAddress: safeModules.at(0) as Address,
-                nodeAddress: nodeAddress as Address,
-                walletClient,
+              safeActionsAsync.createAndExecuteContractTransactionThunk({
+                smartContractAddress: safeModules.at(0) as Address,
+                data: createIncludeNodeTransactionData(encodeDefaultPermissions(nodeAddress)),
+                safeAddress: selectedSafeAddress,
+                signer,
               }),
-            );
+            ).unwrap()
+              .then(transactionResult => {
+                set_includeNodeResponse(transactionResult)
+              });
           }
         }}
       >
         EXPERIMENTAL: add node to module
       </button>
+      <span>is Node: {JSON.stringify(isNodeResponse)}</span>
       <h2>create tx proposal to yourself on selected safe</h2>
       <button
         disabled={!selectedSafeAddress}

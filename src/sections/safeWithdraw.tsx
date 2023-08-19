@@ -139,7 +139,7 @@ function SafeWithdraw() {
 
   useEffect(() => {
     if (proposedTxHash) {
-      const foundProposedTx = pendingTransactions?.results.find((tx) => tx.safeTxHash === proposedTxHash);
+      const foundProposedTx = pendingTransactions?.results.find((tx) => tx.transactionHash === proposedTxHash);
       if (foundProposedTx && address) {
         set_proposedTx(foundProposedTx);
         set_userAction(getUserActionForPendingTransaction(foundProposedTx, address));
@@ -216,9 +216,6 @@ function SafeWithdraw() {
           }),
         )
           .unwrap()
-          .then((res: unknown) => {
-            console.log('executePendingTransactionThunk success', res);
-          })
           .finally(() => {
             set_isExecuting(false);
           });
@@ -245,8 +242,8 @@ function SafeWithdraw() {
           }),
         )
           .unwrap()
-          .then((safeTxHash) => {
-            set_proposedTxHash(safeTxHash);
+          .then((transactionResponse) => {
+            set_proposedTxHash(transactionResponse);
           })
           .finally(() => {
             set_isExecuting(false);
@@ -263,8 +260,8 @@ function SafeWithdraw() {
           }),
         )
           .unwrap()
-          .then((safeTxHash) => {
-            set_proposedTxHash(safeTxHash);
+          .then((transactionResponse) => {
+            set_proposedTxHash(transactionResponse);
           })
           .finally(() => {
             set_isExecuting(false);

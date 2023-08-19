@@ -14,7 +14,7 @@ import SafeApiKit, {
   TokenInfoListResponse,
   TokenInfoResponse
 } from '@safe-global/api-kit';
-import Safe, { ContractNetworksConfig, EthersAdapter, SafeAccountConfig } from '@safe-global/protocol-kit';
+import Safe, { EthersAdapter, SafeAccountConfig, SafeFactory } from '@safe-global/protocol-kit';
 import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionData, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
 import { gnosis } from '@wagmi/core/chains';
 import { ethers } from 'ethers';
@@ -22,7 +22,6 @@ import {
   Address,
   WalletClient,
   createPublicClient,
-  encodePacked,
   http,
   toBytes,
   toHex
@@ -30,7 +29,6 @@ import {
 import { RootState } from '../..';
 import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_MANAGEMENT_MODULE, HOPR_NODE_STAKE_FACTORY } from '../../../../config'
 import hoprNodeStakeFactoryAbi from '../../../abi/nodeStakeFactoryAbi.json';
-import hoprNodeManagementModuleAbi from '../../../abi/nodeManagementModuleAbi.json';
 import {
   getCurrencyFromHistoryTransaction,
   getRequestFromHistoryTransaction,
@@ -62,25 +60,73 @@ const createSafeSDK = async (signer: ethers.providers.JsonRpcSigner, safeAddress
     signerOrProvider: signer,
   });
 
-  const contractNetworks: ContractNetworksConfig = { '100': {
-    safeMasterCopyAddress: '0xc962E67D9490E154D81181879ddf4CD3b65D2132',
-    createCallAddress: '0x9b35Af71d77eaf8d7e40252370304687390A1A52',
-    fallbackHandlerAddress: '0x2a15DE4410d4c8af0A7b6c12803120f43C42B820',
-    multiSendAddress: '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526',
-    multiSendCallOnlyAddress: '0x9641d764fc13c8B624c04430C7356C1C7C8102e2',
-    safeProxyFactoryAddress: '0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67',
-    signMessageLibAddress: '0x58FCe385Ed16beB4BCE49c8DF34c7d6975807520',
-    simulateTxAccessorAddress: '0x3d4BA2E0884aa488718476ca2FB8Efc291A46199',
-  } };
-
   const safeAccount = await Safe.create({
-    contractNetworks,
     ethAdapter: sdkAdapter,
     safeAddress: safeAddress,
   });
 
   return safeAccount;
 };
+
+const createSafeFactory = async (signer: ethers.providers.JsonRpcSigner) => {
+  const adapter = new EthersAdapter({
+    ethers,
+    signerOrProvider: signer,
+  });
+
+  const safeFactory = await SafeFactory.create({
+    ethAdapter: adapter, safeVersion: '1.4.1', 
+  });
+
+  return safeFactory;
+};
+
+const createVanillaSafeWithConfigThunk = createAsyncThunk<
+  string | undefined,
+  {
+    signer: ethers.providers.JsonRpcSigner;
+    config: SafeAccountConfig;
+  },
+  { state: RootState }
+>(
+  'safe/createVanillaSafeWithConfig',
+  async (
+    payload: {
+      signer: ethers.providers.JsonRpcSigner;
+      config: SafeAccountConfig;
+    },
+    {
+      rejectWithValue,
+      dispatch,
+    },
+  ) => {
+    dispatch(setSelectedSafeFetching(true));
+    try {
+      const safeFactory = await createSafeFactory(payload.signer);
+
+      // The saltNonce is used to calculate a deterministic address for the new Safe contract.
+      // This way, even if the same Safe configuration is used multiple times,
+      // each deployment will result in a new, unique Safe contract.
+      const saltNonce = Date.now().toString();
+
+      const safeAccount = await safeFactory.deploySafe({
+        safeAccountConfig: payload.config,
+        saltNonce,
+      });
+
+      const safeAddress = await safeAccount.getAddress();
+      return safeAddress;
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().safe.selectedSafeAddress.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
+);
 
 const getSafesByOwnerThunk = createAsyncThunk<
   OwnerResponse | undefined,
@@ -592,7 +638,7 @@ const executePendingTransactionThunk = createAsyncThunk<
  * This only works if the safe has threshold of 1
  */
 const createAndExecuteTransactionThunk = createAsyncThunk<
-  string | undefined,
+  string,
   {
     signer: ethers.providers.JsonRpcSigner;
     safeAddress: string;
@@ -603,29 +649,21 @@ const createAndExecuteTransactionThunk = createAsyncThunk<
   }
 >(
   'safe/createAndExecuteTransaction',
-  async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      safeTransactionData: SafeTransactionDataPartial;
-    },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(setExecuteTransactionFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       // create safe transaction
       const safeTransaction = await safeSDK.createTransaction({ safeTransactionData: payload.safeTransactionData });
-      const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
       const isValidTx = await safeSDK.isValidTransaction(safeTransaction);
       if (!isValidTx) {
         throw Error('Transaction is not valid');
       }
       // execute safe transaction
-      await safeSDK.executeTransaction(safeTransaction);
+      const safeTxResponse = await safeSDK.executeTransaction(safeTransaction);
       // re fetch all txs
       dispatch(
         getAllSafeTransactionsThunk({
@@ -633,7 +671,7 @@ const createAndExecuteTransactionThunk = createAsyncThunk<
           signer: payload.signer,
         }),
       );
-      return safeTxHash;
+      return safeTxResponse.hash;
     } catch (e) {
       return rejectWithValue(e);
     }
@@ -647,7 +685,7 @@ const createAndExecuteTransactionThunk = createAsyncThunk<
 );
 
 const createAndExecuteContractTransactionThunk = createAsyncThunk<
-  string | undefined,
+  string,
   {
     signer: ethers.providers.JsonRpcSigner;
     safeAddress: string;
@@ -669,7 +707,6 @@ const createAndExecuteContractTransactionThunk = createAsyncThunk<
       dispatch,
     },
   ) => {
-    dispatch(setExecuteTransactionFetching(true));
     try {
       const {
         smartContractAddress,
@@ -684,7 +721,7 @@ const createAndExecuteContractTransactionThunk = createAsyncThunk<
         value: '0',
       };
 
-      const safeTxHash = await dispatch(
+      const safeTxResult = await dispatch(
         createAndExecuteTransactionThunk({
           signer,
           safeAddress: safeAddress,
@@ -692,17 +729,11 @@ const createAndExecuteContractTransactionThunk = createAsyncThunk<
         }),
       ).unwrap();
 
-      return safeTxHash;
+      return safeTxResult;
     } catch (e) {
       return rejectWithValue(e);
     }
   },
-  { condition: (_payload, { getState }) => {
-    const isFetching = getState().safe.executeTransaction.isFetching;
-    if (isFetching) {
-      return false;
-    }
-  } },
 );
 
 const getAllSafeTransactionsThunk = createAsyncThunk<
@@ -965,6 +996,7 @@ const getTokenList = createAsyncThunk<
  * */
 const createSafeWithConfigThunk = createAsyncThunk<
   | {
+      transactionHash: string;
       moduleProxy: string;
       safeAddress: string;
     }
@@ -1008,11 +1040,12 @@ const createSafeWithConfigThunk = createAsyncThunk<
         ],
       });
 
-      await payload.walletClient.writeContract(request);
+      const transactionHash = await payload.walletClient.writeContract(request);
 
       const [moduleProxy, safeAddress] = result as [Address, Address];
 
       return {
+        transactionHash,
         moduleProxy,
         safeAddress,
       };
@@ -1027,51 +1060,6 @@ const createSafeWithConfigThunk = createAsyncThunk<
     }
   } },
 );
-
-const includeNodeNodeModuleThunk = createAsyncThunk<
-  boolean | undefined,
-  {
-    walletClient: WalletClient;
-    moduleAddress: Address;
-    nodeAddress: Address;
-  },
-  { state: RootState }
->('safe/includeNodeNodeModule', async (payload, {
-  rejectWithValue,
-  dispatch,
-}) => {
-  dispatch(setSelectedSafeFetching(true));
-  try {
-    const publicClient = createPublicClient({
-      chain: gnosis,
-      transport: http(),
-    });
-
-    const {
-      result,
-      request,
-    } = await publicClient.simulateContract({
-      account: payload.walletClient.account,
-      address: payload.moduleAddress,
-      abi: hoprNodeManagementModuleAbi,
-      functionName: 'includeNode',
-      args: [
-        encodePacked(
-          ['address', 'uint8', 'uint8', 'uint8', 'uint8[]'],
-          [payload.nodeAddress, 1, 2, 1, [0, 0, 0, 0, 0, 0, 0, 0, 0]],
-        ),
-      ],
-    });
-
-    console.log(result, request);
-
-    // await payload.walletClient.writeContract(request);
-
-    return true;
-  } catch (e) {
-    return rejectWithValue(e);
-  }
-});
 
 // Helper actions to update the isFetching state
 const setInfoFetching = createAction<boolean>('node/setSafeInfoFetching');
@@ -1098,6 +1086,16 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     state.selectedSafeAddress.isFetching = false;
   });
   builder.addCase(createSafeWithConfigThunk.rejected, (state) => {
+    state.selectedSafeAddress.isFetching = false;
+  });
+  // CreateVanillaSafeWithConfig
+  builder.addCase(createVanillaSafeWithConfigThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      state.selectedSafeAddress.data = action.payload;
+    }
+    state.selectedSafeAddress.isFetching = false;
+  });
+  builder.addCase(createVanillaSafeWithConfigThunk.rejected, (state) => {
     state.selectedSafeAddress.isFetching = false;
   });
   // GetSafesByOwner
@@ -1135,7 +1133,6 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getSafeInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.selectedSafeAddress.data = action.payload.address;
-      console.log({ info: action.payload });
       state.info.data = action.payload;
     }
     state.selectedSafeAddress.isFetching = false;
@@ -1280,5 +1277,5 @@ export const actionsAsync = {
   createSafeContractTransaction,
   createAndExecuteTransactionThunk,
   createAndExecuteContractTransactionThunk,
-  includeNodeNodeModuleThunk,
+  createVanillaSafeWithConfigThunk,
 };
