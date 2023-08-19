@@ -150,7 +150,7 @@ function ChannelsPage() {
           },
         }));
         handleRefresh();
-        const msg = `Closing of of ${channelId} succeded`;
+        const msg = `Closing of ${channelId} succeded`;
         sendNotification({
           notificationPayload: {
             source: 'node',
