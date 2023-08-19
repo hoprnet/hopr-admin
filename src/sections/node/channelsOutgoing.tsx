@@ -177,7 +177,7 @@ function ChannelsPage() {
             ],
           },
         }));
-        const msg = `Closing of of ${channelId} failed`;
+        const msg = `Closing of ${channelId} failed`;
         sendNotification({
           notificationPayload: {
             source: 'node',
