@@ -1,33 +1,53 @@
 export const nodeSafeRegistryAbi = [
   {
-    inputs: [], stateMutability: 'nonpayable', type: 'constructor', 
+    inputs: [],
+    stateMutability: 'nonpayable',
+    type: 'constructor',
   },
   {
-    inputs: [], name: 'NodeAddressZero', type: 'error', 
+    inputs: [],
+    name: 'NodeAddressZero',
+    type: 'error',
   },
   {
-    inputs: [], name: 'NodeHasSafe', type: 'error', 
+    inputs: [],
+    name: 'NodeHasSafe',
+    type: 'error',
   },
   {
-    inputs: [], name: 'NotSafeOwnerNorNode', type: 'error', 
+    inputs: [],
+    name: 'NotSafeOwnerNorNode',
+    type: 'error',
   },
   {
-    inputs: [], name: 'NotValidSafe', type: 'error', 
+    inputs: [],
+    name: 'NotValidSafe',
+    type: 'error',
   },
   {
-    inputs: [], name: 'NotValidSignatureFromNode', type: 'error', 
+    inputs: [],
+    name: 'NotValidSignatureFromNode',
+    type: 'error',
   },
   {
-    inputs: [], name: 'SafeAddressZero', type: 'error', 
+    inputs: [],
+    name: 'SafeAddressZero',
+    type: 'error',
   },
   {
     anonymous: false,
     inputs: [
       {
-        indexed: true, internalType: 'address', name: 'safeAddress', type: 'address', 
+        indexed: true,
+        internalType: 'address',
+        name: 'safeAddress',
+        type: 'address',
       },
       {
-        indexed: true, internalType: 'address', name: 'nodeAddress', type: 'address', 
+        indexed: true,
+        internalType: 'address',
+        name: 'nodeAddress',
+        type: 'address',
       },
     ],
     name: 'DergisteredNodeSafe',
@@ -37,10 +57,16 @@ export const nodeSafeRegistryAbi = [
     anonymous: false,
     inputs: [
       {
-        indexed: true, internalType: 'address', name: 'safeAddress', type: 'address', 
+        indexed: true,
+        internalType: 'address',
+        name: 'safeAddress',
+        type: 'address',
       },
       {
-        indexed: true, internalType: 'address', name: 'nodeAddress', type: 'address', 
+        indexed: true,
+        internalType: 'address',
+        name: 'nodeAddress',
+        type: 'address',
       },
     ],
     name: 'RegisteredNodeSafe',
@@ -49,16 +75,24 @@ export const nodeSafeRegistryAbi = [
   {
     inputs: [],
     name: 'NODE_SAFE_TYPEHASH',
-    outputs: [{
-      internalType: 'bytes32', name: '', type: 'bytes32', 
-    }],
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [{
-      internalType: 'address', name: 'nodeAddr', type: 'address', 
-    }],
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'nodeAddr',
+        type: 'address',
+      },
+    ],
     name: 'deregisterNodeBySafe',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -67,27 +101,43 @@ export const nodeSafeRegistryAbi = [
   {
     inputs: [],
     name: 'domainSeparator',
-    outputs: [{
-      internalType: 'bytes32', name: '', type: 'bytes32', 
-    }],
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [{
-      internalType: 'address', name: '', type: 'address', 
-    }],
+    inputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
     name: 'nodeToSafe',
-    outputs: [{
-      internalType: 'address', name: '', type: 'address', 
-    }],
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [{
-      internalType: 'address', name: 'safeAddr', type: 'address', 
-    }],
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'safeAddr',
+        type: 'address',
+      },
+    ],
     name: 'registerSafeByNode',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -98,10 +148,14 @@ export const nodeSafeRegistryAbi = [
       {
         components: [
           {
-            internalType: 'address', name: 'safeAddress', type: 'address', 
+            internalType: 'address',
+            name: 'safeAddress',
+            type: 'address',
           },
           {
-            internalType: 'address', name: 'nodeChainKeyAddress', type: 'address', 
+            internalType: 'address',
+            name: 'nodeChainKeyAddress',
+            type: 'address',
           },
         ],
         internalType: 'struct HoprNodeSafeRegistry.NodeSafe',
@@ -109,7 +163,9 @@ export const nodeSafeRegistryAbi = [
         type: 'tuple',
       },
       {
-        internalType: 'bytes', name: 'sig', type: 'bytes', 
+        internalType: 'bytes',
+        name: 'sig',
+        type: 'bytes',
       },
     ],
     name: 'registerSafeWithNodeSig',
@@ -120,9 +176,13 @@ export const nodeSafeRegistryAbi = [
   {
     inputs: [],
     name: 'version',
-    outputs: [{
-      internalType: 'string', name: '', type: 'string', 
-    }],
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
@@ -132,31 +192,31 @@ export const nodeSafeRegistryAbi = [
       {
         components: [
           {
-            internalType: "address",
-            name: "safeAddress",
-            type: "address",
+            internalType: 'address',
+            name: 'safeAddress',
+            type: 'address',
           },
           {
-            internalType: "address",
-            name: "nodeChainKeyAddress",
-            type: "address",
+            internalType: 'address',
+            name: 'nodeChainKeyAddress',
+            type: 'address',
           },
         ],
-        internalType: "struct HoprNodeSafeRegistry.NodeSafe",
-        name: "nodeSafe",
-        type: "tuple",
+        internalType: 'struct HoprNodeSafeRegistry.NodeSafe',
+        name: 'nodeSafe',
+        type: 'tuple',
       },
     ],
-    name: "isNodeSafeRegistered",
+    name: 'isNodeSafeRegistered',
     outputs: [
       {
-        internalType: "bool",
-        name: "",
-        type: "bool",
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
       },
     ],
     payable: false,
-    stateMutability: "view",
-    type: "function",
+    stateMutability: 'view',
+    type: 'function',
   },
 ];

@@ -75,7 +75,8 @@ const createSafeFactory = async (signer: ethers.providers.JsonRpcSigner) => {
   });
 
   const safeFactory = await SafeFactory.create({
-    ethAdapter: adapter, safeVersion: '1.4.1', 
+    ethAdapter: adapter,
+    safeVersion: '1.4.1',
   });
 
   return safeFactory;

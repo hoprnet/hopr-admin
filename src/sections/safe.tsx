@@ -13,7 +13,7 @@ import Section from '../future-hopr-lib-components/Section';
 import { useEthersSigner } from '../hooks';
 import { observePendingSafeTransactions } from '../hooks/useWatcher/safeTransactions';
 import { appActions } from '../store/slices/app';
-import { createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../utils/blockchain';
+import { createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../utils/blockchain'
 import { nodeManagementModuleAbi } from '../abi/nodeManagementModuleAbi';
 
 // Maximum possible value for uint256
@@ -33,8 +33,7 @@ function SafeSection() {
   const [threshold, set_threshold] = useState(1);
   const [owners, set_owners] = useState('');
   const [nodeAddress, set_nodeAddress] = useState('');
-  const [includeNodeResponse, set_includeNodeResponse] = useState('')
-
+  const [includeNodeResponse, set_includeNodeResponse] = useState('');
 
   const { data: allowanceData } = useContractRead({
     address: mHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
@@ -45,7 +44,7 @@ function SafeSection() {
   });
 
   const { data: isNodeResponse } = useContractRead({
-    address: safeModules ? safeModules.at(0) as Address : '0x',
+    address: safeModules ? (safeModules.at(0) as Address) : '0x',
     abi: nodeManagementModuleAbi,
     functionName: 'isNode',
     args: [nodeAddress],
@@ -213,9 +212,10 @@ function SafeSection() {
                 safeAddress: selectedSafeAddress,
                 signer,
               }),
-            ).unwrap()
-              .then(transactionResult => {
-                set_includeNodeResponse(transactionResult)
+            )
+              .unwrap()
+              .then((transactionResult) => {
+                set_includeNodeResponse(transactionResult);
               });
           }
         }}
