@@ -7,7 +7,6 @@ import Details from './details';
 import FAQ from '../Faq';
 import infoDataRaw from '../Faq/info.json'; // Import your info.json data
 
-
 type InfoData = {
   [routePath: string]: {
     id: number;
@@ -40,7 +39,6 @@ const SInfoBar = styled.div`
   }
 `;
 
-
 const Scroll = styled.div`
   overflow-x: hidden;
   overflow-y: auto;
@@ -57,7 +55,6 @@ const Scroll = styled.div`
   }
   &::-webkit-scrollbar-track {
     background: #ffffa0;
-  
   }
   &::-webkit-scrollbar-thumb {
     background: #3c64a5;
@@ -67,8 +64,7 @@ const Scroll = styled.div`
   &::-webkit-scrollbar-thumb:hover {
     background: #000050;
   }
-
-`
+`;
 
 export default function InfoBar(props: Props) {
   const web3Connected = useAppSelector((store) => store.web3.status.connected);
