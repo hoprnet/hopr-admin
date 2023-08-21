@@ -31,6 +31,16 @@ export const createSendTokensTransactionData = (recipient: Address, amount: bigi
   return transferData;
 };
 
+export const createIncludeNodeTransactionData = (encodedPermissions: unknown) => {
+  const includeNodeData = encodeFunctionData({
+    abi: nodeManagementModuleAbi,
+    functionName: 'includeNode',
+    args: [encodedPermissions as bigint],
+  });
+
+  return includeNodeData;
+};
+
 export const encodeDefaultPermissions = (nodeAddress: string) => {
   const encodedPermissions = encodePacked(
     [
@@ -52,14 +62,4 @@ export const encodeDefaultPermissions = (nodeAddress: string) => {
   );
 
   return encodedPermissions;
-};
-
-export const createIncludeNodeTransactionData = (encodedPermissions: unknown) => {
-  const includeNodeData = encodeFunctionData({
-    abi: nodeManagementModuleAbi,
-    functionName: 'includeNode',
-    args: [encodedPermissions as bigint],
-  });
-
-  return includeNodeData;
 };
