@@ -4,6 +4,7 @@ import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { useNavigate } from 'react-router-dom';
 import { exportToCsv } from '../../utils/helpers';
 import { utils } from 'ethers';
+import { sendNotification } from '../../hooks/useWatcher/notifications';
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
@@ -149,6 +150,17 @@ function ChannelsPage() {
           },
         }));
         handleRefresh();
+        const msg = `Closing of ${channelId} succeded`;
+        sendNotification({
+          notificationPayload: {
+            source: 'node',
+            name: msg,
+            url: null,
+            timeout: null,
+          },
+          toastPayload: { message: msg },
+          dispatch,
+        });
       })
       .catch((e) => {
         set_closingStates((prevStates) => ({
@@ -165,6 +177,17 @@ function ChannelsPage() {
             ],
           },
         }));
+        const msg = `Closing of ${channelId} failed`;
+        sendNotification({
+          notificationPayload: {
+            source: 'node',
+            name: msg,
+            url: null,
+            timeout: null,
+          },
+          toastPayload: { message: msg },
+          dispatch,
+        });
       });
   };
 
@@ -178,17 +201,20 @@ function ChannelsPage() {
       name: 'Peer Id',
       search: true,
       tooltip: true,
+      maxWidth: '168px',
     },
     {
       key: 'status',
       name: 'Status',
       search: true,
       tooltip: true,
+      maxWidth: '80px',
     },
     {
       key: 'funds',
       name: 'Dedicated Funds',
       tooltip: true,
+      maxWidth: '80px',
     },
     {
       key: 'actions',
@@ -218,14 +244,10 @@ function ChannelsPage() {
           />
           <IconButton
             iconComponent={<CloseChannelIcon />}
+            pending={closingStates[channel.channelId]?.closing}
             tooltipText={`Close outgoing channel`}
             onClick={() => handleCloseChannels('outgoing', channel.peerId, channel.channelId)}
           />
-          {closingStates[channel.channelId]?.closing && <CircularProgress />}
-          {closingStates[channel.channelId]?.closeSuccess && <div>Close Success</div>}
-          {closingStates[channel.channelId]?.closeErrors.map((error, index) => (
-            <div key={index}>{error.error}</div>
-          ))}
         </>
       ),
     };

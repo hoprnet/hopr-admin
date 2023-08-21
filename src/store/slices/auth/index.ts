@@ -78,6 +78,9 @@ const authSlice = createSlice({
     setStatusError(state, action: PayloadAction<string>) {
       state.status.error = action.payload;
     },
+    setOpenLoginModalToNode(state, action: PayloadAction<boolean>) {
+      state.helper.openLoginModalToNode = action.payload;
+    },
   },
   extraReducers: (builder) => createExtraReducers(builder),
 });

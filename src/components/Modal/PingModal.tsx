@@ -19,7 +19,8 @@ export const PingModal = (props: PingModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const [peerId, set_peerId] = useState<string>(props.peerId ? props.peerId : '');
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, set_OpenModal] = useState(false);
+  const [disableButton, set_disableButton] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_peerId(event.target.value);
@@ -31,17 +32,18 @@ export const PingModal = (props: PingModalProps) => {
   useEffect(setPropPeerId, []);
 
   const handleOpenModal = () => {
-    setOpenModal(true);
+    set_OpenModal(true);
   };
 
   const handleCloseModal = () => {
-    setOpenModal(false);
+    set_OpenModal(false);
     set_peerId('');
     setPropPeerId();
   };
 
   const handlePing = () => {
     if (loginData.apiEndpoint && loginData.apiToken) {
+      set_disableButton(true);
       dispatch(
         actionsAsync.pingNodeThunk({
           peerId,
@@ -80,6 +82,7 @@ export const PingModal = (props: PingModalProps) => {
         })
         .finally(() => {
           handleCloseModal();
+          set_disableButton(false);
         });
     }
   };
@@ -118,6 +121,7 @@ export const PingModal = (props: PingModalProps) => {
         <DialogActions>
           <Button
             disabled={peerId.length === 0}
+            pending={disableButton}
             onClick={handlePing}
             style={{
               marginRight: '16px',

@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
 
 //Stores
-import { useAppDispatch, useAppSelector } from '../store';
-import { safeActionsAsync } from '../store/slices/safe';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { safeActionsAsync } from '../../store/slices/safe';
 
 // HOPR Components
 import { utils } from 'ethers';
 import { Address, formatEther } from 'viem';
 import { erc20ABI, useContractRead } from 'wagmi';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, mHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../config';
-import Section from '../future-hopr-lib-components/Section';
-import { useEthersSigner } from '../hooks';
-import { observePendingSafeTransactions } from '../hooks/useWatcher/safeTransactions';
-import { appActions } from '../store/slices/app';
-import { createApproveTransactionData } from '../utils/blockchain';
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, mHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
+import Section from '../../future-hopr-lib-components/Section';
+import { useEthersSigner } from '../../hooks';
+import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
+import { appActions } from '../../store/slices/app';
+import { createApproveTransactionData } from '../../utils/blockchain';
 
 // Maximum possible value for uint256
 const MAX_UINT256 = BigInt(2 ** 256) - BigInt(1);
