@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { ApplicationMapType } from '../../router';
+import Details from '../../components/InfoBar/details';
 
 const drawerWidth = 240;
 const minDrawerWidth = 56;
@@ -52,6 +53,7 @@ const StyledDrawer = styled(MuiDrawer)`
     .StyledListItemButton {
       color: white;
       &.Mui-selected {
+        text-decoration: underline 2px rgb(255, 255, 255);
         &:hover {
           background-color: rgba(255, 255, 255, 0.3);
         }
@@ -84,7 +86,7 @@ const StyledListItemButton = styled(ListItemButton)`
   &.Mui-selected {
     color: #0000b4;
     background-color: rgba(255, 255, 255, 0.45);
-    text-decoration: underline 2px rgb(255, 255, 255);
+    text-decoration: underline 2px #0000b4;
     text-underline-offset: 4px;
     .MuiTypography-root {
       font-weight: bold;
@@ -95,6 +97,12 @@ const StyledListItemButton = styled(ListItemButton)`
     }
   }
 ` as typeof ListItemButton;
+
+const SListItemIcon = styled(ListItemIcon)`
+  &.GroupIcon {
+    color: rgba(0, 0, 0, 0.2);
+  }
+`;
 
 type DrawerProps = {
   drawerItems: ApplicationMapType;
@@ -162,7 +170,7 @@ const Drawer = ({
                   placement="right"
                 >
                   <StyledListSubheader className="StyledListSubheader">
-                    <ListItemIcon className="ListItemIcon">{group.icon}</ListItemIcon>
+                    <SListItemIcon className="SListItemIcon GroupIcon">{group.icon}</SListItemIcon>
                   </StyledListSubheader>
                 </Tooltip>
               )
@@ -182,7 +190,7 @@ const Drawer = ({
                   onClick={handleButtonClick}
                   className="StyledListItemButton"
                 >
-                  <ListItemIcon className="ListItemIcon">{item.icon}</ListItemIcon>
+                  <SListItemIcon className="SListItemIcon">{item.icon}</SListItemIcon>
                   <ListItemText className="ListItemText">{item.name}</ListItemText>
                 </StyledListItemButton>
               </Tooltip>
@@ -190,6 +198,7 @@ const Drawer = ({
           </List>
         </div>
       ))}
+      {drawerVariant === 'temporary' && <Details style={{ margin: '0 auto 16px' }} />}
     </StyledDrawer>
   );
 };

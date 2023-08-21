@@ -35,6 +35,7 @@ interface Props extends SelectMuiProps {
     value: string | number;
     name: string | number | null;
   }[];
+  native?: boolean;
 }
 
 const Select: React.FC<Props> = (props) => {
@@ -49,6 +50,8 @@ const Select: React.FC<Props> = (props) => {
         onChange={props.onChange}
         label={props.label}
         disabled={props.disabled}
+        native={props.native}
+        MenuProps={{ disableScrollLock: true }}
       >
         {props.values &&
           props.values.map((elem, index) => (

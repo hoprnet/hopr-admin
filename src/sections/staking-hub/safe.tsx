@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 
 //Stores
-import { useAppDispatch, useAppSelector } from '../store';
-import { safeActionsAsync } from '../store/slices/safe';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { safeActionsAsync } from '../../store/slices/safe';
 
 // HOPR Components
 import { utils } from 'ethers';
 import { Address, formatEther } from 'viem';
 import { erc20ABI, useContractRead, useWalletClient } from 'wagmi';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, mHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../config'
-import { nodeManagementModuleAbi } from '../abi/nodeManagementModuleAbi';
-import { nodeSafeRegistryAbi } from '../abi/nodeSafeRegistryAbi';
-import Section from '../future-hopr-lib-components/Section';
-import { useEthersSigner } from '../hooks';
-import { observePendingSafeTransactions } from '../hooks/useWatcher/safeTransactions';
-import { appActions } from '../store/slices/app';
-import { createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../utils/blockchain'
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, mHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config'
+import { nodeManagementModuleAbi } from '../../abi/nodeManagementModuleAbi';
+import Section from '../../future-hopr-lib-components/Section';
+import { useEthersSigner } from '../../hooks';
+import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
+import { appActions } from '../../store/slices/app';
+import { createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../utils/blockchain'
+import { nodeSafeRegistryAbi } from '../../abi/nodeSafeRegistryAbi';
 
 // Maximum possible value for uint256
 const MAX_UINT256 = BigInt(2 ** 256) - BigInt(1);
@@ -34,9 +34,9 @@ function SafeSection() {
   const [threshold, set_threshold] = useState(1);
   const [owners, set_owners] = useState('');
   const [nodeAddress, set_nodeAddress] = useState('');
+  const [includeNodeResponse, set_includeNodeResponse] = useState('');
   const [safeAddressForRegistry, set_safeAddressForRegistry] = useState('');
   const [nodeAddressForRegistry, set_nodeAddressForRegistry] = useState('');
-  const [includeNodeResponse, set_includeNodeResponse] = useState('');
 
   const { data: allowanceData } = useContractRead({
     address: mHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
@@ -240,26 +240,6 @@ function SafeSection() {
         EXPERIMENTAL: add node to module
       </button>
       <span>is Node: {JSON.stringify(isNodeResponse)}</span>
-      <h2>is safe registered</h2>
-      <label htmlFor="safeAddressForRegistry">safe Address</label>
-      <input
-        id="safeAddressForRegistry"
-        value={safeAddressForRegistry}
-        type="text"
-        onChange={(event) => {
-          set_safeAddressForRegistry(event.target.value);
-        }}
-      />
-      <label htmlFor="">node Address</label>
-      <input
-        id="nodeAddressForRegistry"
-        value={nodeAddressForRegistry}
-        type="text"
-        onChange={(event) => {
-          set_nodeAddressForRegistry(event.target.value);
-        }}
-      />
-      <span>is safe registered: {JSON.stringify(isNodeSafeRegistered)}</span>
       <h2>create tx proposal to yourself on selected safe</h2>
       <button
         disabled={!selectedSafeAddress}
@@ -282,6 +262,27 @@ function SafeSection() {
       >
         create tx proposal
       </button>
+      <h2>is safe registered</h2>
+      <label htmlFor="safeAddressForRegistry">safe Address</label>
+      <input
+        id="safeAddressForRegistry"
+        value={safeAddressForRegistry}
+        type="text"
+        onChange={(event) => {
+          set_safeAddressForRegistry(event.target.value);
+        }}
+      />
+      <label htmlFor="">node Address</label>
+      <input
+        id="nodeAddressForRegistry"
+        value={nodeAddressForRegistry}
+        type="text"
+        onChange={(event) => {
+          set_nodeAddressForRegistry(event.target.value);
+        }}
+      />
+      <span>is safe registered: {JSON.stringify(isNodeSafeRegistered)}</span>
+
       <h2>transactions actions</h2>
       {allTransactions?.results.map((transaction, key) => (
         <div key={key}>

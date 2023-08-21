@@ -1,11 +1,11 @@
-import { Container, FlexContainer, Text } from '../steps/safeOnboarding/styled';
+import { Container, FlexContainer, Text } from '../../steps/safeOnboarding/styled';
 import { MenuItem, Select, TextField } from '@mui/material';
-import { safeActionsAsync } from '../store/slices/safe';
-import { useAppDispatch, useAppSelector } from '../store';
-import { useEthersSigner } from '../hooks';
+import { safeActionsAsync } from '../../store/slices/safe';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { useEthersSigner } from '../../hooks';
 import { useState, useEffect } from 'react';
-import Button from '../future-hopr-lib-components/Button';
-import Section from '../future-hopr-lib-components/Section';
+import Button from '../../future-hopr-lib-components/Button';
+import Section from '../../future-hopr-lib-components/Section';
 import styled from '@emotion/styled';
 
 const RemoveOwnerDiv = styled.div`

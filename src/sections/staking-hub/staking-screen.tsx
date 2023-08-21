@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
-import { useAppSelector } from '../store';
+import { useAppSelector } from '../../store';
 import styled from '@emotion/styled';
 
-import Button from '../future-hopr-lib-components/Button';
+import Button from '../../future-hopr-lib-components/Button';
 import Chart from 'react-apexcharts';
-import Section from '../future-hopr-lib-components/Section';
+import Section from '../../future-hopr-lib-components/Section';
 import { Card, Chip, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 

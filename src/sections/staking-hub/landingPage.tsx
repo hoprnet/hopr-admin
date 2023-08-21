@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import Button from '../future-hopr-lib-components/Button';
-import Section from '../future-hopr-lib-components/Section';
+import Button from '../../future-hopr-lib-components/Button';
+import Section from '../../future-hopr-lib-components/Section';
 import { Link } from 'react-router-dom';
 
 const StyledContainer = styled.div`

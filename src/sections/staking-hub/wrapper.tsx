@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { parseUnits } from 'viem';
-import wrapperAbi from '../abi/wrapperAbi.json';
-import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS } from '../../config'
+import wrapperAbi from '../../abi/wrapperAbi.json';
+import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS } from '../../../config'
 
 // Redux
-import { useAppSelector } from '../store';
+import { useAppSelector } from '../../store';
 
 // HOPR Components
-import Button from '../future-hopr-lib-components/Button';
-import Section from '../future-hopr-lib-components/Section';
+import Button from '../../future-hopr-lib-components/Button';
+import Section from '../../future-hopr-lib-components/Section';
 
 // Mui
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';

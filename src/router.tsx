@@ -8,30 +8,44 @@ import { authActions, authActionsAsync } from './store/slices/auth';
 import { nodeActions, nodeActionsAsync } from './store/slices/node';
 
 // Sections
+import NodeLandingPage from './sections/node/landingPage';
+import StakingLandingPage from './sections/staking-hub/landingPage';
 import SectionLogs from './sections/node/logs';
-import SectionWeb3 from './sections/web3';
-import SectionSafe from './sections/safe';
+import SectionWeb3 from './sections/staking-hub/web3';
+import SectionSafe from './sections/staking-hub/safe';
 import AliasesPage from './sections/node/aliases';
 import InfoPage from './sections/node/info';
 import MessagesPage from './sections/node/messages';
 import PeersPage from './sections/node/peers';
 import TicketsPage from './sections/node/tickets';
-import ChannelsPage from './sections/node/channels';
+import ChannelsPageIncoming from './sections/node/channelsIncoming';
+import ChannelsPageOutgoing from './sections/node/channelsOutgoing';
 import MetricsPage from './sections/node/metrics';
-import SafeStakingPage from './sections/safeStaking';
+import SafeStakingPage from './sections/staking-hub/safeStaking';
 import ConfigurationPage from './sections/node/configuration';
 import AddNode from './steps/installNode/addNode';
 import SelectNodeType from './steps/installNode/selectNodeType';
-import WrapperPage from './sections/wrapper';
+import WrapperPage from './sections/staking-hub/wrapper';
 import XdaiToNodePage from './steps/xdaiToNode';
-import StakingScreen from './sections/staking-screen';
-import SafeWithdraw from './sections/safeWithdraw';
+import StakingScreen from './sections/staking-hub/staking-screen';
+import SafeWithdraw from './sections/staking-hub/safeWithdraw';
 import UpdateNodePage from './steps/updateNode';
+import SetupNodePage from './steps/setupYourNode';
+import AddedToWhitelist from './steps/addedToWhitelist';
+import JoinWaitlistPage from './steps/joinWaitlist';
+import WhatYouWillNeedPage from './steps/whatYouWillNeed';
+import DockerInstallation from './steps/installNode/dockerInstallation';
+import NodeAddress from './steps/installNode/nodeAddress';
+import SafeOnboarding from './steps/safeOnboarding';
+import NodeAdded from './sections/staking-hub/nodeAdded';
+import SafeActions from './sections/staking-hub/actions';
+import NoNodeAdded from './sections/staking-hub/noNodeAdded';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
 import ConnectWeb3 from './components/ConnectWeb3';
 import ConnectNode from './components/ConnectNode';
+import ConnectSafe from './components/ConnectSafe';
 import NotificationBar from './components/NotificationBar';
 import InfoBar from './components/InfoBar';
 
@@ -53,20 +67,10 @@ import DevelopIcon from '@mui/icons-material/Code';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import AddBoxIcon from '@mui/icons-material/AddBox';
-import DockerInstallation from './steps/installNode/dockerInstallation';
-import NodeAddress from './steps/installNode/nodeAddress';
 import PaidIcon from '@mui/icons-material/Paid';
-import ConnectSafe from './components/ConnectSafe';
-import SafeOnboarding from './steps/safeOnboarding';
-import NoNodeAdded from './sections/noNodeAdded';
-import StakingLandingPage from './sections/stakingLandingPage';
-import NodeAdded from './sections/nodeAdded';
-import SafeActions from './sections/actions';
 import WalletIcon from '@mui/icons-material/Wallet';
-import SetupNodePage from './steps/setupYourNode';
-import AddedToWhitelist from './steps/addedToWhitelist';
-import JoinWaitlistPage from './steps/joinWaitlist';
-import WhatYouWillNeedPage from './steps/whatYouWillNeed';
+import IncomingChannelsIcon from './future-hopr-lib-components/Icons/IncomingChannels';
+import OutgoingChannelsIcon from './future-hopr-lib-components/Icons/OutgoingChannels';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -151,10 +155,17 @@ export const applicationMapNode: ApplicationMapType = [
         loginNeeded: 'node',
       },
       {
-        name: 'CHANNELS',
-        path: 'channels',
-        icon: <HubIcon />,
-        element: <ChannelsPage />,
+        name: 'INCOMING CHANNELS',
+        path: 'channels-INCOMING',
+        icon: <IncomingChannelsIcon />,
+        element: <ChannelsPageIncoming />,
+        loginNeeded: 'node',
+      },
+      {
+        name: 'OUTGOING CHANNELS',
+        path: 'channels-OUTGOING',
+        icon: <OutgoingChannelsIcon />,
+        element: <ChannelsPageOutgoing />,
         loginNeeded: 'node',
       },
     ],
@@ -428,17 +439,25 @@ var routes = [
 ];
 
 applicationMap.map((groups) => {
-  // if(!groups.items) {
-  //   routes[0].children.push({ path: groups.path, element: groups.element});
-  // } else {
   groups.items.map((item) => {
-    if (item.path && item.element)
+    if (environment === 'node') {
+      routes[0].children.push({
+        path: '/',
+        element: <NodeLandingPage />,
+      });
+    } else if (environment === 'web3') {
+      routes[0].children.push({
+        path: '/',
+        element: <StakingLandingPage />,
+      });
+    }
+    if (item.path && item.element) {
       routes[0].children.push({
         path: groups.path + '/' + item.path,
         element: item.element,
       });
+    }
   });
-  //  }
 });
 
 const router = createBrowserRouter(routes);
