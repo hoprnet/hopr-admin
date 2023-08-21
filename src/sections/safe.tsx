@@ -59,9 +59,12 @@ function SafeSection() {
     address: HOPR_NODE_SAFE_REGISTRY,
     abi: nodeSafeRegistryAbi,
     functionName: 'isNodeSafeRegistered',
-    args: [{
-      safeAddress: safeAddressForRegistry, nodeChainKeyAddress: nodeAddressForRegistry, 
-    }],
+    args: [
+      {
+        safeAddress: safeAddressForRegistry,
+        nodeChainKeyAddress: nodeAddressForRegistry,
+      },
+    ],
     enabled: !!safeAddressForRegistry && !!nodeAddressForRegistry,
     watch: true,
   });
