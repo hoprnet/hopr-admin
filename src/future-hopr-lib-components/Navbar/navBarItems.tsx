@@ -3,10 +3,10 @@ import styled from '@emotion/styled';
 import NavButton from './navButton';
 
 const Content = styled.div`
-  gap: 5px;
   align-items: center;
   &.menu-right:not(.menu-webpapp) {
     margin-right: 8px;
+    gap: 5px;
   }
   &.menu-mobile {
     display: flex;

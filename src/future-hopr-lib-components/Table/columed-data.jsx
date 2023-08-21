@@ -40,14 +40,60 @@ export const Table = styled.table`
   }
   td {
     overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100px;
+    overflow-wrap: anywhere;
+  }
+  th {
+    overflow-wrap: break-word;
   }
   th:first-of-type {
     width: ${(props) => (props.width1stColumn ? props.width1stColumn : '160')}px;
   }
+  &.table-has-title {
+    tr:first-of-type {
+      border-top: 0.2rem solid darkgray;
+    }
+  }
   ${(props) => props.noTopBorder && `tr:first-of-type { border-top: none; }`};
+
+  @media screen and (max-width: 992px) {
+    tr {
+      display: flex;
+      flex-direction: column;
+    }
+    th:first-of-type {
+      padding-top: 12px;
+      padding-bottom: 0px;
+    }
+    td {
+      padding-top: 2px;
+    }
+  }
 `;
+
+export function TableExtended(props) {
+  const Content = styled.div`
+    color: #414141;
+    width: 100%;
+    .title {
+      color: #414141;
+      margin-bottom: 8px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+  `;
+
+  return (
+    <Content style={props.style}>
+      {props.title && <div className="title">{props.title}</div>}
+      <Table
+        className="table-has-title"
+        width1stColumn={props.width1stColumn}
+      >
+        {props.children}
+      </Table>
+    </Content>
+  );
+}
 
 // elemet should accept only <tbody>
 export default function TableDataColumed(props) {

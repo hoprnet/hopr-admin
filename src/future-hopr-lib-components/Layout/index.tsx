@@ -1,6 +1,6 @@
 /// <reference types="vite-plugin-svgr/client" />
 // Packages
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { Outlet } from 'react-router-dom';
@@ -13,8 +13,15 @@ import Drawer from './drawer';
 
 // Types
 import { ApplicationMapType } from '../../router';
+import { useAppSelector } from '../../store';
 
-const SLayout = styled.div``;
+const SLayout = styled.div`
+  &.webapp {
+    .Section.full-height-min {
+      min-height: calc(100vh - 60px - 80px + 40px);
+    }
+  }
+`;
 
 type ContentType = {
   openedNavigationDrawer: boolean;
@@ -42,8 +49,8 @@ const Content = styled.div<ContentType>`
   ${(props) =>
     props.drawerRight &&
     css`
-      @media screen and (min-width: 600px) {
-        margin-right: 161px;
+      @media screen and (min-width: 740px) {
+        margin-right: 233px;
       }
     `}
 `;
@@ -59,6 +66,7 @@ const Layout: React.FC<{
     node?: boolean;
     web3?: boolean;
   };
+  drawerType?: 'blue' | 'white';
   drawerItems: ApplicationMapType;
   drawerRight?: React.ReactNode;
 }> = ({
@@ -71,40 +79,53 @@ const Layout: React.FC<{
   webapp,
   drawerLoginState,
   drawerRight,
+  drawerType,
 }) => {
-  // Determine if the device is a mobile device based on the screen width
   const isMobile = useMediaQuery('(max-width: 500px)');
+  const account = useAppSelector((store) => store.web3.account);
+  const isConnected = useAppSelector((store) => store.auth.status.connected);
 
-  // Set the initial state of the drawer based on the device type
-  // If it's a mobile device, set the drawer to be closed by default
-  const [openedNavigationDrawer, set_openedNavigationDrawer] = useState(!isMobile);
+  const [openedNavigationDrawerPC, set_openedNavigationDrawerPC] = useState(false);
+  const [openedNavigationDrawerMobile, set_openedNavigationDrawerMobile] = useState(false);
+
+  const handleOpenedNavigationDrawer = (bool: boolean) => {
+    if (isMobile) set_openedNavigationDrawerMobile(bool);
+    else set_openedNavigationDrawerPC(bool);
+  };
+
+  useEffect(() => {
+    if (isConnected) set_openedNavigationDrawerPC(true);
+  }, [isConnected]);
 
   return (
-    <SLayout className="Layout">
+    <SLayout className={`Layout${webapp ? ' webapp' : ''} ${className}`}>
       <NavBar
         mainLogo="/logo.svg"
         mainLogoAlt="hopr logo"
         itemsNavbarRight={itemsNavbarRight}
         tallerNavBarOnMobile={tallerNavBarOnMobile}
         webapp={webapp}
-        set_openedNavigationDrawer={set_openedNavigationDrawer}
-        openedNavigationDrawer={openedNavigationDrawer}
+        set_openedNavigationDrawer={handleOpenedNavigationDrawer}
+        openedNavigationDrawer={isMobile ? openedNavigationDrawerMobile : openedNavigationDrawerPC}
       />
-
       {drawer && (
         <Drawer
+          drawerType={drawerType}
           drawerItems={drawerItems}
           drawerLoginState={drawerLoginState}
-          set_openedNavigationDrawer={set_openedNavigationDrawer}
-          openedNavigationDrawer={openedNavigationDrawer}
+          set_openedNavigationDrawer={handleOpenedNavigationDrawer}
+          openedNavigationDrawer={isMobile ? openedNavigationDrawerMobile : openedNavigationDrawerPC}
         />
       )}
       <Content
-        className="Content"
-        openedNavigationDrawer={openedNavigationDrawer}
+        className={`Content ${drawerRight ? 'drawerRight' : ''}`}
+        openedNavigationDrawer={isMobile ? openedNavigationDrawerMobile : openedNavigationDrawerPC}
         drawerRight={!!drawerRight}
       >
-        <Outlet />
+        {' '}
+        <div>
+          <Outlet />
+        </div>
         {/* {children} */}
       </Content>
       {drawerRight}

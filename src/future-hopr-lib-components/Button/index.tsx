@@ -1,12 +1,15 @@
 import { forwardRef, Ref } from 'react';
 import styled from '@emotion/styled';
 import MuiButton, { ButtonProps } from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 
 type StyledButtonProps = ButtonProps & {
   imageOnly?: boolean;
   size70?: boolean;
   standardWidth?: boolean;
   fade?: boolean;
+  pending?: boolean;
+  nofade?: boolean;
   target?: string;
 };
 
@@ -24,9 +27,8 @@ const StyledButton = styled(MuiButton)<StyledButtonProps>`
   height: 39px;
 
   &.btn-hopr--v2:not(.Mui-disabled) {
-    color: #fff;
     background: linear-gradient(#000050, #0000b4);
-    color: #ffffff;
+    color: #fff;
   }
   &.btn-hopr--standardWidth {
     width: 100%;
@@ -50,6 +52,40 @@ const StyledButton = styled(MuiButton)<StyledButtonProps>`
   &.btn-hopr--v2.btn-hopr--fade:not(.Mui-disabled) {
     background: linear-gradient(rgb(0 0 80 / 60%), rgb(0 0 180 / 60%));
   }
+  &.white:not(.Mui-disabled) {
+    background: #fff;
+    color: #0000b2;
+    font-weight: 700;
+  }
+
+  &.btn-hopr--no-fade:not(.Mui-disabled) {
+    align-self: flex-start;
+    background: #000050;
+    font-size: 12px;
+    font-weight: 700;
+    height: 32px;
+    text-transform: uppercase;
+    padding-inline: 0.75rem;
+  }
+
+  &.btn-hopr--no-fade {
+    &[disabled] {
+      background-color: #0000001e;
+      box-shadow: none;
+      color: #00000042;
+      font-size: 12px;
+      font-weight: 700;
+      height: 32px;
+      text-transform: uppercase;
+      padding-inline: 0.75rem;
+    }
+  }
+`;
+
+const SCircularProgress = styled(CircularProgress)`
+  width: 30px !important;
+  height: 30px !important;
+  position: absolute;
 `;
 
 const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>) => {
@@ -59,6 +95,8 @@ const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>
     standardWidth,
     fade,
     children,
+    nofade,
+    pending,
     ...rest
   } = props;
 
@@ -69,6 +107,7 @@ const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>
     size70 && 'btn-hopr--size70',
     standardWidth && 'btn-hopr--standardWidth',
     fade && 'btn-hopr--fade',
+    nofade && 'btn-hopr--no-fade',
   ]
     .filter(Boolean)
     .join(' ');
@@ -79,8 +118,10 @@ const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>
       {...rest}
       ref={ref}
       className={classNames}
+      disabled={props.disabled || pending}
     >
       {children}
+      {pending && <SCircularProgress />}
     </StyledButton>
   );
 });

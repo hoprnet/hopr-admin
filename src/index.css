@@ -19,6 +19,7 @@ body {
   font-family: 'Source Code Pro', monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-y: scroll!important;
 }
 
 code {
@@ -36,6 +37,61 @@ input {
   font-family: inherit;
 }
 
-ul.notification-menu-list {
+/* Menus */
+ul.notification-menu-list,
+ul.connect-node-menu-list,
+ul.safe-menu-list {
   padding: 0;
 } 
+
+ul.connect-node-menu-list {
+  width: 200px;
+} 
+
+ul.safe-menu-list {
+  width: 240px;
+} 
+
+ul.safe-menu-list > li {
+  display: flex;
+  justify-content: center;
+}
+
+body.menu-opened .InfoBar {
+  /* width: 250px;
+  padding-right: 17px; */
+}
+
+
+@media screen and (min-width: 740px) {
+  body.menu-opened .drawerRight {
+ /*   margin-right: 250px; */
+  }
+}
+
+/*
+body::-webkit-scrollbar {
+  width: 17px;
+}
+body::-webkit-scrollbar-track {
+  background: #ffffa0;
+ 
+}
+body::-webkit-scrollbar-thumb {
+  background: #3c64a5;
+  border-radius: 10px;
+  border: 3px solid #ffffa0;
+}
+body::-webkit-scrollbar-thumb:hover {
+  background: #000050;
+}
+*/
+
+ /* Tooltips */
+.STooltip.MuiPopper-root.MuiTooltip-popper[data-popper-placement*="bottom"] > .MuiTooltip-tooltip.MuiTooltip-tooltipPlacementBottom{
+  margin-top: 4px;
+}
+
+.STooltip.notWide .MuiTooltip-tooltip {
+  width: 160px;
+}

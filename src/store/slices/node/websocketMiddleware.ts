@@ -37,6 +37,8 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
         apiEndpoint,
         apiToken,
       } = getState().auth.loginData;
+      const connectedToNode = getState().auth.status.connected;
+      if (!connectedToNode) return;
       const messagesWebsocketStatus = getState().node.messagesWebsocketStatus;
       if (apiEndpoint && apiToken) {
         try {
@@ -80,6 +82,8 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
         apiEndpoint,
         apiToken,
       } = getState().auth.loginData;
+      const connectedToNode = getState().auth.status.connected;
+      if (!connectedToNode) return;
       const logsWebsocketStatus = getState().node.logsWebsocketStatus;
       if (apiEndpoint && apiToken) {
         try {

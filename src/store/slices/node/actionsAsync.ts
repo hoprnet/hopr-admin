@@ -1,4 +1,10 @@
-import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  ActionReducerMapBuilder,
+  AnyAction,
+  ThunkDispatch,
+  createAction,
+  createAsyncThunk
+} from '@reduxjs/toolkit'
 import { initialState } from './initialState';
 import {
   type AliasPayloadType,
@@ -18,10 +24,28 @@ import {
   type SetSettingPayloadType,
   type SignPayloadType,
   type WithdrawPayloadType,
+  GetChannelResponseType,
+  GetPeersResponseType,
+  GetPeerInfoResponseType,
+  GetSettingsResponseType,
+  GetAliasesResponseType,
+  GetInfoResponseType,
+  GetStatisticsResponseType,
+  GetTicketsResponseType,
+  GetTokenResponseType,
+  GetEntryNodesResponseType,
+  GetChannelTicketsResponseType,
+  GetChannelsResponseType,
   api,
   utils,
   flows,
+  FundChannelsResponseType,
+  OpenChannelResponseType,
+  CreateTokenResponseType
 } from '@hoprnet/hopr-sdk';
+import { parseMetrics } from '../../../utils/metrics';
+import { RootState } from '../..';
+import { formatEther } from 'viem';
 
 const { APIError } = utils;
 const {
@@ -57,96 +81,205 @@ const {
   sign,
   withdraw,
 } = api;
-
 const { openMultipleChannels } = flows;
 
-const getInfoThunk = createAsyncThunk('node/getInfo', async (payload: BasePayloadType, { rejectWithValue }) => {
-  try {
-    const info = await getInfo(payload);
-    return info;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+const getInfoThunk = createAsyncThunk<GetInfoResponseType | undefined, BasePayloadType, { state: RootState }>(
+  'node/getInfo',
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setInfoFetching(true));
+    try {
+      const info = await getInfo(payload);
+      return info;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  }
-});
-
-const getAddressesThunk = createAsyncThunk('node/getAccount', async (payload: BasePayloadType, { rejectWithValue }) => {
-  try {
-    const addresses = await getAddresses(payload);
-    return addresses;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.info.isFetching;
+    if (isFetching) {
+      return false;
     }
-  }
-});
+  } },
+);
 
-const getAliasesThunk = createAsyncThunk('node/getAliases', async (payload: BasePayloadType, { rejectWithValue }) => {
-  try {
-    const aliases = await getAliases(payload);
-    return aliases;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+const getAddressesThunk = createAsyncThunk<
+  | {
+      hopr: string;
+      native: string;
     }
-  }
-});
-
-const getBalancesThunk = createAsyncThunk('node/getBalances', async (payload: BasePayloadType, { rejectWithValue }) => {
-  try {
-    const balances = await getBalances(payload);
-    return balances;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+  | undefined,
+  BasePayloadType & { force?: boolean },
+  { state: RootState }
+>(
+  'node/getAccount',
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setAddressesFetching(true));
+    try {
+      const addresses = await getAddresses(payload);
+      return addresses;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  }
-});
-
-const getChannelsThunk = createAsyncThunk('node/getChannels', async (payload: BasePayloadType, { rejectWithValue }) => {
-  try {
-    const channels = await getChannels(payload);
-    return channels;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+  },
+  { condition: (_payload, { getState }) => {
+    if (_payload.force) {
+      return true;
     }
-  }
-});
 
-const getPeersThunk = createAsyncThunk('node/getPeers', async (payload: GetPeersPayloadType, { rejectWithValue }) => {
-  try {
-    const peers = await getPeers(payload);
-    return peers;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+    const isFetching = getState().node.addresses.isFetching;
+    if (isFetching) {
+      return false;
     }
-  }
-});
+  } },
+);
 
-const getPeerInfoThunk = createAsyncThunk(
+const getAliasesThunk = createAsyncThunk<GetAliasesResponseType | undefined, BasePayloadType, { state: RootState }>(
+  'node/getAliases',
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setAliasesFetching(true));
+    try {
+      const aliases = await getAliases(payload);
+      return aliases;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
+    }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.aliases.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
+);
+
+const getBalancesThunk = createAsyncThunk<
+  { hopr: string; native: string } | undefined,
+  BasePayloadType & { force?: boolean },
+  { state: RootState; dispatch: ThunkDispatch<RootState, unknown, AnyAction> }
+>(
+  'node/getBalances',
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setBalancesFetching(true));
+    try {
+      const balances = await getBalances(payload);
+      return balances;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
+    }
+  },
+  { condition: (_payload, { getState }) => {
+    if (_payload.force) {
+      return true;
+    }
+
+    const isFetching = getState().node.balances.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
+);
+
+const getChannelsThunk = createAsyncThunk<
+  GetChannelsResponseType | undefined,
+  GetPeersPayloadType,
+  { state: RootState }
+>(
+  'node/getChannels',
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setChannelsFetching(true));
+    try {
+      const channels = await getChannels(payload);
+      return channels;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
+    }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.channels.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
+);
+
+const getPeersThunk = createAsyncThunk<GetPeersResponseType | undefined, GetPeersPayloadType, { state: RootState }>(
+  'node/getPeers',
+  async (payload: GetPeersPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setPeersFetching(true));
+    try {
+      const peers = await getPeers(payload);
+      return peers;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
+    }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.peers.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
+);
+
+const getPeerInfoThunk = createAsyncThunk<
+  GetPeerInfoResponseType | undefined,
+  GetPeerInfoPayloadType,
+  { state: RootState }
+>(
   'node/getPeerInfo',
-  async (payload: GetPeerInfoPayloadType, { rejectWithValue }) => {
+  async (payload: GetPeerInfoPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setPeerInfoFetching(true));
     try {
       const peerInfo = await getPeerInfo(payload);
       return peerInfo;
@@ -158,26 +291,53 @@ const getPeerInfoThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.peerInfo.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
-const getSettingsThunk = createAsyncThunk('node/getSettings', async (payload: BasePayloadType, { rejectWithValue }) => {
-  try {
-    const settings = await getSettings(payload);
-    return settings;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+const getSettingsThunk = createAsyncThunk<GetSettingsResponseType | undefined, BasePayloadType, { state: RootState }>(
+  'node/getSettings',
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setSettingsFetching(true));
+    try {
+      const settings = await getSettings(payload);
+      return settings;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  }
-});
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.settings.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
+);
 
-const getStatisticsThunk = createAsyncThunk(
+const getStatisticsThunk = createAsyncThunk<
+  GetStatisticsResponseType | undefined,
+  BasePayloadType,
+  { state: RootState }
+>(
   'node/getStatistics',
-  async (payload: BasePayloadType, { rejectWithValue }) => {
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setStatisticsFetching(true));
     try {
       const statistics = await getStatistics(payload);
       return statistics;
@@ -189,40 +349,80 @@ const getStatisticsThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.statistics.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
-const getTicketsThunk = createAsyncThunk('node/getTickets', async (payload: BasePayloadType, { rejectWithValue }) => {
-  try {
-    const tickets = await getTickets(payload);
-    return tickets;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+const getTicketsThunk = createAsyncThunk<GetTicketsResponseType | undefined, BasePayloadType, { state: RootState }>(
+  'node/getTickets',
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setTicketsFetching(true));
+    try {
+      const tickets = await getTickets(payload);
+      return tickets;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  }
-});
-
-const getTokenThunk = createAsyncThunk('node/getToken', async (payload: BasePayloadType, { rejectWithValue }) => {
-  try {
-    const token = await getToken(payload);
-    return token;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.tickets.isFetching;
+    if (isFetching) {
+      return false;
     }
-  }
-});
+  } },
+);
 
-const getEntryNodesThunk = createAsyncThunk(
+const getTokenThunk = createAsyncThunk<GetTokenResponseType | undefined, BasePayloadType, { state: RootState }>(
+  'node/getToken',
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setTokensFetching(true));
+    try {
+      const token = await getToken(payload);
+      return token;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
+    }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.tokens.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
+);
+
+const getEntryNodesThunk = createAsyncThunk<
+  GetEntryNodesResponseType | undefined,
+  BasePayloadType,
+  { state: RootState }
+>(
   'node/getEntryNodes',
-  async (payload: BasePayloadType, { rejectWithValue }) => {
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setEntryNodesFetching(true));
     try {
       const entryNodes = await getEntryNodes(payload);
       return entryNodes;
@@ -234,76 +434,150 @@ const getEntryNodesThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.entryNodes.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
-const getVersionThunk = createAsyncThunk('node/getVersion', async (payload: BasePayloadType, { rejectWithValue }) => {
-  try {
-    const version = await getVersion(payload);
-    return version;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+const getVersionThunk = createAsyncThunk<string | undefined, BasePayloadType, { state: RootState }>(
+  'node/getVersion',
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setVersionFetching(true));
+    try {
+      const version = await getVersion(payload);
+      return version;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  }
-});
-
-const withdrawThunk = createAsyncThunk('node/withdraw', async (payload: WithdrawPayloadType, { rejectWithValue }) => {
-  try {
-    const res = await withdraw(payload);
-    return res;
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.version.isFetching;
+    if (isFetching) {
+      return false;
     }
-  }
-});
+  } },
+);
 
-const getAliasThunk = createAsyncThunk('node/getAlias', async (payload: AliasPayloadType, { rejectWithValue }) => {
-  try {
-    const res = await getAlias(payload);
-    return {
-      peerId: res,
-      alias: payload.alias,
-    };
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+const withdrawThunk = createAsyncThunk<string | undefined, WithdrawPayloadType, { state: RootState }>(
+  'node/withdraw',
+  async (payload: WithdrawPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setTransactionsFetching(true));
+    try {
+      const res = await withdraw(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  }
-});
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.transactions.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
+);
 
-const setAliasThunk = createAsyncThunk('node/setAlias', async (payload: SetAliasPayloadType, { rejectWithValue }) => {
-  try {
-    const res = await setAlias(payload);
-    if (res) {
+const getAliasThunk = createAsyncThunk<
+  | {
+      peerId: string;
+      alias: string;
+    }
+  | undefined,
+  AliasPayloadType,
+  { state: RootState }
+>(
+  'node/getAlias',
+  async (payload: AliasPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setAliasesFetching(true));
+    try {
+      const res = await getAlias(payload);
       return {
-        peerId: payload.peerId,
+        peerId: res,
         alias: payload.alias,
       };
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
     }
-  } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.aliases.isFetching;
+    if (isFetching) {
+      return false;
     }
-  }
-});
+  } },
+);
 
-const removeAliasThunk = createAsyncThunk(
+const setAliasThunk = createAsyncThunk<
+  { peerId: string; alias: string } | undefined,
+  SetAliasPayloadType,
+  { state: RootState }
+>(
+  'node/setAlias',
+  async (payload: SetAliasPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setAliasesFetching(true));
+    try {
+      const res = await setAlias(payload);
+      if (res) {
+        return {
+          peerId: payload.peerId,
+          alias: payload.alias,
+        };
+      }
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
+    }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.aliases.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
+);
+
+const removeAliasThunk = createAsyncThunk<{ alias: string } | undefined, AliasPayloadType, { state: RootState }>(
   'node/removeAlias',
-  async (payload: AliasPayloadType, { rejectWithValue }) => {
+  async (payload: AliasPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setAliasesFetching(true));
     try {
       const res = await removeAlias(payload);
       if (res) {
@@ -317,12 +591,30 @@ const removeAliasThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.aliases.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
-const closeChannelThunk = createAsyncThunk(
+const closeChannelThunk = createAsyncThunk<
+  | {
+      channelStatus: string;
+      receipt?: string | undefined;
+    }
+  | undefined,
+  CloseChannelPayloadType,
+  { state: RootState }
+>(
   'node/closeChannel',
-  async (payload: CloseChannelPayloadType, { rejectWithValue }) => {
+  async (payload: CloseChannelPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setCloseChannelFetching(true));
     try {
       const res = await closeChannel(payload);
       return res;
@@ -334,12 +626,26 @@ const closeChannelThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.closeChannel.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
-const fundChannelsThunk = createAsyncThunk(
+const fundChannelsThunk = createAsyncThunk<
+  FundChannelsResponseType | undefined,
+  FundChannelsPayloadType,
+  { state: RootState }
+>(
   'node/fundChannels',
-  async (payload: FundChannelsPayloadType, { rejectWithValue }) => {
+  async (payload: FundChannelsPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setChannelsFetching(true));
     try {
       const res = await fundChannels(payload);
       return res;
@@ -351,12 +657,26 @@ const fundChannelsThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.channels.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
-const getChannelThunk = createAsyncThunk(
+const getChannelThunk = createAsyncThunk<
+  GetChannelResponseType | undefined,
+  GetChannelPayloadType,
+  { state: RootState }
+>(
   'node/getChannel',
-  async (payload: GetChannelPayloadType, { rejectWithValue }) => {
+  async (payload: GetChannelPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setChannelsFetching(true));
     try {
       const res = await getChannel(payload);
       return res;
@@ -368,12 +688,26 @@ const getChannelThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.channels.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
-const getChannelTicketsThunk = createAsyncThunk(
+const getChannelTicketsThunk = createAsyncThunk<
+  GetChannelTicketsResponseType | undefined,
+  PeerIdPayloadType,
+  { state: RootState }
+>(
   'node/getChannelTickets',
-  async (payload: PeerIdPayloadType, { rejectWithValue }) => {
+  async (payload: PeerIdPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setTicketsFetching(true));
     try {
       const res = await getChannelTickets(payload);
       return res;
@@ -385,12 +719,26 @@ const getChannelTicketsThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.tickets.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
-const openChannelThunk = createAsyncThunk(
+const openChannelThunk = createAsyncThunk<
+  OpenChannelResponseType | undefined,
+  OpenChannelPayloadType,
+  { state: RootState }
+>(
   'node/openChannel',
-  async (payload: OpenChannelPayloadType, { rejectWithValue }) => {
+  async (payload: OpenChannelPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setChannelsFetching(true));
     try {
       const res = await openChannel(payload);
       return res;
@@ -402,7 +750,13 @@ const openChannelThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.channels.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
 const openMultipleChannelsThunk = createAsyncThunk(
@@ -444,9 +798,13 @@ const openMultipleChannelsThunk = createAsyncThunk(
   }
 );
 
-const redeemChannelTicketsThunk = createAsyncThunk(
+const redeemChannelTicketsThunk = createAsyncThunk<boolean | undefined, PeerIdPayloadType, { state: RootState }>(
   'node/redeemChannelTickets',
-  async (payload: PeerIdPayloadType, { rejectWithValue }) => {
+  async (payload: PeerIdPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setRedeemTicketsFetching(true));
     try {
       const res = await redeemChannelTickets(payload);
       return res;
@@ -458,7 +816,13 @@ const redeemChannelTicketsThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.redeemTickets.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
 const sendMessageThunk = createAsyncThunk(
@@ -512,9 +876,13 @@ const pingNodeThunk = createAsyncThunk('node/pingNode', async (payload: PingNode
   }
 });
 
-const setSettingThunk = createAsyncThunk(
+const setSettingThunk = createAsyncThunk<boolean | undefined, SetSettingPayloadType, { state: RootState }>(
   'node/setSetting',
-  async (payload: SetSettingPayloadType, { rejectWithValue }) => {
+  async (payload: SetSettingPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setSettingsFetching(true));
     try {
       const res = await setSetting(payload);
       return res;
@@ -526,12 +894,22 @@ const setSettingThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.settings.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
-const redeemTicketsThunk = createAsyncThunk(
+const redeemTicketsThunk = createAsyncThunk<boolean | undefined, BasePayloadType, { state: RootState }>(
   'node/redeemTickets',
-  async (payload: BasePayloadType, { rejectWithValue }) => {
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setRedeemTicketsFetching(true));
     try {
       const res = await redeemTickets(payload);
       return res;
@@ -543,12 +921,26 @@ const redeemTicketsThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.redeemTickets.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
-const createTokenThunk = createAsyncThunk(
+const createTokenThunk = createAsyncThunk<
+  CreateTokenResponseType | undefined,
+  CreateTokenPayloadType,
+  { state: RootState }
+>(
   'node/createToken',
-  async (payload: CreateTokenPayloadType, { rejectWithValue }) => {
+  async (payload: CreateTokenPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setTokensFetching(true));
     try {
       const res = await createToken(payload);
       return res;
@@ -560,12 +952,26 @@ const createTokenThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.tokens.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
-const deleteTokenThunk = createAsyncThunk(
+const deleteTokenThunk = createAsyncThunk<
+  { deleted: boolean; id: string } | undefined,
+  DeleteTokenPayloadType,
+  { state: RootState }
+>(
   'node/deleteToken',
-  async (payload: DeleteTokenPayloadType, { rejectWithValue }) => {
+  async (payload: DeleteTokenPayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setTokensFetching(true));
     try {
       const res = await deleteToken(payload);
       return {
@@ -580,12 +986,22 @@ const deleteTokenThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.tokens.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
-const getPrometheusMetricsThunk = createAsyncThunk(
+const getPrometheusMetricsThunk = createAsyncThunk<string | undefined, BasePayloadType, { state: RootState }>(
   'node/getPrometheusMetrics',
-  async (payload: BasePayloadType, { rejectWithValue }) => {
+  async (payload: BasePayloadType, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setMetricsFetching(true));
     try {
       const res = await getMetrics(payload);
       return res;
@@ -597,121 +1013,270 @@ const getPrometheusMetricsThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.metrics.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
+// Helper action to update the isFetching state
+const setAliasesFetching = createAction<boolean>('node/setAliasesFetching');
+const setInfoFetching = createAction<boolean>('node/setInfoFetching');
+const setMetricsFetching = createAction<boolean>('node/setMetricsFetching');
+const setAddressesFetching = createAction<boolean>('node/setAddressesFetching');
+const setBalancesFetching = createAction<boolean>('node/setBalancesFetching');
+const setChannelsFetching = createAction<boolean>('node/setChannelsFetching');
+const setPeersFetching = createAction<boolean>('node/setPeersFetching');
+const setPeerInfoFetching = createAction<boolean>('node/setPeerInfoFetching');
+const setEntryNodesFetching = createAction<boolean>('node/setEntryNodesFetching');
+const setSettingsFetching = createAction<boolean>('node/setSettingsFetching');
+const setStatisticsFetching = createAction<boolean>('node/setStatisticsFetching');
+const setTicketsFetching = createAction<boolean>('node/setTicketsFetching');
+const setTokensFetching = createAction<boolean>('node/setTokensFetching');
+const setVersionFetching = createAction<boolean>('node/setVersionFetching');
+const setTransactionsFetching = createAction<boolean>('node/setTransactionsFetching');
+const setCloseChannelFetching = createAction<boolean>('node/setCloseChannelFetching');
+const setRedeemTicketsFetching = createAction<boolean>('node/setRedeemTicketsFetching');
+
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
+  // getInfo
   builder.addCase(getInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.info = action.payload;
+      state.info.data = action.payload;
     }
+    state.info.isFetching = false;
   });
+  builder.addCase(getInfoThunk.rejected, (state, action) => {
+    state.info.isFetching = false;
+  });
+  // getAddresses
   builder.addCase(getAddressesThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.addresses = action.payload;
+      state.addresses.data = action.payload;
     }
+    state.addresses.isFetching = false;
   });
+  builder.addCase(getAddressesThunk.rejected, (state, action) => {
+    state.addresses.isFetching = false;
+  });
+  // getAliases
   builder.addCase(getAliasesThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.aliases = action.payload;
+      state.aliases.data = action.payload;
     }
+    state.aliases.isFetching = false;
   });
+  builder.addCase(getAliasesThunk.rejected, (state, action) => {
+    state.aliases.isFetching = false;
+  });
+  // getBalances
   builder.addCase(getBalancesThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.balances = action.payload;
+      state.balances.data = {
+        native: {
+          value: action.payload.native,
+          formatted: formatEther(BigInt(action.payload.native)),
+        },
+        hopr: {
+          value: action.payload.hopr,
+          formatted: formatEther(BigInt(action.payload.hopr)),
+        },
+      };
+      state.balances.isFetching = false;
     }
   });
+  builder.addCase(getBalancesThunk.rejected, (state, action) => {
+    state.balances.isFetching = false;
+  });
+  // getChannels
   builder.addCase(getChannelsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.channels = action.payload;
+      state.channels.data = action.payload;
     }
+    state.channels.isFetching = false;
   });
+  builder.addCase(getChannelsThunk.rejected, (state, action) => {
+    state.channels.isFetching = false;
+  });
+  // getPeers
   builder.addCase(getPeersThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.peers = action.payload;
+      state.peers.data = action.payload;
     }
+    state.peers.isFetching = false;
   });
+  builder.addCase(getPeersThunk.rejected, (state, action) => {
+    state.peers.isFetching = false;
+  });
+  // getPeerInfo
   builder.addCase(getPeerInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.peerInfo = action.payload;
+      state.peerInfo.data = action.payload;
     }
+    state.peerInfo.isFetching = false;
   });
+  builder.addCase(getPeerInfoThunk.rejected, (state, action) => {
+    state.peerInfo.isFetching = false;
+  });
+  // getSettings
   builder.addCase(getSettingsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.settings = action.payload;
+      state.settings.data = action.payload;
     }
+    state.settings.isFetching = false;
   });
+  builder.addCase(getSettingsThunk.rejected, (state, action) => {
+    state.settings.isFetching = false;
+  });
+  // setSettings
+  builder.addCase(setSettingThunk.fulfilled, (state, action) => {
+    state.settings.isFetching = false;
+  });
+  builder.addCase(setSettingThunk.rejected, (state, action) => {
+    state.settings.isFetching = false;
+  });
+  // getStatistics
   builder.addCase(getStatisticsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.statistics = action.payload;
+      state.statistics.data = action.payload;
     }
+    state.statistics.isFetching = false;
   });
+  builder.addCase(getStatisticsThunk.rejected, (state, action) => {
+    state.statistics.isFetching = false;
+  });
+  // getTickets
   builder.addCase(getTicketsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.tickets = action.payload;
+      state.tickets.data = action.payload;
     }
+    state.tickets.isFetching = false;
   });
+  builder.addCase(getTicketsThunk.rejected, (state, action) => {
+    state.tickets.isFetching = false;
+  });
+  // redeemTicketsThunk
+  builder.addCase(redeemTicketsThunk.fulfilled, (state, action) => {
+    state.redeemTickets.isFetching = false;
+    state.redeemTickets.error = undefined;
+  });
+  builder.addCase(redeemTicketsThunk.rejected, (state, action) => {
+    state.redeemTickets.isFetching = false;
+    // Assign the error to the errors state
+    state.redeemTickets.error = (
+      action.payload as {
+        status: string | undefined;
+        error: string | undefined;
+      }
+    ).error;
+  });
+  // getTokenThunk
   builder.addCase(getTokenThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      const tokenExists = state.tokens?.findIndex((token) => token.id === action.payload?.id);
+      const tokenExists = state.tokens.data?.findIndex((token) => token.id === action.payload?.id);
 
       if (tokenExists) {
-        state.tokens[tokenExists] = action.payload;
+        state.tokens.data[tokenExists] = action.payload;
       } else {
-        state.tokens.push(action.payload);
+        state.tokens.data.push(action.payload);
       }
     }
+    state.tokens.isFetching = false;
   });
+  builder.addCase(getTokenThunk.rejected, (state, action) => {
+    state.tokens.isFetching = false;
+  });
+  // createToken
+  builder.addCase(createTokenThunk.fulfilled, (state, action) => {
+    state.tokens.isFetching = false;
+  });
+  builder.addCase(createTokenThunk.rejected, (state, action) => {
+    state.tokens.isFetching = false;
+  });
+  // getEntryNodes
   builder.addCase(getEntryNodesThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.entryNodes = action.payload;
+      state.entryNodes.data = action.payload;
     }
+    state.entryNodes.isFetching = false;
   });
+  builder.addCase(getEntryNodesThunk.rejected, (state, action) => {
+    state.entryNodes.isFetching = false;
+  });
+  // getVersion
   builder.addCase(getVersionThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.version = action.payload;
+      state.version.data = action.payload;
     }
+    state.version.isFetching = false;
   });
+  builder.addCase(getVersionThunk.rejected, (state, action) => {
+    state.version.isFetching = false;
+  });
+  // getAlias
   builder.addCase(getAliasThunk.fulfilled, (state, action) => {
-    if (action.payload && state.aliases) {
-      if (state.aliases) {
-        state.aliases[action.payload.alias] = action.payload.peerId;
+    if (action.payload) {
+      if (state.aliases.data) {
+        state.aliases.data[action.payload.alias] = action.payload.peerId;
       } else {
-        state.aliases = { [action.payload.alias]: action.payload.peerId };
+        state.aliases.data = { [action.payload.alias]: action.payload.peerId };
       }
     }
+    state.aliases.isFetching = false;
   });
+  builder.addCase(getAliasThunk.rejected, (state, action) => {
+    state.aliases.isFetching = false;
+  });
+  // setAlias
   builder.addCase(setAliasThunk.fulfilled, (state, action) => {
-    if (action.payload && state.aliases) {
-      if (state.aliases) {
-        state.aliases[action.payload.alias] = action.payload.peerId;
+    if (action.payload) {
+      if (state.aliases.data) {
+        state.aliases.data[action.payload.alias] = action.payload.peerId;
       } else {
-        state.aliases = { [action.payload.alias]: action.payload.peerId };
+        state.aliases.data = { [action.payload.alias]: action.payload.peerId };
       }
     }
+    state.aliases.isFetching = false;
   });
+  builder.addCase(setAliasThunk.rejected, (state, action) => {
+    state.aliases.isFetching = false;
+  });
+  // removeAlias
   builder.addCase(removeAliasThunk.fulfilled, (state, action) => {
-    if (action.payload && state.aliases) {
-      if (state.aliases) {
-        delete state.aliases[action.payload.alias];
+    if (action.payload && state.aliases.data) {
+      if (state.aliases.data) {
+        delete state.aliases.data[action.payload.alias];
       }
     }
+    state.aliases.isFetching = false;
   });
+  builder.addCase(removeAliasThunk.rejected, (state, action) => {
+    state.aliases.isFetching = false;
+  });
+  // withdraw
   builder.addCase(withdrawThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.transactions.push(action.payload);
+      state.transactions.data.push(action.payload);
     }
+    state.transactions.isFetching = false;
   });
+  builder.addCase(withdrawThunk.rejected, (state, action) => {
+    state.transactions.isFetching = false;
+  });
+  // getChannels
   builder.addCase(getChannelThunk.fulfilled, (state, action) => {
     if (action.payload) {
       const { balance, channelId, peerId, status, type } = action.payload;
       // find channel if it already exists
-      const channelIndex = state.channels?.[type].findIndex((channel) => channel.channelId === channelId);
+      const channelIndex = state.channels.data?.[type].findIndex((channel) => channel.channelId === channelId);
 
-      if (state.channels) {
+      if (state.channels.data) {
         if (channelIndex) {
           // update channel
-          state.channels[type][channelIndex] = {
+          state.channels.data[type][channelIndex] = {
             balance,
             channelId,
             peerId,
@@ -720,7 +1285,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
           };
         } else {
           // add new channel
-          state.channels[type].push({
+          state.channels.data[type].push({
             balance,
             channelId,
             peerId,
@@ -729,7 +1294,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
           });
         }
       } else {
-        state.channels = {
+        state.channels.data = {
           incoming: [],
           outgoing: [],
           // overwrite actual type
@@ -745,30 +1310,40 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
         };
       }
     }
+    state.channels.isFetching = false;
   });
+  builder.addCase(getChannelThunk.rejected, (state, action) => {
+    state.channels.isFetching = false;
+  });
+  // getChannelTickets
   builder.addCase(getChannelTicketsThunk.fulfilled, (state, action) => {
     if (action.payload) {
       for (const updatedTicket of action.payload) {
         // using challenge as an id between tickets
         const uniqueIdentifier = updatedTicket.challenge;
-        const existingIndex = state.tickets?.findIndex((ticket) => ticket.challenge === uniqueIdentifier);
+        const existingIndex = state.tickets.data?.findIndex((ticket) => ticket.challenge === uniqueIdentifier);
 
-        if (existingIndex && existingIndex !== -1 && state.tickets) {
+        if (existingIndex && existingIndex !== -1 && state.tickets.data) {
           // Update the existing ticket with the new values
-          state.tickets[existingIndex] = {
-            ...state.tickets[existingIndex],
+          state.tickets.data[existingIndex] = {
+            ...state.tickets.data[existingIndex],
             ...updatedTicket,
           };
-        } else if (state.tickets) {
+        } else if (state.tickets.data) {
           // Add the updated ticket as a new object
-          state.tickets.push(updatedTicket);
+          state.tickets.data.push(updatedTicket);
         } else {
           // initialize tickets array
-          state.tickets = [updatedTicket];
+          state.tickets.data = [updatedTicket];
         }
       }
     }
+    state.tickets.isFetching = false;
   });
+  builder.addCase(getChannelTicketsThunk.rejected, (state, action) => {
+    state.tickets.isFetching = false;
+  });
+  // sendMessage
   builder.addCase(sendMessageThunk.pending, (state, action) => {
     if (action.meta) {
       state.messagesSent.push({
@@ -791,7 +1366,6 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     console.log('rejected', action);
     const index = state.messagesSent.findIndex((msg) => msg.id === action.meta.requestId);
     if (index !== -1) {
-      console;
       state.messagesSent[index].status = 'error';
       // prettier-ignore
       { /*   @ts-ignore */ }
@@ -802,6 +1376,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
       }
     }
   });
+  // signedMessages
   builder.addCase(signThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.signedMessages.push({
@@ -810,6 +1385,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
       });
     }
   });
+  // pingNode
   builder.addCase(pingNodeThunk.fulfilled, (state, action) => {
     if (action.payload) {
       const pingExists = state.pings.findIndex((ping) => ping.peerId === action.payload?.peerId);
@@ -827,15 +1403,47 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
       }
     }
   });
+  // deleteToken
   builder.addCase(deleteTokenThunk.fulfilled, (state, action) => {
     if (action.payload?.deleted) {
-      state.tokens = state.tokens.filter((token) => token.id !== action.payload?.id);
+      state.tokens.data = state.tokens.data.filter((token) => token.id !== action.payload?.id);
     }
+    state.tokens.isFetching = false;
   });
+  builder.addCase(deleteTokenThunk.rejected, (state, action) => {
+    state.tokens.isFetching = false;
+  });
+  // getPrometheusMetrics
   builder.addCase(getPrometheusMetricsThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.metrics = action.payload;
+      state.metrics.data.raw = action.payload;
+      state.metrics.data.parsed = parseMetrics(action.payload);
     }
+    state.metrics.isFetching = false;
+  });
+  builder.addCase(getPrometheusMetricsThunk.rejected, (state, action) => {
+    state.metrics.isFetching = false;
+  });
+  // closeChannel
+  builder.addCase(closeChannelThunk.fulfilled, (state, action) => {
+    state.closeChannel.isFetching = false;
+  });
+  builder.addCase(closeChannelThunk.rejected, (state, action) => {
+    state.closeChannel.isFetching = false;
+  });
+  // fundChannels
+  builder.addCase(fundChannelsThunk.fulfilled, (state, action) => {
+    state.channels.isFetching = false;
+  });
+  builder.addCase(fundChannelsThunk.rejected, (state, action) => {
+    state.channels.isFetching = false;
+  });
+  // redeemChannelTickets
+  builder.addCase(redeemChannelTicketsThunk.fulfilled, (state, action) => {
+    state.redeemTickets.isFetching = false;
+  });
+  builder.addCase(redeemChannelTicketsThunk.rejected, (state, action) => {
+    state.redeemTickets.isFetching = false;
   });
 };
 
@@ -846,6 +1454,7 @@ export const actionsAsync = {
   getBalancesThunk,
   getChannelsThunk,
   getPeersThunk,
+  getPeerInfoThunk,
   getSettingsThunk,
   getStatisticsThunk,
   getTicketsThunk,

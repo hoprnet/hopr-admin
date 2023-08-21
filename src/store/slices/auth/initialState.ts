@@ -19,6 +19,9 @@ type InitialState = {
     apiToken: string | null;
     localName: string | null;
   }[];
+  helper: {
+    openLoginModalToNode: boolean;
+  };
 };
 
 export const initialState: InitialState = {
@@ -34,4 +37,5 @@ export const initialState: InitialState = {
     peerId: null,
   },
   nodes: ADMIN_UI_NODE_LIST ? ADMIN_UI_NODE_LIST : [],
+  helper: { openLoginModalToNode: false },
 };

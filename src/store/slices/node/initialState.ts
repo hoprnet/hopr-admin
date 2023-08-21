@@ -13,7 +13,7 @@ import type {
   PingNodeResponseType
 } from '@hoprnet/hopr-sdk';
 
-type Message = {
+export type Message = {
   id: string;
   createdAt: number;
   body: string;
@@ -26,18 +26,36 @@ type Message = {
 type WebsocketConnectionStatus = 'connecting' | 'connected' | 'error' | null;
 
 type InitialState = {
-  info: GetInfoResponseType | null;
+  info: {
+    data: GetInfoResponseType | null;
+    isFetching: boolean;
+  };
   status: {
     initiating: boolean;
     initiated: boolean;
   };
   addresses: {
-    hopr: string | null;
-    native: string | null;
+    data: { hopr: string | null; native: string | null };
+    isFetching: boolean;
   };
-  aliases: GetAliasesResponseType | null;
-  balances: AccountResponseType | null;
-  channels: GetChannelsResponseType | null;
+  aliases: { data: GetAliasesResponseType | null; isFetching: boolean };
+  balances: {
+    data: {
+      hopr: {
+        value: string | null;
+        formatted: string | null;
+      };
+      native: {
+        value: string | null;
+        formatted: string | null;
+      };
+    };
+    isFetching: boolean;
+  };
+  channels: {
+    data: GetChannelsResponseType | null;
+    isFetching: boolean;
+  };
   messages: Message[];
   messagesSent: Message[];
   logs: {
@@ -46,55 +64,142 @@ type InitialState = {
     timestamp: number;
   }[];
   signedMessages: { createdAt: number; body: string }[];
-  peers: GetPeersResponseType | null;
-  entryNodes: GetEntryNodesResponseType | null;
-  peerInfo: GetPeerInfoResponseType | null;
-  settings: GetSettingsResponseType | null;
-  statistics: GetStatisticsResponseType | null;
-  tickets: GetTicketsResponseType | null;
-  tokens: GetTokenResponseType[];
-  version: string | null;
-  transactions: string[];
+  peers: { data: GetPeersResponseType | null; isFetching: boolean };
+  entryNodes: { data: GetEntryNodesResponseType | null; isFetching: boolean };
+  peerInfo: {
+    data: {
+      announced: string[];
+      observed: string[];
+    };
+    isFetching: boolean;
+  };
+  settings: { data: GetSettingsResponseType | null; isFetching: boolean };
+  statistics: { data: GetStatisticsResponseType | null; isFetching: boolean };
+  tickets: { data: GetTicketsResponseType | null; isFetching: boolean };
+  tokens: { data: GetTokenResponseType[]; isFetching: boolean };
+  version: { data: string | null; isFetching: boolean };
+  transactions: { data: string[]; isFetching: boolean };
   pings: (PingNodeResponseType & { peerId: string })[];
-  metrics: string | null;
+  metrics: {
+    data: {
+      raw: string | null;
+      parsed: {
+        [key: string]: {
+          categories: string[];
+          data: any[];
+          length: number;
+          name: string;
+          type: string;
+        };
+      };
+    };
+    isFetching: boolean;
+  };
   messagesWebsocketStatus: WebsocketConnectionStatus;
   logsWebsocketStatus: WebsocketConnectionStatus;
+  closeChannel: { isFetching: boolean };
+  redeemTickets: {
+    isFetching: boolean;
+    error: string | undefined;
+  };
 };
 
 export const initialState: InitialState = {
-  info: null,
+  info: {
+    data: null,
+    isFetching: false,
+  },
   status: {
     initiating: false,
     initiated: false,
   },
   addresses: {
-    hopr: null,
-    native: null,
+    data: {
+      hopr: null,
+      native: null,
+    },
+    isFetching: false,
   },
-  aliases: null,
-  balances: null,
-  channels: null,
+  aliases: {
+    data: null,
+    isFetching: false,
+  },
+  balances: {
+    data: {
+      hopr: {
+        value: null,
+        formatted: null,
+      },
+      native: {
+        value: null,
+        formatted: null,
+      },
+    },
+    isFetching: false,
+  },
+  channels: {
+    data: null,
+    isFetching: false,
+  },
   messages: [],
   messagesSent: [],
   signedMessages: [],
   logs: [],
   peers: {
-    connected: [],
-    announced: [],
+    data: {
+      connected: [],
+      announced: [],
+    },
+    isFetching: false,
   },
   peerInfo: {
-    announced: [],
-    observed: [],
+    data: {
+      announced: [],
+      observed: [],
+    },
+    isFetching: false,
   },
-  entryNodes: null,
-  settings: null,
-  statistics: null,
-  tickets: [],
-  tokens: [],
-  version: null,
-  transactions: [],
+  entryNodes: {
+    data: null,
+    isFetching: false,
+  },
+  settings: {
+    data: null,
+    isFetching: false,
+  },
+  statistics: {
+    data: null,
+    isFetching: false,
+  },
+  tickets: {
+    data: [],
+    isFetching: false,
+  },
+  tokens: {
+    data: [],
+    isFetching: false,
+  },
+  version: {
+    data: null,
+    isFetching: false,
+  },
+  transactions: {
+    data: [],
+    isFetching: false,
+  },
   pings: [],
-  metrics: null,
+  metrics: {
+    data: {
+      raw: null,
+      parsed: {},
+    },
+    isFetching: false,
+  },
   messagesWebsocketStatus: null,
   logsWebsocketStatus: null,
+  closeChannel: { isFetching: false },
+  redeemTickets: {
+    isFetching: false,
+    error: undefined,
+  },
 };

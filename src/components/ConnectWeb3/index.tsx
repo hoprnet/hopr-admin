@@ -1,22 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import Modal from '../../future-hopr-lib-components/Modal';
 import WalletButton from '../../future-hopr-lib-components/Button/wallet-button';
 
 // Store
-import { useAppDispatch } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { web3Actions } from '../../store/slices/web3';
+import { appActions } from '../../store/slices/app';
+import { safeActions } from '../../store/slices/safe';
 
 // wagmi
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
+import { gnosis, localhost } from 'viem/chains';
+import { Button, Menu, MenuItem } from '@mui/material';
+import { truncateEthereumAddress } from '../../utils/blockchain';
 
-const AppBarContainer = styled.div`
-  height: 59px;
-  width: 160px;
-  display: flex;
+const AppBarContainer = styled(Button)`
   align-items: center;
+  display: flex;
+  cursor: pointer;
+  height: 59px;
   justify-content: center;
+  width: 285px;
+  border-radius: 0;
+  & .image-container {
+    height: 50px;
+    width: 50px;
+    & img {
+      width: 100%;
+      height: 100%;
+    }
+  }
 `;
 
 const ConnectWalletContent = styled.div`
@@ -27,6 +42,28 @@ const ConnectWalletContent = styled.div`
   p {
     margin-top: 48px;
   }
+`;
+
+const Web3Button = styled.div`
+  font-family: 'Source Code Pro';
+  min-width: 150px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  color: #414141;
+  gap: 10px;
+  p {
+    margin: 0;
+    font-size: 12px;
+  }
+  .chain {
+    color: #808080;
+    line-height: 12px;
+  }
+`;
+
+const DropdownArrow = styled.img`
+  align-self: center;
 `;
 
 type ConnectWeb3Props = {
@@ -42,9 +79,33 @@ export default function ConnectWeb3({
 }: ConnectWeb3Props) {
   const dispatch = useAppDispatch();
   const [chooseWalletModal, set_chooseWalletModal] = useState(false);
-  const { connect } = useConnect({ connector: new InjectedConnector() });
-  const { isConnected } = useAccount();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
+  const {
+    connect,
+    error,
+  } = useConnect({ connector: new InjectedConnector({ chains: [localhost, gnosis] }) });
   const { disconnect } = useDisconnect();
+  const account = useAppSelector((store) => store.web3.account);
+  const isConnected = useAppSelector((store) => store.web3.status.connected);
+  const chain = useAppSelector((store) => store.web3.chain);
+  const walletPresent = useAppSelector((store) => store.web3.walletPresent);
+  const [localError, set_localError] = useState<false | string>(false);
+  const [currentAccount, set_currentAccount] = useState('');
+  const containerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        handleCloseMenu();
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     if (isConnected) handleClose();
@@ -56,59 +117,119 @@ export default function ConnectWeb3({
     }
   }, [open]);
 
+  useEffect(() => {
+    if (account) {
+      set_currentAccount(account);
+    }
+  }, [account]);
+
+  useEffect(() => {
+    if (error) set_localError(JSON.stringify(error));
+    else set_localError(false);
+  }, [error]);
+
   const handleClose = () => {
     if (onClose) {
       onClose();
     }
     set_chooseWalletModal(false);
+    setTimeout(() => {
+      set_localError(false);
+    }, 250);
   };
 
   const handleConnectToMetaMask = () => {
     dispatch(web3Actions.setLoading(true));
+
     connect();
     if (isConnected) {
       handleClose();
     }
   };
 
+  const handleDisconnectMM = () => {
+    disconnect();
+    dispatch(appActions.resetSafeState());
+    dispatch(web3Actions.resetState());
+    dispatch(safeActions.resetState());
+  };
+
+  // New function to handle opening the menu
+  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  // New function to handle closing the menu
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handleWeb3ButtonClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (!isConnected) {
+      set_chooseWalletModal(true);
+    } else {
+      handleOpenMenu(event);
+    }
+  };
+
   return (
     <>
       {inTheAppBar && (
-        <AppBarContainer>
+        <AppBarContainer
+          onClick={handleWeb3ButtonClick}
+          ref={containerRef}
+          className={`web3-connect-btn`}
+        >
+          <div className="image-container">
+            <img src="/assets/wallets/MetaMask_Fox.svg" />
+          </div>
           {!isConnected ? (
-            <button
-              onClick={() => {
-                set_chooseWalletModal(true);
-              }}
-            >
-              Connect Wallet
-            </button>
+            <Web3Button>Connect Wallet</Web3Button>
           ) : (
-            <button
-              onClick={() => {
-                disconnect();
-              }}
-            >
-              Disconnect
-            </button>
+            <>
+              <Web3Button>
+                <div className="wallet-info">
+                  <p className="chain">Metamask @ {chain}</p>
+                  <p>eth: {truncateEthereumAddress(currentAccount)}</p>
+                </div>
+                <div className="dropdown-icon">
+                  <DropdownArrow src="/assets/dropdown-arrow.svg" />
+                </div>
+              </Web3Button>
+
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleCloseMenu}
+                disableScrollLock={true}
+              >
+                <MenuItem onClick={handleDisconnectMM}>Disconnect</MenuItem>
+              </Menu>
+            </>
           )}
         </AppBarContainer>
       )}
       <Modal
         open={chooseWalletModal}
         onClose={handleClose}
-        title="CONNECT A WALLET"
+        title={localError ? 'ERROR' : 'CONNECT A WALLET'}
+        disableScrollLock={true}
+        style={{ height: '270px' }}
       >
-        <ConnectWalletContent>
-          <WalletButton
-            onClick={handleConnectToMetaMask}
-            wallet="metamask"
-          />
-          <p>
-            By connecting a wallet, you agree to HOPR’s Terms of Service and acknowledge that you have read and
-            understand the Disclaimer.
-          </p>
-        </ConnectWalletContent>
+        {!localError && (
+          <ConnectWalletContent>
+            <WalletButton
+              onClick={handleConnectToMetaMask}
+              wallet="metamask"
+            />
+            <p>
+              By connecting a wallet, you agree to HOPR’s Terms of Service and acknowledge that you have read and
+              understand the Disclaimer.
+            </p>
+          </ConnectWalletContent>
+        )}
+        {localError && !walletPresent && <p>Wallet was not detected. Please install a wallet, e.g. MetaMask</p>}
+        {localError && walletPresent && <p>{localError}</p>}
       </Modal>
     </>
   );

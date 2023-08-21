@@ -1,86 +1,101 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import { useAppDispatch, useAppSelector } from '../../store';
-import Drawer from '@mui/material/Drawer';
+import { useAppSelector } from '../../store';
 import styled from '@emotion/styled';
-import Toolbar from '@mui/material/Toolbar';
-import { ethers } from 'ethers';
+import { useLocation } from 'react-router-dom';
 
-const drawerWidth = 160;
+// HOPR Components
+import Details from './details';
+import FAQ from '../Faq';
+import infoDataRaw from '../Faq/info.json'; // Import your info.json data
+
+
+type InfoData = {
+  [routePath: string]: {
+    id: number;
+    title: string;
+    content: string;
+  }[];
+};
 
 interface Props {}
 
-const AppBarFiller = styled(Toolbar)`
-  min-height: 59px !important;
-`;
-
-const SDrawer = styled(Drawer)`
-  .MuiDrawer-paper {
-    box-sizing: border-box;
-    width: 161px;
+const SInfoBar = styled.div`
+  display: none;
+  width: 233px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  box-sizing: border-box;
+  padding-top: 48px;
+  &.node {
     background: #ffffa0;
-    font-size: 13px;
+    border: 0;
+  }
+  &.web3 {
+    background: #edfbff;
+    border: 0;
+  }
+  @media (min-width: 740px) {
+    display: block;
   }
 `;
 
-const Title = styled.div`
-  font-weight: 700;
-`;
 
-const Data = styled.div`
-  margin-bottom: 24px;
-`;
+const Scroll = styled.div`
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+  & > div {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #ffffa0;
+  
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #3c64a5;
+    border-radius: 10px;
+    border: 3px solid #ffffa0;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #000050;
+  }
+
+`
 
 export default function InfoBar(props: Props) {
-  const {
-    balances,
-    peers,
-    info,
-    channels,
-  } = useAppSelector((state) => state.node);
+  const web3Connected = useAppSelector((store) => store.web3.status.connected);
+  const nodeConnected = useAppSelector((store) => store.auth.status.connected);
+  const currentRoute = useLocation().pathname;
 
-  const drawer = (
-    <div>
-      <AppBarFiller />
-      <Title>Status</Title>
-      <Data>{info?.connectivityStatus}</Data>
+  const infoData: InfoData = infoDataRaw;
 
-      <Title>xDai balance</Title>
-      <Data>{balances?.native && ethers.utils.formatEther(balances.native)}</Data>
-
-      <Title>mHOPR balance</Title>
-      <Data>{balances?.hopr && ethers.utils.formatEther(balances.hopr)}</Data>
-
-      <Title>Peers seen in the network</Title>
-      <Data>{peers?.announced?.length || '-'}</Data>
-
-      <Title>Outgoing Chanels</Title>
-      <Data>{channels?.outgoing?.length || '-'}</Data>
-
-      <Title>Incoming Chanels</Title>
-      <Data>{channels?.incoming?.length || '-'}</Data>
-    </div>
-  );
+  const pageHasFAQ = () => {
+    if (infoData[currentRoute]) return true;
+    return false;
+  };
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <Box
-        component="nav"
-        sx={{
-          width: { sm: drawerWidth },
-          flexShrink: { sm: 0 },
-        }}
-        aria-label="mailbox folders"
-      >
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        <SDrawer
-          variant="permanent"
-          anchor={'right'}
-          open
-        >
-          {drawer}
-        </SDrawer>
-      </Box>
-    </Box>
+    <SInfoBar className={`InfoBar ${web3Connected ? 'web3' : ''} ${nodeConnected ? 'node' : ''}`}>
+      <Scroll>
+        <div>
+          {(web3Connected || (nodeConnected && !web3Connected)) && <Details />}
+          {nodeConnected && pageHasFAQ() && (
+            <FAQ
+              data={infoData[currentRoute]}
+              label={currentRoute.split('/')[currentRoute.split('/').length - 1]}
+              variant="blue"
+            />
+          )}
+        </div>
+      </Scroll>
+    </SInfoBar>
   );
 }

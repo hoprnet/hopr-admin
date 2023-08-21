@@ -1,29 +1,40 @@
-import { useEffect, useState } from 'react';
-import styled from '@emotion/styled';
-import { DialogTitle, TextField, DialogActions, InputAdornment } from '@mui/material';
+import { DialogActions, DialogTitle, InputAdornment, TextField } from '@mui/material';
+import { ethers } from 'ethers';
+import { useState } from 'react';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
-import { ethers } from 'ethers';
-import CloseIcon from '@mui/icons-material/Close';
+import { sendNotification } from '../../hooks/useWatcher/notifications';
 
-type OpenChannelModalProps = {
+// HOPR Components
+import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+import AddChannelIcon from '../../future-hopr-lib-components/Icons/AddChannel';
+import FundChannelIcon from '../../future-hopr-lib-components/Icons/FundChannel';
+import Button from '../../future-hopr-lib-components/Button';
+
+// Mui
+import CloseIcon from '@mui/icons-material/Close';
+import HubIcon from '@mui/icons-material/Hub';
+
+type OpenOrFundChannelModalProps = {
   peerId?: string;
   channelId?: string;
   modalBtnText?: string;
   actionBtnText?: string;
   title?: string;
+  type?: 'open' | 'fund';
 };
 
-export const OpenChannelModal = ({
+export const OpenOrFundChannelModal = ({
   channelId,
   title,
   modalBtnText,
   actionBtnText,
+  type,
   ...props
-}: OpenChannelModalProps) => {
+}: OpenOrFundChannelModalProps) => {
   const dispatch = useAppDispatch();
-  const loginData = useAppSelector((selector) => selector.auth.loginData);
+  const loginData = useAppSelector((store) => store.auth.loginData);
   const [openChannelModal, set_openChannelModal] = useState(false);
   const [amount, set_amount] = useState('');
   const [peerId, set_peerId] = useState(props.peerId ? props.peerId : '');
@@ -50,8 +61,32 @@ export const OpenChannelModal = ({
         }),
       )
         .unwrap()
+        .then(() => {
+          const msg = `Channel to ${peerId} is ${type === 'open' ? 'opened' : 'funded'}`;
+          sendNotification({
+            notificationPayload: {
+              source: 'node',
+              name: msg,
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: msg },
+            dispatch,
+          });
+        })
         .catch((e) => {
-          console.log(e.error);
+          const errMsg = `Channel to ${peerId} failed to be ${type === 'open' ? 'opened' : 'funded'}`;
+          console.log(errMsg, e.error);
+          sendNotification({
+            notificationPayload: {
+              source: 'node',
+              name: errMsg,
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: errMsg },
+            dispatch,
+          });
         });
     };
 
@@ -88,12 +123,28 @@ export const OpenChannelModal = ({
     );
   };
 
+  const icon = () => {
+    switch (type) {
+    case 'open':
+      return <AddChannelIcon />;
+    case 'fund':
+      return <FundChannelIcon />;
+    default:
+      return <HubIcon />;
+    }
+  };
+
   return (
     <>
-      <button onClick={handleOpenChannelDialog}>{modalBtnText ? modalBtnText : 'Open Channel'}</button>
+      <IconButton
+        iconComponent={icon()}
+        tooltipText={modalBtnText ? modalBtnText : 'Open outgoing channel'}
+        onClick={handleOpenChannelDialog}
+      />
       <SDialog
         open={openChannelModal}
         onClose={handleCloseModal}
+        disableScrollLock={true}
       >
         <TopBar>
           <DialogTitle>{title ? title : 'Open Outgoing Channel'}</DialogTitle>
@@ -123,13 +174,17 @@ export const OpenChannelModal = ({
           />
         </SDialogContent>
         <DialogActions>
-          <button onClick={handleCloseModal}>Cancel</button>
-          <button
+          <Button
             onClick={handleAction}
             disabled={!amount || parseFloat(amount) <= 0 || !peerId}
+            style={{
+              marginRight: '16px',
+              marginBottom: '6px',
+              marginTop: '-6px',
+            }}
           >
             {actionBtnText ? actionBtnText : 'Open Channel'}
-          </button>
+          </Button>
         </DialogActions>
       </SDialog>
     </>

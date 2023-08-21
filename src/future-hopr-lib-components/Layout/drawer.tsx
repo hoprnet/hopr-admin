@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { ApplicationMapType } from '../../router';
+import Details from '../../components/InfoBar/details';
 
 const drawerWidth = 240;
 const minDrawerWidth = 56;
@@ -23,7 +24,6 @@ const StyledDrawer = styled(MuiDrawer)`
     padding-top: 59px;
     transition: width 0.4s ease-out;
     overflow-x: hidden;
-
     scrollbar-width: none;
     &::-webkit-scrollbar {
       display: none;
@@ -37,29 +37,72 @@ const StyledDrawer = styled(MuiDrawer)`
         width: ${drawerWidth}px;
       `}
   }
+
+  &.type-blue {
+    .MuiDrawer-paper {
+      background: #000050;
+      color: white;
+    }
+    hr {
+      border-color: rgb(255 255 255 / 50%);
+    }
+    .StyledListSubheader {
+      background: #000050;
+      color: white;
+    }
+    .StyledListItemButton {
+      color: white;
+      &.Mui-selected {
+        text-decoration: underline 2px rgb(255, 255, 255);
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.3);
+        }
+      }
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+    }
+    .MuiSvgIcon-root {
+      color: white;
+    }
+  }
 `;
 
 const StyledListSubheader = styled(ListSubheader)`
   align-items: center;
-  color: #777;
   display: flex;
   height: 64px;
   letter-spacing: 0.2px;
   user-select: none;
+  color: #777;
 `;
 
 const StyledListItemButton = styled(ListItemButton)`
   height: 48px;
+  svg {
+    width: 24px;
+    height: 24px;
+  }
   &.Mui-selected {
     color: #0000b4;
-    & .MuiTypography-root {
+    background-color: rgba(255, 255, 255, 0.45);
+    text-decoration: underline 2px #0000b4;
+    text-underline-offset: 4px;
+    .MuiTypography-root {
       font-weight: bold;
     }
-    & .MuiListItemIcon-root {
+    .MuiSvgIcon-root,
+    .MuiListItemIcon-root {
       color: #0000b4;
     }
   }
 ` as typeof ListItemButton;
+
+const SListItemIcon = styled(ListItemIcon)`
+  &.GroupIcon {
+    color: rgba(0, 0, 0, 0.2);
+  }
+`;
 
 type DrawerProps = {
   drawerItems: ApplicationMapType;
@@ -68,6 +111,7 @@ type DrawerProps = {
     web3?: boolean;
   };
   openedNavigationDrawer: boolean;
+  drawerType?: 'blue' | 'white' | false;
   set_openedNavigationDrawer: (openedNavigationDrawer: boolean) => void;
 };
 
@@ -76,6 +120,7 @@ const Drawer = ({
   drawerLoginState,
   openedNavigationDrawer,
   set_openedNavigationDrawer,
+  drawerType,
 }: DrawerProps) => {
   const location = useLocation();
   const searchParams = location.search;
@@ -110,6 +155,7 @@ const Drawer = ({
       variant={drawerVariant}
       open={openedNavigationDrawer}
       onClose={() => set_openedNavigationDrawer(false)}
+      className={drawerType === 'blue' ? 'type-blue' : 'type-white'}
     >
       {drawerItems.map((group) => (
         <div key={group.groupName}>
@@ -117,14 +163,14 @@ const Drawer = ({
           <List
             subheader={
               openedNavigationDrawer ? (
-                <StyledListSubheader>{group.groupName}</StyledListSubheader>
+                <StyledListSubheader className="StyledListSubheader">{group.groupName}</StyledListSubheader>
               ) : (
                 <Tooltip
                   title={`Group: ${group.groupName.toLowerCase()}`}
                   placement="right"
                 >
-                  <StyledListSubheader>
-                    <ListItemIcon sx={{ color: '#ddd' }}>{group.icon}</ListItemIcon>
+                  <StyledListSubheader className="StyledListSubheader">
+                    <SListItemIcon className="SListItemIcon GroupIcon">{group.icon}</SListItemIcon>
                   </StyledListSubheader>
                 </Tooltip>
               )
@@ -142,15 +188,17 @@ const Drawer = ({
                   selected={location.pathname === `/${group.path}/${item.path}`}
                   disabled={!item.element || (item.loginNeeded && !drawerLoginState?.[item.loginNeeded])}
                   onClick={handleButtonClick}
+                  className="StyledListItemButton"
                 >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText>{item.name}</ListItemText>
+                  <SListItemIcon className="SListItemIcon">{item.icon}</SListItemIcon>
+                  <ListItemText className="ListItemText">{item.name}</ListItemText>
                 </StyledListItemButton>
               </Tooltip>
             ))}
           </List>
         </div>
       ))}
+      {drawerVariant === 'temporary' && <Details style={{ margin: '0 auto 16px' }} />}
     </StyledDrawer>
   );
 };
