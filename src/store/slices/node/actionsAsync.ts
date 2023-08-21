@@ -1289,19 +1289,23 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
         // using challenge as an id between tickets
         const uniqueIdentifier = updatedTicket.challenge;
         const existingIndex = state.tickets.data?.findIndex((ticket) => ticket.challenge === uniqueIdentifier);
+        const updatedTicketWithChannelId = {
+          ...updatedTicket,
+          channelId: action.meta.arg.channelId,
+        };
 
         if (existingIndex && existingIndex !== -1 && state.tickets.data) {
           // Update the existing ticket with the new values
           state.tickets.data[existingIndex] = {
             ...state.tickets.data[existingIndex],
-            ...updatedTicket,
+            ...updatedTicketWithChannelId,
           };
         } else if (state.tickets.data) {
           // Add the updated ticket as a new object
-          state.tickets.data.push(updatedTicket); // FIXME: ChannelId missing
+          state.tickets.data.push(updatedTicketWithChannelId);
         } else {
           // initialize tickets array
-          state.tickets.data = [updatedTicket]; // FIXME: ChannelId missing
+          state.tickets.data = [updatedTicketWithChannelId];
         }
       }
     }

@@ -90,28 +90,28 @@ export const OpenOrFundChannelModal = ({
         });
     };
 
-    const handleFundChannels = async (weiValue: string, peerId: string, channelId: string) => {
-      await dispatch(
-        actionsAsync.fundChannelsThunk({
-          apiEndpoint: loginData.apiEndpoint!,
-          apiToken: loginData.apiToken!,
-          peerId: peerId,
-          incomingAmount: '0',
-          outgoingAmount: weiValue,
-          timeout: 60e3,
-        }),
-      )
-        .unwrap()
-        .catch((e) => {
-          console.log(e.error);
-        });
-    };
+    // const handleFundChannels = async (weiValue: string, peerId: string, channelId: string) => {
+    //   await dispatch(
+    //     actionsAsync.fundChannelsThunk({
+    //       apiEndpoint: loginData.apiEndpoint!,
+    //       apiToken: loginData.apiToken!,
+    //       peerId: peerId,
+    //       incomingAmount: '0',
+    //       outgoingAmount: weiValue,
+    //       timeout: 60e3,
+    //     }),
+    //   )
+    //     .unwrap()
+    //     .catch((e) => {
+    //       console.log(e.error);
+    //     });
+    // };
 
     handleCloseModal();
     const parsedOutgoing = parseFloat(amount ?? '0') >= 0 ? amount ?? '0' : '0';
     const weiValue = ethers.utils.parseEther(parsedOutgoing).toString();
     if (channelId) {
-      await handleFundChannels(weiValue, peerId, channelId);
+      // await handleFundChannels(weiValue, peerId, channelId);
     } else {
       await handleOpenChannel(weiValue, peerId);
     }
