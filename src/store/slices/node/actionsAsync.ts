@@ -732,26 +732,24 @@ const openChannelThunk = createAsyncThunk<
   OpenChannelResponseType | undefined,
   OpenChannelPayloadType,
   { state: RootState }
->(
-  'node/openChannel',
-  async (payload: OpenChannelPayloadType, {
-    rejectWithValue,
-    dispatch,
-  }) => {
-    try {
-      const res = await openChannel(payload);
-      return res;
-    } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
-      }
+>('node/openChannel', async (payload: OpenChannelPayloadType, {
+  rejectWithValue,
+  dispatch,
+}) => {
+  try {
+    const res = await openChannel(payload);
+    return res;
+  } catch (e) {
+    if (e instanceof APIError) {
+      return rejectWithValue({
+        status: e.status,
+        error: e.error,
+      });
     }
   }
-);
+});
 
+// will not be used for now, as it doesn't give good errors
 const openMultipleChannelsThunk = createAsyncThunk(
   'node/openMultipleChannels',
   async (
@@ -762,7 +760,7 @@ const openMultipleChannelsThunk = createAsyncThunk(
       amount: string;
       timeout?: number;
     },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const res = await openMultipleChannels({
@@ -788,7 +786,7 @@ const openMultipleChannelsThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 const redeemChannelTicketsThunk = createAsyncThunk<boolean | undefined, PeerIdPayloadType, { state: RootState }>(
@@ -835,7 +833,7 @@ const sendMessageThunk = createAsyncThunk(
         });
       }
     }
-  }
+  },
 );
 
 const signThunk = createAsyncThunk('node/sign', async (payload: SignPayloadType, { rejectWithValue }) => {
@@ -1262,7 +1260,13 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   // getChannels
   builder.addCase(getChannelThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      const { balance, channelId, peerId, status, type } = action.payload;
+      const {
+        balance,
+        channelId,
+        peerId,
+        status,
+        type,
+      } = action.payload;
       // find channel if it already exists
       const channelIndex = state.channels.data?.[type].findIndex((channel) => channel.channelId === channelId);
 

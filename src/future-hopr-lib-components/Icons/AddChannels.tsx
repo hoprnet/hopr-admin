@@ -1,10 +1,9 @@
 export default function AddChannels() {
-
   const css = `
     .AddChannels-csv-text-svg {
       font: 9px sans-serif;
     }
-  `
+  `;
 
   return (
     <svg
@@ -14,9 +13,7 @@ export default function AddChannels() {
       viewBox="0 0 24 24"
       data-testid="HubIcon"
     >
-      <style>
-        {css}
-      </style>
+      <style>{css}</style>
       <defs>
         <mask id="AddChannelsMask">
           <circle
@@ -42,7 +39,9 @@ export default function AddChannels() {
         d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
       />
       <text
-        x="8" y="23" className="AddChannels-csv-text-svg"
+        x="8"
+        y="23"
+        className="AddChannels-csv-text-svg"
       >
         .csv
       </text>

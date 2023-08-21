@@ -7,7 +7,6 @@ import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { utils } from 'ethers';
 import { sendNotification } from '../../hooks/useWatcher/notifications';
 
-
 //Mui
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -68,7 +67,7 @@ export const OpenMultipleChannelsModal = () => {
       })
       .catch((e) => {
         let errMsg = `Channel to ${peerId} failed to be opened.`;
-        if(e.status) errMsg = errMsg + `\n${e.status}`
+        if (e.status) errMsg = errMsg + `\n${e.status}`;
         sendNotification({
           notificationPayload: {
             source: 'node',
@@ -86,9 +85,9 @@ export const OpenMultipleChannelsModal = () => {
     const parsedOutgoing = parseFloat(amount ?? '0') >= 0 ? amount ?? '0' : '0';
     const weiValue = utils.parseEther(parsedOutgoing).toString();
     if (peerIds && loginData.apiEndpoint && loginData.apiToken) {
-      for (let i = 0; i < peerIds.length; i++ ) {
+      for (let i = 0; i < peerIds.length; i++) {
         handleOpenChannel(weiValue, peerIds[i]);
-        await new Promise(r => setTimeout(r, 50));
+        await new Promise((r) => setTimeout(r, 50));
       }
     }
     handleCloseModal();
@@ -107,8 +106,8 @@ export const OpenMultipleChannelsModal = () => {
     reader.onload = (e: ProgressEvent<FileReader>) => {
       const contents = e.target?.result;
       if (typeof contents === 'string') {
-        let parsedData = parseCSV(contents);
-        if(parsedData.length > 0) {
+        const parsedData = parseCSV(contents);
+        if (parsedData.length > 0) {
           set_peerIds(parsedData);
           set_openMultipleChannelsModal(true);
         } else {
@@ -142,14 +141,10 @@ export const OpenMultipleChannelsModal = () => {
     const expectedObjectKeys = header.map((key) => key.trim());
 
     // find the index of the "peerId" header
-    let peerIdIndex = expectedObjectKeys.findIndex((key) => 
-      key === 'peerId' || 
-      key === 'peerid' || 
-      key === 'peer'
-    );
-    
+    let peerIdIndex = expectedObjectKeys.findIndex((key) => key === 'peerId' || key === 'peerid' || key === 'peer');
+
     if (peerIdIndex === -1) {
-      peerIdIndex = expectedObjectKeys.findIndex((key) => key.length === 53 && key.substr(0,6) === '16Uiu2');
+      peerIdIndex = expectedObjectKeys.findIndex((key) => key.length === 53 && key.substr(0, 6) === '16Uiu2');
       startAtLine = 0;
     }
 
@@ -179,7 +174,7 @@ export const OpenMultipleChannelsModal = () => {
   return (
     <>
       <IconButton
-        iconComponent={<AddChannelsIcon/>}
+        iconComponent={<AddChannelsIcon />}
         tooltipText={'Open multiple outgoing channels by csv'}
         onClick={handleImportClick}
       />

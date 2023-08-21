@@ -16,7 +16,7 @@ import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 // Modals
 import { PingModal } from '../../components/Modal/PingModal';
 import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
-import { OpenMultipleChannelsModal } from '../../components/Modal/OpenMultipleChannelsModal'
+import { OpenMultipleChannelsModal } from '../../components/Modal/OpenMultipleChannelsModal';
 
 // Mui
 import CircularProgress from '@mui/material/CircularProgress';
@@ -268,7 +268,7 @@ function ChannelsPage() {
         actions={
           <>
             <OpenOrFundChannelModal type={'open'} />
-            <OpenMultipleChannelsModal/>
+            <OpenMultipleChannelsModal />
             <OpenOrFundChannelModal
               type={'fund'}
               title="Fund outgoing channel"

@@ -76,7 +76,7 @@ export const OpenOrFundChannelModal = ({
         })
         .catch((e) => {
           let errMsg = `Channel to ${peerId} failed to be ${type === 'open' ? 'opened' : 'funded'}`;
-          if(e.status) errMsg = errMsg + `\n${e.status}`
+          if (e.status) errMsg = errMsg + `\n${e.status}`;
           sendNotification({
             notificationPayload: {
               source: 'node',
