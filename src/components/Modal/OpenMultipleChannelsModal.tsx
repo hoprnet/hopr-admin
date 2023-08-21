@@ -4,8 +4,17 @@ import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-
 import STextField from '../../future-hopr-lib-components/TextField';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
+import { utils } from 'ethers';
+import { sendNotification } from '../../hooks/useWatcher/notifications';
+
+
+//Mui
 import CloseIcon from '@mui/icons-material/Close';
-import { ethers } from 'ethers';
+
+// HOPR Components
+import Button from '../../future-hopr-lib-components/Button';
+import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+import AddChannelsIcon from '../../future-hopr-lib-components/Icons/AddChannels';
 
 type OpenMultipleChannelsModalProps = {};
 
@@ -27,46 +36,165 @@ export const OpenMultipleChannelsModal = () => {
     }
   };
 
-  const handleOpenMultipleChannelsDialog = () => {
-    set_openMultipleChannelsModal(true);
-  };
-
   const handleCloseModal = () => {
     set_openMultipleChannelsModal(false);
     set_amount('');
     set_peerIds([]);
   };
 
-  const handleAction = async () => {
-    if (peerIds && loginData.apiEndpoint && loginData.apiToken) {
-      const parsedOutgoing = parseFloat(amount ?? '0') >= 0 ? amount ?? '0' : '0';
-      const weiValue = ethers.utils.parseEther(parsedOutgoing).toString();
-      dispatch(
-        actionsAsync.openMultipleChannelsThunk({
-          peerIds: peerIds,
-          amount: weiValue,
-          apiEndpoint: loginData.apiEndpoint,
-          apiToken: loginData.apiToken,
-          timeout: 60e3 * 7, // 7 minutes... This method can take really long
-        }),
-      )
-        .unwrap()
-        .then(handleRefresh)
-        .catch((e) => {
-          console.log(e.error);
-        })
-        .finally(() => {
-          handleCloseModal();
+  const handleOpenChannel = async (weiValue: string, peerId: string) => {
+    await dispatch(
+      actionsAsync.openChannelThunk({
+        apiEndpoint: loginData.apiEndpoint!,
+        apiToken: loginData.apiToken!,
+        amount: weiValue,
+        peerId: peerId,
+        timeout: 60e3,
+      }),
+    )
+      .unwrap()
+      .then(() => {
+        const msg = `Channel to ${peerId} is opened`;
+        sendNotification({
+          notificationPayload: {
+            source: 'node',
+            name: msg,
+            url: null,
+            timeout: null,
+          },
+          toastPayload: { message: msg },
+          dispatch,
         });
+      })
+      .catch((e) => {
+        let errMsg = `Channel to ${peerId} failed to be opened.`;
+        if(e.status) errMsg = errMsg + `\n${e.status}`
+        sendNotification({
+          notificationPayload: {
+            source: 'node',
+            name: errMsg,
+            url: null,
+            timeout: null,
+          },
+          toastPayload: { message: errMsg },
+          dispatch,
+        });
+      });
+  };
+
+  const handleAction = async () => {
+    const parsedOutgoing = parseFloat(amount ?? '0') >= 0 ? amount ?? '0' : '0';
+    const weiValue = utils.parseEther(parsedOutgoing).toString();
+    if (peerIds && loginData.apiEndpoint && loginData.apiToken) {
+      for (let i = 0; i < peerIds.length; i++ ) {
+        handleOpenChannel(weiValue, peerIds[i]);
+        await new Promise(r => setTimeout(r, 50));
+      }
     }
+    handleCloseModal();
+  };
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  /**
+   * Handles the file upload event.
+   * @param event The file upload event.
+   */
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    const reader = new FileReader();
+
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      const contents = e.target?.result;
+      if (typeof contents === 'string') {
+        let parsedData = parseCSV(contents);
+        if(parsedData.length > 0) {
+          set_peerIds(parsedData);
+          set_openMultipleChannelsModal(true);
+        } else {
+          const msg = 'Failed parsing .csv to open multiple channels.';
+          sendNotification({
+            notificationPayload: {
+              source: 'node',
+              name: msg,
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: msg },
+            dispatch,
+          });
+        }
+      }
+    };
+
+    if (file) {
+      reader.readAsText(file);
+    }
+  };
+
+  const parseCSV = (csvContent: string) => {
+    const lines = csvContent.split('\n');
+    const parsedData: string[] = [];
+    let startAtLine = 1;
+
+    // gets all keys, csv holds the headers on the first line
+    const header = lines[0].split(',');
+    const expectedObjectKeys = header.map((key) => key.trim());
+
+    // find the index of the "peerId" header
+    let peerIdIndex = expectedObjectKeys.findIndex((key) => 
+      key === 'peerId' || 
+      key === 'peerid' || 
+      key === 'peer'
+    );
+    
+    if (peerIdIndex === -1) {
+      peerIdIndex = expectedObjectKeys.findIndex((key) => key.length === 53 && key.substr(0,6) === '16Uiu2');
+      startAtLine = 0;
+    }
+
+    // loop through each line, get the peerId value and add it to parsedData
+    for (let i = startAtLine; i < lines.length; i++) {
+      const values = lines[i].split(',');
+      if (values.length > 1 && peerIdIndex !== -1) {
+        const peerId = values[peerIdIndex]?.trim();
+        if (peerId) {
+          parsedData.push(peerId);
+        }
+      }
+    }
+
+    // Reset the file input value
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+
+    return parsedData;
+  };
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
   };
 
   return (
     <>
-      <button onClick={handleOpenMultipleChannelsDialog}>{'Open Multiple Channels'}</button>
+      <IconButton
+        iconComponent={<AddChannelsIcon/>}
+        tooltipText={'Open multiple outgoing channels by csv'}
+        onClick={handleImportClick}
+      />
+      <input
+        type="file"
+        accept=".csv"
+        style={{ display: 'none' }}
+        ref={fileInputRef}
+        onChange={handleFileUpload}
+        placeholder="import"
+      />
       <SDialog
         open={openChannelModal}
         onClose={handleCloseModal}
+        disableScrollLock={true}
       >
         <TopBar>
           <DialogTitle>{'Open Multiple Channels'}</DialogTitle>
@@ -78,7 +206,6 @@ export const OpenMultipleChannelsModal = () => {
           </SIconButton>
         </TopBar>
         <SDialogContent>
-          <CSVUploader />
           <STextField
             label="Peer Ids"
             type="string"
@@ -100,92 +227,19 @@ export const OpenMultipleChannelsModal = () => {
           />
         </SDialogContent>
         <DialogActions>
-          <button onClick={handleCloseModal}>Cancel</button>
-          <button
+          <Button
             onClick={handleAction}
             disabled={!amount || parseFloat(amount) <= 0 || !peerIds}
+            style={{
+              marginRight: '16px',
+              marginBottom: '6px',
+              marginTop: '-18px',
+            }}
           >
-            {'Open Channels'}
-          </button>
+            Open Channels
+          </Button>
         </DialogActions>
       </SDialog>
     </>
   );
-
-  /**
-   * Component for uploading and parsing CSV data.
-   */
-  function CSVUploader() {
-    const fileInputRef = useRef<HTMLInputElement>(null);
-
-    /**
-     * Handles the file upload event.
-     * @param event The file upload event.
-     */
-    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      const reader = new FileReader();
-
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        const contents = e.target?.result;
-        if (typeof contents === 'string') {
-          parseCSV(contents);
-        }
-      };
-
-      if (file) {
-        reader.readAsText(file);
-      }
-    };
-
-    const parseCSV = (csvContent: string) => {
-      const lines = csvContent.split('\n');
-      const parsedData: string[] = [];
-
-      // gets all keys, csv holds the headers on the first line
-      const header = lines[0].split(',');
-      const expectedObjectKeys = header.map((key) => key.trim());
-
-      // find the index of the "peerId" header
-      const peerIdIndex = expectedObjectKeys.findIndex((key) => key === 'peerId');
-
-      // loop through each line, get the peerId value and add it to parsedData
-      for (let i = 1; i < lines.length; i++) {
-        const values = lines[i].split(',');
-        if (values.length > 1 && peerIdIndex !== -1) {
-          const peerId = values[peerIdIndex]?.trim();
-          if (peerId) {
-            parsedData.push(peerId);
-          }
-        }
-      }
-
-      // after parsing, run the callback function
-      set_peerIds(parsedData);
-
-      // Reset the file input value
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-    };
-
-    const handleImportClick = () => {
-      fileInputRef.current?.click();
-    };
-
-    return (
-      <div>
-        <button onClick={handleImportClick}>Open Multiple Channels</button>
-        {/* hidden import */}
-        <input
-          type="file"
-          accept=".csv"
-          style={{ display: 'none' }}
-          ref={fileInputRef}
-          onChange={handleFileUpload}
-          placeholder="import"
-        />
-      </div>
-    );
-  }
 };

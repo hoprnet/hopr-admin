@@ -738,7 +738,6 @@ const openChannelThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setChannelsFetching(true));
     try {
       const res = await openChannel(payload);
       return res;
@@ -750,13 +749,7 @@ const openChannelThunk = createAsyncThunk<
         });
       }
     }
-  },
-  { condition: (_payload, { getState }) => {
-    const isFetching = getState().node.channels.isFetching;
-    if (isFetching) {
-      return false;
-    }
-  } },
+  }
 );
 
 const openMultipleChannelsThunk = createAsyncThunk(
@@ -779,7 +772,7 @@ const openMultipleChannelsThunk = createAsyncThunk(
         peerIds: payload.peerIds,
         amount: payload.amount,
       });
-      console.log(res);
+      console.log('res', res);
       if (typeof res === 'undefined')
         throw new APIError({
           status: '400',
@@ -787,7 +780,7 @@ const openMultipleChannelsThunk = createAsyncThunk(
         });
       return res;
     } catch (e) {
-      console.log(e);
+      console.log('e', e);
       if (e instanceof APIError) {
         return rejectWithValue({
           status: e.status,
