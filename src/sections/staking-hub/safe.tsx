@@ -8,7 +8,7 @@ import { safeActionsAsync } from '../../store/slices/safe';
 import { utils } from 'ethers';
 import { Address, formatEther } from 'viem';
 import { erc20ABI, useContractRead } from 'wagmi';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, mHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config';
 import Section from '../../future-hopr-lib-components/Section';
 import { useEthersSigner } from '../../hooks';
 import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
@@ -31,7 +31,7 @@ function SafeSection() {
   const [owners, set_owners] = useState('');
 
   const { data: allowanceData } = useContractRead({
-    address: mHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
+    address: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
     abi: erc20ABI,
     functionName: 'allowance',
     args: [selectedSafeAddress, HOPR_CHANNELS_SMART_CONTRACT_ADDRESS],
@@ -229,7 +229,7 @@ function SafeSection() {
                 data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, MAX_UINT256),
                 signer,
                 safeAddress: selectedSafeAddress,
-                smartContractAddress: mHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
+                smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
               }),
             );
           }

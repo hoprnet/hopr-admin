@@ -4,6 +4,7 @@ import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { useNavigate } from 'react-router-dom';
 import { exportToCsv } from '../../utils/helpers';
 import { utils } from 'ethers';
+import { HOPR_TOKEN_USED } from '../../../config';
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
@@ -204,7 +205,7 @@ function ChannelsPage() {
       key: key,
       peerId: getAliasByPeerId(channel.peerId),
       status: channel.status,
-      funds: `${utils.formatEther(channel.balance)} mHOPR`,
+      funds: `${utils.formatEther(channel.balance)} ${HOPR_TOKEN_USED}`,
       actions: (
         <>
           <PingModal peerId={channel.peerId} />
