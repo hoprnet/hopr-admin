@@ -16,7 +16,6 @@ import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 
-
 // No way to tell what the ethereum request can be so has to be any
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type EthereumProvider = { request(...args: any): Promise<any> };
@@ -43,7 +42,7 @@ const config = createConfig({
       chains,
       options: { projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID },
     }),
-    // add localhost only to injected connector 
+    // add localhost only to injected connector
     // because wallet connect fails with it
     new InjectedConnector({ chains: [localhost, ...chains] }),
   ],
