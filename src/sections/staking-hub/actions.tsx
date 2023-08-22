@@ -22,12 +22,12 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 // STORE
-import { useAppDispatch, useAppSelector } from '../store';
-import { safeActionsAsync } from '../store/slices/safe';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { safeActionsAsync } from '../../store/slices/safe';
 
 // COMPONENTS
-import Button from '../future-hopr-lib-components/Button';
-import Section from '../future-hopr-lib-components/Section';
+import Button from '../../future-hopr-lib-components/Button';
+import Section from '../../future-hopr-lib-components/Section';
 
 // LIBS
 import styled from '@emotion/styled';
@@ -39,7 +39,7 @@ import { erc20ABI } from 'wagmi';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { Address, decodeFunctionData, formatEther } from 'viem';
-import { useEthersSigner } from '../hooks';
+import { useEthersSigner } from '../../hooks';
 import {
   CustomAllTransactionsListResponse,
   CustomEthereumTxWithTransfersResponse,
@@ -47,10 +47,10 @@ import {
   CustomSafeMultisigTransactionListResponse,
   CustomSafeMultisigTransactionResponse,
   CustomSafeMultisigTransactionWithTransfersResponse
-} from '../store/slices/safe/initialState';
-import { calculateTimeInGMT, formatDateToUserTimezone, formatTimeToUserTimezone } from '../utils/date';
-import { truncateEthereumAddress } from '../utils/blockchain';
-import { getUserActionForPendingTransaction } from '../utils/safeTransactions';
+} from '../../store/slices/safe/initialState';
+import { calculateTimeInGMT, formatDateToUserTimezone, formatTimeToUserTimezone } from '../../utils/date';
+import { truncateEthereumAddress } from '../../utils/blockchain';
+import { getUserActionForPendingTransaction } from '../../utils/safeTransactions';
 
 const StyledContainer = styled(Paper)`
   min-width: 800px;

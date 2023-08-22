@@ -1,5 +1,6 @@
-import { Address, encodeFunctionData } from 'viem';
+import { Address, encodeFunctionData, encodePacked } from 'viem';
 import { erc20ABI } from 'wagmi';
+import { nodeManagementModuleAbi } from '../abi/nodeManagementModuleAbi';
 
 export const createApproveTransactionData = (spender: Address, value: bigint) => {
   const approveData = encodeFunctionData({
@@ -28,4 +29,37 @@ export const createSendTokensTransactionData = (recipient: Address, amount: bigi
     args: [recipient, amount],
   });
   return transferData;
+};
+
+export const createIncludeNodeTransactionData = (encodedPermissions: unknown) => {
+  const includeNodeData = encodeFunctionData({
+    abi: nodeManagementModuleAbi,
+    functionName: 'includeNode',
+    args: [encodedPermissions as bigint],
+  });
+
+  return includeNodeData;
+};
+
+export const encodeDefaultPermissions = (nodeAddress: string) => {
+  const encodedPermissions = encodePacked(
+    [
+      'address',
+      'uint8',
+      'uint8',
+      'uint8',
+      'uint8',
+      'uint8',
+      'uint8',
+      'uint8',
+      'uint8',
+      'uint8',
+      'uint8',
+      'uint8',
+      'uint8',
+    ],
+    [nodeAddress as Address, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  );
+
+  return encodedPermissions;
 };

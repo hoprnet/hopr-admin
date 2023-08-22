@@ -3,23 +3,23 @@ import styled from '@emotion/styled';
 import { useSearchParams } from 'react-router-dom';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { parseUnits } from 'viem';
-import { useAppDispatch, useAppSelector } from '../store';
-import { safeActionsAsync } from '../store/slices/safe';
-import { createSendTokensTransactionData } from '../utils/blockchain';
-import { useEthersSigner } from '../hooks';
-import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../config';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { safeActionsAsync } from '../../store/slices/safe';
+import { createSendTokensTransactionData } from '../../utils/blockchain';
+import { useEthersSigner } from '../../hooks';
+import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
 
 // components
-import Button from '../future-hopr-lib-components/Button';
-import Section from '../future-hopr-lib-components/Section';
-import Card from '../components/Card';
+import Button from '../../future-hopr-lib-components/Button';
+import Section from '../../future-hopr-lib-components/Section';
+import Card from '../../components/Card';
 
 // Mui
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
-import Select from '../future-hopr-lib-components/Select';
+import Select from '../../future-hopr-lib-components/Select';
 import { SelectChangeEvent } from '@mui/material/Select';
-import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../utils/safeTransactions';
+import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../../utils/safeTransactions';
 
 const StyledForm = styled.div`
   width: 100%;
@@ -139,7 +139,7 @@ function SafeWithdraw() {
 
   useEffect(() => {
     if (proposedTxHash) {
-      const foundProposedTx = pendingTransactions?.results.find((tx) => tx.safeTxHash === proposedTxHash);
+      const foundProposedTx = pendingTransactions?.results.find((tx) => tx.transactionHash === proposedTxHash);
       if (foundProposedTx && address) {
         set_proposedTx(foundProposedTx);
         set_userAction(getUserActionForPendingTransaction(foundProposedTx, address));
@@ -216,9 +216,6 @@ function SafeWithdraw() {
           }),
         )
           .unwrap()
-          .then((res: unknown) => {
-            console.log('executePendingTransactionThunk success', res);
-          })
           .finally(() => {
             set_isExecuting(false);
           });
@@ -245,8 +242,8 @@ function SafeWithdraw() {
           }),
         )
           .unwrap()
-          .then((safeTxHash) => {
-            set_proposedTxHash(safeTxHash);
+          .then((transactionResponse) => {
+            set_proposedTxHash(transactionResponse);
           })
           .finally(() => {
             set_isExecuting(false);
@@ -263,8 +260,8 @@ function SafeWithdraw() {
           }),
         )
           .unwrap()
-          .then((safeTxHash) => {
-            set_proposedTxHash(safeTxHash);
+          .then((transactionResponse) => {
+            set_proposedTxHash(transactionResponse);
           })
           .finally(() => {
             set_isExecuting(false);
