@@ -29,7 +29,7 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 
 
-### `docker build -f ./scripts/Dockerfile-NodeAdmin .`
+### `docker build -f ./scripts/NodeAdmin.Dockerfile .`
 
 Builds the Node Admin docker image.
 
