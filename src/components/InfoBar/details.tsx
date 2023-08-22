@@ -1,3 +1,4 @@
+import { HOPR_TOKEN_USED } from '../../../config';
 import { useAppSelector } from '../../store';
 import styled from '@emotion/styled';
 
@@ -202,7 +203,7 @@ export default function Details(props: Props) {
               alt="xHOPR Icon"
             />
           </IconContainer>
-          <Text>xHOPR</Text>
+          <Text>{HOPR_TOKEN_USED}</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer>
