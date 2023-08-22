@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
+import { utils } from 'ethers';
+import { useEthersSigner } from '../../hooks';
+import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
+import { Address, formatEther } from 'viem';
+import { appActions } from '../../store/slices/app';
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config';
+import { erc20ABI, useContractRead, useWalletClient } from 'wagmi';
+import { nodeManagementModuleAbi } from '../../abi/nodeManagementModuleAbi';
+import { nodeSafeRegistryAbi } from '../../abi/nodeSafeRegistryAbi';
+import { createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../utils/blockchain'
 
 //Stores
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActionsAsync } from '../../store/slices/safe';
 
 // HOPR Components
-import { utils } from 'ethers';
-import { Address, formatEther } from 'viem';
-import { erc20ABI, useContractRead, useWalletClient } from 'wagmi';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, mHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config'
-import { nodeManagementModuleAbi } from '../../abi/nodeManagementModuleAbi';
 import Section from '../../future-hopr-lib-components/Section';
-import { useEthersSigner } from '../../hooks';
-import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
-import { appActions } from '../../store/slices/app';
-import { createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../utils/blockchain'
-import { nodeSafeRegistryAbi } from '../../abi/nodeSafeRegistryAbi';
 
 // Maximum possible value for uint256
 const MAX_UINT256 = BigInt(2 ** 256) - BigInt(1);
@@ -39,7 +39,7 @@ function SafeSection() {
   const [nodeAddressForRegistry, set_nodeAddressForRegistry] = useState('');
 
   const { data: allowanceData } = useContractRead({
-    address: mHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
+    address: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
     abi: erc20ABI,
     functionName: 'allowance',
     args: [selectedSafeAddress, HOPR_CHANNELS_SMART_CONTRACT_ADDRESS],
@@ -337,7 +337,7 @@ function SafeSection() {
                 data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, MAX_UINT256),
                 signer,
                 safeAddress: selectedSafeAddress,
-                smartContractAddress: mHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
+                smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
               }),
             );
           }

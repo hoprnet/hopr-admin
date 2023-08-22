@@ -5,6 +5,7 @@ import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { sendNotification } from '../../hooks/useWatcher/notifications';
+import { HOPR_TOKEN_USED } from '../../../config';
 
 // HOPR Components
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
@@ -146,7 +147,7 @@ export const OpenOrFundChannelModal = ({
             placeholder="Amount"
             value={amount}
             onChange={(e) => set_amount(e.target.value)}
-            InputProps={{ endAdornment: <InputAdornment position="end">mHOPR</InputAdornment> }}
+            InputProps={{ endAdornment: <InputAdornment position="end">{HOPR_TOKEN_USED}</InputAdornment> }}
             sx={{ mt: '6px' }}
           />
         </SDialogContent>
