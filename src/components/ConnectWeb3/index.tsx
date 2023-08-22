@@ -99,7 +99,7 @@ export default function ConnectWeb3({
   const [localError, set_localError] = useState<false | string>(false);
   const [currentAccount, set_currentAccount] = useState('');
   const containerRef = useRef<HTMLButtonElement>(null);
-  
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -161,7 +161,6 @@ export default function ConnectWeb3({
     // close current modal
     handleClose();
   };
- 
 
   const handleDisconnectMM = () => {
     disconnect();
@@ -232,18 +231,21 @@ export default function ConnectWeb3({
         style={{ height: '270px' }}
       >
         {!localError && (
-          <><ConnectWalletContent>
-            <WalletButton
-              onClick={handleConnectToMetaMask}
-              wallet="metamask" />
-            <WalletButton
-              onClick={handleConnectToWalletConnect}
-              wallet='walletConnect' />
-            <p>
+          <>
+            <ConnectWalletContent>
+              <WalletButton
+                onClick={handleConnectToMetaMask}
+                wallet="metamask"
+              />
+              <WalletButton
+                onClick={handleConnectToWalletConnect}
+                wallet="walletConnect"
+              />
+              <p>
                 By connecting a wallet, you agree to HOPR’s Terms of Service and acknowledge that you have read and
                 understand the Disclaimer.
-            </p>
-          </ConnectWalletContent>
+              </p>
+            </ConnectWalletContent>
           </>
         )}
         {localError && !walletPresent && <p>Wallet was not detected. Please install a wallet, e.g. MetaMask</p>}

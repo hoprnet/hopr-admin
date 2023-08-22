@@ -35,10 +35,13 @@ const walletIsInBrowser =
 
 const config = createConfig({
   autoConnect: true,
-  connectors: [new MetaMaskConnector({ chains }),  new WalletConnectConnector({
-    chains,
-    options: { projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID },
-  })],
+  connectors: [
+    new MetaMaskConnector({ chains }),
+    new WalletConnectConnector({
+      chains,
+      options: { projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID },
+    }),
+  ],
 
   publicClient: (chain) => {
     if (walletIsInBrowser) {

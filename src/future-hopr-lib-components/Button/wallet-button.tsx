@@ -15,11 +15,12 @@ const SButton = styled(MuiButton)`
   }
 `;
 
-type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & React.PropsWithChildren & { 
-  wallet?: string
-  className?: string
-  src?: string
-}
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
+  React.PropsWithChildren & {
+    wallet?: string;
+    className?: string;
+    src?: string;
+  };
 
 export default function Button(props: ButtonProps) {
   function src() {
