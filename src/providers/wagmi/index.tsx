@@ -31,7 +31,9 @@ const config = createConfig({
     // wallet is in browser at this point
     return createWalletClient({
       chain: gnosis,
-      transport: walletIsInBrowser ? custom((window as unknown as WindowWithEthereum).ethereum) : http('https://derp.hoprnet.org/rpc/xdai/mainnet'),
+      transport: walletIsInBrowser
+        ? custom((window as unknown as WindowWithEthereum).ethereum)
+        : http('https://derp.hoprnet.org/rpc/xdai/mainnet'),
     }).extend(publicActions);
   },
 });
@@ -44,7 +46,7 @@ export default function WagmiProvider(props: React.PropsWithChildren) {
   }, [walletIsInBrowser]);
 
   if (!walletIsInBrowser) {
-    return props.children
+    return props.children;
   }
 
   return (
