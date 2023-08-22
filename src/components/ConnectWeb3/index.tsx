@@ -11,10 +11,7 @@ import { web3Actions } from '../../store/slices/web3';
 
 // wagmi
 import { Button, Menu, MenuItem } from '@mui/material';
-import { gnosis, localhost } from 'viem/chains';
-import { useConnect, useDisconnect } from 'wagmi';
-import { InjectedConnector } from 'wagmi/connectors/injected';
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
+import { Connector, useConnect, useDisconnect } from 'wagmi';
 import { truncateEthereumAddress } from '../../utils/blockchain';
 
 const AppBarContainer = styled(Button)`
@@ -82,14 +79,11 @@ export default function ConnectWeb3({
   const [chooseWalletModal, set_chooseWalletModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const {
-    connect: connectMetaMask,
-    error: errorMetaMask,
-  } = useConnect({ connector: new InjectedConnector({ chains: [localhost, gnosis] }) });
-
-  const { connect: connectWalletConnect } = useConnect({ connector: new WalletConnectConnector({
-    chains: [gnosis],
-    options: { projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID },
-  }) });
+    connectors,
+    connect,
+    error,
+    data,
+  } = useConnect();
 
   const { disconnect } = useDisconnect();
   const account = useAppSelector((store) => store.web3.account);
@@ -131,9 +125,9 @@ export default function ConnectWeb3({
   }, [account]);
 
   useEffect(() => {
-    if (errorMetaMask) set_localError(JSON.stringify(errorMetaMask));
+    if (error) set_localError(JSON.stringify(error));
     else set_localError(false);
-  }, [errorMetaMask]);
+  }, [error]);
 
   const handleClose = () => {
     if (onClose) {
@@ -145,21 +139,15 @@ export default function ConnectWeb3({
     }, 250);
   };
 
-  const handleConnectToMetaMask = () => {
+  const handleConnectToWallet = (connector: Connector) => {
     dispatch(web3Actions.setLoading(true));
 
-    connectMetaMask();
-    if (isConnected) {
+    connect({ connector });
+
+    // wallet connect opens another modal
+    if (isConnected || connector.id === 'walletConnect') {
       handleClose();
     }
-  };
-
-  const handleConnectToWalletConnect = () => {
-    dispatch(web3Actions.setLoading(true));
-    // open wallet connect modal
-    connectWalletConnect();
-    // close current modal
-    handleClose();
   };
 
   const handleDisconnectMM = () => {
@@ -204,7 +192,9 @@ export default function ConnectWeb3({
             <>
               <Web3Button>
                 <div className="wallet-info">
-                  <p className="chain">Metamask @ {chain}</p>
+                  <p className="chain">
+                    {data?.connector?.name ?? 'Metamask'} @ {chain}
+                  </p>
                   <p>eth: {truncateEthereumAddress(currentAccount)}</p>
                 </div>
                 <div className="dropdown-icon">
@@ -231,22 +221,22 @@ export default function ConnectWeb3({
         style={{ height: '270px' }}
       >
         {!localError && (
-          <>
-            <ConnectWalletContent>
+          <ConnectWalletContent>
+            {connectors.map((connector) => (
               <WalletButton
-                onClick={handleConnectToMetaMask}
-                wallet="metamask"
+                key={connector.id}
+                disabled={!connector.ready}
+                onClick={() => {
+                  handleConnectToWallet(connector);
+                }}
+                wallet={connector.id}
               />
-              <WalletButton
-                onClick={handleConnectToWalletConnect}
-                wallet="walletConnect"
-              />
-              <p>
-                By connecting a wallet, you agree to HOPR’s Terms of Service and acknowledge that you have read and
-                understand the Disclaimer.
-              </p>
-            </ConnectWalletContent>
-          </>
+            ))}
+            <p>
+              By connecting a wallet, you agree to HOPR’s Terms of Service and acknowledge that you have read and
+              understand the Disclaimer.
+            </p>
+          </ConnectWalletContent>
         )}
         {localError && !walletPresent && <p>Wallet was not detected. Please install a wallet, e.g. MetaMask</p>}
         {localError && walletPresent && <p>{localError}</p>}
