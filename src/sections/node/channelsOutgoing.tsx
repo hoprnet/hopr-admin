@@ -213,7 +213,6 @@ function ChannelsPage() {
             modalBtnText="Fund outgoing channel"
             actionBtnText="Fund outgoing channel"
             type="fund"
-            channelId={channel.id}
           />
           <IconButton
             iconComponent={<CloseChannelIcon />}

@@ -22,6 +22,7 @@ import {
   type GetChannelTicketsPayloadType,
   type WithdrawPayloadType,
   type RedeemChannelTicketsPayloadType,
+  type GetPeerPayloadType,
   GetChannelResponseType,
   GetPeersResponseType,
   GetSettingsResponseType,
@@ -36,7 +37,8 @@ import {
   api,
   utils,
   OpenChannelResponseType,
-  CreateTokenResponseType
+  CreateTokenResponseType,
+  GetPeerResponseType
 } from '@hoprnet/hopr-sdk';
 import { parseMetrics } from '../../../utils/metrics';
 import { RootState } from '../..';
@@ -47,7 +49,7 @@ const {
   closeChannel,
   createToken,
   deleteToken,
-  // fundChannels,
+  // fundChannels, -> might be same as openChannel
   getAddresses,
   getAlias,
   getAliases,
@@ -58,7 +60,6 @@ const {
   getEntryNodes,
   getInfo,
   getMetrics,
-  // getPeerInfo,
   getPeers,
   getSettings,
   getStatistics,
@@ -67,6 +68,7 @@ const {
   getVersion,
   openChannel,
   pingPeer,
+  // getPeer, // old getPeerInfo
   redeemChannelTickets,
   redeemTickets,
   removeAlias,
@@ -263,19 +265,16 @@ const getPeersThunk = createAsyncThunk<GetPeersResponseType | undefined, GetPeer
   } },
 );
 
-// const getPeerInfoThunk = createAsyncThunk<
-//   GetPeerInfoResponseType | undefined,
-//   GetPeerInfoPayloadType,
-//   { state: RootState }
-// >(
+// TODO: This is fixed, comment out after new sdk package is published
+// const getPeerInfoThunk = createAsyncThunk<GetPeerResponseType | undefined, GetPeerPayloadType, { state: RootState }>(
 //   'node/getPeerInfo',
-//   async (payload: GetPeerInfoPayloadType, {
+//   async (payload: GetPeerPayloadType, {
 //     rejectWithValue,
 //     dispatch,
 //   }) => {
 //     dispatch(setPeerInfoFetching(true));
 //     try {
-//       const peerInfo = await getPeerInfo(payload);
+//       const peerInfo = await getPeer(payload);
 //       return peerInfo;
 //     } catch (e) {
 //       if (e instanceof APIError) {
@@ -1263,7 +1262,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
         state.channels.data = {
           incoming: [],
           outgoing: [],
-          all: [], // FIXME: Can this be empty if it doesnt have any data before? Should we not index the result of this?
+          all: [],
           // overwrite actual type
           [type]: [
             {
