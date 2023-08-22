@@ -1,19 +1,20 @@
-import { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
-import Modal from '../../future-hopr-lib-components/Modal';
+import { useEffect, useRef, useState } from 'react';
 import WalletButton from '../../future-hopr-lib-components/Button/wallet-button';
+import Modal from '../../future-hopr-lib-components/Modal';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
-import { web3Actions } from '../../store/slices/web3';
 import { appActions } from '../../store/slices/app';
 import { safeActions } from '../../store/slices/safe';
+import { web3Actions } from '../../store/slices/web3';
 
 // wagmi
+import { Button, Menu, MenuItem } from '@mui/material';
+import { gnosis, localhost } from 'viem/chains';
 import { useConnect, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
-import { gnosis, localhost } from 'viem/chains';
-import { Button, Menu, MenuItem } from '@mui/material';
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { truncateEthereumAddress } from '../../utils/blockchain';
 
 const AppBarContainer = styled(Button)`
@@ -81,9 +82,15 @@ export default function ConnectWeb3({
   const [chooseWalletModal, set_chooseWalletModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const {
-    connect,
-    error,
+    connect: connectMetaMask,
+    error: errorMetaMask,
   } = useConnect({ connector: new InjectedConnector({ chains: [localhost, gnosis] }) });
+
+  const { connect: connectWalletConnect } = useConnect({ connector: new WalletConnectConnector({
+    chains: [gnosis],
+    options: { projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID },
+  }) });
+
   const { disconnect } = useDisconnect();
   const account = useAppSelector((store) => store.web3.account);
   const isConnected = useAppSelector((store) => store.web3.status.connected);
@@ -92,7 +99,7 @@ export default function ConnectWeb3({
   const [localError, set_localError] = useState<false | string>(false);
   const [currentAccount, set_currentAccount] = useState('');
   const containerRef = useRef<HTMLButtonElement>(null);
-
+  
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -124,9 +131,9 @@ export default function ConnectWeb3({
   }, [account]);
 
   useEffect(() => {
-    if (error) set_localError(JSON.stringify(error));
+    if (errorMetaMask) set_localError(JSON.stringify(errorMetaMask));
     else set_localError(false);
-  }, [error]);
+  }, [errorMetaMask]);
 
   const handleClose = () => {
     if (onClose) {
@@ -141,11 +148,20 @@ export default function ConnectWeb3({
   const handleConnectToMetaMask = () => {
     dispatch(web3Actions.setLoading(true));
 
-    connect();
+    connectMetaMask();
     if (isConnected) {
       handleClose();
     }
   };
+
+  const handleConnectToWalletConnect = () => {
+    dispatch(web3Actions.setLoading(true));
+    // open wallet connect modal
+    connectWalletConnect();
+    // close current modal
+    handleClose();
+  };
+ 
 
   const handleDisconnectMM = () => {
     disconnect();
@@ -196,7 +212,6 @@ export default function ConnectWeb3({
                   <DropdownArrow src="/assets/dropdown-arrow.svg" />
                 </div>
               </Web3Button>
-
               <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
@@ -217,16 +232,19 @@ export default function ConnectWeb3({
         style={{ height: '270px' }}
       >
         {!localError && (
-          <ConnectWalletContent>
+          <><ConnectWalletContent>
             <WalletButton
               onClick={handleConnectToMetaMask}
-              wallet="metamask"
-            />
+              wallet="metamask" />
+            <WalletButton
+              onClick={handleConnectToWalletConnect}
+              wallet='walletConnect' />
             <p>
-              By connecting a wallet, you agree to HOPR’s Terms of Service and acknowledge that you have read and
-              understand the Disclaimer.
+                By connecting a wallet, you agree to HOPR’s Terms of Service and acknowledge that you have read and
+                understand the Disclaimer.
             </p>
           </ConnectWalletContent>
+          </>
         )}
         {localError && !walletPresent && <p>Wallet was not detected. Please install a wallet, e.g. MetaMask</p>}
         {localError && walletPresent && <p>{localError}</p>}

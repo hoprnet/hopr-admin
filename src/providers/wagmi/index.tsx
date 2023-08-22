@@ -13,6 +13,7 @@ import { publicProvider } from 'wagmi/providers/public';
 //wagmi connectors
 import { createWalletClient, custom, publicActions } from 'viem';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 
 // No way to tell what the ethereum request can be so has to be any
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -34,7 +35,11 @@ const walletIsInBrowser =
 
 const config = createConfig({
   autoConnect: true,
-  connectors: [new MetaMaskConnector({ chains })],
+  connectors: [new MetaMaskConnector({ chains }),  new WalletConnectConnector({
+    chains,
+    options: { projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID },
+  })],
+
   publicClient: (chain) => {
     if (walletIsInBrowser) {
       return createWalletClient({

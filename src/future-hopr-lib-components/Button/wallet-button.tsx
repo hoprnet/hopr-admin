@@ -15,11 +15,19 @@ const SButton = styled(MuiButton)`
   }
 `;
 
-export default function Button(props) {
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & React.PropsWithChildren & { 
+  wallet?: string
+  className?: string
+  src?: string
+}
+
+export default function Button(props: ButtonProps) {
   function src() {
     switch (props.wallet) {
     case 'metamask':
       return '/assets/wallets/MetaMask-Emblem.svg';
+    case 'walletConnect':
+      return '/assets/wallets/WalletConnect-Icon.svg';
     case 'viewMode':
       return '/assets/wallets/Eye_open_font_awesome.svg';
     default:
@@ -30,7 +38,7 @@ export default function Button(props) {
   return (
     <SButton
       className={props.className}
-      {...props}
+      onClick={props.onClick}
     >
       <img src={props.src ? props.src : src()} />
       {props.wallet === 'viewMode' && <Typography>View mode</Typography>}
