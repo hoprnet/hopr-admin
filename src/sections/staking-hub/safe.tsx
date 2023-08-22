@@ -4,7 +4,7 @@ import { useEthersSigner } from '../../hooks';
 import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
 import { Address, formatEther } from 'viem';
 import { appActions } from '../../store/slices/app';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config';
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config'
 import { erc20ABI, useContractRead, useWalletClient } from 'wagmi';
 import { nodeManagementModuleAbi } from '../../abi/nodeManagementModuleAbi';
 import { nodeSafeRegistryAbi } from '../../abi/nodeSafeRegistryAbi';

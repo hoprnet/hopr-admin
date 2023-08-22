@@ -268,7 +268,9 @@ function InfoPage() {
                   <span>Hopr</span>
                 </Tooltip>
               </th>
-              <td>{balances.hopr?.formatted} {HOPR_TOKEN_USED}</td>
+              <td>
+                {balances.hopr?.formatted} {HOPR_TOKEN_USED}
+              </td>
             </tr>
           </tbody>
         </TableExtended>
