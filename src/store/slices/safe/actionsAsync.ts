@@ -15,19 +15,19 @@ import SafeApiKit, {
   TokenInfoResponse
 } from '@safe-global/api-kit';
 import Safe, { EthersAdapter, SafeAccountConfig, SafeFactory } from '@safe-global/protocol-kit';
-import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionData, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
-import { gnosis } from '@wagmi/core/chains';
+import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionData, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types';
 import { ethers } from 'ethers';
 import {
   Address,
   WalletClient,
-  createPublicClient,
-  http,
+  encodePacked,
+  keccak256,
+  publicActions,
   toBytes,
   toHex
-} from 'viem'
+} from 'viem';
 import { RootState } from '../..';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_MANAGEMENT_MODULE, HOPR_NODE_STAKE_FACTORY } from '../../../../config'
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_MANAGEMENT_MODULE, HOPR_NODE_STAKE_FACTORY } from '../../../../config';
 import hoprNodeStakeFactoryAbi from '../../../abi/nodeStakeFactoryAbi.json';
 import {
   getCurrencyFromHistoryTransaction,
@@ -1015,20 +1015,19 @@ const createSafeWithConfigThunk = createAsyncThunk<
   }) => {
     dispatch(setSelectedSafeFetching(true));
     try {
+      const superWalletClient = payload.walletClient.extend(publicActions)
+      
+      if (!superWalletClient.account) return;
+
       // The saltNonce is used to calculate a deterministic address for the new Safe contract.
       // This way, even if the same Safe configuration is used multiple times,
       // each deployment will result in a new, unique Safe contract.
-      const saltNonce = Date.now().toString();
-
-      const publicClient = createPublicClient({
-        chain: gnosis,
-        transport: http(),
-      });
+      const saltNonce = keccak256(encodePacked(['bytes20', 'string'], [superWalletClient.account.address, Date.now().toString()]));
 
       const {
         result,
         request,
-      } = await publicClient.simulateContract({
+      } = await superWalletClient.simulateContract({
         account: payload.walletClient.account,
         address: HOPR_NODE_STAKE_FACTORY,
         abi: hoprNodeStakeFactoryAbi,
@@ -1041,7 +1040,12 @@ const createSafeWithConfigThunk = createAsyncThunk<
         ],
       });
 
-      const transactionHash = await payload.walletClient.writeContract(request);
+      // simulation failed
+      if (!result) return;
+
+      const transactionHash = await superWalletClient.writeContract(request);
+
+      await superWalletClient.waitForTransactionReceipt({ hash: transactionHash })
 
       const [moduleProxy, safeAddress] = result as [Address, Address];
 
