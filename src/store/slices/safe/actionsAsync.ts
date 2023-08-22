@@ -38,8 +38,8 @@ import {
   getValueFromHistoryTransaction
 } from '../../../utils/safeTransactions';
 import { initialState } from './initialState';
+import { SAFE_SERVICE_URL } from '../../../../config';
 
-const SERVICE_URL = 'https://safe-transaction.stage.hoprtech.net/';
 
 const createSafeApiService = async (signer: ethers.providers.JsonRpcSigner) => {
   const adapter = new EthersAdapter({
@@ -47,7 +47,7 @@ const createSafeApiService = async (signer: ethers.providers.JsonRpcSigner) => {
     signerOrProvider: signer,
   });
   const safeService = new SafeApiKit({
-    txServiceUrl: SERVICE_URL,
+    txServiceUrl: SAFE_SERVICE_URL,
     ethAdapter: adapter,
   });
 
@@ -1024,6 +1024,7 @@ const createSafeWithConfigThunk = createAsyncThunk<
         chain: gnosis,
         transport: http(),
       });
+      
 
       const {
         result,
@@ -1043,7 +1044,24 @@ const createSafeWithConfigThunk = createAsyncThunk<
 
       const transactionHash = await payload.walletClient.writeContract(request);
 
+      const transaction = await publicClient.waitForTransactionReceipt( 
+        { hash: transactionHash }
+      );
+
       const [moduleProxy, safeAddress] = result as [Address, Address];
+
+      await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          transactionHash,
+          safeAddress,
+          moduleAddress: moduleProxy,
+          owner: payload.walletClient.account?.address,
+        }),
+      })
 
       return {
         transactionHash,
