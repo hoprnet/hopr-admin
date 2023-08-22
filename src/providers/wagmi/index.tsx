@@ -11,7 +11,7 @@ import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 
 //wagmi connectors
-import { createWalletClient, custom, publicActions } from 'viem';
+import { createWalletClient, custom, http, publicActions } from 'viem';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 
 // No way to tell what the ethereum request can be so has to be any
@@ -19,15 +19,7 @@ import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 type EthereumProvider = { request(...args: any): Promise<any> };
 type WindowWithEthereum = { ethereum: EthereumProvider };
 
-const {
-  chains,
-  publicClient,
-  webSocketPublicClient,
-} = configureChains([gnosis], [publicProvider()], {
-  pollingInterval: 30_000,
-  stallTimeout: 5_000,
-  rank: true,
-});
+const { chains } = configureChains([gnosis], [publicProvider()]);
 
 const walletIsInBrowser =
   typeof window !== 'undefined' && typeof (window as unknown as WindowWithEthereum).ethereum !== 'undefined';
@@ -35,18 +27,13 @@ const walletIsInBrowser =
 const config = createConfig({
   autoConnect: true,
   connectors: [new MetaMaskConnector({ chains })],
-  publicClient: (chain) => {
-    if (walletIsInBrowser) {
-      return createWalletClient({
-        chain: gnosis,
-        transport: custom((window as unknown as WindowWithEthereum).ethereum),
-      }).extend(publicActions);
-    }
-
-    // no ethereum found in window
-    return publicClient(chain);
+  publicClient: () => {
+    // wallet is in browser at this point
+    return createWalletClient({
+      chain: gnosis,
+      transport: walletIsInBrowser ? custom((window as unknown as WindowWithEthereum).ethereum) : http('https://derp.hoprnet.org/rpc/xdai/mainnet'),
+    }).extend(publicActions);
   },
-  webSocketPublicClient,
 });
 
 export default function WagmiProvider(props: React.PropsWithChildren) {
@@ -55,6 +42,10 @@ export default function WagmiProvider(props: React.PropsWithChildren) {
   useEffect(() => {
     dispatch(web3Actions.setWalletPresent(walletIsInBrowser));
   }, [walletIsInBrowser]);
+
+  if (!walletIsInBrowser) {
+    return props.children
+  }
 
   return (
     <WagmiConfig config={config}>
