@@ -16,13 +16,13 @@ import SafeApiKit, {
 } from '@safe-global/api-kit';
 import Safe, { EthersAdapter, SafeAccountConfig, SafeFactory } from '@safe-global/protocol-kit';
 import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionData, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
-import { gnosis } from '@wagmi/core/chains';
 import { ethers } from 'ethers';
 import {
   Address,
   WalletClient,
-  createPublicClient,
-  http,
+  encodePacked,
+  keccak256,
+  publicActions,
   toBytes,
   toHex
 } from 'viem'
@@ -38,8 +38,7 @@ import {
   getValueFromHistoryTransaction
 } from '../../../utils/safeTransactions';
 import { initialState } from './initialState';
-
-const SERVICE_URL = 'https://safe-transaction.stage.hoprtech.net/';
+import { SAFE_SERVICE_URL } from '../../../../config';
 
 const createSafeApiService = async (signer: ethers.providers.JsonRpcSigner) => {
   const adapter = new EthersAdapter({
@@ -47,7 +46,7 @@ const createSafeApiService = async (signer: ethers.providers.JsonRpcSigner) => {
     signerOrProvider: signer,
   });
   const safeService = new SafeApiKit({
-    txServiceUrl: SERVICE_URL,
+    txServiceUrl: SAFE_SERVICE_URL,
     ethAdapter: adapter,
   });
 
@@ -1015,20 +1014,21 @@ const createSafeWithConfigThunk = createAsyncThunk<
   }) => {
     dispatch(setSelectedSafeFetching(true));
     try {
+      const superWalletClient = payload.walletClient.extend(publicActions);
+
+      if (!superWalletClient.account) return;
+
       // The saltNonce is used to calculate a deterministic address for the new Safe contract.
       // This way, even if the same Safe configuration is used multiple times,
       // each deployment will result in a new, unique Safe contract.
-      const saltNonce = Date.now().toString();
-
-      const publicClient = createPublicClient({
-        chain: gnosis,
-        transport: http(),
-      });
+      const saltNonce = keccak256(
+        encodePacked(['bytes20', 'string'], [superWalletClient.account.address, Date.now().toString()]),
+      );
 
       const {
         result,
         request,
-      } = await publicClient.simulateContract({
+      } = await superWalletClient.simulateContract({
         account: payload.walletClient.account,
         address: HOPR_NODE_STAKE_FACTORY,
         abi: hoprNodeStakeFactoryAbi,
@@ -1041,9 +1041,34 @@ const createSafeWithConfigThunk = createAsyncThunk<
         ],
       });
 
-      const transactionHash = await payload.walletClient.writeContract(request);
+      // TODO: Add error handling if failed (notificaiton)
+
+      if (!result) return;
+
+      const transactionHash = await superWalletClient.writeContract(request);
+
+      const red = await superWalletClient.waitForTransactionReceipt({ hash: transactionHash });
+
+      console.log({ red });
 
       const [moduleProxy, safeAddress] = result as [Address, Address];
+
+      await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          transactionHash,
+          safeAddress,
+          moduleAddress: moduleProxy,
+          ownerAddress: payload.walletClient.account?.address,
+        }),
+      });
+      dispatch(
+        addSafeLocally({
+          safeAddress,
+          moduleAddress: moduleProxy,
+        }),
+      );
 
       return {
         transactionHash,
@@ -1077,6 +1102,8 @@ const setAddDelegateFetching = createAction<boolean>('node/setAddDelegateFetchin
 const setRemoveDelegateFetching = createAction<boolean>('node/setRemoveDelegateFetching');
 const setTokenListFetching = createAction<boolean>('node/setTokenListFetching');
 const setTokenFetching = createAction<boolean>('node/setTokenFetching');
+
+const addSafeLocally = createAction<{}>('stakingHub/addSafe');
 
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   // CreateSafeWithConfig

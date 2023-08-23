@@ -17,6 +17,7 @@ import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 // Modals
 import { PingModal } from '../../components/Modal/PingModal';
 import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
+import { OpenMultipleChannelsModal } from '../../components/Modal/OpenMultipleChannelsModal';
 
 // Mui
 import CircularProgress from '@mui/material/CircularProgress';
@@ -122,7 +123,11 @@ function ChannelsPage() {
     }
   };
 
+<<<<<<< HEAD:src/sections/node/channelsOutgoing.tsx
   const handleCloseChannels = (channelId: string) => {
+=======
+  const handleCloseChannel = (direction: 'incoming' | 'outgoing', peerId: string, channelId: string) => {
+>>>>>>> develop:src/pages/node/channelsOutgoing.tsx
     set_closingStates((prevStates) => ({
       ...prevStates,
       [channelId]: {
@@ -245,7 +250,11 @@ function ChannelsPage() {
             iconComponent={<CloseChannelIcon />}
             pending={closingStates[channel.id]?.closing}
             tooltipText={`Close outgoing channel`}
+<<<<<<< HEAD:src/sections/node/channelsOutgoing.tsx
             onClick={() => handleCloseChannels(channel.id)}
+=======
+            onClick={() => handleCloseChannel('outgoing', channel.peerId, channel.channelId)}
+>>>>>>> develop:src/pages/node/channelsOutgoing.tsx
           />
         </>
       ),
@@ -266,6 +275,7 @@ function ChannelsPage() {
         actions={
           <>
             <OpenOrFundChannelModal type={'open'} />
+            <OpenMultipleChannelsModal />
             <OpenOrFundChannelModal
               type={'fund'}
               title="Fund outgoing channel"
