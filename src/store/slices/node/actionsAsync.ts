@@ -38,6 +38,7 @@ import {
   GetChannelsResponseType,
   api,
   utils,
+  flows,
   FundChannelsResponseType,
   OpenChannelResponseType,
   CreateTokenResponseType
@@ -80,6 +81,7 @@ const {
   sign,
   withdraw,
 } = api;
+const { openMultipleChannels } = flows;
 
 const getInfoThunk = createAsyncThunk<GetInfoResponseType | undefined, BasePayloadType, { state: RootState }>(
   'node/getInfo',
@@ -730,17 +732,53 @@ const openChannelThunk = createAsyncThunk<
   OpenChannelResponseType | undefined,
   OpenChannelPayloadType,
   { state: RootState }
->(
-  'node/openChannel',
-  async (payload: OpenChannelPayloadType, {
-    rejectWithValue,
-    dispatch,
-  }) => {
-    dispatch(setChannelsFetching(true));
+>('node/openChannel', async (payload: OpenChannelPayloadType, {
+  rejectWithValue,
+  dispatch,
+}) => {
+  try {
+    const res = await openChannel(payload);
+    return res;
+  } catch (e) {
+    if (e instanceof APIError) {
+      return rejectWithValue({
+        status: e.status,
+        error: e.error,
+      });
+    }
+  }
+});
+
+// will not be used for now, as it doesn't give good errors
+const openMultipleChannelsThunk = createAsyncThunk(
+  'node/openMultipleChannels',
+  async (
+    payload: {
+      apiEndpoint: string;
+      apiToken: string;
+      peerIds: string[];
+      amount: string;
+      timeout?: number;
+    },
+    { rejectWithValue },
+  ) => {
     try {
-      const res = await openChannel(payload);
+      const res = await openMultipleChannels({
+        apiEndpoint: payload.apiEndpoint,
+        apiToken: payload.apiToken,
+        timeout: payload.timeout,
+        peerIds: payload.peerIds,
+        amount: payload.amount,
+      });
+      console.log('res', res);
+      if (typeof res === 'undefined')
+        throw new APIError({
+          status: '400',
+          error: 'Node does not have enough balance to fund channels',
+        });
       return res;
     } catch (e) {
+      console.log('e', e);
       if (e instanceof APIError) {
         return rejectWithValue({
           status: e.status,
@@ -749,12 +787,6 @@ const openChannelThunk = createAsyncThunk<
       }
     }
   },
-  { condition: (_payload, { getState }) => {
-    const isFetching = getState().node.channels.isFetching;
-    if (isFetching) {
-      return false;
-    }
-  } },
 );
 
 const redeemChannelTicketsThunk = createAsyncThunk<boolean | undefined, PeerIdPayloadType, { state: RootState }>(
@@ -1435,6 +1467,7 @@ export const actionsAsync = {
   getChannelThunk,
   getChannelTicketsThunk,
   openChannelThunk,
+  openMultipleChannelsThunk,
   redeemChannelTicketsThunk,
   sendMessageThunk,
   signThunk,
