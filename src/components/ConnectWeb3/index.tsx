@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { web3Actions } from '../../store/slices/web3';
 import { appActions } from '../../store/slices/app';
 import { safeActions } from '../../store/slices/safe';
+import { stakingHubActions, stakingHubActionsAsync } from '../../store/slices/stakingHub';
 
 // wagmi
 import { useConnect, useDisconnect } from 'wagmi';
@@ -108,7 +109,12 @@ export default function ConnectWeb3({
   }, []);
 
   useEffect(() => {
-    if (isConnected) handleClose();
+    if (isConnected) {
+      console.log('isConnected')
+      dispatch(stakingHubActionsAsync.getHubSafesByOwnerThunk(account));
+      handleClose();
+    }
+
   }, [isConnected]);
 
   useEffect(() => {
@@ -152,6 +158,7 @@ export default function ConnectWeb3({
     dispatch(appActions.resetSafeState());
     dispatch(web3Actions.resetState());
     dispatch(safeActions.resetState());
+    dispatch(stakingHubActions.resetState());
   };
 
   // New function to handle opening the menu

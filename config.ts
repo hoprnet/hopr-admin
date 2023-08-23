@@ -12,6 +12,7 @@ export const HOPR_TOKEN_USED_CONTRACT_ADDRESS = mHOPR_TOKEN_SMART_CONTRACT_ADDRE
 
 
 // Safe Contracts
+
 export const SAFE_SERVICE_URL = 'https://safe-transaction.stage.hoprtech.net';
 //export const SAFE_SERVICE_URL = 'https://safe-transaction-gnosis-chain.safe.global';
 export const HOPR_NODE_STAKE_FACTORY = '0x6E078019EEE40B249fa3A876E7a6b089B77cFf9b';
