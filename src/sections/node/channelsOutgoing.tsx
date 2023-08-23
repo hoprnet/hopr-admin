@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { exportToCsv } from '../../utils/helpers';
 import { utils } from 'ethers';
 import { sendNotification } from '../../hooks/useWatcher/notifications';
-import { HOPR_TOKEN_USED } from '../../../config'
+import { HOPR_TOKEN_USED } from '../../../config';
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
