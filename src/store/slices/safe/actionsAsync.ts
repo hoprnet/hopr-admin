@@ -40,7 +40,6 @@ import {
 import { initialState } from './initialState';
 import { SAFE_SERVICE_URL } from '../../../../config';
 
-
 const createSafeApiService = async (signer: ethers.providers.JsonRpcSigner) => {
   const adapter = new EthersAdapter({
     ethers,
@@ -1048,26 +1047,28 @@ const createSafeWithConfigThunk = createAsyncThunk<
 
       const transactionHash = await superWalletClient.writeContract(request);
 
-      const red = await superWalletClient.waitForTransactionReceipt({ hash: transactionHash })
+      const red = await superWalletClient.waitForTransactionReceipt({ hash: transactionHash });
 
-      console.log({ red })
+      console.log({ red });
 
       const [moduleProxy, safeAddress] = result as [Address, Address];
 
-      
       await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           transactionHash,
           safeAddress,
           moduleAddress: moduleProxy,
           ownerAddress: payload.walletClient.account?.address,
         }),
-      })
-      dispatch(addSafeLocally({safeAddress, moduleAddress: moduleProxy}));
+      });
+      dispatch(
+        addSafeLocally({
+          safeAddress,
+          moduleAddress: moduleProxy,
+        }),
+      );
 
       return {
         transactionHash,

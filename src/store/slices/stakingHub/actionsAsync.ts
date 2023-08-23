@@ -2,11 +2,7 @@ import { ActionReducerMapBuilder, createAction, createAsyncThunk } from '@reduxj
 import { initialState } from './initialState';
 import { RootState } from '../..';
 
-const getHubSafesByOwnerThunk = createAsyncThunk<
-  any | undefined,
-  any,
-  { state: RootState }
->(
+const getHubSafesByOwnerThunk = createAsyncThunk<any | undefined, any, { state: RootState }>(
   'stakingHub/getHubSafesByOwner',
   async (payload, {
     rejectWithValue,
@@ -15,19 +11,17 @@ const getHubSafesByOwnerThunk = createAsyncThunk<
     dispatch(setHubSafesByOwnerFetching(true));
     try {
       const resp = await fetch('https://stake.hoprnet.org/api/hub/getSafes', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ownerAddress: payload
-        }),
-      })
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ownerAddress: payload }),
+      });
       const json = await resp.json();
-      const mapped = json.map((elem: {moduleaddress: string; safeaddress: string}) => { return {
-        moduleAddress: elem.moduleaddress,
-        safeAddress: elem.safeaddress
-      }});
+      const mapped = json.map((elem: { moduleaddress: string; safeaddress: string }) => {
+        return {
+          moduleAddress: elem.moduleaddress,
+          safeAddress: elem.safeaddress,
+        };
+      });
       return mapped;
     } catch (e) {
       return rejectWithValue(e);
@@ -44,18 +38,15 @@ const getHubSafesByOwnerThunk = createAsyncThunk<
 // Helper actions to update the isFetching state
 const setHubSafesByOwnerFetching = createAction<boolean>('stakingHub/setHubSafesByOwnerFetching');
 
-
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   // getSafesByOwner
   builder.addCase(getHubSafesByOwnerThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      console.log(action.payload)
+      console.log(action.payload);
       state.safes.data = action.payload;
     }
     state.safes.isFetching = false;
   });
 };
 
-export const actionsAsync = {
-  getHubSafesByOwnerThunk
-};
+export const actionsAsync = { getHubSafesByOwnerThunk };

@@ -4,13 +4,11 @@ type InitialState = {
       safeAddress: string;
       moduleAddress: string;
     }[];
-    isFetching: boolean,
-  }
+    isFetching: boolean;
+  };
 };
 
-export const initialState: InitialState = {
-  safes: {
-    data: [],
-    isFetching: false,
-  },
-};
+export const initialState: InitialState = { safes: {
+  data: [],
+  isFetching: false,
+} };
