@@ -79,12 +79,14 @@ const StyledListSubheader = styled(ListSubheader)`
 
 const StyledListItemButton = styled(ListItemButton)`
   height: 48px;
+  fill: rgba(0, 0, 0, 0.54);
   svg {
     width: 24px;
     height: 24px;
   }
   &.Mui-selected {
     color: #0000b4;
+    fill: #0000b4;
     background-color: rgba(255, 255, 255, 0.45);
     text-decoration: underline 2px #0000b4;
     text-underline-offset: 4px;
@@ -94,6 +96,7 @@ const StyledListItemButton = styled(ListItemButton)`
     .MuiSvgIcon-root,
     .MuiListItemIcon-root {
       color: #0000b4;
+      fill: #0000b4;
     }
   }
 ` as typeof ListItemButton;
