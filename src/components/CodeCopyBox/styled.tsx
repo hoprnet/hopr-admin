@@ -100,6 +100,7 @@ export const Container = styled.div`
     cursor: pointer;
     text-align: center;
     color: rgba(0, 0, 0, 0.54);
+    fill: rgba(0, 0, 0, 0.54);
     box-sizing: inherit;
     user-select: none;
     width: 1em;

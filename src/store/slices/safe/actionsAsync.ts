@@ -38,8 +38,7 @@ import {
   getValueFromHistoryTransaction
 } from '../../../utils/safeTransactions';
 import { initialState } from './initialState';
-
-const SERVICE_URL = 'https://safe-transaction.stage.hoprtech.net/';
+import { SAFE_SERVICE_URL } from '../../../../config';
 
 const createSafeApiService = async (signer: ethers.providers.JsonRpcSigner) => {
   const adapter = new EthersAdapter({
@@ -47,7 +46,7 @@ const createSafeApiService = async (signer: ethers.providers.JsonRpcSigner) => {
     signerOrProvider: signer,
   });
   const safeService = new SafeApiKit({
-    txServiceUrl: SERVICE_URL,
+    txServiceUrl: SAFE_SERVICE_URL,
     ethAdapter: adapter,
   });
 
@@ -1042,14 +1041,34 @@ const createSafeWithConfigThunk = createAsyncThunk<
         ],
       });
 
-      // simulation failed
+      // TODO: Add error handling if failed (notificaiton)
+
       if (!result) return;
 
       const transactionHash = await superWalletClient.writeContract(request);
 
-      await superWalletClient.waitForTransactionReceipt({ hash: transactionHash });
+      const red = await superWalletClient.waitForTransactionReceipt({ hash: transactionHash });
+
+      console.log({ red });
 
       const [moduleProxy, safeAddress] = result as [Address, Address];
+
+      await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          transactionHash,
+          safeAddress,
+          moduleAddress: moduleProxy,
+          ownerAddress: payload.walletClient.account?.address,
+        }),
+      });
+      dispatch(
+        addSafeLocally({
+          safeAddress,
+          moduleAddress: moduleProxy,
+        }),
+      );
 
       return {
         transactionHash,
@@ -1083,6 +1102,8 @@ const setAddDelegateFetching = createAction<boolean>('node/setAddDelegateFetchin
 const setRemoveDelegateFetching = createAction<boolean>('node/setRemoveDelegateFetching');
 const setTokenListFetching = createAction<boolean>('node/setTokenListFetching');
 const setTokenFetching = createAction<boolean>('node/setTokenFetching');
+
+const addSafeLocally = createAction<{}>('stakingHub/addSafe');
 
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   // CreateSafeWithConfig
