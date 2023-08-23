@@ -15,6 +15,7 @@ import { createWalletClient, custom, publicActions } from 'viem';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
+import { VITE_WALLET_CONNECT_PROJECT_ID } from '../../../config';
 
 // No way to tell what the ethereum request can be so has to be any
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,7 +41,7 @@ const config = createConfig({
     new MetaMaskConnector({ chains }),
     new WalletConnectConnector({
       chains,
-      options: { projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID },
+      options: { projectId: VITE_WALLET_CONNECT_PROJECT_ID },
     }),
     // add localhost only to injected connector
     // because wallet connect fails with it
