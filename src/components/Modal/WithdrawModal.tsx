@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { HOPR_TOKEN_USED } from '../../../config';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import {
@@ -165,7 +166,7 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
               }}
               select
             >
-              <MenuItem value={'HOPR'}>wxHopr</MenuItem>
+              <MenuItem value={'HOPR'}>{HOPR_TOKEN_USED}</MenuItem>
               <MenuItem value={'NATIVE'}>xDai</MenuItem>
             </TextField>
             <TextFieldWithoutArrows
