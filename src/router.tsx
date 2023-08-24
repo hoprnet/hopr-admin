@@ -8,27 +8,27 @@ import { authActions, authActionsAsync } from './store/slices/auth';
 import { nodeActions, nodeActionsAsync } from './store/slices/node';
 
 // Sections
-import NodeLandingPage from './sections/node/landingPage';
-import StakingLandingPage from './sections/staking-hub/landingPage';
-import SectionLogs from './sections/node/logs';
-import SectionWeb3 from './sections/staking-hub/web3';
-import SectionSafe from './sections/staking-hub/safe';
-import AliasesPage from './sections/node/aliases';
-import InfoPage from './sections/node/info';
-import MessagesPage from './sections/node/messages';
-import PeersPage from './sections/node/peers';
-import TicketsPage from './sections/node/tickets';
-import ChannelsPageIncoming from './sections/node/channelsIncoming';
-import ChannelsPageOutgoing from './sections/node/channelsOutgoing';
-import MetricsPage from './sections/node/metrics';
-import SafeStakingPage from './sections/staking-hub/safeStaking';
-import ConfigurationPage from './sections/node/configuration';
+import NodeLandingPage from './pages/node/landingPage';
+import StakingLandingPage from './pages/staking-hub/landingPage';
+import SectionLogs from './pages/node/logs';
+import SectionWeb3 from './pages/staking-hub/web3';
+import SectionSafe from './pages/staking-hub/safe';
+import AliasesPage from './pages/node/aliases';
+import InfoPage from './pages/node/info';
+import MessagesPage from './pages/node/messages';
+import PeersPage from './pages/node/peers';
+import TicketsPage from './pages/node/tickets';
+import ChannelsPageIncoming from './pages/node/channelsIncoming';
+import ChannelsPageOutgoing from './pages/node/channelsOutgoing';
+import MetricsPage from './pages/node/metrics';
+import SafeStakingPage from './pages/staking-hub/safeStaking';
+import ConfigurationPage from './pages/node/configuration';
 import AddNode from './steps/installNode/addNode';
 import SelectNodeType from './steps/installNode/selectNodeType';
-import WrapperPage from './sections/staking-hub/wrapper';
+import WrapperPage from './pages/staking-hub/wrapper';
 import XdaiToNodePage from './steps/xdaiToNode';
-import StakingScreen from './sections/staking-hub/staking-screen';
-import SafeWithdraw from './sections/staking-hub/safeWithdraw';
+import StakingScreen from './pages/staking-hub/staking-screen';
+import SafeWithdraw from './pages/staking-hub/safeWithdraw';
 import UpdateNodePage from './steps/updateNode';
 import SetupNodePage from './steps/setupYourNode';
 import AddedToWhitelist from './steps/addedToWhitelist';
@@ -37,9 +37,10 @@ import WhatYouWillNeedPage from './steps/whatYouWillNeed';
 import DockerInstallation from './steps/installNode/dockerInstallation';
 import NodeAddress from './steps/installNode/nodeAddress';
 import SafeOnboarding from './steps/safeOnboarding';
-import NodeAdded from './sections/staking-hub/nodeAdded';
-import SafeActions from './sections/staking-hub/actions';
-import NoNodeAdded from './sections/staking-hub/noNodeAdded';
+import NodeAdded from './pages/staking-hub/nodeAdded';
+import SafeActions from './pages/staking-hub/actions';
+import NoNodeAdded from './pages/staking-hub/noNodeAdded';
+import Onboarding from './pages/staking-hub/onboarding';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -172,17 +173,55 @@ export const applicationMapNode: ApplicationMapType = [
   },
 ];
 
-export const applicationMapWeb3: ApplicationMapType = [
+export const applicationMapStakingHub: ApplicationMapType = [
   {
     groupName: 'Staking Hub',
     path: 'hub',
     icon: <DevelopIcon />,
     items: [
       {
-        name: 'Web3',
+        name: 'Staking Hub',
+        path: 'staking-hub-landing',
+        icon: <SavingsIcon />,
+        element: <StakingLandingPage />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Onboarding',
+        path: 'onboarding',
+        icon: <LockIcon />,
+        element: <Onboarding />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Wrapper',
+        path: 'wrapper',
+        icon: <PaidIcon />,
+        element: <WrapperPage />,
+        loginNeeded: 'web3',
+      },
+    ],
+  },
+];
+
+export const applicationMapDevWeb3: ApplicationMapType = [
+  {
+    groupName: 'Dev Pages',
+    path: 'dev-pages',
+    icon: <DevelopIcon />,
+    items: [
+      {
+        name: 'Web3 Store',
         path: 'web3',
         icon: <AccountBalanceWalletIcon />,
         element: <SectionWeb3 />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Safe Store',
+        path: 'safe',
+        icon: <LockIcon />,
+        element: <SectionSafe />,
         loginNeeded: 'web3',
       },
       {
@@ -207,13 +246,6 @@ export const applicationMapWeb3: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
-        name: 'Safe',
-        path: 'safe',
-        icon: <LockIcon />,
-        element: <SectionSafe />,
-        loginNeeded: 'web3',
-      },
-      {
         name: 'Actions',
         path: 'safe/actions',
         icon: <SwapVertIcon />,
@@ -228,24 +260,10 @@ export const applicationMapWeb3: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
-        name: 'Staking Hub',
-        path: 'staking-hub-landing',
-        icon: <SavingsIcon />,
-        element: <StakingLandingPage />,
-        loginNeeded: 'web3',
-      },
-      {
         name: 'Withdraw',
         path: 'withdraw',
         icon: <WalletIcon />,
         element: <SafeWithdraw />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Wrapper',
-        path: 'wrapper',
-        icon: <PaidIcon />,
-        element: <WrapperPage />,
         loginNeeded: 'web3',
       },
     ],
@@ -338,7 +356,8 @@ export const applicationMapDev: ApplicationMapType = [
 function createApplicationMap() {
   const temp: ApplicationMapType = [];
   if (environment === 'dev' || environment === 'node') applicationMapNode.map((elem) => temp.push(elem));
-  if (environment === 'dev' || environment === 'web3') applicationMapWeb3.map((elem) => temp.push(elem));
+  if (environment === 'dev' || environment === 'web3') applicationMapStakingHub.map((elem) => temp.push(elem));
+  if (environment === 'dev' || environment === 'web3') applicationMapDevWeb3.map((elem) => temp.push(elem));
   if (environment === 'dev') applicationMapDev.map((elem) => temp.push(elem));
   return temp;
 }
