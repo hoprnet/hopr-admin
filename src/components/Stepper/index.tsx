@@ -33,7 +33,6 @@ const StepContainer = styled.div`
   align-items: center;
   gap: 1rem;
   min-width: 2rem;
-  
 
   :not(:last-child)::after {
     content: '';
@@ -47,18 +46,18 @@ const StepContainer = styled.div`
 `;
 
 const StepName = styled.div`
-    text-transform: uppercase;
-    color: #414141;
-    max-width: 30ch;
-    
-    &.completed {
-        color: #A4A4A4;
-    }
+  text-transform: uppercase;
+  color: #414141;
+  max-width: 30ch;
 
-    &.current {
-        font-weight: bold;
-    }
-`
+  &.completed {
+    color: #a4a4a4;
+  }
+
+  &.current {
+    font-weight: bold;
+  }
+`;
 
 const StepperContainer = styled.div`
   display: flex;
@@ -114,12 +113,24 @@ const StepIcon = (props: StepIconProps) => {
 
 const StepText = (props: StepTextProps) => {
   if (props.state === 'COMPLETED') {
-    return <StepName className='completed'><p>{props.name}</p></StepName>
+    return (
+      <StepName className="completed">
+        <p>{props.name}</p>
+      </StepName>
+    );
   } else if (props.state === 'CURRENT') {
-    return <StepName className='current'><p>{props.name}</p></StepName>
+    return (
+      <StepName className="current">
+        <p>{props.name}</p>
+      </StepName>
+    );
   } else {
     // pending
-    return <StepName><p>{props.name}</p></StepName>
+    return (
+      <StepName>
+        <p>{props.name}</p>
+      </StepName>
+    );
   }
 };
 

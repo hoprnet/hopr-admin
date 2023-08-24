@@ -32,14 +32,22 @@ const OnboardingContainer = styled.div`
   padding-bottom: 40px;
 `;
 
-
 function Onboarding() {
   const dispatch = useAppDispatch();
   const onboardingStep = useAppSelector((store) => store.stakingHub.onboarding.step);
 
   return (
     <OnboardingContainer className="OnboardingContainer">
-      <Stepper currentStep={1} steps={[{ name: 'create safe' }, { name: 'really long text whatever this might be. really long text whatever this might be.'}, { name: 'fund safe' }, { name: 'choose your node setup' }, { name: 'add node' } ]} />
+      <Stepper
+        currentStep={1}
+        steps={[
+          { name: 'create safe' },
+          { name: 'really long text whatever this might be. really long text whatever this might be.' },
+          { name: 'fund safe' },
+          { name: 'choose your node setup' },
+          { name: 'add node' },
+        ]}
+      />
 
       {onboardingStep === 0 && (
         <StepContainer>
