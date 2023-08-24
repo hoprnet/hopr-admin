@@ -1,10 +1,8 @@
 import type {
   GetStatisticsResponseType,
-  AccountResponseType,
   GetAliasesResponseType,
   GetChannelsResponseType,
   GetInfoResponseType,
-  GetPeerInfoResponseType,
   GetPeersResponseType,
   GetSettingsResponseType,
   GetTicketsResponseType,
