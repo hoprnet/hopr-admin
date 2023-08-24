@@ -173,24 +173,17 @@ export const applicationMapNode: ApplicationMapType = [
   },
 ];
 
-export const applicationMapWeb3: ApplicationMapType = [
+export const applicationMapStakingHub: ApplicationMapType = [
   {
     groupName: 'Staking Hub',
     path: 'hub',
     icon: <DevelopIcon />,
     items: [
       {
-        name: 'Web3',
-        path: 'web3',
-        icon: <AccountBalanceWalletIcon />,
-        element: <SectionWeb3 />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Safe',
-        path: 'safe',
-        icon: <LockIcon />,
-        element: <SectionSafe />,
+        name: 'Staking Hub',
+        path: 'staking-hub-landing',
+        icon: <SavingsIcon />,
+        element: <StakingLandingPage />,
         loginNeeded: 'web3',
       },
       {
@@ -198,6 +191,37 @@ export const applicationMapWeb3: ApplicationMapType = [
         path: 'onboarding',
         icon: <LockIcon />,
         element: <Onboarding />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Wrapper',
+        path: 'wrapper',
+        icon: <PaidIcon />,
+        element: <WrapperPage />,
+        loginNeeded: 'web3',
+      },
+    ],
+  },
+];
+
+export const applicationMapDevWeb3: ApplicationMapType = [
+  {
+    groupName: 'Dev Pages',
+    path: 'dev-pages',
+    icon: <DevelopIcon />,
+    items: [
+      {
+        name: 'Web3 Store',
+        path: 'web3',
+        icon: <AccountBalanceWalletIcon />,
+        element: <SectionWeb3 />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Safe Store',
+        path: 'safe',
+        icon: <LockIcon />,
+        element: <SectionSafe />,
         loginNeeded: 'web3',
       },
       {
@@ -236,24 +260,10 @@ export const applicationMapWeb3: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
-        name: 'Staking Hub',
-        path: 'staking-hub-landing',
-        icon: <SavingsIcon />,
-        element: <StakingLandingPage />,
-        loginNeeded: 'web3',
-      },
-      {
         name: 'Withdraw',
         path: 'withdraw',
         icon: <WalletIcon />,
         element: <SafeWithdraw />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Wrapper',
-        path: 'wrapper',
-        icon: <PaidIcon />,
-        element: <WrapperPage />,
         loginNeeded: 'web3',
       },
     ],
@@ -346,7 +356,8 @@ export const applicationMapDev: ApplicationMapType = [
 function createApplicationMap() {
   const temp: ApplicationMapType = [];
   if (environment === 'dev' || environment === 'node') applicationMapNode.map((elem) => temp.push(elem));
-  if (environment === 'dev' || environment === 'web3') applicationMapWeb3.map((elem) => temp.push(elem));
+  if (environment === 'dev' || environment === 'web3') applicationMapStakingHub.map((elem) => temp.push(elem));
+  if (environment === 'dev' || environment === 'web3') applicationMapDevWeb3.map((elem) => temp.push(elem));
   if (environment === 'dev') applicationMapDev.map((elem) => temp.push(elem));
   return temp;
 }

@@ -19,6 +19,7 @@ import WhatYouWillNeedPage from '../../steps/whatYouWillNeed';
 import CreateSafe from '../../steps/createSafe';
 import SafeIsReady from '../../steps/safeIsReady';
 import OptionalNftTtransfer from '../../steps/optionalNftTtransfer';
+import XdaiToSafe from '../../steps/xDaiToSafe';
 
 
 
@@ -84,8 +85,10 @@ function Onboarding() {
 
         { onboardingStep === 4 && <OptionalNftTtransfer/> }
 
+        { onboardingStep === 5 && <XdaiToSafe/> }
+
         {
-          onboardingStep === 5 &&
+          onboardingStep === 6 &&
           <StepContainer>
             <button
               onClick={()=>{dispatch(stakingHubActions.setOnboardingStep(4));}}
@@ -94,9 +97,7 @@ function Onboarding() {
             </button>
           </StepContainer>
         }
-
-
-    
+        
     </OnboardingContainer>
   );
 }

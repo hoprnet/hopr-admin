@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import styled from '@emotion/styled';
+
+//HOPR Components
 import Button from '../future-hopr-lib-components/Button';
 import { StepContainer } from './components';
 
@@ -69,13 +71,30 @@ const SRadio = styled(Radio)`
 `;
 
 const TransferNft = styled.div`
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  img {
+    width: 116px;
+    height: 116px;
+  }
+  button {
+    width: 254px;
+    text-transform: uppercase;
+  }
 `;
 
 
 export default function optionalNftTtransfer() {
   const dispatch = useAppDispatch();
   const [option, set_option] = useState<0 | 1 | null>(null)
+  const communityNftId = useAppSelector((store) => store.web3.communityNftId)
+
+  function whichNFTimage(){
+    if(communityNftId === null) return '/assets/nft-NOT-detected-in-wallet.png'
+    if(communityNftId !== null) return '/assets/nft-detected-in-wallet.png'
+  }
 
   return (
     <StepContainer
@@ -86,6 +105,7 @@ export default function optionalNftTtransfer() {
         <Option
           className={`${option === 0 ? 'chosen' : ''}`}
           onClick={()=>{set_option(0)}}
+          disabled={communityNftId === null}
         >
           <OptionText>
             <div className='left'>
@@ -95,8 +115,18 @@ export default function optionalNftTtransfer() {
               <span className='big'>Minimum 10,000 wxHOPR</span><br/><span className='smaller'>WITH transferred NR NFT in your safe</span>
             </div>
           </OptionText>
-           <TransferNft>
-              d
+            <TransferNft>
+              <img 
+                src={whichNFTimage()}
+              />
+              <Button
+                onClick={(event) => {
+                  event.stopPropagation()
+                }}
+                disabled={communityNftId === null}
+              >
+                Transfer NFT to Safe
+              </Button>
             </TransferNft>
         </Option>
         <Option
