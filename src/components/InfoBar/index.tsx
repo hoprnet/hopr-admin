@@ -5,9 +5,9 @@ import { useLocation } from 'react-router-dom';
 // HOPR Components
 import Details from './details';
 import FAQ from '../Faq';
-import nodeInfoRaw from '../Faq/node-faq.json';
-import stakingInfoRaw from '../Faq/staking-faq.json';
-import stakingAlertsRaw from '../Faq/staking-alerts.json';
+import nodeInfoData from '../Faq/node-faq';
+import stakingInfoData from '../Faq/staking-faq';
+import stakingAlertsData from '../Faq/staking-alerts';
 
 type InfoData = {
   [routePath: string]: {
@@ -72,10 +72,6 @@ export default function InfoBar(props: Props) {
   const web3Connected = useAppSelector((store) => store.web3.status.connected);
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const currentRoute = useLocation().pathname;
-
-  const nodeInfoData: InfoData = nodeInfoRaw;
-  const stakingInfoData: InfoData = stakingInfoRaw;
-  const stakingAlertsData: InfoData = stakingAlertsRaw;
 
   const pageHasNodeFAQ = () => {
     if (nodeInfoData[currentRoute]) return true;
