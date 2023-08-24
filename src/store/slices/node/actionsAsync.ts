@@ -729,7 +729,7 @@ const openMultipleChannelsThunk = createAsyncThunk(
         apiEndpoint: payload.apiEndpoint,
         apiToken: payload.apiToken,
         timeout: payload.timeout,
-        peerIds: payload.peerIds,
+        peerAddresses: payload.peerIds,
         amount: payload.amount,
       });
       console.log('res', res);
@@ -1229,21 +1229,27 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     if (action.payload) {
       const {
         balance,
-        id,
-        peerId,
+        channelId,
+        destinationPeerId,
         status,
-        type,
+        sourcePeerId,
       } = action.payload[0];
+
+      const personalPeerId = state.addresses.data.hopr;
+
+      // Check if it's incming or outgoing depending on the local peer id and the source peer id of the channel
+      const type = personalPeerId === sourcePeerId ? 'outgoing' : 'incoming';
+
       // find channel if it already exists
-      const channelIndex = state.channels.data?.[type].findIndex((channel) => channel.id === id);
+      const channelIndex = state.channels.data?.[type].findIndex((channel) => channel.id === channelId);
 
       if (state.channels.data) {
         if (channelIndex) {
           // update channel
           state.channels.data[type][channelIndex] = {
             balance,
-            id,
-            peerId,
+            id: channelId,
+            peerId: destinationPeerId,
             status,
             type,
           };
@@ -1251,8 +1257,8 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
           // add new channel
           state.channels.data[type].push({
             balance,
-            id,
-            peerId,
+            id: channelId,
+            peerId: destinationPeerId,
             status,
             type,
           });
@@ -1266,8 +1272,8 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
           [type]: [
             {
               balance,
-              id,
-              peerId,
+              id: channelId,
+              peerId: destinationPeerId,
               status,
               type,
             },

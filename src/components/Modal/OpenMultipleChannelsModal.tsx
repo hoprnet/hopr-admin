@@ -47,7 +47,7 @@ export const OpenMultipleChannelsModal = () => {
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
         amount: weiValue,
-        peerId: peerId,
+        peerAddress: peerId,
         timeout: 60e3,
       }),
     )
