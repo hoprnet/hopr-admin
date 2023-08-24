@@ -145,7 +145,9 @@ export default function WhatYouWillNeedPage() {
   return (
     <StepContainer
       title={'WHAT YOU WILL NEED'}
-      description={'It will take 20 minutes to join the network waitlist. Before starting make sure you have got the required tokens.'}
+      description={
+        'It will take 20 minutes to join the network waitlist. Before starting make sure you have got the required tokens.'
+      }
     >
       <Content>
         <Container>
@@ -187,7 +189,9 @@ export default function WhatYouWillNeedPage() {
           />
         </Container>
         <ConfirmButton
-          onClick={()=>{dispatch(stakingHubActions.setOnboardingStep(2));}}
+          onClick={() => {
+            dispatch(stakingHubActions.setOnboardingStep(2));
+          }}
         >
           continue
         </ConfirmButton>

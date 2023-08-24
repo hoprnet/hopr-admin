@@ -5,14 +5,12 @@ import styled from '@emotion/styled';
 import { useAppSelector, useAppDispatch } from '../../store';
 import { stakingHubActions } from '../../store/slices/stakingHub';
 
-
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
 import { StepContainer } from '../../steps/components';
 
 // Mui
 import Paper from '@mui/material/Paper/Paper';
-
 
 //Steps
 import WhatYouWillNeedPage from '../../steps/whatYouWillNeed';
@@ -21,13 +19,11 @@ import SafeIsReady from '../../steps/safeIsReady';
 import OptionalNftTtransfer from '../../steps/optionalNftTtransfer';
 import XdaiToSafe from '../../steps/xDaiToSafe';
 
-
-
 const Steps = styled.div`
   height: 400px;
   width: 280px;
   background-color: darkblue;
-`
+`;
 
 const OnboardingContainer = styled.div`
   display: flex;
@@ -40,64 +36,56 @@ const OnboardingContainer = styled.div`
   overflow: hidden;
   background: #edfbff;
   padding-bottom: 40px;
-`
+`;
 
 const SPaper = styled(Paper)`
   max-width: 850px;
   width: 100%;
   height: 620px;
   overflow: auto;
-`
+`;
 
 function Onboarding() {
   const dispatch = useAppDispatch();
   const onboardingStep = useAppSelector((store) => store.stakingHub.onboarding.step);
-  
-  
-
 
   return (
-    <OnboardingContainer
-      className='OnboardingContainer'
-    >
-      <Steps/>
+    <OnboardingContainer className="OnboardingContainer">
+      <Steps />
 
+      {onboardingStep === 0 && (
+        <StepContainer>
+          <button
+            onClick={() => {
+              dispatch(stakingHubActions.setOnboardingStep(1));
+            }}
+          >
+            Start
+          </button>
+        </StepContainer>
+      )}
 
+      {onboardingStep === 1 && <WhatYouWillNeedPage />}
 
+      {onboardingStep === 2 && <CreateSafe />}
 
-          {
-            onboardingStep === 0 &&
-            <StepContainer>
-              <button
-                onClick={()=>{dispatch(stakingHubActions.setOnboardingStep(1));}}
-              >
-                Start
-              </button>
-            </StepContainer>
-          }
+      {onboardingStep === 3 && <SafeIsReady />}
 
+      {onboardingStep === 4 && <OptionalNftTtransfer />}
 
-        { onboardingStep === 1 && <WhatYouWillNeedPage /> }
+      {onboardingStep === 5 && <XdaiToSafe />}
 
-        { onboardingStep === 2 && <CreateSafe/> }
-
-        { onboardingStep === 3 && <SafeIsReady/> }
-
-        { onboardingStep === 4 && <OptionalNftTtransfer/> }
-
-        { onboardingStep === 5 && <XdaiToSafe/> }
-
-        {
-          onboardingStep === 6 &&
-          <StepContainer>
-            <button
-              onClick={()=>{dispatch(stakingHubActions.setOnboardingStep(4));}}
-            >
-              Back
-            </button>
-          </StepContainer>
-        }
-        
+      {onboardingStep === 6 && (
+        <StepContainer>
+          <button
+            onClick={() => {
+              dispatch(stakingHubActions.setOnboardingStep(4));
+            }}
+          >
+            Back
+          </button>
+        </StepContainer>
+      )}
     </OnboardingContainer>
   );
 }

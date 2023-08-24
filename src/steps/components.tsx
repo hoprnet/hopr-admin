@@ -9,16 +9,16 @@ const SPaper = styled(Paper)`
   width: 100%;
   height: 620px;
   overflow: auto;
-`
+`;
 
 const StepTitle = styled.h2`
-    color: #414141;
-    font-size: 32px;
-    font-weight: 400;
-    text-align: center;
-    text-transform: uppercase;
-    margin: 0;
-`
+  color: #414141;
+  font-size: 32px;
+  font-weight: 400;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 0;
+`;
 
 const StepDescription = styled.p<{ descriptionLeft?: boolean }>`
   color: #414141;
@@ -39,26 +39,24 @@ const Image = styled.img`
 `;
 
 export function StepContainer(props: any) {
-    return (
-        <SPaper>
-            {props.image && (
-                <ImageContainer
-                height={props.image.height}
-                width={props.image.width}
-                >
-                <Image
-                    src={props.image.src}
-                    alt={props.image.alt}
-                />
-                </ImageContainer>
-            )}
-            {props.title && <StepTitle>{props.title}</StepTitle> }
-            {props.description && <StepDescription descriptionLeft={props.descriptionLeft}>{props.description}</StepDescription>}
-            <div>
-                {props.children}
-            </div>
-        </SPaper>
-    );
+  return (
+    <SPaper>
+      {props.image && (
+        <ImageContainer
+          height={props.image.height}
+          width={props.image.width}
+        >
+          <Image
+            src={props.image.src}
+            alt={props.image.alt}
+          />
+        </ImageContainer>
+      )}
+      {props.title && <StepTitle>{props.title}</StepTitle>}
+      {props.description && (
+        <StepDescription descriptionLeft={props.descriptionLeft}>{props.description}</StepDescription>
+      )}
+      <div>{props.children}</div>
+    </SPaper>
+  );
 }
-
-  

@@ -3,7 +3,6 @@ import { nanoid } from '@reduxjs/toolkit';
 import { WalletClient } from 'viem';
 import { useWalletClient } from 'wagmi';
 
-
 // Components
 import {
   AddButton,
@@ -30,7 +29,6 @@ import { safeActionsAsync } from '../store/slices/safe';
 import { stakingHubActions } from '../store/slices/stakingHub';
 import { useAppDispatch, useAppSelector } from '../store';
 
-
 type OwnersAndConfirmationsProps = {
   account: `0x${string}`;
   walletClient: WalletClient | null | undefined;
@@ -43,9 +41,8 @@ const CreateSafe = () => {
   const [error, set_error] = useState<unknown>('');
   const [owners, set_owners] = useState<{ id: string; address: string }[]>([]);
   const [threshold, set_threshold] = useState(1);
-  const account = useAppSelector((store) => store.web3.account)
+  const account = useAppSelector((store) => store.web3.account);
   const { data: walletClient } = useWalletClient();
-
 
   const updateOwnerAddress = (id: string, address: string) => {
     set_owners((prevOwners) => {
@@ -73,7 +70,7 @@ const CreateSafe = () => {
       owners: [account as string],
       threshold,
     };
-    console.log(config)
+    console.log(config);
     try {
       set_error('');
       set_loading(true);
@@ -90,7 +87,7 @@ const CreateSafe = () => {
       } else {
         set_error(JSON.stringify(error, null, 2));
       }
-    //  set_step(0);
+      //  set_step(0);
     } finally {
       set_loading(false);
     }
@@ -101,59 +98,63 @@ const CreateSafe = () => {
       title="Create Safe"
       description="Set the owner wallets of your Safe and how many need to confirm to execute a valid transaction."
     >
-        <Container>
-          <Text>Owner address</Text>
-          <FlexContainer>
-            <Text>{account}</Text>
-            <IconButton
-              size="small"
-              onClick={() => navigator.clipboard.writeText(account ? account : '')}
-            >
-              <CopyIcon />
-            </IconButton>
-            <IconButton
-              size="small"
-              href={`https://gnosisscan.io/address/${account}`}
-              target="_blank"
-            >
-              <LaunchIcon />
-            </IconButton>
-          </FlexContainer>
-        </Container>
-        {owners.length > 1 &&
-          owners.slice(1).map((owner) => {
-            return (
-              <FlexContainer key={owner.id}>
-                <TextField
-                  label="Address"
-                  placeholder="New owner address here..."
-                  fullWidth
-                  onChange={(e) => updateOwnerAddress(owner.id, e.target.value)}
-                />
-                <IconButton onClick={() => removeOwner(owner.id)}>
-                  <DeleteIcon />
-                </IconButton>
-              </FlexContainer>
-            );
-          })}
-
-        <ButtonContainer>
-          <StyledGrayButton
-            onClick={()=>{dispatch(stakingHubActions.setOnboardingStep(1));}}
-          >Back</StyledGrayButton>
-          <Button
-            onClick={handleContinueClick}
-            disabled={loading}
+      <Container>
+        <Text>Owner address</Text>
+        <FlexContainer>
+          <Text>{account}</Text>
+          <IconButton
+            size="small"
+            onClick={() => navigator.clipboard.writeText(account ? account : '')}
           >
-            DEPLOY
-          </Button>
-        </ButtonContainer>
-        {loading && <CircularProgress />}
-        {error && (
-          <StyledError>
-            <strong>There was an error:</strong> {JSON.stringify(error)}
-          </StyledError>
-        )}
+            <CopyIcon />
+          </IconButton>
+          <IconButton
+            size="small"
+            href={`https://gnosisscan.io/address/${account}`}
+            target="_blank"
+          >
+            <LaunchIcon />
+          </IconButton>
+        </FlexContainer>
+      </Container>
+      {owners.length > 1 &&
+        owners.slice(1).map((owner) => {
+          return (
+            <FlexContainer key={owner.id}>
+              <TextField
+                label="Address"
+                placeholder="New owner address here..."
+                fullWidth
+                onChange={(e) => updateOwnerAddress(owner.id, e.target.value)}
+              />
+              <IconButton onClick={() => removeOwner(owner.id)}>
+                <DeleteIcon />
+              </IconButton>
+            </FlexContainer>
+          );
+        })}
+
+      <ButtonContainer>
+        <StyledGrayButton
+          onClick={() => {
+            dispatch(stakingHubActions.setOnboardingStep(1));
+          }}
+        >
+          Back
+        </StyledGrayButton>
+        <Button
+          onClick={handleContinueClick}
+          disabled={loading}
+        >
+          DEPLOY
+        </Button>
+      </ButtonContainer>
+      {loading && <CircularProgress />}
+      {error && (
+        <StyledError>
+          <strong>There was an error:</strong> {JSON.stringify(error)}
+        </StyledError>
+      )}
     </StepContainer>
   );
 };

@@ -22,21 +22,27 @@ export default function safeIsReady() {
   return (
     <StepContainer
       title="SAFE IS READY"
-      description={<>You’re now part of the HOPR ecosystem!<br/>Next, you’ll need to fund your HOPR node."</>}
+      description={
+        <>
+          You’re now part of the HOPR ecosystem!
+          <br />
+          Next, you’ll need to fund your HOPR node."
+        </>
+      }
       image={{
         src: '/assets/safe-success-2.svg',
         alt: 'Safe deployed successfully',
         height: 300,
       }}
     >
-      
-
-
-      
       <Content>
         <ConfirmButton
-          onClick={()=>{dispatch(stakingHubActions.setOnboardingStep(4));}}
-        >CONTINUE</ConfirmButton>
+          onClick={() => {
+            dispatch(stakingHubActions.setOnboardingStep(4));
+          }}
+        >
+          CONTINUE
+        </ConfirmButton>
       </Content>
     </StepContainer>
   );

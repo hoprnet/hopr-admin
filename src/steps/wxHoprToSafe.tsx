@@ -35,12 +35,10 @@ type FundsToSafeProps = {
   set_step: (step: number) => void;
 };
 
-const FundsToSafe = ({
-  set_step,
-}: FundsToSafeProps) => {
+const FundsToSafe = ({ set_step }: FundsToSafeProps) => {
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const walletBalance = useAppSelector((store) => store.web3.balance);
-  const account = useAppSelector((store) => store.web3.account)
+  const account = useAppSelector((store) => store.web3.account);
 
   const [xdaiValue, set_xdaiValue] = useState('');
   const [wxhoprValue, set_wxhoprValue] = useState('');
@@ -123,8 +121,8 @@ const FundsToSafe = ({
             Stake <Lowercase>wx</Lowercase>HOPR into safe
           </Text>
           <StyledDescription>
-            Add-in the amount of <Lowercase>wx</Lowercase>HOPR you like to deposit to your safe. We suggest to move
-            all your <Lowercase>wx</Lowercase>HOPR to the safe.
+            Add-in the amount of <Lowercase>wx</Lowercase>HOPR you like to deposit to your safe. We suggest to move all
+            your <Lowercase>wx</Lowercase>HOPR to the safe.
           </StyledDescription>
         </StyledInstructions>
         <StyledInputGroup>

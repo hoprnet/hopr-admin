@@ -42,7 +42,7 @@ const FundsToSafe = () => {
   const dispatch = useAppDispatch();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const walletBalance = useAppSelector((store) => store.web3.balance);
-  const account = useAppSelector((store) => store.web3.account)
+  const account = useAppSelector((store) => store.web3.account);
 
   const [xdaiValue, set_xdaiValue] = useState('');
   const [wxhoprValue, set_wxhoprValue] = useState('');
@@ -90,9 +90,8 @@ const FundsToSafe = () => {
   const {
     isLoading: is_wxHOPR_to_safe_loading,
     write: write_wxHOPR_to_safe,
-  } = useContractWrite({
-    ...wxHOPR_to_safe_config,
-//    onSuccess: () => set_step(2),
+  } = useContractWrite({ ...wxHOPR_to_safe_config,
+    //    onSuccess: () => set_step(2),
   });
 
   const {
@@ -150,9 +149,13 @@ const FundsToSafe = () => {
         </StyledInputGroup>
       </StyledForm>
       <ButtonContainer>
-        <StyledGrayButton 
-          onClick={()=>{dispatch(stakingHubActions.setOnboardingStep(4));}}
-        >Back</StyledGrayButton>
+        <StyledGrayButton
+          onClick={() => {
+            dispatch(stakingHubActions.setOnboardingStep(4));
+          }}
+        >
+          Back
+        </StyledGrayButton>
         <Button
           onClick={handleDeployClick}
           disabled={!send_xDAI_to_safe}

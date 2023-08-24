@@ -8,15 +8,13 @@ type InitialState = {
   };
   onboarding: {
     step: number;
-  }
+  };
 };
 
-export const initialState: InitialState = { 
+export const initialState: InitialState = {
   safes: {
     data: [],
     isFetching: false,
   },
-  onboarding: {
-    step: 0,
-  }
+  onboarding: { step: 0 },
 };
