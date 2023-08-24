@@ -14,6 +14,9 @@ const safeSlice = createSlice({
       state.info.data = null;
       state.delegates.data = null;
     },
+    setSelectedSafe(state, action: PayloadAction<string>) {
+      state.selectedSafeAddress.data = action.payload;
+    },
     setSafeBalance_xDai(state, action) {
       state.balance.data.xDai.value = action.payload ? action.payload.value : null;
       state.balance.data.xDai.formatted = action.payload ? action.payload.formatted : null;

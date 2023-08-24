@@ -13,8 +13,8 @@ import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 // Modals
-import { PingModal } from '../../components/Modal/PingModal';
-import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
+import { PingModal } from '../../components/Modal/node/PingModal';
+import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
 
 // Mui
 import GetAppIcon from '@mui/icons-material/GetApp';

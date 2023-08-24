@@ -53,18 +53,6 @@ function Onboarding() {
     <OnboardingContainer className="OnboardingContainer">
       <Steps />
 
-      {onboardingStep === 0 && (
-        <StepContainer>
-          <button
-            onClick={() => {
-              dispatch(stakingHubActions.setOnboardingStep(1));
-            }}
-          >
-            Start
-          </button>
-        </StepContainer>
-      )}
-
       {onboardingStep === 1 && <WhatYouWillNeedPage />}
 
       {onboardingStep === 2 && <CreateSafe />}

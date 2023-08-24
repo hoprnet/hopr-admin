@@ -15,9 +15,9 @@ import CloseChannelIcon from '../../future-hopr-lib-components/Icons/CloseChanne
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 // Modals
-import { PingModal } from '../../components/Modal/PingModal';
-import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
-import { OpenMultipleChannelsModal } from '../../components/Modal/OpenMultipleChannelsModal';
+import { PingModal } from '../../components/Modal/node/PingModal';
+import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
+import { OpenMultipleChannelsModal } from '../../components/Modal/node/OpenMultipleChannelsModal';
 
 // Mui
 import CircularProgress from '@mui/material/CircularProgress';
