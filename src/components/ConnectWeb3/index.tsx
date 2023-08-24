@@ -184,7 +184,7 @@ export default function ConnectWeb3({
           className={`web3-connect-btn`}
         >
           <div className="image-container">
-            <img src="/assets/wallets/MetaMask_Fox.svg" />
+            <img src={data?.connector?.id === 'walletConnect' ? "/assets/wallets/WalletConnect-Icon.svg" : "/assets/wallets/MetaMask_Fox.svg"} />
           </div>
           {!isConnected ? (
             <Web3Button>Connect Wallet</Web3Button>

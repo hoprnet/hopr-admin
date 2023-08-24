@@ -9,6 +9,7 @@ import { web3Actions } from '../../store/slices/web3';
 import { gnosis, localhost } from '@wagmi/core/chains';
 import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 
 //wagmi connectors
 import { createWalletClient, custom, publicActions } from 'viem';
@@ -25,8 +26,7 @@ type WindowWithEthereum = { ethereum: EthereumProvider };
 const {
   chains,
   publicClient,
-  webSocketPublicClient,
-} = configureChains([gnosis], [publicProvider()], {
+} = configureChains([gnosis], [jsonRpcProvider({ rpc: () => ({ http: `https://derp.hoprnet.org/rpc/xdai/mainnet` }) }), publicProvider()], {
   pollingInterval: 30_000,
   stallTimeout: 5_000,
   rank: true,
@@ -49,6 +49,8 @@ const config = createConfig({
   ],
 
   publicClient: (chain) => {
+    // this means even if connected through wallet connect
+    // the requests will go through the wallet client
     if (walletIsInBrowser) {
       return createWalletClient({
         chain: gnosis,
@@ -59,7 +61,6 @@ const config = createConfig({
     // no ethereum found in window
     return publicClient(chain);
   },
-  webSocketPublicClient,
 });
 
 export default function WagmiProvider(props: React.PropsWithChildren) {
@@ -72,7 +73,7 @@ export default function WagmiProvider(props: React.PropsWithChildren) {
   return (
     <WagmiConfig config={config}>
       {props.children}
-      {walletIsInBrowser && <Updater />}
+      <Updater />
     </WagmiConfig>
   );
 }

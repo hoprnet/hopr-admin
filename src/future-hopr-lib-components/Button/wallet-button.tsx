@@ -28,7 +28,7 @@ export default function Button(props: ButtonProps) {
     case 'metaMask':
       return '/assets/wallets/MetaMask-Emblem.svg';
     case 'walletConnect':
-      return '/assets/wallets/WalletConnect-Icon.svg';
+      return '/assets/wallets/WalletConnect-Login.png';
     case 'injected':
       return '';
     case 'viewMode':
