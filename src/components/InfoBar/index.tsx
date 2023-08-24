@@ -5,7 +5,9 @@ import { useLocation } from 'react-router-dom';
 // HOPR Components
 import Details from './details';
 import FAQ from '../Faq';
-import infoDataRaw from '../Faq/info.json'; // Import your info.json data
+import nodeInfoData from '../Faq/node-faq';
+import stakingInfoData from '../Faq/staking-faq';
+import stakingAlertsData from '../Faq/staking-alerts';
 
 type InfoData = {
   [routePath: string]: {
@@ -71,10 +73,18 @@ export default function InfoBar(props: Props) {
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const currentRoute = useLocation().pathname;
 
-  const infoData: InfoData = infoDataRaw;
+  const pageHasNodeFAQ = () => {
+    if (nodeInfoData[currentRoute]) return true;
+    return false;
+  };
 
-  const pageHasFAQ = () => {
-    if (infoData[currentRoute]) return true;
+  const pageHasStakingFAQ = () => {
+    if (stakingInfoData[currentRoute]) return true;
+    return false;
+  };
+
+  const pageHasStakingAlerts = () => {
+    if (stakingAlertsData[currentRoute]) return true;
     return false;
   };
 
@@ -83,11 +93,25 @@ export default function InfoBar(props: Props) {
       <Scroll>
         <div>
           {(web3Connected || (nodeConnected && !web3Connected)) && <Details />}
-          {nodeConnected && pageHasFAQ() && (
+          {nodeConnected && pageHasNodeFAQ() && (
             <FAQ
-              data={infoData[currentRoute]}
+              data={nodeInfoData[currentRoute]}
               label={currentRoute.split('/')[currentRoute.split('/').length - 1]}
               variant="blue"
+            />
+          )}
+          {web3Connected && pageHasStakingFAQ() && (
+            <FAQ
+              data={stakingInfoData[currentRoute]}
+              label={currentRoute.split('/')[currentRoute.split('/').length - 1]}
+              variant="blue"
+            />
+          )}
+          {web3Connected && pageHasStakingAlerts() && (
+            <FAQ
+              data={stakingAlertsData[currentRoute]}
+              label={currentRoute.split('/')[currentRoute.split('/').length - 1]}
+              variant="pink"
             />
           )}
         </div>
