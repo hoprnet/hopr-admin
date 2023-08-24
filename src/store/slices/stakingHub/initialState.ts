@@ -17,7 +17,7 @@ export const initialState: InitialState = {
     data: [],
     isFetching: false,
   },
-  onboarding: { 
+  onboarding: {
     step: 1,
     notFinished: false,
   },

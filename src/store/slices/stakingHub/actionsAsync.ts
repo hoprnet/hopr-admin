@@ -45,11 +45,10 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
       console.log(action.payload);
       state.safes.data = action.payload;
 
-      if(action.payload.length > 0) {
+      if (action.payload.length > 0) {
         state.onboarding.notFinished = true;
         state.onboarding.step = 4;
       }
-
     }
     state.safes.isFetching = false;
   });

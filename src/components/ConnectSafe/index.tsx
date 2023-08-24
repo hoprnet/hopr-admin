@@ -101,7 +101,7 @@ export default function ConnectSafe() {
   }, [safeAddress]);
 
   useEffect(() => {
-    if (safes.length > 0 && !safeAddress) dispatch(safeActions.setSelectedSafe(safes[0].safeAddress)); 
+    if (safes.length > 0 && !safeAddress) dispatch(safeActions.setSelectedSafe(safes[0].safeAddress));
   }, [safes]);
 
   const fetchInitialStateForSigner = async () => {
@@ -201,7 +201,9 @@ export default function ConnectSafe() {
               <MenuItem
                 key={`${safe.safeAddress}_${index}`}
                 value={safe.safeAddress}
-                onClick={() => {dispatch(safeActions.setSelectedSafe(safe.safeAddress))}}
+                onClick={() => {
+                  dispatch(safeActions.setSelectedSafe(safe.safeAddress));
+                }}
               >
                 {safe.safeAddress &&
                   `${safe.safeAddress.substring(0, 6)}...${safe.safeAddress.substring(

@@ -8,7 +8,6 @@ import Button from '../../../future-hopr-lib-components/Button';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../../future-hopr-lib-components/Modal/styled';
 import CloseIcon from '@mui/icons-material/Close';
 
-
 const Content = styled(SDialogContent)`
   gap: 1rem;
   & button {
@@ -27,9 +26,10 @@ const ContinueOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
   const notFinished = useAppSelector((state) => state.stakingHub.onboarding.notFinished);
   const [openModal, set_openModal] = useState(false);
 
-  useEffect(()=>{
-    if(notFinished) handleOpenModal();
-  }, [notFinished])
+  useEffect(() => {
+    if (notFinished) handleOpenModal();
+    else handleCloseModal();
+  }, [notFinished]);
 
   const handleOpenModal = () => {
     set_openModal(true);
@@ -56,22 +56,20 @@ const ContinueOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
           </SIconButton>
         </TopBar>
         <Content>
-            <p>
-              Looks like we ran into an unexpected error. Would you like to try again?
-            </p>
-            <Button
-              onClick={handleCloseModal}
-              outlined
-            >
-              NOT NOW
-            </Button>
-            <Button 
-              onClick={()=>{
-                navigate(`/hub/onboarding`);
-              }}
-            >
-              YES
-            </Button>
+          <p>Looks like we ran into an unexpected error. Would you like to try again?</p>
+          <Button
+            onClick={handleCloseModal}
+            outlined
+          >
+            NOT NOW
+          </Button>
+          <Button
+            onClick={() => {
+              navigate(`/hub/onboarding`);
+            }}
+          >
+            YES
+          </Button>
         </Content>
       </SDialog>
     </>
