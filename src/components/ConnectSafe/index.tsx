@@ -62,9 +62,10 @@ const SafeAddress = styled.div`
 
 export default function ConnectSafe() {
   const dispatch = useAppDispatch();
-  const signer = useEthersSigner();
   const connected = useAppSelector((store) => store.web3.status);
-  const safes = useAppSelector((store) => store.safe.safesByOwner.data);
+  const signer = useEthersSigner();
+  //const safes = useAppSelector((store) => store.safe.safesByOwner.data);
+  const safes = useAppSelector((store) => store.stakingHub.safes.data);
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
@@ -147,7 +148,7 @@ export default function ConnectSafe() {
   };
 
   const handleSafeButtonClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (connected.connected) {
+    if (connected.connected && safes.length > 0) {
       handleOpenMenu(event);
     }
   };
@@ -188,16 +189,16 @@ export default function ConnectSafe() {
             }}
             disableScrollLock={true}
           >
-            {safes.map((safeAddress) => (
+            {safes.map((safe, index) => (
               <MenuItem
-                key={safeAddress}
-                value={safeAddress}
-                onClick={() => useSelectedSafe(safeAddress)}
+                key={`${safe.safeAddress}_${index}`}
+                value={safe.safeAddress}
+                onClick={() => useSelectedSafe(safe.safeAddress)}
               >
-                {safeAddress &&
-                  `${safeAddress.substring(0, 6)}...${safeAddress.substring(
-                    safeAddress.length - 8,
-                    safeAddress.length,
+                {safe.safeAddress &&
+                  `${safe.safeAddress.substring(0, 6)}...${safe.safeAddress.substring(
+                    safe.safeAddress.length - 8,
+                    safe.safeAddress.length,
                   )}`}
               </MenuItem>
             ))}

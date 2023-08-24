@@ -74,6 +74,10 @@ export default function WagmiProvider(props: React.PropsWithChildren) {
     dispatch(web3Actions.setWalletPresent(walletIsInBrowser));
   }, [walletIsInBrowser]);
 
+  if (!walletIsInBrowser) {
+    return props.children;
+  }
+
   return (
     <WagmiConfig config={config}>
       {props.children}

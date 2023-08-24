@@ -7,12 +7,13 @@ import Modal from '../../future-hopr-lib-components/Modal';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { appActions } from '../../store/slices/app';
 import { safeActions } from '../../store/slices/safe';
-import { web3Actions } from '../../store/slices/web3';
+import { stakingHubActions, stakingHubActionsAsync } from '../../store/slices/stakingHub';
 
 // wagmi
 import { Button, Menu, MenuItem } from '@mui/material';
 import { Connector, useConnect, useDisconnect } from 'wagmi';
 import { truncateEthereumAddress } from '../../utils/blockchain';
+import { web3Actions } from '../../store/slices/web3';
 
 const AppBarContainer = styled(Button)`
   align-items: center;
@@ -109,7 +110,11 @@ export default function ConnectWeb3({
   }, []);
 
   useEffect(() => {
-    if (isConnected) handleClose();
+    if (isConnected) {
+      console.log('isConnected');
+      dispatch(stakingHubActionsAsync.getHubSafesByOwnerThunk(account));
+      handleClose();
+    }
   }, [isConnected]);
 
   useEffect(() => {
@@ -155,6 +160,7 @@ export default function ConnectWeb3({
     dispatch(appActions.resetSafeState());
     dispatch(web3Actions.resetState());
     dispatch(safeActions.resetState());
+    dispatch(stakingHubActions.resetState());
   };
 
   // New function to handle opening the menu
