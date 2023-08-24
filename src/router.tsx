@@ -40,6 +40,7 @@ import SafeOnboarding from './steps/safeOnboarding';
 import NodeAdded from './pages/staking-hub/nodeAdded';
 import SafeActions from './pages/staking-hub/actions';
 import NoNodeAdded from './pages/staking-hub/noNodeAdded';
+import Onboarding from './pages/staking-hub/onboarding';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -186,6 +187,20 @@ export const applicationMapWeb3: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
+        name: 'Safe',
+        path: 'safe',
+        icon: <LockIcon />,
+        element: <SectionSafe />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Onboarding',
+        path: 'onboarding',
+        icon: <LockIcon />,
+        element: <Onboarding />,
+        loginNeeded: 'web3',
+      },
+      {
         name: 'Staking screen',
         path: 'staking-screen',
         icon: <SavingsIcon />,
@@ -204,13 +219,6 @@ export const applicationMapWeb3: ApplicationMapType = [
         path: 'node-added',
         icon: <SavingsIcon />,
         element: <NodeAdded />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Safe',
-        path: 'safe',
-        icon: <LockIcon />,
-        element: <SectionSafe />,
         loginNeeded: 'web3',
       },
       {
