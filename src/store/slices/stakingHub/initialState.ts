@@ -6,9 +6,17 @@ type InitialState = {
     }[];
     isFetching: boolean;
   };
+  onboarding: {
+    step: number;
+  }
 };
 
-export const initialState: InitialState = { safes: {
-  data: [],
-  isFetching: false,
-} };
+export const initialState: InitialState = { 
+  safes: {
+    data: [],
+    isFetching: false,
+  },
+  onboarding: {
+    step: 4,
+  }
+};

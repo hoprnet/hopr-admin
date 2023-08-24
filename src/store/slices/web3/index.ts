@@ -29,8 +29,8 @@ const web3Slice = createSlice({
     setWalletPresent(state, action) {
       state.walletPresent = action.payload;
     },
-    setHasCommunityNFT(state, action: PayloadAction<boolean>) {
-      state.hasCommunityNFT = action.payload;
+    setHasCommunityNftId(state, action: PayloadAction<number>) {
+      state.communityNftId = action.payload;
     },
     setWalletBalance_xDai(state, action) {
       state.balance.xDai.value = action.payload ? action.payload.value : null;

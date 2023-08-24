@@ -148,7 +148,7 @@ export default function ConnectSafe() {
   };
 
   const handleSafeButtonClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (connected.connected) {
+    if (connected.connected && safes.length > 0) {
       handleOpenMenu(event);
     }
   };

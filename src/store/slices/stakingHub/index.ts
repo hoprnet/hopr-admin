@@ -13,6 +13,9 @@ const stakingHubSlice = createSlice({
     addSafe: (state, payload) => {
       state.safes.data = [...state.safes.data, payload.payload];
     },
+    setOnboardingStep: (state, payload) => {
+      state.onboarding.step = payload.payload;
+    },
   },
   extraReducers: (builder) => createExtraReducers(builder),
 });

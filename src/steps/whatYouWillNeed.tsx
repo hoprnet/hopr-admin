@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
-import Card from '../components/Card';
 import Button from '../future-hopr-lib-components/Button';
-import Section from '../future-hopr-lib-components/Section';
+import { useAppDispatch } from '../store';
+import { StepContainer } from './components';
+import { stakingHubActions } from '../store/slices/stakingHub';
 
 const ConfirmButton = styled(Button)`
   width: 250px;
@@ -140,58 +141,57 @@ const TitleWithSVG = (props: {
 };
 
 export default function WhatYouWillNeedPage() {
+  const dispatch = useAppDispatch();
   return (
-    <Section
-      center
-      fullHeightMin
-      lightBlue
+    <StepContainer
+      title={'WHAT YOU WILL NEED'}
+      description={'It will take 20 minutes to join the network waitlist. Before starting make sure you have got the required tokens.'}
     >
-      <Card
-        title="what you will need"
-        description="It will take 20 minutes to join the network waitlist. Before starting make sure you have got the required tokens."
-      >
-        <Content>
-          <Container>
-            <TitleWithSVG
-              title="time"
-              img={{
-                src: '/assets/clock.svg',
-                height: 100,
-                width: 100,
-              }}
-            />
-            <TitleWithSVG title="token">
-              <CenteredFlex>
-                <OverlappingSVGs
-                  firstSVG={{
-                    src: '/assets/wxHoprIcon.svg',
-                    height: 100,
-                    width: 100,
-                  }}
-                  secondSVG={{
-                    src: '/assets/xdai-icon-with-green-x.svg',
-                    height: 90,
-                    width: 90,
-                  }}
-                />
-                <p>min. 10k wxHOPR with NR NFT</p>
-                <p>min. 30k wxHOPR without NR NFT</p>
-                <p>+</p>
-                <p>min. 1 xDAI</p>
-              </CenteredFlex>
-            </TitleWithSVG>
-            <TitleWithSVG
-              title="optional"
-              img={{
-                src: '/assets/network-registry-nft-icon.svg',
-                height: 100,
-                width: 100,
-              }}
-            />
-          </Container>
-          <ConfirmButton>continue</ConfirmButton>
-        </Content>
-      </Card>
-    </Section>
+      <Content>
+        <Container>
+          <TitleWithSVG
+            title="time"
+            img={{
+              src: '/assets/clock.svg',
+              height: 100,
+              width: 100,
+            }}
+          />
+          <TitleWithSVG title="token">
+            <CenteredFlex>
+              <OverlappingSVGs
+                firstSVG={{
+                  src: '/assets/wxHoprIcon.svg',
+                  height: 100,
+                  width: 100,
+                }}
+                secondSVG={{
+                  src: '/assets/xdai-icon-with-green-x.svg',
+                  height: 90,
+                  width: 90,
+                }}
+              />
+              <p>min. 10k wxHOPR with NR NFT</p>
+              <p>min. 30k wxHOPR without NR NFT</p>
+              <p>+</p>
+              <p>min. 1 xDAI</p>
+            </CenteredFlex>
+          </TitleWithSVG>
+          <TitleWithSVG
+            title="optional"
+            img={{
+              src: '/assets/network-registry-nft-icon.svg',
+              height: 100,
+              width: 100,
+            }}
+          />
+        </Container>
+        <ConfirmButton
+          onClick={()=>{dispatch(stakingHubActions.setOnboardingStep(2));}}
+        >
+          continue
+        </ConfirmButton>
+      </Content>
+    </StepContainer>
   );
 }
