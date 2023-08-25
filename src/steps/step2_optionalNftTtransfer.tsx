@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import styled from '@emotion/styled';
+import { WalletClient } from 'viem';
+import { useWalletClient } from 'wagmi';
+
 
 //HOPR Components
 import Button from '../future-hopr-lib-components/Button';
@@ -8,6 +11,7 @@ import { StepContainer } from './components';
 //Store
 import { useAppSelector, useAppDispatch } from '../store';
 import { stakingHubActions } from '../store/slices/stakingHub';
+import { web3ActionsAsync } from '../store/slices/web3';
 
 // Mui
 import Radio from '@mui/material/Radio';
@@ -89,6 +93,9 @@ export default function optionalNftTtransfer() {
   const dispatch = useAppDispatch();
   const [option, set_option] = useState<0 | 1 | null>(null);
   const communityNftId = useAppSelector((store) => store.web3.communityNftId);
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const walletAddress = useAppSelector((store) => store.web3.account);
+  const { data: walletClient } = useWalletClient();
 
   function whichNFTimage() {
     if (communityNftId === null) return '/assets/nft-NOT-detected-in-wallet.png';
@@ -125,6 +132,16 @@ export default function optionalNftTtransfer() {
             <Button
               onClick={(event) => {
                 event.stopPropagation();
+                if (!walletClient) return;
+                // TODO: Diego TS error: safeAddress
+                if(walletAddress && safeAddress && communityNftId !== null) {
+                  dispatch(web3ActionsAsync.sendNftToSafeThunk({
+                    walletAddress, 
+                    safeAddress,
+                    walletClient,
+                    communityNftId
+                  }))
+                }
               }}
               disabled={communityNftId === null}
             >

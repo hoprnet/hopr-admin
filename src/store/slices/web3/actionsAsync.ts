@@ -1,6 +1,22 @@
-import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
+import { ActionReducerMapBuilder, createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
-import { STAKE_SUBGRAPH } from '../../../../config';
+import { STAKE_SUBGRAPH, GNOSIS_CHAIN_HOPR_BOOST_NFT } from '../../../../config';
+import erc721ABI from '../../../abi/erc721-abi.json'
+import {
+  Address,
+  WalletClient,
+  encodePacked,
+  keccak256,
+  publicActions,
+  toBytes,
+  toHex
+} from 'viem';
+import Safe, { EthersAdapter, SafeAccountConfig, SafeFactory } from '@safe-global/protocol-kit';
+import { RootState } from '../..';
+
+// TO REMOVE
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_MANAGEMENT_MODULE, HOPR_NODE_STAKE_FACTORY } from '../../../../config'
+import hoprNodeStakeFactoryAbi from '../../../abi/nodeStakeFactoryAbi.json';
 
 const getCommunityNftsOwnedByWallet = createAsyncThunk(
   'web3/getCommunityNftsOwnedByWallet',
@@ -25,6 +41,79 @@ const getCommunityNftsOwnedByWallet = createAsyncThunk(
   },
 );
 
+const sendNftToSafeThunk = createAsyncThunk<
+  | {
+      success: boolean;
+    }
+  | undefined,
+  {
+    walletClient: WalletClient;
+    walletAddress: string;
+    safeAddres: string;
+    communityNftId: number;
+  },
+  { state: RootState }
+>(
+  'safe/sendNftToSafe',
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(setCommunityNftTransfering(true));
+    let success = false;
+    try {
+      const superWalletClient = payload.walletClient.extend(publicActions);
+
+      if (!superWalletClient.account) return;
+
+      const {
+        result,
+        request,
+      } = await superWalletClient.simulateContract({
+        account: payload.walletClient.account,
+        address: GNOSIS_CHAIN_HOPR_BOOST_NFT,
+        abi: erc721ABI,
+        functionName: 'safeTransferFrom',
+        args: [
+          payload.walletAddress,
+          payload.safeAddres,
+          payload.communityNftId,
+        ],
+      });
+
+      // TODO: Add error handling if failed (notificaiton)
+
+      if (!result) return;
+
+      const transactionHash = await superWalletClient.writeContract(request);
+
+      const red = await superWalletClient.waitForTransactionReceipt({ hash: transactionHash });
+
+      console.log({ red });
+
+      dispatch(
+        setCommunityNftIdInSafe(payload.communityNftId),
+      );
+
+      return {
+        success
+      };
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().web3.communityNftTransfering;
+    if (isFetching) {
+      return false;
+    }
+  } },
+);
+
+// Helper actions to update the isFetching state
+const setCommunityNftTransfering = createAction<boolean>('web3/setCommunityNftTransfering');
+const setCommunityNftIdInSafe = createAction<{}>('safe/setCommunityNftId');
+
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   builder.addCase(getCommunityNftsOwnedByWallet.fulfilled, (state, action) => {
     if (action.payload) {
@@ -34,6 +123,16 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
       }
     }
   });
+  builder.addCase(sendNftToSafeThunk.rejected, (state) => {
+    state.communityNftTransfering = false;
+  });
+  builder.addCase(sendNftToSafeThunk.fulfilled, (state, action) => {
+    state.communityNftId = null;
+    state.communityNftTransfering = false;
+  });
 };
 
-export const actionsAsync = { getCommunityNftsOwnedByWallet };
+export const actionsAsync = { 
+  getCommunityNftsOwnedByWallet,
+  sendNftToSafeThunk
+};
