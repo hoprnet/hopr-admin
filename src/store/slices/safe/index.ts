@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { initialState } from './initialState';
-import { actionsAsync, createExtraReducers } from './actionsAsync';
+import { actionsAsync, createAsyncReducer } from './actionsAsync';
 import { createFetchingReducer } from './actionsFetching';
+import { initialState } from './initialState';
 
 const safeSlice = createSlice({
   name: 'safe',
@@ -35,7 +35,7 @@ const safeSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    createExtraReducers(builder), createFetchingReducer(builder);
+    createAsyncReducer(builder), createFetchingReducer(builder);
   },
 });
 

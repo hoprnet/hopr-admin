@@ -45,7 +45,7 @@ const getHubSafesByOwnerThunk = createAsyncThunk<
 // Helper actions to update the isFetching state
 const setHubSafesByOwnerFetching = createAction<boolean>('stakingHub/setHubSafesByOwnerFetching');
 
-export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
+export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   // getSafesByOwner
   builder.addCase(getHubSafesByOwnerThunk.fulfilled, (state, action) => {
     if (action.payload) {

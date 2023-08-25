@@ -98,10 +98,7 @@ const createVanillaSafeWithConfigThunk = createAsyncThunk<
 >(
   'safe/createVanillaSafeWithConfig',
   async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      config: SafeAccountConfig;
-    },
+    payload,
     {
       rejectWithValue,
       dispatch,
@@ -175,12 +172,7 @@ const addOwnerToSafeThunk = createAsyncThunk<
 >(
   'safe/addOwnerToSafe',
   async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      ownerAddress: string;
-      threshold?: number;
-    },
+    payload,
     {
       rejectWithValue,
       dispatch,
@@ -239,12 +231,7 @@ const removeOwnerFromSafeThunk = createAsyncThunk<
 >(
   'safe/removeOwnerFromSafe',
   async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      ownerAddress: string;
-      threshold?: number;
-    },
+    payload,
     {
       rejectWithValue,
       dispatch,
@@ -301,11 +288,7 @@ const updateSafeThresholdThunk = createAsyncThunk<
 >(
   'safe/updateSafeThreshold',
   async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      newThreshold: number;
-    },
+    payload,
     {
       rejectWithValue,
       dispatch,
@@ -359,10 +342,7 @@ const getSafeInfoThunk = createAsyncThunk<
 >(
   'safe/getSafeInfo',
   async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-    },
+    payload,
     {
       rejectWithValue,
       dispatch,
@@ -392,11 +372,7 @@ const createSafeTransactionThunk = createAsyncThunk<
 >(
   'safe/createTransaction',
   async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      safeTransactionData: SafeTransactionDataPartial;
-    },
+    payload,
     {
       rejectWithValue,
       dispatch,
@@ -451,12 +427,7 @@ const createSafeContractTransaction = createAsyncThunk<
 >(
   'safe/createContractTransaction',
   async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      smartContractAddress: string;
-      data: string;
-    },
+    payload,
     {
       rejectWithValue,
       dispatch,
@@ -504,11 +475,7 @@ const createSafeRejectionTransactionThunk = createAsyncThunk<
 >(
   'safe/rejectTransactionProposal',
   async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      nonce: number;
-    },
+    payload,
     {
       rejectWithValue,
       dispatch,
@@ -558,11 +525,7 @@ const confirmTransactionThunk = createAsyncThunk<
 >(
   'safe/confirmTransactionProposal',
   async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      safeTransactionHash: string;
-    },
+    payload,
     {
       rejectWithValue,
       dispatch,
@@ -605,11 +568,7 @@ const executePendingTransactionThunk = createAsyncThunk<
 >(
   'safe/executeTransactionProposal',
   async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      safeTransaction: SafeMultisigTransactionResponse | SafeTransaction;
-    },
+    payload,
     {
       rejectWithValue,
       dispatch,
@@ -702,12 +661,7 @@ const createAndExecuteContractTransactionThunk = createAsyncThunk<
 >(
   'safe/createAndExecuteContractTransaction',
   async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      smartContractAddress: string;
-      data: string;
-    },
+    payload,
     {
       rejectWithValue,
       dispatch,
@@ -753,11 +707,7 @@ const getAllSafeTransactionsThunk = createAsyncThunk<
 >(
   'safe/getAllSafeTransactions',
   async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      options?: AllTransactionsOptions;
-    },
+    payload,
     {
       rejectWithValue,
       dispatch,
@@ -793,10 +743,7 @@ const getPendingSafeTransactionsThunk = createAsyncThunk<
 >(
   'safe/getPendingSafeTransactions',
   async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-    },
+    payload,
     {
       rejectWithValue,
       dispatch,
@@ -829,7 +776,7 @@ const addSafeDelegateThunk = createAsyncThunk<
 >(
   'safe/addDelegate',
   async (
-    payload: { options: Omit<AddSafeDelegateProps, 'signer'>; signer: ethers.providers.JsonRpcSigner },
+    payload,
     {
       rejectWithValue,
       dispatch,
@@ -871,7 +818,7 @@ const removeSafeDelegateThunk = createAsyncThunk<
 >(
   'safe/removeDelegate',
   async (
-    payload: { options: Omit<DeleteSafeDelegateProps, 'signer'>; signer: ethers.providers.JsonRpcSigner },
+    payload,
     {
       rejectWithValue,
       dispatch,
@@ -913,7 +860,7 @@ const getSafeDelegatesThunk = createAsyncThunk<
 >(
   'safe/getDelegates',
   async (
-    payload: { options: GetSafeDelegateProps; signer: ethers.providers.JsonRpcSigner },
+    payload,
     {
       rejectWithValue,
       dispatch,
@@ -945,7 +892,7 @@ const getToken = createAsyncThunk<
   { state: RootState }
 >(
   'safe/getToken',
-  async (payload: { tokenAddress: string; signer: ethers.providers.JsonRpcSigner }, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -974,7 +921,7 @@ const getTokenList = createAsyncThunk<
   { state: RootState }
 >(
   'safe/getTokenList',
-  async (payload: { signer: ethers.providers.JsonRpcSigner }, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -1114,7 +1061,7 @@ const getCommunityNftsOwnedBySafeThunk = createAsyncThunk(
   },
 );
 
-export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
+export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   // CreateSafeWithConfig
   builder.addCase(createSafeWithConfigThunk.fulfilled, (state, action) => {
     if (action.payload) {

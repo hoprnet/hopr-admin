@@ -41,7 +41,6 @@ import { parseMetrics } from '../../../utils/metrics';
 import { RootState } from '../..';
 import { formatEther } from 'viem';
 import { nodeActionsFetching } from './actionsFetching';
-
 const { APIError } = utils;
 const {
   closeChannel,
@@ -80,7 +79,7 @@ const { openMultipleChannels } = flows;
 
 const getInfoThunk = createAsyncThunk<GetInfoResponseType | undefined, BasePayloadType, { state: RootState }>(
   'node/getInfo',
-  async (payload: BasePayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -146,7 +145,7 @@ const getAddressesThunk = createAsyncThunk<
 
 const getAliasesThunk = createAsyncThunk<GetAliasesResponseType | undefined, BasePayloadType, { state: RootState }>(
   'node/getAliases',
-  async (payload: BasePayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -208,11 +207,11 @@ const getBalancesThunk = createAsyncThunk<
 
 const getChannelsThunk = createAsyncThunk<
   GetChannelsResponseType | undefined,
-  GetPeersPayloadType,
+  BasePayloadType,
   { state: RootState }
 >(
   'node/getChannels',
-  async (payload: BasePayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -239,7 +238,7 @@ const getChannelsThunk = createAsyncThunk<
 
 const getPeersThunk = createAsyncThunk<GetPeersResponseType | undefined, GetPeersPayloadType, { state: RootState }>(
   'node/getPeers',
-  async (payload: GetPeersPayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -270,7 +269,7 @@ const getPeerInfoThunk = createAsyncThunk<
   { state: RootState }
 >(
   'node/getPeerInfo',
-  async (payload: GetPeerInfoPayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -297,7 +296,7 @@ const getPeerInfoThunk = createAsyncThunk<
 
 const getSettingsThunk = createAsyncThunk<GetSettingsResponseType | undefined, BasePayloadType, { state: RootState }>(
   'node/getSettings',
-  async (payload: BasePayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -328,7 +327,7 @@ const getStatisticsThunk = createAsyncThunk<
   { state: RootState }
 >(
   'node/getStatistics',
-  async (payload: BasePayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -355,7 +354,7 @@ const getStatisticsThunk = createAsyncThunk<
 
 const getTicketsThunk = createAsyncThunk<GetTicketsResponseType | undefined, BasePayloadType, { state: RootState }>(
   'node/getTickets',
-  async (payload: BasePayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -382,7 +381,7 @@ const getTicketsThunk = createAsyncThunk<GetTicketsResponseType | undefined, Bas
 
 const getTokenThunk = createAsyncThunk<GetTokenResponseType | undefined, BasePayloadType, { state: RootState }>(
   'node/getToken',
-  async (payload: BasePayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -413,7 +412,7 @@ const getEntryNodesThunk = createAsyncThunk<
   { state: RootState }
 >(
   'node/getEntryNodes',
-  async (payload: BasePayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -440,7 +439,7 @@ const getEntryNodesThunk = createAsyncThunk<
 
 const getVersionThunk = createAsyncThunk<string | undefined, BasePayloadType, { state: RootState }>(
   'node/getVersion',
-  async (payload: BasePayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -467,7 +466,7 @@ const getVersionThunk = createAsyncThunk<string | undefined, BasePayloadType, { 
 
 const withdrawThunk = createAsyncThunk<string | undefined, WithdrawPayloadType, { state: RootState }>(
   'node/withdraw',
-  async (payload: WithdrawPayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -502,7 +501,7 @@ const getAliasThunk = createAsyncThunk<
   { state: RootState }
 >(
   'node/getAlias',
-  async (payload: AliasPayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -536,7 +535,7 @@ const setAliasThunk = createAsyncThunk<
   { state: RootState }
 >(
   'node/setAlias',
-  async (payload: SetAliasPayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -568,7 +567,7 @@ const setAliasThunk = createAsyncThunk<
 
 const removeAliasThunk = createAsyncThunk<{ alias: string } | undefined, AliasPayloadType, { state: RootState }>(
   'node/removeAlias',
-  async (payload: AliasPayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -605,7 +604,7 @@ const closeChannelThunk = createAsyncThunk<
   { state: RootState }
 >(
   'node/closeChannel',
-  async (payload: CloseChannelPayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -636,7 +635,7 @@ const fundChannelsThunk = createAsyncThunk<
   { state: RootState }
 >(
   'node/fundChannels',
-  async (payload: FundChannelsPayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -667,7 +666,7 @@ const getChannelThunk = createAsyncThunk<
   { state: RootState }
 >(
   'node/getChannel',
-  async (payload: GetChannelPayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -698,7 +697,7 @@ const getChannelTicketsThunk = createAsyncThunk<
   { state: RootState }
 >(
   'node/getChannelTickets',
-  async (payload: PeerIdPayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -727,7 +726,7 @@ const openChannelThunk = createAsyncThunk<
   OpenChannelResponseType | undefined,
   OpenChannelPayloadType,
   { state: RootState }
->('node/openChannel', async (payload: OpenChannelPayloadType, { rejectWithValue }) => {
+>('node/openChannel', async (payload, { rejectWithValue }) => {
   try {
     const res = await openChannel(payload);
     return res;
@@ -781,7 +780,7 @@ const openMultipleChannelsThunk = createAsyncThunk(
 
 const redeemChannelTicketsThunk = createAsyncThunk<boolean | undefined, PeerIdPayloadType, { state: RootState }>(
   'node/redeemChannelTickets',
-  async (payload: PeerIdPayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -859,7 +858,7 @@ const pingNodeThunk = createAsyncThunk('node/pingNode', async (payload: PingNode
 
 const setSettingThunk = createAsyncThunk<boolean | undefined, SetSettingPayloadType, { state: RootState }>(
   'node/setSetting',
-  async (payload: SetSettingPayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -886,7 +885,7 @@ const setSettingThunk = createAsyncThunk<boolean | undefined, SetSettingPayloadT
 
 const redeemTicketsThunk = createAsyncThunk<boolean | undefined, BasePayloadType, { state: RootState }>(
   'node/redeemTickets',
-  async (payload: BasePayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -917,7 +916,7 @@ const createTokenThunk = createAsyncThunk<
   { state: RootState }
 >(
   'node/createToken',
-  async (payload: CreateTokenPayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -948,7 +947,7 @@ const deleteTokenThunk = createAsyncThunk<
   { state: RootState }
 >(
   'node/deleteToken',
-  async (payload: DeleteTokenPayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -978,7 +977,7 @@ const deleteTokenThunk = createAsyncThunk<
 
 const getPrometheusMetricsThunk = createAsyncThunk<string | undefined, BasePayloadType, { state: RootState }>(
   'node/getPrometheusMetrics',
-  async (payload: BasePayloadType, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
@@ -1003,7 +1002,7 @@ const getPrometheusMetricsThunk = createAsyncThunk<string | undefined, BasePaylo
   } },
 );
 
-export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
+export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   // getInfo
   builder.addCase(getInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {

@@ -89,7 +89,7 @@ const sendNftToSafeThunk = createAsyncThunk<
   } },
 );
 
-export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
+export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   builder.addCase(getCommunityNftsOwnedByWallet.fulfilled, (state, action) => {
     if (action.payload) {
       if (action.payload?.boosts.length > 0 && action.payload?.boosts[0].id) {

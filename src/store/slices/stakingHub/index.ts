@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
-import { actionsAsync, createExtraReducers } from './actionsAsync';
+import { actionsAsync, createAsyncReducer } from './actionsAsync';
 
 const stakingHubSlice = createSlice({
   name: 'stakingHub',
@@ -19,7 +19,7 @@ const stakingHubSlice = createSlice({
       state.onboarding.step = action.payload;
     },
   },
-  extraReducers: (builder) => createExtraReducers(builder),
+  extraReducers: (builder) => createAsyncReducer(builder),
 });
 
 export const stakingHubActions = stakingHubSlice.actions;
