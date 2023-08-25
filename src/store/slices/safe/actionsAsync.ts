@@ -39,6 +39,7 @@ import {
 } from '../../../utils/safeTransactions';
 import { initialState } from './initialState';
 import { STAKE_SUBGRAPH, SAFE_SERVICE_URL } from '../../../../config';
+import { stakingHubActions } from '../stakingHub';
 
 const createSafeApiService = async (signer: ethers.providers.JsonRpcSigner) => {
   const adapter = new EthersAdapter({
@@ -1047,9 +1048,7 @@ const createSafeWithConfigThunk = createAsyncThunk<
 
       const transactionHash = await superWalletClient.writeContract(request);
 
-      const red = await superWalletClient.waitForTransactionReceipt({ hash: transactionHash });
-
-      console.log({ red });
+      await superWalletClient.waitForTransactionReceipt({ hash: transactionHash });
 
       const [moduleProxy, safeAddress] = result as [Address, Address];
 
@@ -1064,7 +1063,7 @@ const createSafeWithConfigThunk = createAsyncThunk<
         }),
       });
       dispatch(
-        addSafeLocally({
+        stakingHubActions.addSafe({
           safeAddress,
           moduleAddress: moduleProxy,
         }),
@@ -1125,8 +1124,6 @@ const setAddDelegateFetching = createAction<boolean>('node/setAddDelegateFetchin
 const setRemoveDelegateFetching = createAction<boolean>('node/setRemoveDelegateFetching');
 const setTokenListFetching = createAction<boolean>('node/setTokenListFetching');
 const setTokenFetching = createAction<boolean>('node/setTokenFetching');
-
-const addSafeLocally = createAction<{}>('stakingHub/addSafe');
 
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   // CreateSafeWithConfig
