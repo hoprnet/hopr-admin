@@ -154,7 +154,7 @@ export const Stepper = (props: StepperProps) => {
     index,
     currentStep,
   }: { index: number; currentStep: number }): StepState => {
-    if (index === currentStep && currentStep === props.lastStepDone) return 'CURRENT_AND_COMPLETED'
+    if (index === currentStep && currentStep === props.lastStepDone) return 'CURRENT_AND_COMPLETED';
     if (index < currentStep) return 'COMPLETED';
     if (index === currentStep) return 'CURRENT';
     return 'PENDING';
