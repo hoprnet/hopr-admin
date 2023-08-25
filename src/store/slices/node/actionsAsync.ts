@@ -1367,8 +1367,8 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
       // since action payload is unknown we have to check if it an object
       if (typeof action.payload !== 'object') return;
       // make sure status is part of payload
-      if (!('status' in action.payload)) return
-            
+      if (!('status' in action.payload)) return;
+
       if (typeof action.payload.status === 'string') {
         state.messagesSent[index].error = action.payload.status;
       }
