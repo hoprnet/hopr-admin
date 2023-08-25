@@ -33,7 +33,14 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           You can find the best options for buying HOPR, DAI, xDAI and xHOPR in our{' '}
-          <a href="https://docs.hoprnet.org/staking/how-to-get-hopr">docs</a>.
+          <a
+            href="https://docs.hoprnet.org/staking/how-to-get-hopr"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            docs
+          </a>
+          .
         </span>
       ),
     },
@@ -43,7 +50,14 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           You can convert your xHOPR to wxHOPR by using our wrapper on the{' '}
-          <a href="https://wrapper.hoprnet.org/">staking hub</a>.
+          <a
+            href="https://wrapper.hoprnet.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            staking hub
+          </a>
+          .
         </span>
       ),
     },
@@ -82,7 +96,14 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           You will need to install Docker on your device to complete this installation. Follow{' '}
-          <a href="#">these instructions</a> if you don't have Docker installed.
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            these instructions
+          </a>{' '}
+          if you don't have Docker installed.
         </span>
       ),
     },
@@ -91,7 +112,14 @@ const stakingFaq: FaqData = {
       title: 'Install Node',
       content: (
         <span>
-          You can view a complete breakdown of how to install a HOPR node using Docker <a href="#">here</a>
+          You can view a complete breakdown of how to install a HOPR node using Docker{' '}
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>
         </span>
       ),
     },
@@ -105,8 +133,24 @@ const stakingFaq: FaqData = {
           The process for updating your node depends on the device you're using. Follow the appropriate link for your
           setup.
           <br />
-          <br />- For Dappnode users, click <a href="#">here</a> for the steps.
-          <br />- Docker users, find your instructions <a href="#">here</a>.
+          <br />- For Dappnode users, click{' '}
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>{' '}
+          for the steps.
+          <br />- Docker users, find your instructions{' '}
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>
+          .
         </span>
       ),
     },
@@ -118,8 +162,24 @@ const stakingFaq: FaqData = {
           The process for restarting your node depends on the device you're using. Follow the appropriate link for your
           setup.
           <br />
-          <br />- For Dappnode users, click <a href="#">here</a> for the steps.
-          <br />- Docker users, find your instructions <a href="#">here</a>.
+          <br />- For Dappnode users, click{' '}
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>{' '}
+          for the steps.
+          <br />- Docker users, find your instructions{' '}
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>
+          .
         </span>
       ),
     },
@@ -209,7 +269,14 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           You can convert your xHOPR to wxHOPR by using our wrapper on the{' '}
-          <a href="https://wrapper.hoprnet.org/">staking hub</a>.
+          <a
+            href="https://wrapper.hoprnet.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            staking hub
+          </a>
+          .
         </span>
       ),
     },
@@ -221,7 +288,14 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           You can find the best options for buying HOPR, DAI, xDAI and xHOPR in our{' '}
-          <a href="https://docs.hoprnet.org/staking/how-to-get-hopr">docs</a>.
+          <a
+            href="https://docs.hoprnet.org/staking/how-to-get-hopr"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            docs
+          </a>
+          .
         </span>
       ),
     },
@@ -252,7 +326,14 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           You can find the best options for buying HOPR, DAI, xDAI and xHOPR in our{' '}
-          <a href="https://docs.hoprnet.org/staking/how-to-get-hopr">docs</a>.
+          <a
+            href="https://docs.hoprnet.org/staking/how-to-get-hopr"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            docs
+          </a>
+          .
         </span>
       ),
     },
@@ -268,7 +349,14 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           You can convert your xHOPR to wxHOPR by using our wrapper on the{' '}
-          <a href="https://wrapper.hoprnet.org/">staking hub</a>.
+          <a
+            href="https://wrapper.hoprnet.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            staking hub
+          </a>
+          .
         </span>
       ),
     },
@@ -286,7 +374,14 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           You can find the best options for buying HOPR, DAI, xDAI and xHOPR in our{' '}
-          <a href="https://docs.hoprnet.org/staking/how-to-get-hopr">docs</a>.
+          <a
+            href="https://docs.hoprnet.org/staking/how-to-get-hopr"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            docs
+          </a>
+          .
         </span>
       ),
     },
@@ -304,7 +399,14 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           You can find the best options for buying HOPR, DAI, xDAI and xHOPR in our{' '}
-          <a href="https://docs.hoprnet.org/staking/how-to-get-hopr">docs</a>.
+          <a
+            href="https://docs.hoprnet.org/staking/how-to-get-hopr"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            docs
+          </a>
+          .
         </span>
       ),
     },
@@ -314,7 +416,15 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           This will vary depending on how many nodes are in the network, how much wxHOPR you have staked and how many
-          nodes you are running. You can view a complete breakdown of the economic model <a href="#">here</a>.
+          nodes you are running. You can view a complete breakdown of the economic model{' '}
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>
+          .
         </span>
       ),
     },
@@ -350,7 +460,15 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           After creating and funding your safe, you will need to register your safe address on to the waitlist using
-          this <a href="#">form</a>.<br />
+          this{' '}
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            form
+          </a>
+          .<br />
           <br />
           Nodes are onboarded into the HOPR network in a first come, first serve basis. So fill out the form as soon as
           possible if you haven't already.
@@ -363,7 +481,15 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           Make sure your allowance aligns with your node strategy and is not draining your tokens or preventing you from
-          producing well-connected nodes. You can always change your node allowance <a href="#">here</a>.
+          producing well-connected nodes. You can always change your node allowance{' '}
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>
+          .
         </span>
       ),
     },
@@ -373,10 +499,24 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           To remove your node from your safe, first, execute the removeNode(address nodeAddress) function on the{' '}
-          <a href="#">NodeManagementModule contract</a>.<br />
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            NodeManagementModule contract
+          </a>
+          .<br />
           <br />
           Then remove the node as a delegate from the safe. You can view how to do this two-step procedure in our docs{' '}
-          <a href="#">here</a>.
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>
+          .
         </span>
       ),
     },
@@ -386,7 +526,14 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           It is calculated using the network's heartbeat mechanism.\n\nYou can read what differentiates each category{' '}
-          <a href="https://docs.hoprnet.org/node/hoprd-commands#info">here</a>.
+          <a
+            href="https://docs.hoprnet.org/node/hoprd-commands#info"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>
+          .
         </span>
       ),
     },
@@ -409,7 +556,15 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           After creating and funding your safe, you will need to register your safe address on to the waitlist using
-          this <a href="#">form</a>.<br />
+          this{' '}
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            form
+          </a>
+          .<br />
           <br />
           Nodes are onboarded into the HOPR network in a first come, first serve basis. So fill out the form as soon as
           possible if you have't already.
@@ -422,7 +577,15 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           Make sure your allowance aligns with your node strategy and is not draining your tokens or preventing you from
-          producing well-connected nodes. You can always change your node allowance <a href="#">here</a>.
+          producing well-connected nodes. You can always change your node allowance{' '}
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>
+          .
         </span>
       ),
     },
@@ -432,10 +595,24 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           To remove your node from your safe, first, execute the removeNode(address nodeAddress) function on the{' '}
-          <a href="#">NodeManagementModule contract</a>.<br />
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            NodeManagementModule contract
+          </a>
+          .<br />
           <br />
           Then remove the node as a delegate from the safe. You can view how to do this two-step procedure in our docs{' '}
-          <a href="#">here</a>.
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>
+          .
         </span>
       ),
     },
@@ -445,7 +622,14 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           It is calculated using the network's heartbeat mechanism.\n\nYou can read what differentiates each category{' '}
-          <a href="https://docs.hoprnet.org/node/hoprd-commands#info">here</a>.
+          <a
+            href="https://docs.hoprnet.org/node/hoprd-commands#info"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>
+          .
         </span>
       ),
     },

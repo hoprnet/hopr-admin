@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react';
 import { HOPR_TOKEN_USED } from '../../../config';
 import { useAppSelector } from '../../store';
 import styled from '@emotion/styled';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   style?: object;
@@ -85,6 +87,11 @@ const Data = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;
   }
+
+  a {
+    color: #007bff; /* Set the desired color for links */
+    text-decoration: underline;
+  }
 `;
 
 // TODO: make batter to work with balances
@@ -134,6 +141,21 @@ export default function Details(props: Props) {
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const walletBalance = useAppSelector((store) => store.web3.balance);
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
+  const loginData = useAppSelector((store) => store.auth.loginData);
+  const statistics = useAppSelector((store) => store.node.statistics.data);
+
+  const navigate = useNavigate();
+  const [queryParams, set_queryParams] = useState('');
+
+  useEffect(() => {
+    if (loginData.apiEndpoint && loginData.apiToken) {
+      const queryParams = new URLSearchParams({
+        apiToken: loginData.apiToken,
+        apiEndpoint: loginData.apiEndpoint,
+      }).toString();
+      set_queryParams(queryParams);
+    }
+  }, [loginData.apiToken, loginData.apiEndpoint]);
 
   const web3Drawer = (
     <Web3Container style={props.style}>
@@ -220,11 +242,19 @@ export default function Details(props: Props) {
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
-          <Text>Outgoing Chanels</Text>
+          <Text>CHANNELS: OUT</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
-          <Text>Incoming Chanels</Text>
+          <Text>CHANNELS: IN</Text>
+        </IconAndText>
+        <IconAndText>
+          <IconContainer></IconContainer>
+          <Text>Unredeemed tickets</Text>
+        </IconAndText>
+        <IconAndText>
+          <IconContainer></IconContainer>
+          <Text>LINKS</Text>
         </IconAndText>
       </TitleColumn>
       <DataColumn>
@@ -236,6 +266,27 @@ export default function Details(props: Props) {
           <p>{truncateBalanceto5charsWhenNoDecimals(peers?.announced?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.outgoing?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.incoming?.length) || '-'}</p>
+          <p>{statistics?.unredeemed}</p>
+          <br />
+          <>
+            <a onClick={() => navigate(`/hub/staking-hub-landing?${queryParams}`)}>Staking Hub</a>
+            <br />
+            <a
+              href="https://docs.hoprnet.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Docs
+            </a>
+            <br />
+            <a
+              href="https://t.me/hoprnet"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Telegram
+            </a>
+          </>
         </Data>
       </DataColumn>
     </Web3Container>

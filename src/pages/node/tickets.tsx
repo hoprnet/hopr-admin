@@ -78,7 +78,7 @@ function TicketsPage() {
             />
             <IconButton
               iconComponent={<GetAppIcon />}
-              tooltipText="Download all tickets as JSON"
+              tooltipText="Export all tickets as JSON"
               onClick={() => {
                 exportToFile(JSON.stringify(tickets), 'tickets.json', 'text/json');
               }}

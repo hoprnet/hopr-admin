@@ -139,36 +139,6 @@ function InfoPage() {
         }}
       >
         <TableExtended
-          title="Software"
-          style={{ marginBottom: '42px' }}
-        >
-          <tbody>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The version of HOPR your node is running."
-                  notWide
-                >
-                  <span>Version</span>
-                </Tooltip>
-              </th>
-              <td>{version?.replaceAll('"', '')}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The environment your node is running in."
-                  notWide
-                >
-                  <span>Environment</span>
-                </Tooltip>
-              </th>
-              <td>{info?.environment}</td>
-            </tr>
-          </tbody>
-        </TableExtended>
-
-        <TableExtended
           title="Network"
           style={{ marginBottom: '42px' }}
         >
@@ -328,6 +298,36 @@ function InfoPage() {
         </TableExtended>
 
         <TableExtended
+          title="Software"
+          style={{ marginBottom: '42px' }}
+        >
+          <tbody>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The version of HOPR your node is running."
+                  notWide
+                >
+                  <span>Version</span>
+                </Tooltip>
+              </th>
+              <td>{version?.replaceAll('"', '')}</td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The environment your node is running in."
+                  notWide
+                >
+                  <span>Environment</span>
+                </Tooltip>
+              </th>
+              <td>{info?.environment}</td>
+            </tr>
+          </tbody>
+        </TableExtended>
+
+        <TableExtended
           title="Channels"
           style={{ marginBottom: '42px' }}
         >
@@ -386,123 +386,7 @@ function InfoPage() {
             </tr>
           </tbody>
         </TableExtended>
-        <TableExtended
-          title="Tickets"
-          style={{ marginBottom: '42px' }}
-        >
-          <tbody>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The number of tickets earned by another node in a channel connected to you which have yet to be redeemed."
-                  notWide
-                >
-                  <span>Pending</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.pending}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The number of tickets earned by your node that have yet to be redeemed."
-                  notWide
-                >
-                  <span>Unredeemed</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.unredeemed}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The value of all your unredeemed tickets in HOPR tokens."
-                  notWide
-                >
-                  <span>Unredeemed value</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.unredeemedValue}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The number of tickets redeemed by your node."
-                  notWide
-                >
-                  <span>Redeemed</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.redeemed}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The value of all your redeemed tickets."
-                  notWide
-                >
-                  <span>Redeemed value</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.redeemedValue}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The number of tickets which were empty."
-                  notWide
-                >
-                  <span>Losing tickets</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.losingTickets}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The percentage of tickets earned by your node that were winning."
-                  notWide
-                >
-                  <span>Win proportion</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.winProportion}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The number of tickets lost due to channels closing without ticket redemption."
-                  notWide
-                >
-                  <span>Neglected</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.neglected}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The number of tickets which were rejected by the network due to suspicious activity or lack of eligibility."
-                  notWide
-                >
-                  <span>Rejected</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.rejected}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The value of your rejected tickets in HOPR tokens."
-                  notWide
-                >
-                  <span>Rejected value</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.rejectedValue}</td>
-            </tr>
-          </tbody>
-        </TableExtended>
+
         <TableExtended
           title="Aliases"
           style={{ marginBottom: '42px' }}

@@ -163,7 +163,7 @@ function MetricsPage() {
           <>
             <IconButton
               iconComponent={<GetAppIcon />}
-              tooltipText="Download metrics as a text file"
+              tooltipText="Export metrics as a text file"
               onClick={() => {
                 exportToFile(metrics.raw ? metrics.raw : 'error', 'metrics.txt', 'text/txt');
               }}

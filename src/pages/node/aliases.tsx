@@ -154,7 +154,7 @@ function AliasesPage() {
             <CSVUploader onParse={handleCSVUpload} />
             <IconButton
               iconComponent={<GetAppIcon />}
-              tooltipText="Export seen peers as a CSV"
+              tooltipText="Export aliases as a CSV"
               disabled={aliases !== null && Object.keys(aliases).length === 0}
               onClick={handleExport}
             />

@@ -15,9 +15,23 @@ const nodeFaq: FaqData = {
         <span>
           You can find the latest version for your device on our docs:
           <br />
-          <br />- For <a href="https://docs.hoprnet.org/node/using-dappnode">Dappnode</a>
+          <br />- For{' '}
+          <a
+            href="https://docs.hoprnet.org/node/using-dappnode"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Dappnode
+          </a>
           <br />
-          <br />- For <a href="https://docs.hoprnet.org/node/using-docker">Docker</a>
+          <br />- For{' '}
+          <a
+            href="https://docs.hoprnet.org/node/using-docker"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Docker
+          </a>
         </span>
       ),
     },
@@ -34,7 +48,15 @@ const nodeFaq: FaqData = {
         <span>
           You must have your node approved to join the network by having an eligible associated staking address and
           being approved by the HOPR association to join the network, as it is currently permissioned. You can join the
-          network by creating a safe <a href="#">here</a>.
+          network by creating a safe{' '}
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>
+          .
         </span>
       ),
     },
@@ -47,7 +69,14 @@ const nodeFaq: FaqData = {
           <br />
           <br />
           You can read what differentiates each category{' '}
-          <a href="https://docs.hoprnet.org/node/hoprd-commands#info">here</a>.
+          <a
+            href="https://docs.hoprnet.org/node/hoprd-commands#info"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            here
+          </a>
+          .
         </span>
       ),
     },
@@ -139,7 +168,13 @@ const nodeFaq: FaqData = {
         <span>
           If a large proportion of your connection attempts are failing, there is likely an issue with your node or a
           bug. This is diagnostic information you can pass on for support to one of our ambassadors on Telegram:{' '}
-          <a href="https://t.me/hoprnet">https://t.me/hoprnet</a>
+          <a
+            href="https://t.me/hoprnet"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            https://t.me/hoprnet
+          </a>
         </span>
       ),
     },
@@ -240,7 +275,11 @@ const nodeFaq: FaqData = {
       content: (
         <span>
           You can view the lifecycle of a payment channel and what the different states mean here:{' '}
-          <a href="https://docs.hoprnet.org/developers/smart-contract#lifecycle-of-payment-channel">
+          <a
+            href="https://docs.hoprnet.org/developers/smart-contract#lifecycle-of-payment-channel"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             https://docs.hoprnet.org/developers/smart-contract#lifecycle-of-payment-channel
           </a>
         </span>

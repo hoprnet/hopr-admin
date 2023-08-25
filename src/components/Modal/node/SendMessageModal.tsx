@@ -100,6 +100,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
       .then((res) => {
         console.log('@message: ', res?.challenge);
         set_status('Message sent');
+        handleCloseModal();
       })
       .catch((e) => {
         console.log('@message err:', e);

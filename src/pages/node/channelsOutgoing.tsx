@@ -20,7 +20,6 @@ import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundCh
 import { OpenMultipleChannelsModal } from '../../components/Modal/node/OpenMultipleChannelsModal';
 
 // Mui
-import CircularProgress from '@mui/material/CircularProgress';
 import GetAppIcon from '@mui/icons-material/GetApp';
 
 function ChannelsPage() {
@@ -29,7 +28,6 @@ function ChannelsPage() {
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
-  const [tabIndex, set_tabIndex] = useState(0);
   const [closingStates, set_closingStates] = useState<
     Record<
       string,
@@ -43,21 +41,15 @@ function ChannelsPage() {
       }
     >
   >({});
-  const tabLabel = tabIndex === 0 ? 'outgoing' : 'incoming';
-  const channelsData = tabIndex === 0 ? channels?.outgoing : channels?.incoming;
+  const tabLabel = 'outgoing';
+  const channelsData = channels?.outgoing;
 
   const [queryParams, set_queryParams] = useState('');
 
   const navigate = useNavigate();
 
-  const handleTabChange = (event: React.SyntheticEvent<Element, Event>, newTabIndex: number) => {
-    set_tabIndex(newTabIndex);
-    handleHash(newTabIndex);
-  };
-
-  const handleHash = (newTabIndex: number) => {
-    const newHash = newTabIndex === 0 ? 'outgoing' : 'incoming';
-    navigate(`?${queryParams}#${newHash}`, { replace: true });
+  const handleHash = () => {
+    navigate(`?${queryParams}#outgoing`, { replace: true });
   };
 
   useEffect(() => {
@@ -71,17 +63,9 @@ function ChannelsPage() {
   }, [loginData.apiToken, loginData.apiEndpoint]);
 
   useEffect(() => {
-    const currentHash = window.location.hash;
-    const defaultHash = currentHash === '#incoming' || currentHash === '#outgoing' ? currentHash : '#outgoing';
-
-    const defaultTabIndex = defaultHash === '#outgoing' ? 0 : 1;
-    set_tabIndex(defaultTabIndex);
-    handleHash(defaultTabIndex);
-
+    handleHash();
     handleRefresh();
   }, [queryParams]);
-
-  useEffect(() => {}, [tabIndex]);
 
   const handleRefresh = () => {
     dispatch(
