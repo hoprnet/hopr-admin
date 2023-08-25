@@ -59,22 +59,6 @@ const FundsToSafe = () => {
     args: [selectedSafeAddress as Address, parseUnits(wxhoprValue as NumberLiteral, 18)],
   });
 
-  useEffect(() => {
-    if (account) {
-  //    updateBalances();
-    } else {
-      set_xdaiValue('');
-      set_wxhoprValue('');
-    }
-  }, [account, walletBalance.xDai.formatted, walletBalance.wxHopr.formatted]);
-
-  const updateBalances = () => {
-    if (account && walletBalance.xDai.value && walletBalance.wxHopr.formatted) {
-      set_xdaiValue(formatEther(BigInt(walletBalance.xDai.value) - parseUnits(`${0.002}`, 18)));
-      set_wxhoprValue(walletBalance.wxHopr.formatted);
-    }
-  };
-
   const setMax_xDAI = () => {
     if (walletBalance.xDai.value) {
       set_xdaiValue(formatEther(BigInt(walletBalance.xDai.value) - parseUnits(`${0.002}`, 18)));
@@ -98,15 +82,20 @@ const FundsToSafe = () => {
     isLoading: is_xDAI_to_safe_loading,
     sendTransaction: send_xDAI_to_safe,
   } = useSendTransaction({
-    ...xDAI_to_safe_config,
-    onSuccess: () => write_wxHOPR_to_safe?.(),
+    ...xDAI_to_safe_config
   });
 
-  const handleDeployClick = () => {
-    if (xdaiValue && wxhoprValue) {
-      send_xDAI_to_safe?.();
-    }
+  const handleFundxDai = () => {
+    send_xDAI_to_safe?.();
   };
+  
+
+  const handleFundwxHopr = () => {
+    write_wxHOPR_to_safe?.();
+  };
+  
+
+
   return (
     <StepContainer
       image={{
@@ -148,8 +137,8 @@ const FundsToSafe = () => {
           <MaxButton onClick={setMax_xDAI}>Max</MaxButton>
         </StyledInputGroup>
         <Button
-          onClick={handleDeployClick}
-          disabled={!send_xDAI_to_safe}
+          onClick={handleFundxDai}
+          disabled={!xdaiValue || xdaiValue === '' ||  xdaiValue === '0' }
         >
           Fund
         </Button>
@@ -183,8 +172,8 @@ const FundsToSafe = () => {
           </StyledCoinLabel>
           <MaxButton onClick={setMax_wxHOPR}>Max</MaxButton>
           <Button
-            onClick={handleDeployClick}
-            disabled={!send_xDAI_to_safe}
+            onClick={handleFundwxHopr}
+            disabled={!wxhoprValue || wxhoprValue === '' ||  wxhoprValue === '0' }
           >
             Fund
           </Button>
