@@ -2,10 +2,14 @@ import { ActionReducerMapBuilder, createAction, createAsyncThunk } from '@reduxj
 import { RootState } from '../..';
 import { initialState } from './initialState';
 
-const getHubSafesByOwnerThunk = createAsyncThunk<{
-  moduleAddress: string;
-  safeAddress: string;
-}[], string, { state: RootState }>(
+const getHubSafesByOwnerThunk = createAsyncThunk<
+  {
+    moduleAddress: string;
+    safeAddress: string;
+  }[],
+  string,
+  { state: RootState }
+>(
   'stakingHub/getHubSafesByOwner',
   async (payload, {
     rejectWithValue,
