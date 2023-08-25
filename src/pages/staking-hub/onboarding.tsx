@@ -8,9 +8,6 @@ import { stakingHubActions } from '../../store/slices/stakingHub';
 // HOPR Components
 import { StepContainer } from '../../steps/components';
 
-// Mui
-import Paper from '@mui/material/Paper/Paper';
-
 //Steps
 import WhatYouWillNeedPage from '../../steps/step0_whatYouWillNeed';
 import CreateSafe from '../../steps/step1-1_createSafe';
