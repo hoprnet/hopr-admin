@@ -1,8 +1,11 @@
 import { ActionReducerMapBuilder, createAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { initialState } from './initialState';
 import { RootState } from '../..';
+import { initialState } from './initialState';
 
-const getHubSafesByOwnerThunk = createAsyncThunk<any | undefined, any, { state: RootState }>(
+const getHubSafesByOwnerThunk = createAsyncThunk<{
+  moduleAddress: string;
+  safeAddress: string;
+}[], string, { state: RootState }>(
   'stakingHub/getHubSafesByOwner',
   async (payload, {
     rejectWithValue,
@@ -15,8 +18,8 @@ const getHubSafesByOwnerThunk = createAsyncThunk<any | undefined, any, { state: 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ownerAddress: payload }),
       });
-      const json = await resp.json();
-      const mapped = json.map((elem: { moduleaddress: string; safeaddress: string }) => {
+      const json: { moduleaddress: string; safeaddress: string }[] = await resp.json();
+      const mapped = json.map((elem) => {
         return {
           moduleAddress: elem.moduleaddress,
           safeAddress: elem.safeaddress,

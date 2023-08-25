@@ -6,8 +6,6 @@ import erc721ABI from '../../../abi/erc721-abi.json';
 import { initialState } from './initialState';
 import { web3Actions } from '.';
 
-// TO REMOVE
-
 const getCommunityNftsOwnedByWallet = createAsyncThunk(
   'web3/getCommunityNftsOwnedByWallet',
   async (payload: { account: string }, { rejectWithValue }) => {
