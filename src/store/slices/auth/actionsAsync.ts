@@ -23,6 +23,13 @@ export const loginThunk = createAsyncThunk<
       apiEndpoint: apiEndpoint,
       apiToken: apiToken,
     });
+
+    if (!info.isEligible) {
+      throw new Error(`Not eligible on network registry. 
+      Join the waitlist and once approved, you can return to login.
+      For now, keep an eye on the waitlist.`);
+    }
+
     return info;
   } catch (e) {
     // see if connecting error is due to low balance
@@ -49,6 +56,10 @@ export const loginThunk = createAsyncThunk<
         return rejectWithValue(
           `Your xDai balance seems to low to operate the node.\nPlease top up your node.\nAddress: ${addresses?.native}`,
         );
+      }
+
+      if (e instanceof Error) {
+        return rejectWithValue('Unknown error: ' + JSON.stringify(e.message));
       }
 
       // stringify to make sure that
