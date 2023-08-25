@@ -61,7 +61,7 @@ const FundsToSafe = () => {
 
   useEffect(() => {
     if (account) {
-      updateBalances();
+  //    updateBalances();
     } else {
       set_xdaiValue('');
       set_wxhoprValue('');
@@ -147,20 +147,62 @@ const FundsToSafe = () => {
           </StyledCoinLabel>
           <MaxButton onClick={setMax_xDAI}>Max</MaxButton>
         </StyledInputGroup>
+        <Button
+          onClick={handleDeployClick}
+          disabled={!send_xDAI_to_safe}
+        >
+          Fund
+        </Button>
+      </StyledForm>
+      <StyledForm>
+        <StyledInstructions>
+          <Text>
+            Stake <Lowercase>wx</Lowercase>HOPR into safe
+          </Text>
+          <StyledDescription>
+            Add-in the amount of <Lowercase>wx</Lowercase>HOPR you like to deposit to your safe. We suggest to move all
+            your <Lowercase>wx</Lowercase>HOPR to the safe.
+          </StyledDescription>
+        </StyledInstructions>
+        <StyledInputGroup>
+          <StyledTextField
+            type="number"
+            variant="outlined"
+            placeholder="-"
+            size="small"
+            value={wxhoprValue}
+            onChange={(e) => set_wxhoprValue(e.target.value)}
+            InputProps={{ inputProps: {
+              style: { textAlign: 'right' },
+              min: 0,
+              pattern: '[0-9]*',
+            } }}
+          />
+          <StyledCoinLabel>
+            <Lowercase>wx</Lowercase>HOPR
+          </StyledCoinLabel>
+          <MaxButton onClick={setMax_wxHOPR}>Max</MaxButton>
+          <Button
+            onClick={handleDeployClick}
+            disabled={!send_xDAI_to_safe}
+          >
+            Fund
+          </Button>
+        </StyledInputGroup>
       </StyledForm>
       <ButtonContainer>
         <StyledGrayButton
           onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(5));
+            dispatch(stakingHubActions.setOnboardingStep(3));
           }}
         >
           Back
         </StyledGrayButton>
         <Button
-          onClick={handleDeployClick}
-          disabled={!send_xDAI_to_safe}
+          onClick={()=>{dispatch(stakingHubActions.setOnboardingStep(5));}}
+          disabled={true}
         >
-          Deploy
+          Continue
         </Button>
       </ButtonContainer>
       {(is_xDAI_to_safe_loading || is_wxHOPR_to_safe_loading) && <span>Check your Wallet...</span>}

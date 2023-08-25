@@ -169,7 +169,7 @@ export default function optionalNftTtransfer() {
       <Content>
         <ConfirmButton
           onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(5));
+            dispatch(stakingHubActions.setOnboardingStep(4));
           }}
           disabled={option === null}
         >

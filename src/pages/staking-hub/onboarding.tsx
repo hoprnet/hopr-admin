@@ -16,7 +16,7 @@ import WhatYouWillNeedPage from '../../steps/step0_whatYouWillNeed';
 import CreateSafe from '../../steps/step1-1_createSafe';
 import SafeIsReady from '../../steps/step1-2_safeIsReady';
 import OptionalNftTtransfer from '../../steps/step2_optionalNftTtransfer';
-import XdaiToSafe from '../../steps/step3-1_xDaiToSafe';
+import XdaiToSafe from '../../steps/step3_xDaiToSafe';
 import { Stepper } from '../../components/Stepper';
 
 const OnboardingContainer = styled.div`
