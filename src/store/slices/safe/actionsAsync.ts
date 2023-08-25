@@ -97,13 +97,10 @@ const createVanillaSafeWithConfigThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/createVanillaSafeWithConfig',
-  async (
-    payload,
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(safeActionsFetching.setSelectedSafeFetching(true));
     try {
       const safeFactory = await createSafeFactory(payload.signer);
@@ -171,13 +168,10 @@ const addOwnerToSafeThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/addOwnerToSafe',
-  async (
-    payload,
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(safeActionsFetching.setInfoFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
@@ -230,13 +224,10 @@ const removeOwnerFromSafeThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/removeOwnerFromSafe',
-  async (
-    payload,
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(safeActionsFetching.setInfoFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
@@ -287,13 +278,10 @@ const updateSafeThresholdThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/updateSafeThreshold',
-  async (
-    payload,
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(safeActionsFetching.setInfoFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
@@ -341,13 +329,10 @@ const getSafeInfoThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/getSafeInfo',
-  async (
-    payload,
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(safeActionsFetching.setInfoFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
@@ -371,13 +356,10 @@ const createSafeTransactionThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/createTransaction',
-  async (
-    payload,
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(safeActionsFetching.setCreateTransactionFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
@@ -426,13 +408,10 @@ const createSafeContractTransaction = createAsyncThunk<
   { state: RootState }
 >(
   'safe/createContractTransaction',
-  async (
-    payload,
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(safeActionsFetching.setCreateTransactionFetching(true));
     try {
       const {
@@ -474,13 +453,10 @@ const createSafeRejectionTransactionThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/rejectTransactionProposal',
-  async (
-    payload,
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(safeActionsFetching.setRejectTransactionFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
@@ -524,13 +500,10 @@ const confirmTransactionThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/confirmTransactionProposal',
-  async (
-    payload,
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(safeActionsFetching.setConfirmTransactionFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
@@ -567,13 +540,10 @@ const executePendingTransactionThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/executeTransactionProposal',
-  async (
-    payload,
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(safeActionsFetching.setExecuteTransactionFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
@@ -658,43 +628,37 @@ const createAndExecuteContractTransactionThunk = createAsyncThunk<
     data: string;
   },
   { state: RootState }
->(
-  'safe/createAndExecuteContractTransaction',
-  async (
-    payload,
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    try {
-      const {
-        smartContractAddress,
-        data,
+>('safe/createAndExecuteContractTransaction', async (payload, {
+  rejectWithValue,
+  dispatch,
+}) => {
+  try {
+    const {
+      smartContractAddress,
+      data,
+      signer,
+      safeAddress,
+    } = payload;
+
+    const safeTransactionData: SafeTransactionDataPartial = {
+      to: smartContractAddress,
+      data,
+      value: '0',
+    };
+
+    const safeTxResult = await dispatch(
+      createAndExecuteTransactionThunk({
         signer,
-        safeAddress,
-      } = payload;
+        safeAddress: safeAddress,
+        safeTransactionData,
+      }),
+    ).unwrap();
 
-      const safeTransactionData: SafeTransactionDataPartial = {
-        to: smartContractAddress,
-        data,
-        value: '0',
-      };
-
-      const safeTxResult = await dispatch(
-        createAndExecuteTransactionThunk({
-          signer,
-          safeAddress: safeAddress,
-          safeTransactionData,
-        }),
-      ).unwrap();
-
-      return safeTxResult;
-    } catch (e) {
-      return rejectWithValue(e);
-    }
-  },
-);
+    return safeTxResult;
+  } catch (e) {
+    return rejectWithValue(e);
+  }
+});
 
 const getAllSafeTransactionsThunk = createAsyncThunk<
   AllTransactionsListResponse | undefined,
@@ -706,13 +670,10 @@ const getAllSafeTransactionsThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/getAllSafeTransactions',
-  async (
-    payload,
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(safeActionsFetching.setSafeAllTransactionsFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
@@ -742,13 +703,10 @@ const getPendingSafeTransactionsThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/getPendingSafeTransactions',
-  async (
-    payload,
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(safeActionsFetching.setSafePendingTransactionsFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
@@ -775,13 +733,10 @@ const addSafeDelegateThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/addDelegate',
-  async (
-    payload,
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(safeActionsFetching.setAddDelegateFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
@@ -817,13 +772,10 @@ const removeSafeDelegateThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/removeDelegate',
-  async (
-    payload,
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(safeActionsFetching.setRemoveDelegateFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
@@ -859,13 +811,10 @@ const getSafeDelegatesThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/getDelegates',
-  async (
-    payload,
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(safeActionsFetching.setSafeDelegatesFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);

@@ -205,11 +205,7 @@ const getBalancesThunk = createAsyncThunk<
   } },
 );
 
-const getChannelsThunk = createAsyncThunk<
-  GetChannelsResponseType | undefined,
-  BasePayloadType,
-  { state: RootState }
->(
+const getChannelsThunk = createAsyncThunk<GetChannelsResponseType | undefined, BasePayloadType, { state: RootState }>(
   'node/getChannels',
   async (payload, {
     rejectWithValue,
