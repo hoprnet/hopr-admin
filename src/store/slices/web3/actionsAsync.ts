@@ -73,9 +73,7 @@ const sendNftToSafeThunk = createAsyncThunk<
 
       const transactionHash = await superWalletClient.writeContract(request);
 
-      const red = await superWalletClient.waitForTransactionReceipt({ hash: transactionHash });
-
-      console.log({ red });
+      await superWalletClient.waitForTransactionReceipt({ hash: transactionHash });
 
       dispatch(setCommunityNftIdInSafe(payload.communityNftId));
 
@@ -100,7 +98,6 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getCommunityNftsOwnedByWallet.fulfilled, (state, action) => {
     if (action.payload) {
       if (action.payload?.boosts.length > 0 && action.payload?.boosts[0].id) {
-        console.log('Found community NFT id:', action.payload?.boosts[0].id);
         state.communityNftId = parseInt(action.payload?.boosts[0].id);
       }
     }

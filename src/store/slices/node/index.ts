@@ -8,11 +8,9 @@ const nodeSlice = createSlice({
   reducers: {
     resetState: () => initialState,
     setInitiating(state) {
-      console.log('SDK initiating');
       state.status.initiating = true;
     },
     setInitiated(state) {
-      console.log('SDK setInitiated');
       state.status.initiating = false;
       state.status.initiated = true;
     },

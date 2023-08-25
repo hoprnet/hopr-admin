@@ -767,7 +767,6 @@ const openMultipleChannelsThunk = createAsyncThunk(
         peerIds: payload.peerIds,
         amount: payload.amount,
       });
-      console.log('res', res);
       if (typeof res === 'undefined')
         throw new APIError({
           status: '400',
@@ -775,7 +774,6 @@ const openMultipleChannelsThunk = createAsyncThunk(
         });
       return res;
     } catch (e) {
-      console.log('e', e);
       if (e instanceof APIError) {
         return rejectWithValue({
           status: e.status,
@@ -1361,17 +1359,17 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
   });
   builder.addCase(sendMessageThunk.rejected, (state, action) => {
-    console.log('rejected', action);
     const index = state.messagesSent.findIndex((msg) => msg.id === action.meta.requestId);
     if (index !== -1) {
       state.messagesSent[index].status = 'error';
-      // prettier-ignore
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      { /*   @ts-ignore */ }
+      // make sure it is not null
+      if (!action.payload) return;
+      // since action payload is unknown we have to check if it an object
+      if (typeof action.payload !== 'object') return;
+      // make sure status is part of payload
+      if (!('status' in action.payload)) return
+            
       if (typeof action.payload.status === 'string') {
-        // prettier-ignore
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        { /* @ts-ignore */ }
         state.messagesSent[index].error = action.payload.status;
       }
     }

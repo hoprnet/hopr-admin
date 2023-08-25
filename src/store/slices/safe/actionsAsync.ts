@@ -1094,6 +1094,7 @@ const getCommunityNftsOwnedBySafeThunk = createAsyncThunk(
       const response = await fetch(STAKE_SUBGRAPH, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        // eslint-disable-next-line no-useless-escape
         body: `{\"query\":\"\\n  query getSubGraphNFTsUserDataForSafe {\\n    _meta {\\n      block {\\n        timestamp\\n        number\\n      }\\n    }\\n    boosts(first: 1, where: {owner: \\\"${account.toLocaleLowerCase()}\\\", uri_ends_with: \\\"Network_registry/community\\\"}) {\\n      id}\\n  }\\n\"}`,
       });
       const responseJson: {

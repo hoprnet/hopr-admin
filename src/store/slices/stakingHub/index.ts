@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
 import { actionsAsync, createExtraReducers } from './actionsAsync';
 
