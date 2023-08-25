@@ -46,7 +46,6 @@ const StepContainer = styled.div`
 `;
 
 const StepName = styled.div`
-  text-transform: uppercase;
   color: #414141;
   max-width: 30ch;
 
@@ -69,6 +68,7 @@ const StepperContainer = styled.div`
 type StepperProps = {
   steps: { name: string }[];
   currentStep: number;
+  lastStepDone: number;
 };
 
 type StepState = 'COMPLETED' | 'CURRENT' | 'PENDING';
@@ -77,6 +77,7 @@ type StepProps = {
   name: string;
   position: number;
   state: StepState;
+  stepComplated: StepState;
 };
 
 type StepIconProps = {
@@ -139,7 +140,7 @@ const Step = (props: StepProps) => {
     <StepContainer>
       <StepIcon
         position={props.position}
-        state={props.state}
+        state={props.stepComplated}
       />
       <StepText
         name={props.name}
@@ -166,6 +167,10 @@ export const Stepper = (props: StepperProps) => {
           key={idx}
           name={step.name}
           position={idx}
+          stepComplated={getStepState({
+            currentStep: props.lastStepDone,
+            index: idx,
+          })}
           state={getStepState({
             currentStep: props.currentStep,
             index: idx,

@@ -71,6 +71,9 @@ const safeSlice = createSlice({
     setTokenFetching(state, action: PayloadAction<boolean>) {
       state.token.isFetching = action.payload;
     },
+    setCommunityNftId(state, action: PayloadAction<number>) {
+      state.communityNftId = action.payload;
+    },
   },
   extraReducers: (builder) => createExtraReducers(builder),
 });

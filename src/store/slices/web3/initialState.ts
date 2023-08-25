@@ -6,6 +6,7 @@ export const initialState = {
   account: null as string | null,
   wallet: null as string | null,
   communityNftId: null as number | null,
+  communityNftTransferring: false as boolean,
   chainId: null as string | null,
   chain: null as string | null,
   blockNumber: '',

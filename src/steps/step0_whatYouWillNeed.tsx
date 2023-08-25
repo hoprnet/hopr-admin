@@ -190,7 +190,7 @@ export default function WhatYouWillNeedPage() {
         </Container>
         <ConfirmButton
           onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(2));
+            dispatch(stakingHubActions.setOnboardingStep(1));
           }}
         >
           continue

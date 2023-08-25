@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { formatEther, parseEther, parseUnits } from 'viem';
-import { useAppSelector } from '../store';
 import {
   erc20ABI,
   useContractWrite,
@@ -9,6 +8,10 @@ import {
   useSendTransaction
 } from 'wagmi';
 import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../config';
+
+//Store
+import { useAppSelector, useAppDispatch } from '../store';
+import { stakingHubActions } from '../store/slices/stakingHub';
 
 // HOPR Components
 import {
@@ -35,7 +38,8 @@ type FundsToSafeProps = {
   set_step: (step: number) => void;
 };
 
-const FundsToSafe = ({ set_step }: FundsToSafeProps) => {
+const FundsToSafe = () => {
+  const dispatch = useAppDispatch();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const walletBalance = useAppSelector((store) => store.web3.balance);
   const account = useAppSelector((store) => store.web3.account);
@@ -55,22 +59,6 @@ const FundsToSafe = ({ set_step }: FundsToSafeProps) => {
     args: [selectedSafeAddress as Address, parseUnits(wxhoprValue as NumberLiteral, 18)],
   });
 
-  useEffect(() => {
-    if (account) {
-      updateBalances();
-    } else {
-      set_xdaiValue('');
-      set_wxhoprValue('');
-    }
-  }, [account, walletBalance.xDai.formatted, walletBalance.wxHopr.formatted]);
-
-  const updateBalances = () => {
-    if (account && walletBalance.xDai.value && walletBalance.wxHopr.formatted) {
-      set_xdaiValue(formatEther(BigInt(walletBalance.xDai.value) - parseUnits(`${0.002}`, 18)));
-      set_wxhoprValue(walletBalance.wxHopr.formatted);
-    }
-  };
-
   const setMax_xDAI = () => {
     if (walletBalance.xDai.value) {
       set_xdaiValue(formatEther(BigInt(walletBalance.xDai.value) - parseUnits(`${0.002}`, 18)));
@@ -86,24 +74,23 @@ const FundsToSafe = ({ set_step }: FundsToSafeProps) => {
   const {
     isLoading: is_wxHOPR_to_safe_loading,
     write: write_wxHOPR_to_safe,
-  } = useContractWrite({
-    ...wxHOPR_to_safe_config,
-    onSuccess: () => set_step(2),
+  } = useContractWrite({ ...wxHOPR_to_safe_config,
+    //    onSuccess: () => set_step(2),
   });
 
   const {
     isLoading: is_xDAI_to_safe_loading,
     sendTransaction: send_xDAI_to_safe,
-  } = useSendTransaction({
-    ...xDAI_to_safe_config,
-    onSuccess: () => write_wxHOPR_to_safe?.(),
-  });
+  } = useSendTransaction({ ...xDAI_to_safe_config });
 
-  const handleDeployClick = () => {
-    if (xdaiValue && wxhoprValue) {
-      send_xDAI_to_safe?.();
-    }
+  const handleFundxDai = () => {
+    send_xDAI_to_safe?.();
   };
+
+  const handleFundwxHopr = () => {
+    write_wxHOPR_to_safe?.();
+  };
+
   return (
     <StepContainer
       image={{
@@ -115,6 +102,42 @@ const FundsToSafe = ({ set_step }: FundsToSafeProps) => {
       description="You're about to create a new Safe and move funds to it. There will be an deployment fee in xDAi charged to your wallet. Please confirm it."
       descriptionLeft
     >
+      <StyledForm>
+        <StyledInstructions>
+          <Text>
+            Move <Lowercase>x</Lowercase>DAI to safe
+          </Text>
+          <StyledDescription>
+            Add-in the amount of <Lowercase>x</Lowercase>DAI you like to deposit to your safe. In a later step these
+            will then be moved to your node.
+          </StyledDescription>
+        </StyledInstructions>
+        <StyledInputGroup>
+          <StyledTextField
+            type="number"
+            variant="outlined"
+            placeholder="-"
+            size="small"
+            value={xdaiValue}
+            onChange={(e) => set_xdaiValue(e.target.value)}
+            InputProps={{ inputProps: {
+              style: { textAlign: 'right' },
+              min: 0,
+              pattern: '[0-9]*',
+            } }}
+          />
+          <StyledCoinLabel>
+            <Lowercase>x</Lowercase>DAI
+          </StyledCoinLabel>
+          <MaxButton onClick={setMax_xDAI}>Max</MaxButton>
+        </StyledInputGroup>
+        <Button
+          onClick={handleFundxDai}
+          disabled={!xdaiValue || xdaiValue === '' || xdaiValue === '0'}
+        >
+          Fund
+        </Button>
+      </StyledForm>
       <StyledForm>
         <StyledInstructions>
           <Text>
@@ -143,15 +166,29 @@ const FundsToSafe = ({ set_step }: FundsToSafeProps) => {
             <Lowercase>wx</Lowercase>HOPR
           </StyledCoinLabel>
           <MaxButton onClick={setMax_wxHOPR}>Max</MaxButton>
+          <Button
+            onClick={handleFundwxHopr}
+            disabled={!wxhoprValue || wxhoprValue === '' || wxhoprValue === '0'}
+          >
+            Fund
+          </Button>
         </StyledInputGroup>
       </StyledForm>
       <ButtonContainer>
-        <StyledGrayButton onClick={() => set_step(0)}>Back</StyledGrayButton>
-        <Button
-          onClick={handleDeployClick}
-          disabled={!send_xDAI_to_safe}
+        <StyledGrayButton
+          onClick={() => {
+            dispatch(stakingHubActions.setOnboardingStep(3));
+          }}
         >
-          Deploy
+          Back
+        </StyledGrayButton>
+        <Button
+          onClick={() => {
+            dispatch(stakingHubActions.setOnboardingStep(5));
+          }}
+          disabled={true}
+        >
+          Continue
         </Button>
       </ButtonContainer>
       {(is_xDAI_to_safe_loading || is_wxHOPR_to_safe_loading) && <span>Check your Wallet...</span>}

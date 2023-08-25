@@ -38,7 +38,7 @@ import {
   getValueFromHistoryTransaction
 } from '../../../utils/safeTransactions';
 import { initialState } from './initialState';
-import { SAFE_SERVICE_URL } from '../../../../config';
+import { STAKE_SUBGRAPH, SAFE_SERVICE_URL } from '../../../../config';
 
 const createSafeApiService = async (signer: ethers.providers.JsonRpcSigner) => {
   const adapter = new EthersAdapter({
@@ -1087,6 +1087,28 @@ const createSafeWithConfigThunk = createAsyncThunk<
   } },
 );
 
+const getCommunityNftsOwnedBySafeThunk = createAsyncThunk(
+  'web3/getCommunityNftsOwnedBySafe',
+  async (account: string, { rejectWithValue }) => {
+    try {
+      const response = await fetch(STAKE_SUBGRAPH, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: `{\"query\":\"\\n  query getSubGraphNFTsUserDataForSafe {\\n    _meta {\\n      block {\\n        timestamp\\n        number\\n      }\\n    }\\n    boosts(first: 1, where: {owner: \\\"${account.toLocaleLowerCase()}\\\", uri_ends_with: \\\"Network_registry/community\\\"}) {\\n      id}\\n  }\\n\"}`,
+      });
+      const responseJson: {
+        data: {
+          boosts: { id: string }[];
+        } | null;
+      } = await response.json();
+
+      return responseJson.data;
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  },
+);
+
 // Helper actions to update the isFetching state
 const setInfoFetching = createAction<boolean>('node/setSafeInfoFetching');
 const setSelectedSafeFetching = createAction<boolean>('node/setSelectedSafeFetching');
@@ -1281,6 +1303,13 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   builder.addCase(getToken.rejected, (state) => {
     state.token.isFetching = false;
   });
+  builder.addCase(getCommunityNftsOwnedBySafeThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      if (action.payload?.boosts.length > 0 && action.payload?.boosts[0].id) {
+        state.communityNftId = parseInt(action.payload?.boosts[0].id);
+      }
+    }
+  });
 };
 
 export const actionsAsync = {
@@ -1305,4 +1334,5 @@ export const actionsAsync = {
   createAndExecuteTransactionThunk,
   createAndExecuteContractTransactionThunk,
   createVanillaSafeWithConfigThunk,
+  getCommunityNftsOwnedBySafeThunk,
 };

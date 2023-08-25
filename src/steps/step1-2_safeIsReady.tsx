@@ -38,7 +38,7 @@ export default function safeIsReady() {
       <Content>
         <ConfirmButton
           onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(4));
+            dispatch(stakingHubActions.setOnboardingStep(3));
           }}
         >
           CONTINUE

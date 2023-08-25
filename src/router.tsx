@@ -33,7 +33,7 @@ import UpdateNodePage from './steps/updateNode';
 import SetupNodePage from './steps/setupYourNode';
 import AddedToWhitelist from './steps/addedToWhitelist';
 import JoinWaitlistPage from './steps/joinWaitlist';
-import WhatYouWillNeedPage from './steps/whatYouWillNeed';
+import WhatYouWillNeedPage from './steps/step0_whatYouWillNeed';
 import DockerInstallation from './steps/installNode/dockerInstallation';
 import NodeAddress from './steps/installNode/nodeAddress';
 import SafeOnboarding from './steps/safeOnboarding';
