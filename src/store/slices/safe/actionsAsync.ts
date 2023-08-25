@@ -1,4 +1,4 @@
-import { ActionReducerMapBuilder, createAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 import SafeApiKit, {
   AddSafeDelegateProps,
   AllTransactionsListResponse,
@@ -15,7 +15,7 @@ import SafeApiKit, {
   TokenInfoResponse
 } from '@safe-global/api-kit';
 import Safe, { EthersAdapter, SafeAccountConfig, SafeFactory } from '@safe-global/protocol-kit';
-import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionData, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
+import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionData, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types';
 import { ethers } from 'ethers';
 import {
   Address,
@@ -25,9 +25,15 @@ import {
   publicActions,
   toBytes,
   toHex
-} from 'viem'
+} from 'viem';
 import { RootState } from '../..';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_MANAGEMENT_MODULE, HOPR_NODE_STAKE_FACTORY } from '../../../../config'
+import {
+  HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,
+  HOPR_NODE_MANAGEMENT_MODULE,
+  HOPR_NODE_STAKE_FACTORY,
+  SAFE_SERVICE_URL,
+  STAKE_SUBGRAPH
+} from '../../../../config'
 import hoprNodeStakeFactoryAbi from '../../../abi/nodeStakeFactoryAbi.json';
 import {
   getCurrencyFromHistoryTransaction,
@@ -37,9 +43,9 @@ import {
   getSourceOfPendingTransaction,
   getValueFromHistoryTransaction
 } from '../../../utils/safeTransactions';
-import { initialState } from './initialState';
-import { STAKE_SUBGRAPH, SAFE_SERVICE_URL } from '../../../../config';
 import { stakingHubActions } from '../stakingHub';
+import { safeActionsFetching } from './actionsFetching';
+import { initialState } from './initialState';
 
 const createSafeApiService = async (signer: ethers.providers.JsonRpcSigner) => {
   const adapter = new EthersAdapter({
@@ -101,7 +107,7 @@ const createVanillaSafeWithConfigThunk = createAsyncThunk<
       dispatch,
     },
   ) => {
-    dispatch(setSelectedSafeFetching(true));
+    dispatch(safeActionsFetching.setSelectedSafeFetching(true));
     try {
       const safeFactory = await createSafeFactory(payload.signer);
 
@@ -139,7 +145,7 @@ const getSafesByOwnerThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setSafeByOwnerFetching(true));
+    dispatch(safeActionsFetching.setSafeByOwnerFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const signerAddress = await payload.signer.getAddress();
@@ -180,7 +186,7 @@ const addOwnerToSafeThunk = createAsyncThunk<
       dispatch,
     },
   ) => {
-    dispatch(setInfoFetching(true));
+    dispatch(safeActionsFetching.setInfoFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       const safeApi = await createSafeApiService(payload.signer);
@@ -244,7 +250,7 @@ const removeOwnerFromSafeThunk = createAsyncThunk<
       dispatch,
     },
   ) => {
-    dispatch(setInfoFetching(true));
+    dispatch(safeActionsFetching.setInfoFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       const safeApi = await createSafeApiService(payload.signer);
@@ -305,7 +311,7 @@ const updateSafeThresholdThunk = createAsyncThunk<
       dispatch,
     },
   ) => {
-    dispatch(setInfoFetching(true));
+    dispatch(safeActionsFetching.setInfoFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       const safeApi = await createSafeApiService(payload.signer);
@@ -362,9 +368,8 @@ const getSafeInfoThunk = createAsyncThunk<
       dispatch,
     },
   ) => {
-    dispatch(setInfoFetching(true));
+    dispatch(safeActionsFetching.setInfoFetching(true));
     try {
-      dispatch(setInfoFetching(true));
       const safeApi = await createSafeApiService(payload.signer);
       const info = await safeApi.getSafeInfo(payload.safeAddress);
       return info;
@@ -397,7 +402,7 @@ const createSafeTransactionThunk = createAsyncThunk<
       dispatch,
     },
   ) => {
-    dispatch(setCreateTransactionFetching(true));
+    dispatch(safeActionsFetching.setCreateTransactionFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       const safeApi = await createSafeApiService(payload.signer);
@@ -457,7 +462,7 @@ const createSafeContractTransaction = createAsyncThunk<
       dispatch,
     },
   ) => {
-    dispatch(setCreateTransactionFetching(true));
+    dispatch(safeActionsFetching.setCreateTransactionFetching(true));
     try {
       const {
         smartContractAddress,
@@ -509,7 +514,7 @@ const createSafeRejectionTransactionThunk = createAsyncThunk<
       dispatch,
     },
   ) => {
-    dispatch(setRejectTransactionFetching(true));
+    dispatch(safeActionsFetching.setRejectTransactionFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       const safeApi = await createSafeApiService(payload.signer);
@@ -563,7 +568,7 @@ const confirmTransactionThunk = createAsyncThunk<
       dispatch,
     },
   ) => {
-    dispatch(setConfirmTransactionFetching(true));
+    dispatch(safeActionsFetching.setConfirmTransactionFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       const safeApi = await createSafeApiService(payload.signer);
@@ -610,7 +615,7 @@ const executePendingTransactionThunk = createAsyncThunk<
       dispatch,
     },
   ) => {
-    dispatch(setExecuteTransactionFetching(true));
+    dispatch(safeActionsFetching.setExecuteTransactionFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       await safeSDK.executeTransaction(payload.safeTransaction);
@@ -654,7 +659,7 @@ const createAndExecuteTransactionThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setExecuteTransactionFetching(true));
+    dispatch(safeActionsFetching.setExecuteTransactionFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       // create safe transaction
@@ -758,7 +763,7 @@ const getAllSafeTransactionsThunk = createAsyncThunk<
       dispatch,
     },
   ) => {
-    dispatch(setSafeAllTransactionsFetching(true));
+    dispatch(safeActionsFetching.setSafeAllTransactionsFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const transactions = await safeApi.getAllTransactions(payload.safeAddress, {
@@ -797,7 +802,7 @@ const getPendingSafeTransactionsThunk = createAsyncThunk<
       dispatch,
     },
   ) => {
-    dispatch(setSafePendingTransactionsFetching(true));
+    dispatch(safeActionsFetching.setSafePendingTransactionsFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const transactions = await safeApi.getPendingTransactions(payload.safeAddress);
@@ -830,7 +835,7 @@ const addSafeDelegateThunk = createAsyncThunk<
       dispatch,
     },
   ) => {
-    dispatch(setAddDelegateFetching(true));
+    dispatch(safeActionsFetching.setAddDelegateFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const response = await safeApi.addSafeDelegate({
@@ -872,7 +877,7 @@ const removeSafeDelegateThunk = createAsyncThunk<
       dispatch,
     },
   ) => {
-    dispatch(setRemoveDelegateFetching(true));
+    dispatch(safeActionsFetching.setRemoveDelegateFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const response = await safeApi.removeSafeDelegate({
@@ -914,7 +919,7 @@ const getSafeDelegatesThunk = createAsyncThunk<
       dispatch,
     },
   ) => {
-    dispatch(setSafeDelegatesFetching(true));
+    dispatch(safeActionsFetching.setSafeDelegatesFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const response = await safeApi.getSafeDelegates(payload.options);
@@ -944,7 +949,7 @@ const getToken = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setTokenFetching(true));
+    dispatch(safeActionsFetching.setTokenFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const token = await safeApi.getToken(payload.tokenAddress);
@@ -973,7 +978,7 @@ const getTokenList = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setTokenListFetching(true));
+    dispatch(safeActionsFetching.setTokenListFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const tokenList = await safeApi.getTokenList();
@@ -1013,7 +1018,7 @@ const createSafeWithConfigThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setSelectedSafeFetching(true));
+    dispatch(safeActionsFetching.setSelectedSafeFetching(true));
     try {
       const superWalletClient = payload.walletClient.extend(publicActions);
 
@@ -1108,22 +1113,6 @@ const getCommunityNftsOwnedBySafeThunk = createAsyncThunk(
     }
   },
 );
-
-// Helper actions to update the isFetching state
-const setInfoFetching = createAction<boolean>('node/setSafeInfoFetching');
-const setSelectedSafeFetching = createAction<boolean>('node/setSelectedSafeFetching');
-const setSafeByOwnerFetching = createAction<boolean>('node/setSafeByOwnerFetching');
-const setSafeAllTransactionsFetching = createAction<boolean>('node/setSafeAllTransactionsFetching');
-const setSafePendingTransactionsFetching = createAction<boolean>('node/setSafePendingTransactionsFetching');
-const setSafeDelegatesFetching = createAction<boolean>('node/setSafeDelegatesFetching');
-const setCreateTransactionFetching = createAction<boolean>('node/setCreateTransactionFetching');
-const setConfirmTransactionFetching = createAction<boolean>('node/setConfirmTransactionFetching');
-const setRejectTransactionFetching = createAction<boolean>('node/setRejectTransactionFetching');
-const setExecuteTransactionFetching = createAction<boolean>('node/setExecuteTransactionFetching');
-const setAddDelegateFetching = createAction<boolean>('node/setAddDelegateFetching');
-const setRemoveDelegateFetching = createAction<boolean>('node/setRemoveDelegateFetching');
-const setTokenListFetching = createAction<boolean>('node/setTokenListFetching');
-const setTokenFetching = createAction<boolean>('node/setTokenFetching');
 
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   // CreateSafeWithConfig
