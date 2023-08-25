@@ -1,6 +1,6 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import { actionsAsync, createExtraReducers } from './actionsAsync';
 import { initialState } from './initialState';
-import { createExtraReducers, actionsAsync } from './actionsAsync';
 
 const web3Slice = createSlice({
   name: 'web3',
@@ -32,8 +32,8 @@ const web3Slice = createSlice({
     setHasCommunityNftId(state, action) {
       state.communityNftId = action.payload;
     },
-    setCommunityNftTransfering(state, action) {
-      state.communityNftTransfering = action.payload;
+    setCommunityNftTransferring(state, action) {
+      state.communityNftTransferring = action.payload;
     },
     setWalletBalance_xDai(state, action) {
       state.balance.xDai.value = action.payload ? action.payload.value : null;

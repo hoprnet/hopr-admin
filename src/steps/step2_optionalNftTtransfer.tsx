@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import styled from '@emotion/styled';
-import { WalletClient } from 'viem';
 import { useWalletClient } from 'wagmi';
 
 
@@ -133,13 +132,12 @@ export default function optionalNftTtransfer() {
               onClick={(event) => {
                 event.stopPropagation();
                 if (!walletClient) return;
-                // TODO: Diego TS error: safeAddress
                 if(walletAddress && safeAddress && communityNftId !== null) {
                   dispatch(web3ActionsAsync.sendNftToSafeThunk({
                     walletAddress, 
                     safeAddress,
                     walletClient,
-                    communityNftId
+                    communityNftId,
                   }))
                 }
               }}
