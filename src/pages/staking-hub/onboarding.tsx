@@ -6,7 +6,6 @@ import { useAppSelector, useAppDispatch } from '../../store';
 import { stakingHubActions } from '../../store/slices/stakingHub';
 
 // HOPR Components
-import Section from '../../future-hopr-lib-components/Section';
 import { StepContainer } from '../../steps/components';
 
 // Mui
@@ -18,12 +17,7 @@ import CreateSafe from '../../steps/createSafe';
 import SafeIsReady from '../../steps/safeIsReady';
 import OptionalNftTtransfer from '../../steps/optionalNftTtransfer';
 import XdaiToSafe from '../../steps/xDaiToSafe';
-
-const Steps = styled.div`
-  height: 400px;
-  width: 280px;
-  background-color: darkblue;
-`;
+import { Stepper } from '../../components/Stepper';
 
 const OnboardingContainer = styled.div`
   display: flex;
@@ -38,32 +32,22 @@ const OnboardingContainer = styled.div`
   padding-bottom: 40px;
 `;
 
-const SPaper = styled(Paper)`
-  max-width: 850px;
-  width: 100%;
-  height: 620px;
-  overflow: auto;
-`;
-
 function Onboarding() {
   const dispatch = useAppDispatch();
   const onboardingStep = useAppSelector((store) => store.stakingHub.onboarding.step);
 
   return (
     <OnboardingContainer className="OnboardingContainer">
-      <Steps />
-
-      {onboardingStep === 0 && (
-        <StepContainer>
-          <button
-            onClick={() => {
-              dispatch(stakingHubActions.setOnboardingStep(1));
-            }}
-          >
-            Start
-          </button>
-        </StepContainer>
-      )}
+      <Stepper
+        currentStep={1}
+        steps={[
+          { name: 'create safe' },
+          { name: 'really long text whatever this might be. really long text whatever this might be.' },
+          { name: 'fund safe' },
+          { name: 'choose your node setup' },
+          { name: 'add node' },
+        ]}
+      />
 
       {onboardingStep === 1 && <WhatYouWillNeedPage />}
 

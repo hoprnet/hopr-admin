@@ -184,7 +184,6 @@ export const applicationMapStakingHub: ApplicationMapType = [
         path: 'staking-hub-landing',
         icon: <SavingsIcon />,
         element: <StakingLandingPage />,
-        loginNeeded: 'web3',
       },
       {
         name: 'Onboarding',
@@ -198,7 +197,6 @@ export const applicationMapStakingHub: ApplicationMapType = [
         path: 'wrapper',
         icon: <PaidIcon />,
         element: <WrapperPage />,
-        loginNeeded: 'web3',
       },
     ],
   },
@@ -367,6 +365,7 @@ export const applicationMap: ApplicationMapType = createApplicationMap();
 const LayoutEnhanced = () => {
   const dispatch = useAppDispatch();
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
+  const web3Connected = useAppSelector((store) => store.web3.status.connected);
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [searchParams] = useSearchParams();
@@ -432,7 +431,7 @@ const LayoutEnhanced = () => {
       drawerItems={applicationMap}
       drawerLoginState={{
         node: nodeConnected,
-        web3: true,
+        web3: web3Connected,
       }}
       className={environment}
       drawerType={environment === 'web3' ? 'blue' : undefined}
@@ -464,7 +463,7 @@ applicationMap.map((groups) => {
         path: '/',
         element: <NodeLandingPage />,
       });
-    } else if (environment === 'web3') {
+    } else if (environment === 'web3' || environment === 'dev') {
       routes[0].children.push({
         path: '/',
         element: <StakingLandingPage />,

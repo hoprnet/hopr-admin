@@ -1160,7 +1160,6 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   // GetSafeInfo
   builder.addCase(getSafeInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.selectedSafeAddress.data = action.payload.address;
       state.info.data = action.payload;
     }
     state.selectedSafeAddress.isFetching = false;

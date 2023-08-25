@@ -9,14 +9,14 @@ const { APIError } = utils;
 import Section from '../../future-hopr-lib-components/Section';
 import { SubpageTitle } from '../../components/SubpageTitle';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
-import { SendMessageModal } from '../../components/Modal/SendMessageModal';
+import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 import RemoveAliasIcon from '../../future-hopr-lib-components/Icons/RemoveAlias';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 // Modals
-import { PingModal } from '../../components/Modal/PingModal';
-import { CreateAliasModal } from '../../components/Modal/AddAliasModal';
-import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
+import { PingModal } from '../../components/Modal/node/PingModal';
+import { CreateAliasModal } from '../../components/Modal/node//AddAliasModal';
+import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
 
 //Mui
 import GetAppIcon from '@mui/icons-material/GetApp';

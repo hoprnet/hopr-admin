@@ -25,7 +25,7 @@ export default function AddedToWhitelist() {
         title="congratulations!"
         description="You are now eligible to join the HOPR network! Continue below to set up your HOPR node."
         image={{
-          src: '/assets/added-to-whitelist.svg',
+          src: '/assets/green-check.svg',
           alt: 'Safe deployed successfully',
           height: 200,
         }}

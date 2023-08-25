@@ -10,6 +10,7 @@ type StyledButtonProps = ButtonProps & {
   fade?: boolean;
   pending?: boolean;
   nofade?: boolean;
+  outlined?: boolean;
   target?: string;
 };
 
@@ -80,6 +81,12 @@ const StyledButton = styled(MuiButton)<StyledButtonProps>`
       padding-inline: 0.75rem;
     }
   }
+
+  &.btn-hopr--outlined:not(.Mui-disabled) {
+    background: #fff;
+    color: #000050;
+    border: 2px solid #000050;
+  }
 `;
 
 const SCircularProgress = styled(CircularProgress)`
@@ -97,6 +104,7 @@ const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>
     children,
     nofade,
     pending,
+    outlined,
     ...rest
   } = props;
 
@@ -108,6 +116,7 @@ const Button = forwardRef((props: StyledButtonProps, ref: Ref<HTMLButtonElement>
     standardWidth && 'btn-hopr--standardWidth',
     fade && 'btn-hopr--fade',
     nofade && 'btn-hopr--no-fade',
+    outlined && 'btn-hopr--outlined',
   ]
     .filter(Boolean)
     .join(' ');

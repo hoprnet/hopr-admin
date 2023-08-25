@@ -92,7 +92,6 @@ export default function ConnectWeb3({
   const chain = useAppSelector((store) => store.web3.chain);
   const walletPresent = useAppSelector((store) => store.web3.walletPresent);
   const [localError, set_localError] = useState<false | string>(false);
-  const [currentAccount, set_currentAccount] = useState('');
   const containerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -122,12 +121,6 @@ export default function ConnectWeb3({
       set_chooseWalletModal(open);
     }
   }, [open]);
-
-  useEffect(() => {
-    if (account) {
-      set_currentAccount(account);
-    }
-  }, [account]);
 
   useEffect(() => {
     if (error) set_localError(JSON.stringify(error));
@@ -207,7 +200,7 @@ export default function ConnectWeb3({
                   <p className="chain">
                     {data?.connector?.name ?? 'Metamask'} @ {chain}
                   </p>
-                  <p>eth: {truncateEthereumAddress(currentAccount)}</p>
+                  <p>eth: {truncateEthereumAddress(account as string)}</p>
                 </div>
                 <div className="dropdown-icon">
                   <DropdownArrow src="/assets/dropdown-arrow.svg" />
