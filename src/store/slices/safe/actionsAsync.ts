@@ -1,4 +1,4 @@
-import { ActionReducerMapBuilder, createAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { ActionReducerMapBuilder, createAction, createAsyncThunk, isPlain } from '@reduxjs/toolkit';
 import SafeApiKit, {
   AddSafeDelegateProps,
   AllTransactionsListResponse,
@@ -117,6 +117,15 @@ const createVanillaSafeWithConfigThunk = createAsyncThunk<
       const safeAddress = await safeAccount.getAddress();
       return safeAddress;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -145,6 +154,15 @@ const getSafesByOwnerThunk = createAsyncThunk<
       const safeAddresses = await safeApi.getSafesByOwner(signerAddress);
       return safeAddresses;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -209,6 +227,15 @@ const addOwnerToSafeThunk = createAsyncThunk<
       );
       return addOwnerTx.data;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -272,6 +299,15 @@ const removeOwnerFromSafeThunk = createAsyncThunk<
       );
       return removeOwnerTx.data;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -331,6 +367,15 @@ const updateSafeThresholdThunk = createAsyncThunk<
       );
       return changeThresholdTx.data;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -368,6 +413,15 @@ const getSafeInfoThunk = createAsyncThunk<
       const info = await safeApi.getSafeInfo(payload.safeAddress);
       return info;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -427,6 +481,15 @@ const createSafeTransactionThunk = createAsyncThunk<
       );
       return safeTxHash;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -480,6 +543,15 @@ const createSafeContractTransaction = createAsyncThunk<
 
       return safeTxHash;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -534,6 +606,15 @@ const createSafeRejectionTransactionThunk = createAsyncThunk<
       );
       return true;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -577,6 +658,15 @@ const confirmTransactionThunk = createAsyncThunk<
       );
       return confirmTransaction;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -622,6 +712,15 @@ const executePendingTransactionThunk = createAsyncThunk<
       );
       return true;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -673,6 +772,15 @@ const createAndExecuteTransactionThunk = createAsyncThunk<
       );
       return safeTxResponse.hash;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -731,6 +839,15 @@ const createAndExecuteContractTransactionThunk = createAsyncThunk<
 
       return safeTxResult;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -766,6 +883,15 @@ const getAllSafeTransactionsThunk = createAsyncThunk<
       });
       return transactions;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -802,6 +928,15 @@ const getPendingSafeTransactionsThunk = createAsyncThunk<
       const transactions = await safeApi.getPendingTransactions(payload.safeAddress);
       return transactions;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -847,6 +982,15 @@ const addSafeDelegateThunk = createAsyncThunk<
 
       return response;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -889,6 +1033,15 @@ const removeSafeDelegateThunk = createAsyncThunk<
 
       return response;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -919,6 +1072,15 @@ const getSafeDelegatesThunk = createAsyncThunk<
       const response = await safeApi.getSafeDelegates(payload.options);
       return response;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -949,6 +1111,15 @@ const getToken = createAsyncThunk<
       const token = await safeApi.getToken(payload.tokenAddress);
       return token;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -978,6 +1149,15 @@ const getTokenList = createAsyncThunk<
       const tokenList = await safeApi.getTokenList();
       return tokenList;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -1076,6 +1256,15 @@ const createSafeWithConfigThunk = createAsyncThunk<
         safeAddress,
       };
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
@@ -1104,6 +1293,15 @@ const getCommunityNftsOwnedBySafeThunk = createAsyncThunk(
 
       return responseJson.data;
     } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
       return rejectWithValue(e);
     }
   },
