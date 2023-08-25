@@ -1,9 +1,10 @@
-import { ActionReducerMapBuilder, createAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 import { WalletClient, publicActions } from 'viem';
 import { RootState } from '../..';
 import { GNOSIS_CHAIN_HOPR_BOOST_NFT, STAKE_SUBGRAPH } from '../../../../config';
 import erc721ABI from '../../../abi/erc721-abi.json';
 import { initialState } from './initialState';
+import { web3Actions } from '.';
 
 // TO REMOVE
 
@@ -49,7 +50,7 @@ const sendNftToSafeThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setCommunityNftTransferring(true));
+    dispatch(web3Actions.setCommunityNftTransferring(true));
     const success = false;
     try {
       const superWalletClient = payload.walletClient.extend(publicActions);
@@ -75,7 +76,7 @@ const sendNftToSafeThunk = createAsyncThunk<
 
       await superWalletClient.waitForTransactionReceipt({ hash: transactionHash });
 
-      dispatch(setCommunityNftIdInSafe(payload.communityNftId));
+      dispatch(web3Actions.setHasCommunityNftId(payload.communityNftId));
 
       return { success };
     } catch (e) {
@@ -89,10 +90,6 @@ const sendNftToSafeThunk = createAsyncThunk<
     }
   } },
 );
-
-// Helper actions to update the isFetching state
-const setCommunityNftTransferring = createAction<boolean>('web3/setCommunityNftTransferring');
-const setCommunityNftIdInSafe = createAction<number>('safe/setCommunityNftId');
 
 export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   builder.addCase(getCommunityNftsOwnedByWallet.fulfilled, (state, action) => {
