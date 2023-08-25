@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';
 import { Link } from 'react-router-dom';
+import ContinueOnboarding from '../../components/Modal/staking-hub/ContinueOnboarding';
 
 const StyledContainer = styled.div`
   align-items: center;
@@ -80,6 +81,7 @@ const StakingLandingPage = () => {
           <StyledLink to="https://t.me/hoprnet">Telegram</StyledLink>
         </Links>
       </StyledContainer>
+      <ContinueOnboarding />
     </Section>
   );
 };

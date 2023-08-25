@@ -8,6 +8,7 @@ import { useAccount, useBalance, useNetwork } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActions } from '../../store/slices/safe';
 import { web3Actions, web3ActionsAsync } from '../../store/slices/web3';
+import { stakingHubActions, stakingHubActionsAsync } from '../../store/slices/stakingHub';
 
 export default function WagmiUpdater() {
   const dispatch = useAppDispatch();
@@ -28,6 +29,8 @@ export default function WagmiUpdater() {
     dispatch(web3Actions.setAccount(address));
     if (address) {
       dispatch(web3ActionsAsync.getCommunityNftsOwnedByAccount({ account: address }));
+      dispatch(stakingHubActions.resetState());
+      dispatch(stakingHubActionsAsync.getHubSafesByOwnerThunk(address));
     }
   }, [isConnected, address]);
 

@@ -1,19 +1,19 @@
 import { useRef, useState } from 'react';
 import { DialogTitle, DialogActions, InputAdornment } from '@mui/material';
-import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
-import STextField from '../../future-hopr-lib-components/TextField';
-import { useAppDispatch, useAppSelector } from '../../store';
-import { actionsAsync } from '../../store/slices/node/actionsAsync';
+import { SDialog, SDialogContent, SIconButton, TopBar } from '../../../future-hopr-lib-components/Modal/styled';
+import STextField from '../../../future-hopr-lib-components/TextField';
+import { useAppDispatch, useAppSelector } from '../../../store';
+import { actionsAsync } from '../../../store/slices/node/actionsAsync';
 import { utils } from 'ethers';
-import { sendNotification } from '../../hooks/useWatcher/notifications';
+import { sendNotification } from '../../../hooks/useWatcher/notifications';
 
 //Mui
 import CloseIcon from '@mui/icons-material/Close';
 
 // HOPR Components
-import Button from '../../future-hopr-lib-components/Button';
-import IconButton from '../../future-hopr-lib-components/Button/IconButton';
-import AddChannelsIcon from '../../future-hopr-lib-components/Icons/AddChannels';
+import Button from '../../../future-hopr-lib-components/Button';
+import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
+import AddChannelsIcon from '../../../future-hopr-lib-components/Icons/AddChannels';
 
 type OpenMultipleChannelsModalProps = {};
 

@@ -7,15 +7,15 @@ import styled from '@emotion/styled';
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
 import { SubpageTitle } from '../../components/SubpageTitle';
-import { CreateAliasModal } from '../../components/Modal/AddAliasModal';
-import { OpenOrFundChannelModal } from '../../components/Modal/OpenOrFundChannelModal';
-import { SendMessageModal } from '../../components/Modal/SendMessageModal';
+import { CreateAliasModal } from '../../components/Modal/node//AddAliasModal';
+import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
+import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 //  Modals
-import { PingModal } from '../../components/Modal/PingModal';
+import { PingModal } from '../../components/Modal/node/PingModal';
 
 //Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
