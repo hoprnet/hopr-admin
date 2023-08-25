@@ -1,17 +1,17 @@
 import { DialogActions, DialogTitle, InputAdornment, TextField } from '@mui/material';
 import { ethers } from 'ethers';
 import { useState } from 'react';
-import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
-import { useAppDispatch, useAppSelector } from '../../store';
-import { actionsAsync } from '../../store/slices/node/actionsAsync';
-import { sendNotification } from '../../hooks/useWatcher/notifications';
-import { HOPR_TOKEN_USED } from '../../../config';
+import { SDialog, SDialogContent, SIconButton, TopBar } from '../../../future-hopr-lib-components/Modal/styled';
+import { useAppDispatch, useAppSelector } from '../../../store';
+import { actionsAsync } from '../../../store/slices/node/actionsAsync';
+import { sendNotification } from '../../../hooks/useWatcher/notifications';
+import { HOPR_TOKEN_USED } from '../../../../config';
 
 // HOPR Components
-import IconButton from '../../future-hopr-lib-components/Button/IconButton';
-import AddChannelIcon from '../../future-hopr-lib-components/Icons/AddChannel';
-import FundChannelIcon from '../../future-hopr-lib-components/Icons/FundChannel';
-import Button from '../../future-hopr-lib-components/Button';
+import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
+import AddChannelIcon from '../../../future-hopr-lib-components/Icons/AddChannel';
+import FundChannelIcon from '../../../future-hopr-lib-components/Icons/FundChannel';
+import Button from '../../../future-hopr-lib-components/Button';
 
 // Mui
 import CloseIcon from '@mui/icons-material/Close';

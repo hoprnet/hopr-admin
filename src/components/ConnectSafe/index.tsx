@@ -67,6 +67,7 @@ export default function ConnectSafe() {
   //const safes = useAppSelector((store) => store.safe.safesByOwner.data);
   const safes = useAppSelector((store) => store.stakingHub.safes.data);
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const safeAddressFromBefore = useAppSelector((store) => store.safe.info.data?.address);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
 
@@ -94,8 +95,14 @@ export default function ConnectSafe() {
   }, [signer]);
 
   useEffect(() => {
-    if (safeAddress) useSelectedSafe(safeAddress);
+    if (safeAddress) {
+      useSelectedSafe(safeAddress);
+    }
   }, [safeAddress]);
+
+  useEffect(() => {
+    if (safes.length > 0 && !safeAddress) dispatch(safeActions.setSelectedSafe(safes[0].safeAddress));
+  }, [safes]);
 
   const fetchInitialStateForSigner = async () => {
     if (signer) {
@@ -107,6 +114,7 @@ export default function ConnectSafe() {
   const useSelectedSafe = (safeAddress: string) => {
     if (signer) {
       dispatch(appActions.resetState());
+      dispatch(safeActions.setSelectedSafe(safeAddress));
       observePendingSafeTransactions({
         dispatch,
         previousState: prevPendingSafeTransaction,
@@ -148,7 +156,7 @@ export default function ConnectSafe() {
   };
 
   const handleSafeButtonClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (connected.connected) {
+    if (connected.connected && safes.length > 0) {
       handleOpenMenu(event);
     }
   };
@@ -193,7 +201,9 @@ export default function ConnectSafe() {
               <MenuItem
                 key={`${safe.safeAddress}_${index}`}
                 value={safe.safeAddress}
-                onClick={() => useSelectedSafe(safe.safeAddress)}
+                onClick={() => {
+                  dispatch(safeActions.setSelectedSafe(safe.safeAddress));
+                }}
               >
                 {safe.safeAddress &&
                   `${safe.safeAddress.substring(0, 6)}...${safe.safeAddress.substring(

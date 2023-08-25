@@ -10,7 +10,7 @@ import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
 import { SubpageTitle } from '../../components/SubpageTitle';
 import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
-import WithdrawModal from '../../components/Modal/WithdrawModal';
+import WithdrawModal from '../../components/Modal/node/WithdrawModal';
 import { HOPR_TOKEN_USED } from '../../../config';
 
 function InfoPage() {

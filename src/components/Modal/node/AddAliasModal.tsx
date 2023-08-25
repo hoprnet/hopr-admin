@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import { DialogTitle, TextField, DialogActions, Alert } from '@mui/material';
-import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
-import { useAppDispatch, useAppSelector } from '../../store';
-import { actionsAsync } from '../../store/slices/node/actionsAsync';
-import { appActions } from '../../store/slices/app';
+import { SDialog, SDialogContent, SIconButton, TopBar } from '../../../future-hopr-lib-components/Modal/styled';
+import { useAppDispatch, useAppSelector } from '../../../store';
+import { actionsAsync } from '../../../store/slices/node/actionsAsync';
+import { appActions } from '../../../store/slices/app';
 import CloseIcon from '@mui/icons-material/Close';
-import { sendNotification } from '../../hooks/useWatcher/notifications';
+import { sendNotification } from '../../../hooks/useWatcher/notifications';
 
 // HOPR Components
-import IconButton from '../../future-hopr-lib-components/Button/IconButton';
-import AddAliasIcon from '../../future-hopr-lib-components/Icons/AddAlias';
-import Button from '../../future-hopr-lib-components/Button';
+import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
+import AddAliasIcon from '../../../future-hopr-lib-components/Icons/AddAlias';
+import Button from '../../../future-hopr-lib-components/Button';
 
 type CreateAliasModalProps = {
   handleRefresh: () => void;

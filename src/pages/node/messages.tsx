@@ -7,7 +7,7 @@ import { actionsAsync } from '../../store/slices/node/actionsAsync';
 
 // HOPR components
 import Section from '../../future-hopr-lib-components/Section';
-import { SendMessageModal } from '../../components/Modal/SendMessageModal';
+import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 import { SubpageTitle } from '../../components/SubpageTitle';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 

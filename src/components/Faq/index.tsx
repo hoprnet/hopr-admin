@@ -97,6 +97,11 @@ const AccordionContent = styled(AccordionDetails)`
 const Content = styled.div`
   color: #414141;
   overflow-wrap: break-word;
+
+  a {
+    color: #007bff; /* Set the desired color for links */
+    text-decoration: underline;
+  }
 `;
 
 type FaqProps = {

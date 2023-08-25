@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { DialogTitle, TextField, DialogActions, Alert } from '@mui/material';
-import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
-import { useAppDispatch, useAppSelector } from '../../store';
-import { actionsAsync } from '../../store/slices/node/actionsAsync';
+import { SDialog, SDialogContent, SIconButton, TopBar } from '../../../future-hopr-lib-components/Modal/styled';
+import { useAppDispatch, useAppSelector } from '../../../store';
+import { actionsAsync } from '../../../store/slices/node/actionsAsync';
 import CloseIcon from '@mui/icons-material/Close';
-import { sendNotification } from '../../hooks/useWatcher/notifications';
+import { sendNotification } from '../../../hooks/useWatcher/notifications';
 
 // HOPR Components
-import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
 import RssFeedIcon from '@mui/icons-material/RssFeed';
-import Button from '../../future-hopr-lib-components/Button';
+import Button from '../../../future-hopr-lib-components/Button';
 
 type PingModalProps = {
   peerId?: string;

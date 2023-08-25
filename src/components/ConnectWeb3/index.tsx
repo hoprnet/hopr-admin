@@ -1,21 +1,19 @@
-import { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
-import Modal from '../../future-hopr-lib-components/Modal';
+import { useEffect, useRef, useState } from 'react';
 import WalletButton from '../../future-hopr-lib-components/Button/wallet-button';
+import Modal from '../../future-hopr-lib-components/Modal';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
-import { web3Actions } from '../../store/slices/web3';
 import { appActions } from '../../store/slices/app';
 import { safeActions } from '../../store/slices/safe';
 import { stakingHubActions, stakingHubActionsAsync } from '../../store/slices/stakingHub';
 
 // wagmi
-import { useConnect, useDisconnect } from 'wagmi';
-import { InjectedConnector } from 'wagmi/connectors/injected';
-import { gnosis, localhost } from 'viem/chains';
 import { Button, Menu, MenuItem } from '@mui/material';
+import { Connector, useConnect, useDisconnect } from 'wagmi';
 import { truncateEthereumAddress } from '../../utils/blockchain';
+import { web3Actions } from '../../store/slices/web3';
 
 const AppBarContainer = styled(Button)`
   align-items: center;
@@ -82,16 +80,18 @@ export default function ConnectWeb3({
   const [chooseWalletModal, set_chooseWalletModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const {
+    connectors,
     connect,
     error,
-  } = useConnect({ connector: new InjectedConnector({ chains: [localhost, gnosis] }) });
+    data,
+  } = useConnect();
+
   const { disconnect } = useDisconnect();
   const account = useAppSelector((store) => store.web3.account);
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const chain = useAppSelector((store) => store.web3.chain);
   const walletPresent = useAppSelector((store) => store.web3.walletPresent);
   const [localError, set_localError] = useState<false | string>(false);
-  const [currentAccount, set_currentAccount] = useState('');
   const containerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -123,12 +123,6 @@ export default function ConnectWeb3({
   }, [open]);
 
   useEffect(() => {
-    if (account) {
-      set_currentAccount(account);
-    }
-  }, [account]);
-
-  useEffect(() => {
     if (error) set_localError(JSON.stringify(error));
     else set_localError(false);
   }, [error]);
@@ -143,11 +137,13 @@ export default function ConnectWeb3({
     }, 250);
   };
 
-  const handleConnectToMetaMask = () => {
+  const handleConnectToWallet = (connector: Connector) => {
     dispatch(web3Actions.setLoading(true));
 
-    connect();
-    if (isConnected) {
+    connect({ connector });
+
+    // wallet connect opens another modal
+    if (isConnected || connector.id === 'walletConnect') {
       handleClose();
     }
   };
@@ -187,7 +183,13 @@ export default function ConnectWeb3({
           className={`web3-connect-btn`}
         >
           <div className="image-container">
-            <img src="/assets/wallets/MetaMask_Fox.svg" />
+            <img
+              src={
+                data?.connector?.id === 'walletConnect'
+                  ? '/assets/wallets/WalletConnect-Icon.svg'
+                  : '/assets/wallets/MetaMask_Fox.svg'
+              }
+            />
           </div>
           {!isConnected ? (
             <Web3Button>Connect Wallet</Web3Button>
@@ -195,14 +197,15 @@ export default function ConnectWeb3({
             <>
               <Web3Button>
                 <div className="wallet-info">
-                  <p className="chain">Metamask @ {chain}</p>
-                  <p>eth: {truncateEthereumAddress(currentAccount)}</p>
+                  <p className="chain">
+                    {data?.connector?.name ?? 'Metamask'} @ {chain}
+                  </p>
+                  <p>eth: {truncateEthereumAddress(account as string)}</p>
                 </div>
                 <div className="dropdown-icon">
                   <DropdownArrow src="/assets/dropdown-arrow.svg" />
                 </div>
               </Web3Button>
-
               <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
@@ -224,10 +227,16 @@ export default function ConnectWeb3({
       >
         {!localError && (
           <ConnectWalletContent>
-            <WalletButton
-              onClick={handleConnectToMetaMask}
-              wallet="metamask"
-            />
+            {connectors.map((connector) => (
+              <WalletButton
+                key={connector.id}
+                disabled={!connector.ready}
+                onClick={() => {
+                  handleConnectToWallet(connector);
+                }}
+                wallet={connector.id}
+              />
+            ))}
             <p>
               By connecting a wallet, you agree to HOPR’s Terms of Service and acknowledge that you have read and
               understand the Disclaimer.

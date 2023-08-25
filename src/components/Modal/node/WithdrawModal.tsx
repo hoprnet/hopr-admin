@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
-import { HOPR_TOKEN_USED } from '../../../config';
+import { HOPR_TOKEN_USED } from '../../../../config';
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../../store';
 import {
   CircularProgress,
   DialogTitle,
@@ -10,14 +10,14 @@ import {
   Button as MuiButton,
   TextField
 } from '@mui/material'
-import Button from '../../future-hopr-lib-components/Button';
-import { SDialog, SDialogContent, SIconButton, TopBar } from '../../future-hopr-lib-components/Modal/styled';
-import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+import Button from '../../../future-hopr-lib-components/Button';
+import { SDialog, SDialogContent, SIconButton, TopBar } from '../../../future-hopr-lib-components/Modal/styled';
+import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
 
 import CloseIcon from '@mui/icons-material/Close';
-import WithdrawIcon from '../../future-hopr-lib-components/Icons/Withdraw';
+import WithdrawIcon from '../../../future-hopr-lib-components/Icons/Withdraw';
 import LaunchIcon from '@mui/icons-material/Launch';
-import { nodeActionsAsync } from '../../store/slices/node';
+import { nodeActionsAsync } from '../../../store/slices/node';
 import { parseEther } from 'viem';
 
 const Content = styled(SDialogContent)`

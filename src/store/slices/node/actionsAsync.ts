@@ -75,7 +75,6 @@ const {
   sendMessage,
   setAlias,
   setSetting,
-  // sign,
   withdraw,
 } = api;
 const { openMultipleChannels } = flows;
@@ -694,10 +693,7 @@ const openChannelThunk = createAsyncThunk<
   OpenChannelResponseType | undefined,
   OpenChannelPayloadType,
   { state: RootState }
->('node/openChannel', async (payload: OpenChannelPayloadType, {
-  rejectWithValue,
-  dispatch,
-}) => {
+>('node/openChannel', async (payload: OpenChannelPayloadType, { rejectWithValue }) => {
   try {
     const res = await openChannel(payload);
     return res;
@@ -1007,7 +1003,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.info.isFetching = false;
   });
-  builder.addCase(getInfoThunk.rejected, (state, action) => {
+  builder.addCase(getInfoThunk.rejected, (state) => {
     state.info.isFetching = false;
   });
   // getAddresses
@@ -1017,7 +1013,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.addresses.isFetching = false;
   });
-  builder.addCase(getAddressesThunk.rejected, (state, action) => {
+  builder.addCase(getAddressesThunk.rejected, (state) => {
     state.addresses.isFetching = false;
   });
   // getAliases
@@ -1027,7 +1023,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.aliases.isFetching = false;
   });
-  builder.addCase(getAliasesThunk.rejected, (state, action) => {
+  builder.addCase(getAliasesThunk.rejected, (state) => {
     state.aliases.isFetching = false;
   });
   // getBalances
@@ -1046,7 +1042,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
       state.balances.isFetching = false;
     }
   });
-  builder.addCase(getBalancesThunk.rejected, (state, action) => {
+  builder.addCase(getBalancesThunk.rejected, (state) => {
     state.balances.isFetching = false;
   });
   // getChannels
@@ -1056,29 +1052,33 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.channels.isFetching = false;
   });
-  builder.addCase(getChannelsThunk.rejected, (state, action) => {
+  builder.addCase(getChannelsThunk.rejected, (state) => {
     state.channels.isFetching = false;
   });
   // getPeers
   builder.addCase(getPeersThunk.fulfilled, (state, action) => {
     if (action.payload) {
+      state.peers.data = {
+        announced: [],
+        connected: [],
+      };
       state.peers.data = action.payload;
     }
     state.peers.isFetching = false;
   });
-  builder.addCase(getPeersThunk.rejected, (state, action) => {
+  builder.addCase(getPeersThunk.rejected, (state) => {
     state.peers.isFetching = false;
   });
-  // getPeerInfo
-  // builder.addCase(getPeerInfoThunk.fulfilled, (state, action) => {
-  //   if (action.payload) {
-  //     state.peerInfo.data = action.payload;
-  //   }
-  //   state.peerInfo.isFetching = false;
-  // });
-  // builder.addCase(getPeerInfoThunk.rejected, (state, action) => {
-  //   state.peerInfo.isFetching = false;
-  // });
+  // getPeer
+  builder.addCase(getPeerInfoThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      state.peerInfo.data = action.payload;
+    }
+    state.peerInfo.isFetching = false;
+  });
+  builder.addCase(getPeerInfoThunk.rejected, (state, action) => {
+    state.peerInfo.isFetching = false;
+  });
   // getSettings
   builder.addCase(getSettingsThunk.fulfilled, (state, action) => {
     if (action.payload) {
@@ -1086,14 +1086,14 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.settings.isFetching = false;
   });
-  builder.addCase(getSettingsThunk.rejected, (state, action) => {
+  builder.addCase(getSettingsThunk.rejected, (state) => {
     state.settings.isFetching = false;
   });
   // setSettings
-  builder.addCase(setSettingThunk.fulfilled, (state, action) => {
+  builder.addCase(setSettingThunk.fulfilled, (state) => {
     state.settings.isFetching = false;
   });
-  builder.addCase(setSettingThunk.rejected, (state, action) => {
+  builder.addCase(setSettingThunk.rejected, (state) => {
     state.settings.isFetching = false;
   });
   // getStatistics
@@ -1103,7 +1103,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.statistics.isFetching = false;
   });
-  builder.addCase(getStatisticsThunk.rejected, (state, action) => {
+  builder.addCase(getStatisticsThunk.rejected, (state) => {
     state.statistics.isFetching = false;
   });
   // getTickets
@@ -1113,11 +1113,11 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.tickets.isFetching = false;
   });
-  builder.addCase(getTicketsThunk.rejected, (state, action) => {
+  builder.addCase(getTicketsThunk.rejected, (state) => {
     state.tickets.isFetching = false;
   });
   // redeemTicketsThunk
-  builder.addCase(redeemTicketsThunk.fulfilled, (state, action) => {
+  builder.addCase(redeemTicketsThunk.fulfilled, (state) => {
     state.redeemTickets.isFetching = false;
     state.redeemTickets.error = undefined;
   });
@@ -1144,14 +1144,14 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.tokens.isFetching = false;
   });
-  builder.addCase(getTokenThunk.rejected, (state, action) => {
+  builder.addCase(getTokenThunk.rejected, (state) => {
     state.tokens.isFetching = false;
   });
   // createToken
-  builder.addCase(createTokenThunk.fulfilled, (state, action) => {
+  builder.addCase(createTokenThunk.fulfilled, (state) => {
     state.tokens.isFetching = false;
   });
-  builder.addCase(createTokenThunk.rejected, (state, action) => {
+  builder.addCase(createTokenThunk.rejected, (state) => {
     state.tokens.isFetching = false;
   });
   // getEntryNodes
@@ -1161,7 +1161,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.entryNodes.isFetching = false;
   });
-  builder.addCase(getEntryNodesThunk.rejected, (state, action) => {
+  builder.addCase(getEntryNodesThunk.rejected, (state) => {
     state.entryNodes.isFetching = false;
   });
   // getVersion
@@ -1171,7 +1171,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.version.isFetching = false;
   });
-  builder.addCase(getVersionThunk.rejected, (state, action) => {
+  builder.addCase(getVersionThunk.rejected, (state) => {
     state.version.isFetching = false;
   });
   // getAlias
@@ -1185,7 +1185,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.aliases.isFetching = false;
   });
-  builder.addCase(getAliasThunk.rejected, (state, action) => {
+  builder.addCase(getAliasThunk.rejected, (state) => {
     state.aliases.isFetching = false;
   });
   // setAlias
@@ -1199,7 +1199,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.aliases.isFetching = false;
   });
-  builder.addCase(setAliasThunk.rejected, (state, action) => {
+  builder.addCase(setAliasThunk.rejected, (state) => {
     state.aliases.isFetching = false;
   });
   // removeAlias
@@ -1211,7 +1211,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.aliases.isFetching = false;
   });
-  builder.addCase(removeAliasThunk.rejected, (state, action) => {
+  builder.addCase(removeAliasThunk.rejected, (state) => {
     state.aliases.isFetching = false;
   });
   // withdraw
@@ -1221,7 +1221,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.transactions.isFetching = false;
   });
-  builder.addCase(withdrawThunk.rejected, (state, action) => {
+  builder.addCase(withdrawThunk.rejected, (state) => {
     state.transactions.isFetching = false;
   });
   // getChannels
@@ -1283,7 +1283,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.channels.isFetching = false;
   });
-  builder.addCase(getChannelThunk.rejected, (state, action) => {
+  builder.addCase(getChannelThunk.rejected, (state) => {
     state.channels.isFetching = false;
   });
   // getChannelTickets
@@ -1315,7 +1315,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.tickets.isFetching = false;
   });
-  builder.addCase(getChannelTicketsThunk.rejected, (state, action) => {
+  builder.addCase(getChannelTicketsThunk.rejected, (state) => {
     state.tickets.isFetching = false;
   });
   // sendMessage
@@ -1343,9 +1343,11 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     if (index !== -1) {
       state.messagesSent[index].status = 'error';
       // prettier-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       { /*   @ts-ignore */ }
       if (typeof action.payload.status === 'string') {
         // prettier-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         { /* @ts-ignore */ }
         state.messagesSent[index].error = action.payload.status;
       }
@@ -1378,7 +1380,7 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.tokens.isFetching = false;
   });
-  builder.addCase(deleteTokenThunk.rejected, (state, action) => {
+  builder.addCase(deleteTokenThunk.rejected, (state) => {
     state.tokens.isFetching = false;
   });
   // getPrometheusMetrics
@@ -1389,21 +1391,21 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
     }
     state.metrics.isFetching = false;
   });
-  builder.addCase(getPrometheusMetricsThunk.rejected, (state, action) => {
+  builder.addCase(getPrometheusMetricsThunk.rejected, (state) => {
     state.metrics.isFetching = false;
   });
   // closeChannel
-  builder.addCase(closeChannelThunk.fulfilled, (state, action) => {
+  builder.addCase(closeChannelThunk.fulfilled, (state) => {
     state.closeChannel.isFetching = false;
   });
-  builder.addCase(closeChannelThunk.rejected, (state, action) => {
+  builder.addCase(closeChannelThunk.rejected, (state) => {
     state.closeChannel.isFetching = false;
   });
   // redeemChannelTickets
-  builder.addCase(redeemChannelTicketsThunk.fulfilled, (state, action) => {
+  builder.addCase(redeemChannelTicketsThunk.fulfilled, (state) => {
     state.redeemTickets.isFetching = false;
   });
-  builder.addCase(redeemChannelTicketsThunk.rejected, (state, action) => {
+  builder.addCase(redeemChannelTicketsThunk.rejected, (state) => {
     state.redeemTickets.isFetching = false;
   });
 };
@@ -1433,7 +1435,6 @@ export const actionsAsync = {
   openMultipleChannelsThunk,
   redeemChannelTicketsThunk,
   sendMessageThunk,
-  // signThunk,
   pingNodeThunk,
   setSettingThunk,
   redeemTicketsThunk,
