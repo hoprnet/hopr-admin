@@ -1334,5 +1334,5 @@ export const actionsAsync = {
   createAndExecuteTransactionThunk,
   createAndExecuteContractTransactionThunk,
   createVanillaSafeWithConfigThunk,
-  getCommunityNftsOwnedBySafeThunk
+  getCommunityNftsOwnedBySafeThunk,
 };

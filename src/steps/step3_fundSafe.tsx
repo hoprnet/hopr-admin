@@ -81,20 +81,15 @@ const FundsToSafe = () => {
   const {
     isLoading: is_xDAI_to_safe_loading,
     sendTransaction: send_xDAI_to_safe,
-  } = useSendTransaction({
-    ...xDAI_to_safe_config
-  });
+  } = useSendTransaction({ ...xDAI_to_safe_config });
 
   const handleFundxDai = () => {
     send_xDAI_to_safe?.();
   };
-  
 
   const handleFundwxHopr = () => {
     write_wxHOPR_to_safe?.();
   };
-  
-
 
   return (
     <StepContainer
@@ -138,7 +133,7 @@ const FundsToSafe = () => {
         </StyledInputGroup>
         <Button
           onClick={handleFundxDai}
-          disabled={!xdaiValue || xdaiValue === '' ||  xdaiValue === '0' }
+          disabled={!xdaiValue || xdaiValue === '' || xdaiValue === '0'}
         >
           Fund
         </Button>
@@ -173,7 +168,7 @@ const FundsToSafe = () => {
           <MaxButton onClick={setMax_wxHOPR}>Max</MaxButton>
           <Button
             onClick={handleFundwxHopr}
-            disabled={!wxhoprValue || wxhoprValue === '' ||  wxhoprValue === '0' }
+            disabled={!wxhoprValue || wxhoprValue === '' || wxhoprValue === '0'}
           >
             Fund
           </Button>
@@ -188,7 +183,9 @@ const FundsToSafe = () => {
           Back
         </StyledGrayButton>
         <Button
-          onClick={()=>{dispatch(stakingHubActions.setOnboardingStep(5));}}
+          onClick={() => {
+            dispatch(stakingHubActions.setOnboardingStep(5));
+          }}
           disabled={true}
         >
           Continue

@@ -36,24 +36,24 @@ function Onboarding() {
   const dispatch = useAppDispatch();
   const onboardingStep = useAppSelector((store) => store.stakingHub.onboarding.step);
 
-  function whatIsCompletedStep(page: number){
-    switch(page){
-      case 2:
-      case 3:
-        return 1;
+  function whatIsCompletedStep(page: number) {
+    switch (page) {
+    case 2:
+    case 3:
+      return 1;
 
-      default:
-        return 0;
+    default:
+      return 0;
     }
   }
 
-  function whatIsCurrentStep(page: number){
-    switch(page){
-      case 4:
-        return 1;
+  function whatIsCurrentStep(page: number) {
+    switch (page) {
+    case 4:
+      return 1;
 
-      default:
-        return 0;
+    default:
+      return 0;
     }
   }
 

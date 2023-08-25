@@ -46,8 +46,8 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
       state.safes.data = action.payload;
 
       if (action.payload.length > 0) {
-      //  state.onboarding.notFinished = true;
-     //   state.onboarding.step = 2;
+        //  state.onboarding.notFinished = true;
+        //   state.onboarding.step = 2;
       }
     }
     state.safes.isFetching = false;

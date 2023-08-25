@@ -143,9 +143,7 @@ export default function ConnectSafe() {
         }),
       );
     }
-    dispatch(
-      safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress),
-    );
+    dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));
   };
 
   // New function to handle opening the menu

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import { useWalletClient } from 'wagmi';
 
-
 //HOPR Components
 import Button from '../future-hopr-lib-components/Button';
 import { StepContainer } from './components';
@@ -132,13 +131,15 @@ export default function optionalNftTtransfer() {
               onClick={(event) => {
                 event.stopPropagation();
                 if (!walletClient) return;
-                if(walletAddress && safeAddress && communityNftId !== null) {
-                  dispatch(web3ActionsAsync.sendNftToSafeThunk({
-                    walletAddress, 
-                    safeAddress,
-                    walletClient,
-                    communityNftId,
-                  }))
+                if (walletAddress && safeAddress && communityNftId !== null) {
+                  dispatch(
+                    web3ActionsAsync.sendNftToSafeThunk({
+                      walletAddress,
+                      safeAddress,
+                      walletClient,
+                      communityNftId,
+                    }),
+                  );
                 }
               }}
               disabled={communityNftId === null}
