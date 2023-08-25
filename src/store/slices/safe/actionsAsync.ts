@@ -15,7 +15,7 @@ import SafeApiKit, {
   TokenInfoResponse
 } from '@safe-global/api-kit';
 import Safe, { EthersAdapter, SafeAccountConfig, SafeFactory } from '@safe-global/protocol-kit';
-import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionData, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types';
+import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionData, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
 import { ethers } from 'ethers';
 import {
   Address,
@@ -25,7 +25,7 @@ import {
   publicActions,
   toBytes,
   toHex
-} from 'viem';
+} from 'viem'
 import { RootState } from '../..';
 import {
   HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,
@@ -33,7 +33,7 @@ import {
   HOPR_NODE_STAKE_FACTORY,
   SAFE_SERVICE_URL,
   STAKE_SUBGRAPH
-} from '../../../../config'
+} from '../../../../config';
 import hoprNodeStakeFactoryAbi from '../../../abi/nodeStakeFactoryAbi.json';
 import {
   getCurrencyFromHistoryTransaction,
