@@ -1092,6 +1092,10 @@ export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof init
   // getPeers
   builder.addCase(getPeersThunk.fulfilled, (state, action) => {
     if (action.payload) {
+      state.peers.data = {
+        announced: [],
+        connected: [],
+      };
       state.peers.data = action.payload;
     }
     state.peers.isFetching = false;
