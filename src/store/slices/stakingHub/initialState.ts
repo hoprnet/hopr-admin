@@ -9,6 +9,7 @@ type InitialState = {
   onboarding: {
     step: number;
     notFinished: boolean;
+    userIsInOnboarding: boolean;
   };
 };
 
@@ -18,7 +19,8 @@ export const initialState: InitialState = {
     isFetching: false,
   },
   onboarding: {
-    step: 1,
+    step: 0,
     notFinished: false,
+    userIsInOnboarding: false,
   },
 };

@@ -12,11 +12,11 @@ import { StepContainer } from '../../steps/components';
 import Paper from '@mui/material/Paper/Paper';
 
 //Steps
-import WhatYouWillNeedPage from '../../steps/whatYouWillNeed';
-import CreateSafe from '../../steps/createSafe';
-import SafeIsReady from '../../steps/safeIsReady';
-import OptionalNftTtransfer from '../../steps/optionalNftTtransfer';
-import XdaiToSafe from '../../steps/xDaiToSafe';
+import WhatYouWillNeedPage from '../../steps/step0_whatYouWillNeed';
+import CreateSafe from '../../steps/step1-1_createSafe';
+import SafeIsReady from '../../steps/step1-2_safeIsReady';
+import OptionalNftTtransfer from '../../steps/step2_optionalNftTtransfer';
+import XdaiToSafe from '../../steps/step3-1_xDaiToSafe';
 import { Stepper } from '../../components/Stepper';
 
 const OnboardingContainer = styled.div`
@@ -36,30 +36,56 @@ function Onboarding() {
   const dispatch = useAppDispatch();
   const onboardingStep = useAppSelector((store) => store.stakingHub.onboarding.step);
 
+  function whatIsCompletedStep(page: number){
+    switch(page){
+      case 2:
+      case 3:
+        return 1;
+
+      default:
+        return 0;
+    }
+  }
+
+  function whatIsCurrentStep(page: number){
+    switch(page){
+      case 4:
+        return 1;
+
+      default:
+        return 0;
+    }
+  }
+
   return (
     <OnboardingContainer className="OnboardingContainer">
       <Stepper
-        currentStep={1}
+        lastStepDone={whatIsCompletedStep(onboardingStep)}
+        currentStep={whatIsCurrentStep(onboardingStep)}
         steps={[
-          { name: 'create safe' },
-          { name: 'really long text whatever this might be. really long text whatever this might be.' },
-          { name: 'fund safe' },
-          { name: 'choose your node setup' },
-          { name: 'add node' },
+          { name: 'CREATE SAFE' },
+          { name: 'OPTIONAL NFT TRANSFER' },
+          { name: 'FUND SAFE' },
+          { name: 'CHOOSE YOUR NODE SETUP' },
+          { name: 'WAITLIST' },
+          { name: 'ADD NODE' },
+          { name: 'CONFIGURE NODE' },
+          { name: 'FUND NODE' },
+          { name: 'SET wxHOPR ALLOWANCES' },
         ]}
       />
 
-      {onboardingStep === 1 && <WhatYouWillNeedPage />}
+      {onboardingStep === 0 && <WhatYouWillNeedPage />}
 
-      {onboardingStep === 2 && <CreateSafe />}
+      {onboardingStep === 1 && <CreateSafe />}
 
-      {onboardingStep === 3 && <SafeIsReady />}
+      {onboardingStep === 2 && <SafeIsReady />}
 
-      {onboardingStep === 4 && <OptionalNftTtransfer />}
+      {onboardingStep === 3 && <OptionalNftTtransfer />}
 
-      {onboardingStep === 5 && <XdaiToSafe />}
+      {onboardingStep === 4 && <XdaiToSafe />}
 
-      {onboardingStep === 6 && (
+      {onboardingStep === 5 && (
         <StepContainer>
           <button
             onClick={() => {
