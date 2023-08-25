@@ -151,7 +151,7 @@ const FundsToSafe = () => {
       <ButtonContainer>
         <StyledGrayButton
           onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(4));
+            dispatch(stakingHubActions.setOnboardingStep(5));
           }}
         >
           Back

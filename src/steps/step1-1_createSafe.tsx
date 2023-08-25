@@ -80,7 +80,7 @@ const CreateSafe = () => {
           walletClient,
         }),
       ).unwrap();
-      dispatch(stakingHubActions.setOnboardingStep(3));
+      dispatch(stakingHubActions.setOnboardingStep(2));
     } catch (error) {
       if (error instanceof Error) {
         set_error(error.message);
