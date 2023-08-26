@@ -84,7 +84,7 @@ type InitialState = {
       parsed: {
         [key: string]: {
           categories: string[];
-          data: any[];
+          data: unknown[];
           length: number;
           name: string;
           type: string;

@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { actionsAsync, createExtraReducers } from './actionsAsync';
+import { actionsAsync, createAsyncReducer } from './actionsAsync';
+import { createFetchingReducer } from './actionsFetching';
 import { initialState } from './initialState';
 
 const nodeSlice = createSlice({
@@ -8,11 +9,9 @@ const nodeSlice = createSlice({
   reducers: {
     resetState: () => initialState,
     setInitiating(state) {
-      console.log('SDK initiating');
       state.status.initiating = true;
     },
     setInitiated(state) {
-      console.log('SDK setInitiated');
       state.status.initiating = false;
       state.status.initiated = true;
     },
@@ -58,60 +57,10 @@ const nodeSlice = createSlice({
     closeLogsWebsocket() {
       // state changes in node middleware
     },
-    // Action to update the isFetching state
-    setAliasesFetching(state, action: PayloadAction<boolean>) {
-      state.aliases.isFetching = action.payload;
-    },
-    setInfoFetching(state, action: PayloadAction<boolean>) {
-      state.info.isFetching = action.payload;
-    },
-    setMetricsFetching(state, action: PayloadAction<boolean>) {
-      state.metrics.isFetching = action.payload;
-    },
-    setAddressesFetching(state, action: PayloadAction<boolean>) {
-      state.addresses.isFetching = action.payload;
-    },
-    setBalancesFetching(state, action: PayloadAction<boolean>) {
-      state.balances.isFetching = action.payload;
-    },
-    setChannelsFetching(state, action: PayloadAction<boolean>) {
-      state.channels.isFetching = action.payload;
-    },
-    setPeersFetching(state, action: PayloadAction<boolean>) {
-      state.peers.isFetching = action.payload;
-    },
-    setPeerInfoFetching(state, action: PayloadAction<boolean>) {
-      state.peerInfo.isFetching = action.payload;
-    },
-    setEntryNodesFetching(state, action: PayloadAction<boolean>) {
-      state.entryNodes.isFetching = action.payload;
-    },
-    setSettingsFetching(state, action: PayloadAction<boolean>) {
-      state.settings.isFetching = action.payload;
-    },
-    setStatisticsFetching(state, action: PayloadAction<boolean>) {
-      state.statistics.isFetching = action.payload;
-    },
-    setTicketsFetching(state, action: PayloadAction<boolean>) {
-      state.tickets.isFetching = action.payload;
-    },
-    setTokensFetching(state, action: PayloadAction<boolean>) {
-      state.tokens.isFetching = action.payload;
-    },
-    setVersionFetching(state, action: PayloadAction<boolean>) {
-      state.version.isFetching = action.payload;
-    },
-    setTransactionsFetching(state, action: PayloadAction<boolean>) {
-      state.transactions.isFetching = action.payload;
-    },
-    setCloseChannelFetching(state, action: PayloadAction<boolean>) {
-      state.closeChannel.isFetching = action.payload;
-    },
-    setRedeemTicketsFetching(state, action: PayloadAction<boolean>) {
-      state.redeemTickets.isFetching = action.payload;
-    },
   },
-  extraReducers: (builder) => createExtraReducers(builder),
+  extraReducers: (builder) => {
+    createAsyncReducer(builder), createFetchingReducer(builder);
+  },
 });
 
 export const nodeActions = nodeSlice.actions;
