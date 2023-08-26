@@ -29,6 +29,8 @@ import {
 } from './safeOnboarding/styled';
 import { StepContainer } from './components';
 import Button from '../future-hopr-lib-components/Button';
+import styled from '@emotion/styled';
+import { safeActionsAsync } from '../store/slices/safe';
 
 type Address = `0x${string}`;
 type NumberLiteral = `${number}`;
@@ -38,11 +40,22 @@ type FundsToSafeProps = {
   set_step: (step: number) => void;
 };
 
+const GreenText = styled.p`
+  color: green;
+  display: inline;
+`;
+
 const FundsToSafe = () => {
   const dispatch = useAppDispatch();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const walletBalance = useAppSelector((store) => store.web3.balance);
   const account = useAppSelector((store) => store.web3.account);
+  const balance = useAppSelector((store) => store.safe.balance.data);
+
+  // We have to refresh safe balance after a fund for example to make sure when it's okay to continue
+  // useEffect(() => {
+  //   // dispatch(safeActionsAsync.)
+  // }, [selectedSafeAddress])
 
   const [xdaiValue, set_xdaiValue] = useState('');
   const [wxhoprValue, set_wxhoprValue] = useState('');
@@ -91,6 +104,20 @@ const FundsToSafe = () => {
     write_wxHOPR_to_safe?.();
   };
 
+  const xdaiEnoughBalance = (): boolean => {
+    if (parseEther(xdaiValue as NumberLiteral) >= 0.1) {
+      return true;
+    }
+    return false;
+  };
+
+  const wxhoprEnoughBalance = (): boolean => {
+    if (parseUnits(wxhoprValue as NumberLiteral, 18) >= BigInt('1')) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <StepContainer
       image={{
@@ -109,7 +136,7 @@ const FundsToSafe = () => {
           </Text>
           <StyledDescription>
             Add-in the amount of <Lowercase>x</Lowercase>DAI you like to deposit to your safe. In a later step these
-            will then be moved to your node.
+            will then be moved to your node. {xdaiEnoughBalance() && <GreenText>enough balance</GreenText>}
           </StyledDescription>
         </StyledInstructions>
         <StyledInputGroup>
@@ -130,13 +157,13 @@ const FundsToSafe = () => {
             <Lowercase>x</Lowercase>DAI
           </StyledCoinLabel>
           <MaxButton onClick={setMax_xDAI}>Max</MaxButton>
+          <Button
+            onClick={handleFundxDai}
+            disabled={!xdaiValue || xdaiValue === '' || xdaiValue === '0'}
+          >
+            Fund
+          </Button>
         </StyledInputGroup>
-        <Button
-          onClick={handleFundxDai}
-          disabled={!xdaiValue || xdaiValue === '' || xdaiValue === '0'}
-        >
-          Fund
-        </Button>
       </StyledForm>
       <StyledForm>
         <StyledInstructions>
@@ -145,7 +172,8 @@ const FundsToSafe = () => {
           </Text>
           <StyledDescription>
             Add-in the amount of <Lowercase>wx</Lowercase>HOPR you like to deposit to your safe. We suggest to move all
-            your <Lowercase>wx</Lowercase>HOPR to the safe.
+            your <Lowercase>wx</Lowercase>HOPR to the safe.{' '}
+            {wxhoprEnoughBalance() && <GreenText>enough balance</GreenText>}
           </StyledDescription>
         </StyledInstructions>
         <StyledInputGroup>
