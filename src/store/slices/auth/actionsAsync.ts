@@ -10,14 +10,14 @@ export const loginThunk = createAsyncThunk<
   GetInfoResponseType | undefined,
   { apiToken: string; apiEndpoint: string },
   { state: RootState }
->('auth/login', async (loginData: { apiToken: string; apiEndpoint: string }, {
+>('auth/login', async (payload, {
   rejectWithValue,
   dispatch,
 }) => {
   const {
     apiEndpoint,
     apiToken,
-  } = loginData;
+  } = payload;
   try {
     const info = await getInfo({
       apiEndpoint: apiEndpoint,
@@ -73,7 +73,7 @@ export const loginThunk = createAsyncThunk<
   }
 });
 
-export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
+export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   builder.addCase(loginThunk.pending, (state) => {
     state.status.connecting = true;
     state.status.connected = false;

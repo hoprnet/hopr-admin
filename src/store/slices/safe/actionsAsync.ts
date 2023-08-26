@@ -1,4 +1,4 @@
-import { ActionReducerMapBuilder, createAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 import SafeApiKit, {
   AddSafeDelegateProps,
   AllTransactionsListResponse,
@@ -27,7 +27,13 @@ import {
   toHex
 } from 'viem'
 import { RootState } from '../..';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_MANAGEMENT_MODULE, HOPR_NODE_STAKE_FACTORY } from '../../../../config'
+import {
+  HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,
+  HOPR_NODE_MANAGEMENT_MODULE,
+  HOPR_NODE_STAKE_FACTORY,
+  SAFE_SERVICE_URL,
+  STAKE_SUBGRAPH
+} from '../../../../config';
 import hoprNodeStakeFactoryAbi from '../../../abi/nodeStakeFactoryAbi.json';
 import {
   getCurrencyFromHistoryTransaction,
@@ -37,8 +43,9 @@ import {
   getSourceOfPendingTransaction,
   getValueFromHistoryTransaction
 } from '../../../utils/safeTransactions';
+import { stakingHubActions } from '../stakingHub';
+import { safeActionsFetching } from './actionsFetching';
 import { initialState } from './initialState';
-import { STAKE_SUBGRAPH, SAFE_SERVICE_URL } from '../../../../config';
 
 const createSafeApiService = async (signer: ethers.providers.JsonRpcSigner) => {
   const adapter = new EthersAdapter({
@@ -90,17 +97,11 @@ const createVanillaSafeWithConfigThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/createVanillaSafeWithConfig',
-  async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      config: SafeAccountConfig;
-    },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    dispatch(setSelectedSafeFetching(true));
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(safeActionsFetching.setSelectedSafeFetching(true));
     try {
       const safeFactory = await createSafeFactory(payload.signer);
 
@@ -138,7 +139,7 @@ const getSafesByOwnerThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setSafeByOwnerFetching(true));
+    dispatch(safeActionsFetching.setSafeByOwnerFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const signerAddress = await payload.signer.getAddress();
@@ -167,19 +168,11 @@ const addOwnerToSafeThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/addOwnerToSafe',
-  async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      ownerAddress: string;
-      threshold?: number;
-    },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    dispatch(setInfoFetching(true));
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(safeActionsFetching.setInfoFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       const safeApi = await createSafeApiService(payload.signer);
@@ -231,19 +224,11 @@ const removeOwnerFromSafeThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/removeOwnerFromSafe',
-  async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      ownerAddress: string;
-      threshold?: number;
-    },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    dispatch(setInfoFetching(true));
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(safeActionsFetching.setInfoFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       const safeApi = await createSafeApiService(payload.signer);
@@ -293,18 +278,11 @@ const updateSafeThresholdThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/updateSafeThreshold',
-  async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      newThreshold: number;
-    },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    dispatch(setInfoFetching(true));
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(safeActionsFetching.setInfoFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       const safeApi = await createSafeApiService(payload.signer);
@@ -351,19 +329,12 @@ const getSafeInfoThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/getSafeInfo',
-  async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-    },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    dispatch(setInfoFetching(true));
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(safeActionsFetching.setInfoFetching(true));
     try {
-      dispatch(setInfoFetching(true));
       const safeApi = await createSafeApiService(payload.signer);
       const info = await safeApi.getSafeInfo(payload.safeAddress);
       return info;
@@ -385,18 +356,11 @@ const createSafeTransactionThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/createTransaction',
-  async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      safeTransactionData: SafeTransactionDataPartial;
-    },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    dispatch(setCreateTransactionFetching(true));
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(safeActionsFetching.setCreateTransactionFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       const safeApi = await createSafeApiService(payload.signer);
@@ -444,19 +408,11 @@ const createSafeContractTransaction = createAsyncThunk<
   { state: RootState }
 >(
   'safe/createContractTransaction',
-  async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      smartContractAddress: string;
-      data: string;
-    },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    dispatch(setCreateTransactionFetching(true));
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(safeActionsFetching.setCreateTransactionFetching(true));
     try {
       const {
         smartContractAddress,
@@ -497,18 +453,11 @@ const createSafeRejectionTransactionThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/rejectTransactionProposal',
-  async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      nonce: number;
-    },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    dispatch(setRejectTransactionFetching(true));
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(safeActionsFetching.setRejectTransactionFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       const safeApi = await createSafeApiService(payload.signer);
@@ -551,18 +500,11 @@ const confirmTransactionThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/confirmTransactionProposal',
-  async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      safeTransactionHash: string;
-    },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    dispatch(setConfirmTransactionFetching(true));
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(safeActionsFetching.setConfirmTransactionFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       const safeApi = await createSafeApiService(payload.signer);
@@ -598,18 +540,11 @@ const executePendingTransactionThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/executeTransactionProposal',
-  async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      safeTransaction: SafeMultisigTransactionResponse | SafeTransaction;
-    },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    dispatch(setExecuteTransactionFetching(true));
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(safeActionsFetching.setExecuteTransactionFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       await safeSDK.executeTransaction(payload.safeTransaction);
@@ -653,7 +588,7 @@ const createAndExecuteTransactionThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setExecuteTransactionFetching(true));
+    dispatch(safeActionsFetching.setExecuteTransactionFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       // create safe transaction
@@ -693,48 +628,37 @@ const createAndExecuteContractTransactionThunk = createAsyncThunk<
     data: string;
   },
   { state: RootState }
->(
-  'safe/createAndExecuteContractTransaction',
-  async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      smartContractAddress: string;
-      data: string;
-    },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    try {
-      const {
-        smartContractAddress,
-        data,
+>('safe/createAndExecuteContractTransaction', async (payload, {
+  rejectWithValue,
+  dispatch,
+}) => {
+  try {
+    const {
+      smartContractAddress,
+      data,
+      signer,
+      safeAddress,
+    } = payload;
+
+    const safeTransactionData: SafeTransactionDataPartial = {
+      to: smartContractAddress,
+      data,
+      value: '0',
+    };
+
+    const safeTxResult = await dispatch(
+      createAndExecuteTransactionThunk({
         signer,
-        safeAddress,
-      } = payload;
+        safeAddress: safeAddress,
+        safeTransactionData,
+      }),
+    ).unwrap();
 
-      const safeTransactionData: SafeTransactionDataPartial = {
-        to: smartContractAddress,
-        data,
-        value: '0',
-      };
-
-      const safeTxResult = await dispatch(
-        createAndExecuteTransactionThunk({
-          signer,
-          safeAddress: safeAddress,
-          safeTransactionData,
-        }),
-      ).unwrap();
-
-      return safeTxResult;
-    } catch (e) {
-      return rejectWithValue(e);
-    }
-  },
-);
+    return safeTxResult;
+  } catch (e) {
+    return rejectWithValue(e);
+  }
+});
 
 const getAllSafeTransactionsThunk = createAsyncThunk<
   AllTransactionsListResponse | undefined,
@@ -746,18 +670,11 @@ const getAllSafeTransactionsThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/getAllSafeTransactions',
-  async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-      options?: AllTransactionsOptions;
-    },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    dispatch(setSafeAllTransactionsFetching(true));
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(safeActionsFetching.setSafeAllTransactionsFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const transactions = await safeApi.getAllTransactions(payload.safeAddress, {
@@ -786,17 +703,11 @@ const getPendingSafeTransactionsThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/getPendingSafeTransactions',
-  async (
-    payload: {
-      signer: ethers.providers.JsonRpcSigner;
-      safeAddress: string;
-    },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    dispatch(setSafePendingTransactionsFetching(true));
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(safeActionsFetching.setSafePendingTransactionsFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const transactions = await safeApi.getPendingTransactions(payload.safeAddress);
@@ -822,14 +733,11 @@ const addSafeDelegateThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/addDelegate',
-  async (
-    payload: { options: Omit<AddSafeDelegateProps, 'signer'>; signer: ethers.providers.JsonRpcSigner },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    dispatch(setAddDelegateFetching(true));
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(safeActionsFetching.setAddDelegateFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const response = await safeApi.addSafeDelegate({
@@ -864,14 +772,11 @@ const removeSafeDelegateThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/removeDelegate',
-  async (
-    payload: { options: Omit<DeleteSafeDelegateProps, 'signer'>; signer: ethers.providers.JsonRpcSigner },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    dispatch(setRemoveDelegateFetching(true));
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(safeActionsFetching.setRemoveDelegateFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const response = await safeApi.removeSafeDelegate({
@@ -906,14 +811,11 @@ const getSafeDelegatesThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/getDelegates',
-  async (
-    payload: { options: GetSafeDelegateProps; signer: ethers.providers.JsonRpcSigner },
-    {
-      rejectWithValue,
-      dispatch,
-    },
-  ) => {
-    dispatch(setSafeDelegatesFetching(true));
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    dispatch(safeActionsFetching.setSafeDelegatesFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const response = await safeApi.getSafeDelegates(payload.options);
@@ -939,11 +841,11 @@ const getToken = createAsyncThunk<
   { state: RootState }
 >(
   'safe/getToken',
-  async (payload: { tokenAddress: string; signer: ethers.providers.JsonRpcSigner }, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setTokenFetching(true));
+    dispatch(safeActionsFetching.setTokenFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const token = await safeApi.getToken(payload.tokenAddress);
@@ -968,11 +870,11 @@ const getTokenList = createAsyncThunk<
   { state: RootState }
 >(
   'safe/getTokenList',
-  async (payload: { signer: ethers.providers.JsonRpcSigner }, {
+  async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setTokenListFetching(true));
+    dispatch(safeActionsFetching.setTokenListFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
       const tokenList = await safeApi.getTokenList();
@@ -1012,7 +914,7 @@ const createSafeWithConfigThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setSelectedSafeFetching(true));
+    dispatch(safeActionsFetching.setSelectedSafeFetching(true));
     try {
       const superWalletClient = payload.walletClient.extend(publicActions);
 
@@ -1047,9 +949,7 @@ const createSafeWithConfigThunk = createAsyncThunk<
 
       const transactionHash = await superWalletClient.writeContract(request);
 
-      const red = await superWalletClient.waitForTransactionReceipt({ hash: transactionHash });
-
-      console.log({ red });
+      await superWalletClient.waitForTransactionReceipt({ hash: transactionHash });
 
       const [moduleProxy, safeAddress] = result as [Address, Address];
 
@@ -1064,7 +964,7 @@ const createSafeWithConfigThunk = createAsyncThunk<
         }),
       });
       dispatch(
-        addSafeLocally({
+        stakingHubActions.addSafe({
           safeAddress,
           moduleAddress: moduleProxy,
         }),
@@ -1094,6 +994,7 @@ const getCommunityNftsOwnedBySafeThunk = createAsyncThunk(
       const response = await fetch(STAKE_SUBGRAPH, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        // eslint-disable-next-line no-useless-escape
         body: `{\"query\":\"\\n  query getSubGraphNFTsUserDataForSafe {\\n    _meta {\\n      block {\\n        timestamp\\n        number\\n      }\\n    }\\n    boosts(first: 1, where: {owner: \\\"${account.toLocaleLowerCase()}\\\", uri_ends_with: \\\"Network_registry/community\\\"}) {\\n      id}\\n  }\\n\"}`,
       });
       const responseJson: {
@@ -1109,25 +1010,7 @@ const getCommunityNftsOwnedBySafeThunk = createAsyncThunk(
   },
 );
 
-// Helper actions to update the isFetching state
-const setInfoFetching = createAction<boolean>('node/setSafeInfoFetching');
-const setSelectedSafeFetching = createAction<boolean>('node/setSelectedSafeFetching');
-const setSafeByOwnerFetching = createAction<boolean>('node/setSafeByOwnerFetching');
-const setSafeAllTransactionsFetching = createAction<boolean>('node/setSafeAllTransactionsFetching');
-const setSafePendingTransactionsFetching = createAction<boolean>('node/setSafePendingTransactionsFetching');
-const setSafeDelegatesFetching = createAction<boolean>('node/setSafeDelegatesFetching');
-const setCreateTransactionFetching = createAction<boolean>('node/setCreateTransactionFetching');
-const setConfirmTransactionFetching = createAction<boolean>('node/setConfirmTransactionFetching');
-const setRejectTransactionFetching = createAction<boolean>('node/setRejectTransactionFetching');
-const setExecuteTransactionFetching = createAction<boolean>('node/setExecuteTransactionFetching');
-const setAddDelegateFetching = createAction<boolean>('node/setAddDelegateFetching');
-const setRemoveDelegateFetching = createAction<boolean>('node/setRemoveDelegateFetching');
-const setTokenListFetching = createAction<boolean>('node/setTokenListFetching');
-const setTokenFetching = createAction<boolean>('node/setTokenFetching');
-
-const addSafeLocally = createAction<{}>('stakingHub/addSafe');
-
-export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
+export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   // CreateSafeWithConfig
   builder.addCase(createSafeWithConfigThunk.fulfilled, (state, action) => {
     if (action.payload) {

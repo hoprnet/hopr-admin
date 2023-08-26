@@ -1,11 +1,10 @@
-import { ActionReducerMapBuilder, createAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 import { WalletClient, publicActions } from 'viem';
 import { RootState } from '../..';
 import { GNOSIS_CHAIN_HOPR_BOOST_NFT, STAKE_SUBGRAPH } from '../../../../config';
 import erc721ABI from '../../../abi/erc721-abi.json';
 import { initialState } from './initialState';
-
-// TO REMOVE
+import { web3Actions } from '.';
 
 const getCommunityNftsOwnedByWallet = createAsyncThunk(
   'web3/getCommunityNftsOwnedByWallet',
@@ -49,7 +48,7 @@ const sendNftToSafeThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setCommunityNftTransferring(true));
+    dispatch(web3Actions.setCommunityNftTransferring(true));
     const success = false;
     try {
       const superWalletClient = payload.walletClient.extend(publicActions);
@@ -73,11 +72,9 @@ const sendNftToSafeThunk = createAsyncThunk<
 
       const transactionHash = await superWalletClient.writeContract(request);
 
-      const red = await superWalletClient.waitForTransactionReceipt({ hash: transactionHash });
+      await superWalletClient.waitForTransactionReceipt({ hash: transactionHash });
 
-      console.log({ red });
-
-      dispatch(setCommunityNftIdInSafe(payload.communityNftId));
+      dispatch(web3Actions.setHasCommunityNftId(payload.communityNftId));
 
       return { success };
     } catch (e) {
@@ -92,15 +89,10 @@ const sendNftToSafeThunk = createAsyncThunk<
   } },
 );
 
-// Helper actions to update the isFetching state
-const setCommunityNftTransferring = createAction<boolean>('web3/setCommunityNftTransferring');
-const setCommunityNftIdInSafe = createAction<number>('safe/setCommunityNftId');
-
-export const createExtraReducers = (builder: ActionReducerMapBuilder<typeof initialState>) => {
+export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   builder.addCase(getCommunityNftsOwnedByWallet.fulfilled, (state, action) => {
     if (action.payload) {
       if (action.payload?.boosts.length > 0 && action.payload?.boosts[0].id) {
-        console.log('Found community NFT id:', action.payload?.boosts[0].id);
         state.communityNftId = parseInt(action.payload?.boosts[0].id);
       }
     }
