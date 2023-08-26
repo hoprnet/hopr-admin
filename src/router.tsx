@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouteObject, useSearchParams } from 'react-router-dom';
+import { createBrowserRouter, Link, RouteObject, useSearchParams } from 'react-router-dom';
 import { environment } from '../config';
 
 // Store
@@ -70,6 +70,9 @@ import SwapVertIcon from '@mui/icons-material/SwapVert';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import PaidIcon from '@mui/icons-material/Paid';
 import WalletIcon from '@mui/icons-material/Wallet';
+import LinkIcon from '@mui/icons-material/Link';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import TelegramIcon from '@mui/icons-material/Telegram';
 import IncomingChannelsIcon from './future-hopr-lib-components/Icons/IncomingChannels';
 import OutgoingChannelsIcon from './future-hopr-lib-components/Icons/OutgoingChannels';
 
@@ -83,6 +86,7 @@ export type ApplicationMapType = {
     icon: JSX.Element;
     element?: JSX.Element;
     loginNeeded?: 'node' | 'web3';
+    externalLink?: string;
   }[];
 }[];
 
@@ -156,18 +160,43 @@ export const applicationMapNode: ApplicationMapType = [
         loginNeeded: 'node',
       },
       {
-        name: 'INCOMING CHANNELS',
+        name: 'CHANNELS: IN',
         path: 'channels-INCOMING',
         icon: <IncomingChannelsIcon />,
         element: <ChannelsPageIncoming />,
         loginNeeded: 'node',
       },
       {
-        name: 'OUTGOING CHANNELS',
+        name: 'CHANNELS: OUT',
         path: 'channels-OUTGOING',
         icon: <OutgoingChannelsIcon />,
         element: <ChannelsPageOutgoing />,
         loginNeeded: 'node',
+      },
+    ],
+  },
+  {
+    groupName: 'LINKS',
+    path: 'links',
+    icon: <LinkIcon />,
+    items: [
+      {
+        name: 'Staking Hub',
+        path: 'staking-hub-landing',
+        icon: <SavingsIcon />,
+        element: <StakingLandingPage />,
+      },
+      {
+        name: 'Docs',
+        path: 'https://docs.hoprnet.org/',
+        icon: <LibraryBooksIcon />,
+        externalLink: 'https://docs.hoprnet.org/',
+      },
+      {
+        name: 'Telegram',
+        path: 'https://t.me/hoprnet',
+        icon: <TelegramIcon />,
+        externalLink: 'https://t.me/hoprnet',
       },
     ],
   },

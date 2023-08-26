@@ -242,19 +242,15 @@ export default function Details(props: Props) {
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
-          <Text>CHANNELS: OUT</Text>
+          <Text>Outgoing Chanels</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
-          <Text>CHANNELS: IN</Text>
+          <Text>Incoming Chanels</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
           <Text>Unredeemed tickets</Text>
-        </IconAndText>
-        <IconAndText>
-          <IconContainer></IconContainer>
-          <Text>LINKS</Text>
         </IconAndText>
       </TitleColumn>
       <DataColumn>
@@ -266,27 +262,8 @@ export default function Details(props: Props) {
           <p>{truncateBalanceto5charsWhenNoDecimals(peers?.announced?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.outgoing?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.incoming?.length) || '-'}</p>
-          <p>{statistics?.unredeemed}</p>
           <br />
-          <>
-            <a onClick={() => navigate(`/hub/staking-hub-landing?${queryParams}`)}>Staking Hub</a>
-            <br />
-            <a
-              href="https://docs.hoprnet.org/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Docs
-            </a>
-            <br />
-            <a
-              href="https://t.me/hoprnet"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Telegram
-            </a>
-          </>
+          <p>{statistics?.unredeemed}</p>
         </Data>
       </DataColumn>
     </Web3Container>

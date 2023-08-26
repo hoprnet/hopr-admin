@@ -185,17 +185,32 @@ const Drawer = ({
                 title={!openedNavigationDrawer && item.name}
                 placement="right"
               >
-                <StyledListItemButton
-                  component={Link}
-                  to={`${group.path}/${item.path}${searchParams ?? ''}`}
-                  selected={location.pathname === `/${group.path}/${item.path}`}
-                  disabled={!item.element || (item.loginNeeded && !drawerLoginState?.[item.loginNeeded])}
-                  onClick={handleButtonClick}
-                  className="StyledListItemButton"
-                >
-                  <SListItemIcon className="SListItemIcon">{item.icon}</SListItemIcon>
-                  <ListItemText className="ListItemText">{item.name}</ListItemText>
-                </StyledListItemButton>
+                {item.externalLink ? (
+                  <StyledListItemButton
+                    component="a"
+                    href={item.externalLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    disabled={item.loginNeeded && !drawerLoginState?.[item.loginNeeded]}
+                    onClick={handleButtonClick}
+                    className="StyledListItemButton"
+                  >
+                    <SListItemIcon className="SListItemIcon">{item.icon}</SListItemIcon>
+                    <ListItemText className="ListItemText">{item.name}</ListItemText>
+                  </StyledListItemButton>
+                ) : (
+                  <StyledListItemButton
+                    component={Link}
+                    to={`${group.path}/${item.path}${searchParams ?? ''}`}
+                    selected={location.pathname === `/${group.path}/${item.path}`}
+                    disabled={!item.element || (item.loginNeeded && !drawerLoginState?.[item.loginNeeded])}
+                    onClick={handleButtonClick}
+                    className="StyledListItemButton"
+                  >
+                    <SListItemIcon className="SListItemIcon">{item.icon}</SListItemIcon>
+                    <ListItemText className="ListItemText">{item.name}</ListItemText>
+                  </StyledListItemButton>
+                )}
               </Tooltip>
             ))}
           </List>
