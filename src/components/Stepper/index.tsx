@@ -71,13 +71,12 @@ type StepperProps = {
   lastStepDone: number;
 };
 
-type StepState = 'COMPLETED' | 'CURRENT' | 'PENDING';
+type StepState = 'COMPLETED' | 'CURRENT' | 'CURRENT_AND_COMPLETED' | 'PENDING';
 
 type StepProps = {
   name: string;
   position: number;
   state: StepState;
-  stepComplated: StepState;
 };
 
 type StepIconProps = {
@@ -91,7 +90,7 @@ type StepTextProps = {
 };
 
 const StepIcon = (props: StepIconProps) => {
-  if (props.state === 'COMPLETED') {
+  if (props.state === 'COMPLETED' || props.state === 'CURRENT_AND_COMPLETED') {
     return (
       <ImageContainer
         height={29}
@@ -119,7 +118,7 @@ const StepText = (props: StepTextProps) => {
         <p>{props.name}</p>
       </StepName>
     );
-  } else if (props.state === 'CURRENT') {
+  } else if (props.state === 'CURRENT' || props.state === 'CURRENT_AND_COMPLETED') {
     return (
       <StepName className="current">
         <p>{props.name}</p>
@@ -140,7 +139,7 @@ const Step = (props: StepProps) => {
     <StepContainer>
       <StepIcon
         position={props.position}
-        state={props.stepComplated}
+        state={props.state}
       />
       <StepText
         name={props.name}
@@ -155,6 +154,7 @@ export const Stepper = (props: StepperProps) => {
     index,
     currentStep,
   }: { index: number; currentStep: number }): StepState => {
+    if (index === currentStep && currentStep === props.lastStepDone) return 'CURRENT_AND_COMPLETED';
     if (index < currentStep) return 'COMPLETED';
     if (index === currentStep) return 'CURRENT';
     return 'PENDING';
@@ -167,10 +167,6 @@ export const Stepper = (props: StepperProps) => {
           key={idx}
           name={step.name}
           position={idx}
-          stepComplated={getStepState({
-            currentStep: props.lastStepDone,
-            index: idx,
-          })}
           state={getStepState({
             currentStep: props.currentStep,
             index: idx,
