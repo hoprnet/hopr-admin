@@ -30,13 +30,6 @@ const stakingHubSlice = createSlice({
       state.onboarding.safeAddress = action.payload.safeAddress;
       state.onboarding.moduleAddress = action.payload.moduleAddress;
     },
-    goToStepWeShouldBeOn: (state) => {
-      let tmpState = JSON.parse(JSON.stringify(state));
-      console.log('goToStepWeShouldBeOn', JSON.parse(JSON.stringify(state)));
-      if(tmpState.onboarding.nodeAddress) {
-        state.onboarding.step = 11;
-      }
-    },
     setOnboardingNodeAddress: (state, action) => {
       state.onboarding.nodeAddress = action.payload;
     },
@@ -44,7 +37,9 @@ const stakingHubSlice = createSlice({
       state.onboarding.step = action.payload;
     },
   },
-  extraReducers: (builder) => createAsyncReducer(builder),
+  extraReducers: (builder) => {
+    createAsyncReducer(builder)
+  },
 });
 
 export const stakingHubActions = stakingHubSlice.actions;

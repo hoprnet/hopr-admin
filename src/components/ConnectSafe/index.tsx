@@ -147,8 +147,10 @@ export default function ConnectSafe() {
     dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));
     await dispatch(stakingHubActionsAsync.getSubgraphDataThunk(safeAddress));
     const moduleAddress = safes.filter(elem => elem.safeAddress === safeAddress)[0].moduleAddress;
-    dispatch(stakingHubActions.useSafeForOnboarding({safeAddress, moduleAddress}));
-    dispatch(stakingHubActions.goToStepWeShouldBeOn());
+    dispatch(stakingHubActions.useSafeForOnboarding({
+      safeAddress, moduleAddress,
+    }));
+    await dispatch(stakingHubActionsAsync.goToStepWeShouldBeOnThunk()).unwrap();
   };
 
   // New function to handle opening the menu
