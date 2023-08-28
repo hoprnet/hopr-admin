@@ -64,7 +64,7 @@ const CodeContainer = styled.div`
   display: flex;
   flex-direction: column;
   text-align: start;
- // text-transform: uppercase;
+  // text-transform: uppercase;
   code {
     font-size: 12px;
     line-height: 16px;

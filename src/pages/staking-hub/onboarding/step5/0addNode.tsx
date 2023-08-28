@@ -4,7 +4,7 @@ import Button from '../../../../future-hopr-lib-components/Button';
 import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
 import { StepContainer } from '../components';
 import { useEthersSigner } from '../../../../hooks';
-import { getAddress } from 'viem'
+import { getAddress } from 'viem';
 
 // Mui
 import { TextField } from '@mui/material';
