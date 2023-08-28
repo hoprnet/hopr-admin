@@ -69,9 +69,7 @@ const registerNodeAndSafeToNRThunk = createAsyncThunk<
     if (!superWalletClient.account) return;
     console.log('payload', payload);
 
-    const {
-      request,
-    } = await superWalletClient.simulateContract({
+    const { request } = await superWalletClient.simulateContract({
       account: payload.walletClient.account,
       address: HOPR_NETWORK_REGISTRY,
       abi: NetworkRegistryAbi,
@@ -140,31 +138,19 @@ const setSubgraphDataFetching = createAction<boolean>('stakingHub/setSubgraphDat
 export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   builder.addCase(getHubSafesByOwnerThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      console.log(action.payload);
       state.safes.data = action.payload;
-
-      if (action.payload.length > 0) {
-        //  state.onboarding.notFinished = true;
-        //   state.onboarding.step = 2;
-      }
     }
     state.safes.isFetching = false;
   });
   builder.addCase(getSubgraphDataThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      console.log(action.payload);
       state.safeInfo.data = action.payload;
-
       if (action.payload.registeredNodesInNetworkRegistry.length > 0) {
         let tmp = [];
         tmp = action.payload.registeredNodesInNetworkRegistry.map((elem) => elem.node.id as string);
         state.safeInfo.data.registeredNodesInNetworkRegistryParsed = tmp;
+        state.onboarding.nodeAddress = tmp[tmp.length - 1];
       }
-
-      // if (action.payload.length > 0) {
-      //   //  state.onboarding.notFinished = true;
-      //   //   state.onboarding.step = 2;
-      // }
     }
     state.safeInfo.isFetching = false;
   });

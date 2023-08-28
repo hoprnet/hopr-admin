@@ -4,6 +4,7 @@ import Button from '../../../../future-hopr-lib-components/Button';
 import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
 import { StepContainer } from '../components';
 import { useEthersSigner } from '../../../../hooks';
+import { getAddress } from 'viem'
 
 // Mui
 import { TextField } from '@mui/material';
@@ -34,7 +35,7 @@ export default function AddNode() {
   const signer = useEthersSigner();
   const [isLoading, set_isLoading] = useState(false);
   const [address, set_address] = useState('');
-  const nodeInNetworkRegistry = nodesAddedToSafe.includes(address);
+  const nodeInNetworkRegistry = nodesAddedToSafe.includes(address.toLocaleLowerCase());
 
   const addDelegate = async () => {
     if (signer && safeAddress && account) {
@@ -44,7 +45,7 @@ export default function AddNode() {
           signer,
           options: {
             safeAddress,
-            delegateAddress: address,
+            delegateAddress: getAddress(address),
             delegatorAddress: account,
             label: 'node',
           },

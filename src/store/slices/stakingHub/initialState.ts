@@ -10,6 +10,8 @@ type InitialState = {
     step: number;
     notFinished: boolean;
     nodeAddress: string | null;
+    safeAddress: string | null;
+    moduleAddress: string | null;
     userIsInOnboarding: boolean;
   };
   safeInfo: {
@@ -71,6 +73,8 @@ export const initialState: InitialState = {
   onboarding: {
     step: 0,
     nodeAddress: null,
+    safeAddress: null,
+    moduleAddress: null,
     notFinished: false,
     userIsInOnboarding: false,
   },
