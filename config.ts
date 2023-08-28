@@ -9,8 +9,8 @@ export const wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS = '0x097707143e01318734535676
 export const GNOSIS_CHAIN_HOPR_BOOST_NFT = "0x43d13d7b83607f14335cf2cb75e87da369d056c7";
 
 // App 
-export const HOPR_TOKEN_USED = 'mHOPR';
-export const HOPR_TOKEN_USED_CONTRACT_ADDRESS = mHOPR_TOKEN_SMART_CONTRACT_ADDRESS;
+export const HOPR_TOKEN_USED = 'wxHOPR';
+export const HOPR_TOKEN_USED_CONTRACT_ADDRESS = wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS;
 
 // Safe Contracts
 export const SAFE_SERVICE_URL = 'https://safe-transaction.stage.hoprtech.net';

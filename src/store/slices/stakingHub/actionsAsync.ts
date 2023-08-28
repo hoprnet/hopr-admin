@@ -70,9 +70,8 @@ const registerNodeAndSafeToNRThunk = createAsyncThunk<
       const superWalletClient = payload.walletClient.extend(publicActions);
 
       if (!superWalletClient.account) return;
-
+      console.log('payload', payload)
       const {
-        result,
         request,
       } = await superWalletClient.simulateContract({
         account: payload.walletClient.account,
