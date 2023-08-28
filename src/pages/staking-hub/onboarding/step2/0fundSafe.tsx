@@ -7,7 +7,7 @@ import {
   usePrepareSendTransaction,
   useSendTransaction
 } from 'wagmi';
-import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../../../config';
+import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, MINIMUM_XDAI_TO_FUND, MINIMUM_WXHOPR_TO_FUND } from '../../../../../config'
 
 //Store
 import { useAppSelector, useAppDispatch } from '../../../../store';
@@ -29,6 +29,7 @@ import {
 } from '../safeOnboarding/styled';
 import { StepContainer } from '../components';
 import Button from '../../../../future-hopr-lib-components/Button';
+import styled from '@emotion/styled';
 
 type Address = `0x${string}`;
 type NumberLiteral = `${number}`;
@@ -38,11 +39,17 @@ type FundsToSafeProps = {
   set_step: (step: number) => void;
 };
 
+const GreenText = styled.p`
+  color: green;
+  display: inline;
+`;
+
 const FundsToSafe = () => {
   const dispatch = useAppDispatch();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const walletBalance = useAppSelector((store) => store.web3.balance);
   const account = useAppSelector((store) => store.web3.account);
+  const safeBalance = useAppSelector((store) => store.safe.balance.data);
 
   const [xdaiValue, set_xdaiValue] = useState('');
   const [wxhoprValue, set_wxhoprValue] = useState('');
@@ -72,16 +79,29 @@ const FundsToSafe = () => {
   };
 
   const {
+    isSuccess: is_wxHOPR_to_safe_success,
     isLoading: is_wxHOPR_to_safe_loading,
     write: write_wxHOPR_to_safe,
   } = useContractWrite({ ...wxHOPR_to_safe_config,
     //    onSuccess: () => set_step(2),
   });
+  useEffect(() => {
+    if (is_wxHOPR_to_safe_success) {
+      set_wxhoprValue('');
+    }
+  }, [is_wxHOPR_to_safe_loading]);
 
   const {
+    isSuccess: is_xDAI_to_safe_success,
     isLoading: is_xDAI_to_safe_loading,
     sendTransaction: send_xDAI_to_safe,
   } = useSendTransaction({ ...xDAI_to_safe_config });
+
+  useEffect(() => {
+    if (is_xDAI_to_safe_success) {
+      set_xdaiValue('');
+    }
+  }, [is_xDAI_to_safe_loading]);
 
   const handleFundxDai = () => {
     send_xDAI_to_safe?.();
@@ -89,6 +109,22 @@ const FundsToSafe = () => {
 
   const handleFundwxHopr = () => {
     write_wxHOPR_to_safe?.();
+  };
+
+  const xdaiEnoughBalance = (): boolean => {
+    console.log(safeBalance.xDai.value);
+    if (Number(safeBalance.xDai.formatted) >= MINIMUM_XDAI_TO_FUND) {
+      return true;
+    }
+    return false;
+  };
+
+  const wxhoprEnoughBalance = (): boolean => {
+    console.log(safeBalance.wxHopr.value);
+    if (Number(safeBalance.wxHopr.formatted) >= MINIMUM_WXHOPR_TO_FUND) {
+      return true;
+    }
+    return false;
   };
 
   return (
@@ -109,7 +145,7 @@ const FundsToSafe = () => {
           </Text>
           <StyledDescription>
             Add-in the amount of <Lowercase>x</Lowercase>DAI you like to deposit to your safe. In a later step these
-            will then be moved to your node.
+            will then be moved to your node. {xdaiEnoughBalance() && <GreenText>enough balance</GreenText>}
           </StyledDescription>
         </StyledInstructions>
         <StyledInputGroup>
@@ -130,13 +166,13 @@ const FundsToSafe = () => {
             <Lowercase>x</Lowercase>DAI
           </StyledCoinLabel>
           <MaxButton onClick={setMax_xDAI}>Max</MaxButton>
+          <Button
+            onClick={handleFundxDai}
+            disabled={!xdaiValue || xdaiValue === '' || xdaiValue === '0'}
+          >
+            Fund
+          </Button>
         </StyledInputGroup>
-        <Button
-          onClick={handleFundxDai}
-          disabled={!xdaiValue || xdaiValue === '' || xdaiValue === '0'}
-        >
-          Fund
-        </Button>
       </StyledForm>
       <StyledForm>
         <StyledInstructions>
@@ -145,7 +181,8 @@ const FundsToSafe = () => {
           </Text>
           <StyledDescription>
             Add-in the amount of <Lowercase>wx</Lowercase>HOPR you like to deposit to your safe. We suggest to move all
-            your <Lowercase>wx</Lowercase>HOPR to the safe.
+            your <Lowercase>wx</Lowercase>HOPR to the safe.{' '}
+            {wxhoprEnoughBalance() && <GreenText>enough balance</GreenText>}
           </StyledDescription>
         </StyledInstructions>
         <StyledInputGroup>
@@ -186,6 +223,7 @@ const FundsToSafe = () => {
           onClick={() => {
             dispatch(stakingHubActions.setOnboardingStep(5));
           }}
+          disabled={!xdaiEnoughBalance() || !wxhoprEnoughBalance()}
         >
           Continue
         </Button>

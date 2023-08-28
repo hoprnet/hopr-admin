@@ -1,4 +1,4 @@
-export const environment:('dev' | 'node' | 'web3') = 'dev';
+export const environment: 'dev' | 'node' | 'web3' = 'dev';
 
 // Smart Contracts
 export const HOPR_CHANNELS_SMART_CONTRACT_ADDRESS = '0xfabee463f31e39ec8952bbfb4490c41103bf573e';
@@ -6,9 +6,9 @@ export const mHOPR_TOKEN_SMART_CONTRACT_ADDRESS = '0x66225dE86Cac02b32f34992eb34
 export const xHOPR_TOKEN_SMART_CONTRACT_ADDRESS = '0xD057604A14982FE8D88c5fC25Aac3267eA142a08';
 export const wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS = '0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1';
 export const wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS = '0x097707143e01318734535676cfe2e5cF8b656ae8';
-export const GNOSIS_CHAIN_HOPR_BOOST_NFT = "0x43d13d7b83607f14335cf2cb75e87da369d056c7";
+export const GNOSIS_CHAIN_HOPR_BOOST_NFT = '0x43d13d7b83607f14335cf2cb75e87da369d056c7';
 
-// App 
+// App
 export const HOPR_TOKEN_USED = 'wxHOPR';
 export const HOPR_TOKEN_USED_CONTRACT_ADDRESS = wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS;
 
@@ -25,4 +25,8 @@ export const STAKING_V2_SUBGRAPH = 'https://api.studio.thegraph.com/query/40438/
 //export const STAKING_V2_SUBGRAPH = 'https://api.studio.thegraph.com/proxy/40438/test-dufour/version/latest';
 
 // Wallet Connect
-export const VITE_WALLET_CONNECT_PROJECT_ID = "efdce6b5c6b10913211ff1b40bc4d54d"
+export const VITE_WALLET_CONNECT_PROJECT_ID = 'efdce6b5c6b10913211ff1b40bc4d54d';
+
+// Minimum to be funded
+export const MINIMUM_WXHOPR_TO_FUND = 1;
+export const MINIMUM_XDAI_TO_FUND = 0.1;
