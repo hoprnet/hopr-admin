@@ -228,7 +228,7 @@ const FundsToSafe = () => {
           Continue
         </Button>
       </ButtonContainer>
-      {(is_xDAI_to_safe_loading || is_wxHOPR_to_safe_loading) && <span>Check your Wallet...</span>}
+      <>{is_xDAI_to_safe_loading || is_wxHOPR_to_safe_loading ? <span>Check your Wallet...</span> : null}</>
     </StepContainer>
   );
 };

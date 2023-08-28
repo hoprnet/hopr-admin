@@ -117,23 +117,25 @@ const CreateSafe = () => {
           </IconButton>
         </FlexContainer>
       </Container>
-      {owners.length > 1 &&
-        owners.slice(1).map((owner) => {
-          return (
-            <FlexContainer key={owner.id}>
-              <TextField
-                label="Address"
-                placeholder="New owner address here..."
-                fullWidth
-                onChange={(e) => updateOwnerAddress(owner.id, e.target.value)}
-              />
-              <IconButton onClick={() => removeOwner(owner.id)}>
-                <DeleteIcon />
-              </IconButton>
-            </FlexContainer>
-          );
-        })}
-
+      <div>
+        {owners.length > 1
+          ? owners.slice(1).map((owner) => {
+            return (
+              <FlexContainer key={owner.id}>
+                <TextField
+                  label="Address"
+                  placeholder="New owner address here..."
+                  fullWidth
+                  onChange={(e) => updateOwnerAddress(owner.id, e.target.value)}
+                />
+                <IconButton onClick={() => removeOwner(owner.id)}>
+                  <DeleteIcon />
+                </IconButton>
+              </FlexContainer>
+            );
+          })
+          : null}
+      </div>
       <ButtonContainer>
         <StyledGrayButton
           onClick={() => {
@@ -149,12 +151,14 @@ const CreateSafe = () => {
           DEPLOY
         </Button>
       </ButtonContainer>
-      {loading && <CircularProgress />}
-      {error && (
-        <StyledError>
-          <strong>There was an error:</strong> {JSON.stringify(error)}
-        </StyledError>
-      )}
+      <>{loading && <CircularProgress />}</>
+      <>
+        {error && (
+          <StyledError>
+            <strong>There was an error:</strong> {JSON.stringify(error)}
+          </StyledError>
+        )}
+      </>
     </StepContainer>
   );
 };

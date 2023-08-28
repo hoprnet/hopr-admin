@@ -3,7 +3,7 @@ import Button from '../../../../future-hopr-lib-components/Button';
 import { StepContainer } from '../components';
 
 //Store
-import { useAppSelector, useAppDispatch } from '../../../../store';
+import { useAppDispatch } from '../../../../store';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
 const Content = styled.div`
