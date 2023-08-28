@@ -4,6 +4,10 @@ import { initialState } from './initialState';
 import { STAKING_V2_SUBGRAPH } from '../../../../config';
 import { SubgraphOutput } from './initialState';
 
+import NetworkRegistryAbi from '../../../abi/network-registry-abi.json';
+import { HOPR_NETWORK_REGISTRY } from '../../../../config';
+import { WalletClient, publicActions } from 'viem';
+
 const getHubSafesByOwnerThunk = createAsyncThunk<
   {
     moduleAddress: string;
@@ -44,6 +48,49 @@ const getHubSafesByOwnerThunk = createAsyncThunk<
   } },
 );
 
+const registerNodeAndSafeToNRThunk = createAsyncThunk<
+  | {
+      transactionHash: string;
+    }
+  | undefined,
+  {
+    walletClient: WalletClient;
+    nodeAddress: string;
+    safeAddress: string;
+  },
+  { state: RootState }
+>('safe/registerNodeAndSafeToNR', async (payload, {
+  rejectWithValue,
+  dispatch,
+}) => {
+  try {
+    const superWalletClient = payload.walletClient.extend(publicActions);
+
+    if (!superWalletClient.account) return;
+    console.log('payload', payload);
+
+    const {
+      request,
+    } = await superWalletClient.simulateContract({
+      account: payload.walletClient.account,
+      address: HOPR_NETWORK_REGISTRY,
+      abi: NetworkRegistryAbi,
+      functionName: 'managerRegister',
+      args: [[payload.safeAddress], [payload.nodeAddress]],
+    });
+
+    const transactionHash = await superWalletClient.writeContract(request);
+
+    await superWalletClient.waitForTransactionReceipt({ hash: transactionHash });
+
+    console.log('registerNodeAndSafeToNR hash', transactionHash);
+
+    return { transactionHash };
+  } catch (e) {
+    return rejectWithValue(e);
+  }
+});
+
 const getSubgraphDataThunk = createAsyncThunk<SubgraphOutput | null, string, { state: RootState }>(
   'stakingHub/getSubgraphData',
   async (safeAddress, {
@@ -52,8 +99,9 @@ const getSubgraphDataThunk = createAsyncThunk<SubgraphOutput | null, string, { s
   }) => {
     dispatch(setSubgraphDataFetching(true));
 
-  //  safeAddress = '0x0cdecaff277c296665f31aac0957a3a3151b6159'; //debug
+    //  safeAddress = '0x0cdecaff277c296665f31aac0957a3a3151b6159'; //debug
 
+    safeAddress = safeAddress.toLocaleLowerCase();
     console.log(safeAddress);
 
     const QUERY = `{\"query\":\"{\\n  safes(first: 1, where: {id: \\\"${safeAddress}\\\"}) {\\n    id\\n    balance {\\n      mHoprBalance\\n      wxHoprBalance\\n      xHoprBalance\\n    }\\n    threshold\\n    owners {\\n      owner {\\n        id\\n      }\\n    }\\n    isCreatedByNodeStakeFactory\\n    targetedModules {\\n      id\\n    }\\n    allowance {\\n      xHoprAllowance\\n      wxHoprAllowance\\n      mHoprAllowance\\n      grantedToChannelsContract\\n    }\\n    addedModules {\\n      module {\\n        id\\n      }\\n    }\\n    isEligibleOnNetworkRegistry\\n    registeredNodesInSafeRegistry {\\n      node {\\n        id\\n      }\\n    }\\n    registeredNodesInNetworkRegistry {\\n      node {\\n        id\\n      }\\n    }\\n  }\\n  _meta {\\n    hasIndexingErrors\\n    deployment\\n  }\\n  nodeManagementModules(first: 1, where: {id: \\\"${safeAddress}\\\"}) {\\n    id\\n    implementation\\n    includedNodes {\\n      node {\\n        id\\n      }\\n    }\\n    multiSend\\n    target {\\n      id\\n    }\\n  }\\n}\",\"variables\":null,\"extensions\":{\"headers\":null}}`;
@@ -124,5 +172,6 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
 
 export const actionsAsync = {
   getHubSafesByOwnerThunk,
+  registerNodeAndSafeToNRThunk,
   getSubgraphDataThunk,
 };

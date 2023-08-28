@@ -82,27 +82,19 @@ export const initialState: InitialState = {
         xHoprBalance: null,
       },
       threshold: null,
-      owners: [
-        { owner: { id: null } },
-      ],
+      owners: [{ owner: { id: null } }],
       isCreatedByNodeStakeFactory: null,
-      targetedModules: [
-        { id: null },
-      ],
+      targetedModules: [{ id: null }],
       allowance: {
         xHoprAllowance: null,
         wxHoprAllowance: null,
         mHoprAllowance: null,
         grantedToChannelsContract: null,
       },
-      addedModules: [
-        { module: { id: null } },
-      ],
+      addedModules: [{ module: { id: null } }],
       isEligibleOnNetworkRegistry: null,
       registeredNodesInSafeRegistry: [],
-      registeredNodesInNetworkRegistry: [
-        { node: { id: null } },
-      ],
+      registeredNodesInNetworkRegistry: [{ node: { id: null } }],
       registeredNodesInNetworkRegistryParsed: [],
     },
     isFetching: false,
