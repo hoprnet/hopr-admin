@@ -1,46 +1,36 @@
-import { useEffect, useState } from 'react';
-import { nanoid } from '@reduxjs/toolkit';
-import { WalletClient } from 'viem';
+import { useState } from 'react';
 import { useWalletClient } from 'wagmi';
 
 // Components
+import { IconButton, TextField } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import Button from '../../../../future-hopr-lib-components/Button';
+import { StepContainer } from '../components';
 import {
-  AddButton,
   ButtonContainer,
   Container,
-  StyledError,
   FlexContainer,
+  StyledError,
   StyledGrayButton,
-  Subtitle,
   Text
 } from '../safeOnboarding/styled';
-import { StepContainer } from '../components';
-import Button from '../../../../future-hopr-lib-components/Button';
-import { IconButton, MenuItem, Select, TextField } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
 
 // Icons
 import CopyIcon from '@mui/icons-material/ContentCopy';
-import LaunchIcon from '@mui/icons-material/Launch';
-import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import { safeActionsAsync } from '../../../../store/slices/safe';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
-type OwnersAndConfirmationsProps = {
-  account: `0x${string}`;
-  walletClient: WalletClient | null | undefined;
-  set_step: (step: number) => void;
-};
 
 const CreateSafe = () => {
   const dispatch = useAppDispatch();
   const [loading, set_loading] = useState(false);
   const [error, set_error] = useState<unknown>('');
   const [owners, set_owners] = useState<{ id: string; address: string }[]>([]);
-  const [threshold, set_threshold] = useState(1);
+  const [threshold] = useState(1);
   const account = useAppSelector((store) => store.web3.account);
   const { data: walletClient } = useWalletClient();
 
@@ -70,7 +60,7 @@ const CreateSafe = () => {
       owners: [account as string],
       threshold,
     };
-    console.log(config);
+    
     try {
       set_error('');
       set_loading(true);

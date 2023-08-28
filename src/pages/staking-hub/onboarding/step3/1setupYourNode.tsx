@@ -1,8 +1,6 @@
 import styled from '@emotion/styled';
-import Card from '../../../../components/Card';
 import Button from '../../../../future-hopr-lib-components/Button';
 import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
-import Section from '../../../../future-hopr-lib-components/Section';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { Link } from 'react-router-dom';
 import CodeCopyBox from '../../../../components/CodeCopyBox';
