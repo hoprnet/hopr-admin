@@ -22,24 +22,26 @@ const ConfirmButton = styled(Button)`
 
 export default function safeIsReady() {
   const dispatch = useAppDispatch();
-  const safeInfo = useAppSelector(state => state.safe.info.data)
-  const safeAddress = useAppSelector(state => state.safe.selectedSafeAddress.data) 
+  const safeInfo = useAppSelector((state) => state.safe.info.data);
+  const safeAddress = useAppSelector((state) => state.safe.selectedSafeAddress.data);
   const signer = useEthersSigner();
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (safeAddress && signer && !safeInfo) {
-        dispatch(safeActionsAsync.getSafeInfoThunk({
-          safeAddress,
-          signer,
-        }))
+        dispatch(
+          safeActionsAsync.getSafeInfoThunk({
+            safeAddress,
+            signer,
+          }),
+        );
       }
-    }, 15_000)
+    }, 15_000);
 
     return () => {
-      clearInterval(interval)
-    }
-  }, [safeAddress, signer])
+      clearInterval(interval);
+    };
+  }, [safeAddress, signer]);
 
   return (
     <StepContainer
