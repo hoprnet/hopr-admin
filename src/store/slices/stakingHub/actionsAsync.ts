@@ -128,15 +128,15 @@ const getSubgraphDataThunk = createAsyncThunk<SubgraphOutput | null, string, { s
 
 const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: RootState }>(
   'stakingHub/goToStepWeShouldBeOn',
-  async (_payload,{ getState }) => {
-    const state = getState()
-    
-    if(state.stakingHub.onboarding.nodeAddress) {
+  async (_payload, { getState }) => {
+    const state = getState();
+
+    if (state.stakingHub.onboarding.nodeAddress) {
       return 11;
     }
 
-    if(state.safe.delegates.data?.count) {
-      return 13
+    if (state.safe.delegates.data?.count) {
+      return 13;
     }
 
     // default case

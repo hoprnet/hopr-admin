@@ -38,7 +38,7 @@ const stakingHubSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    createAsyncReducer(builder)
+    createAsyncReducer(builder);
   },
 });
 
