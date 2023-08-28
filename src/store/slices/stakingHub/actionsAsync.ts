@@ -52,7 +52,7 @@ const getSubgraphDataThunk = createAsyncThunk<SubgraphOutput | null, string, { s
   }) => {
     dispatch(setSubgraphDataFetching(true));
 
-  //  safeAddress = '0x0cdecaff277c296665f31aac0957a3a3151b6159'; //debug
+    //  safeAddress = '0x0cdecaff277c296665f31aac0957a3a3151b6159'; //debug
 
     console.log(safeAddress);
 
