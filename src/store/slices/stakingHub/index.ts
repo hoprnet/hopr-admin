@@ -15,6 +15,9 @@ const stakingHubSlice = createSlice({
     addSafe: (state, action) => {
       state.safes.data = [...state.safes.data, action.payload];
     },
+    goToStepWeShouldBeOn: (state) => {
+      console.log('goToStepWeShouldBeOn', JSON.parse(JSON.stringify(state)));
+    },
     setOnboardingNodeAddress: (state, action) => {
       state.onboarding.nodeAddress = action.payload;
     },

@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActions, safeActionsAsync } from '../../store/slices/safe';
-import { stakingHubActionsAsync } from '../../store/slices/stakingHub';
+import { stakingHubActions, stakingHubActionsAsync } from '../../store/slices/stakingHub';
 
 import { useEthersSigner } from '../../hooks';
 
@@ -112,7 +112,7 @@ export default function ConnectSafe() {
     }
   };
 
-  const useSelectedSafe = (safeAddress: string) => {
+  const useSelectedSafe = async (safeAddress: string) => {
     if (signer) {
       dispatch(appActions.resetState());
       dispatch(safeActions.setSelectedSafe(safeAddress));
@@ -143,9 +143,10 @@ export default function ConnectSafe() {
           options: { safeAddress },
         }),
       );
-      dispatch(stakingHubActionsAsync.getSubgraphDataThunk(safeAddress));
     }
     dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));
+    await dispatch(stakingHubActionsAsync.getSubgraphDataThunk(safeAddress));
+    dispatch(stakingHubActions.goToStepWeShouldBeOn());
   };
 
   // New function to handle opening the menu
