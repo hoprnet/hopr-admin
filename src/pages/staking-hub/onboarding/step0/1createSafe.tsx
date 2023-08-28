@@ -24,7 +24,6 @@ import { useAppDispatch, useAppSelector } from '../../../../store';
 import { safeActionsAsync } from '../../../../store/slices/safe';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
-
 const CreateSafe = () => {
   const dispatch = useAppDispatch();
   const [loading, set_loading] = useState(false);
@@ -60,7 +59,7 @@ const CreateSafe = () => {
       owners: [account as string],
       threshold,
     };
-    
+
     try {
       set_error('');
       set_loading(true);

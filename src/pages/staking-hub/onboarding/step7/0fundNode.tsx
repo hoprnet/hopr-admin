@@ -8,7 +8,6 @@ import { useEthersSigner } from '../../../../hooks';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../../../../utils/safeTransactions';
 
-
 // Store
 import { useAppSelector, useAppDispatch } from '../../../../store';
 import { safeActionsAsync } from '../../../../store/slices/safe';

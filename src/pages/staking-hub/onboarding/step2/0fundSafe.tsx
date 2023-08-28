@@ -31,7 +31,6 @@ import { StepContainer } from '../components';
 import Button from '../../../../future-hopr-lib-components/Button';
 import styled from '@emotion/styled';
 
-
 const GreenText = styled.p`
   color: green;
   display: inline;

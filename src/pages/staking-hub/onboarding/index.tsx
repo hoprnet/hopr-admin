@@ -56,7 +56,7 @@ export const ONBOARDING_PAGES = {
   CONFIGURE_NODE: 13,
   FUND_NODE: 14,
   SET_ALLOWANCE: 15,
-} as const
+} as const;
 
 function Onboarding() {
   const dispatch = useAppDispatch();
