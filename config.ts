@@ -17,7 +17,7 @@ export const SAFE_SERVICE_URL = 'https://safe-transaction.stage.hoprtech.net';
 export const HOPR_NODE_STAKE_FACTORY = '0xa2e2F71f687914f5DC2010632bC2dEbB1B9FC1D5';
 export const HOPR_NODE_MANAGEMENT_MODULE = '0xb3B09FA6504F9d59F1a9740F68f3E904ca857A82';
 export const HOPR_NODE_SAFE_REGISTRY = '0x3E7c4720934ff6A9FE122Cb761f36a11E9b848D9';
-export const HOPR_NETWORK_REGISTRY = '0x3E7c4720934ff6A9FE122Cb761f36a11E9b848D9';
+export const HOPR_NETWORK_REGISTRY = '0x2f3243adC9805F6dd3E01C9E9ED31675A5B16902';
 
 //Subgraphs
 export const STAKE_SUBGRAPH = 'https://api.studio.thegraph.com/query/40439/hopr-stake-all-seasons/v0.0.10';
