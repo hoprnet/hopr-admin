@@ -762,21 +762,20 @@ const createAndExecuteContractTransactionThunk = createAsyncThunk<
       }),
     ).unwrap();
 
-      return safeTxResult;
-    } catch (e) {
-      if (e instanceof Error) {
-        return rejectWithValue(e.message);
-      }
+    return safeTxResult;
+  } catch (e) {
+    if (e instanceof Error) {
+      return rejectWithValue(e.message);
+    }
 
-      // value is serializable
-      if (isPlain(e)) {
-        return rejectWithValue(e);
-      }
-
+    // value is serializable
+    if (isPlain(e)) {
       return rejectWithValue(e);
     }
-  },
-);
+
+    return rejectWithValue(e);
+  }
+});
 
 const getAllSafeTransactionsThunk = createAsyncThunk<
   AllTransactionsListResponse | undefined,

@@ -1,20 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
+import { useNavigate } from 'react-router-dom';
 
 //Store
-import { useAppSelector, useAppDispatch } from '../../store';
-import { stakingHubActions } from '../../store/slices/stakingHub';
+import { useAppSelector, useAppDispatch } from '../../../store';
+import { stakingHubActions } from '../../../store/slices/stakingHub';
 
 // HOPR Components
-import { StepContainer } from '../../steps/components';
+import { StepContainer } from './components';
+import { Stepper } from '../../../components/Stepper';
 
 //Steps
-import WhatYouWillNeedPage from '../../steps/step0_whatYouWillNeed';
-import CreateSafe from '../../steps/step1-1_createSafe';
-import SafeIsReady from '../../steps/step1-2_safeIsReady';
-import OptionalNftTtransfer from '../../steps/step2_optionalNftTtransfer';
-import XdaiToSafe from '../../steps/step3_fundSafe';
-import { Stepper } from '../../components/Stepper';
+import WhatYouWillNeedPage from './step0/0whatYouWillNeed';
+import CreateSafe from './step0/1createSafe';
+import SafeIsReady from './step0/2safeIsReady';
+import OptionalNftTtransfer from './step1/0optionalNftTtransfer';
+import XdaiToSafe from './step2/0fundSafe';
+import SafeIsFunded from './step2/1safeIsFunded';
+import SelectNodeType from './step3/0selectNodeType';
+import SetupNodeStep from './step3/1setupYourNode';
+import SetupYourDappNode from './step3/1setupYourDappNode';
+import JoinWaitListStep from './step4/0joinWaitlist';
+import AddedToWhitelist from './step4/1addedToWhitelist';
+import AddNode from './step5/0addNode';
+import ConfigureNode from './step6/0configureNode';
+import FundNode from './step7/0fundNode';
+import SetAllowance from './step8/0setAllowance';
 
 const OnboardingContainer = styled.div`
   display: flex;
@@ -31,7 +42,12 @@ const OnboardingContainer = styled.div`
 
 function Onboarding() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const onboardingStep = useAppSelector((store) => store.stakingHub.onboarding.step);
+
+  useEffect(() => {
+    navigate(`#${onboardingStep}`, { replace: true });
+  }, [onboardingStep]);
 
   function whatIsCompletedStep(page: number) {
     switch (page) {
@@ -40,7 +56,7 @@ function Onboarding() {
       return 1;
 
     default:
-      return 0;
+      return -1;
     }
   }
 
@@ -73,16 +89,23 @@ function Onboarding() {
       />
 
       {onboardingStep === 0 && <WhatYouWillNeedPage />}
-
       {onboardingStep === 1 && <CreateSafe />}
-
       {onboardingStep === 2 && <SafeIsReady />}
-
       {onboardingStep === 3 && <OptionalNftTtransfer />}
-
       {onboardingStep === 4 && <XdaiToSafe />}
+      {onboardingStep === 5 && <SafeIsFunded />}
+      {onboardingStep === 6 && <SelectNodeType />}
+      {onboardingStep === 7 && <SetupNodeStep />}
+      {onboardingStep === 8 && <SetupYourDappNode />}
 
-      {onboardingStep === 5 && (
+      {onboardingStep === 10 && <JoinWaitListStep />}
+      {onboardingStep === 11 && <AddedToWhitelist />}
+      {onboardingStep === 12 && <AddNode />}
+      {onboardingStep === 13 && <ConfigureNode />}
+      {onboardingStep === 14 && <FundNode />}
+      {onboardingStep === 15 && <SetAllowance />}
+
+      {onboardingStep === 22 && (
         <StepContainer>
           <button
             onClick={() => {

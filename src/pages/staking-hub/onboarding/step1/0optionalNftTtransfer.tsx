@@ -3,17 +3,18 @@ import styled from '@emotion/styled';
 import { useWalletClient } from 'wagmi';
 
 //HOPR Components
-import Button from '../future-hopr-lib-components/Button';
-import { StepContainer } from './components';
+import Button from '../../../../future-hopr-lib-components/Button';
+import { StepContainer } from '../components';
 
 //Store
-import { useAppSelector, useAppDispatch } from '../store';
-import { stakingHubActions } from '../store/slices/stakingHub';
-import { web3ActionsAsync } from '../store/slices/web3';
+import { useAppSelector, useAppDispatch } from '../../../../store';
+import { stakingHubActions } from '../../../../store/slices/stakingHub';
+import { web3ActionsAsync } from '../../../../store/slices/web3';
 
 // Mui
 import Radio from '@mui/material/Radio';
 import MuiButton from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
 
 const Content = styled.div`
   display: flex;
@@ -90,14 +91,15 @@ const TransferNft = styled.div`
 export default function optionalNftTtransfer() {
   const dispatch = useAppDispatch();
   const [option, set_option] = useState<0 | 1 | null>(null);
-  const communityNftId = useAppSelector((store) => store.web3.communityNftId);
+  const communityNftIdInWallet = useAppSelector((store) => store.web3.communityNftId);
+  const communityNftIdInSafe = useAppSelector((store) => store.safe.communityNftId);
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const walletAddress = useAppSelector((store) => store.web3.account);
   const { data: walletClient } = useWalletClient();
 
   function whichNFTimage() {
-    if (communityNftId === null) return '/assets/nft-NOT-detected-in-wallet.png';
-    if (communityNftId !== null) return '/assets/nft-detected-in-wallet.png';
+    if (communityNftIdInWallet === null) return '/assets/nft-NOT-detected-in-wallet.png';
+    if (communityNftIdInWallet !== null) return '/assets/nft-detected-in-wallet.png';
   }
 
   return (
@@ -113,7 +115,7 @@ export default function optionalNftTtransfer() {
           onClick={() => {
             set_option(0);
           }}
-          disabled={communityNftId === null}
+          disabled={communityNftIdInWallet === null}
         >
           <OptionText>
             <div className="left">
@@ -131,18 +133,18 @@ export default function optionalNftTtransfer() {
               onClick={(event) => {
                 event.stopPropagation();
                 if (!walletClient) return;
-                if (walletAddress && safeAddress && communityNftId !== null) {
+                if (walletAddress && safeAddress && communityNftIdInWallet !== null) {
                   dispatch(
                     web3ActionsAsync.sendNftToSafeThunk({
                       walletAddress,
                       safeAddress,
                       walletClient,
-                      communityNftId,
+                      communityNftId: communityNftIdInWallet,
                     }),
                   );
                 }
               }}
-              disabled={communityNftId === null}
+              disabled={communityNftIdInWallet === null}
             >
               Transfer NFT to Safe
             </Button>
@@ -166,14 +168,29 @@ export default function optionalNftTtransfer() {
       </OptionContaiener>
 
       <Content>
-        <ConfirmButton
-          onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(4));
-          }}
-          disabled={option === null}
-        >
-          CONTINUE
-        </ConfirmButton>
+        {option === 0 && !communityNftIdInSafe ? (
+          <Tooltip title="You need to transder Community NFT to the Safe in order to use that option">
+            <span style={{ textAlign: 'center' }}>
+              <ConfirmButton
+                onClick={() => {
+                  dispatch(stakingHubActions.setOnboardingStep(4));
+                }}
+                disabled={option === null || (option === 0 && !communityNftIdInSafe)}
+              >
+                CONTINUE
+              </ConfirmButton>
+            </span>
+          </Tooltip>
+        ) : (
+          <ConfirmButton
+            onClick={() => {
+              dispatch(stakingHubActions.setOnboardingStep(4));
+            }}
+            disabled={option === null}
+          >
+            CONTINUE
+          </ConfirmButton>
+        )}
       </Content>
     </StepContainer>
   );

@@ -12,8 +12,8 @@ import {
   Subtitle,
   Text
 } from './styled';
-import Button from '../../future-hopr-lib-components/Button';
-import Card from '../../components/Card';
+import Button from '../../../../future-hopr-lib-components/Button';
+import Card from '../../../../components/Card';
 import { IconButton, MenuItem, Select, TextField } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -22,8 +22,8 @@ import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { safeActionsAsync } from '../../store/slices/safe';
-import { useAppDispatch } from '../../store';
+import { safeActionsAsync } from '../../../../store/slices/safe';
+import { useAppDispatch } from '../../../../store';
 import { WalletClient } from 'viem';
 
 type OwnersAndConfirmationsProps = {

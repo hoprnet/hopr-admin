@@ -1,4 +1,4 @@
-import { Container, FlexContainer, Text } from '../../steps/safeOnboarding/styled';
+import { Container, FlexContainer, Text } from './onboarding/safeOnboarding/styled';
 import { MenuItem, Select, TextField } from '@mui/material';
 import { safeActionsAsync } from '../../store/slices/safe';
 import { useAppDispatch, useAppSelector } from '../../store';

@@ -21,6 +21,8 @@ export const HOPR_NODE_SAFE_REGISTRY = '0x715978DC28c44410A187C7D3d5a308c7d7b109
 
 //Subgraphs
 export const STAKE_SUBGRAPH = 'https://api.studio.thegraph.com/query/40439/hopr-stake-all-seasons/v0.0.10';
+export const STAKING_V2_SUBGRAPH = 'https://api.studio.thegraph.com/query/40438/subgraph-dufour/version/latest';
+//export const STAKING_V2_SUBGRAPH = 'https://api.studio.thegraph.com/proxy/40438/test-dufour/version/latest';
 
 // Wallet Connect
 export const VITE_WALLET_CONNECT_PROJECT_ID = "efdce6b5c6b10913211ff1b40bc4d54d"
