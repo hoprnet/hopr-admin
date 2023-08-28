@@ -5,9 +5,6 @@ import { StepContainer } from '../components';
 //Store
 import { useAppSelector, useAppDispatch } from '../../../../store';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
-import { useEffect } from 'react';
-import { safeActionsAsync } from '../../../../store/slices/safe';
-import { useEthersSigner } from '../../../../hooks';
 
 const Content = styled.div`
   display: flex;
@@ -23,25 +20,6 @@ const ConfirmButton = styled(Button)`
 export default function safeIsReady() {
   const dispatch = useAppDispatch();
   const safeInfo = useAppSelector((state) => state.safe.info.data);
-  const safeAddress = useAppSelector((state) => state.safe.selectedSafeAddress.data);
-  const signer = useEthersSigner();
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (safeAddress && signer && !safeInfo) {
-        dispatch(
-          safeActionsAsync.getSafeInfoThunk({
-            safeAddress,
-            signer,
-          }),
-        );
-      }
-    }, 15_000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [safeAddress, signer]);
 
   return (
     <StepContainer
@@ -68,7 +46,6 @@ export default function safeIsReady() {
         >
           CONTINUE
         </ConfirmButton>
-        {!safeInfo && <p>Checking if the safe has been indexed by our services...</p>}
       </Content>
     </StepContainer>
   );
