@@ -49,6 +49,8 @@ export default function ConfigureNode() {
           set_isLoading(false);
           set_includeNodeResponse(transactionResult);
           dispatch(stakingHubActions.setOnboardingStep(14));
+        }).catch(e=>{
+          set_isLoading(false);
         });
     }
   };
@@ -63,13 +65,6 @@ export default function ConfigureNode() {
       }}
     >
       <ButtonContainer>
-        <StyledGrayButton
-          onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(12));
-          }}
-        >
-          Back
-        </StyledGrayButton>
         <Button
           onClick={includeNode}
           pending={isLoading}

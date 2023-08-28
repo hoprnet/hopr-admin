@@ -1143,7 +1143,7 @@ const createSafeWithConfigThunk = createAsyncThunk<
         }),
       });
       dispatch(
-        stakingHubActions.addSafe({
+        stakingHubActions.addSafeAndUseItForOnboarding({
           safeAddress,
           moduleAddress: moduleProxy,
         }),
