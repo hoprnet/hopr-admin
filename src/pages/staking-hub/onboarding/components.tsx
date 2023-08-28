@@ -38,7 +38,20 @@ const Image = styled.img`
   width: 100%;
 `;
 
-export function StepContainer(props: any) {
+type StepContainerProps = {
+  image?: {
+    src: string;
+    alt?: string;
+    height?: number;
+    width?: number;
+  };
+  title?: string;
+  description?: string;
+  descriptionLeft?: boolean;
+  children?: JSX.Element;
+};
+
+export function StepContainer(props: StepContainerProps) {
   return (
     <SPaper>
       {props.image && (
