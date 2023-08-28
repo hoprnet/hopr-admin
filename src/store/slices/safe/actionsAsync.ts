@@ -1234,6 +1234,12 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   // CreateSafeWithConfig
   builder.addCase(createSafeWithConfigThunk.fulfilled, (state, action) => {
     if (action.payload) {
+      // reset other safe states
+      state.allTransactions.data = null
+      state.communityNftId = null
+      state.delegates.data = null
+      state.pendingTransactions.data = null
+      state.info.data = null
       state.selectedSafeAddress.data = action.payload.safeAddress;
     }
     state.selectedSafeAddress.isFetching = false;
