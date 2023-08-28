@@ -27,7 +27,7 @@ const ConfirmButton = styled(Button)`
   align-self: center;
 `;
 
-const OptionContaiener = styled.div`
+const OptionContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -98,6 +98,7 @@ export default function optionalNftTtransfer() {
   const { data: walletClient } = useWalletClient();
 
   function whichNFTimage() {
+    if (communityNftIdInSafe !== null) return '/assets/nft-in-safe.png';
     if (communityNftIdInWallet === null) return '/assets/nft-NOT-detected-in-wallet.png';
     if (communityNftIdInWallet !== null) return '/assets/nft-detected-in-wallet.png';
   }
@@ -109,7 +110,7 @@ export default function optionalNftTtransfer() {
         'Transfer your NR (Network Registry) NFT to join the network with only 10,000 wxHOPR. If you do not have one Please select the 30,000 option and continue.'
       }
     >
-      <OptionContaiener>
+      <OptionContainer>
         <Option
           className={`${option === 0 ? 'chosen' : ''}`}
           onClick={() => {
@@ -165,11 +166,10 @@ export default function optionalNftTtransfer() {
             </div>
           </OptionText>
         </Option>
-      </OptionContaiener>
-
+      </OptionContainer>
       <Content>
         {option === 0 && !communityNftIdInSafe ? (
-          <Tooltip title="You need to transder Community NFT to the Safe in order to use that option">
+          <Tooltip title="You need to transfer Community NFT to the Safe in order to use that option">
             <span style={{ textAlign: 'center' }}>
               <ConfirmButton
                 onClick={() => {

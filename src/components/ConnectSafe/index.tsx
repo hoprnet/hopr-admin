@@ -68,7 +68,6 @@ export default function ConnectSafe() {
   //const safes = useAppSelector((store) => store.safe.safesByOwner.data);
   const safes = useAppSelector((store) => store.stakingHub.safes.data);
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
-  const safeAddressFromBefore = useAppSelector((store) => store.safe.info.data?.address);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
 
@@ -144,10 +143,12 @@ export default function ConnectSafe() {
         }),
       );
     }
-    dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));
-    await dispatch(stakingHubActionsAsync.getSubgraphDataThunk(safeAddress));
-    const moduleAddress = safes.filter(elem => elem.safeAddress === safeAddress)[0].moduleAddress;
-    dispatch(stakingHubActions.useSafeForOnboarding({safeAddress, moduleAddress}));
+    await dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress)).unwrap();
+    await dispatch(stakingHubActionsAsync.getSubgraphDataThunk(safeAddress)).unwrap();
+    const moduleAddress = safes.find(elem => elem.safeAddress === safeAddress)?.moduleAddress;
+    dispatch(stakingHubActions.useSafeForOnboarding({
+      safeAddress, moduleAddress,
+    }));
     dispatch(stakingHubActions.goToStepWeShouldBeOn());
   };
 
