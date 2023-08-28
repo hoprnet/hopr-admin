@@ -49,7 +49,8 @@ export default function ConfigureNode() {
           set_isLoading(false);
           set_includeNodeResponse(transactionResult);
           dispatch(stakingHubActions.setOnboardingStep(14));
-        }).catch(e=>{
+        })
+        .catch((e) => {
           set_isLoading(false);
         });
     }

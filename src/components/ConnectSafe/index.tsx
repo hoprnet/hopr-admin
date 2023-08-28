@@ -145,10 +145,13 @@ export default function ConnectSafe() {
     }
     await dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress)).unwrap();
     await dispatch(stakingHubActionsAsync.getSubgraphDataThunk(safeAddress)).unwrap();
-    const moduleAddress = safes.find(elem => elem.safeAddress === safeAddress)?.moduleAddress;
-    dispatch(stakingHubActions.useSafeForOnboarding({
-      safeAddress, moduleAddress,
-    }));
+    const moduleAddress = safes.find((elem) => elem.safeAddress === safeAddress)?.moduleAddress;
+    dispatch(
+      stakingHubActions.useSafeForOnboarding({
+        safeAddress,
+        moduleAddress,
+      }),
+    );
     dispatch(stakingHubActions.goToStepWeShouldBeOn());
   };
 
