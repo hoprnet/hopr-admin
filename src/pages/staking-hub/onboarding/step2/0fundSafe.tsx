@@ -79,16 +79,29 @@ const FundsToSafe = () => {
   };
 
   const {
+    isSuccess: is_wxHOPR_to_safe_success,
     isLoading: is_wxHOPR_to_safe_loading,
     write: write_wxHOPR_to_safe,
   } = useContractWrite({ ...wxHOPR_to_safe_config,
     //    onSuccess: () => set_step(2),
   });
+  useEffect(() => {
+    if (is_wxHOPR_to_safe_success) {
+      set_wxhoprValue('');
+    }
+  }, [is_wxHOPR_to_safe_loading]);
 
   const {
+    isSuccess: is_xDAI_to_safe_success,
     isLoading: is_xDAI_to_safe_loading,
     sendTransaction: send_xDAI_to_safe,
   } = useSendTransaction({ ...xDAI_to_safe_config });
+
+  useEffect(() => {
+    if (is_xDAI_to_safe_success) {
+      set_xdaiValue('');
+    }
+  }, [is_xDAI_to_safe_loading]);
 
   const handleFundxDai = () => {
     send_xDAI_to_safe?.();
