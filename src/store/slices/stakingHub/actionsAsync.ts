@@ -69,23 +69,17 @@ const registerNodeAndSafeToNRThunk = createAsyncThunk<
     if (!superWalletClient.account) return;
     console.log('payload', payload);
 
-    const requestPayload = {
+    const {
+      request,
+    } = await superWalletClient.simulateContract({
       account: payload.walletClient.account,
       address: HOPR_NETWORK_REGISTRY,
       abi: NetworkRegistryAbi,
       functionName: 'managerRegister',
       args: [[payload.safeAddress], [payload.nodeAddress]],
-    }
+    });
 
-    // const {
-    //   result,
-    //   request,
-    // } = await superWalletClient.simulateContract(requestPayload);
-
-    // console.log('request', request);
-    // console.log('result', result);
-
-    const transactionHash = await superWalletClient.writeContract(requestPayload);
+    const transactionHash = await superWalletClient.writeContract(request);
 
     await superWalletClient.waitForTransactionReceipt({ hash: transactionHash });
 
