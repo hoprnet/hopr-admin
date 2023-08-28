@@ -7,7 +7,7 @@ import { StepContainer } from '../components';
 
 // Blockchain
 import { Address, formatEther, parseEther } from 'viem';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../../../config';
+import { HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../../../config';
 import { MAX_UINT256, createApproveTransactionData } from '../../../../utils/blockchain';
 
 // Store
@@ -39,6 +39,7 @@ const StyledGrayButton = styled(GrayButton)`
 export default function SetAllowance() {
   const dispatch = useAppDispatch();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
+  const nodeAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
   const isLoading = useAppSelector((store) => store.safe.createTransaction.isFetching);
   const signer = useEthersSigner();
   const [wxhoprValue, set_wxhoprValue] = useState('');
@@ -47,7 +48,7 @@ export default function SetAllowance() {
     if (signer && selectedSafeAddress) {
       await dispatch(
         safeActionsAsync.createSafeContractTransaction({
-          data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, MAX_UINT256),
+          data: createApproveTransactionData(nodeAddress, MAX_UINT256),
           signer,
           safeAddress: selectedSafeAddress,
           smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
