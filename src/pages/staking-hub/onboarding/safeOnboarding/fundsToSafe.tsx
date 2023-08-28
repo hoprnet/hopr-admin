@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { formatEther, parseEther, parseUnits } from 'viem';
-import { useAppSelector } from '../../store';
+import { useAppSelector } from '../../../../store';
 import {
   erc20ABI,
   useContractWrite,
@@ -8,7 +8,7 @@ import {
   usePrepareSendTransaction,
   useSendTransaction
 } from 'wagmi';
-import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
+import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../../../config';
 
 // HOPR Components
 import {
@@ -24,8 +24,8 @@ import {
   StyledTextField,
   Text
 } from './styled';
-import Button from '../../future-hopr-lib-components/Button';
-import Card from '../../components/Card';
+import Button from '../../../../future-hopr-lib-components/Button';
+import Card from '../../../../components/Card';
 
 type Address = `0x${string}`;
 type NumberLiteral = `${number}`;

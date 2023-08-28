@@ -13,9 +13,9 @@ import {
   StyledGrayButton,
   Subtitle,
   Text
-} from './safeOnboarding/styled';
-import { StepContainer } from './components';
-import Button from '../future-hopr-lib-components/Button';
+} from '../safeOnboarding/styled';
+import { StepContainer } from '../components';
+import Button from '../../../../future-hopr-lib-components/Button';
 import { IconButton, MenuItem, Select, TextField } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -25,9 +25,9 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { safeActionsAsync } from '../store/slices/safe';
-import { stakingHubActions } from '../store/slices/stakingHub';
-import { useAppDispatch, useAppSelector } from '../store';
+import { useAppDispatch, useAppSelector } from '../../../../store';
+import { safeActionsAsync } from '../../../../store/slices/safe';
+import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
 type OwnersAndConfirmationsProps = {
   account: `0x${string}`;

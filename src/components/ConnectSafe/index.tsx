@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActions, safeActionsAsync } from '../../store/slices/safe';
+import { stakingHubActionsAsync } from '../../store/slices/stakingHub';
 
 import { useEthersSigner } from '../../hooks';
 
@@ -142,6 +143,7 @@ export default function ConnectSafe() {
           options: { safeAddress },
         }),
       );
+      dispatch(stakingHubActionsAsync.getSubgraphDataThunk(safeAddress));
     }
     dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));
   };

@@ -24,6 +24,7 @@ const MAX_UINT256 = BigInt(2 ** 256) - BigInt(1);
 function SafeSection() {
   const dispatch = useAppDispatch();
   const safe = useAppSelector((store) => store.safe);
+  const stakingHub = useAppSelector((store) => store.stakingHub);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
   const safesByOwner = useAppSelector((store) => store.safe.safesByOwner.data);
   const allTransactions = useAppSelector((store) => store.safe.allTransactions.data);
@@ -382,8 +383,10 @@ function SafeSection() {
       >
         approve
       </button>
-      <h2>store</h2>
+      <h2>safe store</h2>
       <pre>{JSON.stringify(safe, null, 4)}</pre>
+      <h2>Staking Hub store</h2>
+      <pre>{JSON.stringify(stakingHub, null, 4)}</pre>
     </Section>
   );
 }

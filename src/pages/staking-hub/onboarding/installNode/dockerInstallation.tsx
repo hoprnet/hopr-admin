@@ -1,11 +1,11 @@
 import { TextField } from '@mui/material';
-import Section from '../../future-hopr-lib-components/Section';
+import Section from '../../../../future-hopr-lib-components/Section';
 import { useState } from 'react';
 import styled from '@emotion/styled';
-import Button from '../../future-hopr-lib-components/Button';
-import GrayButton from '../../future-hopr-lib-components/Button/gray';
-import Card from '../../components/Card';
-import CodeCopyBox from '../../components/CodeCopyBox';
+import Button from '../../../../future-hopr-lib-components/Button';
+import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
+import Card from '../../../../components/Card';
+import CodeCopyBox from '../../../../components/CodeCopyBox';
 import { useNavigate } from 'react-router-dom';
 
 const docker_image = 'gcr.io/hoprassociation/hoprd:1.93.5';

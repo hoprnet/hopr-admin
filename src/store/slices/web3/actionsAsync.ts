@@ -5,6 +5,7 @@ import { GNOSIS_CHAIN_HOPR_BOOST_NFT, STAKE_SUBGRAPH } from '../../../../config'
 import erc721ABI from '../../../abi/erc721-abi.json';
 import { initialState } from './initialState';
 import { web3Actions } from '.';
+import { safeActions } from '../safe';
 
 const getCommunityNftsOwnedByWallet = createAsyncThunk(
   'web3/getCommunityNftsOwnedByWallet',
@@ -55,10 +56,7 @@ const sendNftToSafeThunk = createAsyncThunk<
 
       if (!superWalletClient.account) return;
 
-      const {
-        result,
-        request,
-      } = await superWalletClient.simulateContract({
+      const { request } = await superWalletClient.simulateContract({
         account: payload.walletClient.account,
         address: GNOSIS_CHAIN_HOPR_BOOST_NFT,
         abi: erc721ABI,
@@ -66,15 +64,11 @@ const sendNftToSafeThunk = createAsyncThunk<
         args: [payload.walletAddress, payload.safeAddress, payload.communityNftId],
       });
 
-      // TODO: Add error handling if failed (notification)
-
-      if (!result) return;
-
       const transactionHash = await superWalletClient.writeContract(request);
 
       await superWalletClient.waitForTransactionReceipt({ hash: transactionHash });
 
-      dispatch(web3Actions.setHasCommunityNftId(payload.communityNftId));
+      dispatch(safeActions.setCommunityNftId(payload.communityNftId));
 
       return { success };
     } catch (e) {
@@ -94,6 +88,8 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     if (action.payload) {
       if (action.payload?.boosts.length > 0 && action.payload?.boosts[0].id) {
         state.communityNftId = parseInt(action.payload?.boosts[0].id);
+      } else {
+        state.communityNftId = null;
       }
     }
   });
