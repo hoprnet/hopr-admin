@@ -22,6 +22,10 @@ import SetupNodeStep from './step3/1setupYourNode';
 import SetupYourDappNode from './step3/1setupYourDappNode';
 import JoinWaitListStep from './step4/0joinWaitlist';
 import AddedToWhitelist from './step4/1addedToWhitelist';
+import AddNode from './step5/0addNode';
+import ConfigureNode from './step6/0configureNode';
+import FundNode from './step7/0fundNode';
+import SetAllowance from './step8/0setAllowance';
 
 const OnboardingContainer = styled.div`
   display: flex;
@@ -96,6 +100,10 @@ function Onboarding() {
 
       {onboardingStep === 10 && <JoinWaitListStep />}
       {onboardingStep === 11 && <AddedToWhitelist />}
+      {onboardingStep === 12 && <AddNode />}
+      {onboardingStep === 13 && <ConfigureNode />}
+      {onboardingStep === 14 && <FundNode />}
+      {onboardingStep === 15 && <SetAllowance />}
 
       {onboardingStep === 22 && (
         <StepContainer>
