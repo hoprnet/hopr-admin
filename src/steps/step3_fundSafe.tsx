@@ -50,7 +50,7 @@ const FundsToSafe = () => {
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const walletBalance = useAppSelector((store) => store.web3.balance);
   const account = useAppSelector((store) => store.web3.account);
-  const balance = useAppSelector((store) => store.safe.balance.data);
+  const safeBalance = useAppSelector((store) => store.safe.balance.data);
 
   // We have to refresh safe balance after a fund for example to make sure when it's okay to continue
   // useEffect(() => {
@@ -105,14 +105,16 @@ const FundsToSafe = () => {
   };
 
   const xdaiEnoughBalance = (): boolean => {
-    if (parseEther(xdaiValue as NumberLiteral) >= 0.1) {
+    console.log(safeBalance.xDai.value);
+    if (Number(safeBalance.xDai.value) >= 0.1) {
       return true;
     }
     return false;
   };
 
   const wxhoprEnoughBalance = (): boolean => {
-    if (parseUnits(wxhoprValue as NumberLiteral, 18) >= BigInt('1')) {
+    console.log(safeBalance.wxHopr.value);
+    if (Number(safeBalance.wxHopr.value) >= 1) {
       return true;
     }
     return false;
@@ -214,7 +216,7 @@ const FundsToSafe = () => {
           onClick={() => {
             dispatch(stakingHubActions.setOnboardingStep(5));
           }}
-          disabled={true}
+          disabled={!xdaiEnoughBalance() || !wxhoprEnoughBalance()}
         >
           Continue
         </Button>
