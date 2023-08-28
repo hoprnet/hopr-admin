@@ -64,10 +64,10 @@ const CodeContainer = styled.div`
   display: flex;
   flex-direction: column;
   text-align: start;
-  text-transform: uppercase;
+ // text-transform: uppercase;
   code {
-    font-size: 8px;
-    line-height: 12px;
+    font-size: 12px;
+    line-height: 16px;
   }
 `;
 
@@ -94,6 +94,9 @@ const Instruction = (props: { num: number; description?: string; children?: JSX.
 
 export default function SetupNodeStep() {
   const dispatch = useAppDispatch();
+  const safeAddress = useAppSelector((store) => store.stakingHub.onboarding.safeAddress);
+  const moduleAddress = useAppSelector((store) => store.stakingHub.onboarding.moduleAddress);
+
   return (
     <StepContainer
       title="Set up your node"
@@ -111,15 +114,15 @@ export default function SetupNodeStep() {
                 <CodeContainer>
                   <span>install hoprd</span>
                   <CodeCopyBox
-                    code={`BLINDTEXT  docker run -e RESPONSE_TIMEOUT=10000 -e DISCOVERY_PLATFORM_API_ENDPOINT=https://discovery.rpch.tech -e PORT=8080 -e DATA_DIR=app -e CLIENT=eager-rice-current-same-surrounded`}
+                    code={`docker run --pull always --restart on-failure -m 2g --log-driver json-file --log-opt max-size=100M --log-opt max-file=5 -ti -v $HOME/.hoprd-db-test:/app/hoprd-db -p 9091:9091/tcp -p 9091:9091/udp -p 8080:8080 -p 3001:3001 -e DEBUG="hopr*" europe-west3-docker.pkg.dev/hoprassociation/docker-images/hoprd:latest --network rotsee --init --api --identity /app/hoprd-db/.hopr-id-monte-rosa --data /app/hoprd-db --password 'open-sesame-iTwnsPNg0hpagP+o6T0KOwiH9RQ0' --apiHost "0.0.0.0" --apiToken 'YOUR_SECURITY_TOKEN' --healthCheck --healthCheckHost "0.0.0.0" --announce --safeAddress ${safeAddress} --moduleAddress ${moduleAddress}`}
                   />
                 </CodeContainer>
-                <CodeContainer>
+                {/* <CodeContainer>
                   <span>run hoprd</span>
                   <CodeCopyBox
                     code={`BLINDTEXT docker run -e RESPONSE_TIMEOUT=10000 -e DISCOVERY_PLATFORM_API_ENDPOINT=https://discovery.rpch.tech -e PORT=8080 -e DATA_DIR=app -e CLIENT=eager-rice-current-same-surrounded`}
                   />
-                </CodeContainer>
+                </CodeContainer> */}
               </Content>
             </div>
           </Instruction>

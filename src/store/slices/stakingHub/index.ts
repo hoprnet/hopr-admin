@@ -9,14 +9,33 @@ const stakingHubSlice = createSlice({
     resetState: (state) => {
       state.safes.data = [];
       state.safes.isFetching = false;
-      state.onboarding.step = 3;
-      state.onboarding.notFinished = false;
+      state.onboarding = {
+        step: 0,
+        nodeAddress: null,
+        safeAddress: null,
+        moduleAddress: null,
+        notFinished: false,
+        userIsInOnboarding: false,
+      };
     },
     addSafe: (state, action) => {
       state.safes.data = [...state.safes.data, action.payload];
     },
+    addSafeAndUseItForOnboarding: (state, action) => {
+      state.safes.data = [...state.safes.data, action.payload];
+      state.onboarding.safeAddress = action.payload.safeAddress;
+      state.onboarding.moduleAddress = action.payload.moduleAddress;
+    },
+    useSafeForOnboarding: (state, action) => {
+      state.onboarding.safeAddress = action.payload.safeAddress;
+      state.onboarding.moduleAddress = action.payload.moduleAddress;
+    },
     goToStepWeShouldBeOn: (state) => {
+      let tmpState = JSON.parse(JSON.stringify(state));
       console.log('goToStepWeShouldBeOn', JSON.parse(JSON.stringify(state)));
+      if(tmpState.onboarding.nodeAddress) {
+        state.onboarding.step = 11;
+      }
     },
     setOnboardingNodeAddress: (state, action) => {
       state.onboarding.nodeAddress = action.payload;
