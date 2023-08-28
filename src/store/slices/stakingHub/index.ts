@@ -31,9 +31,9 @@ const stakingHubSlice = createSlice({
       state.onboarding.moduleAddress = action.payload.moduleAddress;
     },
     goToStepWeShouldBeOn: (state) => {
-      let tmpState = JSON.parse(JSON.stringify(state));
+      const tmpState = JSON.parse(JSON.stringify(state));
       console.log('goToStepWeShouldBeOn', JSON.parse(JSON.stringify(state)));
-      if(tmpState.onboarding.nodeAddress) {
+      if (tmpState.onboarding.nodeAddress) {
         state.onboarding.step = 11;
       }
     },

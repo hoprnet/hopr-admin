@@ -1,8 +1,6 @@
-import { useState } from 'react';
 import styled from '@emotion/styled';
 import Button from '../../../../future-hopr-lib-components/Button';
-import { Address } from 'viem';
-import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
+import { Address, getAddress } from 'viem';
 import { StepContainer } from '../components';
 import { useEthersSigner } from '../../../../hooks';
 
@@ -19,38 +17,27 @@ const ButtonContainer = styled.div`
   gap: 1rem;
 `;
 
-const StyledGrayButton = styled(GrayButton)`
-  border: 1px solid black;
-  height: 39px;
-`;
-
 export default function ConfigureNode() {
   const dispatch = useAppDispatch();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
   const nodeAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
-  const safeModules = useAppSelector((state) => state.safe.info.data?.modules);
+  const moduleAddress = useAppSelector((state) => state.stakingHub.onboarding.moduleAddress) as Address;
+  const isLoading = useAppSelector((store) => store.safe.executeTransaction.isFetching);
   const signer = useEthersSigner();
-  const [isLoading, set_isLoading] = useState(false);
-  const [includeNodeResponse, set_includeNodeResponse] = useState('');
 
   const includeNode = async () => {
-    if (signer && selectedSafeAddress && safeModules && safeModules.at(0) && nodeAddress) {
-      set_isLoading(true);
+    if (signer && selectedSafeAddress && moduleAddress && nodeAddress) {
       dispatch(
         safeActionsAsync.createAndExecuteContractTransactionThunk({
-          smartContractAddress: safeModules.at(0) as Address,
-          data: createIncludeNodeTransactionData(encodeDefaultPermissions(nodeAddress)),
+          smartContractAddress: moduleAddress,
+          data: createIncludeNodeTransactionData(encodeDefaultPermissions(getAddress(nodeAddress))),
           safeAddress: selectedSafeAddress,
           signer,
         }),
       )
         .unwrap()
-        .then((transactionResult) => {
-          set_isLoading(false);
-          set_includeNodeResponse(transactionResult);
+        .then(() => {
           dispatch(stakingHubActions.setOnboardingStep(14));
-        }).catch(e=>{
-          set_isLoading(false);
         });
     }
   };
