@@ -69,9 +69,7 @@ const registerNodeAndSafeToNRThunk = createAsyncThunk<
     if (!superWalletClient.account) return;
     console.log('payload', payload);
 
-    const {
-      request,
-    } = await superWalletClient.simulateContract({
+    const { request } = await superWalletClient.simulateContract({
       account: payload.walletClient.account,
       address: HOPR_NETWORK_REGISTRY,
       abi: NetworkRegistryAbi,
