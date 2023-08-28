@@ -19,8 +19,6 @@ const ConfirmButton = styled(Button)`
 
 export default function safeIsReady() {
   const dispatch = useAppDispatch();
-  const safeInfo = useAppSelector((state) => state.safe.info.data);
-
   return (
     <StepContainer
       title="SAFE IS READY"
@@ -39,7 +37,6 @@ export default function safeIsReady() {
     >
       <Content>
         <ConfirmButton
-          disabled={!safeInfo}
           onClick={() => {
             dispatch(stakingHubActions.setOnboardingStep(3));
           }}
