@@ -48,7 +48,7 @@ type StepContainerProps = {
   title?: string;
   description?: JSX.Element | string;
   descriptionLeft?: boolean;
-  children?: JSX.Element |  JSX.Element[];
+  children?: JSX.Element | JSX.Element[];
 };
 
 export function StepContainer(props: StepContainerProps) {
