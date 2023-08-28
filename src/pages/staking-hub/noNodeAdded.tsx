@@ -271,7 +271,7 @@ const NoNodeAdded = () => {
             title="wxHOPR Total Stake"
             value={safeBalance.wxHopr.formatted || '-'}
             chip={{
-              label: '+12%/24h',
+              label: '+%/24h',
               color: 'success',
             }}
             buttons={[
@@ -282,7 +282,7 @@ const NoNodeAdded = () => {
               },
               {
                 text: 'xHOPR → wxHOPR',
-                link: '/develop/wrapper',
+                link: '/hub/wrapper',
               },
               {
                 text: 'STAKE wxHOPR',
@@ -316,19 +316,19 @@ const NoNodeAdded = () => {
           <StakingCard
             id="redeemed-tickets"
             title="Redeemed Tickets"
-            value="1,329"
+            value="-"
             chip={{
-              label: '+9%/24h',
+              label: '+%/24h',
               color: 'success',
             }}
           />
           <StakingCard
             id="earned-rewards"
             title="Earned rewards"
-            value="12,736"
+            value="-"
             currency="wxHOPR"
             chip={{
-              label: '-5%/24h',
+              label: '-%/24h',
               color: 'error',
             }}
           />

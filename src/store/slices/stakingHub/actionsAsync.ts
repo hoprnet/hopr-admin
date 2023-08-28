@@ -151,6 +151,8 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         state.safeInfo.data.registeredNodesInNetworkRegistryParsed = tmp;
         state.onboarding.nodeAddress = tmp[tmp.length - 1];
       }
+      state.safeInfo.data.allowance = action.payload.allowance;
+      state.safeInfo.data.balance = action.payload.balance;
     }
     state.safeInfo.isFetching = false;
   });
