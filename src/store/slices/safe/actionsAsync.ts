@@ -127,7 +127,8 @@ const createVanillaSafeWithConfigThunk = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -164,7 +165,8 @@ const getSafesByOwnerThunk = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -229,7 +231,8 @@ const addOwnerToSafeThunk = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -293,7 +296,8 @@ const removeOwnerFromSafeThunk = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -354,7 +358,8 @@ const updateSafeThresholdThunk = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -393,7 +398,8 @@ const getSafeInfoThunk = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -454,7 +460,8 @@ const createSafeTransactionThunk = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -507,7 +514,8 @@ const createSafeContractTransaction = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -563,7 +571,8 @@ const createSafeRejectionTransactionThunk = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -608,7 +617,8 @@ const confirmTransactionThunk = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -655,7 +665,8 @@ const executePendingTransactionThunk = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -715,7 +726,8 @@ const createAndExecuteTransactionThunk = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -772,7 +784,8 @@ const createAndExecuteContractTransactionThunk = createAsyncThunk<
       return rejectWithValue(e);
     }
 
-    return rejectWithValue(e);
+    // error is not serializable
+    return rejectWithValue(JSON.stringify(e));
   }
 });
 
@@ -808,7 +821,8 @@ const getAllSafeTransactionsThunk = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -847,7 +861,8 @@ const getPendingSafeTransactionsThunk = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -898,7 +913,8 @@ const addSafeDelegateThunk = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -946,7 +962,8 @@ const removeSafeDelegateThunk = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -982,7 +999,8 @@ const getSafeDelegatesThunk = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -1021,7 +1039,8 @@ const getToken = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -1059,7 +1078,8 @@ const getTokenList = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -1142,6 +1162,7 @@ const createSafeWithConfigThunk = createAsyncThunk<
           ownerAddress: payload.walletClient.account?.address,
         }),
       });
+
       dispatch(
         stakingHubActions.addSafeAndUseItForOnboarding({
           safeAddress,
@@ -1164,7 +1185,8 @@ const createSafeWithConfigThunk = createAsyncThunk<
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -1202,7 +1224,8 @@ const getCommunityNftsOwnedBySafeThunk = createAsyncThunk(
         return rejectWithValue(e);
       }
 
-      return rejectWithValue(e);
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
     }
   },
 );
@@ -1211,6 +1234,12 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   // CreateSafeWithConfig
   builder.addCase(createSafeWithConfigThunk.fulfilled, (state, action) => {
     if (action.payload) {
+      // reset other safe states
+      state.allTransactions.data = null;
+      state.communityNftId = null;
+      state.delegates.data = null;
+      state.pendingTransactions.data = null;
+      state.info.data = null;
       state.selectedSafeAddress.data = action.payload.safeAddress;
     }
     state.selectedSafeAddress.isFetching = false;
