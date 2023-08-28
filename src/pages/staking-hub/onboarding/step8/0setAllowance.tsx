@@ -1,18 +1,19 @@
-import { useState } from 'react';
+// UI
 import styled from '@emotion/styled';
 import Button from '../../../../future-hopr-lib-components/Button';
-import { Address } from 'viem';
 import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
-import { StepContainer } from '../components';
 import { useEthersSigner } from '../../../../hooks';
+import { StepContainer } from '../components';
 
-// Web3
-import { createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../../../utils/blockchain';
+// Blockchain
+import { MAX_UINT256, createApproveTransactionData } from '../../../../utils/blockchain';
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../../../config';
+import { Address } from 'viem';
 
 // Store
-import { useAppSelector, useAppDispatch } from '../../../../store';
-import { stakingHubActions } from '../../../../store/slices/stakingHub';
+import { useAppDispatch, useAppSelector } from '../../../../store';
 import { safeActionsAsync } from '../../../../store/slices/safe';
+import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -27,13 +28,21 @@ const StyledGrayButton = styled(GrayButton)`
 export default function SetAllowance() {
   const dispatch = useAppDispatch();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
-  const nodeAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
-  const safeModules = useAppSelector((state) => state.safe.info.data?.modules);
+  const isLoading = useAppSelector((store) => store.safe.createTransaction.isFetching);
   const signer = useEthersSigner();
-  const [isLoading, set_isLoading] = useState(false);
-  const [includeNodeResponse, set_includeNodeResponse] = useState('');
 
-  const setAllowance = async () => {};
+  const setAllowance = async () => {
+    if (signer && selectedSafeAddress) {
+      dispatch(
+        safeActionsAsync.createSafeContractTransaction({
+          data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, MAX_UINT256),
+          signer,
+          safeAddress: selectedSafeAddress,
+          smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
+        }),
+      );
+    }
+  };
 
   return (
     <StepContainer

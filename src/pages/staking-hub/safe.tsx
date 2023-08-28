@@ -8,7 +8,7 @@ import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, HOPR_TOK
 import { erc20ABI, useContractRead, useWalletClient } from 'wagmi';
 import { nodeManagementModuleAbi } from '../../abi/nodeManagementModuleAbi';
 import { nodeSafeRegistryAbi } from '../../abi/nodeSafeRegistryAbi';
-import { createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../utils/blockchain'
+import { MAX_UINT256, createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../utils/blockchain'
 
 //Stores
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -16,9 +16,6 @@ import { safeActionsAsync } from '../../store/slices/safe';
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
-
-// Maximum possible value for uint256
-const MAX_UINT256 = BigInt(2 ** 256) - BigInt(1);
 
 function SafeSection() {
   const dispatch = useAppDispatch();
