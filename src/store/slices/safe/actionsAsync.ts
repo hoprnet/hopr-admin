@@ -1,4 +1,4 @@
-import { ActionReducerMapBuilder, createAction, createAsyncThunk, isPlain } from '@reduxjs/toolkit';
+import { ActionReducerMapBuilder, createAsyncThunk, isPlain } from '@reduxjs/toolkit';
 import SafeApiKit, {
   AddSafeDelegateProps,
   AllTransactionsListResponse,
@@ -475,7 +475,6 @@ const createSafeContractTransaction = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(safeActionsFetching.setCreateTransactionFetching(true));
     try {
       const {
         smartContractAddress,
