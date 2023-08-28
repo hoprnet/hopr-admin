@@ -7,7 +7,7 @@ import {
   usePrepareSendTransaction,
   useSendTransaction
 } from 'wagmi';
-import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../../../config';
+import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, MINIMUM_XDAI_TO_FUND, MINIMUM_WXHOPR_TO_FUND } from '../../../../../config'
 
 //Store
 import { useAppSelector, useAppDispatch } from '../../../../store';
@@ -113,7 +113,7 @@ const FundsToSafe = () => {
 
   const xdaiEnoughBalance = (): boolean => {
     console.log(safeBalance.xDai.value);
-    if (Number(safeBalance.xDai.value) >= 0.1) {
+    if (Number(safeBalance.xDai.formatted) >= MINIMUM_XDAI_TO_FUND) {
       return true;
     }
     return false;
@@ -121,7 +121,7 @@ const FundsToSafe = () => {
 
   const wxhoprEnoughBalance = (): boolean => {
     console.log(safeBalance.wxHopr.value);
-    if (Number(safeBalance.wxHopr.value) >= 1) {
+    if (Number(safeBalance.wxHopr.formatted) >= MINIMUM_WXHOPR_TO_FUND) {
       return true;
     }
     return false;
