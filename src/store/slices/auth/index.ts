@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { bubbleSortObject, getObjectFromLocalStorage } from '../../../utils/functions';
+import { actionsAsync, createAsyncReducer } from './actionsAsync';
 import { initialState } from './initialState';
-import { actionsAsync, createExtraReducers } from './actionsAsync';
-import { getObjectFromLocalStorage, bubbleSortObject } from '../../../utils/functions';
 
 const authSlice = createSlice({
   name: 'auth',
@@ -82,7 +82,7 @@ const authSlice = createSlice({
       state.helper.openLoginModalToNode = action.payload;
     },
   },
-  extraReducers: (builder) => createExtraReducers(builder),
+  extraReducers: (builder) => createAsyncReducer(builder),
 });
 
 export const authActions = authSlice.actions;

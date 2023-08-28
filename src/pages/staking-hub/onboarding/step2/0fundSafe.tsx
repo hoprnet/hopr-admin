@@ -7,11 +7,11 @@ import {
   usePrepareSendTransaction,
   useSendTransaction
 } from 'wagmi';
-import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../config';
+import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../../../config';
 
 //Store
-import { useAppSelector, useAppDispatch } from '../store';
-import { stakingHubActions } from '../store/slices/stakingHub';
+import { useAppSelector, useAppDispatch } from '../../../../store';
+import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
 // HOPR Components
 import {
@@ -26,11 +26,10 @@ import {
   StyledInstructions,
   StyledTextField,
   Text
-} from './safeOnboarding/styled';
-import { StepContainer } from './components';
-import Button from '../future-hopr-lib-components/Button';
+} from '../safeOnboarding/styled';
+import { StepContainer } from '../components';
+import Button from '../../../../future-hopr-lib-components/Button';
 import styled from '@emotion/styled';
-import { safeActionsAsync } from '../store/slices/safe';
 
 type Address = `0x${string}`;
 type NumberLiteral = `${number}`;
@@ -51,11 +50,6 @@ const FundsToSafe = () => {
   const walletBalance = useAppSelector((store) => store.web3.balance);
   const account = useAppSelector((store) => store.web3.account);
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
-
-  // We have to refresh safe balance after a fund for example to make sure when it's okay to continue
-  // useEffect(() => {
-  //   // dispatch(safeActionsAsync.)
-  // }, [selectedSafeAddress])
 
   const [xdaiValue, set_xdaiValue] = useState('');
   const [wxhoprValue, set_wxhoprValue] = useState('');

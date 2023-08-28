@@ -23,20 +23,9 @@ import ChannelsPageOutgoing from './pages/node/channelsOutgoing';
 import MetricsPage from './pages/node/metrics';
 import SafeStakingPage from './pages/staking-hub/safeStaking';
 import ConfigurationPage from './pages/node/configuration';
-import AddNode from './steps/installNode/addNode';
-import SelectNodeType from './steps/installNode/selectNodeType';
 import WrapperPage from './pages/staking-hub/wrapper';
-import XdaiToNodePage from './steps/xdaiToNode';
 import StakingScreen from './pages/staking-hub/staking-screen';
 import SafeWithdraw from './pages/staking-hub/safeWithdraw';
-import UpdateNodePage from './steps/updateNode';
-import SetupNodePage from './steps/setupYourNode';
-import AddedToWhitelist from './steps/addedToWhitelist';
-import JoinWaitlistPage from './steps/joinWaitlist';
-import WhatYouWillNeedPage from './steps/step0_whatYouWillNeed';
-import DockerInstallation from './steps/installNode/dockerInstallation';
-import NodeAddress from './steps/installNode/nodeAddress';
-import SafeOnboarding from './steps/safeOnboarding';
 import NodeAdded from './pages/staking-hub/nodeAdded';
 import SafeActions from './pages/staking-hub/actions';
 import NoNodeAdded from './pages/staking-hub/noNodeAdded';
@@ -273,81 +262,7 @@ export const applicationMapDev: ApplicationMapType = [
     groupName: 'DEVELOP / Steps',
     path: 'steps',
     icon: <DevelopIcon />,
-    items: [
-      {
-        name: 'Safe Onboarding',
-        path: 'safe-onboarding',
-        icon: <LockIcon />,
-        element: <SafeOnboarding />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Add node',
-        path: 'add-node',
-        icon: <AddBoxIcon />,
-        element: <AddNode />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Select node',
-        path: 'select-node-type',
-        icon: <AddBoxIcon />,
-        element: <SelectNodeType />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Docker',
-        path: 'docker-installation',
-        icon: <AddBoxIcon />,
-        element: <DockerInstallation />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Node Address',
-        path: 'node-address',
-        icon: <AddBoxIcon />,
-        element: <NodeAddress />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Update your node',
-        path: 'update-your-node',
-        icon: <AddBoxIcon />,
-        element: <UpdateNodePage />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Set up your node',
-        path: 'setup-your-node',
-        icon: <AddBoxIcon />,
-        element: <SetupNodePage />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Added to whitelist',
-        path: 'added-to-whitelist',
-        icon: <AddBoxIcon />,
-        element: <AddedToWhitelist />,
-      },
-      {
-        name: 'Join the waitlist',
-        path: 'join-waitlist',
-        icon: <AddBoxIcon />,
-        element: <JoinWaitlistPage />,
-      },
-      {
-        name: 'What you will need',
-        path: 'what-you-will-need',
-        icon: <AddBoxIcon />,
-        element: <WhatYouWillNeedPage />,
-      },
-      {
-        name: 'xdai to node',
-        path: 'xdai-to-node',
-        icon: <AddBoxIcon />,
-        element: <XdaiToNodePage />,
-      },
-    ],
+    items: [],
   },
 ];
 
