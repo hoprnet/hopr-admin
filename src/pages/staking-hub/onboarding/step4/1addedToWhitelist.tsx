@@ -24,7 +24,7 @@ export default function AddedToWhitelist() {
   return (
     <StepContainer
       title="Congratulations!"
-      description={"You are now eligible to join the HOPR network! Continue below to set up your HOPR node."}
+      description={'You are now eligible to join the HOPR network! Continue below to set up your HOPR node.'}
       image={{
         src: '/assets/green-check.svg',
         alt: 'Safe deployed successfully',
@@ -36,7 +36,9 @@ export default function AddedToWhitelist() {
           onClick={() => {
             dispatch(stakingHubActions.setOnboardingStep(12));
           }}
-        >Continue</ConfirmButton>
+        >
+          Continue
+        </ConfirmButton>
       </Content>
     </StepContainer>
   );

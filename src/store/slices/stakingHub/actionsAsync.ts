@@ -44,11 +44,7 @@ const getHubSafesByOwnerThunk = createAsyncThunk<
   } },
 );
 
-const getSubgraphDataThunk = createAsyncThunk<
-  SubgraphOutput | null,
-  string,
-  { state: RootState }
->(
+const getSubgraphDataThunk = createAsyncThunk<SubgraphOutput | null, string, { state: RootState }>(
   'stakingHub/getSubgraphData',
   async (safeAddress, {
     rejectWithValue,
@@ -56,26 +52,24 @@ const getSubgraphDataThunk = createAsyncThunk<
   }) => {
     dispatch(setSubgraphDataFetching(true));
 
-    safeAddress = '0x0cdecaff277c296665f31aac0957a3a3151b6159' //debug
+  //  safeAddress = '0x0cdecaff277c296665f31aac0957a3a3151b6159'; //debug
 
-    console.log(safeAddress)
+    console.log(safeAddress);
 
-    const QUERY = `{\"query\":\"{\\n  safes(first: 1, where: {id: \\\"${safeAddress}\\\"}) {\\n    id\\n    balance {\\n      mHoprBalance\\n      wxHoprBalance\\n      xHoprBalance\\n    }\\n    threshold\\n    owners {\\n      owner {\\n        id\\n      }\\n    }\\n    isCreatedByNodeStakeFactory\\n    targetedModules {\\n      id\\n    }\\n    allowance {\\n      xHoprAllowance\\n      wxHoprAllowance\\n      mHoprAllowance\\n      grantedToChannelsContract\\n    }\\n    addedModules {\\n      module {\\n        id\\n      }\\n    }\\n    isEligibleOnNetworkRegistry\\n    registeredNodesInSafeRegistry {\\n      node {\\n        id\\n      }\\n    }\\n    registeredNodesInNetworkRegistry {\\n      node {\\n        id\\n      }\\n    }\\n  }\\n  _meta {\\n    hasIndexingErrors\\n    deployment\\n  }\\n  nodeManagementModules(first: 1, where: {id: \\\"${safeAddress}\\\"}) {\\n    id\\n    implementation\\n    includedNodes {\\n      node {\\n        id\\n      }\\n    }\\n    multiSend\\n    target {\\n      id\\n    }\\n  }\\n}\",\"variables\":null,\"extensions\":{\"headers\":null}}`
-    
+    const QUERY = `{\"query\":\"{\\n  safes(first: 1, where: {id: \\\"${safeAddress}\\\"}) {\\n    id\\n    balance {\\n      mHoprBalance\\n      wxHoprBalance\\n      xHoprBalance\\n    }\\n    threshold\\n    owners {\\n      owner {\\n        id\\n      }\\n    }\\n    isCreatedByNodeStakeFactory\\n    targetedModules {\\n      id\\n    }\\n    allowance {\\n      xHoprAllowance\\n      wxHoprAllowance\\n      mHoprAllowance\\n      grantedToChannelsContract\\n    }\\n    addedModules {\\n      module {\\n        id\\n      }\\n    }\\n    isEligibleOnNetworkRegistry\\n    registeredNodesInSafeRegistry {\\n      node {\\n        id\\n      }\\n    }\\n    registeredNodesInNetworkRegistry {\\n      node {\\n        id\\n      }\\n    }\\n  }\\n  _meta {\\n    hasIndexingErrors\\n    deployment\\n  }\\n  nodeManagementModules(first: 1, where: {id: \\\"${safeAddress}\\\"}) {\\n    id\\n    implementation\\n    includedNodes {\\n      node {\\n        id\\n      }\\n    }\\n    multiSend\\n    target {\\n      id\\n    }\\n  }\\n}\",\"variables\":null,\"extensions\":{\"headers\":null}}`;
+
     try {
       const resp = await fetch(STAKING_V2_SUBGRAPH, {
         method: 'POST',
-        "headers": {
-          "content-type": "application/json",
-        },
+        headers: { 'content-type': 'application/json' },
         body: QUERY,
       });
-      const json : {
+      const json: {
         data: {
-          safes: SubgraphOutput[]
-        }
+          safes: SubgraphOutput[];
+        };
       } = await resp.json();
-      console.log('SubgraphOutput',json )
+      console.log('SubgraphOutput', json);
 
       if (json.data.safes[0]) return json.data.safes[0];
       else return null;
@@ -90,7 +84,6 @@ const getSubgraphDataThunk = createAsyncThunk<
     }
   } },
 );
-
 
 // Helper actions to update the isFetching state
 const setHubSafesByOwnerFetching = createAction<boolean>('stakingHub/setHubSafesByOwnerFetching');
@@ -114,9 +107,9 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       console.log(action.payload);
       state.safeInfo.data = action.payload;
 
-      if(action.payload.registeredNodesInNetworkRegistry.length > 0) {
+      if (action.payload.registeredNodesInNetworkRegistry.length > 0) {
         let tmp = [];
-        tmp = action.payload.registeredNodesInNetworkRegistry.map(elem=>elem.node.id as string)
+        tmp = action.payload.registeredNodesInNetworkRegistry.map((elem) => elem.node.id as string);
         state.safeInfo.data.registeredNodesInNetworkRegistryParsed = tmp;
       }
 
@@ -129,7 +122,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
 };
 
-export const actionsAsync = { 
+export const actionsAsync = {
   getHubSafesByOwnerThunk,
-  getSubgraphDataThunk
- };
+  getSubgraphDataThunk,
+};

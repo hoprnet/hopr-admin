@@ -143,9 +143,7 @@ export default function ConnectSafe() {
           options: { safeAddress },
         }),
       );
-      dispatch(
-        stakingHubActionsAsync.getSubgraphDataThunk(safeAddress),
-      );
+      dispatch(stakingHubActionsAsync.getSubgraphDataThunk(safeAddress));
     }
     dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));
   };

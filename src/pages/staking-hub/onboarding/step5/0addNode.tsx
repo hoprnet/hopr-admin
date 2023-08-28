@@ -27,7 +27,9 @@ const StyledGrayButton = styled(GrayButton)`
 export default function AddNode() {
   const dispatch = useAppDispatch();
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
-  const nodesAddedToSafe = useAppSelector((store) => store.stakingHub.safeInfo.data.registeredNodesInNetworkRegistryParsed);
+  const nodesAddedToSafe = useAppSelector(
+    (store) => store.stakingHub.safeInfo.data.registeredNodesInNetworkRegistryParsed,
+  );
   const account = useAppSelector((store) => store.web3.account);
   const signer = useEthersSigner();
   const [isLoading, set_isLoading] = useState(false);
@@ -54,11 +56,12 @@ export default function AddNode() {
     }
   };
 
-
   return (
     <StepContainer
       title="Add Node"
-      description={'Please enter and confirm your node address. This will initiate a transaction which you will need to sign.'}
+      description={
+        'Please enter and confirm your node address. This will initiate a transaction which you will need to sign.'
+      }
       image={{
         src: '/assets/node-blue.svg',
         height: 200,
@@ -76,10 +79,10 @@ export default function AddNode() {
           onClick={() => {
             dispatch(stakingHubActions.setOnboardingStep(11));
           }}
-        >Back</StyledGrayButton>
-        <Tooltip
-          title={!nodeInNetworkRegistry && 'This node is not on the whitelist'}
         >
+          Back
+        </StyledGrayButton>
+        <Tooltip title={!nodeInNetworkRegistry && 'This node is not on the whitelist'}>
           <span>
             <Button
               onClick={addDelegate}
@@ -93,4 +96,4 @@ export default function AddNode() {
       </ButtonContainer>
     </StepContainer>
   );
-};
+}

@@ -10,7 +10,7 @@ import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-type
 import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../../../../utils/safeTransactions';
 
 // Web3
-import { createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../../../utils/blockchain'
+import { createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../../../utils/blockchain';
 
 // Store
 import { useAppSelector, useAppDispatch } from '../../../../store';
@@ -20,7 +20,6 @@ import { safeActionsAsync } from '../../../../store/slices/safe';
 // MUI
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
-
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -250,94 +249,90 @@ export default function FundNode() {
       title="Fund Node"
       description={'You need to sign a transaction to connect your node to your existing HOPR safe.'}
     >
-              <div>
-          <StyledForm>
-            <StyledInstructions>
-              <StyledText>SEND xdAI to Node</StyledText>
-              <StyledDescription>
-                Add-in the amount of xDAI you like to transfer from your safe to your node.
-              </StyledDescription>
-            </StyledInstructions>
-            <StyledInputGroup>
-              <TextField
-                variant="outlined"
-                placeholder="-"
-                size="small"
-                value={xdaiValue}
-                onChange={(e) => set_xdaiValue(e.target.value)}
-                inputProps={{
-                  inputMode: 'numeric',
-                  pattern: '[0-9]*',
+      <div>
+        <StyledForm>
+          <StyledInstructions>
+            <StyledText>SEND xdAI to Node</StyledText>
+            <StyledDescription>
+              Add-in the amount of xDAI you like to transfer from your safe to your node.
+            </StyledDescription>
+          </StyledInstructions>
+          <StyledInputGroup>
+            <TextField
+              variant="outlined"
+              placeholder="-"
+              size="small"
+              value={xdaiValue}
+              onChange={(e) => set_xdaiValue(e.target.value)}
+              inputProps={{
+                inputMode: 'numeric',
+                pattern: '[0-9]*',
+              }}
+              InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
+            />
+            <StyledCoinLabel>xdai</StyledCoinLabel>
+          </StyledInputGroup>
+        </StyledForm>
+        {!!proposedTx && (
+          <StyledPendingSafeTransactions>
+            <StyledDescription>
+              {userAction === 'EXECUTE'
+                ? 'transaction has been approved by all required owners'
+                : `transaction is pending ${
+                  (proposedTx?.confirmationsRequired ?? 0) - (proposedTx?.confirmations?.length ?? 0)
+                } approvals`}
+            </StyledDescription>
+            {userAction === 'SIGN' && (
+              <StyledApproveButton
+                onClick={() => {
+                  if (signer && proposedTx) {
+                    dispatch(
+                      safeActionsAsync.confirmTransactionThunk({
+                        signer,
+                        safeAddress: proposedTx.safe,
+                        safeTransactionHash: proposedTx.safeTxHash,
+                      }),
+                    );
+                  }
                 }}
-                InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
-              />
-              <StyledCoinLabel>xdai</StyledCoinLabel>
-            </StyledInputGroup>
-          </StyledForm>
-          {!!proposedTx && (
-            <StyledPendingSafeTransactions>
-              <StyledDescription>
-                {userAction === 'EXECUTE'
-                  ? 'transaction has been approved by all required owners'
-                  : `transaction is pending ${
-                    (proposedTx?.confirmationsRequired ?? 0) - (proposedTx?.confirmations?.length ?? 0)
-                  } approvals`}
-              </StyledDescription>
-              {userAction === 'SIGN' && (
-                <StyledApproveButton
-                  onClick={() => {
-                    if (signer && proposedTx) {
-                      dispatch(
-                        safeActionsAsync.confirmTransactionThunk({
-                          signer,
-                          safeAddress: proposedTx.safe,
-                          safeTransactionHash: proposedTx.safeTxHash,
-                        }),
-                      );
-                    }
-                  }}
-                >
-                  approve/sign
-                </StyledApproveButton>
-              )}
-            </StyledPendingSafeTransactions>
-          )}
-          <StyledButtonGroup>
-            <StyledGrayButton>back</StyledGrayButton>
-            {!userCanSkipProposal ? (
-              <Tooltip title={getErrorsForApproveButton().at(0)}>
-                <span>
-                  {' '}
-                  <StyledBlueButton
-                    disabled={!!getErrorsForApproveButton().length}
-                    onClick={proposeTx}
-                  >
-                    FUND
-                  </StyledBlueButton>
-                </span>
-              </Tooltip>
-            ) : (
-              <Tooltip title={getErrorsForExecuteButton().at(0)}>
-                <span>
-                  {' '}
-                  <StyledBlueButton
-                    disabled={!!getErrorsForExecuteButton().length}
-                    // no need to propose tx with only 1 threshold
-                    onClick={proposedTx ? executeTx : createAndExecuteTx}
-                  >
-                    FUND
-                  </StyledBlueButton>
-                </span>
-              </Tooltip>
+              >
+                approve/sign
+              </StyledApproveButton>
             )}
-          </StyledButtonGroup>
-          {isProposalLoading && <p>Signing transaction with nonce...</p>}
-          {isExecutionLoading && <p>Executing transaction with nonce...</p>}
-        </div>
-
-
-
-
+          </StyledPendingSafeTransactions>
+        )}
+        <StyledButtonGroup>
+          <StyledGrayButton>back</StyledGrayButton>
+          {!userCanSkipProposal ? (
+            <Tooltip title={getErrorsForApproveButton().at(0)}>
+              <span>
+                {' '}
+                <StyledBlueButton
+                  disabled={!!getErrorsForApproveButton().length}
+                  onClick={proposeTx}
+                >
+                  FUND
+                </StyledBlueButton>
+              </span>
+            </Tooltip>
+          ) : (
+            <Tooltip title={getErrorsForExecuteButton().at(0)}>
+              <span>
+                {' '}
+                <StyledBlueButton
+                  disabled={!!getErrorsForExecuteButton().length}
+                  // no need to propose tx with only 1 threshold
+                  onClick={proposedTx ? executeTx : createAndExecuteTx}
+                >
+                  FUND
+                </StyledBlueButton>
+              </span>
+            </Tooltip>
+          )}
+        </StyledButtonGroup>
+        {isProposalLoading && <p>Signing transaction with nonce...</p>}
+        {isExecutionLoading && <p>Executing transaction with nonce...</p>}
+      </div>
     </StepContainer>
   );
-};
+}

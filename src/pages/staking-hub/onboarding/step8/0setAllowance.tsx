@@ -7,7 +7,7 @@ import { StepContainer } from '../components';
 import { useEthersSigner } from '../../../../hooks';
 
 // Web3
-import { createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../../../utils/blockchain'
+import { createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../../../utils/blockchain';
 
 // Store
 import { useAppSelector, useAppDispatch } from '../../../../store';
@@ -33,9 +33,7 @@ export default function SetAllowance() {
   const [isLoading, set_isLoading] = useState(false);
   const [includeNodeResponse, set_includeNodeResponse] = useState('');
 
-  const setAllowance = async () => {
-    
-  };
+  const setAllowance = async () => {};
 
   return (
     <StepContainer
@@ -47,7 +45,9 @@ export default function SetAllowance() {
           onClick={() => {
             dispatch(stakingHubActions.setOnboardingStep(12));
           }}
-        >Back</StyledGrayButton>
+        >
+          Back
+        </StyledGrayButton>
         <Button
           onClick={setAllowance}
           pending={isLoading}
@@ -57,4 +57,4 @@ export default function SetAllowance() {
       </ButtonContainer>
     </StepContainer>
   );
-};
+}
