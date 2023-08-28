@@ -1,14 +1,14 @@
 import { TextField } from '@mui/material';
-import Section from '../../future-hopr-lib-components/Section';
+import Section from '../../../../future-hopr-lib-components/Section';
 import { useState } from 'react';
 import styled from '@emotion/styled';
-import Button from '../../future-hopr-lib-components/Button';
-import GrayButton from '../../future-hopr-lib-components/Button/gray';
-import Card from '../../components/Card';
+import Button from '../../../../future-hopr-lib-components/Button';
+import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
+import Card from '../../../../components/Card';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../store';
-import { useEthersSigner } from '../../hooks';
-import { safeActionsAsync } from '../../store/slices/safe';
+import { useAppDispatch, useAppSelector } from '../../../../store';
+import { useEthersSigner } from '../../../../hooks';
+import { safeActionsAsync } from '../../../../store/slices/safe';
 
 const ButtonContainer = styled.div`
   align-self: center;

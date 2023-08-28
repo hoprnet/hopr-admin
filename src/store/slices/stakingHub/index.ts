@@ -9,7 +9,7 @@ const stakingHubSlice = createSlice({
     resetState: (state) => {
       state.safes.data = [];
       state.safes.isFetching = false;
-      state.onboarding.step = 4;
+      state.onboarding.step = 11;
       state.onboarding.notFinished = false;
     },
     addSafe: (state, action) => {

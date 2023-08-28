@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
-import Button from '../future-hopr-lib-components/Button';
-import { useAppDispatch } from '../store';
-import { StepContainer } from './components';
-import { stakingHubActions } from '../store/slices/stakingHub';
+import Button from '../../../../future-hopr-lib-components/Button';
+import { useAppDispatch } from '../../../../store';
+import { StepContainer } from '../components';
+import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
 const ConfirmButton = styled(Button)`
   width: 250px;

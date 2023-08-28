@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
 //Stores
-import { useAppSelector } from '../../store';
+import { useAppSelector } from '../../../../store';
 
 // HOPR Components
-import Section from '../../future-hopr-lib-components/Section';
+import Section from '../../../../future-hopr-lib-components/Section';
 
 import OwnersAndConfirmations from './ownersAndConfirmations';
 import FundsToSafe from './fundsToSafe';

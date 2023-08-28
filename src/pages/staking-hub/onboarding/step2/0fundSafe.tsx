@@ -7,11 +7,11 @@ import {
   usePrepareSendTransaction,
   useSendTransaction
 } from 'wagmi';
-import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../config';
+import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../../../config';
 
 //Store
-import { useAppSelector, useAppDispatch } from '../store';
-import { stakingHubActions } from '../store/slices/stakingHub';
+import { useAppSelector, useAppDispatch } from '../../../../store';
+import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
 // HOPR Components
 import {
@@ -26,9 +26,9 @@ import {
   StyledInstructions,
   StyledTextField,
   Text
-} from './safeOnboarding/styled';
-import { StepContainer } from './components';
-import Button from '../future-hopr-lib-components/Button';
+} from '../safeOnboarding/styled';
+import { StepContainer } from '../components';
+import Button from '../../../../future-hopr-lib-components/Button';
 
 type Address = `0x${string}`;
 type NumberLiteral = `${number}`;
@@ -186,7 +186,6 @@ const FundsToSafe = () => {
           onClick={() => {
             dispatch(stakingHubActions.setOnboardingStep(5));
           }}
-          disabled={true}
         >
           Continue
         </Button>

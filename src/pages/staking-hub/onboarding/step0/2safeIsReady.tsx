@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import Button from '../future-hopr-lib-components/Button';
-import { StepContainer } from './components';
+import Button from '../../../../future-hopr-lib-components/Button';
+import { StepContainer } from '../components';
 
 //Store
-import { useAppSelector, useAppDispatch } from '../store';
-import { stakingHubActions } from '../store/slices/stakingHub';
+import { useAppSelector, useAppDispatch } from '../../../../store';
+import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
 const Content = styled.div`
   display: flex;

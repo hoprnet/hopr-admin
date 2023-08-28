@@ -1,5 +1,5 @@
 //Stores
-import { useAppDispatch, useAppSelector } from '../store';
+import { useAppDispatch, useAppSelector } from '../../../store';
 
 // Libraries
 import styled from '@emotion/styled';
@@ -11,14 +11,14 @@ import Tooltip from '@mui/material/Tooltip';
 // components
 import { useEffect, useState } from 'react';
 import { parseUnits } from 'viem';
-import Button from '../future-hopr-lib-components/Button';
-import GrayButton from '../future-hopr-lib-components/Button/gray';
-import Section from '../future-hopr-lib-components/Section';
-import { useEthersSigner } from '../hooks';
-import { safeActionsAsync } from '../store/slices/safe';
-import Card from '../components/Card';
+import Button from '../../../future-hopr-lib-components/Button';
+import GrayButton from '../../../future-hopr-lib-components/Button/gray';
+import Section from '../../../future-hopr-lib-components/Section';
+import { useEthersSigner } from '../../../hooks';
+import { safeActionsAsync } from '../../../store/slices/safe';
+import Card from '../../../components/Card';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
-import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../utils/safeTransactions';
+import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../../../utils/safeTransactions';
 
 const StyledForm = styled.div`
   width: 100%;
