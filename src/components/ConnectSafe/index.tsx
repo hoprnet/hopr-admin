@@ -164,30 +164,24 @@ export default function ConnectSafe() {
         moduleAddress,
       }),
     ).unwrap();
-
+    
+    let nodeXDaiBalance = '0';
+    
     if (
       subgraphRes.registeredNodesInNetworkRegistryParsed?.length > 0 &&
       subgraphRes.registeredNodesInNetworkRegistryParsed?.[0] !== null
     ) {
       const bigIntXDaiBalance = await browserClient.getBalance({ address: subgraphRes.registeredNodesInNetworkRegistryParsed[0] as Address });
-      const nodeXDaiBalance = bigIntXDaiBalance.toString();
-      dispatch(
-        stakingHubActions.useSafeForOnboarding({
-          safeAddress,
-          moduleAddress,
-          nodeXDaiBalance,
-        }),
-      );
-    } else {
-      dispatch(
-        stakingHubActions.useSafeForOnboarding({
-          safeAddress,
-          moduleAddress,
-          nodeXDaiBalance: '0',
-        }),
-      );
+      nodeXDaiBalance = bigIntXDaiBalance.toString();
     }
-
+  
+    dispatch(
+      stakingHubActions.useSafeForOnboarding({
+        safeAddress,
+        moduleAddress,
+        nodeXDaiBalance,
+      }),
+    );
     await dispatch(stakingHubActionsAsync.goToStepWeShouldBeOnThunk()).unwrap();
     dispatch(stakingHubActions.onboardingIsFetching(false));
   };
