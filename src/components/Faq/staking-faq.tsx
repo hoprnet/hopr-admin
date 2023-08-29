@@ -7,6 +7,74 @@ type FaqElement = {
 type FaqData = Record<string, FaqElement[]>;
 
 const stakingFaq: FaqData = {
+  '/hub/onboarding#0': [
+    {
+      id: 1,
+      title: 'Token addresses',
+      content: (
+        <span>
+          HOPR (Ethereum): 0xf5581dfefd8fb0e4aec526be659cfab1f8c781dax
+          <br />
+          HOPR (Gnosis chain): 0xD057604A14982FE8D88c5fC25Aac3267eA142a08
+          <br />
+          wxHOPR (Gnosis chain): 0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1
+        </span>
+      ),
+    },
+    {
+      id: 2,
+      title: 'Buying xDAI & HOPR',
+      content: (
+        <span>
+          You can find the best options for buying HOPR, DAI, xDAI and xHOPR in our{' '}
+          <a href="https://docs.hoprnet.org/staking/how-to-get-hopr">docs</a>.
+        </span>
+      ),
+    },
+    {
+      id: 3,
+      title: 'Why do I need wxHOPR?',
+      content:
+        'wxHOPR is used to fund channels with other nodes on the network. Well-connected nodes are able to relay more data and earn a higher yield.',
+    },
+    {
+      id: 4,
+      title: 'Wrapping xHOPR → wxHOPR',
+      content: (
+        <span>
+          You can convert your xHOPR to wxHOPR by using our wrapper on the{' '}
+          <a href="https://wrapper.hoprnet.org/">staking hub</a>.
+        </span>
+      ),
+    },
+    {
+      id: 5,
+      title: 'How do I get an NR NFT?',
+      content:
+        'NR NFTs were given to node runners of previous HOPR releases. We no longer distribute this NFT. So unless you have already been airdropped one by HOPR, you will only be able to find them on NFT marketplaces.',
+    },
+  ],
+  '/hub/onboarding#1': [
+    {
+      id: 1,
+      title: 'Managing owners',
+      content: 'You can change ownership after safe creation.',
+    },
+  ],
+  '/hub/onboarding#3': [
+    {
+      id: 1,
+      title: 'How do I get an NR NFT?',
+      content:
+        'NR NFTs were given to node runners of previous HOPR releases. We no longer distribute this NFT. So unless you have already been airdropped one by HOPR, you will only be able to find them on NFT marketplaces.',
+    },
+    {
+      id: 2,
+      title: 'What happens if I have multiple NR NFTS?',
+      content:
+        'If you have more than one NR NFT, only the one with the lowest ID number will be transferred to your safe, and the rest will remain in your wallet.',
+    },
+  ],
   '/hub/onboarding#4': [
     {
       id: 1,
@@ -54,27 +122,6 @@ const stakingFaq: FaqData = {
         'One xDAI is sufficient to start running a node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
     },
   ],
-  '/hub/onboarding#1': [
-    {
-      id: 1,
-      title: 'Managing owners',
-      content: 'You can change ownership after safe creation.',
-    },
-  ],
-  '/hub/onboarding#3': [
-    {
-      id: 1,
-      title: 'How do I get an NR NFT?',
-      content:
-        'NR NFTs were given to node runners of previous HOPR releases. We no longer distribute this NFT. So unless you have already been airdropped one by HOPR, you will only be able to find them on NFT marketplaces.',
-    },
-    {
-      id: 2,
-      title: 'What happens if I have multiple NR NFTS?',
-      content:
-        'If you have more than one NR NFT, only the one with the lowest ID number will be transferred to your safe, and the rest will remain in your wallet.',
-    },
-  ],
   '/hub/onboarding#7': [
     {
       id: 1,
@@ -94,40 +141,6 @@ const stakingFaq: FaqData = {
           You can view a complete breakdown of how to install a HOPR node using Docker <a href="#">here</a>
         </span>
       ),
-    },
-  ],
-  '/steps/update-your-node': [
-    {
-      id: 1,
-      title: 'How to update my node',
-      content: (
-        <span>
-          The process for updating your node depends on the device you're using. Follow the appropriate link for your
-          setup.
-          <br />
-          <br />- For Dappnode users, click <a href="#">here</a> for the steps.
-          <br />- Docker users, find your instructions <a href="#">here</a>.
-        </span>
-      ),
-    },
-    {
-      id: 2,
-      title: 'How to restart my node',
-      content: (
-        <span>
-          The process for restarting your node depends on the device you're using. Follow the appropriate link for your
-          setup.
-          <br />
-          <br />- For Dappnode users, click <a href="#">here</a> for the steps.
-          <br />- Docker users, find your instructions <a href="#">here</a>.
-        </span>
-      ),
-    },
-    {
-      id: 3,
-      title: 'How much xDAI should I transfer?',
-      content:
-        'One xDAI is sufficient to start running a node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
     },
   ],
   '/hub/onboarding#10': [
@@ -189,6 +202,40 @@ const stakingFaq: FaqData = {
         'If your node is ever compromised it may lead to your entire allowance of wxHOPR being drained. Please set a reasonable allowance, and use our default value as a guideline.',
     },
   ],
+  '/steps/update-your-node': [
+    {
+      id: 1,
+      title: 'How to update my node',
+      content: (
+        <span>
+          The process for updating your node depends on the device you're using. Follow the appropriate link for your
+          setup.
+          <br />
+          <br />- For Dappnode users, click <a href="#">here</a> for the steps.
+          <br />- Docker users, find your instructions <a href="#">here</a>.
+        </span>
+      ),
+    },
+    {
+      id: 2,
+      title: 'How to restart my node',
+      content: (
+        <span>
+          The process for restarting your node depends on the device you're using. Follow the appropriate link for your
+          setup.
+          <br />
+          <br />- For Dappnode users, click <a href="#">here</a> for the steps.
+          <br />- Docker users, find your instructions <a href="#">here</a>.
+        </span>
+      ),
+    },
+    {
+      id: 3,
+      title: 'How much xDAI should I transfer?',
+      content:
+        'One xDAI is sufficient to start running a node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
+    },
+  ],
   '/steps/stake': [
     {
       id: 1,
@@ -230,53 +277,6 @@ const stakingFaq: FaqData = {
       title: 'How much xDAI should I transfer?',
       content:
         'One xDAI is sufficient to start running a node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
-    },
-  ],
-  '/hub/onboarding#0': [
-    {
-      id: 1,
-      title: 'Token addresses',
-      content: (
-        <span>
-          HOPR (Ethereum): 0xf5581dfefd8fb0e4aec526be659cfab1f8c781dax
-          <br />
-          HOPR (Gnosis chain): 0xD057604A14982FE8D88c5fC25Aac3267eA142a08
-          <br />
-          wxHOPR (Gnosis chain): 0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1
-        </span>
-      ),
-    },
-    {
-      id: 2,
-      title: 'Buying xDAI & HOPR',
-      content: (
-        <span>
-          You can find the best options for buying HOPR, DAI, xDAI and xHOPR in our{' '}
-          <a href="https://docs.hoprnet.org/staking/how-to-get-hopr">docs</a>.
-        </span>
-      ),
-    },
-    {
-      id: 3,
-      title: 'Why do I need wxHOPR?',
-      content:
-        'wxHOPR is used to fund channels with other nodes on the network. Well-connected nodes are able to relay more data and earn a higher yield.',
-    },
-    {
-      id: 4,
-      title: 'Wrapping xHOPR → wxHOPR',
-      content: (
-        <span>
-          You can convert your xHOPR to wxHOPR by using our wrapper on the{' '}
-          <a href="https://wrapper.hoprnet.org/">staking hub</a>.
-        </span>
-      ),
-    },
-    {
-      id: 5,
-      title: 'How do I get an NR NFT?',
-      content:
-        'NR NFTs were given to node runners of previous HOPR releases. We no longer distribute this NFT. So unless you have already been airdropped one by HOPR, you will only be able to find them on NFT marketplaces.',
     },
   ],
   '/hub/wrapper': [
