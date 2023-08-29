@@ -15,8 +15,8 @@ import { appActions } from '../../store/slices/app';
 import { truncateEthereumAddress } from '../../utils/blockchain';
 
 //web3
-import { createWalletClient, custom } from 'viem'
-import { gnosis } from 'viem/chains'
+import { createWalletClient, custom } from 'viem';
+import { gnosis } from 'viem/chains';
 import { browserClient } from '../../providers/wagmi';
 
 const AppBarContainer = styled(Button)`
@@ -159,19 +159,23 @@ export default function ConnectSafe() {
     dispatch(stakingHubActions.onboardingIsFetching(true));
     await dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));
     const moduleAddress = safes.filter((elem) => elem.safeAddress === safeAddress)[0].moduleAddress;
-    const subgraphRez = await dispatch(stakingHubActionsAsync.getSubgraphDataThunk({safeAddress, moduleAddress}));
+    const subgraphRez = await dispatch(stakingHubActionsAsync.getSubgraphDataThunk({
+      safeAddress, moduleAddress, 
+    }));
     let nodeXDaiBalance;
     // TODO: fix later
     // @ts-ignore
-    if(subgraphRez.payload?.registeredNodesInNetworkRegistryParsed?.length > 0 && subgraphRez.payload.registeredNodesInNetworkRegistryParsed[0] !==null) {
-      console.log('Onboarding: we have a nodeAddress')
-      nodeXDaiBalance = await browserClient.getBalance({ 
+    if (
+      subgraphRez.payload?.registeredNodesInNetworkRegistryParsed?.length > 0 &&
+      subgraphRez.payload.registeredNodesInNetworkRegistryParsed[0] !== null
+    ) {
+      console.log('Onboarding: we have a nodeAddress');
+      nodeXDaiBalance = await browserClient.getBalance({
         // @ts-ignore
-        address: subgraphRez.payload.registeredNodesInNetworkRegistryParsed[0],
-      });
+        address: subgraphRez.payload.registeredNodesInNetworkRegistryParsed[0] });
       nodeXDaiBalance = nodeXDaiBalance.toString();
       // @ts-ignore
-      console.log('Onboarding: node xDai balance is', nodeXDaiBalance/1e18);
+      console.log('Onboarding: node xDai balance is', nodeXDaiBalance / 1e18);
     }
 
     dispatch(
@@ -206,7 +210,9 @@ export default function ConnectSafe() {
       onClick={handleSafeButtonClick}
       ref={menuRef}
       disabled={!connected.connected}
-      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${environment === 'dev' ? 'display' : 'display-none'}`}
+      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${
+        environment === 'dev' ? 'display' : 'display-none'
+      }`}
     >
       <div className="image-container">
         <img
