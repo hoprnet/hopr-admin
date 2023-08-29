@@ -164,9 +164,9 @@ export default function ConnectSafe() {
         moduleAddress,
       }),
     ).unwrap();
-    
+
     let nodeXDaiBalance = '0';
-    
+
     if (
       subgraphRes.registeredNodesInNetworkRegistryParsed?.length > 0 &&
       subgraphRes.registeredNodesInNetworkRegistryParsed?.[0] !== null
@@ -174,7 +174,7 @@ export default function ConnectSafe() {
       const bigIntXDaiBalance = await browserClient.getBalance({ address: subgraphRes.registeredNodesInNetworkRegistryParsed[0] as Address });
       nodeXDaiBalance = bigIntXDaiBalance.toString();
     }
-  
+
     dispatch(
       stakingHubActions.useSafeForOnboarding({
         safeAddress,
