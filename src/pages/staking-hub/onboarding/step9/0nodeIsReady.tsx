@@ -28,7 +28,9 @@ export default function NodeIsReady() {
     >
       <Content>
         <ConfirmButton
-          onClick={()=>{navigate('/dev-pages/staking-screen')}}
+          onClick={() => {
+            navigate('/dev-pages/staking-screen');
+          }}
         >
           VIEW STAKING OVERVIEW
         </ConfirmButton>
