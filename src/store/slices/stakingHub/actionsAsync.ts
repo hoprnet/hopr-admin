@@ -141,14 +141,16 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
       return 16;
     }
 
-    console.log('BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18)', BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18));
-    if (BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18) ) {
+    console.log('BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18)', state.stakingHub.onboarding.nodeXDaiBalance && BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18));
+    if (state.stakingHub.onboarding.nodeXDaiBalance && BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18) ) {
       return 15;
     }
 
-    console.log('state.stakingHub.safeInfo.data.module.includedNodes.length > 0', state.stakingHub.safeInfo.data.module.includedNodes.length > 0);
-    console.log('state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null', state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null);
+    console.log('state.stakingHub.safeInfo.data.module.includedNodes.length > 0', state.stakingHub.safeInfo.data.module.includedNodes);
+    console.log('state.stakingHub.safeInfo.data.module.includedNodes.length > 0', state.stakingHub.safeInfo.data.module.includedNodes && state.stakingHub.safeInfo.data.module.includedNodes.length > 0);
+    console.log('state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null', state.stakingHub.safeInfo.data.module.includedNodes && state.stakingHub.safeInfo.data.module.includedNodes.length > 0 && state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null);
     if (
+      state.stakingHub.safeInfo.data.module.includedNodes &&
       state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
       state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null
     ) {
