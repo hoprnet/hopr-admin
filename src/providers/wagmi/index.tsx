@@ -39,6 +39,12 @@ const {
 const walletIsInBrowser =
   typeof window !== 'undefined' && typeof (window as unknown as WindowWithEthereum).ethereum !== 'undefined';
 
+
+export const browserClient = createWalletClient({
+  chain: gnosis,
+  transport: custom((window as unknown as WindowWithEthereum).ethereum),
+}).extend(publicActions);
+
 const config = createConfig({
   autoConnect: true,
   connectors: [
@@ -56,10 +62,7 @@ const config = createConfig({
     // this means even if connected through wallet connect
     // the requests will go through the wallet client
     if (walletIsInBrowser) {
-      return createWalletClient({
-        chain: gnosis,
-        transport: custom((window as unknown as WindowWithEthereum).ethereum),
-      }).extend(publicActions);
+      return browserClient;
     }
 
     // no ethereum found in window

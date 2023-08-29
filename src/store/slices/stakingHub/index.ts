@@ -16,7 +16,24 @@ const stakingHubSlice = createSlice({
         moduleAddress: null,
         notFinished: false,
         userIsInOnboarding: false,
+        nodeXDaiBalance: null,
+        isFetching: false,
       };
+    },
+    resetOnboardingState: (state) => {
+      state.onboarding = {
+        step: 0,
+        nodeAddress: null,
+        safeAddress: null,
+        moduleAddress: null,
+        notFinished: false,
+        userIsInOnboarding: false,
+        nodeXDaiBalance: null,
+        isFetching: false,
+      };
+    },
+    onboardingIsFetching: (state, action) => {
+      state.onboarding.isFetching = action.payload;
     },
     addSafe: (state, action) => {
       state.safes.data = [...state.safes.data, action.payload];
@@ -29,6 +46,7 @@ const stakingHubSlice = createSlice({
     useSafeForOnboarding: (state, action) => {
       state.onboarding.safeAddress = action.payload.safeAddress;
       state.onboarding.moduleAddress = action.payload.moduleAddress;
+      if (action.payload.nodeXDaiBalance) state.onboarding.nodeXDaiBalance = action.payload.nodeXDaiBalance;
     },
     setOnboardingNodeAddress: (state, action) => {
       state.onboarding.nodeAddress = action.payload;
