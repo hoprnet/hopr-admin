@@ -9,6 +9,7 @@ import { useEthersSigner } from '../../../../hooks';
 // Store
 import { useAppSelector, useAppDispatch } from '../../../../store';
 import { safeActionsAsync } from '../../../../store/slices/safe';
+import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
 // MUI
 import TextField from '@mui/material/TextField';
@@ -101,6 +102,7 @@ export default function FundNode() {
     )
       .unwrap()
       .then(() => {
+        dispatch(stakingHubActions.setOnboardingStep(15));
         set_isExecutionLoading(false);
       })
       .catch(() => {
