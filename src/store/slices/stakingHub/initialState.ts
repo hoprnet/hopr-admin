@@ -129,9 +129,7 @@ export const initialState: InitialState = {
       module: {
         id: null,
         implementation: null,
-        includedNodes: [
-          { node: { id: null } },
-        ],
+        includedNodes: [{ node: { id: null } }],
         multiSend: null,
         target: { id: null },
       },
