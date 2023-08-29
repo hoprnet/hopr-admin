@@ -24,9 +24,8 @@ export default function safeIsReady() {
       title="SAFE IS READY"
       description={
         <>
-          You’re now part of the HOPR ecosystem!
-          <br />
-          Next, you’ll need to fund your HOPR node."
+          <p>You’re now part of the HOPR ecosystem!</p>
+          <p>Next, you’ll need to fund your HOPR node.</p>
         </>
       }
       image={{
