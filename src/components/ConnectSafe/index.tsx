@@ -167,9 +167,10 @@ export default function ConnectSafe() {
     );
     let nodeXDaiBalance;
     // TODO: fix later
-    // @ts-ignore
     if (
+      // @ts-ignore
       subgraphRez.payload?.registeredNodesInNetworkRegistryParsed?.length > 0 &&
+      // @ts-ignore
       subgraphRez.payload.registeredNodesInNetworkRegistryParsed[0] !== null
     ) {
       console.log('Onboarding: we have a nodeAddress');
