@@ -13,6 +13,8 @@ type InitialState = {
     safeAddress: string | null;
     moduleAddress: string | null;
     userIsInOnboarding: boolean;
+    nodeXDaiBalance: string | null;
+    isFetching: boolean;
   };
   safeInfo: {
     data: SubgraphParsedOutput;
@@ -97,6 +99,8 @@ export const initialState: InitialState = {
     moduleAddress: null,
     notFinished: false,
     userIsInOnboarding: false,
+    nodeXDaiBalance: null,
+    isFetching: false,
   },
   safeInfo: {
     data: {

@@ -73,80 +73,14 @@ const StyledBlueButton = styled(Button)`
 export default function FundNode() {
   const dispatch = useAppDispatch();
   // injected states
-  const pendingTransactions = useAppSelector((store) => store.safe.pendingTransactions.data);
-  const safeInfo = useAppSelector((store) => store.safe.info.data);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const nodeAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
-  const walletAddress = useAppSelector((store) => store.web3.account);
   // local states
-  const [userCanSkipProposal, set_userCanSkipProposal] = useState(false);
-  const [userAction, set_userAction] = useState<'EXECUTE' | 'SIGN' | null>(null);
   const [xdaiValue, set_xdaiValue] = useState<string>('');
-  const [isProposalLoading, set_isProposalLoading] = useState<boolean>();
   const [isExecutionLoading, set_isExecutionLoading] = useState<boolean>();
-  const [proposedTxHash, set_proposedTxHash] = useState<string>();
-  const [proposedTx, set_proposedTx] = useState<SafeMultisigTransactionResponse>();
 
   const signer = useEthersSigner();
 
-  useEffect(() => {
-    if (proposedTxHash) {
-      const foundProposedTx = pendingTransactions?.results.find((tx) => tx.safeTxHash === proposedTxHash);
-      if (foundProposedTx && walletAddress) {
-        set_proposedTx(foundProposedTx);
-        set_userAction(getUserActionForPendingTransaction(foundProposedTx, walletAddress));
-      }
-    }
-  }, [pendingTransactions, proposedTxHash, walletAddress]);
-
-  useEffect(() => {
-    set_userCanSkipProposal(getUserCanSkipProposal(safeInfo));
-  }, [safeInfo]);
-
-  const proposeTx = () => {
-    if (signer && Number(xdaiValue) && selectedSafeAddress && nodeAddress) {
-      set_isProposalLoading(true);
-      dispatch(
-        safeActionsAsync.createSafeTransactionThunk({
-          signer,
-          safeAddress: selectedSafeAddress,
-          safeTransactionData: {
-            to: nodeAddress,
-            value: parseUnits(xdaiValue as `${number}`, 18).toString(),
-            data: '0x',
-          },
-        }),
-      )
-        .unwrap()
-        .then((safeTxHash) => {
-          set_proposedTxHash(safeTxHash);
-          set_isProposalLoading(false);
-        })
-        .catch(() => {
-          set_isProposalLoading(false);
-        });
-    }
-  };
-
-  const executeTx = () => {
-    if (proposedTxHash && signer && selectedSafeAddress) {
-      const safeTx = pendingTransactions?.results.find((tx) => {
-        if (tx.safeTxHash === proposedTxHash) {
-          return true;
-        }
-        return false;
-      });
-      if (safeTx) {
-        dispatch(
-          safeActionsAsync.executePendingTransactionThunk({
-            safeAddress: selectedSafeAddress,
-            signer,
-            safeTransaction: safeTx,
-          }),
-        );
-      }
-    }
-  };
 
   const createAndExecuteTx = () => {
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
@@ -202,12 +136,11 @@ export default function FundNode() {
           </StyledInputGroup>
         </StyledForm>
         <StyledBlueButton
-          onClick={proposedTx ? executeTx : createAndExecuteTx}
+          onClick={createAndExecuteTx}
           pending={isExecutionLoading}
         >
           FUND
         </StyledBlueButton>
-        {isProposalLoading && <p>Signing transaction with nonce...</p>}
         {isExecutionLoading && <p>Executing transaction with nonce...</p>}
       </div>
     </StepContainer>

@@ -1,7 +1,13 @@
 import { ActionReducerMapBuilder, createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../..';
 import { initialState, SubgraphParsedOutput } from './initialState';
-import { STAKING_V2_SUBGRAPH, HOPR_NETWORK_REGISTRY, MINIMUM_WXHOPR_TO_FUND, MINIMUM_XDAI_TO_FUND } from '../../../../config';
+import { 
+  STAKING_V2_SUBGRAPH, 
+  HOPR_NETWORK_REGISTRY, 
+  MINIMUM_WXHOPR_TO_FUND, 
+  MINIMUM_XDAI_TO_FUND,
+  MINIMUM_XDAI_TO_FUND_NODE
+ } from '../../../../config';
 import NetworkRegistryAbi from '../../../abi/network-registry-abi.json';
 import { WalletClient, publicActions } from 'viem';
 
@@ -130,10 +136,13 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
   async (_payload, { getState }) => {
     const state = getState();
 
-  
-    // if (state.stakingHub.safeInfo) {
-    //   return 13;
-    // }
+    if (BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18) ) {
+      return 15;
+    }
+
+    if (state.stakingHub.safeInfo.data.module.includedNodes[0].node.id !== null) {
+      return 14;
+    }
 
     if (state.safe.delegates.data?.count) {
       return 13;

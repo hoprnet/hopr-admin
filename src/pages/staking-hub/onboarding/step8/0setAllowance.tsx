@@ -85,7 +85,7 @@ export default function SetAllowance() {
       <ButtonContainer>
         <StyledGrayButton
           onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(12));
+            dispatch(stakingHubActions.setOnboardingStep(14));
           }}
         >
           Back
