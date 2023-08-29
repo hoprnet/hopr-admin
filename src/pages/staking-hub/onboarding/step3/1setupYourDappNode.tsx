@@ -1,7 +1,5 @@
 import styled from '@emotion/styled';
-import Card from '../../../../components/Card';
 import Button from '../../../../future-hopr-lib-components/Button';
-import Section from '../../../../future-hopr-lib-components/Section';
 import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { Link } from 'react-router-dom';
@@ -9,13 +7,8 @@ import CodeCopyBox from '../../../../components/CodeCopyBox';
 import { StepContainer } from '../components';
 
 //Store
-import { useAppSelector, useAppDispatch } from '../../../../store';
+import { useAppDispatch } from '../../../../store';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
-
-const ConfirmButton = styled(Button)`
-  width: 250px;
-  align-self: center;
-`;
 
 const Content = styled.div`
   display: flex;

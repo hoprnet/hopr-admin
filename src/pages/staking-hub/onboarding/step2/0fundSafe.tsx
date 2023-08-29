@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { formatEther, parseEther, parseUnits } from 'viem';
+import { Address, formatEther, parseEther, parseUnits } from 'viem';
 import {
   erc20ABI,
   useContractWrite,
@@ -31,14 +31,6 @@ import { StepContainer } from '../components';
 import Button from '../../../../future-hopr-lib-components/Button';
 import styled from '@emotion/styled';
 
-type Address = `0x${string}`;
-type NumberLiteral = `${number}`;
-
-type FundsToSafeProps = {
-  account: Address;
-  set_step: (step: number) => void;
-};
-
 const GreenText = styled.p`
   color: green;
   display: inline;
@@ -48,7 +40,6 @@ const FundsToSafe = () => {
   const dispatch = useAppDispatch();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const walletBalance = useAppSelector((store) => store.web3.balance);
-  const account = useAppSelector((store) => store.web3.account);
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
 
   const [xdaiValue, set_xdaiValue] = useState('');
@@ -56,14 +47,14 @@ const FundsToSafe = () => {
 
   const { config: xDAI_to_safe_config } = usePrepareSendTransaction({
     to: selectedSafeAddress ?? undefined,
-    value: parseEther(xdaiValue as NumberLiteral),
+    value: parseEther(xdaiValue),
   });
 
   const { config: wxHOPR_to_safe_config } = usePrepareContractWrite({
     address: wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     abi: erc20ABI,
     functionName: 'transfer',
-    args: [selectedSafeAddress as Address, parseUnits(wxhoprValue as NumberLiteral, 18)],
+    args: [selectedSafeAddress as Address, parseUnits(wxhoprValue, 18)],
   });
 
   const setMax_xDAI = () => {
@@ -82,9 +73,8 @@ const FundsToSafe = () => {
     isSuccess: is_wxHOPR_to_safe_success,
     isLoading: is_wxHOPR_to_safe_loading,
     write: write_wxHOPR_to_safe,
-  } = useContractWrite({ ...wxHOPR_to_safe_config,
-    //    onSuccess: () => set_step(2),
-  });
+  } = useContractWrite({ ...wxHOPR_to_safe_config });
+
   useEffect(() => {
     if (is_wxHOPR_to_safe_success) {
       set_wxhoprValue('');
@@ -112,7 +102,6 @@ const FundsToSafe = () => {
   };
 
   const xdaiEnoughBalance = (): boolean => {
-    console.log(safeBalance.xDai.value);
     if (Number(safeBalance.xDai.formatted) >= MINIMUM_XDAI_TO_FUND) {
       return true;
     }
@@ -120,7 +109,6 @@ const FundsToSafe = () => {
   };
 
   const wxhoprEnoughBalance = (): boolean => {
-    console.log(safeBalance.wxHopr.value);
     if (Number(safeBalance.wxHopr.formatted) >= MINIMUM_WXHOPR_TO_FUND) {
       return true;
     }
