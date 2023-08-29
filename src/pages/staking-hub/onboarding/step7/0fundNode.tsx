@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import Button from '../../../../future-hopr-lib-components/Button';
-import { Address } from 'viem';
+import { Address, parseUnits } from 'viem';
+import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
 import { StepContainer } from '../components';
 import { useEthersSigner } from '../../../../hooks';
-import { parseUnits } from 'viem';
-import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
-import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../../../../utils/safeTransactions';
 
 // Store
 import { useAppSelector, useAppDispatch } from '../../../../store';
@@ -15,6 +13,10 @@ import { safeActionsAsync } from '../../../../store/slices/safe';
 // MUI
 import TextField from '@mui/material/TextField';
 
+const StyledGrayButton = styled(GrayButton)`
+  border: 1px solid black;
+  height: 39px;
+`;
 
 const StyledForm = styled.div`
   width: 100%;

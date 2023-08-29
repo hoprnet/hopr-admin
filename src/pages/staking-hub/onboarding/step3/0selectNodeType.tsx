@@ -1,11 +1,9 @@
 import styled from '@emotion/styled';
-import Section from '../../../../future-hopr-lib-components/Section';
 import Button from '../../../../future-hopr-lib-components/Button';
-import Card from '../../../../components/Card';
 import { StepContainer } from '../components';
 
 //Store
-import { useAppSelector, useAppDispatch } from '../../../../store';
+import { useAppDispatch } from '../../../../store';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
 const NodeContainer = styled.div`

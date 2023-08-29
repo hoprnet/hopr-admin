@@ -14,7 +14,7 @@ import { Stepper } from '../../../components/Stepper';
 import WhatYouWillNeedPage from './step0/0whatYouWillNeed';
 import CreateSafe from './step0/1createSafe';
 import SafeIsReady from './step0/2safeIsReady';
-import OptionalNftTtransfer from './step1/0optionalNftTtransfer';
+import OptionalNftTransfer from './step1/0optionalNftTransfer';
 import XdaiToSafe from './step2/0fundSafe';
 import SafeIsFunded from './step2/1safeIsFunded';
 import SelectNodeType from './step3/0selectNodeType';
@@ -39,6 +39,24 @@ const OnboardingContainer = styled.div`
   background: #edfbff;
   padding-bottom: 40px;
 `;
+
+export const ONBOARDING_PAGES = {
+  WHAT_YOU_WILL_NEED: 0,
+  CREATE_SAFE: 1,
+  SAFE_IS_READY: 2,
+  OPTIONAL_NFT_TRANSFER: 3,
+  XDAI_TO_SAFE: 4,
+  SAFE_IS_FUNDED: 5,
+  SELECT_NODE_TYPE: 6,
+  SETUP_NODE: 7,
+  SETUP_DAPP_NODE: 8,
+  JOIN_WAITLIST: 10,
+  ADDED_TO_WHITELIST: 11,
+  ADD_NODE: 12,
+  CONFIGURE_NODE: 13,
+  FUND_NODE: 14,
+  SET_ALLOWANCE: 15,
+} as const;
 
 function Onboarding() {
   const dispatch = useAppDispatch();
@@ -88,22 +106,22 @@ function Onboarding() {
         ]}
       />
 
-      {onboardingStep === 0 && <WhatYouWillNeedPage />}
-      {onboardingStep === 1 && <CreateSafe />}
-      {onboardingStep === 2 && <SafeIsReady />}
-      {onboardingStep === 3 && <OptionalNftTtransfer />}
-      {onboardingStep === 4 && <XdaiToSafe />}
-      {onboardingStep === 5 && <SafeIsFunded />}
-      {onboardingStep === 6 && <SelectNodeType />}
-      {onboardingStep === 7 && <SetupNodeStep />}
-      {onboardingStep === 8 && <SetupYourDappNode />}
+      {onboardingStep === ONBOARDING_PAGES.WHAT_YOU_WILL_NEED && <WhatYouWillNeedPage />}
+      {onboardingStep === ONBOARDING_PAGES.CREATE_SAFE && <CreateSafe />}
+      {onboardingStep === ONBOARDING_PAGES.SAFE_IS_READY && <SafeIsReady />}
+      {onboardingStep === ONBOARDING_PAGES.OPTIONAL_NFT_TRANSFER && <OptionalNftTransfer />}
+      {onboardingStep === ONBOARDING_PAGES.XDAI_TO_SAFE && <XdaiToSafe />}
+      {onboardingStep === ONBOARDING_PAGES.SAFE_IS_FUNDED && <SafeIsFunded />}
+      {onboardingStep === ONBOARDING_PAGES.SELECT_NODE_TYPE && <SelectNodeType />}
+      {onboardingStep === ONBOARDING_PAGES.SETUP_NODE && <SetupNodeStep />}
+      {onboardingStep === ONBOARDING_PAGES.SETUP_DAPP_NODE && <SetupYourDappNode />}
 
-      {onboardingStep === 10 && <JoinWaitListStep />}
-      {onboardingStep === 11 && <AddedToWhitelist />}
-      {onboardingStep === 12 && <AddNode />}
-      {onboardingStep === 13 && <ConfigureNode />}
-      {onboardingStep === 14 && <FundNode />}
-      {onboardingStep === 15 && <SetAllowance />}
+      {onboardingStep === ONBOARDING_PAGES.JOIN_WAITLIST && <JoinWaitListStep />}
+      {onboardingStep === ONBOARDING_PAGES.ADDED_TO_WHITELIST && <AddedToWhitelist />}
+      {onboardingStep === ONBOARDING_PAGES.ADD_NODE && <AddNode />}
+      {onboardingStep === ONBOARDING_PAGES.CONFIGURE_NODE && <ConfigureNode />}
+      {onboardingStep === ONBOARDING_PAGES.FUND_NODE && <FundNode />}
+      {onboardingStep === ONBOARDING_PAGES.SET_ALLOWANCE && <SetAllowance />}
 
       {onboardingStep === 22 && (
         <StepContainer>
