@@ -183,6 +183,13 @@ export const applicationMapStakingHub: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
+        name: 'Withdraw',
+        path: 'withdraw',
+        icon: <WalletIcon />,
+        element: <SafeWithdraw />,
+        loginNeeded: 'web3',
+      },
+      {
         name: 'Wrapper',
         path: 'wrapper',
         icon: <PaidIcon />,
@@ -245,13 +252,6 @@ export const applicationMapDevWeb3: ApplicationMapType = [
         path: 'safe/staking',
         icon: <SavingsIcon />,
         element: <SafeStakingPage />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Withdraw',
-        path: 'withdraw',
-        icon: <WalletIcon />,
-        element: <SafeWithdraw />,
         loginNeeded: 'web3',
       },
     ],
