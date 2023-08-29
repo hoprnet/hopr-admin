@@ -165,11 +165,11 @@ export default function ConnectSafe() {
     // @ts-ignore
     if(subgraphRez.payload?.registeredNodesInNetworkRegistryParsed?.length > 0 && subgraphRez.payload.registeredNodesInNetworkRegistryParsed[0] !==null) {
       console.log('Onboarding: we have a nodeAddress')
-      nodeXDaiBalance = await browserClient?.getBalance({ 
+      nodeXDaiBalance = await browserClient.getBalance({ 
         // @ts-ignore
         address: subgraphRez.payload.registeredNodesInNetworkRegistryParsed[0],
       });
-      nodeXDaiBalance = nodeXDaiBalance?.toString();
+      nodeXDaiBalance = nodeXDaiBalance.toString();
       // @ts-ignore
       console.log('Onboarding: node xDai balance is', nodeXDaiBalance/1e18);
     }
