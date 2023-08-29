@@ -27,7 +27,7 @@ const ConfirmButton = styled(Button)`
   align-self: center;
 `;
 
-const OptionContaiener = styled.div`
+const OptionContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -109,89 +109,90 @@ export default function optionalNftTtransfer() {
         'Transfer your NR (Network Registry) NFT to join the network with only 10,000 wxHOPR. If you do not have one Please select the 30,000 option and continue.'
       }
     >
-      <OptionContaiener>
-        <Option
-          className={`${option === 0 ? 'chosen' : ''}`}
-          onClick={() => {
-            set_option(0);
-          }}
-          disabled={communityNftIdInWallet === null}
-        >
-          <OptionText>
-            <div className="left">
-              <SRadio checked={option === 0} />
-            </div>
-            <div className="right">
-              <span className="big">Minimum 10,000 wxHOPR</span>
-              <br />
-              <span className="smaller">WITH transferred NR NFT in your safe</span>
-            </div>
-          </OptionText>
-          <TransferNft>
-            <img src={whichNFTimage()} />
-            <Button
-              onClick={(event) => {
-                event.stopPropagation();
-                if (!walletClient) return;
-                if (walletAddress && safeAddress && communityNftIdInWallet !== null) {
-                  dispatch(
-                    web3ActionsAsync.sendNftToSafeThunk({
-                      walletAddress,
-                      safeAddress,
-                      walletClient,
-                      communityNftId: communityNftIdInWallet,
-                    }),
-                  );
-                }
-              }}
-              disabled={communityNftIdInWallet === null}
-            >
-              Transfer NFT to Safe
-            </Button>
-          </TransferNft>
-        </Option>
-        <Option
-          className={`${option === 1 ? 'chosen' : ''}`}
-          onClick={() => {
-            set_option(1);
-          }}
-        >
-          <OptionText>
-            <div className="left">
-              <SRadio checked={option === 1} />
-            </div>
-            <div className="right">
-              <span className="big">Minimum 30,000 wxHOPR</span>
-            </div>
-          </OptionText>
-        </Option>
-      </OptionContaiener>
-
-      <Content>
-        {option === 0 && !communityNftIdInSafe ? (
-          <Tooltip title="You need to transder Community NFT to the Safe in order to use that option">
-            <span style={{ textAlign: 'center' }}>
-              <ConfirmButton
-                onClick={() => {
-                  dispatch(stakingHubActions.setOnboardingStep(4));
-                }}
-                disabled={option === null || (option === 0 && !communityNftIdInSafe)}
-              >
-                CONTINUE
-              </ConfirmButton>
-            </span>
-          </Tooltip>
-        ) : (
-          <ConfirmButton
+      <>
+        <OptionContainer>
+          <Option
+            className={`${option === 0 ? 'chosen' : ''}`}
             onClick={() => {
-              dispatch(stakingHubActions.setOnboardingStep(4));
+              set_option(0);
             }}
-            disabled={option === null}
+            disabled={communityNftIdInWallet === null}
           >
+            <OptionText>
+              <div className="left">
+                <SRadio checked={option === 0} />
+              </div>
+              <div className="right">
+                <span className="big">Minimum 10,000 wxHOPR</span>
+                <br />
+                <span className="smaller">WITH transferred NR NFT in your safe</span>
+              </div>
+            </OptionText>
+            <TransferNft>
+              <img src={whichNFTimage()} />
+              <Button
+                onClick={(event) => {
+                  event.stopPropagation();
+                  if (!walletClient) return;
+                  if (walletAddress && safeAddress && communityNftIdInWallet !== null) {
+                    dispatch(
+                      web3ActionsAsync.sendNftToSafeThunk({
+                        walletAddress,
+                        safeAddress,
+                        walletClient,
+                        communityNftId: communityNftIdInWallet,
+                      }),
+                    );
+                  }
+                }}
+                disabled={communityNftIdInWallet === null}
+              >
+              Transfer NFT to Safe
+              </Button>
+            </TransferNft>
+          </Option>
+          <Option
+            className={`${option === 1 ? 'chosen' : ''}`}
+            onClick={() => {
+              set_option(1);
+            }}
+          >
+            <OptionText>
+              <div className="left">
+                <SRadio checked={option === 1} />
+              </div>
+              <div className="right">
+                <span className="big">Minimum 30,000 wxHOPR</span>
+              </div>
+            </OptionText>
+          </Option>
+        </OptionContainer>
+        <Content>
+          {option === 0 && !communityNftIdInSafe ? (
+            <Tooltip title="You need to transder Community NFT to the Safe in order to use that option">
+              <span style={{ textAlign: 'center' }}>
+                <ConfirmButton
+                  onClick={() => {
+                    dispatch(stakingHubActions.setOnboardingStep(4));
+                  }}
+                  disabled={option === null || (option === 0 && !communityNftIdInSafe)}
+                >
+                CONTINUE
+                </ConfirmButton>
+              </span>
+            </Tooltip>
+          ) : (
+            <ConfirmButton
+              onClick={() => {
+                dispatch(stakingHubActions.setOnboardingStep(4));
+              }}
+              disabled={option === null}
+            >
             CONTINUE
-          </ConfirmButton>
-        )}
-      </Content>
+            </ConfirmButton>
+          )}
+        </Content>
+      </>
     </StepContainer>
   );
 }

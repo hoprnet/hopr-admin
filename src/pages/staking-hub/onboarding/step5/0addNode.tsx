@@ -68,33 +68,35 @@ export default function AddNode() {
         height: 200,
       }}
     >
-      <TextField
-        type="text"
-        label="Node Address"
-        placeholder="Your address..."
-        value={address}
-        onChange={(e) => set_address(e.target.value)}
-      />
-      <ButtonContainer>
-        <StyledGrayButton
-          onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(11));
-          }}
-        >
+      <>
+        <TextField
+          type="text"
+          label="Node Address"
+          placeholder="Your address..."
+          value={address}
+          onChange={(e) => set_address(e.target.value)}
+        />
+        <ButtonContainer>
+          <StyledGrayButton
+            onClick={() => {
+              dispatch(stakingHubActions.setOnboardingStep(11));
+            }}
+          >
           Back
-        </StyledGrayButton>
-        <Tooltip title={!nodeInNetworkRegistry && 'This node is not on the whitelist'}>
-          <span>
-            <Button
-              onClick={addDelegate}
-              disabled={!nodeInNetworkRegistry}
-              pending={isLoading}
-            >
+          </StyledGrayButton>
+          <Tooltip title={!nodeInNetworkRegistry && 'This node is not on the whitelist'}>
+            <span>
+              <Button
+                onClick={addDelegate}
+                disabled={!nodeInNetworkRegistry}
+                pending={isLoading}
+              >
               Continue
-            </Button>
-          </span>
-        </Tooltip>
-      </ButtonContainer>
+              </Button>
+            </span>
+          </Tooltip>
+        </ButtonContainer>
+      </>
     </StepContainer>
   );
 }

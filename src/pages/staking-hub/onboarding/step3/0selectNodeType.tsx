@@ -64,59 +64,61 @@ export default function SelectNodeType() {
   const dispatch = useAppDispatch();
   return (
     <StepContainer title="SELECT NODE TYPE">
-      <NodeContainer>
-        <Node>
-          <ImageContainer>
-            <Image src="/assets/docker.svg" />
-          </ImageContainer>
-          <Title>Docker Version</Title>
-          <Price>Free</Price>
-          <TextContainer>
+      <>
+        <NodeContainer>
+          <Node>
+            <ImageContainer>
+              <Image src="/assets/docker.svg" />
+            </ImageContainer>
+            <Title>Docker Version</Title>
+            <Price>Free</Price>
+            <TextContainer>
             If you want to run a node on your own hardware without the HOPR Node PC, that’s perfectly acceptable and
             possible as well!
-          </TextContainer>
-        </Node>
-        <Node>
-          <ImageContainer>
-            <Image
-              src="/images/dappnode.png"
-              width={310}
-            />
-          </ImageContainer>
-          <Title>Dappnode</Title>
-          <Price>$ 1,630.70</Price>
-          <TextContainer>
-            <span>
-              <b>CPU:</b> Intel NUC i7 Series 10
-            </span>
-            <span>
-              <b>Memory:</b> 32gb
-            </span>
-            <span>
-              <b>Storage:</b> 2TB NVMe
-            </span>
-            <br />
-            <span>
-              <b>Bonus tokens:</b> 1000 HOPR tokens
-            </span>
-          </TextContainer>
-          <Stack>
-            <StyledButton
-              href="https://dappnode.com/collections/frontpage/products/hopr-special-edition"
-              target="_blank"
-            >
+            </TextContainer>
+          </Node>
+          <Node>
+            <ImageContainer>
+              <Image
+                src="/images/dappnode.png"
+                width={310}
+              />
+            </ImageContainer>
+            <Title>Dappnode</Title>
+            <Price>$ 1,630.70</Price>
+            <TextContainer>
+              <span>
+                <b>CPU:</b> Intel NUC i7 Series 10
+              </span>
+              <span>
+                <b>Memory:</b> 32gb
+              </span>
+              <span>
+                <b>Storage:</b> 2TB NVMe
+              </span>
+              <br />
+              <span>
+                <b>Bonus tokens:</b> 1000 HOPR tokens
+              </span>
+            </TextContainer>
+            <Stack>
+              <StyledButton
+                href="https://dappnode.com/collections/frontpage/products/hopr-special-edition"
+                target="_blank"
+              >
               Order
-            </StyledButton>
-          </Stack>
-        </Node>
-      </NodeContainer>
-      <Button
-        onClick={() => {
-          dispatch(stakingHubActions.setOnboardingStep(7));
-        }}
-      >
+              </StyledButton>
+            </Stack>
+          </Node>
+        </NodeContainer>
+        <Button
+          onClick={() => {
+            dispatch(stakingHubActions.setOnboardingStep(7));
+          }}
+        >
         CONTINUE
-      </Button>
+        </Button>
+      </>
     </StepContainer>
   );
 }

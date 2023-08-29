@@ -62,41 +62,43 @@ export default function SetAllowance() {
       title="SET wxHOPR ALLOWANCE"
       description={`Your node will need to access wxHOPR from your safe to fund payment channels on the HOPR network. You can set a maximum allowance to reduce your funds at risk in case your node is ever compromised.`}
     >
-      <StyledInputGroup>
-        <StyledText>NODE ALLOWANCE</StyledText>
-        <StyledTextField
-          type="number"
-          variant="outlined"
-          placeholder="-"
-          size="small"
-          value={formatEther(BigInt(wxhoprValue))}
-          onChange={(e) => set_wxhoprValue(parseEther(e.target.value).toString())}
-          InputProps={{ inputProps: {
-            style: { textAlign: 'right' },
-            min: 0,
-            pattern: '[0-9]*',
-          } }}
-        />
-        <StyledCoinLabel>
-          <Lowercase>wx</Lowercase>hopr
-        </StyledCoinLabel>
-        <Button onClick={() => set_wxhoprValue(MAX_UINT256.toString())}>DEFAULT</Button>
-      </StyledInputGroup>
-      <ButtonContainer>
-        <StyledGrayButton
-          onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(12));
-          }}
-        >
+      <>
+        <StyledInputGroup>
+          <StyledText>NODE ALLOWANCE</StyledText>
+          <StyledTextField
+            type="number"
+            variant="outlined"
+            placeholder="-"
+            size="small"
+            value={formatEther(BigInt(wxhoprValue))}
+            onChange={(e) => set_wxhoprValue(parseEther(e.target.value).toString())}
+            InputProps={{ inputProps: {
+              style: { textAlign: 'right' },
+              min: 0,
+              pattern: '[0-9]*',
+            } }}
+          />
+          <StyledCoinLabel>
+            <Lowercase>wx</Lowercase>hopr
+          </StyledCoinLabel>
+          <Button onClick={() => set_wxhoprValue(MAX_UINT256.toString())}>DEFAULT</Button>
+        </StyledInputGroup>
+        <ButtonContainer>
+          <StyledGrayButton
+            onClick={() => {
+              dispatch(stakingHubActions.setOnboardingStep(12));
+            }}
+          >
           Back
-        </StyledGrayButton>
-        <Button
-          onClick={setAllowance}
-          pending={isLoading}
-        >
+          </StyledGrayButton>
+          <Button
+            onClick={setAllowance}
+            pending={isLoading}
+          >
           SIGN
-        </Button>
-      </ButtonContainer>
+          </Button>
+        </ButtonContainer>
+      </>
     </StepContainer>
   );
 }

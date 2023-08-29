@@ -87,28 +87,28 @@ const CreateSafe = () => {
       title="Create Safe"
       description="Set the owner wallets of your Safe and how many need to confirm to execute a valid transaction."
     >
-      <Container>
-        <Text>Owner address</Text>
-        <FlexContainer>
-          <Text>{account}</Text>
-          <IconButton
-            size="small"
-            onClick={() => navigator.clipboard.writeText(account ? account : '')}
-          >
-            <CopyIcon />
-          </IconButton>
-          <IconButton
-            size="small"
-            href={`https://gnosisscan.io/address/${account}`}
-            target="_blank"
-          >
-            <LaunchIcon />
-          </IconButton>
-        </FlexContainer>
-      </Container>
-      <div>
+      <>
+        <Container>
+          <Text>Owner address</Text>
+          <FlexContainer>
+            <Text>{account}</Text>
+            <IconButton
+              size="small"
+              onClick={() => navigator.clipboard.writeText(account ? account : '')}
+            >
+              <CopyIcon />
+            </IconButton>
+            <IconButton
+              size="small"
+              href={`https://gnosisscan.io/address/${account}`}
+              target="_blank"
+            >
+              <LaunchIcon />
+            </IconButton>
+          </FlexContainer>
+        </Container>
         {owners.length > 1
-          ? owners.slice(1).map((owner) => {
+          && owners.slice(1).map((owner) => {
             return (
               <FlexContainer key={owner.id}>
                 <TextField
@@ -123,25 +123,23 @@ const CreateSafe = () => {
               </FlexContainer>
             );
           })
-          : null}
-      </div>
-      <ButtonContainer>
-        <StyledGrayButton
-          onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(1));
-          }}
-        >
+        }
+        <ButtonContainer>
+          <StyledGrayButton
+            onClick={() => {
+              dispatch(stakingHubActions.setOnboardingStep(1));
+            }}
+          >
           Back
-        </StyledGrayButton>
-        <Button
-          onClick={handleContinueClick}
-          disabled={loading}
-        >
+          </StyledGrayButton>
+          <Button
+            onClick={handleContinueClick}
+            disabled={loading}
+          >
           DEPLOY
-        </Button>
-      </ButtonContainer>
-      <>{loading && <CircularProgress />}</>
-      <>
+          </Button>
+        </ButtonContainer>
+        {loading && <CircularProgress />}
         {error && (
           <StyledError>
             <strong>There was an error:</strong> {JSON.stringify(error)}
