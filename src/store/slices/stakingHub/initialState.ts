@@ -72,19 +72,19 @@ export type SubgraphParsedOutput = {
       {
         node: {
           id: string | null;
-        }
+        };
       }
-    ],
+    ];
     multiSend: string | null;
     target: {
       id: string | null;
-    }
-  },
+    };
+  };
   overall_staking_v2_balances: {
     mHoprBalance: string | null;
     wxHoprBalance: string | null;
     xHoprBalance: string | null;
-  }
+  };
 };
 
 export const initialState: InitialState = {
@@ -128,22 +128,16 @@ export const initialState: InitialState = {
         id: null,
         implementation: null,
         includedNodes: [
-          {
-            node: {
-              id: null,
-            }
-          }
+          { node: { id: null } },
         ],
         multiSend: null,
-        target: {
-          id: null,
-        }
+        target: { id: null },
       },
       overall_staking_v2_balances: {
         mHoprBalance: null,
         wxHoprBalance: null,
         xHoprBalance: null,
-      }
+      },
     },
     isFetching: false,
   },
