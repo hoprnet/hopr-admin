@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
+import { useEffect, useRef, useState } from 'react';
 import { environment } from '../../../config';
 
 // Store
@@ -15,8 +15,7 @@ import { appActions } from '../../store/slices/app';
 import { truncateEthereumAddress } from '../../utils/blockchain';
 
 //web3
-import { createWalletClient, custom } from 'viem';
-import { gnosis } from 'viem/chains';
+import { Address } from 'viem';
 import { browserClient } from '../../providers/wagmi';
 
 const AppBarContainer = styled(Button)`
@@ -159,36 +158,37 @@ export default function ConnectSafe() {
     dispatch(stakingHubActions.onboardingIsFetching(true));
     await dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));
     const moduleAddress = safes.filter((elem) => elem.safeAddress === safeAddress)[0].moduleAddress;
-    const subgraphRez = await dispatch(
+    const subgraphRes = await dispatch(
       stakingHubActionsAsync.getSubgraphDataThunk({
         safeAddress,
         moduleAddress,
       }),
-    );
-    let nodeXDaiBalance;
-    // TODO: fix later
-    // @ts-ignore
+    ).unwrap();
+
     if (
-      subgraphRez.payload?.registeredNodesInNetworkRegistryParsed?.length > 0 &&
-      subgraphRez.payload.registeredNodesInNetworkRegistryParsed[0] !== null
+      subgraphRes.registeredNodesInNetworkRegistryParsed?.length > 0 &&
+      subgraphRes.registeredNodesInNetworkRegistryParsed?.[0] !== null
     ) {
-      console.log('Onboarding: we have a nodeAddress');
-      nodeXDaiBalance = await browserClient.getBalance({
-        // @ts-ignore
-        address: subgraphRez.payload.registeredNodesInNetworkRegistryParsed[0] });
-      nodeXDaiBalance = nodeXDaiBalance.toString();
-      // @ts-ignore
-      console.log('Onboarding: node xDai balance is', nodeXDaiBalance / 1e18);
+      const bigIntXDaiBalance = await browserClient.getBalance({ address: subgraphRes.registeredNodesInNetworkRegistryParsed[0] as Address });
+      const nodeXDaiBalance = bigIntXDaiBalance.toString();
+      dispatch(
+        stakingHubActions.useSafeForOnboarding({
+          safeAddress,
+          moduleAddress,
+          nodeXDaiBalance,
+        }),
+      );
+    } else {
+      dispatch(
+        stakingHubActions.useSafeForOnboarding({
+          safeAddress,
+          moduleAddress,
+          nodeXDaiBalance: '0',
+        }),
+      );
     }
 
-    dispatch(
-      stakingHubActions.useSafeForOnboarding({
-        safeAddress,
-        moduleAddress,
-        nodeXDaiBalance,
-      }),
-    );
-    dispatch(stakingHubActionsAsync.goToStepWeShouldBeOnThunk());
+    await dispatch(stakingHubActionsAsync.goToStepWeShouldBeOnThunk()).unwrap();
     dispatch(stakingHubActions.onboardingIsFetching(false));
   };
 
