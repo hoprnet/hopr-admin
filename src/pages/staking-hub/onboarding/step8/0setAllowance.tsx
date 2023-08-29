@@ -47,7 +47,7 @@ export default function SetAllowance() {
   const setAllowance = async () => {
     if (signer && selectedSafeAddress) {
       await dispatch(
-        safeActionsAsync.createSafeContractTransaction({
+        safeActionsAsync.createAndExecuteContractTransactionThunk({
           data: createApproveTransactionData(nodeAddress, MAX_UINT256),
           signer,
           safeAddress: selectedSafeAddress,
