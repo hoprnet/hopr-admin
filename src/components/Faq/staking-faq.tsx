@@ -247,7 +247,7 @@ const stakingFaq: FaqData = {
       ),
     },
     {
-      id: 1,
+      id: 2,
       title: 'Buying xDAI & HOPR',
       content: (
         <span>
@@ -257,13 +257,13 @@ const stakingFaq: FaqData = {
       ),
     },
     {
-      id: 1,
+      id: 3,
       title: 'Why do I need wxHOPR?',
       content:
         'wxHOPR is used to fund channels with other nodes on the network. Well-connected nodes are able to relay more data and earn a higher yield.',
     },
     {
-      id: 1,
+      id: 4,
       title: 'Wrapping xHOPR → wxHOPR',
       content: (
         <span>
@@ -273,7 +273,7 @@ const stakingFaq: FaqData = {
       ),
     },
     {
-      id: 1,
+      id: 5,
       title: 'How do I get an NR NFT?',
       content:
         'NR NFTs were given to node runners of previous HOPR releases. We no longer distribute this NFT. So unless you have already been airdropped one by HOPR, you will only be able to find them on NFT marketplaces.',
