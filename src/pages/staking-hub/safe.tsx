@@ -33,7 +33,6 @@ function SafeSection() {
   const [threshold, set_threshold] = useState(1);
   const [owners, set_owners] = useState('');
   const [nodeAddress, set_nodeAddress] = useState('');
-  const [safeAddress, set_safeAddress] = useState('');
   const [includeNodeResponse, set_includeNodeResponse] = useState('');
   const [safeAddressForRegistry, set_safeAddressForRegistry] = useState('');
   const [nodeAddressForRegistry, set_nodeAddressForRegistry] = useState('');
@@ -260,9 +259,9 @@ function SafeSection() {
         }}
       />
       <button
-        disabled={!selectedSafeAddress}
+        disabled={!safeAddressForRegistry || !nodeAddressForRegistry}
         onClick={() => {
-          if (walletClient && selectedSafeAddress) {
+          if (walletClient && safeAddressForRegistry && nodeAddressForRegistry) {
             dispatch(
               stakingHubActionsAsync.registerNodeAndSafeToNRThunk({
                 safeAddress: safeAddressForRegistry,
