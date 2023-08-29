@@ -143,7 +143,11 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
   async (_payload, { getState }) => {
     const state = getState();
 
-    if (BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18)) {
+    if (BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance as string) >= BigInt(0) ) {
+      return 16;
+    }
+
+    if (BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18) ) {
       return 15;
     }
 

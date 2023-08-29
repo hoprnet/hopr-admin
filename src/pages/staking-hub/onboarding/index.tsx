@@ -1,13 +1,11 @@
-import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 //Store
-import { useAppSelector, useAppDispatch } from '../../../store';
-import { stakingHubActions } from '../../../store/slices/stakingHub';
+import { useAppSelector } from '../../../store';
 
 // HOPR Components
-import { StepContainer } from './components';
 import { Stepper } from '../../../components/Stepper';
 
 //Steps
@@ -19,14 +17,15 @@ import OptionalNftTransfer from './step1/0optionalNftTransfer';
 import XdaiToSafe from './step2/0fundSafe';
 import SafeIsFunded from './step2/1safeIsFunded';
 import SelectNodeType from './step3/0selectNodeType';
-import SetupNodeStep from './step3/1setupYourNode';
 import SetupYourDappNode from './step3/1setupYourDappNode';
+import SetupNodeStep from './step3/1setupYourNode';
 import JoinWaitListStep from './step4/0joinWaitlist';
 import AddedToWhitelist from './step4/1addedToWhitelist';
 import AddNode from './step5/0addNode';
 import ConfigureNode from './step6/0configureNode';
 import FundNode from './step7/0fundNode';
 import SetAllowance from './step8/0setAllowance';
+import NodeIsReady from './step9/0nodeIsReady';
 
 const OnboardingContainer = styled.div`
   display: flex;
@@ -57,10 +56,10 @@ export const ONBOARDING_PAGES = {
   CONFIGURE_NODE: 13,
   FUND_NODE: 14,
   SET_ALLOWANCE: 15,
+  NODE_IS_READY: 16,
 } as const;
 
 function Onboarding() {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const onboardingStep = useAppSelector((store) => store.stakingHub.onboarding.step);
   const onboardingIsFetching = useAppSelector((store) => store.stakingHub.onboarding.isFetching);
@@ -91,6 +90,9 @@ function Onboarding() {
       return 6;
     case ONBOARDING_PAGES.SET_ALLOWANCE:
       return 7;
+    case ONBOARDING_PAGES.NODE_IS_READY:
+      return 8;
+
     default:
       return -1;
     }
@@ -116,6 +118,7 @@ function Onboarding() {
     case ONBOARDING_PAGES.FUND_NODE:
       return 7;
     case ONBOARDING_PAGES.SET_ALLOWANCE:
+    case ONBOARDING_PAGES.NODE_IS_READY:
       return 8;
 
     default:
@@ -161,6 +164,7 @@ function Onboarding() {
           {onboardingStep === ONBOARDING_PAGES.CONFIGURE_NODE && <ConfigureNode />}
           {onboardingStep === ONBOARDING_PAGES.FUND_NODE && <FundNode />}
           {onboardingStep === ONBOARDING_PAGES.SET_ALLOWANCE && <SetAllowance />}
+          {onboardingStep === ONBOARDING_PAGES.NODE_IS_READY && <NodeIsReady />}
         </>
       )}
     </OnboardingContainer>

@@ -40,12 +40,13 @@ export default function SetAllowance() {
   const dispatch = useAppDispatch();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
   const nodeAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
-  const isLoading = useAppSelector((store) => store.safe.createTransaction.isFetching);
   const signer = useEthersSigner();
   const [wxHoprValue, set_wxHoprValue] = useState('');
+  const [loading, set_loading] = useState(false);
 
   const setAllowance = async () => {
     if (signer && selectedSafeAddress && nodeAddress) {
+      set_loading(true)
       await dispatch(
         safeActionsAsync.createAndExecuteContractTransactionThunk({
           data: createApproveTransactionData(nodeAddress, BigInt(wxHoprValue)),
@@ -53,7 +54,11 @@ export default function SetAllowance() {
           safeAddress: selectedSafeAddress,
           smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
         }),
-      ).unwrap();
+      ).unwrap().then(()=>{
+        dispatch(stakingHubActions.setOnboardingStep(16));
+      }).finally(()=>{
+        set_loading(false)
+      });
     }
   };
 
@@ -84,18 +89,12 @@ export default function SetAllowance() {
           <Button onClick={() => set_wxHoprValue(MAX_UINT256.toString())}>DEFAULT</Button>
         </StyledInputGroup>
         <ButtonContainer>
-          <StyledGrayButton
-            onClick={() => {
-              dispatch(stakingHubActions.setOnboardingStep(14));
-            }}
-          >
-            Back
-          </StyledGrayButton>
           <Button
             onClick={setAllowance}
-            pending={isLoading}
+            disabled={BigInt(wxHoprValue) <= BigInt(0) }
+            pending={loading}
           >
-            SIGN
+          EXECUTE
           </Button>
         </ButtonContainer>
       </>
