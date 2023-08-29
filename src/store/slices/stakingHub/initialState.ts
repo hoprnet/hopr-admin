@@ -68,13 +68,15 @@ export type SubgraphParsedOutput = {
   module: {
     id: string | null;
     implementation: string | null;
-    includedNodes: [
-      {
-        node: {
-          id: string | null;
-        };
-      }
-    ] | [],
+    includedNodes:
+      | [
+          {
+            node: {
+              id: string | null;
+            };
+          }
+        ]
+      | [];
     multiSend: string | null;
     target: {
       id: string | null;
