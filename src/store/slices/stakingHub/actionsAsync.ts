@@ -1,7 +1,7 @@
 import { ActionReducerMapBuilder, createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../..';
-import { initialState, SubgraphOutput } from './initialState';
-import { STAKING_V2_SUBGRAPH, HOPR_NETWORK_REGISTRY } from '../../../../config';
+import { initialState, SubgraphParsedOutput } from './initialState';
+import { STAKING_V2_SUBGRAPH, HOPR_NETWORK_REGISTRY, MINIMUM_WXHOPR_TO_FUND, MINIMUM_XDAI_TO_FUND } from '../../../../config';
 import NetworkRegistryAbi from '../../../abi/network-registry-abi.json';
 import { WalletClient, publicActions } from 'viem';
 
@@ -83,21 +83,19 @@ const registerNodeAndSafeToNRThunk = createAsyncThunk<
   }
 });
 
-const getSubgraphDataThunk = createAsyncThunk<SubgraphOutput | null, string, { state: RootState }>(
+const getSubgraphDataThunk = createAsyncThunk<SubgraphParsedOutput, {safeAddress: string, moduleAddress: string}, { state: RootState }>(
   'stakingHub/getSubgraphData',
-  async (safeAddress, {
+  async ({safeAddress, moduleAddress}, {
     rejectWithValue,
     dispatch,
   }) => {
     dispatch(setSubgraphDataFetching(true));
 
-    //  safeAddress = '0x0cdecaff277c296665f31aac0957a3a3151b6159'; //debug
-
     safeAddress = safeAddress.toLocaleLowerCase();
-    console.log(safeAddress);
+    moduleAddress = moduleAddress.toLocaleLowerCase();
 
     // eslint-disable-next-line no-useless-escape
-    const QUERY = `{\"query\":\"{\\n  safes(first: 1, where: {id: \\\"${safeAddress}\\\"}) {\\n    id\\n    balance {\\n      mHoprBalance\\n      wxHoprBalance\\n      xHoprBalance\\n    }\\n    threshold\\n    owners {\\n      owner {\\n        id\\n      }\\n    }\\n    isCreatedByNodeStakeFactory\\n    targetedModules {\\n      id\\n    }\\n    allowance {\\n      xHoprAllowance\\n      wxHoprAllowance\\n      mHoprAllowance\\n      grantedToChannelsContract\\n    }\\n    addedModules {\\n      module {\\n        id\\n      }\\n    }\\n    isEligibleOnNetworkRegistry\\n    registeredNodesInSafeRegistry {\\n      node {\\n        id\\n      }\\n    }\\n    registeredNodesInNetworkRegistry {\\n      node {\\n        id\\n      }\\n    }\\n  }\\n  _meta {\\n    hasIndexingErrors\\n    deployment\\n  }\\n  nodeManagementModules(first: 1, where: {id: \\\"${safeAddress}\\\"}) {\\n    id\\n    implementation\\n    includedNodes {\\n      node {\\n        id\\n      }\\n    }\\n    multiSend\\n    target {\\n      id\\n    }\\n  }\\n}\",\"variables\":null,\"extensions\":{\"headers\":null}}`;
+    const QUERY = `{\"query\":\"{\\n  safes(first: 1, where: {id: \\\"${safeAddress}\\\"}) {\\n    id\\n    balance {\\n      mHoprBalance\\n      wxHoprBalance\\n      xHoprBalance\\n    }\\n    threshold\\n    owners {\\n      owner {\\n        id\\n      }\\n    }\\n    isCreatedByNodeStakeFactory\\n    targetedModules {\\n      id\\n    }\\n    allowance {\\n      xHoprAllowance\\n      wxHoprAllowance\\n      mHoprAllowance\\n      grantedToChannelsContract\\n    }\\n    addedModules {\\n      module {\\n        id\\n      }\\n    }\\n    isEligibleOnNetworkRegistry\\n    registeredNodesInSafeRegistry {\\n      node {\\n        id\\n      }\\n    }\\n    registeredNodesInNetworkRegistry {\\n      node {\\n        id\\n      }\\n    }\\n  }\\n  nodeManagementModules(\\n    first: 1\\n    where: {id: \\\"${moduleAddress}\\\"}\\n  ) {\\n    id\\n    implementation\\n    includedNodes {\\n      node {\\n        id\\n      }\\n    }\\n    multiSend\\n    target {\\n      id\\n    }\\n  }\\n  balances(where: {id: \\\"all_the_safes\\\"}) {\\n    mHoprBalance\\n    wxHoprBalance\\n    xHoprBalance\\n  }\\n  _meta {\\n    hasIndexingErrors\\n    deployment\\n    block {\\n      hash\\n      timestamp\\n    }\\n  }\\n}\",\"variables\":null,\"extensions\":{\"headers\":null}}`
 
     try {
       const resp = await fetch(STAKING_V2_SUBGRAPH, {
@@ -105,15 +103,16 @@ const getSubgraphDataThunk = createAsyncThunk<SubgraphOutput | null, string, { s
         headers: { 'content-type': 'application/json' },
         body: QUERY,
       });
-      const json: {
-        data: {
-          safes: SubgraphOutput[];
-        };
-      } = await resp.json();
+      const json = await resp.json();
       console.log('SubgraphOutput', json);
-
-      if (json.data.safes[0]) return json.data.safes[0];
-      else return null;
+      
+      let output = JSON.parse(JSON.stringify(initialState.safeInfo.data));
+      if (json.data.safes.length > 0) output = json.data.safes[0];
+      if (json.data.nodeManagementModules.length > 0) output.module = json.data.nodeManagementModules[0];
+      if (json.data.balances.length > 0) output.overall_staking_v2_balances = json.data.balances[0];
+      
+      console.log('SubgraphParsedOutput', output);
+      return output
     } catch (e) {
       return rejectWithValue(e);
     }
@@ -131,12 +130,32 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
   async (_payload, { getState }) => {
     const state = getState();
 
+  
+    // if (state.stakingHub.safeInfo) {
+    //   return 13;
+    // }
+
+    if (state.safe.delegates.data?.count) {
+      return 13;
+    }
+
     if (state.stakingHub.onboarding.nodeAddress) {
       return 11;
     }
 
-    if (state.safe.delegates.data?.count) {
-      return 13;
+    if (
+      state.safe.balance.data.xDai.value && BigInt(state.safe.balance.data.xDai.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18) &&
+      state.safe.balance.data.wxHopr.value && BigInt(state.safe.balance.data.wxHopr.value) >= BigInt(MINIMUM_WXHOPR_TO_FUND*1e18)
+    ) {
+      return 5;
+    }
+
+    if (state.safe.communityNftId !== null) {
+      return 4;
+    }
+
+    if (state.safe.selectedSafeAddress.data) {
+      return 2;
     }
 
     // default case
@@ -158,7 +177,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(getSubgraphDataThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.safeInfo.data = action.payload;
-      if (action.payload.registeredNodesInNetworkRegistry.length > 0) {
+      if (action.payload?.registeredNodesInNetworkRegistry?.length > 0) {
         let tmp = [];
         tmp = action.payload.registeredNodesInNetworkRegistry.map((elem) => elem.node.id as string);
         state.safeInfo.data.registeredNodesInNetworkRegistryParsed = tmp;

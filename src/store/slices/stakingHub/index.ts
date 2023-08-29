@@ -18,6 +18,16 @@ const stakingHubSlice = createSlice({
         userIsInOnboarding: false,
       };
     },
+    resetOnboardingState: (state) => {
+      state.onboarding = {
+        step: 0,
+        nodeAddress: null,
+        safeAddress: null,
+        moduleAddress: null,
+        notFinished: false,
+        userIsInOnboarding: false,
+      };
+    },
     addSafe: (state, action) => {
       state.safes.data = [...state.safes.data, action.payload];
     },

@@ -2,19 +2,34 @@ import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import Button from '../../../../future-hopr-lib-components/Button';
 import { Address } from 'viem';
+import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
 import { StepContainer } from '../components';
 import { useEthersSigner } from '../../../../hooks';
 import { parseUnits } from 'viem';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../../../../utils/safeTransactions';
 
+// Web3
+import { createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../../../utils/blockchain';
+
 // Store
 import { useAppSelector, useAppDispatch } from '../../../../store';
+import { stakingHubActions } from '../../../../store/slices/stakingHub';
 import { safeActionsAsync } from '../../../../store/slices/safe';
 
 // MUI
 import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
 
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
+
+const StyledGrayButton = styled(GrayButton)`
+  border: 1px solid black;
+  height: 39px;
+`;
 
 const StyledForm = styled.div`
   width: 100%;
@@ -64,11 +79,28 @@ const StyledCoinLabel = styled.p`
   text-transform: uppercase;
 `;
 
+const StyledButtonGroup = styled.div`
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+`;
+
 const StyledBlueButton = styled(Button)`
   text-transform: uppercase;
   padding: 0.2rem 4rem;
 `;
 
+const StyledPendingSafeTransactions = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const StyledApproveButton = styled(Button)`
+  align-self: flex-start;
+  text-transform: uppercase;
+`;
 
 export default function FundNode() {
   const dispatch = useAppDispatch();
@@ -172,6 +204,46 @@ export default function FundNode() {
       });
   };
 
+  const getErrorsForSafeTx = ({ customValidator }: { customValidator?: () => { errors: string[] } }) => {
+    const errors: string[] = [];
+
+    if (!signer) {
+      errors.push('wallet is required');
+    }
+
+    if (!selectedSafeAddress) {
+      errors.push('safe is required');
+    }
+
+    if (!nodeAddress) {
+      errors.push('node is required');
+    }
+
+    // only require xDai value if there
+    // is no proposed tx
+    if (!xdaiValue && !proposedTx) {
+      errors.push('xDai value is required');
+    }
+
+    if (customValidator) {
+      const customErrors = customValidator();
+      errors.push(...customErrors.errors);
+    }
+
+    return errors;
+  };
+
+  const getErrorsForApproveButton = () =>
+    getErrorsForSafeTx({ customValidator: () => {
+      return Number(xdaiValue) ? { errors: [] } : { errors: ['xdai value is required'] };
+    } });
+
+  const getErrorsForExecuteButton = () =>
+    getErrorsForSafeTx({ customValidator: () => {
+      // no user action means the user can not do anything
+      return !userAction ? { errors: [] } : { errors: ['transaction requires more approvals'] };
+    } });
+
   return (
     <StepContainer
       title="Fund Node"
@@ -201,12 +273,63 @@ export default function FundNode() {
             <StyledCoinLabel>xdai</StyledCoinLabel>
           </StyledInputGroup>
         </StyledForm>
-        <StyledBlueButton
-          onClick={proposedTx ? executeTx : createAndExecuteTx}
-          pending={isExecutionLoading}
-        >
-          FUND
-        </StyledBlueButton>
+        {!!proposedTx && (
+          <StyledPendingSafeTransactions>
+            <StyledDescription>
+              {userAction === 'EXECUTE'
+                ? 'transaction has been approved by all required owners'
+                : `transaction is pending ${
+                  (proposedTx?.confirmationsRequired ?? 0) - (proposedTx?.confirmations?.length ?? 0)
+                } approvals`}
+            </StyledDescription>
+            {userAction === 'SIGN' && (
+              <StyledApproveButton
+                onClick={() => {
+                  if (signer && proposedTx) {
+                    dispatch(
+                      safeActionsAsync.confirmTransactionThunk({
+                        signer,
+                        safeAddress: proposedTx.safe,
+                        safeTransactionHash: proposedTx.safeTxHash,
+                      }),
+                    );
+                  }
+                }}
+              >
+                approve/sign
+              </StyledApproveButton>
+            )}
+          </StyledPendingSafeTransactions>
+        )}
+        <StyledButtonGroup>
+          <StyledGrayButton>back</StyledGrayButton>
+          {!userCanSkipProposal ? (
+            <Tooltip title={getErrorsForApproveButton().at(0)}>
+              <span>
+                {' '}
+                <StyledBlueButton
+                  disabled={!!getErrorsForApproveButton().length}
+                  onClick={proposeTx}
+                >
+                  FUND
+                </StyledBlueButton>
+              </span>
+            </Tooltip>
+          ) : (
+            <Tooltip title={getErrorsForExecuteButton().at(0)}>
+              <span>
+                {' '}
+                <StyledBlueButton
+                  disabled={!!getErrorsForExecuteButton().length}
+                  // no need to propose tx with only 1 threshold
+                  onClick={proposedTx ? executeTx : createAndExecuteTx}
+                >
+                  FUND
+                </StyledBlueButton>
+              </span>
+            </Tooltip>
+          )}
+        </StyledButtonGroup>
         {isProposalLoading && <p>Signing transaction with nonce...</p>}
         {isExecutionLoading && <p>Executing transaction with nonce...</p>}
       </div>

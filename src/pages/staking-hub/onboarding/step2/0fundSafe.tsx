@@ -112,16 +112,14 @@ const FundsToSafe = () => {
   };
 
   const xdaiEnoughBalance = (): boolean => {
-    console.log(safeBalance.xDai.value);
-    if (Number(safeBalance.xDai.formatted) >= MINIMUM_XDAI_TO_FUND) {
+    if (safeBalance.xDai.value && BigInt(safeBalance.xDai.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18)) {
       return true;
     }
     return false;
   };
 
   const wxhoprEnoughBalance = (): boolean => {
-    console.log(safeBalance.wxHopr.value);
-    if (Number(safeBalance.wxHopr.formatted) >= MINIMUM_WXHOPR_TO_FUND) {
+    if (safeBalance.wxHopr.value && BigInt(safeBalance.wxHopr.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18)) {
       return true;
     }
     return false;

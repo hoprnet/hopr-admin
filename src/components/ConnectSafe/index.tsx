@@ -144,9 +144,9 @@ export default function ConnectSafe() {
         }),
       );
     }
-    dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));
-    await dispatch(stakingHubActionsAsync.getSubgraphDataThunk(safeAddress));
+    await dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));
     const moduleAddress = safes.filter((elem) => elem.safeAddress === safeAddress)[0].moduleAddress;
+    await dispatch(stakingHubActionsAsync.getSubgraphDataThunk({safeAddress, moduleAddress}));
     dispatch(
       stakingHubActions.useSafeForOnboarding({
         safeAddress,
@@ -213,6 +213,8 @@ export default function ConnectSafe() {
                 key={`${safe.safeAddress}_${index}`}
                 value={safe.safeAddress}
                 onClick={() => {
+                  dispatch(safeActions.resetState());
+                  dispatch(stakingHubActions.resetOnboardingState());
                   dispatch(safeActions.setSelectedSafe(safe.safeAddress));
                 }}
               >
