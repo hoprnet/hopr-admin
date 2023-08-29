@@ -74,7 +74,7 @@ export type SubgraphParsedOutput = {
           id: string | null;
         }
       }
-    ],
+    ] | [],
     multiSend: string | null;
     target: {
       id: string | null;

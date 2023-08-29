@@ -136,7 +136,7 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
   async (_payload, { getState }) => {
     const state = getState();
 
-    if (BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance as string) >= BigInt(0) ) {
+    if (BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance as string) > BigInt(0) ) {
       return 16;
     }
 
@@ -144,7 +144,10 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
       return 15;
     }
 
-    if (state.stakingHub.safeInfo.data.module.includedNodes[0].node.id !== null) {
+    if (
+      state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
+      state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null
+    ) {
       return 14;
     }
 
