@@ -15,7 +15,7 @@ const stakingFaq: FaqData = {
         <span>
           HOPR (Ethereum): 0xf5581dfefd8fb0e4aec526be659cfab1f8c781dax
           <br />
-          HOPR (Gnosis chain): 0xD057604A14982FE8D88c5fC25Aac3267eA142a08
+          xHOPR (Gnosis chain): 0xD057604A14982FE8D88c5fC25Aac3267eA142a08
           <br />
           wxHOPR (Gnosis chain): 0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1
         </span>
@@ -244,7 +244,7 @@ const stakingFaq: FaqData = {
         <span>
           HOPR (Ethereum): 0xf5581dfefd8fb0e4aec526be659cfab1f8c781dax
           <br />
-          HOPR (Gnosis chain): 0xD057604A14982FE8D88c5fC25Aac3267eA142a08
+          xHOPR (Gnosis chain): 0xD057604A14982FE8D88c5fC25Aac3267eA142a08
           <br />
           wxHOPR (Gnosis chain): 0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1
         </span>
