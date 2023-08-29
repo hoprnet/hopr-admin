@@ -1,11 +1,8 @@
 import { ActionReducerMapBuilder, createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../..';
-import { initialState } from './initialState';
-import { STAKING_V2_SUBGRAPH } from '../../../../config';
-import { SubgraphOutput } from './initialState';
-
+import { initialState, SubgraphOutput } from './initialState';
+import { STAKING_V2_SUBGRAPH, HOPR_NETWORK_REGISTRY } from '../../../../config';
 import NetworkRegistryAbi from '../../../abi/network-registry-abi.json';
-import { HOPR_NETWORK_REGISTRY } from '../../../../config';
 import { WalletClient, publicActions } from 'viem';
 
 const getHubSafesByOwnerThunk = createAsyncThunk<
@@ -59,10 +56,7 @@ const registerNodeAndSafeToNRThunk = createAsyncThunk<
     safeAddress: string;
   },
   { state: RootState }
->('safe/registerNodeAndSafeToNR', async (payload, {
-  rejectWithValue,
-  dispatch,
-}) => {
+>('safe/registerNodeAndSafeToNR', async (payload, { rejectWithValue }) => {
   try {
     const superWalletClient = payload.walletClient.extend(publicActions);
 
@@ -102,6 +96,7 @@ const getSubgraphDataThunk = createAsyncThunk<SubgraphOutput | null, string, { s
     safeAddress = safeAddress.toLocaleLowerCase();
     console.log(safeAddress);
 
+    // eslint-disable-next-line no-useless-escape
     const QUERY = `{\"query\":\"{\\n  safes(first: 1, where: {id: \\\"${safeAddress}\\\"}) {\\n    id\\n    balance {\\n      mHoprBalance\\n      wxHoprBalance\\n      xHoprBalance\\n    }\\n    threshold\\n    owners {\\n      owner {\\n        id\\n      }\\n    }\\n    isCreatedByNodeStakeFactory\\n    targetedModules {\\n      id\\n    }\\n    allowance {\\n      xHoprAllowance\\n      wxHoprAllowance\\n      mHoprAllowance\\n      grantedToChannelsContract\\n    }\\n    addedModules {\\n      module {\\n        id\\n      }\\n    }\\n    isEligibleOnNetworkRegistry\\n    registeredNodesInSafeRegistry {\\n      node {\\n        id\\n      }\\n    }\\n    registeredNodesInNetworkRegistry {\\n      node {\\n        id\\n      }\\n    }\\n  }\\n  _meta {\\n    hasIndexingErrors\\n    deployment\\n  }\\n  nodeManagementModules(first: 1, where: {id: \\\"${safeAddress}\\\"}) {\\n    id\\n    implementation\\n    includedNodes {\\n      node {\\n        id\\n      }\\n    }\\n    multiSend\\n    target {\\n      id\\n    }\\n  }\\n}\",\"variables\":null,\"extensions\":{\"headers\":null}}`;
 
     try {
@@ -131,6 +126,24 @@ const getSubgraphDataThunk = createAsyncThunk<SubgraphOutput | null, string, { s
   } },
 );
 
+const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: RootState }>(
+  'stakingHub/goToStepWeShouldBeOn',
+  async (_payload, { getState }) => {
+    const state = getState();
+
+    if (state.stakingHub.onboarding.nodeAddress) {
+      return 11;
+    }
+
+    if (state.safe.delegates.data?.count) {
+      return 13;
+    }
+
+    // default case
+    return 0;
+  },
+);
+
 // Helper actions to update the isFetching state
 const setHubSafesByOwnerFetching = createAction<boolean>('stakingHub/setHubSafesByOwnerFetching');
 const setSubgraphDataFetching = createAction<boolean>('stakingHub/setSubgraphDataFetching');
@@ -154,10 +167,16 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     }
     state.safeInfo.isFetching = false;
   });
+  builder.addCase(goToStepWeShouldBeOnThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      state.onboarding.step = action.payload;
+    }
+  });
 };
 
 export const actionsAsync = {
   getHubSafesByOwnerThunk,
   registerNodeAndSafeToNRThunk,
   getSubgraphDataThunk,
+  goToStepWeShouldBeOnThunk,
 };

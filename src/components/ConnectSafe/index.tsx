@@ -153,7 +153,7 @@ export default function ConnectSafe() {
         moduleAddress,
       }),
     );
-    dispatch(stakingHubActions.goToStepWeShouldBeOn());
+    await dispatch(stakingHubActionsAsync.goToStepWeShouldBeOnThunk()).unwrap();
   };
 
   // New function to handle opening the menu

@@ -7,7 +7,7 @@ type FaqElement = {
 type FaqData = Record<string, FaqElement[]>;
 
 const stakingFaq: FaqData = {
-  '/steps/fund-safe': [
+  '/hub/onboarding#4': [
     {
       id: 1,
       title: 'Token addresses',
@@ -54,14 +54,14 @@ const stakingFaq: FaqData = {
         'One xDAI is sufficient to start running a node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
     },
   ],
-  '/steps/set-owner': [
+  '/hub/onboarding#1': [
     {
       id: 1,
       title: 'Managing owners',
       content: 'You can change ownership after safe creation.',
     },
   ],
-  '/steps/nft-transfer': [
+  '/hub/onboarding#3': [
     {
       id: 1,
       title: 'How do I get an NR NFT?',
@@ -75,7 +75,7 @@ const stakingFaq: FaqData = {
         'If you have more than one NR NFT, only the one with the lowest ID number will be transferred to your safe, and the rest will remain in your wallet.',
     },
   ],
-  '/steps/setup-your-node': [
+  '/hub/onboarding#7': [
     {
       id: 1,
       title: 'Setup Docker',
@@ -130,7 +130,7 @@ const stakingFaq: FaqData = {
         'One xDAI is sufficient to start running a node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
     },
   ],
-  '/steps/join-waitlist': [
+  '/hub/onboarding#10': [
     {
       id: 1,
       title: 'How long do I have to wait to be approved?',
@@ -161,7 +161,7 @@ const stakingFaq: FaqData = {
         'One xDAI is sufficient to start running a node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
     },
   ],
-  '/steps/xdai-to-node': [
+  '/hub/onboarding#14': [
     {
       id: 1,
       title: 'How much xDAI should I transfer?',
@@ -169,7 +169,7 @@ const stakingFaq: FaqData = {
         'One xDAI is sufficient to start your node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
     },
   ],
-  '/steps/set-allowance': [
+  '/hub/onboarding#15': [
     {
       id: 1,
       title: 'What is node allowance?',
@@ -232,7 +232,7 @@ const stakingFaq: FaqData = {
         'One xDAI is sufficient to start running a node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
     },
   ],
-  '/steps/what-you-will-need': [
+  '/hub/onboarding#0': [
     {
       id: 1,
       title: 'Token addresses',
@@ -291,7 +291,7 @@ const stakingFaq: FaqData = {
       ),
     },
   ],
-  '/hub/staking-screen': [
+  '/dev-pages/staking-screen': [
     {
       id: 1,
       title: 'How much xDAI should I deposit',
@@ -332,7 +332,7 @@ const stakingFaq: FaqData = {
       ),
     },
   ],
-  '/hub/node-added': [
+  '/dev-pages/node-added': [
     {
       id: 1,
       title: 'How much xDAI should I deposit?',
@@ -391,7 +391,7 @@ const stakingFaq: FaqData = {
       ),
     },
   ],
-  '/hub/no-node': [
+  '/dev-pages/no-node': [
     {
       id: 1,
       title: 'How much xDAI should I deposit?',
