@@ -42,13 +42,13 @@ export default function SetAllowance() {
   const nodeAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
   const isLoading = useAppSelector((store) => store.safe.createTransaction.isFetching);
   const signer = useEthersSigner();
-  const [wxhoprValue, set_wxhoprValue] = useState('');
+  const [wxHoprValue, set_wxHoprValue] = useState('');
 
   const setAllowance = async () => {
-    if (signer && selectedSafeAddress) {
+    if (signer && selectedSafeAddress && nodeAddress) {
       await dispatch(
-        safeActionsAsync.createSafeContractTransaction({
-          data: createApproveTransactionData(nodeAddress, MAX_UINT256),
+        safeActionsAsync.createAndExecuteContractTransactionThunk({
+          data: createApproveTransactionData(nodeAddress, BigInt(wxHoprValue)),
           signer,
           safeAddress: selectedSafeAddress,
           smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
@@ -70,8 +70,8 @@ export default function SetAllowance() {
             variant="outlined"
             placeholder="-"
             size="small"
-            value={formatEther(BigInt(wxhoprValue))}
-            onChange={(e) => set_wxhoprValue(parseEther(e.target.value).toString())}
+            value={formatEther(BigInt(wxHoprValue))}
+            onChange={(e) => set_wxHoprValue(parseEther(e.target.value).toString())}
             InputProps={{ inputProps: {
               style: { textAlign: 'right' },
               min: 0,
@@ -81,21 +81,21 @@ export default function SetAllowance() {
           <StyledCoinLabel>
             <Lowercase>wx</Lowercase>hopr
           </StyledCoinLabel>
-          <Button onClick={() => set_wxhoprValue(MAX_UINT256.toString())}>DEFAULT</Button>
+          <Button onClick={() => set_wxHoprValue(MAX_UINT256.toString())}>DEFAULT</Button>
         </StyledInputGroup>
         <ButtonContainer>
           <StyledGrayButton
             onClick={() => {
-              dispatch(stakingHubActions.setOnboardingStep(12));
+              dispatch(stakingHubActions.setOnboardingStep(14));
             }}
           >
-            Back
+          Back
           </StyledGrayButton>
           <Button
             onClick={setAllowance}
             pending={isLoading}
           >
-            SIGN
+          SIGN
           </Button>
         </ButtonContainer>
       </>
