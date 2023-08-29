@@ -46,7 +46,7 @@ export default function SetAllowance() {
 
   const setAllowance = async () => {
     if (signer && selectedSafeAddress && nodeAddress) {
-      set_loading(true)
+      set_loading(true);
       await dispatch(
         safeActionsAsync.createAndExecuteContractTransactionThunk({
           data: createApproveTransactionData(nodeAddress, BigInt(wxHoprValue)),
@@ -54,11 +54,14 @@ export default function SetAllowance() {
           safeAddress: selectedSafeAddress,
           smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
         }),
-      ).unwrap().then(()=>{
-        dispatch(stakingHubActions.setOnboardingStep(16));
-      }).finally(()=>{
-        set_loading(false)
-      });
+      )
+        .unwrap()
+        .then(() => {
+          dispatch(stakingHubActions.setOnboardingStep(16));
+        })
+        .finally(() => {
+          set_loading(false);
+        });
     }
   };
 
@@ -90,7 +93,7 @@ export default function SetAllowance() {
       <ButtonContainer>
         <Button
           onClick={setAllowance}
-          disabled={BigInt(wxHoprValue) <= BigInt(0) }
+          disabled={BigInt(wxHoprValue) <= BigInt(0)}
           pending={loading}
         >
           EXECUTE

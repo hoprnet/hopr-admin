@@ -39,7 +39,6 @@ const {
 const walletIsInBrowser =
   typeof window !== 'undefined' && typeof (window as unknown as WindowWithEthereum).ethereum !== 'undefined';
 
-
 export const browserClient = createWalletClient({
   chain: gnosis,
   transport: custom((window as unknown as WindowWithEthereum).ethereum),
