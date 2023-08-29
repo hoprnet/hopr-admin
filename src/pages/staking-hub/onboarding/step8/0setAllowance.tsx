@@ -89,13 +89,13 @@ export default function SetAllowance() {
               dispatch(stakingHubActions.setOnboardingStep(12));
             }}
           >
-          Back
+            Back
           </StyledGrayButton>
           <Button
             onClick={setAllowance}
             pending={isLoading}
           >
-          SIGN
+            SIGN
           </Button>
         </ButtonContainer>
       </>

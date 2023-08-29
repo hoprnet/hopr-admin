@@ -130,11 +130,11 @@ const FundsToSafe = () => {
         <StyledForm>
           <StyledInstructions>
             <Text>
-            Move <Lowercase>x</Lowercase>DAI to safe
+              Move <Lowercase>x</Lowercase>DAI to safe
             </Text>
             <StyledDescription>
-            Add-in the amount of <Lowercase>x</Lowercase>DAI you like to deposit to your safe. In a later step these
-            will then be moved to your node. {xdaiEnoughBalance() && <GreenText>enough balance</GreenText>}
+              Add-in the amount of <Lowercase>x</Lowercase>DAI you like to deposit to your safe. In a later step these
+              will then be moved to your node. {xdaiEnoughBalance() && <GreenText>enough balance</GreenText>}
             </StyledDescription>
           </StyledInstructions>
           <StyledInputGroup>
@@ -159,18 +159,18 @@ const FundsToSafe = () => {
               onClick={handleFundxDai}
               disabled={!xdaiValue || xdaiValue === '' || xdaiValue === '0'}
             >
-            Fund
+              Fund
             </Button>
           </StyledInputGroup>
         </StyledForm>
         <StyledForm>
           <StyledInstructions>
             <Text>
-            Stake <Lowercase>wx</Lowercase>HOPR into safe
+              Stake <Lowercase>wx</Lowercase>HOPR into safe
             </Text>
             <StyledDescription>
-            Add-in the amount of <Lowercase>wx</Lowercase>HOPR you like to deposit to your safe. We suggest to move all
-            your <Lowercase>wx</Lowercase>HOPR to the safe.{' '}
+              Add-in the amount of <Lowercase>wx</Lowercase>HOPR you like to deposit to your safe. We suggest to move
+              all your <Lowercase>wx</Lowercase>HOPR to the safe.{' '}
               {wxhoprEnoughBalance() && <GreenText>enough balance</GreenText>}
             </StyledDescription>
           </StyledInstructions>
@@ -196,7 +196,7 @@ const FundsToSafe = () => {
               onClick={handleFundwxHopr}
               disabled={!wxhoprValue || wxhoprValue === '' || wxhoprValue === '0'}
             >
-            Fund
+              Fund
             </Button>
           </StyledInputGroup>
         </StyledForm>
@@ -206,7 +206,7 @@ const FundsToSafe = () => {
               dispatch(stakingHubActions.setOnboardingStep(3));
             }}
           >
-          Back
+            Back
           </StyledGrayButton>
           <Button
             onClick={() => {
@@ -214,10 +214,10 @@ const FundsToSafe = () => {
             }}
             disabled={!xdaiEnoughBalance() || !wxhoprEnoughBalance()}
           >
-          Continue
+            Continue
           </Button>
         </ButtonContainer>
-        {is_xDAI_to_safe_loading || is_wxHOPR_to_safe_loading && <span>Check your Wallet...</span>}
+        {is_xDAI_to_safe_loading || (is_wxHOPR_to_safe_loading && <span>Check your Wallet...</span>)}
       </>
     </StepContainer>
   );

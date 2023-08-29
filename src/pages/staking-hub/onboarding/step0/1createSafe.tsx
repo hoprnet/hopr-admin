@@ -107,8 +107,8 @@ const CreateSafe = () => {
             </IconButton>
           </FlexContainer>
         </Container>
-        {owners.length > 1
-          && owners.slice(1).map((owner) => {
+        {owners.length > 1 &&
+          owners.slice(1).map((owner) => {
             return (
               <FlexContainer key={owner.id}>
                 <TextField
@@ -122,21 +122,20 @@ const CreateSafe = () => {
                 </IconButton>
               </FlexContainer>
             );
-          })
-        }
+          })}
         <ButtonContainer>
           <StyledGrayButton
             onClick={() => {
               dispatch(stakingHubActions.setOnboardingStep(1));
             }}
           >
-          Back
+            Back
           </StyledGrayButton>
           <Button
             onClick={handleContinueClick}
             disabled={loading}
           >
-          DEPLOY
+            DEPLOY
           </Button>
         </ButtonContainer>
         {loading && <CircularProgress />}

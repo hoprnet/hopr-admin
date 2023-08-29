@@ -82,7 +82,7 @@ export default function AddNode() {
               dispatch(stakingHubActions.setOnboardingStep(11));
             }}
           >
-          Back
+            Back
           </StyledGrayButton>
           <Tooltip title={!nodeInNetworkRegistry && 'This node is not on the whitelist'}>
             <span>
@@ -91,7 +91,7 @@ export default function AddNode() {
                 disabled={!nodeInNetworkRegistry}
                 pending={isLoading}
               >
-              Continue
+                Continue
               </Button>
             </span>
           </Tooltip>

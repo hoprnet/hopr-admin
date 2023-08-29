@@ -73,8 +73,8 @@ export default function SelectNodeType() {
             <Title>Docker Version</Title>
             <Price>Free</Price>
             <TextContainer>
-            If you want to run a node on your own hardware without the HOPR Node PC, that’s perfectly acceptable and
-            possible as well!
+              If you want to run a node on your own hardware without the HOPR Node PC, that’s perfectly acceptable and
+              possible as well!
             </TextContainer>
           </Node>
           <Node>
@@ -106,7 +106,7 @@ export default function SelectNodeType() {
                 href="https://dappnode.com/collections/frontpage/products/hopr-special-edition"
                 target="_blank"
               >
-              Order
+                Order
               </StyledButton>
             </Stack>
           </Node>
@@ -116,7 +116,7 @@ export default function SelectNodeType() {
             dispatch(stakingHubActions.setOnboardingStep(7));
           }}
         >
-        CONTINUE
+          CONTINUE
         </Button>
       </>
     </StepContainer>

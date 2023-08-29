@@ -147,7 +147,7 @@ export default function optionalNftTtransfer() {
                 }}
                 disabled={communityNftIdInWallet === null}
               >
-              Transfer NFT to Safe
+                Transfer NFT to Safe
               </Button>
             </TransferNft>
           </Option>
@@ -177,7 +177,7 @@ export default function optionalNftTtransfer() {
                   }}
                   disabled={option === null || (option === 0 && !communityNftIdInSafe)}
                 >
-                CONTINUE
+                  CONTINUE
                 </ConfirmButton>
               </span>
             </Tooltip>
@@ -188,7 +188,7 @@ export default function optionalNftTtransfer() {
               }}
               disabled={option === null}
             >
-            CONTINUE
+              CONTINUE
             </ConfirmButton>
           )}
         </Content>
