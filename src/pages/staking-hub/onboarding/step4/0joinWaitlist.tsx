@@ -1,13 +1,14 @@
 import styled from '@emotion/styled';
-import Card from '../../../../components/Card';
 import Button from '../../../../future-hopr-lib-components/Button';
-import Section from '../../../../future-hopr-lib-components/Section';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { Link } from 'react-router-dom';
 import { IconButton, Tooltip } from '@mui/material';
 import { truncateEthereumAddress } from '../../../../utils/blockchain';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { StepContainer } from '../components';
+
+//Store
+import { useAppSelector } from '../../../../store';
 
 const Content = styled.div`
   display: flex;
@@ -101,6 +102,8 @@ const Instruction = (props: { num: number; description?: string; children?: JSX.
 };
 
 export default function JoinWaitListStep() {
+  const safeAddress = useAppSelector((store) => store.stakingHub.onboarding.safeAddress);
+
   return (
     <StepContainer
       title="Join the waitlist"
@@ -118,10 +121,10 @@ export default function JoinWaitListStep() {
               </span>
               <StyledTransactionHashWithIcon>
                 <p>Safe address:</p>
-                <TruncatedEthereumAddressWithTooltip address={`0x90E03535c75f4D18786dC2d29c5e1261782C8943`} />
+                <TruncatedEthereumAddressWithTooltip address={safeAddress as string} />
                 <IconButton
                   onClick={() => {
-                    navigator.clipboard.writeText(`0x90E03535c75f4D18786dC2d29c5e1261782C8943`);
+                    navigator.clipboard.writeText(safeAddress as string);
                   }}
                 >
                   {' '}

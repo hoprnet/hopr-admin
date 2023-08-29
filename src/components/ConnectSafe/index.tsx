@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
+import { environment } from '../../../config';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -13,10 +14,15 @@ import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTrans
 import { appActions } from '../../store/slices/app';
 import { truncateEthereumAddress } from '../../utils/blockchain';
 
+//web3
+import { createWalletClient, custom } from 'viem'
+import { gnosis } from 'viem/chains'
+import { browserClient } from '../../providers/wagmi';
+
 const AppBarContainer = styled(Button)`
   align-items: center;
   border-right: 1px lightgray solid;
-  display: flex;
+  display: none;
   align-items: center;
   height: 59px;
   cursor: pointer;
@@ -24,6 +30,9 @@ const AppBarContainer = styled(Button)`
   width: 250px;
   gap: 10px;
   border-radius: 0;
+  &.display {
+    display: flex;
+  }
   .image-container {
     height: 50px;
     width: 50px;
@@ -97,6 +106,7 @@ export default function ConnectSafe() {
   useEffect(() => {
     if (safeAddress) {
       useSelectedSafe(safeAddress);
+      getOnboardingData(safeAddress);
     }
   }, [safeAddress]);
 
@@ -143,16 +153,36 @@ export default function ConnectSafe() {
         }),
       );
     }
-    await dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress)).unwrap();
-    await dispatch(stakingHubActionsAsync.getSubgraphDataThunk(safeAddress)).unwrap();
-    const moduleAddress = safes.find((elem) => elem.safeAddress === safeAddress)?.moduleAddress;
+  };
+
+  const getOnboardingData = async (safeAddress: string) => {
+    dispatch(stakingHubActions.onboardingIsFetching(true));
+    await dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));
+    const moduleAddress = safes.filter((elem) => elem.safeAddress === safeAddress)[0].moduleAddress;
+    const subgraphRez = await dispatch(stakingHubActionsAsync.getSubgraphDataThunk({safeAddress, moduleAddress}));
+    let nodeXDaiBalance;
+    // TODO: fix later
+    // @ts-ignore
+    if(subgraphRez.payload?.registeredNodesInNetworkRegistryParsed?.length > 0 && subgraphRez.payload.registeredNodesInNetworkRegistryParsed[0] !==null) {
+      console.log('Onboarding: we have a nodeAddress')
+      nodeXDaiBalance = await browserClient.getBalance({ 
+        // @ts-ignore
+        address: subgraphRez.payload.registeredNodesInNetworkRegistryParsed[0],
+      });
+      nodeXDaiBalance = nodeXDaiBalance.toString();
+      // @ts-ignore
+      console.log('Onboarding: node xDai balance is', nodeXDaiBalance/1e18);
+    }
+
     dispatch(
       stakingHubActions.useSafeForOnboarding({
         safeAddress,
         moduleAddress,
+        nodeXDaiBalance,
       }),
     );
-    dispatch(stakingHubActions.goToStepWeShouldBeOn());
+    dispatch(stakingHubActionsAsync.goToStepWeShouldBeOnThunk());
+    dispatch(stakingHubActions.onboardingIsFetching(false));
   };
 
   // New function to handle opening the menu
@@ -176,7 +206,7 @@ export default function ConnectSafe() {
       onClick={handleSafeButtonClick}
       ref={menuRef}
       disabled={!connected.connected}
-      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'}`}
+      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${environment === 'dev' ? 'display' : 'display-none'}`}
     >
       <div className="image-container">
         <img
@@ -212,6 +242,8 @@ export default function ConnectSafe() {
                 key={`${safe.safeAddress}_${index}`}
                 value={safe.safeAddress}
                 onClick={() => {
+                  dispatch(safeActions.resetState());
+                  dispatch(stakingHubActions.resetOnboardingState());
                   dispatch(safeActions.setSelectedSafe(safe.safeAddress));
                 }}
               >

@@ -1,10 +1,7 @@
 import styled from '@emotion/styled';
 import Button from '../../../../future-hopr-lib-components/Button';
 import { StepContainer } from '../components';
-
-//Store
-import { useAppDispatch } from '../../../../store';
-import { stakingHubActions } from '../../../../store/slices/stakingHub';
+import { useNavigate } from 'react-router-dom';
 
 const Content = styled.div`
   display: flex;
@@ -17,29 +14,23 @@ const ConfirmButton = styled(Button)`
   align-self: center;
 `;
 
-export default function safeIsReady() {
-  const dispatch = useAppDispatch();
+export default function NodeIsReady() {
+  const navigate = useNavigate();
   return (
     <StepContainer
-      title="SAFE IS Funded"
-      description={
-        <>
-          <br />
-        </>
-      }
+      title="CONGRATULATIONS YOUR NODE HAS BEEN ADDED!"
+      description={'Your node and safe are now completely set up and ready to use!'}
       image={{
-        src: '/assets/safe-success-2.svg',
-        alt: 'Safe deployed successfully',
+        src: '/assets/onboarding-done.svg',
+        alt: 'Onboarding done',
         height: 300,
       }}
     >
       <Content>
         <ConfirmButton
-          onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(6));
-          }}
+          onClick={()=>{navigate('/dev-pages/staking-screen')}}
         >
-          CONTINUE
+          VIEW STAKING OVERVIEW
         </ConfirmButton>
       </Content>
     </StepContainer>

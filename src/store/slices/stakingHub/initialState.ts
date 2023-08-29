@@ -13,14 +13,16 @@ type InitialState = {
     safeAddress: string | null;
     moduleAddress: string | null;
     userIsInOnboarding: boolean;
+    nodeXDaiBalance: string | null;
+    isFetching: boolean;
   };
   safeInfo: {
-    data: SubgraphOutput;
+    data: SubgraphParsedOutput;
     isFetching: boolean;
   };
 };
 
-export type SubgraphOutput = {
+export type SubgraphParsedOutput = {
   balance: {
     mHoprBalance: string | null;
     wxHoprBalance: string | null;
@@ -63,6 +65,26 @@ export type SubgraphOutput = {
     }
   ];
   registeredNodesInNetworkRegistryParsed: string[];
+  module: {
+    id: string | null;
+    implementation: string | null;
+    includedNodes: [
+      {
+        node: {
+          id: string | null;
+        }
+      }
+    ] | [],
+    multiSend: string | null;
+    target: {
+      id: string | null;
+    }
+  },
+  overall_staking_v2_balances: {
+    mHoprBalance: string | null;
+    wxHoprBalance: string | null;
+    xHoprBalance: string | null;
+  }
 };
 
 export const initialState: InitialState = {
@@ -77,6 +99,8 @@ export const initialState: InitialState = {
     moduleAddress: null,
     notFinished: false,
     userIsInOnboarding: false,
+    nodeXDaiBalance: null,
+    isFetching: false,
   },
   safeInfo: {
     data: {
@@ -100,6 +124,26 @@ export const initialState: InitialState = {
       registeredNodesInSafeRegistry: [],
       registeredNodesInNetworkRegistry: [{ node: { id: null } }],
       registeredNodesInNetworkRegistryParsed: [],
+      module: {
+        id: null,
+        implementation: null,
+        includedNodes: [
+          {
+            node: {
+              id: null,
+            }
+          }
+        ],
+        multiSend: null,
+        target: {
+          id: null,
+        }
+      },
+      overall_staking_v2_balances: {
+        mHoprBalance: null,
+        wxHoprBalance: null,
+        xHoprBalance: null,
+      }
     },
     isFetching: false,
   },

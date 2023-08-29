@@ -16,7 +16,24 @@ const stakingHubSlice = createSlice({
         moduleAddress: null,
         notFinished: false,
         userIsInOnboarding: false,
+        nodeXDaiBalance: null,
+        isFetching: false,
       };
+    },
+    resetOnboardingState: (state) => {
+      state.onboarding = {
+        step: 0,
+        nodeAddress: null,
+        safeAddress: null,
+        moduleAddress: null,
+        notFinished: false,
+        userIsInOnboarding: false,
+        nodeXDaiBalance: null,
+        isFetching: false,
+      };
+    },
+    onboardingIsFetching: (state, action) => {
+      state.onboarding.isFetching = action.payload;
     },
     addSafe: (state, action) => {
       state.safes.data = [...state.safes.data, action.payload];
@@ -29,13 +46,7 @@ const stakingHubSlice = createSlice({
     useSafeForOnboarding: (state, action) => {
       state.onboarding.safeAddress = action.payload.safeAddress;
       state.onboarding.moduleAddress = action.payload.moduleAddress;
-    },
-    goToStepWeShouldBeOn: (state) => {
-      const tmpState = JSON.parse(JSON.stringify(state));
-      console.log('goToStepWeShouldBeOn', JSON.parse(JSON.stringify(state)));
-      if (tmpState.onboarding.nodeAddress) {
-        state.onboarding.step = 11;
-      }
+      if (action.payload.nodeXDaiBalance) state.onboarding.nodeXDaiBalance = action.payload.nodeXDaiBalance;
     },
     setOnboardingNodeAddress: (state, action) => {
       state.onboarding.nodeAddress = action.payload;
@@ -44,7 +55,9 @@ const stakingHubSlice = createSlice({
       state.onboarding.step = action.payload;
     },
   },
-  extraReducers: (builder) => createAsyncReducer(builder),
+  extraReducers: (builder) => {
+    createAsyncReducer(builder);
+  },
 });
 
 export const stakingHubActions = stakingHubSlice.actions;
