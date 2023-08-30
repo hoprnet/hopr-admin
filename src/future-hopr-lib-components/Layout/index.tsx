@@ -34,7 +34,7 @@ const Content = styled.div<ContentType>`
   margin-left: 0;
 
   transition: margin-left 0.4s ease-out;
-  @media (min-width: 499.1px) {
+  @media (min-width: 500px) {
     margin-left: ${(props) => (props.openedNavigationDrawer ? '240px' : '56px')};
   }
 
@@ -98,7 +98,7 @@ const Layout: React.FC<{
   }, [isConnected]);
 
   return (
-    <SLayout className={`Layout${webapp ? ' webapp' : ''} ${className}`}>
+    <SLayout className={`Layout${webapp ? ' webapp' : ''} ${className} ${openedNavigationDrawerPC ? 'drawerOpen' : 'drawerClosed'}`}>
       <NavBar
         mainLogo="/logo.svg"
         mainLogoAlt="hopr logo"

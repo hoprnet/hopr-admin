@@ -62,6 +62,7 @@ import WalletIcon from '@mui/icons-material/Wallet';
 import IncomingChannelsIcon from './future-hopr-lib-components/Icons/IncomingChannels';
 import OutgoingChannelsIcon from './future-hopr-lib-components/Icons/OutgoingChannels';
 import WavingHandIcon from '@mui/icons-material/WavingHand';
+import TrainIcon from './future-hopr-lib-components/Icons/TrainIcon';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -178,7 +179,7 @@ export const applicationMapStakingHub: ApplicationMapType = [
       {
         name: 'Onboarding',
         path: 'onboarding',
-        icon: <WavingHandIcon />,
+        icon: <TrainIcon />,
         element: <Onboarding />,
         loginNeeded: 'web3',
       },

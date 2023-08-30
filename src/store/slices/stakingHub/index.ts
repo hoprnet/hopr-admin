@@ -10,7 +10,7 @@ const stakingHubSlice = createSlice({
       state.safes.data = [];
       state.safes.isFetching = false;
       state.onboarding = {
-        step: 0,
+        step: 5,
         nodeAddress: null,
         safeAddress: null,
         moduleAddress: null,

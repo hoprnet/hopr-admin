@@ -4,10 +4,8 @@ import { useWalletClient } from 'wagmi';
 // Components
 import { IconButton, TextField } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
-import Button from '../../../../future-hopr-lib-components/Button';
-import { StepContainer } from '../components';
+import { StepContainer, ConfirmButton } from '../components';
 import {
-  ButtonContainer,
   Container,
   FlexContainer,
   StyledError,
@@ -86,6 +84,28 @@ const CreateSafe = () => {
     <StepContainer
       title="Create Safe"
       description="Set the owner wallets of your Safe and how many need to confirm to execute a valid transaction."
+      image={{
+        src: '/assets/Safe_with_plus.svg',
+        alt: 'Safe deployed successfully',
+        height: 200,
+      }}
+      buttons={
+        <>
+          <StyledGrayButton
+            onClick={() => {
+              dispatch(stakingHubActions.setOnboardingStep(0));
+            }}
+          >
+            Back
+          </StyledGrayButton>
+          <ConfirmButton
+            onClick={handleContinueClick}
+            disabled={loading}
+          >
+            DEPLOY
+          </ConfirmButton>
+        </>
+      }
     >
       <Container>
         <Text>Owner address</Text>
@@ -122,22 +142,6 @@ const CreateSafe = () => {
             </FlexContainer>
           );
         })}
-
-      <ButtonContainer>
-        <StyledGrayButton
-          onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(0));
-          }}
-        >
-          Back
-        </StyledGrayButton>
-        <Button
-          onClick={handleContinueClick}
-          disabled={loading}
-        >
-          DEPLOY
-        </Button>
-      </ButtonContainer>
       {loading && <CircularProgress />}
       {!!error && (
         <StyledError>
