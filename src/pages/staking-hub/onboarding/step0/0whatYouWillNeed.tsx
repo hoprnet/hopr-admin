@@ -1,14 +1,8 @@
 import styled from '@emotion/styled';
-import Button from '../../../../future-hopr-lib-components/Button';
 import { useAppDispatch } from '../../../../store';
 import { StepContainer } from '../components';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
-
-const ConfirmButton = styled(Button)`
-  width: 250px;
-  align-self: center;
-  text-transform: uppercase;
-`;
+import { ConfirmButton } from '../components';
 
 const Content = styled.div`
   display: flex;
@@ -22,7 +16,7 @@ const Container = styled.div`
   min-height: 290px;
   justify-content: space-around;
   padding: 24px;
-  border-bottom: 1px solid #414141;
+  margin-bottom: 16px;
 `;
 
 const ImageContainer = styled.div<{ width?: number; height?: number }>`
@@ -37,17 +31,33 @@ const Image = styled.img`
 
 const Title = styled.h2`
   color: #414141;
-  font-size: 32px;
-  font-weight: 400;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
   text-align: center;
   text-transform: uppercase;
   margin: 0;
 `;
 
+const TextUnderImage = styled.div`
+  color: #414141;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 450;
+  line-height: 18px;
+  p {
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+`;
+
+
+
 const Overlap = styled.div`
   display: flex;
   position: relative;
-
+  margin-bottom: 17px;
+  left: -32px;
   .svg1 {
     z-index: 1;
   }
@@ -148,6 +158,15 @@ export default function WhatYouWillNeedPage() {
       description={
         'It will take 20 minutes to join the network waitlist. Before starting make sure you have got the required tokens.'
       }
+      buttons={
+        <ConfirmButton
+          onClick={() => {
+            dispatch(stakingHubActions.setOnboardingStep(1));
+          }}
+        >
+          CONTINUE
+        </ConfirmButton>
+      }
     >
       <Content>
         <Container>
@@ -173,10 +192,12 @@ export default function WhatYouWillNeedPage() {
                   width: 90,
                 }}
               />
-              <p>min. 10k wxHOPR with NR NFT</p>
-              <p>min. 30k wxHOPR without NR NFT</p>
-              <p>+</p>
-              <p>min. 1 xDAI</p>
+              <TextUnderImage>
+                <p>min. 10k wxHOPR with NR NFT</p>
+                <p>min. 30k wxHOPR without NR NFT</p>
+                <p>+</p>
+                <p>min. 1 xDAI</p>
+              </TextUnderImage>
             </CenteredFlex>
           </TitleWithSVG>
           <TitleWithSVG
@@ -186,15 +207,12 @@ export default function WhatYouWillNeedPage() {
               height: 100,
               width: 100,
             }}
-          />
+          >
+            <TextUnderImage>
+              <p style={{textAlign:'center'}}>NR NFT</p>
+            </TextUnderImage>
+          </TitleWithSVG>
         </Container>
-        <ConfirmButton
-          onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(1));
-          }}
-        >
-          continue
-        </ConfirmButton>
       </Content>
     </StepContainer>
   );

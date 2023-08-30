@@ -15,8 +15,7 @@ import { appActions } from '../../store/slices/app';
 import { truncateEthereumAddress } from '../../utils/blockchain';
 
 //web3
-import { createWalletClient, custom } from 'viem';
-import { gnosis } from 'viem/chains';
+import { Address } from 'viem';
 import { browserClient } from '../../providers/wagmi';
 
 const AppBarContainer = styled(Button)`
@@ -106,7 +105,7 @@ export default function ConnectSafe() {
   useEffect(() => {
     if (safeAddress) {
       useSelectedSafe(safeAddress);
-      getOnboardingData(safeAddress);
+      //   getOnboardingData(safeAddress);
     }
   }, [safeAddress]);
 
@@ -159,27 +158,23 @@ export default function ConnectSafe() {
     dispatch(stakingHubActions.onboardingIsFetching(true));
     await dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));
     const moduleAddress = safes.filter((elem) => elem.safeAddress === safeAddress)[0].moduleAddress;
-    const subgraphRez = await dispatch(
+    const subgraphResponse = await dispatch(
       stakingHubActionsAsync.getSubgraphDataThunk({
         safeAddress,
         moduleAddress,
       }),
-    );
-    let nodeXDaiBalance;
-    // TODO: fix later
+    ).unwrap();
+
+    let nodeXDaiBalance: any = '0';
+
     if (
-      // @ts-ignore
-      subgraphRez.payload?.registeredNodesInNetworkRegistryParsed?.length > 0 &&
-      // @ts-ignore
-      subgraphRez.payload.registeredNodesInNetworkRegistryParsed[0] !== null
+      subgraphResponse.registeredNodesInNetworkRegistryParsed?.length > 0 &&
+      subgraphResponse.registeredNodesInNetworkRegistryParsed[0] !== null
     ) {
       console.log('Onboarding: we have a nodeAddress');
-      nodeXDaiBalance = await browserClient.getBalance({
-        // @ts-ignore
-        address: subgraphRez.payload.registeredNodesInNetworkRegistryParsed[0] });
-      nodeXDaiBalance = nodeXDaiBalance.toString();
-      // @ts-ignore
-      console.log('Onboarding: node xDai balance is', nodeXDaiBalance / 1e18);
+      const nodeBalanceInBigInt = await browserClient?.getBalance({ address: subgraphResponse.registeredNodesInNetworkRegistryParsed[0] as Address });
+      nodeBalanceInBigInt && console.log('Onboarding: node xDai balance is', nodeBalanceInBigInt / BigInt(1e18));
+      nodeXDaiBalance = nodeBalanceInBigInt?.toString();
     }
 
     dispatch(
