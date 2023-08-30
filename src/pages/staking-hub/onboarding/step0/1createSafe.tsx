@@ -139,7 +139,7 @@ const CreateSafe = () => {
         </Button>
       </ButtonContainer>
       {loading && <CircularProgress />}
-      {error && (
+      {!!error && (
         <StyledError>
           <strong>There was an error:</strong> {JSON.stringify(error)}
         </StyledError>

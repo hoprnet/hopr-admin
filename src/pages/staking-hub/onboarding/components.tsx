@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 import styled from '@emotion/styled';
 
 // Mui
@@ -38,7 +38,20 @@ const Image = styled.img`
   width: 100%;
 `;
 
-export function StepContainer(props: any) {
+type StepContainerProps = {
+  image?: {
+    src: string;
+    alt?: string;
+    height?: number;
+    width?: number;
+  };
+  title?: string;
+  description?: JSX.Element | string;
+  descriptionLeft?: boolean;
+  children?: ReactNode | undefined;
+};
+
+export function StepContainer(props: StepContainerProps) {
   return (
     <SPaper>
       {props.image && (
