@@ -53,7 +53,6 @@ const StyledBlueButton = styled(Button)`
   padding: 0.2rem 4rem;
 `;
 
-
 export default function FundNode() {
   const dispatch = useAppDispatch();
   // injected states
@@ -64,7 +63,6 @@ export default function FundNode() {
   const [isExecutionLoading, set_isExecutionLoading] = useState<boolean>();
 
   const signer = useEthersSigner();
-
 
   const createAndExecuteTx = () => {
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;

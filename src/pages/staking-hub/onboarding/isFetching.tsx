@@ -12,9 +12,7 @@ export default function OnboardingIsFetching() {
   return (
     <StepContainer
       title={'Fetching your current onboarding status'}
-      description={
-        ''
-      }
+      description={''}
       image={{
         src: '/assets/hopr_logo.svg',
         height: 300,

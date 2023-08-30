@@ -15,7 +15,7 @@ import { appActions } from '../../store/slices/app';
 import { truncateEthereumAddress } from '../../utils/blockchain';
 
 //web3
-import { Address } from 'viem'
+import { Address } from 'viem';
 import { browserClient } from '../../providers/wagmi';
 
 const AppBarContainer = styled(Button)`
@@ -158,14 +158,20 @@ export default function ConnectSafe() {
     dispatch(stakingHubActions.onboardingIsFetching(true));
     await dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));
     const moduleAddress = safes.filter((elem) => elem.safeAddress === safeAddress)[0].moduleAddress;
-    const subgraphResponse = await dispatch(stakingHubActionsAsync.getSubgraphDataThunk({
-      safeAddress, moduleAddress,
-    })).unwrap();
-    
+    const subgraphResponse = await dispatch(
+      stakingHubActionsAsync.getSubgraphDataThunk({
+        safeAddress,
+        moduleAddress,
+      }),
+    ).unwrap();
+
     let nodeXDaiBalance: any = '0';
-    
-    if(subgraphResponse.registeredNodesInNetworkRegistryParsed?.length > 0 && subgraphResponse.registeredNodesInNetworkRegistryParsed[0] !==null) {
-      console.log('Onboarding: we have a nodeAddress')
+
+    if (
+      subgraphResponse.registeredNodesInNetworkRegistryParsed?.length > 0 &&
+      subgraphResponse.registeredNodesInNetworkRegistryParsed[0] !== null
+    ) {
+      console.log('Onboarding: we have a nodeAddress');
       const nodeBalanceInBigInt = await browserClient?.getBalance({ address: subgraphResponse.registeredNodesInNetworkRegistryParsed[0] as Address });
       nodeBalanceInBigInt && console.log('Onboarding: node xDai balance is', nodeBalanceInBigInt / BigInt(1e18));
       nodeXDaiBalance = nodeBalanceInBigInt?.toString();
@@ -203,7 +209,9 @@ export default function ConnectSafe() {
       onClick={handleSafeButtonClick}
       ref={menuRef}
       disabled={!connected.connected}
-      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${environment === 'dev' ? 'display' : 'display-none'}`}
+      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${
+        environment === 'dev' ? 'display' : 'display-none'
+      }`}
     >
       <div className="image-container">
         <img
