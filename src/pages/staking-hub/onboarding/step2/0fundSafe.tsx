@@ -15,7 +15,6 @@ import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
 // HOPR Components
 import {
-  ButtonContainer,
   Lowercase,
   MaxButton,
   StyledCoinLabel,
@@ -27,13 +26,20 @@ import {
   StyledTextField,
   Text
 } from '../safeOnboarding/styled';
-import { StepContainer } from '../components';
-import Button from '../../../../future-hopr-lib-components/Button';
+import { StepContainer, ConfirmButton } from '../components';
 import styled from '@emotion/styled';
+import Button from '../../../../future-hopr-lib-components/Button';
 
-const GreenText = styled.p`
-  color: green;
+const GreenText = styled.span`
+  color: #004e00;
   display: inline;
+  font-weight: 700; 
+  font-size: 12px;
+  font-style: normal;
+  line-height: 1.5;
+  margin-top: 16px;
+  margin-bottom: 10px;
+  min-height: 19px;
 `;
 
 const FundsToSafe = () => {
@@ -122,19 +128,36 @@ const FundsToSafe = () => {
         alt: 'Funds to safe image',
         height: 134,
       }}
-      title="Move funds to Safe"
-      description="You're about to create a new Safe and move funds to it. There will be an deployment fee in xDAi charged to your wallet. Please confirm it."
-      descriptionLeft
+      title="MOVE FUNDS TO SAFE"
+      description="You're about to fund a new safe with xDAI & wxHOPR. These will be used later on to pay transaction fees on Gnosis Chain and fund HOPR payment channels respectively."
+      buttons={
+        <>
+          <StyledGrayButton
+            onClick={() => {
+              dispatch(stakingHubActions.setOnboardingStep(3));
+            }}
+          >
+            Back
+          </StyledGrayButton>
+          <ConfirmButton
+            onClick={() => {
+              dispatch(stakingHubActions.setOnboardingStep(5));
+            }}
+            disabled={!xdaiEnoughBalance() || !wxhoprEnoughBalance()}
+          >
+            Continue
+          </ConfirmButton>
+        </>
+      }
     >
-      <StyledForm>
+      <StyledForm className='underline'>
         <StyledInstructions>
           <Text>
             Move <Lowercase>x</Lowercase>DAI to safe
           </Text>
-          <StyledDescription>
-            Add-in the amount of <Lowercase>x</Lowercase>DAI you like to deposit to your safe. In a later step these
-            will then be moved to your node. {xdaiEnoughBalance() && <GreenText>enough balance</GreenText>}
-          </StyledDescription>
+          <GreenText>
+            {xdaiEnoughBalance() && 'You transfered enough xDai'}
+          </GreenText>
         </StyledInstructions>
         <StyledInputGroup>
           <StyledTextField
@@ -144,14 +167,16 @@ const FundsToSafe = () => {
             size="small"
             value={xdaiValue}
             onChange={(e) => set_xdaiValue(e.target.value)}
-            InputProps={{ inputProps: {
-              style: { textAlign: 'right' },
-              min: 0,
-              pattern: '[0-9]*',
-            } }}
+            InputProps={{
+              inputProps: {
+                style: { textAlign: 'right' },
+                min: 0,
+                pattern: '[0-9]*',
+              }
+            }}
           />
           <StyledCoinLabel>
-            <Lowercase>x</Lowercase>DAI
+            xDAI
           </StyledCoinLabel>
           <MaxButton onClick={setMax_xDAI}>Max</MaxButton>
           <Button
@@ -167,11 +192,9 @@ const FundsToSafe = () => {
           <Text>
             Stake <Lowercase>wx</Lowercase>HOPR into safe
           </Text>
-          <StyledDescription>
-            Add-in the amount of <Lowercase>wx</Lowercase>HOPR you like to deposit to your safe. We suggest to move all
-            your <Lowercase>wx</Lowercase>HOPR to the safe.{' '}
-            {wxhoprEnoughBalance() && <GreenText>enough balance</GreenText>}
-          </StyledDescription>
+          <GreenText>
+            {wxhoprEnoughBalance() && 'You transfered enough wxHOPR'}
+          </GreenText>
         </StyledInstructions>
         <StyledInputGroup>
           <StyledTextField
@@ -181,14 +204,16 @@ const FundsToSafe = () => {
             size="small"
             value={wxhoprValue}
             onChange={(e) => set_wxhoprValue(e.target.value)}
-            InputProps={{ inputProps: {
-              style: { textAlign: 'right' },
-              min: 0,
-              pattern: '[0-9]*',
-            } }}
+            InputProps={{
+              inputProps: {
+                style: { textAlign: 'right' },
+                min: 0,
+                pattern: '[0-9]*',
+              }
+            }}
           />
           <StyledCoinLabel>
-            <Lowercase>wx</Lowercase>HOPR
+           wxHOPR
           </StyledCoinLabel>
           <MaxButton onClick={setMax_wxHOPR}>Max</MaxButton>
           <Button
@@ -199,23 +224,7 @@ const FundsToSafe = () => {
           </Button>
         </StyledInputGroup>
       </StyledForm>
-      <ButtonContainer>
-        <StyledGrayButton
-          onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(3));
-          }}
-        >
-          Back
-        </StyledGrayButton>
-        <Button
-          onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(5));
-          }}
-          disabled={!xdaiEnoughBalance() || !wxhoprEnoughBalance()}
-        >
-          Continue
-        </Button>
-      </ButtonContainer>
+
       {(is_xDAI_to_safe_loading || is_wxHOPR_to_safe_loading) && <span>Check your Wallet...</span>}
     </StepContainer>
   );

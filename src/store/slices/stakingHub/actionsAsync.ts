@@ -1,4 +1,4 @@
-import { ActionReducerMapBuilder, createAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { ActionReducerMapBuilder, createAction, createAsyncThunk, isPlain } from '@reduxjs/toolkit';
 import { RootState } from '../..';
 import { initialState, SubgraphParsedOutput } from './initialState';
 import {
@@ -127,7 +127,11 @@ const getSubgraphDataThunk = createAsyncThunk<
       console.log('SubgraphParsedOutput', output);
       return output;
     } catch (e) {
-      return rejectWithValue(e);
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
+      return rejectWithValue(JSON.stringify(e));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -140,94 +144,109 @@ const getSubgraphDataThunk = createAsyncThunk<
 
 const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: RootState }>(
   'stakingHub/goToStepWeShouldBeOn',
-  async (_payload, { getState }) => {
-    const state = getState();
+  async (_payload, {
+    getState,
+    rejectWithValue,
+  }) => {
+    try {
+      const state = getState();
 
-    console.log(
-      'BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance as string) > BigInt(0)',
-      BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance as string) > BigInt(0),
-    );
-    if (BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance as string) > BigInt(0)) {
-      return 16;
-    }
+      console.log(
+        'BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance as string) > BigInt(0)',
+        state.stakingHub.safeInfo.data.allowance.wxHoprAllowance &&
+          BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance as string) > BigInt(0),
+      );
+      if (
+        state.stakingHub.safeInfo.data.allowance.wxHoprAllowance &&
+        BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance) > BigInt(0)
+      ) {
+        return 16;
+      }
 
-    console.log(
-      'BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18)',
-      state.stakingHub.onboarding.nodeXDaiBalance &&
-        BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18),
-    );
-    if (
-      state.stakingHub.onboarding.nodeXDaiBalance &&
-      BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18)
-    ) {
-      return 15;
-    }
+      console.log(
+        'BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18)',
+        state.stakingHub.onboarding.nodeXDaiBalance &&
+          BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18),
+      );
+      if (
+        state.stakingHub.onboarding.nodeXDaiBalance &&
+        BigInt(state.stakingHub.onboarding.nodeXDaiBalance) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18)
+      ) {
+        return 15;
+      }
 
-    console.log(
-      'state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
-      state.stakingHub.safeInfo.data.module.includedNodes,
-    );
-    console.log(
-      'state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
-      state.stakingHub.safeInfo.data.module.includedNodes &&
-        state.stakingHub.safeInfo.data.module.includedNodes.length > 0,
-    );
-    console.log(
-      'state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null',
-      state.stakingHub.safeInfo.data.module.includedNodes &&
+      console.log(
+        'state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
+        state.stakingHub.safeInfo.data.module.includedNodes,
+      );
+      console.log(
+        'state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
+        state.stakingHub.safeInfo.data.module.includedNodes &&
+          state.stakingHub.safeInfo.data.module.includedNodes.length > 0,
+      );
+      console.log(
+        'state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null',
+        state.stakingHub.safeInfo.data.module.includedNodes &&
+          state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
+          state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null,
+      );
+      if (
+        state.stakingHub.safeInfo.data.module.includedNodes &&
         state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
-        state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null,
-    );
-    if (
-      state.stakingHub.safeInfo.data.module.includedNodes &&
-      state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
-      state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null
-    ) {
-      return 14;
+        state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null
+      ) {
+        return 14;
+      }
+
+      console.log('state.safe.delegates.data?.count', state.safe.delegates.data?.count);
+      if (state.safe.delegates.data?.count) {
+        return 13;
+      }
+
+      console.log('state.stakingHub.onboarding.nodeAddress', state.stakingHub.onboarding.nodeAddress);
+      if (state.stakingHub.onboarding.nodeAddress) {
+        return 11;
+      }
+
+      console.log(
+        'state.safe.balance.data.xDai.value && BigInt(state.safe.balance.data.xDai.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18)',
+        state.safe.balance.data.xDai.value &&
+          BigInt(state.safe.balance.data.xDai.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18),
+      );
+      console.log(
+        'state.safe.balance.data.wxHopr.value && BigInt(state.safe.balance.data.wxHopr.value) >= BigInt(MINIMUM_WXHOPR_TO_FUND*1e18)',
+        state.safe.balance.data.wxHopr.value &&
+          BigInt(state.safe.balance.data.wxHopr.value) >= BigInt(MINIMUM_WXHOPR_TO_FUND * 1e18),
+      );
+
+      if (
+        state.safe.balance.data.xDai.value &&
+        BigInt(state.safe.balance.data.xDai.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18) &&
+        state.safe.balance.data.wxHopr.value &&
+        BigInt(state.safe.balance.data.wxHopr.value) >= BigInt(MINIMUM_WXHOPR_TO_FUND * 1e18)
+      ) {
+        return 5;
+      }
+
+      console.log('state.safe.communityNftId !== null', state.safe.communityNftId !== null);
+      if (state.safe.communityNftId !== null) {
+        return 4;
+      }
+
+      console.log('state.safe.selectedSafeAddress.data', state.safe.selectedSafeAddress.data);
+      if (state.safe.selectedSafeAddress.data) {
+        return 2;
+      }
+
+      // default case
+      return 0;
+    } catch (e) {
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
+      return rejectWithValue(JSON.stringify(e));
     }
-
-    console.log('state.safe.delegates.data?.count', state.safe.delegates.data?.count);
-    if (state.safe.delegates.data?.count) {
-      return 13;
-    }
-
-    console.log('state.stakingHub.onboarding.nodeAddress', state.stakingHub.onboarding.nodeAddress);
-    if (state.stakingHub.onboarding.nodeAddress) {
-      return 11;
-    }
-
-    console.log(
-      'state.safe.balance.data.xDai.value && BigInt(state.safe.balance.data.xDai.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18)',
-      state.safe.balance.data.xDai.value &&
-        BigInt(state.safe.balance.data.xDai.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18),
-    );
-    console.log(
-      'state.safe.balance.data.wxHopr.value && BigInt(state.safe.balance.data.wxHopr.value) >= BigInt(MINIMUM_WXHOPR_TO_FUND*1e18)',
-      state.safe.balance.data.wxHopr.value &&
-        BigInt(state.safe.balance.data.wxHopr.value) >= BigInt(MINIMUM_WXHOPR_TO_FUND * 1e18),
-    );
-
-    if (
-      state.safe.balance.data.xDai.value &&
-      BigInt(state.safe.balance.data.xDai.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18) &&
-      state.safe.balance.data.wxHopr.value &&
-      BigInt(state.safe.balance.data.wxHopr.value) >= BigInt(MINIMUM_WXHOPR_TO_FUND * 1e18)
-    ) {
-      return 5;
-    }
-
-    console.log('state.safe.communityNftId !== null', state.safe.communityNftId !== null);
-    if (state.safe.communityNftId !== null) {
-      return 4;
-    }
-
-    console.log('state.safe.selectedSafeAddress.data', state.safe.selectedSafeAddress.data);
-    if (state.safe.selectedSafeAddress.data) {
-      return 2;
-    }
-
-    // default case
-    return 0;
   },
 );
 
@@ -257,6 +276,9 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(goToStepWeShouldBeOnThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.onboarding.step = action.payload;
+      if(state.onboarding.step !== 0 && state.onboarding.step !== 15 && state.onboarding.step !== 16) {
+        state.onboarding.notFinished = true;
+      }
     }
   });
 };

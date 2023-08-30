@@ -65,7 +65,7 @@ const ContinueOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
           </Button>
           <Button
             onClick={() => {
-              navigate(`/hub/onboarding`);
+              navigate(`/staking/onboarding`);
             }}
           >
             YES
