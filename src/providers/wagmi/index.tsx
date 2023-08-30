@@ -9,7 +9,6 @@ import { web3Actions } from '../../store/slices/web3';
 import { gnosis, localhost } from '@wagmi/core/chains';
 import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 //wagmi connectors
 import { createWalletClient, custom, publicActions } from 'viem';
@@ -28,7 +27,7 @@ const {
   publicClient,
 } = configureChains(
   [gnosis],
-  [jsonRpcProvider({ rpc: () => ({ http: `https://derp.hoprnet.org/rpc/xdai/mainnet` }) }), publicProvider()],
+  [publicProvider()],
   {
     pollingInterval: 30_000,
     stallTimeout: 5_000,
