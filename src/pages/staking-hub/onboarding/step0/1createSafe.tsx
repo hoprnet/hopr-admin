@@ -126,7 +126,7 @@ const CreateSafe = () => {
       <ButtonContainer>
         <StyledGrayButton
           onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(1));
+            dispatch(stakingHubActions.setOnboardingStep(0));
           }}
         >
           Back

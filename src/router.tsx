@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouteObject, useSearchParams } from 'react-router-dom';
+import { createBrowserRouter, RouteObject, useSearchParams, Navigate } from 'react-router-dom';
 import { environment } from '../config';
 
 // Store
@@ -166,7 +166,7 @@ export const applicationMapNode: ApplicationMapType = [
 export const applicationMapStakingHub: ApplicationMapType = [
   {
     groupName: 'Staking Hub',
-    path: 'hub',
+    path: 'staking',
     icon: <DevelopIcon />,
     items: [
       {
@@ -368,6 +368,11 @@ var routes = [
   {
     path: '/',
     element: <LayoutEnhanced />,
+    children: [] as RouteObject[],
+  },
+  {
+    path: '*',
+    element: <Navigate to="/" replace />,
     children: [] as RouteObject[],
   },
 ];

@@ -5,10 +5,11 @@ import styled from '@emotion/styled';
 import Paper from '@mui/material/Paper/Paper';
 
 const SPaper = styled(Paper)`
-  max-width: 850px;
-  width: 100%;
+  max-width: 800px;
+  //width: calc( 100% - 64px );
   height: 620px;
   overflow: auto;
+  padding: 32px;
 `;
 
 const StepTitle = styled.h2`
@@ -18,6 +19,7 @@ const StepTitle = styled.h2`
   text-align: center;
   text-transform: uppercase;
   margin: 0;
+  margin-bottom: 16px;
 `;
 
 const StepDescription = styled.p<{ descriptionLeft?: boolean }>`
