@@ -103,7 +103,6 @@ function Onboarding() {
   function whatIsCurrentStep(page: number) {
     switch (page) {
     case ONBOARDING_PAGES.XDAI_TO_SAFE:
-      return 1;
     case ONBOARDING_PAGES.SAFE_IS_FUNDED:
       return 2;
     case ONBOARDING_PAGES.SELECT_NODE_TYPE:

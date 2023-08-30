@@ -128,7 +128,7 @@ const FundsToSafe = () => {
         alt: 'Funds to safe image',
         height: 134,
       }}
-      title="Move funds to Safe"
+      title="MOVE FUNDS TO SAFE"
       description="You're about to fund a new safe with xDAI & wxHOPR. These will be used later on to pay transaction fees on Gnosis Chain and fund HOPR payment channels respectively."
       buttons={
         <>
