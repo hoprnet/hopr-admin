@@ -84,8 +84,12 @@ export default function ConnectWeb3({
     connect,
     error,
     data,
+    isError,
+    isLoading,
+    reset,
+    pendingConnector,
   } = useConnect();
-
+  console.log({ pendingConnector })
   const { disconnect } = useDisconnect();
   const account = useAppSelector((store) => store.web3.account);
   const isConnected = useAppSelector((store) => store.web3.status.connected);
@@ -110,7 +114,6 @@ export default function ConnectWeb3({
 
   useEffect(() => {
     if (isConnected && account) {
-      console.log('isConnected');
       dispatch(stakingHubActionsAsync.getHubSafesByOwnerThunk(account));
       handleClose();
     }
@@ -123,8 +126,14 @@ export default function ConnectWeb3({
   }, [open]);
 
   useEffect(() => {
-    if (error) set_localError(JSON.stringify(error));
-    else set_localError(false);
+    if (error) { 
+      set_localError(JSON.stringify(error)); 
+      // wallet connect modal can 
+      // cause errors if it is closed without connecting
+      if (pendingConnector?.id === 'walletConnect') {
+        reset()
+      }
+    } else set_localError(false);
   }, [error]);
 
   const handleClose = () => {
@@ -178,6 +187,7 @@ export default function ConnectWeb3({
     <>
       {inTheAppBar && (
         <AppBarContainer
+          disabled={isLoading || isError}
           onClick={handleWeb3ButtonClick}
           ref={containerRef}
           className={`web3-connect-btn`}
