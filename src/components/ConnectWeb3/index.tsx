@@ -89,7 +89,6 @@ export default function ConnectWeb3({
     reset,
     pendingConnector,
   } = useConnect();
-  console.log({ pendingConnector })
   const { disconnect } = useDisconnect();
   const account = useAppSelector((store) => store.web3.account);
   const isConnected = useAppSelector((store) => store.web3.status.connected);
