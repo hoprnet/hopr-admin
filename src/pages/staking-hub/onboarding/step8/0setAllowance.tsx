@@ -1,9 +1,9 @@
 // UI
 import styled from '@emotion/styled';
 import Button from '../../../../future-hopr-lib-components/Button';
-import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
 import { useEthersSigner } from '../../../../hooks';
-import { StepContainer } from '../components';
+import { StepContainer, ConfirmButton } from '../components';
+import { Lowercase, StyledCoinLabel, StyledInputGroup, StyledTextField } from '../safeOnboarding/styled';
 
 // Blockchain
 import { Address, formatEther, parseEther } from 'viem';
@@ -15,7 +15,7 @@ import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import { safeActionsAsync } from '../../../../store/slices/safe';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
-import { Lowercase, StyledCoinLabel, StyledInputGroup, StyledTextField } from '../safeOnboarding/styled';
+
 
 const StyledText = styled.h3`
   color: var(--414141, #414141);
@@ -26,15 +26,6 @@ const StyledText = styled.h3`
   text-align: end;
 `;
 
-const ButtonContainer = styled.div`
-  display: flex;
-  gap: 1rem;
-`;
-
-const StyledGrayButton = styled(GrayButton)`
-  border: 1px solid black;
-  height: 39px;
-`;
 
 export default function SetAllowance() {
   const dispatch = useAppDispatch();
@@ -66,6 +57,15 @@ export default function SetAllowance() {
     <StepContainer
       title="SET wxHOPR ALLOWANCE"
       description={`Your node will need to access wxHOPR from your safe to fund payment channels on the HOPR network. You can set a maximum allowance to reduce your funds at risk in case your node is ever compromised.`}
+      buttons={
+        <ConfirmButton
+          onClick={setAllowance}
+          disabled={BigInt(wxHoprValue) <= BigInt(0) }
+          pending={loading}
+        >
+          EXECUTE
+        </ConfirmButton>
+      }
     >
       <StyledInputGroup>
         <StyledText>NODE ALLOWANCE</StyledText>
@@ -87,15 +87,6 @@ export default function SetAllowance() {
         </StyledCoinLabel>
         <Button onClick={() => set_wxHoprValue(MAX_UINT256.toString())}>DEFAULT</Button>
       </StyledInputGroup>
-      <ButtonContainer>
-        <Button
-          onClick={setAllowance}
-          disabled={BigInt(wxHoprValue) <= BigInt(0) }
-          pending={loading}
-        >
-          EXECUTE
-        </Button>
-      </ButtonContainer>
     </StepContainer>
   );
 }

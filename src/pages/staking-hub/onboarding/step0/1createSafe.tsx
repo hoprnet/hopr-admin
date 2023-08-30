@@ -50,7 +50,7 @@ const CreateSafe = () => {
     });
   };
 
-  const handleContinueClick = async () => {
+  const handleCreateSafe = async () => {
     if (!walletClient) return;
 
     const config = {
@@ -99,8 +99,9 @@ const CreateSafe = () => {
             Back
           </StyledGrayButton>
           <ConfirmButton
-            onClick={handleContinueClick}
+            onClick={handleCreateSafe}
             disabled={loading}
+            pending={loading}
           >
             DEPLOY
           </ConfirmButton>
@@ -142,7 +143,6 @@ const CreateSafe = () => {
             </FlexContainer>
           );
         })}
-      {loading && <CircularProgress />}
       {!!error && (
         <StyledError>
           <strong>There was an error:</strong> {JSON.stringify(error)}

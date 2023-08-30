@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import Button from '../../../../future-hopr-lib-components/Button';
 import { Address, getAddress } from 'viem';
-import { StepContainer } from '../components';
+import { StepContainer, ConfirmButton } from '../components';
 import { useEthersSigner } from '../../../../hooks';
 
 // Web3
@@ -50,15 +50,14 @@ export default function ConfigureNode() {
         src: '/assets/node-blue.svg',
         height: 200,
       }}
-    >
-      <ButtonContainer>
-        <Button
+      buttons={
+        <ConfirmButton
           onClick={includeNode}
           pending={isLoading}
         >
           SIGN
-        </Button>
-      </ButtonContainer>
-    </StepContainer>
+        </ConfirmButton>
+      }
+    />
   );
 }

@@ -236,6 +236,9 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(goToStepWeShouldBeOnThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.onboarding.step = action.payload;
+      if(state.onboarding.step !== 0 && state.onboarding.step !== 15 && state.onboarding.step !== 16) {
+        state.onboarding.notFinished = true;
+      }
     }
   });
 };

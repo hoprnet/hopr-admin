@@ -114,6 +114,7 @@ export default function optionalNftTtransfer() {
                 dispatch(stakingHubActions.setOnboardingStep(4));
               }}
               disabled={option === null || (option === 0 && !communityNftIdInSafe)}
+              style={{width: '250px'}}
             >
               CONTINUE
             </ConfirmButton>

@@ -3,11 +3,9 @@ import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 
 //Store
-import { useAppSelector, useAppDispatch } from '../../../store';
-import { stakingHubActions } from '../../../store/slices/stakingHub';
+import { useAppSelector } from '../../../store';
 
 // HOPR Components
-import { StepContainer } from './components';
 import { Stepper } from '../../../components/Stepper';
 
 //Steps
@@ -63,7 +61,6 @@ export const ONBOARDING_PAGES = {
 } as const;
 
 function Onboarding() {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const onboardingStep = useAppSelector((store) => store.stakingHub.onboarding.step);
   const onboardingIsFetching = useAppSelector((store) => store.stakingHub.onboarding.isFetching);
@@ -76,8 +73,9 @@ function Onboarding() {
     switch (page) {
       case ONBOARDING_PAGES.SAFE_IS_READY:
       case ONBOARDING_PAGES.OPTIONAL_NFT_TRANSFER:
-        return 1;
+        return 0;
       case ONBOARDING_PAGES.XDAI_TO_SAFE:
+        return 1;
       case ONBOARDING_PAGES.SAFE_IS_FUNDED:
       case ONBOARDING_PAGES.SELECT_NODE_TYPE:
       case ONBOARDING_PAGES.SETUP_NODE:
@@ -150,7 +148,9 @@ function Onboarding() {
       />
       
       { 
-        onboardingIsFetching ? <OnboardingIsFetching /> :
+        onboardingIsFetching && onboardingStep === 0 ? 
+          <OnboardingIsFetching /> 
+          :
           <>
             {onboardingStep === ONBOARDING_PAGES.WHAT_YOU_WILL_NEED && <WhatYouWillNeedPage />}
             {onboardingStep === ONBOARDING_PAGES.CREATE_SAFE && <CreateSafe />}

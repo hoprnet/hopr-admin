@@ -3,28 +3,20 @@ import styled from '@emotion/styled';
 import Button from '../../../../future-hopr-lib-components/Button';
 import { Address, parseUnits } from 'viem';
 import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
-import { StepContainer } from '../components';
+import { StepContainer, ConfirmButton } from '../components';
 import { useEthersSigner } from '../../../../hooks';
+import { StyledTextField } from '../safeOnboarding/styled';
 
 // Store
 import { useAppSelector, useAppDispatch } from '../../../../store';
 import { safeActionsAsync } from '../../../../store/slices/safe';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
-// MUI
-import TextField from '@mui/material/TextField';
-
-const StyledGrayButton = styled(GrayButton)`
-  border: 1px solid black;
-  height: 39px;
-`;
-
 const StyledForm = styled.div`
   width: 100%;
   display: flex;
   align-items: baseline;
   gap: 1rem;
-  border-bottom: 1px solid #414141;
 `;
 
 const StyledInstructions = styled.div`
@@ -38,16 +30,6 @@ const StyledText = styled.h3`
   font-size: 20px;
   font-style: normal;
   font-weight: 500;
-  letter-spacing: 0.35px;
-  text-transform: uppercase;
-`;
-
-const StyledDescription = styled.p`
-  color: #414141;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 21px;
   letter-spacing: 0.35px;
 `;
 
@@ -64,7 +46,6 @@ const StyledCoinLabel = styled.p`
   font-weight: 400;
   line-height: 60px;
   letter-spacing: 0.35px;
-  text-transform: uppercase;
 `;
 
 const StyledBlueButton = styled(Button)`
@@ -112,39 +93,43 @@ export default function FundNode() {
 
   return (
     <StepContainer
-      title="Fund Node"
-      description={'You need to sign a transaction to connect your node to your existing HOPR safe.'}
+      title="FUND YOUR NODE WITH xDAI"
+      image={{
+        src: '/assets/fund_node_from_safe.png',
+        height: 133,
+      }}
+      buttons={
+        <ConfirmButton
+          onClick={createAndExecuteTx}
+          pending={isExecutionLoading}
+          disabled={xdaiValue === '' || xdaiValue === '0' }
+        >
+          FUND
+        </ConfirmButton>
+      }
     >
       <div>
         <StyledForm>
           <StyledInstructions>
-            <StyledText>SEND xdAI to Node</StyledText>
-            <StyledDescription>
-              Add-in the amount of xDAI you like to transfer from your safe to your node.
-            </StyledDescription>
+            <StyledText>SEND xDAI TO NODE</StyledText>
           </StyledInstructions>
           <StyledInputGroup>
-            <TextField
+            <StyledTextField
               variant="outlined"
               placeholder="-"
               size="small"
               value={xdaiValue}
               onChange={(e) => set_xdaiValue(e.target.value)}
+              type="number"
               inputProps={{
                 inputMode: 'numeric',
                 pattern: '[0-9]*',
               }}
               InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
             />
-            <StyledCoinLabel>xdai</StyledCoinLabel>
+            <StyledCoinLabel>xDAI</StyledCoinLabel>
           </StyledInputGroup>
         </StyledForm>
-        <StyledBlueButton
-          onClick={createAndExecuteTx}
-          pending={isExecutionLoading}
-        >
-          FUND
-        </StyledBlueButton>
         {isExecutionLoading && <p>Executing transaction with nonce...</p>}
       </div>
     </StepContainer>

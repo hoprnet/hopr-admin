@@ -23,8 +23,8 @@ const ImageContainer = styled.div<{ width?: number; height?: number }>`
 `;
 
 const Image = styled.img`
-  height: 100%;
-  width: 100%;
+  height: 29px;
+  width: 29px;
 `;
 
 const StepContainer = styled.div`

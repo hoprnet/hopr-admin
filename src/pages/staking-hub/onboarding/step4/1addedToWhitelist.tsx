@@ -1,21 +1,9 @@
-import styled from '@emotion/styled';
-import Button from '../../../../future-hopr-lib-components/Button';
-import { StepContainer } from '../components';
+import { StepContainer, ConfirmButton } from '../components';
 
 //Store
 import { useAppDispatch } from '../../../../store';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-`;
-
-const ConfirmButton = styled(Button)`
-  width: 200px;
-  align-self: center;
-`;
 
 export default function AddedToWhitelist() {
   const dispatch = useAppDispatch();
@@ -28,8 +16,7 @@ export default function AddedToWhitelist() {
         alt: 'Safe deployed successfully',
         height: 200,
       }}
-    >
-      <Content>
+      buttons={
         <ConfirmButton
           onClick={() => {
             dispatch(stakingHubActions.setOnboardingStep(12));
@@ -37,7 +24,7 @@ export default function AddedToWhitelist() {
         >
           Continue
         </ConfirmButton>
-      </Content>
-    </StepContainer>
+      }
+    />
   );
 }
