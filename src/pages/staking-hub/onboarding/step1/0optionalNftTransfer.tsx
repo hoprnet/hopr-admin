@@ -25,7 +25,7 @@ const OptionContainer = styled.div`
 `;
 
 const Option = styled(MuiButton)`
-  display: fle;
+  display: flex;
   flex-direction: row;
   justify-content: flex-start;
   gap: 8px;
