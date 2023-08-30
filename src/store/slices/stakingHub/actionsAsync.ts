@@ -270,15 +270,13 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         state.safeInfo.data.registeredNodesInNetworkRegistryParsed = tmp;
         state.onboarding.nodeAddress = tmp[tmp.length - 1];
       }
-      state.safeInfo.data.allowance = action.payload.allowance;
-      state.safeInfo.data.balance = action.payload.balance;
     }
     state.safeInfo.isFetching = false;
   });
   builder.addCase(goToStepWeShouldBeOnThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.onboarding.step = action.payload;
-      if(state.onboarding.step !== 0 && state.onboarding.step !== 15 && state.onboarding.step !== 16) {
+      if (state.onboarding.step !== 0 && state.onboarding.step !== 15 && state.onboarding.step !== 16) {
         state.onboarding.notFinished = true;
       }
     }

@@ -282,7 +282,7 @@ const NoNodeAdded = () => {
               },
               {
                 text: 'xHOPR → wxHOPR',
-                link: '/hub/wrapper',
+                link: '/staking/wrapper',
               },
               {
                 text: 'STAKE wxHOPR',
