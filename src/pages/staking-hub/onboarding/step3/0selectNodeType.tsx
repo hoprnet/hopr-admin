@@ -37,13 +37,14 @@ const Title = styled.h3`
 
 const Price = styled(Title)`
   &:empty {
-    height: 42px;
+    height: 17.5px;
   }
 `;
 
 const StyledButton = styled(Button)`
   align-self: center;
   text-transform: uppercase;
+  text-decoration: none !important;
 `;
 
 const Content = styled.div`
