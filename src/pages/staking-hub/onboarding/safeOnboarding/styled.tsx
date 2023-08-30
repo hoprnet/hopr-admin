@@ -14,7 +14,6 @@ export const Container = styled.div<{ column?: boolean }>`
   flex-direction: ${(props) => props.column && 'column'};
   justify-content: space-between;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #414141;
   gap: 1rem;
   min-height: 39px;
 `;
@@ -51,7 +50,10 @@ export const StyledForm = styled.div`
   display: flex;
   align-items: baseline;
   gap: 1rem;
-  border-bottom: 1px solid #414141;
+  &.underline{
+    border-bottom: 1px solid #414141;
+  }
+
 `;
 
 export const StyledInstructions = styled.div`
@@ -111,7 +113,7 @@ export const StyledCoinLabel = styled.p`
   font-weight: 400;
   line-height: 60px;
   letter-spacing: 0.35px;
-  text-transform: uppercase;
+  width: 60px;
 `;
 
 export const MaxButton = styled(Button)`

@@ -54,6 +54,11 @@ const StyledDrawer = styled(MuiDrawer)`
       color: white;
       &.Mui-selected {
         text-decoration: underline 2px rgb(255, 255, 255);
+        background-color: rgba(255, 255, 255, 0.20);
+        .MuiSvgIcon-root {
+          color: #b4f0ff;
+          fill: #b4f0ff;
+        }
         &:hover {
           background-color: rgba(255, 255, 255, 0.3);
         }
@@ -64,6 +69,7 @@ const StyledDrawer = styled(MuiDrawer)`
     }
     .MuiSvgIcon-root {
       color: white;
+      fill: white;
     }
   }
 `;
