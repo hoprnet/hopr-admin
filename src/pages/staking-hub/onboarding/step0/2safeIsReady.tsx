@@ -1,21 +1,10 @@
 import styled from '@emotion/styled';
 import Button from '../../../../future-hopr-lib-components/Button';
-import { StepContainer } from '../components';
+import { StepContainer, ConfirmButton } from '../components';
 
 //Store
 import { useAppDispatch } from '../../../../store';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-`;
-
-const ConfirmButton = styled(Button)`
-  width: 200px;
-  align-self: center;
-`;
 
 export default function safeIsReady() {
   const dispatch = useAppDispatch();
@@ -33,8 +22,7 @@ export default function safeIsReady() {
         alt: 'Safe deployed successfully',
         height: 300,
       }}
-    >
-      <Content>
+      buttons={
         <ConfirmButton
           onClick={() => {
             dispatch(stakingHubActions.setOnboardingStep(3));
@@ -42,7 +30,9 @@ export default function safeIsReady() {
         >
           CONTINUE
         </ConfirmButton>
-      </Content>
+      }
+    >
+
     </StepContainer>
   );
 }

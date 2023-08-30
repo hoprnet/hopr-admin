@@ -31,7 +31,7 @@ import NodeIsReady from './step9/0nodeIsReady';
 
 const OnboardingContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: 24px;
   min-height: calc(100vh - 60px - 80px + 40px);
@@ -40,6 +40,7 @@ const OnboardingContainer = styled.div`
   overflow: hidden;
   background: #edfbff;
   padding-bottom: 40px;
+  transition: width 0.4s ease-out;
 `;
 
 export const ONBOARDING_PAGES = {
@@ -134,6 +135,7 @@ function Onboarding() {
       <Stepper
         lastStepDone={whatIsCompletedStep(onboardingStep)}
         currentStep={whatIsCurrentStep(onboardingStep)}
+        style={{flex: '1 1 10%'}}
         steps={[
           { name: 'CREATE SAFE' },
           { name: 'OPTIONAL NFT TRANSFER' },
@@ -169,7 +171,7 @@ function Onboarding() {
             {onboardingStep === ONBOARDING_PAGES.NODE_IS_READY && <NodeIsReady />}
           </>
         }
-
+      <div style={{flex: 1}}/>
     </OnboardingContainer>
   );
 }
