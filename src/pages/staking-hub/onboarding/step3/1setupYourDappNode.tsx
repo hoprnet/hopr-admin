@@ -1,21 +1,14 @@
 import styled from '@emotion/styled';
-import Card from '../../../../components/Card';
 import Button from '../../../../future-hopr-lib-components/Button';
-import Section from '../../../../future-hopr-lib-components/Section';
 import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { Link } from 'react-router-dom';
 import CodeCopyBox from '../../../../components/CodeCopyBox';
-import { StepContainer } from '../components';
+import { StepContainer, ConfirmButton } from '../components';
 
 //Store
 import { useAppSelector, useAppDispatch } from '../../../../store';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
-
-const ConfirmButton = styled(Button)`
-  width: 250px;
-  align-self: center;
-`;
 
 const Content = styled.div`
   display: flex;
@@ -56,6 +49,8 @@ const NumberWithBackground = styled.div`
 const RightArrow = styled.div`
   stroke: #000050;
   align-self: center;
+  align-self: flex-start;
+  margin-top: 22px;
 `;
 
 const StyledLink = styled(Link)`
@@ -94,10 +89,31 @@ const Instruction = (props: { num: number; description?: string; children?: JSX.
 
 export default function SetupYourDappNode() {
   const dispatch = useAppDispatch();
+  const safeAddress = useAppSelector((store) => store.stakingHub.onboarding.safeAddress);
+  const moduleAddress = useAppSelector((store) => store.stakingHub.onboarding.moduleAddress);
+
   return (
     <StepContainer
       title="Set up your DAPPNODE"
       description={'Follow the instructions below to set up your HOPR node.'}
+      buttons={
+        <>
+          <StyledGrayButton
+            onClick={() => {
+              dispatch(stakingHubActions.setOnboardingStep(6));
+            }}
+          >
+            BACK
+          </StyledGrayButton>
+          <ConfirmButton
+            onClick={() => {
+              dispatch(stakingHubActions.setOnboardingStep(10));
+            }}
+          >
+            CONTINUE
+          </ConfirmButton>
+      </>
+      }
     >
       <Content>
         <StepsContainer>
@@ -129,31 +145,15 @@ export default function SetupYourDappNode() {
             <Content>
               <CodeContainer>
                 <span>safe address</span>
-                <CodeCopyBox code={`safe address`} />
+                <CodeCopyBox code={safeAddress ? safeAddress : 'Loading...'} />
               </CodeContainer>
               <CodeContainer>
                 <span>module address</span>
-                <CodeCopyBox code={`module address`} />
+                <CodeCopyBox code={moduleAddress ? moduleAddress : 'Loading...'} />
               </CodeContainer>
             </Content>
           </Instruction>
         </StepsContainer>
-        <ButtonContainer>
-          <StyledGrayButton
-            onClick={() => {
-              dispatch(stakingHubActions.setOnboardingStep(6));
-            }}
-          >
-            BACK
-          </StyledGrayButton>
-          <Button
-            onClick={() => {
-              dispatch(stakingHubActions.setOnboardingStep(10));
-            }}
-          >
-            CONTINUE
-          </Button>
-        </ButtonContainer>
       </Content>
     </StepContainer>
   );

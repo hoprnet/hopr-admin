@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouteObject, useSearchParams } from 'react-router-dom';
+import { createBrowserRouter, RouteObject, useSearchParams, Navigate } from 'react-router-dom';
 import { environment } from '../config';
 
 // Store
@@ -61,6 +61,8 @@ import PaidIcon from '@mui/icons-material/Paid';
 import WalletIcon from '@mui/icons-material/Wallet';
 import IncomingChannelsIcon from './future-hopr-lib-components/Icons/IncomingChannels';
 import OutgoingChannelsIcon from './future-hopr-lib-components/Icons/OutgoingChannels';
+import WavingHandIcon from '@mui/icons-material/WavingHand';
+import TrainIcon from './future-hopr-lib-components/Icons/TrainIcon';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -165,7 +167,7 @@ export const applicationMapNode: ApplicationMapType = [
 export const applicationMapStakingHub: ApplicationMapType = [
   {
     groupName: 'Staking Hub',
-    path: 'hub',
+    path: 'staking',
     icon: <DevelopIcon />,
     items: [
       {
@@ -177,8 +179,15 @@ export const applicationMapStakingHub: ApplicationMapType = [
       {
         name: 'Onboarding',
         path: 'onboarding',
-        icon: <LockIcon />,
+        icon: <TrainIcon />,
         element: <Onboarding />,
+        loginNeeded: 'web3',
+      },
+      {
+        name: 'Withdraw',
+        path: 'withdraw',
+        icon: <WalletIcon />,
+        element: <SafeWithdraw />,
         loginNeeded: 'web3',
       },
       {
@@ -244,13 +253,6 @@ export const applicationMapDevWeb3: ApplicationMapType = [
         path: 'safe/staking',
         icon: <SavingsIcon />,
         element: <SafeStakingPage />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Withdraw',
-        path: 'withdraw',
-        icon: <WalletIcon />,
-        element: <SafeWithdraw />,
         loginNeeded: 'web3',
       },
     ],
@@ -367,6 +369,11 @@ var routes = [
   {
     path: '/',
     element: <LayoutEnhanced />,
+    children: [] as RouteObject[],
+  },
+  {
+    path: '*',
+    element: <Navigate to="/" replace />,
     children: [] as RouteObject[],
   },
 ];

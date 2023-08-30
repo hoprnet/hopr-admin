@@ -1,21 +1,10 @@
 import styled from '@emotion/styled';
 import Button from '../../../../future-hopr-lib-components/Button';
-import { StepContainer } from '../components';
+import { StepContainer, ConfirmButton } from '../components';
 
 //Store
-import { useAppSelector, useAppDispatch } from '../../../../store';
+import { useAppDispatch } from '../../../../store';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-`;
-
-const ConfirmButton = styled(Button)`
-  width: 200px;
-  align-self: center;
-`;
 
 export default function safeIsReady() {
   const dispatch = useAppDispatch();
@@ -24,9 +13,8 @@ export default function safeIsReady() {
       title="SAFE IS READY"
       description={
         <>
-          You’re now part of the HOPR ecosystem!
-          <br />
-          Next, you’ll need to fund your HOPR node."
+          <p>You’re now part of the HOPR ecosystem!</p>
+          <p>Next, you’ll need to fund your HOPR node.</p>
         </>
       }
       image={{
@@ -34,8 +22,7 @@ export default function safeIsReady() {
         alt: 'Safe deployed successfully',
         height: 300,
       }}
-    >
-      <Content>
+      buttons={
         <ConfirmButton
           onClick={() => {
             dispatch(stakingHubActions.setOnboardingStep(3));
@@ -43,7 +30,9 @@ export default function safeIsReady() {
         >
           CONTINUE
         </ConfirmButton>
-      </Content>
+      }
+    >
+
     </StepContainer>
   );
 }

@@ -28,5 +28,6 @@ export const STAKING_V2_SUBGRAPH = 'https://api.studio.thegraph.com/query/40438/
 export const VITE_WALLET_CONNECT_PROJECT_ID = 'efdce6b5c6b10913211ff1b40bc4d54d';
 
 // Minimum to be funded
-export const MINIMUM_WXHOPR_TO_FUND = 1;
-export const MINIMUM_XDAI_TO_FUND = 0.1;
+export const MINIMUM_WXHOPR_TO_FUND = 0.01;
+export const MINIMUM_XDAI_TO_FUND = 0.01;
+export const MINIMUM_XDAI_TO_FUND_NODE = 0.001;

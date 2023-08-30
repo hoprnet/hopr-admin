@@ -1,13 +1,14 @@
 import styled from '@emotion/styled';
-import Card from '../../../../components/Card';
 import Button from '../../../../future-hopr-lib-components/Button';
-import Section from '../../../../future-hopr-lib-components/Section';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { Link } from 'react-router-dom';
 import { IconButton, Tooltip } from '@mui/material';
 import { truncateEthereumAddress } from '../../../../utils/blockchain';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { StepContainer } from '../components';
+import { StepContainer, ConfirmButton } from '../components';
+
+//Store
+import { useAppSelector } from '../../../../store';
 
 const Content = styled.div`
   display: flex;
@@ -61,11 +62,11 @@ const StyledLink = styled(Link)`
   text-decoration: underline;
 `;
 
-const ConfirmButton = styled(Button)`
-  width: 250px;
-  align-self: center;
-  text-transform: uppercase;
-`;
+// const ConfirmButton = styled(Button)`
+//   width: 250px;
+//   align-self: center;
+//   text-transform: uppercase;
+// `;
 
 const StyledTransactionHashWithIcon = styled.div`
   display: flex;
@@ -101,11 +102,14 @@ const Instruction = (props: { num: number; description?: string; children?: JSX.
 };
 
 export default function JoinWaitListStep() {
+  const safeAddress = useAppSelector((store) => store.stakingHub.onboarding.safeAddress);
+
   return (
     <StepContainer
       title="Join the waitlist"
-      description={
-        'We are currently onboarding nodes on a first come first serve basis. If you have correctly funded your safe, follow the steps below and we’ll onboard you to the HOPR network as soon as possible!'
+      description={`If you have correctly funded your safe, follow the steps below and we’ll onboard you to the HOPR network as soon as possible!`}
+      buttons={
+        <ConfirmButton>VIEW DASHBOARD</ConfirmButton>
       }
     >
       <Content>
@@ -118,10 +122,10 @@ export default function JoinWaitListStep() {
               </span>
               <StyledTransactionHashWithIcon>
                 <p>Safe address:</p>
-                <TruncatedEthereumAddressWithTooltip address={`0x90E03535c75f4D18786dC2d29c5e1261782C8943`} />
+                <TruncatedEthereumAddressWithTooltip address={safeAddress ? safeAddress : 'Loading...'} />
                 <IconButton
                   onClick={() => {
-                    navigator.clipboard.writeText(`0x90E03535c75f4D18786dC2d29c5e1261782C8943`);
+                    navigator.clipboard.writeText(safeAddress as string);
                   }}
                 >
                   {' '}
@@ -150,16 +154,13 @@ export default function JoinWaitListStep() {
           />
         </StepsContainer>
         <Note>
-          Note: You can close this tab now, as it may take over a week to approve your address. Once approved, you can
-          return to this point in the journey by re-visiting{' '}
-          <StyledLink to={`https://hub.hoprnet.org`}>hub.HOPRnet.org</StyledLink> and re-connecting your wallet. For
-          now, keep an eye on the{' '}
-          <StyledLink to={`https://cryptpad.fr/sheet/#/2/sheet/view/NYbRDH+C993dfHwEL1RyyKNtxG5pRoOaxtI4hbRVUBw/`}>
+          Note: You can close this tab now, as it may take over a week to approve your address.
+          Once approved, you can return to this point in the journey by re-visiting{' '}
+          <StyledLink to={`https://hub.hoprnet.org`}>hub.HOPRnet.org</StyledLink>{' '}and re-connecting your wallet.
+          For now, keep an eye on the <StyledLink to={`https://cryptpad.fr/sheet/#/2/sheet/view/NYbRDH+C993dfHwEL1RyyKNtxG5pRoOaxtI4hbRVUBw/`}>
             waitlist
-          </StyledLink>{' '}
-          or view your funds in the dashboard by clicking the button below.
+          </StyledLink>{' '} or view your funds in the dashboard by clicking the button below.
         </Note>
-        <ConfirmButton>view dashboard</ConfirmButton>
       </Content>
     </StepContainer>
   );

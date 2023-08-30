@@ -72,19 +72,21 @@ export default function InfoBar(props: Props) {
   const web3Connected = useAppSelector((store) => store.web3.status.connected);
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const currentRoute = useLocation().pathname;
+  const currentHash = window.location.hash;
 
   const pageHasNodeFAQ = () => {
     if (nodeInfoData[currentRoute]) return true;
     return false;
   };
 
+  console.log(`${currentRoute}${currentHash}`);
   const pageHasStakingFAQ = () => {
-    if (stakingInfoData[currentRoute]) return true;
+    if (stakingInfoData[`${currentRoute}${currentHash}`]) return true;
     return false;
   };
 
   const pageHasStakingAlerts = () => {
-    if (stakingAlertsData[currentRoute]) return true;
+    if (stakingAlertsData[`${currentRoute}${currentHash}`]) return true;
     return false;
   };
 
@@ -102,14 +104,14 @@ export default function InfoBar(props: Props) {
           )}
           {web3Connected && pageHasStakingFAQ() && (
             <FAQ
-              data={stakingInfoData[currentRoute]}
+              data={stakingInfoData[`${currentRoute}${currentHash}`]}
               label={currentRoute.split('/')[currentRoute.split('/').length - 1]}
               variant="blue"
             />
           )}
           {web3Connected && pageHasStakingAlerts() && (
             <FAQ
-              data={stakingAlertsData[currentRoute]}
+              data={stakingAlertsData[`${currentRoute}${currentHash}`]}
               label={currentRoute.split('/')[currentRoute.split('/').length - 1]}
               variant="pink"
             />

@@ -23,8 +23,8 @@ const ImageContainer = styled.div<{ width?: number; height?: number }>`
 `;
 
 const Image = styled.img`
-  height: 100%;
-  width: 100%;
+  height: 29px;
+  width: 29px;
 `;
 
 const StepContainer = styled.div`
@@ -69,6 +69,7 @@ type StepperProps = {
   steps: { name: string }[];
   currentStep: number;
   lastStepDone: number;
+  style?: object; 
 };
 
 type StepState = 'COMPLETED' | 'CURRENT' | 'CURRENT_AND_COMPLETED' | 'PENDING';
@@ -161,7 +162,9 @@ export const Stepper = (props: StepperProps) => {
   };
 
   return (
-    <StepperContainer>
+    <StepperContainer
+      style={props.style}
+    >
       {props.steps.map((step, idx) => (
         <Step
           key={idx}
