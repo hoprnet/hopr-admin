@@ -22,7 +22,6 @@ const StepTitle = styled.h2`
   font-size: 32px;
   font-weight: 400;
   text-align: center;
-  text-transform: uppercase;
   margin: 0;
   margin-bottom: 16px;
 `;
@@ -49,6 +48,7 @@ const ImageContainer = styled.div<{ width?: number; height?: number }>`
 const Image = styled.img`
   height: 100%;
   width: 100%;
+  object-fit: scale-down;
 `;
 
 const BottomContainer = styled.div`

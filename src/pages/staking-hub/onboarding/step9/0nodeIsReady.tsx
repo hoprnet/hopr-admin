@@ -1,18 +1,7 @@
 import styled from '@emotion/styled';
 import Button from '../../../../future-hopr-lib-components/Button';
-import { StepContainer } from '../components';
+import { StepContainer, ConfirmButton } from '../components';
 import { useNavigate } from 'react-router-dom';
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-`;
-
-const ConfirmButton = styled(Button)`
-  width: 200px;
-  align-self: center;
-`;
 
 export default function NodeIsReady() {
   const navigate = useNavigate();
@@ -25,16 +14,15 @@ export default function NodeIsReady() {
         alt: 'Onboarding done',
         height: 300,
       }}
-    >
-      <Content>
+      buttons={
         <ConfirmButton
-          onClick={() => {
-            navigate('/dev-pages/staking-screen');
-          }}
+          onClick={()=>{navigate('/dev-pages/staking-screen')}}
+          style={{maxWidth: '300px'}}
         >
           VIEW STAKING OVERVIEW
         </ConfirmButton>
-      </Content>
+      }
+    >
     </StepContainer>
   );
 }

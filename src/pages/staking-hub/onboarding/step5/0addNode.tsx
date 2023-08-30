@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import Button from '../../../../future-hopr-lib-components/Button';
 import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
-import { StepContainer } from '../components';
+import { StepContainer, ConfirmButton } from '../components';
 import { useEthersSigner } from '../../../../hooks';
 import { getAddress } from 'viem';
 
@@ -14,11 +14,6 @@ import Tooltip from '@mui/material/Tooltip';
 import { useAppSelector, useAppDispatch } from '../../../../store';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
 import { safeActionsAsync } from '../../../../store/slices/safe';
-
-const ButtonContainer = styled.div`
-  display: flex;
-  gap: 1rem;
-`;
 
 const StyledGrayButton = styled(GrayButton)`
   border: 1px solid black;
@@ -67,15 +62,8 @@ export default function AddNode() {
         src: '/assets/node-blue.svg',
         height: 200,
       }}
-    >
-      <TextField
-        type="text"
-        label="Node Address"
-        placeholder="Your address..."
-        value={address}
-        onChange={(e) => set_address(e.target.value)}
-      />
-      <ButtonContainer>
+      buttons={
+        <>
         <StyledGrayButton
           onClick={() => {
             dispatch(stakingHubActions.setOnboardingStep(11));
@@ -83,18 +71,30 @@ export default function AddNode() {
         >
           Back
         </StyledGrayButton>
-        <Tooltip title={!nodeInNetworkRegistry && 'This node is not on the whitelist'}>
+        <Tooltip title={address === '' ? 'Please enter and confirm your node address': !nodeInNetworkRegistry && 'This node is not on the whitelist'}>
           <span>
-            <Button
+            <ConfirmButton
               onClick={addDelegate}
               disabled={!nodeInNetworkRegistry}
               pending={isLoading}
+              style={{width: '250px'}}
             >
               Continue
-            </Button>
+            </ConfirmButton>
           </span>
         </Tooltip>
-      </ButtonContainer>
+      </>
+      }
+    >
+      <TextField
+        type="text"
+        label="Node Address"
+        placeholder="Your address..."
+        value={address}
+        onChange={(e) => set_address(e.target.value)}
+        fullWidth
+        style={{marginTop: '16px'}}
+      />
     </StepContainer>
   );
 }

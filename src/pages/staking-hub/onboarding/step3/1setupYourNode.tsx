@@ -4,7 +4,7 @@ import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { Link } from 'react-router-dom';
 import CodeCopyBox from '../../../../components/CodeCopyBox';
-import { StepContainer } from '../components';
+import { StepContainer, ConfirmButton } from '../components';
 
 //Store
 import { useAppSelector, useAppDispatch } from '../../../../store';
@@ -50,6 +50,8 @@ const NumberWithBackground = styled.div`
 const RightArrow = styled.div`
   stroke: #000050;
   align-self: center;
+  align-self: flex-start;
+  margin-top: 22px;
 `;
 
 const StyledLink = styled(Link)`
@@ -64,15 +66,9 @@ const CodeContainer = styled.div`
   text-align: start;
   // text-transform: uppercase;
   code {
-    font-size: 12px;
+    font-size: 12px!important;
     line-height: 16px;
   }
-`;
-
-const ButtonContainer = styled.div`
-  align-self: center;
-  display: flex;
-  gap: 1rem;
 `;
 
 const StyledGrayButton = styled(GrayButton)`
@@ -99,6 +95,24 @@ export default function SetupNodeStep() {
     <StepContainer
       title="Set up your node"
       description={'Follow the instructions below to set up your HOPR node.'}
+      buttons={
+        <>
+        <StyledGrayButton
+          onClick={() => {
+            dispatch(stakingHubActions.setOnboardingStep(6));
+          }}
+        >
+          BACK
+        </StyledGrayButton>
+        <ConfirmButton
+          onClick={() => {
+            dispatch(stakingHubActions.setOnboardingStep(10));
+          }}
+        >
+          CONTINUE
+        </ConfirmButton>
+      </>
+      }
     >
       <Content>
         <StepsContainer>
@@ -110,7 +124,7 @@ export default function SetupNodeStep() {
               </p>
               <Content>
                 <CodeContainer>
-                  <span>install hoprd</span>
+                  <span>INSTALL HOPRd</span>
                   <CodeCopyBox
                     code={`docker run --pull always --restart on-failure -m 2g --log-driver json-file --log-opt max-size=100M --log-opt max-file=5 -ti -v $HOME/.hoprd-db-test:/app/hoprd-db -p 9091:9091/tcp -p 9091:9091/udp -p 8080:8080 -p 3001:3001 -e DEBUG="hopr*" europe-west3-docker.pkg.dev/hoprassociation/docker-images/hoprd:latest --network rotsee --init --api --identity /app/hoprd-db/.hopr-id-monte-rosa --data /app/hoprd-db --password 'open-sesame-iTwnsPNg0hpagP+o6T0KOwiH9RQ0' --apiHost "0.0.0.0" --apiToken 'YOUR_SECURITY_TOKEN' --healthCheck --healthCheckHost "0.0.0.0" --announce --safeAddress ${safeAddress} --moduleAddress ${moduleAddress}`}
                   />
@@ -132,22 +146,6 @@ export default function SetupNodeStep() {
             description="Return here to continue, once you have set up your node."
           />
         </StepsContainer>
-        <ButtonContainer>
-          <StyledGrayButton
-            onClick={() => {
-              dispatch(stakingHubActions.setOnboardingStep(6));
-            }}
-          >
-            BACK
-          </StyledGrayButton>
-          <Button
-            onClick={() => {
-              dispatch(stakingHubActions.setOnboardingStep(10));
-            }}
-          >
-            CONTINUE
-          </Button>
-        </ButtonContainer>
       </Content>
     </StepContainer>
   );

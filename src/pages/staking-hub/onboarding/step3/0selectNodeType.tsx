@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import Button from '../../../../future-hopr-lib-components/Button';
-import { StepContainer } from '../components';
+import { StepContainer, ConfirmButton } from '../components';
 
 //Store
 import { useAppDispatch } from '../../../../store';
@@ -110,7 +110,20 @@ export default function SelectNodeType() {
   const [option, set_option] = useState<0 | 1 | null>(null);
 
   return (
-    <StepContainer title="SELECT NODE TYPE">
+    <StepContainer 
+      title="SELECT NODE TYPE"
+      buttons={
+        <ConfirmButton
+          onClick={() => {
+            const step = option === 0 ? 7 : 8;
+            dispatch(stakingHubActions.setOnboardingStep(step));
+          }}
+          disabled={option === null}
+        >
+          CONTINUE
+        </ConfirmButton>
+      }
+    >
       <OptionContainer>
         <Option
           className={`${option === 0 ? 'chosen' : ''}`}
@@ -171,17 +184,6 @@ export default function SelectNodeType() {
           </div>
         </Option>
       </OptionContainer>
-      <Content>
-        <StyledButton
-          onClick={() => {
-            const step = option === 0 ? 7 : 8;
-            dispatch(stakingHubActions.setOnboardingStep(step));
-          }}
-          disabled={option === null}
-        >
-          CONTINUE
-        </StyledButton>
-      </Content>
     </StepContainer>
   );
 }
