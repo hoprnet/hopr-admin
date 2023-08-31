@@ -7,7 +7,7 @@ type FaqElement = {
 type FaqData = Record<string, FaqElement[]>;
 
 const stakingFaq: FaqData = {
-  '/hub/onboarding#0': [
+  '/staking/onboarding#0': [
     {
       id: 1,
       title: 'Token addresses',
@@ -54,14 +54,14 @@ const stakingFaq: FaqData = {
         'NR NFTs were given to node runners of previous HOPR releases. We no longer distribute this NFT. So unless you have already been airdropped one by HOPR, you will only be able to find them on NFT marketplaces.',
     },
   ],
-  '/hub/onboarding#1': [
+  '/staking/onboarding#1': [
     {
       id: 1,
       title: 'Managing owners',
       content: 'You can change ownership after safe creation.',
     },
   ],
-  '/hub/onboarding#3': [
+  '/staking/onboarding#3': [
     {
       id: 1,
       title: 'How do I get an NR NFT?',
@@ -75,7 +75,7 @@ const stakingFaq: FaqData = {
         'If you have more than one NR NFT, only the one with the lowest ID number will be transferred to your safe, and the rest will remain in your wallet.',
     },
   ],
-  '/hub/onboarding#4': [
+  '/staking/onboarding#4': [
     {
       id: 1,
       title: 'Token addresses',
@@ -122,7 +122,7 @@ const stakingFaq: FaqData = {
         'One xDAI is sufficient to start running a node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
     },
   ],
-  '/hub/onboarding#7': [
+  '/staking/onboarding#7': [
     {
       id: 1,
       title: 'Setup Docker',
@@ -143,7 +143,7 @@ const stakingFaq: FaqData = {
       ),
     },
   ],
-  '/hub/onboarding#10': [
+  '/staking/onboarding#10': [
     {
       id: 1,
       title: 'How long do I have to wait to be approved?',
@@ -174,7 +174,7 @@ const stakingFaq: FaqData = {
         'One xDAI is sufficient to start running a node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
     },
   ],
-  '/hub/onboarding#14': [
+  '/staking/onboarding#14': [
     {
       id: 1,
       title: 'How much xDAI should I transfer?',
