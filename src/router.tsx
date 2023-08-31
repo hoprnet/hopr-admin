@@ -47,7 +47,6 @@ import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import SettingsIcon from '@mui/icons-material/Settings';
 import TerminalIcon from '@mui/icons-material/Terminal';
 import MailIcon from '@mui/icons-material/Mail';
-import HubIcon from '@mui/icons-material/Hub';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LockIcon from '@mui/icons-material/Lock';
 import ContactPhone from '@mui/icons-material/ContactPhone';
@@ -56,13 +55,11 @@ import NodeIcon from '@mui/icons-material/Router';
 import NetworkingIcon from '@mui/icons-material/Diversity3';
 import DevelopIcon from '@mui/icons-material/Code';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import SwapVertIcon from '@mui/icons-material/SwapVert';
-import AddBoxIcon from '@mui/icons-material/AddBox';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import PaidIcon from '@mui/icons-material/Paid';
 import WalletIcon from '@mui/icons-material/Wallet';
 import IncomingChannelsIcon from './future-hopr-lib-components/Icons/IncomingChannels';
 import OutgoingChannelsIcon from './future-hopr-lib-components/Icons/OutgoingChannels';
-import WavingHandIcon from '@mui/icons-material/WavingHand';
 import TrainIcon from './future-hopr-lib-components/Icons/TrainIcon';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 
@@ -209,7 +206,20 @@ export const applicationMapStakingHub: ApplicationMapType = [
       },
     ],
   },
+  {
+    groupName: 'RESOURCES',
+    path: 'networking',
+    icon: <NetworkingIcon />,
+    items: [
+      {
+        name: 'Docs',
+        path: 'https://docs.hoprnet.org/',
+        icon: <DescriptionOutlinedIcon />,
+      },
+    ]
+  }
 ];
+
 
 export const applicationMapDevWeb3: ApplicationMapType = [
   {
