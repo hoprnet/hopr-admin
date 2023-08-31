@@ -63,7 +63,7 @@ export default function FundNode() {
   const [isExecutionLoading, set_isExecutionLoading] = useState<boolean>();
 
   const signer = useEthersSigner();
-
+  // TODO: check if the node is not funded
   const createAndExecuteTx = () => {
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
     set_isExecutionLoading(true);
