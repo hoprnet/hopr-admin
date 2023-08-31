@@ -30,6 +30,7 @@ import NodeAdded from './pages/staking-hub/nodeAdded';
 import SafeActions from './pages/staking-hub/actions';
 import NoNodeAdded from './pages/staking-hub/noNodeAdded';
 import Onboarding from './pages/staking-hub/onboarding';
+import Dashboard from './pages/staking-hub/dashboard'
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -63,6 +64,7 @@ import IncomingChannelsIcon from './future-hopr-lib-components/Icons/IncomingCha
 import OutgoingChannelsIcon from './future-hopr-lib-components/Icons/OutgoingChannels';
 import WavingHandIcon from '@mui/icons-material/WavingHand';
 import TrainIcon from './future-hopr-lib-components/Icons/TrainIcon';
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -74,7 +76,7 @@ export type ApplicationMapType = {
     overwritePath?: string;
     icon: JSX.Element;
     element?: JSX.Element;
-    loginNeeded?: 'node' | 'web3';
+    loginNeeded?: 'node' | 'web3' | 'safe';
   }[];
 }[];
 
@@ -186,11 +188,18 @@ export const applicationMapStakingHub: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
+        name: 'Dashboard',
+        path: 'dashboard',
+        icon: <SpaceDashboardIcon />,
+        element: <Dashboard />,
+        loginNeeded: 'safe',
+      },
+      {
         name: 'Withdraw',
         path: 'withdraw',
         icon: <WalletIcon />,
         element: <SafeWithdraw />,
-        loginNeeded: 'web3',
+        loginNeeded: 'safe',
       },
       {
         name: 'Wrapper',
@@ -285,11 +294,20 @@ const LayoutEnhanced = () => {
   const dispatch = useAppDispatch();
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const web3Connected = useAppSelector((store) => store.web3.status.connected);
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [searchParams] = useSearchParams();
   const apiEndpoint = searchParams.get('apiEndpoint');
   const apiToken = searchParams.get('apiToken');
+
+  useEffect(() => {
+    if (environment === 'web3') {
+      document.title = "HOPR | Staking Hub"
+    } else if (environment === 'node') {
+      document.title = "HOPR | Node Admin"
+    }
+  }, []);
 
   useEffect(() => {
     if (!apiEndpoint) return;
@@ -351,6 +369,7 @@ const LayoutEnhanced = () => {
       drawerLoginState={{
         node: nodeConnected,
         web3: web3Connected,
+        safe: !!safeAddress,
       }}
       className={environment}
       drawerType={environment === 'web3' ? 'blue' : undefined}
