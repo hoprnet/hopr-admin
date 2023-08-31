@@ -117,7 +117,7 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
         nodeActionsAsync.withdrawThunk({
           amount: parseEther(amount).toString(),
           currency,
-          recipient,
+          ethereumAddress: recipient,
           apiEndpoint,
           apiToken,
         }),

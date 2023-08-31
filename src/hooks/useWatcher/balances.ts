@@ -1,4 +1,4 @@
-import { AccountResponseType } from '@hoprnet/hopr-sdk';
+import { GetBalancesResponseType } from '@hoprnet/hopr-sdk';
 import { useAppDispatch } from '../../store';
 import { observeData } from './observeData';
 import { nodeActionsAsync } from '../../store/slices/node';
@@ -18,8 +18,8 @@ export const balanceHasIncreased = (prevBalance: string, newBalance: string) =>
 /**
  * Handles balance notifications.
  *
- * @param newNodeBalances The new node balances of type AccountResponseType.
- * @param prevNodeBalances The previous node balances of type AccountResponseType, or null.
+ * @param newNodeBalances The new node balances of type GetBalancesResponseType.
+ * @param prevNodeBalances The previous node balances of type GetBalancesResponseType, or null.
  * @param sendNewNativeBalanceNotification A function that handles new native balance notifications.
  * @param sendNewHoprBalanceNotification A function that handles new HOPR balance notifications.
  */
@@ -31,9 +31,9 @@ export const handleBalanceNotification = ({
   sendNewNativeBalanceNotification,
   sendNativeBalanceTooLowNotification,
 }: {
-  prevNodeBalances: AccountResponseType | null;
-  newNodeBalances: AccountResponseType;
-  minimumNodeBalances: AccountResponseType;
+  prevNodeBalances: GetBalancesResponseType | null;
+  newNodeBalances: GetBalancesResponseType;
+  minimumNodeBalances: GetBalancesResponseType;
   sendNewNativeBalanceNotification: (nativeBalanceDifference: bigint) => void;
   sendNewHoprBalanceNotification: (hoprBalanceDifference: bigint) => void;
   sendNativeBalanceTooLowNotification: (newNativeBalance: bigint) => void;
@@ -59,7 +59,7 @@ export const handleBalanceNotification = ({
 /**
  * Observes node balances and handles notifications when changes are detected.
  *
- * @param previousState The previous state of type AccountResponseType, or null.
+ * @param previousState The previous state of type GetBalancesResponseType, or null.
  * @param apiToken The API token as a string, or null.
  * @param apiEndpoint The API endpoint as a string, or null.
  * @param updatePreviousData A function that updates the previous data with the current data.
@@ -73,14 +73,14 @@ export const observeNodeBalances = ({
   updatePreviousData,
   dispatch,
 }: {
-  previousState: AccountResponseType | null;
+  previousState: GetBalancesResponseType | null;
   apiToken: string | null;
   apiEndpoint: string | null;
-  minimumNodeBalances: AccountResponseType;
-  updatePreviousData: (currentData: AccountResponseType) => void;
+  minimumNodeBalances: GetBalancesResponseType;
+  updatePreviousData: (currentData: GetBalancesResponseType) => void;
   dispatch: ReturnType<typeof useAppDispatch>;
 }) =>
-  observeData<AccountResponseType | null>({
+  observeData<GetBalancesResponseType | null>({
     disabled: !apiToken || !apiEndpoint,
     previousData: previousState,
     fetcher: async () => {

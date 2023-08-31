@@ -163,7 +163,7 @@ function InfoPage() {
                   <span>Environment</span>
                 </Tooltip>
               </th>
-              <td>{info?.environment}</td>
+              <td>{info?.network}</td>
             </tr>
           </tbody>
         </TableExtended>
@@ -193,7 +193,7 @@ function InfoPage() {
                   <span>Blockchain Network</span>
                 </Tooltip>
               </th>
-              <td>{info?.network}</td>
+              <td>{info?.chain}</td>
             </tr>
             <tr>
               <th>

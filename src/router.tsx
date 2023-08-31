@@ -93,13 +93,13 @@ export const applicationMapNode: ApplicationMapType = [
         element: <InfoPage />,
         loginNeeded: 'node',
       },
-      {
-        name: 'LOGS',
-        path: 'logs',
-        icon: <TerminalIcon />,
-        element: <SectionLogs />,
-        loginNeeded: 'node',
-      },
+      // {
+      //   name: 'LOGS',
+      //   path: 'logs',
+      //   icon: <TerminalIcon />,
+      //   element: <SectionLogs />,
+      //   loginNeeded: 'node',
+      // },
       {
         name: 'TICKETS',
         path: 'tickets',

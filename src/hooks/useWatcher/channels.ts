@@ -65,12 +65,12 @@ export const getUpdatedChannels = (
   const allNewChannels = newChannels.incoming.concat(newChannels.outgoing);
 
   // create map of channels to optimize lookup
-  const oldChannelsMap = new Map(allOldChannels?.map((channel) => [channel.channelId, channel]));
-  const newChannelsMap = new Map(allNewChannels.map((channel) => [channel.channelId, channel]));
+  const oldChannelsMap = new Map(allOldChannels?.map((channel) => [channel.id, channel]));
+  const newChannelsMap = new Map(allNewChannels.map((channel) => [channel.id, channel]));
 
   // check for updates and new channels
   for (const newChannel of allNewChannels) {
-    const tempOldChannel = oldChannelsMap.get(newChannel.channelId);
+    const tempOldChannel = oldChannelsMap.get(newChannel.id);
 
     // check if new channel is completely new
     // or differs in status
@@ -81,7 +81,7 @@ export const getUpdatedChannels = (
 
   // check for closed channels
   for (const oldChannel of allOldChannels ?? []) {
-    const channelWasClosed = !newChannelsMap.has(oldChannel.channelId);
+    const channelWasClosed = !newChannelsMap.has(oldChannel.id);
     if (channelWasClosed) {
       updatedChannels.push({
         ...oldChannel,
@@ -153,7 +153,7 @@ export const observeChannels = ({
             url: null,
             timeout: null,
           },
-          toastPayload: { message: `${updatedChannel.channelId}: ${notificationText}` },
+          toastPayload: { message: `${updatedChannel.id}: ${notificationText}` },
           dispatch,
         });
       }

@@ -13,7 +13,7 @@ fs.copyFile(configPath, `${configPath}_`, (err) => {
             data = data.toString();
             data = data.replace(`export const environment: 'dev' | 'node' | 'web3' = `, `export const environment:('dev' | 'node' | 'web3') = 'node'; //`);
             fs.writeFile(configPath, data, function(err) {
-                err || console.log('Data replaced to build only Staking Hub.');
+                err || console.log('Data replaced to build only Node Admin.');
             });
         });
 

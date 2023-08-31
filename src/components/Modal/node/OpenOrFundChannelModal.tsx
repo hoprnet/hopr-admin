@@ -19,7 +19,6 @@ import HubIcon from '@mui/icons-material/Hub';
 
 type OpenOrFundChannelModalProps = {
   peerId?: string;
-  channelId?: string;
   modalBtnText?: string;
   actionBtnText?: string;
   title?: string;
@@ -27,7 +26,6 @@ type OpenOrFundChannelModalProps = {
 };
 
 export const OpenOrFundChannelModal = ({
-  channelId,
   title,
   modalBtnText,
   actionBtnText,
@@ -57,7 +55,7 @@ export const OpenOrFundChannelModal = ({
           apiEndpoint: loginData.apiEndpoint!,
           apiToken: loginData.apiToken!,
           amount: weiValue,
-          peerId: peerId,
+          peerAddress: peerId,
           timeout: 60e3,
         }),
       )
@@ -91,31 +89,10 @@ export const OpenOrFundChannelModal = ({
         });
     };
 
-    const handleFundChannels = async (weiValue: string, peerId: string, channelId: string) => {
-      await dispatch(
-        actionsAsync.fundChannelsThunk({
-          apiEndpoint: loginData.apiEndpoint!,
-          apiToken: loginData.apiToken!,
-          peerId: peerId,
-          incomingAmount: '0',
-          outgoingAmount: weiValue,
-          timeout: 60e3,
-        }),
-      )
-        .unwrap()
-        .catch((e) => {
-          console.log(e.error);
-        });
-    };
-
     handleCloseModal();
     const parsedOutgoing = parseFloat(amount ?? '0') >= 0 ? amount ?? '0' : '0';
     const weiValue = ethers.utils.parseEther(parsedOutgoing).toString();
-    if (channelId) {
-      await handleFundChannels(weiValue, peerId, channelId);
-    } else {
-      await handleOpenChannel(weiValue, peerId);
-    }
+    await handleOpenChannel(weiValue, peerId);
     dispatch(
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,

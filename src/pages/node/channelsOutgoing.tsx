@@ -113,7 +113,7 @@ function ChannelsPage() {
     if (channelsData) {
       exportToCsv(
         Object.entries(channelsData).map(([, channel]) => ({
-          channelId: channel.channelId,
+          channelId: channel.id,
           peerId: channel.peerId,
           status: channel.status,
           dedicatedFunds: channel.balance,
@@ -123,7 +123,7 @@ function ChannelsPage() {
     }
   };
 
-  const handleCloseChannel = (direction: 'incoming' | 'outgoing', peerId: string, channelId: string) => {
+  const handleCloseChannels = (channelId: string) => {
     set_closingStates((prevStates) => ({
       ...prevStates,
       [channelId]: {
@@ -137,8 +137,7 @@ function ChannelsPage() {
       actionsAsync.closeChannelThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-        direction: direction,
-        peerId: peerId,
+        channelId: channelId,
       }),
     )
       .unwrap()
@@ -242,13 +241,12 @@ function ChannelsPage() {
             modalBtnText="Fund outgoing channel"
             actionBtnText="Fund outgoing channel"
             type="fund"
-            channelId={channel.channelId}
           />
           <IconButton
             iconComponent={<CloseChannelIcon />}
-            pending={closingStates[channel.channelId]?.closing}
+            pending={closingStates[channel.id]?.closing}
             tooltipText={`Close outgoing channel`}
-            onClick={() => handleCloseChannel('outgoing', channel.peerId, channel.channelId)}
+            onClick={() => handleCloseChannels(channel.id)}
           />
         </>
       ),
