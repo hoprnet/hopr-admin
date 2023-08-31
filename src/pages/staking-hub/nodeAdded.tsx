@@ -258,48 +258,13 @@ const NodeAdded = () => {
   const nodeNativeAddress = useAppSelector((store) => store.node.addresses.data.native);
   const nodeHoprAddress = useAppSelector((store) => store.node.addresses.data.hopr);
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
-  const loginData = useAppSelector((store) => store.auth.loginData);
-  const nodeSettings = useAppSelector((store) => store.node.settings.data);
   const wxHoprAllowance = useAppSelector((store) => store.stakingHub.safeInfo.data.allowance.wxHoprAllowance);
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
 
   const signer = useEthersSigner();
 
   const navigate = useNavigate();
-  const [queryParams, set_queryParams] = useState('');
-
-  useEffect(() => {
-    if (loginData.apiEndpoint && loginData.apiToken) {
-      const queryParams = new URLSearchParams({
-        apiToken: loginData.apiToken,
-        apiEndpoint: loginData.apiEndpoint,
-      }).toString();
-      set_queryParams(queryParams);
-    }
-    handleRefresh();
-  }, [loginData]);
-
-  useEffect(() => {
-    if (signer && safeAddress) {
-      dispatch(
-        safeActionsAsync.getSafeInfoThunk({
-          signer: signer,
-          safeAddress,
-        }),
-      );
-    }
-  }, [safeAddress]);
-
-  const handleRefresh = () => {
-    if (loginData.apiEndpoint && loginData.apiToken) {
-      dispatch(
-        nodeActionsAsync.getSettingsThunk({
-          apiEndpoint: loginData.apiEndpoint,
-          apiToken: loginData.apiToken,
-        }),
-      );
-    }
-  };
+  // const [queryParams, set_queryParams] = useState(''); // later on well see how to get this params
 
   return (
     <Section
@@ -356,7 +321,10 @@ const NodeAdded = () => {
                 </NodeInfoRow>
                 <NodeInfoRow>
                   <p id="actions">Actions</p>
-                  <StyledIconButton onClick={() => navigate(`/node/configuration?${queryParams}`)}>
+                  <StyledIconButton
+                    onClick={() => {} /*navigate(`/node/configuration?${queryParams}`)*/}
+                    disabled
+                  >
                     <SettingsIcon />
                   </StyledIconButton>
                   <StyledIconButton disabled>
@@ -392,11 +360,11 @@ const NodeAdded = () => {
           <GrayCard
             id="node-strategy"
             title="Node strategy"
-            value={nodeSettings?.strategy ?? '-'}
+            value={'-'}
             buttons={[
               {
                 text: 'Adjust in node admin',
-                link: `/node/configuration?${queryParams}`,
+                link: '#', //`/node/configuration?${queryParams}`,
               },
             ]}
           ></GrayCard>
