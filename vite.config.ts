@@ -24,7 +24,8 @@ export default defineConfig(() => {
       }),
     ],
     build: {
-      outDir: 'build' , rollupOptions: { onwarn(warning, warn) {
+      outDir: 'build',
+      rollupOptions: { onwarn(warning, warn) {
         if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
           return
         }

@@ -1,10 +1,13 @@
-FROM node:18-alpine@sha256:d51f2f5ce2dc7dfcc27fc2aa27a6edc66f6b89825ed4c7249ed0a7298c20a45a AS deps
+FROM --platform=linux/amd64 node:18-bullseye-slim AS deps
+
+SHELL ["/bin/bash", "-lc"]
 
 # Check
 # https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine
 # to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
-RUN apk add jq
+RUN apt-get update && \
+    apt-get install -y libc6 jq && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -12,9 +15,9 @@ COPY package.json .
 COPY yarn.lock .
 
 RUN jq .version package.json -r > /version.txt
-RUN yarn --frozen-lockfile
+RUN yarn --frozen-lockfile --network-timeout 100000
 
-FROM node:18-alpine@sha256:d51f2f5ce2dc7dfcc27fc2aa27a6edc66f6b89825ed4c7249ed0a7298c20a45a AS build
+FROM --platform=linux/amd64 node:18-bullseye-slim AS build
 
 WORKDIR /app
 
