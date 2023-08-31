@@ -1,12 +1,15 @@
 import styled from '@emotion/styled';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { truncateHOPRPeerId } from '../../utils/helpers';
-import { useAppSelector } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { nodeActionsAsync } from '../../store/slices/node';
+import { safeActionsAsync } from '../../store/slices/safe';
+import { useEthersSigner } from '../../hooks';
 
 import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';
 import { Card, Chip, IconButton } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import SettingsIcon from '@mui/icons-material/Settings';
 import CloseIcon from '@mui/icons-material/Close';
@@ -251,9 +254,17 @@ const GrayCard = ({
 };
 
 const NodeAdded = () => {
+  const dispatch = useAppDispatch();
   const nodeNativeAddress = useAppSelector((store) => store.node.addresses.data.native);
   const nodeHoprAddress = useAppSelector((store) => store.node.addresses.data.hopr);
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
+  const wxHoprAllowance = useAppSelector((store) => store.stakingHub.safeInfo.data.allowance.wxHoprAllowance);
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+
+  const signer = useEthersSigner();
+
+  const navigate = useNavigate();
+  // const [queryParams, set_queryParams] = useState(''); // later on well see how to get this params
 
   return (
     <Section
@@ -294,23 +305,26 @@ const NodeAdded = () => {
                 </NodeInfoRow>
                 <NodeInfoRow>
                   <p>Last seen</p>
-                  <p>10 mins</p>
+                  <p>- mins</p>
                 </NodeInfoRow>
                 <NodeInfoRow>
                   <p>Ping</p>
-                  <p>972</p>
+                  <p>-</p>
                 </NodeInfoRow>
                 <NodeInfoRow>
                   <p>24h Avail.</p>
-                  <p>90%</p>
+                  <p>-%</p>
                 </NodeInfoRow>
                 <NodeInfoRow>
                   <p>Availability</p>
-                  <p>80%</p>
+                  <p>-%</p>
                 </NodeInfoRow>
                 <NodeInfoRow>
                   <p id="actions">Actions</p>
-                  <StyledIconButton disabled>
+                  <StyledIconButton
+                    onClick={() => {} /*navigate(`/node/configuration?${queryParams}`)*/}
+                    disabled
+                  >
                     <SettingsIcon />
                   </StyledIconButton>
                   <StyledIconButton disabled>
@@ -323,7 +337,7 @@ const NodeAdded = () => {
           <GrayCard
             id="remaining-wxhopr-allowance"
             title="Remaining wxHOPR Allowance"
-            value="0"
+            value={wxHoprAllowance ?? '-'}
             currency="wxHOPR"
             buttons={[
               {
@@ -336,32 +350,31 @@ const NodeAdded = () => {
           <GrayCard
             id="earned-rewards"
             title="Earned rewards"
-            value="120,736.00"
+            value="-"
             currency="wxHOPR"
             chip={{
-              label: '-5%/24h',
+              label: '-%/24h',
               color: 'error',
             }}
           />
           <GrayCard
             id="node-strategy"
             title="Node strategy"
-            value="0"
+            value={'-'}
             buttons={[
               {
                 text: 'Adjust in node admin',
-                link: '#',
-                disabled: true,
+                link: '#', //`/node/configuration?${queryParams}`,
               },
             ]}
           ></GrayCard>
           <GrayCard
             id="redeemed-tickets"
             title="Redeemed Tickets"
-            value="839"
+            value="-"
             currency="Ticket/wxHOPR"
             chip={{
-              label: '+9%/24h',
+              label: '+%/24h',
               color: 'success',
             }}
           ></GrayCard>
