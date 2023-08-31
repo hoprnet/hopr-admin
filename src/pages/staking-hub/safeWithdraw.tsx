@@ -409,7 +409,7 @@ function SafeWithdraw() {
           )}
           <StyledButtonGroup>
             {!userCanSkipProposal ? (
-              <Tooltip title={isSigning ? 'Signing transation' : getErrorsForApproveButton().at(0)}>
+              <Tooltip title={isSigning ? 'Signing transaction' : getErrorsForApproveButton().at(0)}>
                 <span>
                   <StyledBlueButton
                     disabled={!!getErrorsForApproveButton().length || isSigning}
@@ -420,7 +420,7 @@ function SafeWithdraw() {
                 </span>
               </Tooltip>
             ) : (
-              <Tooltip title={isExecuting ? 'Executing transation' : getErrorsForExecuteButton().at(0)}>
+              <Tooltip title={isExecuting ? 'Executing transaction' : getErrorsForExecuteButton().at(0)}>
                 <span>
                   <StyledBlueButton
                     disabled={!!getErrorsForExecuteButton().length || isExecuting}
