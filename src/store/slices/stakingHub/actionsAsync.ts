@@ -151,55 +151,52 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
     try {
       const state = getState();
 
-      console.log(
-        'BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance as string) > BigInt(0)',
-        state.stakingHub.safeInfo.data.allowance.wxHoprAllowance &&
-          BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance as string) > BigInt(0),
-      );
-      if (
-        state.stakingHub.safeInfo.data.allowance.wxHoprAllowance &&
-        BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance) > BigInt(0)
-      ) {
-        return 16;
-      }
-
-      console.log(
-        'BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18)',
-        state.stakingHub.onboarding.nodeXDaiBalance &&
-          BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18),
-      );
-      if (
-        state.stakingHub.onboarding.nodeXDaiBalance &&
-        BigInt(state.stakingHub.onboarding.nodeXDaiBalance) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18)
-      ) {
-        return 15;
-      }
-
-      console.log(
-        'state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
-        state.stakingHub.safeInfo.data.module.includedNodes,
-      );
-      console.log(
-        'state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
-        state.stakingHub.safeInfo.data.module.includedNodes &&
-          state.stakingHub.safeInfo.data.module.includedNodes.length > 0,
-      );
-      console.log(
-        'state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null',
-        state.stakingHub.safeInfo.data.module.includedNodes &&
-          state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
-          state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null,
-      );
-      if (
-        state.stakingHub.safeInfo.data.module.includedNodes &&
-        state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
-        state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null
-      ) {
-        return 14;
-      }
-
       console.log('state.safe.delegates.data?.count', state.safe.delegates.data?.count);
       if (state.safe.delegates.data?.count) {
+        console.log(
+          'state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
+          state.stakingHub.safeInfo.data.module.includedNodes,
+        );
+        console.log(
+          'state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
+          state.stakingHub.safeInfo.data.module.includedNodes &&
+            state.stakingHub.safeInfo.data.module.includedNodes.length > 0,
+        );
+        console.log(
+          'state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null',
+          state.stakingHub.safeInfo.data.module.includedNodes &&
+            state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
+            state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null,
+        );
+        if (
+          state.stakingHub.safeInfo.data.module.includedNodes &&
+          state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
+          state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null
+        ) {
+          console.log(
+            'BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18)',
+            state.stakingHub.onboarding.nodeXDaiBalance &&
+              BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18),
+          );
+          if (
+            state.stakingHub.onboarding.nodeXDaiBalance &&
+            BigInt(state.stakingHub.onboarding.nodeXDaiBalance) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18)
+          ) {
+            console.log(
+              'BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance as string) > BigInt(0)',
+              state.stakingHub.safeInfo.data.allowance.wxHoprAllowance &&
+                BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance as string) > BigInt(0),
+            );
+            if (
+              state.stakingHub.safeInfo.data.allowance.wxHoprAllowance &&
+              BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance) > BigInt(0)
+            ) {
+              return 16;
+            }
+            return 15;
+          }
+          return 14;
+        }
         return 13;
       }
 
