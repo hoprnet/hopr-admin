@@ -887,10 +887,10 @@
   resolved "https://registry.yarnpkg.com/@fontsource/roboto/-/roboto-5.0.8.tgz#613b477a56f21b5705db1a67e995c033ef317f76"
   integrity sha512-XxPltXs5R31D6UZeLIV1td3wTXU3jzd3f2DLsXI8tytMGBkIsGcc9sIyiupRtA8y73HAhuSCeweOoBqf6DbWCA==
 
-"@hoprnet/hopr-sdk@^2.0.0-beta.6":
-  version "2.0.0-beta.6"
-  resolved "https://registry.yarnpkg.com/@hoprnet/hopr-sdk/-/hopr-sdk-2.0.0-beta.6.tgz#d1d4c910a8592b335c0d48069ee3b7e75cd60f1a"
-  integrity sha512-0ybcHtsEEaFq4ij2a/sZi+bHDMw1GUwlIS+CLKvQIN1Ja94eNjpjX11VANgXVCK4OpfblXG9xHLNGQ5+gDq0XQ==
+"@hoprnet/hopr-sdk@^2.0.0-beta.7":
+  version "2.0.0-beta.7"
+  resolved "https://registry.yarnpkg.com/@hoprnet/hopr-sdk/-/hopr-sdk-2.0.0-beta.7.tgz#e85d01faac0930fbbf103561f65ba1b6df5a63c1"
+  integrity sha512-oJi0015H3VJSgYwaeWfD9zWtqUrsbz8Nol7vuWZFyoRQr3er5QthtQ9utdMo4ce0CBKQzd50j5ngYpYMnLyQTA==
   dependencies:
     cross-fetch "^3.1.5"
     debug "^4.3.4"
