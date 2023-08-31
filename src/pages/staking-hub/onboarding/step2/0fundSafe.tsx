@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Address, formatEther, parseEther, parseUnits } from 'viem';
 import {
   erc20ABI,
+  useBalance,
   useContractWrite,
   usePrepareContractWrite,
   usePrepareSendTransaction,
@@ -46,10 +47,40 @@ const FundsToSafe = () => {
   const dispatch = useAppDispatch();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const walletBalance = useAppSelector((store) => store.web3.balance);
-  const safeBalance = useAppSelector((store) => store.safe.balance.data);
-
   const [xdaiValue, set_xdaiValue] = useState('');
   const [wxhoprValue, set_wxhoprValue] = useState('');
+
+  const {
+    refetch: refetchXDaiSafeBalance,
+    data: xDaiSafeBalance,
+  } = useBalance({
+    address: selectedSafeAddress as `0x${string}`,
+    watch: true,
+    enabled: !!selectedSafeAddress,
+  });
+
+  const {
+    refetch: refetchWXHoprSafeBalance,
+    data: wxHoprSafeBalance,
+  } = useBalance({
+    address: selectedSafeAddress as `0x${string}`,
+    token: wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
+    watch: true,
+    enabled: !!selectedSafeAddress,
+  });
+  
+  useEffect(() => {
+    const fetchBalanceInterval = setInterval(() => {
+      if (selectedSafeAddress) {
+        refetchWXHoprSafeBalance()
+        refetchWXHoprSafeBalance()
+      }
+    }, 15_000)
+
+    return () => {
+      clearInterval(fetchBalanceInterval)
+    }
+  }, [])
 
   const { config: xDAI_to_safe_config } = usePrepareSendTransaction({
     to: selectedSafeAddress ?? undefined,
@@ -79,7 +110,9 @@ const FundsToSafe = () => {
     isSuccess: is_wxHOPR_to_safe_success,
     isLoading: is_wxHOPR_to_safe_loading,
     write: write_wxHOPR_to_safe,
-  } = useContractWrite({ ...wxHOPR_to_safe_config });
+  } = useContractWrite({
+    ...wxHOPR_to_safe_config, onSuccess: () => refetchWXHoprSafeBalance(), 
+  });
 
   useEffect(() => {
     if (is_wxHOPR_to_safe_success) {
@@ -91,7 +124,9 @@ const FundsToSafe = () => {
     isSuccess: is_xDAI_to_safe_success,
     isLoading: is_xDAI_to_safe_loading,
     sendTransaction: send_xDAI_to_safe,
-  } = useSendTransaction({ ...xDAI_to_safe_config });
+  } = useSendTransaction({
+    ...xDAI_to_safe_config, onSuccess: () => refetchXDaiSafeBalance(), 
+  });
 
   useEffect(() => {
     if (is_xDAI_to_safe_success) {
@@ -108,14 +143,14 @@ const FundsToSafe = () => {
   };
 
   const xdaiEnoughBalance = (): boolean => {
-    if (safeBalance.xDai.value && BigInt(safeBalance.xDai.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18)) {
+    if (xDaiSafeBalance?.value && BigInt(xDaiSafeBalance.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18)) {
       return true;
     }
     return false;
   };
 
   const wxhoprEnoughBalance = (): boolean => {
-    if (safeBalance.wxHopr.value && BigInt(safeBalance.wxHopr.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18)) {
+    if (wxHoprSafeBalance?.value && BigInt(wxHoprSafeBalance.value) >= BigInt(MINIMUM_WXHOPR_TO_FUND * 1e18)) {
       return true;
     }
     return false;
@@ -167,13 +202,11 @@ const FundsToSafe = () => {
             size="small"
             value={xdaiValue}
             onChange={(e) => set_xdaiValue(e.target.value)}
-            InputProps={{
-              inputProps: {
-                style: { textAlign: 'right' },
-                min: 0,
-                pattern: '[0-9]*',
-              }
-            }}
+            InputProps={{ inputProps: {
+              style: { textAlign: 'right' },
+              min: 0,
+              pattern: '[0-9]*',
+            } }}
           />
           <StyledCoinLabel>
             xDAI
@@ -193,7 +226,7 @@ const FundsToSafe = () => {
             Stake <Lowercase>wx</Lowercase>HOPR into safe
           </Text>
           <GreenText>
-            {wxhoprEnoughBalance() && 'You transfered enough wxHOPR'}
+            {wxhoprEnoughBalance() && 'You transferred enough wxHOPR'}
           </GreenText>
         </StyledInstructions>
         <StyledInputGroup>
@@ -204,13 +237,11 @@ const FundsToSafe = () => {
             size="small"
             value={wxhoprValue}
             onChange={(e) => set_wxhoprValue(e.target.value)}
-            InputProps={{
-              inputProps: {
-                style: { textAlign: 'right' },
-                min: 0,
-                pattern: '[0-9]*',
-              }
-            }}
+            InputProps={{ inputProps: {
+              style: { textAlign: 'right' },
+              min: 0,
+              pattern: '[0-9]*',
+            } }}
           />
           <StyledCoinLabel>
            wxHOPR
