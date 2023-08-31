@@ -71,6 +71,7 @@ export type ApplicationMapType = {
   items: {
     name: string;
     path: string;
+    overwritePath?: string;
     icon: JSX.Element;
     element?: JSX.Element;
     loginNeeded?: 'node' | 'web3';
@@ -173,6 +174,7 @@ export const applicationMapStakingHub: ApplicationMapType = [
       {
         name: 'Staking Hub',
         path: 'staking-hub-landing',
+        overwritePath: '/',
         icon: <SavingsIcon />,
         element: <StakingLandingPage />,
       },
@@ -393,7 +395,7 @@ applicationMap.map((groups) => {
     }
     if (item.path && item.element) {
       routes[0].children.push({
-        path: groups.path + '/' + item.path,
+        path: item.overwritePath ? item.overwritePath : groups.path + '/' + item.path,
         element: item.element,
       });
     }
