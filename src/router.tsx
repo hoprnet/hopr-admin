@@ -300,6 +300,14 @@ const LayoutEnhanced = () => {
   const apiToken = searchParams.get('apiToken');
 
   useEffect(() => {
+    if (environment === 'web3') {
+      document.title = "HOPR | Staking Hub"
+    } else if (environment === 'node') {
+      document.title = "HOPR | Staking Hub"
+    }
+  }, []);
+
+  useEffect(() => {
     if (!apiEndpoint) return;
     if (loginData.apiEndpoint === apiEndpoint && loginData.apiToken === apiToken) return;
     dispatch(
