@@ -32,7 +32,6 @@ import Section from '../../future-hopr-lib-components/Section';
 // LIBS
 import styled from '@emotion/styled';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
-import { default as dayjs } from 'dayjs';
 import { erc20ABI } from 'wagmi';
 
 // HOOKS
@@ -241,7 +240,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           <Tooltip title={transactionAfterSafeNonce && `Earlier actions should be handled first`}>
             <span>
               <StyledBlueButton
-           //     disabled={transactionAfterSafeNonce}
+                disabled={transactionAfterSafeNonce}
                 onClick={() => rejectTx(transaction)}
               >
                 reject
@@ -251,7 +250,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           <Tooltip title={transactionAfterSafeNonce && `Earlier actions should be handled first`}>
             <span>
               <StyledBlueButton
-         //       disabled={transactionAfterSafeNonce}
+                disabled={transactionAfterSafeNonce}
                 onClick={() => executeTx(transaction)}
               >
                 execute
@@ -871,13 +870,13 @@ const PendingTransactionsTable = () => {
     };
   }, [selectedSafeAddress]);
 
-  const sortByDate = (pendingTransactions: CustomSafeMultisigTransactionListResponse) => {
+  const sortByNonce = (pendingTransactions: CustomSafeMultisigTransactionListResponse) => {
     if (!pendingTransactions?.count) return null;
     const sortedCopy: CustomSafeMultisigTransactionListResponse = JSON.parse(JSON.stringify(pendingTransactions));
 
     // sort from oldest date to newest
     return sortedCopy?.results.sort(
-      (prevDay, nextDay) => dayjs(prevDay.submissionDate).valueOf() - dayjs(nextDay.submissionDate).valueOf(),
+      (prevDay, nextDay) => prevDay.nonce - nextDay.nonce,
     ) as CustomSafeMultisigTransactionResponse[];
   };
 
@@ -899,7 +898,7 @@ const PendingTransactionsTable = () => {
         <TableBody>
           {pendingTransactions &&
             !!pendingTransactions?.count &&
-            sortByDate(pendingTransactions)?.map((transaction, key) => (
+            sortByNonce(pendingTransactions)?.map((transaction, key) => (
               <PendingTransactionRow
                 transaction={transaction}
                 key={key}
