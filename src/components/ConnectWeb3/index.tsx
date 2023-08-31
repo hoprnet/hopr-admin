@@ -84,8 +84,6 @@ export default function ConnectWeb3({
     connect,
     error,
     data,
-    isError,
-    isLoading,
     reset,
     pendingConnector,
   } = useConnect();
@@ -186,7 +184,6 @@ export default function ConnectWeb3({
     <>
       {inTheAppBar && (
         <AppBarContainer
-          disabled={isLoading || isError}
           onClick={handleWeb3ButtonClick}
           ref={containerRef}
           className={`web3-connect-btn`}
