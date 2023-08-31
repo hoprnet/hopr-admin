@@ -303,7 +303,7 @@ const LayoutEnhanced = () => {
     if (environment === 'web3') {
       document.title = "HOPR | Staking Hub"
     } else if (environment === 'node') {
-      document.title = "HOPR | Staking Hub"
+      document.title = "HOPR | Node Admin"
     }
   }, []);
 
