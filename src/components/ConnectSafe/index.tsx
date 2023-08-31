@@ -165,7 +165,7 @@ export default function ConnectSafe() {
       }),
     ).unwrap();
 
-    let nodeXDaiBalance: any = '0';
+    let nodeXDaiBalance = '0';
 
     if (
       subgraphResponse.registeredNodesInNetworkRegistryParsed?.length > 0 &&
@@ -174,7 +174,7 @@ export default function ConnectSafe() {
       console.log('Onboarding: we have a nodeAddress');
       const nodeBalanceInBigInt = await browserClient?.getBalance({ address: subgraphResponse.registeredNodesInNetworkRegistryParsed[0] as Address });
       nodeBalanceInBigInt && console.log('Onboarding: node xDai balance is', nodeBalanceInBigInt / BigInt(1e18));
-      nodeXDaiBalance = nodeBalanceInBigInt?.toString();
+      nodeXDaiBalance = nodeBalanceInBigInt?.toString() ?? '0';
     }
 
     dispatch(
