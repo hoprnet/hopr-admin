@@ -13,16 +13,17 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
 // Tabs
-import StakingScreen from '../staking-screen';
-import SafeActions from '../actions';
+import StakingScreen from './staking';
+import SafeActions from './transactions';
 import SafeDashboard from './safe';
-import NoNodeAdded from '../noNodeAdded';
+import NoNodeAdded from './noNodeAdded';
+import NodeAdded from './node'
 
 export const DASHBOARD = {
   staking: 0,
   node: 1,
   safe: 2,
-  actions: 3,
+  transactions: 3,
 } as { [key: string]: number};
 
 const getTabIndexFromUrl = () => {
@@ -33,8 +34,8 @@ const getTabIndexFromUrl = () => {
       return DASHBOARD.node;
     case 'safe':
       return DASHBOARD.safe;
-    case 'actions':
-      return DASHBOARD.actions;
+    case 'transactions':
+      return DASHBOARD.transactions;
     default: 
       return DASHBOARD.staking;  
   }
@@ -104,13 +105,13 @@ function Dashboard() {
           <Tab label="STAKING" {...a11yProps(0)} />
           <Tab label="NODE" {...a11yProps(1)} />
           <Tab label="SAFE" {...a11yProps(2)} />
-          <Tab label="ACTIONS" {...a11yProps(3)} />
+          <Tab label="TRANSACTIONS" {...a11yProps(3)} />
         </Tabs>
         <div className='Content'>
           { tabIndex === DASHBOARD.staking && <StakingScreen/>}
-          { tabIndex === DASHBOARD.node && <NoNodeAdded/>}
+          { tabIndex === DASHBOARD.node && <NodeAdded/>}
           { tabIndex === DASHBOARD.safe && <SafeDashboard/>}
-          { tabIndex === DASHBOARD.actions && <SafeActions/>}
+          { tabIndex === DASHBOARD.transactions && <SafeActions/>}
         </div>
       </SPaper>
     </DashboardContainer>

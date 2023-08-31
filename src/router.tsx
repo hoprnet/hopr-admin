@@ -24,11 +24,11 @@ import MetricsPage from './pages/node/metrics';
 import SafeStakingPage from './pages/staking-hub/safeStaking';
 import ConfigurationPage from './pages/node/configuration';
 import WrapperPage from './pages/staking-hub/wrapper';
-import StakingScreen from './pages/staking-hub/staking-screen';
+import StakingScreen from './pages/staking-hub/dashboard/staking';
 import SafeWithdraw from './pages/staking-hub/safeWithdraw';
-import NodeAdded from './pages/staking-hub/nodeAdded';
-import SafeActions from './pages/staking-hub/actions';
-import NoNodeAdded from './pages/staking-hub/noNodeAdded';
+import NodeAdded from './pages/staking-hub/dashboard/node';
+import SafeActions from './pages/staking-hub/dashboard/transactions';
+import NoNodeAdded from './pages/staking-hub/dashboard/noNodeAdded';
 import Onboarding from './pages/staking-hub/onboarding';
 import Dashboard from './pages/staking-hub/dashboard'
 
@@ -231,41 +231,6 @@ export const applicationMapDevWeb3: ApplicationMapType = [
         element: <SectionSafe />,
         loginNeeded: 'web3',
       },
-      {
-        name: 'Staking screen',
-        path: 'staking-screen',
-        icon: <SavingsIcon />,
-        element: <StakingScreen />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'No node added',
-        path: 'no-node',
-        icon: <SavingsIcon />,
-        element: <NoNodeAdded />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Node added',
-        path: 'node-added',
-        icon: <SavingsIcon />,
-        element: <NodeAdded />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Actions',
-        path: 'safe/actions',
-        icon: <SwapVertIcon />,
-        element: <SafeActions />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Safe/Staking',
-        path: 'safe/staking',
-        icon: <SavingsIcon />,
-        element: <SafeStakingPage />,
-        loginNeeded: 'web3',
-      },
     ],
   },
 ];
@@ -284,7 +249,7 @@ function createApplicationMap() {
   if (environment === 'dev' || environment === 'node') applicationMapNode.map((elem) => temp.push(elem));
   if (environment === 'dev' || environment === 'web3') applicationMapStakingHub.map((elem) => temp.push(elem));
   if (environment === 'dev' || environment === 'web3') applicationMapDevWeb3.map((elem) => temp.push(elem));
-  if (environment === 'dev') applicationMapDev.map((elem) => temp.push(elem));
+  //if (environment === 'dev') applicationMapDev.map((elem) => temp.push(elem));
   return temp;
 }
 

@@ -1,22 +1,21 @@
 import { ReactNode } from 'react';
-import { useAppSelector } from '../../store';
+import { useAppSelector } from '../../../store';
 import styled from '@emotion/styled';
 
-import Button from '../../future-hopr-lib-components/Button';
+import Button from '../../../future-hopr-lib-components/Button';
 import Chart from 'react-apexcharts';
-import Section from '../../future-hopr-lib-components/Section';
+import Section from '../../../future-hopr-lib-components/Section';
 import { Card, Chip, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
 
-const StyledCard = styled(Card)`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
   padding: 2rem;
-  min-width: 1080px;
 `;
 
 const FlexContainer = styled.div`
@@ -38,32 +37,40 @@ const StyledIconButton = styled(IconButton)`
 `;
 
 const Content = styled.div`
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 2rem;
   // for redeemed-tickets: (99px + 99px + 32px => 230px)
   grid-template-columns: 1fr 230px repeat(2, 99px) 230px 1fr;
 
-  & #wxhopr-total-stake {
-    grid-column: 1/4;
+  .line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    
   }
 
-  & #xdai-in-safe {
-    grid-column: 4/7;
+  #wxhopr-total-stake {
+    flex: 1;
   }
 
-  & #expected-apy {
+  #xdai-in-safe {
+    flex: 1;
+  }
+
+  #expected-apy {
     grid-column: 2/3;
   }
 
-  & #redeemed-tickets {
+  #redeemed-tickets {
     grid-column: 3/5;
   }
 
-  & #earned-rewards {
+  #earned-rewards {
     grid-column: 5/6;
   }
 
-  & #stake-development {
+  #stake-development {
     grid-column: 1/7;
   }
 `;
@@ -215,12 +222,7 @@ const StakingScreen = () => {
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
 
   return (
-    <Section
-      lightBlue
-      center
-      fullHeightMin
-    >
-      <StyledCard>
+    <Container>
         {selectedSafeAddress && (
           <FlexContainer>
             <SafeAddress>Safe address: {selectedSafeAddress}</SafeAddress>
@@ -240,78 +242,73 @@ const StakingScreen = () => {
           </FlexContainer>
         )}
         <Content>
-          <GrayCard
-            id="wxhopr-total-stake"
-            title="wxHOPR Total Stake"
-            value={safeBalance.wxHopr.formatted ?? '-'}
-            chip={{
-              label: '+%/24h',
-              color: 'success',
-            }}
-            buttons={[
-              {
-                text: 'BUY xHOPR',
-                link: '#',
-                disabled: true,
-              },
-              {
-                text: 'xHOPR → wxHOPR',
-                link: '/develop/wrapper',
-              },
-              {
-                text: 'STAKE wxHOPR',
-                link: '#',
-                disabled: true,
-              },
-            ]}
-          />
-          <GrayCard
-            id="xdai-in-safe"
-            title="xDAI in Safe"
-            value={safeBalance.xDai.formatted ?? '-'}
-            buttons={[
-              {
-                text: 'FUND SAFE',
-                link: '#',
-                disabled: true,
-              },
-              {
-                text: 'SEND TO NODE',
-                link: '#',
-                disabled: true,
-              },
-            ]}
-          />
-          <GrayCard
-            id="expected-apy"
-            title="Expected APY"
-            value="2 %"
-          />
-          <GrayCard
-            id="redeemed-tickets"
-            title="Redeemed Tickets"
-            value="-"
-            chip={{
-              label: '+%/24h',
-              color: 'success',
-            }}
-          />
-          <GrayCard
-            id="earned-rewards"
-            title="Earned rewards"
-            value="-"
-            currency="wxHOPR"
-            chip={{
-              label: '-%/24h',
-              color: 'error',
-            }}
-          />
-          <GrayCard id="stake-development">
-            <ColumnChart />
-          </GrayCard>
+          <div className='line'>
+            <GrayCard
+              id="wxhopr-total-stake"
+              title="wxHOPR Total Stake"
+              value={safeBalance.wxHopr.formatted ?? '-'}
+              // chip={{
+              //   label: '+%/24h',
+              //   color: 'success',
+              // }}
+              buttons={[
+                {
+                  text: 'BUY xHOPR',
+                  link: '#',
+                  disabled: true,
+                },
+                {
+                  text: 'xHOPR → wxHOPR',
+                  link: '/staking/wrapper',
+                },
+                {
+                  text: 'STAKE wxHOPR',
+                  link: '#',
+                  disabled: true,
+                },
+              ]}
+            />
+            <GrayCard
+              id="xdai-in-safe"
+              title="xDAI in Safe"
+              value={safeBalance.xDai.formatted ?? '-'}
+              buttons={[
+                {
+                  text: 'FUND SAFE',
+                  link: '#',
+                  disabled: true,
+                },
+                {
+                  text: 'SEND TO NODE',
+                  link: '#',
+                  disabled: true,
+                },
+              ]}
+            />
+          </div>
+          <div className='line'>
+            <GrayCard
+              id="redeemed-tickets"
+              title="Redeemed Tickets"
+              value="-"
+              // chip={{
+              //   label: '+%/24h',
+              //   color: 'success',
+              // }}
+            />
+            <GrayCard
+              id="earned-rewards"
+              title="Earned rewards"
+              value="-"
+              currency="wxHOPR"
+              // chip={{
+              //   label: '-%/24h',
+              //   color: 'error',
+              // }}
+            />
+          </div>
         </Content>
-      </StyledCard>
-    </Section>
+    </Container>
   );
 };
 
