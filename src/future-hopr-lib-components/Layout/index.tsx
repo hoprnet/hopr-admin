@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { Outlet } from 'react-router-dom';
 import { useMediaQuery } from '@mui/material';
+import { environment } from '../../../config';
 
 // Components
 import NavBar from '../Navbar/navBar';
@@ -34,7 +35,7 @@ const Content = styled.div<ContentType>`
   margin-left: 0;
 
   transition: margin-left 0.4s ease-out;
-  @media (min-width: 499.1px) {
+  @media (min-width: 500px) {
     margin-left: ${(props) => (props.openedNavigationDrawer ? '240px' : '56px')};
   }
 
@@ -65,6 +66,7 @@ const Layout: React.FC<{
   drawerLoginState?: {
     node?: boolean;
     web3?: boolean;
+    safe?: boolean;
   };
   drawerType?: 'blue' | 'white';
   drawerItems: ApplicationMapType;
@@ -82,10 +84,9 @@ const Layout: React.FC<{
   drawerType,
 }) => {
   const isMobile = useMediaQuery('(max-width: 500px)');
-  const account = useAppSelector((store) => store.web3.account);
   const isConnected = useAppSelector((store) => store.auth.status.connected);
 
-  const [openedNavigationDrawerPC, set_openedNavigationDrawerPC] = useState(false);
+  const [openedNavigationDrawerPC, set_openedNavigationDrawerPC] = useState(environment === 'web3' || environment === 'dev' ? true : false);
   const [openedNavigationDrawerMobile, set_openedNavigationDrawerMobile] = useState(false);
 
   const handleOpenedNavigationDrawer = (bool: boolean) => {
@@ -96,9 +97,8 @@ const Layout: React.FC<{
   useEffect(() => {
     if (isConnected) set_openedNavigationDrawerPC(true);
   }, [isConnected]);
-
   return (
-    <SLayout className={`Layout${webapp ? ' webapp' : ''} ${className}`}>
+    <SLayout className={`Layout${webapp ? ' webapp' : ''} ${className} ${openedNavigationDrawerPC ? 'drawerOpen' : 'drawerClosed'}`}>
       <NavBar
         mainLogo="/logo.svg"
         mainLogoAlt="hopr logo"

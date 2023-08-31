@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
+import { environment } from '../../../config';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActions, safeActionsAsync } from '../../store/slices/safe';
+import { stakingHubActions, stakingHubActionsAsync } from '../../store/slices/stakingHub';
 
 import { useEthersSigner } from '../../hooks';
 
@@ -12,10 +14,14 @@ import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTrans
 import { appActions } from '../../store/slices/app';
 import { truncateEthereumAddress } from '../../utils/blockchain';
 
+//web3
+import { Address } from 'viem';
+import { browserClient } from '../../providers/wagmi';
+
 const AppBarContainer = styled(Button)`
   align-items: center;
   border-right: 1px lightgray solid;
-  display: flex;
+  display: none;
   align-items: center;
   height: 59px;
   cursor: pointer;
@@ -23,6 +29,9 @@ const AppBarContainer = styled(Button)`
   width: 250px;
   gap: 10px;
   border-radius: 0;
+  &.display {
+    display: flex;
+  }
   .image-container {
     height: 50px;
     width: 50px;
@@ -67,7 +76,6 @@ export default function ConnectSafe() {
   //const safes = useAppSelector((store) => store.safe.safesByOwner.data);
   const safes = useAppSelector((store) => store.stakingHub.safes.data);
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
-  const safeAddressFromBefore = useAppSelector((store) => store.safe.info.data?.address);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
 
@@ -97,6 +105,7 @@ export default function ConnectSafe() {
   useEffect(() => {
     if (safeAddress) {
       useSelectedSafe(safeAddress);
+      getOnboardingData(safeAddress);
     }
   }, [safeAddress]);
 
@@ -111,7 +120,7 @@ export default function ConnectSafe() {
     }
   };
 
-  const useSelectedSafe = (safeAddress: string) => {
+  const useSelectedSafe = async (safeAddress: string) => {
     if (signer) {
       dispatch(appActions.resetState());
       dispatch(safeActions.setSelectedSafe(safeAddress));
@@ -145,6 +154,40 @@ export default function ConnectSafe() {
     }
   };
 
+  const getOnboardingData = async (safeAddress: string) => {
+    dispatch(stakingHubActions.onboardingIsFetching(true));
+    await dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));
+    const moduleAddress = safes.filter((elem) => elem.safeAddress === safeAddress)[0].moduleAddress;
+    const subgraphResponse = await dispatch(
+      stakingHubActionsAsync.getSubgraphDataThunk({
+        safeAddress,
+        moduleAddress,
+      }),
+    ).unwrap();
+
+    let nodeXDaiBalance = '0';
+
+    if (
+      subgraphResponse.registeredNodesInNetworkRegistryParsed?.length > 0 &&
+      subgraphResponse.registeredNodesInNetworkRegistryParsed[0] !== null
+    ) {
+      console.log('Onboarding: we have a nodeAddress');
+      const nodeBalanceInBigInt = await browserClient?.getBalance({ address: subgraphResponse.registeredNodesInNetworkRegistryParsed[0] as Address });
+      nodeBalanceInBigInt && console.log('Onboarding: node xDai balance is', nodeBalanceInBigInt / BigInt(1e18));
+      nodeXDaiBalance = nodeBalanceInBigInt?.toString() ?? '0';
+    }
+
+    dispatch(
+      stakingHubActions.useSafeForOnboarding({
+        safeAddress,
+        moduleAddress,
+        nodeXDaiBalance,
+      }),
+    );
+    dispatch(stakingHubActionsAsync.goToStepWeShouldBeOnThunk());
+    dispatch(stakingHubActions.onboardingIsFetching(false));
+  };
+
   // New function to handle opening the menu
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -166,7 +209,9 @@ export default function ConnectSafe() {
       onClick={handleSafeButtonClick}
       ref={menuRef}
       disabled={!connected.connected}
-      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'}`}
+      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${
+        environment === 'dev' ? 'display' : 'display-none'
+      }`}
     >
       <div className="image-container">
         <img
@@ -202,6 +247,8 @@ export default function ConnectSafe() {
                 key={`${safe.safeAddress}_${index}`}
                 value={safe.safeAddress}
                 onClick={() => {
+                  dispatch(safeActions.resetState());
+                  dispatch(stakingHubActions.resetOnboardingState());
                   dispatch(safeActions.setSelectedSafe(safe.safeAddress));
                 }}
               >

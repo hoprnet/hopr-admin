@@ -9,7 +9,6 @@ import { web3Actions } from '../../store/slices/web3';
 import { gnosis, localhost } from '@wagmi/core/chains';
 import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 //wagmi connectors
 import { createWalletClient, custom, publicActions } from 'viem';
@@ -28,7 +27,7 @@ const {
   publicClient,
 } = configureChains(
   [gnosis],
-  [jsonRpcProvider({ rpc: () => ({ http: `https://derp.hoprnet.org/rpc/xdai/mainnet` }) }), publicProvider()],
+  [publicProvider()],
   {
     pollingInterval: 30_000,
     stallTimeout: 5_000,
@@ -38,6 +37,13 @@ const {
 
 const walletIsInBrowser =
   typeof window !== 'undefined' && typeof (window as unknown as WindowWithEthereum).ethereum !== 'undefined';
+
+export const browserClient = walletIsInBrowser
+  ? createWalletClient({
+    chain: gnosis,
+    transport: custom((window as unknown as WindowWithEthereum).ethereum),
+  }).extend(publicActions)
+  : null;
 
 const config = createConfig({
   autoConnect: true,
@@ -56,10 +62,9 @@ const config = createConfig({
     // this means even if connected through wallet connect
     // the requests will go through the wallet client
     if (walletIsInBrowser) {
-      return createWalletClient({
-        chain: gnosis,
-        transport: custom((window as unknown as WindowWithEthereum).ethereum),
-      }).extend(publicActions);
+      // enforce this type because
+      // it is checked before
+      return browserClient!;
     }
 
     // no ethereum found in window
@@ -73,10 +78,6 @@ export default function WagmiProvider(props: React.PropsWithChildren) {
   useEffect(() => {
     dispatch(web3Actions.setWalletPresent(walletIsInBrowser));
   }, [walletIsInBrowser]);
-
-  if (!walletIsInBrowser) {
-    return props.children;
-  }
 
   return (
     <WagmiConfig config={config}>

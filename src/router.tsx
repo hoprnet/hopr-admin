@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouteObject, useSearchParams } from 'react-router-dom';
+import { createBrowserRouter, RouteObject, useSearchParams, Navigate } from 'react-router-dom';
 import { environment } from '../config';
 
 // Store
@@ -23,24 +23,14 @@ import ChannelsPageOutgoing from './pages/node/channelsOutgoing';
 import MetricsPage from './pages/node/metrics';
 import SafeStakingPage from './pages/staking-hub/safeStaking';
 import ConfigurationPage from './pages/node/configuration';
-import AddNode from './steps/installNode/addNode';
-import SelectNodeType from './steps/installNode/selectNodeType';
 import WrapperPage from './pages/staking-hub/wrapper';
-import XdaiToNodePage from './steps/xdaiToNode';
 import StakingScreen from './pages/staking-hub/staking-screen';
 import SafeWithdraw from './pages/staking-hub/safeWithdraw';
-import UpdateNodePage from './steps/updateNode';
-import SetupNodePage from './steps/setupYourNode';
-import AddedToWhitelist from './steps/addedToWhitelist';
-import JoinWaitlistPage from './steps/joinWaitlist';
-import WhatYouWillNeedPage from './steps/whatYouWillNeed';
-import DockerInstallation from './steps/installNode/dockerInstallation';
-import NodeAddress from './steps/installNode/nodeAddress';
-import SafeOnboarding from './steps/safeOnboarding';
 import NodeAdded from './pages/staking-hub/nodeAdded';
 import SafeActions from './pages/staking-hub/actions';
 import NoNodeAdded from './pages/staking-hub/noNodeAdded';
 import Onboarding from './pages/staking-hub/onboarding';
+import Dashboard from './pages/staking-hub/dashboard'
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -72,6 +62,9 @@ import PaidIcon from '@mui/icons-material/Paid';
 import WalletIcon from '@mui/icons-material/Wallet';
 import IncomingChannelsIcon from './future-hopr-lib-components/Icons/IncomingChannels';
 import OutgoingChannelsIcon from './future-hopr-lib-components/Icons/OutgoingChannels';
+import WavingHandIcon from '@mui/icons-material/WavingHand';
+import TrainIcon from './future-hopr-lib-components/Icons/TrainIcon';
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -80,9 +73,10 @@ export type ApplicationMapType = {
   items: {
     name: string;
     path: string;
+    overwritePath?: string;
     icon: JSX.Element;
     element?: JSX.Element;
-    loginNeeded?: 'node' | 'web3';
+    loginNeeded?: 'node' | 'web3' | 'safe';
   }[];
 }[];
 
@@ -176,21 +170,36 @@ export const applicationMapNode: ApplicationMapType = [
 export const applicationMapStakingHub: ApplicationMapType = [
   {
     groupName: 'Staking Hub',
-    path: 'hub',
+    path: 'staking',
     icon: <DevelopIcon />,
     items: [
       {
         name: 'Staking Hub',
         path: 'staking-hub-landing',
+        overwritePath: '/',
         icon: <SavingsIcon />,
         element: <StakingLandingPage />,
       },
       {
         name: 'Onboarding',
         path: 'onboarding',
-        icon: <LockIcon />,
+        icon: <TrainIcon />,
         element: <Onboarding />,
         loginNeeded: 'web3',
+      },
+      {
+        name: 'Dashboard',
+        path: 'dashboard',
+        icon: <SpaceDashboardIcon />,
+        element: <Dashboard />,
+        loginNeeded: 'safe',
+      },
+      {
+        name: 'Withdraw',
+        path: 'withdraw',
+        icon: <WalletIcon />,
+        element: <SafeWithdraw />,
+        loginNeeded: 'safe',
       },
       {
         name: 'Wrapper',
@@ -257,13 +266,6 @@ export const applicationMapDevWeb3: ApplicationMapType = [
         element: <SafeStakingPage />,
         loginNeeded: 'web3',
       },
-      {
-        name: 'Withdraw',
-        path: 'withdraw',
-        icon: <WalletIcon />,
-        element: <SafeWithdraw />,
-        loginNeeded: 'web3',
-      },
     ],
   },
 ];
@@ -273,81 +275,7 @@ export const applicationMapDev: ApplicationMapType = [
     groupName: 'DEVELOP / Steps',
     path: 'steps',
     icon: <DevelopIcon />,
-    items: [
-      {
-        name: 'Safe Onboarding',
-        path: 'safe-onboarding',
-        icon: <LockIcon />,
-        element: <SafeOnboarding />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Add node',
-        path: 'add-node',
-        icon: <AddBoxIcon />,
-        element: <AddNode />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Select node',
-        path: 'select-node-type',
-        icon: <AddBoxIcon />,
-        element: <SelectNodeType />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Docker',
-        path: 'docker-installation',
-        icon: <AddBoxIcon />,
-        element: <DockerInstallation />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Node Address',
-        path: 'node-address',
-        icon: <AddBoxIcon />,
-        element: <NodeAddress />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Update your node',
-        path: 'update-your-node',
-        icon: <AddBoxIcon />,
-        element: <UpdateNodePage />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Set up your node',
-        path: 'setup-your-node',
-        icon: <AddBoxIcon />,
-        element: <SetupNodePage />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Added to whitelist',
-        path: 'added-to-whitelist',
-        icon: <AddBoxIcon />,
-        element: <AddedToWhitelist />,
-      },
-      {
-        name: 'Join the waitlist',
-        path: 'join-waitlist',
-        icon: <AddBoxIcon />,
-        element: <JoinWaitlistPage />,
-      },
-      {
-        name: 'What you will need',
-        path: 'what-you-will-need',
-        icon: <AddBoxIcon />,
-        element: <WhatYouWillNeedPage />,
-      },
-      {
-        name: 'xdai to node',
-        path: 'xdai-to-node',
-        icon: <AddBoxIcon />,
-        element: <XdaiToNodePage />,
-      },
-    ],
+    items: [],
   },
 ];
 
@@ -366,11 +294,20 @@ const LayoutEnhanced = () => {
   const dispatch = useAppDispatch();
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const web3Connected = useAppSelector((store) => store.web3.status.connected);
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [searchParams] = useSearchParams();
   const apiEndpoint = searchParams.get('apiEndpoint');
   const apiToken = searchParams.get('apiToken');
+
+  useEffect(() => {
+    if (environment === 'web3') {
+      document.title = "HOPR | Staking Hub"
+    } else if (environment === 'node') {
+      document.title = "HOPR | Node Admin"
+    }
+  }, []);
 
   useEffect(() => {
     if (!apiEndpoint) return;
@@ -432,6 +369,7 @@ const LayoutEnhanced = () => {
       drawerLoginState={{
         node: nodeConnected,
         web3: web3Connected,
+        safe: !!safeAddress,
       }}
       className={environment}
       drawerType={environment === 'web3' ? 'blue' : undefined}
@@ -454,6 +392,11 @@ var routes = [
     element: <LayoutEnhanced />,
     children: [] as RouteObject[],
   },
+  {
+    path: '*',
+    element: <Navigate to="/" replace />,
+    children: [] as RouteObject[],
+  },
 ];
 
 applicationMap.map((groups) => {
@@ -471,7 +414,7 @@ applicationMap.map((groups) => {
     }
     if (item.path && item.element) {
       routes[0].children.push({
-        path: groups.path + '/' + item.path,
+        path: item.overwritePath ? item.overwritePath : groups.path + '/' + item.path,
         element: item.element,
       });
     }
