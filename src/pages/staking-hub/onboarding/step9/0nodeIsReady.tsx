@@ -16,7 +16,7 @@ export default function NodeIsReady() {
       }}
       buttons={
         <ConfirmButton
-          onClick={()=>{navigate('/dev-pages/staking-screen')}}
+          onClick={()=>{navigate('/staking/dashboard')}}
           style={{maxWidth: '300px'}}
         >
           VIEW STAKING OVERVIEW

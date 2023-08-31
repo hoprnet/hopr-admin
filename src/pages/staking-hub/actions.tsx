@@ -241,7 +241,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           <Tooltip title={transactionAfterSafeNonce && `Earlier actions should be handled first`}>
             <span>
               <StyledBlueButton
-                disabled={transactionAfterSafeNonce}
+           //     disabled={transactionAfterSafeNonce}
                 onClick={() => rejectTx(transaction)}
               >
                 reject
@@ -251,7 +251,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           <Tooltip title={transactionAfterSafeNonce && `Earlier actions should be handled first`}>
             <span>
               <StyledBlueButton
-                disabled={transactionAfterSafeNonce}
+         //       disabled={transactionAfterSafeNonce}
                 onClick={() => executeTx(transaction)}
               >
                 execute

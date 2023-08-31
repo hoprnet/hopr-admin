@@ -79,7 +79,6 @@ export default function InfoBar(props: Props) {
     return false;
   };
 
-  console.log(`${currentRoute}${currentHash}`);
   const pageHasStakingFAQ = () => {
     if (stakingInfoData[`${currentRoute}${currentHash}`]) return true;
     return false;

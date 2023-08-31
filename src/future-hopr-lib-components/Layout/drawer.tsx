@@ -118,6 +118,7 @@ type DrawerProps = {
   drawerLoginState?: {
     node?: boolean;
     web3?: boolean;
+    safe?: boolean;
   };
   openedNavigationDrawer: boolean;
   drawerType?: 'blue' | 'white' | false;
