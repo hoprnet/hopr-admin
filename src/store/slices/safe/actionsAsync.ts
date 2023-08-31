@@ -1293,10 +1293,10 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     if (action.payload) {
       state.info.data = action.payload;
     }
-    state.selectedSafeAddress.isFetching = false;
+    state.info.isFetching = false;
   });
   builder.addCase(getSafeInfoThunk.rejected, (state) => {
-    state.selectedSafeAddress.isFetching = false;
+    state.info.isFetching = false;
   });
   // CreateSafeTransaction
   builder.addCase(createSafeTransactionThunk.fulfilled, (state) => {
