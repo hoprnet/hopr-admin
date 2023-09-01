@@ -140,7 +140,7 @@ export default function FundNode() {
               }}
               InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
               helperText={error ? 'You do not have enough xDai in Safe.' : `min. ${MINIMUM_XDAI_TO_FUND_NODE}`}
-              error={xdaiValue && error}
+              error={!!xdaiValue && error}
             />
             <StyledCoinLabel>xDAI</StyledCoinLabel>
           </StyledInputGroup>
