@@ -346,7 +346,7 @@ const faq: FaqData = [
     title: 'What is the HOPR Safe?',
     content: (
       <span>
-        The HOPR Safe is a smart contract wallet built using
+        The HOPR Safe is a smart contract wallet built using{' '}
         <a
           href="https://Safe.global/"
           target="_blank"
@@ -355,7 +355,7 @@ const faq: FaqData = [
           Safe
         </a>
         . It allows you to store assets with complete security and spin up a HOPR node in order to earn tokens as a node
-        runner. To create your own HOPR Safe, follow the instructions
+        runner. To create your own HOPR Safe, follow the instructions{' '}
         <a
           href="/staking/onboarding"
           target="_blank"

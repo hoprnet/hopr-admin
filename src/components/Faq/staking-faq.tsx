@@ -468,7 +468,7 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           Make sure your allowance aligns with your node strategy and is not draining your tokens or preventing you from
-          producing well-connected nodes. You can always change your node allowance <a href="#">here</a>.{' '}
+          producing well-connected nodes. You can always change your node allowance <a href="#node">here</a>.{' '}
           {/*FIXME: put link to specific page */}
         </span>
       ),

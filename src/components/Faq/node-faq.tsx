@@ -48,7 +48,15 @@ const nodeFaq: FaqData = {
         <span>
           You must have your node approved to join the network by having an eligible associated staking address and
           being approved by the HOPR association to join the network, as it is currently permissioned. You can join the
-          network by creating a safe <a href="#">here</a>.
+          network by creating a safe{' '}
+          <a
+            href="/staking/onboarding"
+            target="_blank"
+            rel="noreferrer"
+          >
+            here
+          </a>
+          .
         </span>
       ),
     },
