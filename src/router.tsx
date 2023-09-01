@@ -400,11 +400,6 @@ var routes = [
     ),
     children: [] as RouteObject[],
   },
-  {
-    path: '/tos',
-    element: <TermsOfService />,
-    children: [] as RouteObject[],
-  },
 ];
 
 applicationMap.map((groups) => {
