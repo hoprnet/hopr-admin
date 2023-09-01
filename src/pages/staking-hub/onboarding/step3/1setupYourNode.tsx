@@ -118,7 +118,11 @@ export default function SetupNodeStep() {
         <StepsContainer>
           <Instruction num={1}>
             <div>
-              <p>Copy the following command into your terminal and followthe instructions{' '}<StyledLink to={`https://docs.hoprnet.org/node/start-here`}>here</StyledLink>.</p>
+              <p>Copy the following command into your terminal and follow the instructions{' '}<StyledLink 
+                to={`https://docs.hoprnet.org/node/start-here` }
+                target="_blank"
+                rel="noopener noreferrer"
+              >here</StyledLink>.</p>
               <Content>
                 <CodeContainer>
                   <span>INSTALL HOPRd</span>
