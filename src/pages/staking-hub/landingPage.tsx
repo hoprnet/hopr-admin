@@ -7,7 +7,6 @@ import ContinueOnboarding from '../../components/Modal/staking-hub/ContinueOnboa
 import { useState } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Card } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import TelegramIcon from '@mui/icons-material/Telegram';
 import Footer from '../../future-hopr-lib-components/Layout/footer';
 import StartOnboarding from '../../components/Modal/staking-hub/StartOnboarding';
 
@@ -78,7 +77,6 @@ const FurtherReadingButton = styled(Button)`
   justify-content: space-evenly;
   flex: '0 0 33.333333%';
 `;
-
 
 const SideToSideContainer = styled.div`
   display: flex;
@@ -311,10 +309,17 @@ const faq: FaqData = [
     title: 'How much can I expect to earn running a HOPR node?',
     content: (
       <span>
-        'The amount of $HOPR earned will vary depending on your stake, the number of nodes in the network, your
-        availability and how well-connected you are in the network. It’s expected that the average node will earn an APY
+        The amount of $HOPR earned will vary depending on your stake, the number of nodes in the network, your
+        availability and how well-connected you are in the network. It's expected that the average node will earn an APY
         of 10-15%, but you can find a complete breakdown of the economic model of reward distribution and strategies to
-        increase your share [here.](link to docs)',
+        increase your share{' '}
+        <a
+          href="https://twitter.com/hoprnet/status/1696539901305790534"
+          target="_blank"
+          rel="noreferrer"
+        >
+          here.
+        </a>
       </span>
     ),
   },
@@ -332,7 +337,7 @@ const faq: FaqData = [
   },
   {
     id: 5,
-    title: 'What is HOPR? ',
+    title: 'What is HOPR?',
     content:
       'The HOPR network is an incentivized p2p mixnet where nodes are relay points for transferring data between users. Data is encrypted and mixed in between nodes so only the users at the source and destination of the data can know the source and destination and decrypt the data.',
   },
@@ -341,19 +346,23 @@ const faq: FaqData = [
     title: 'What is the HOPR Safe?',
     content: (
       <span>
-        The HOPR Safe is a smart contract wallet built using 
-        <a 
+        The HOPR Safe is a smart contract wallet built using
+        <a
           href="https://Safe.global/"
-          target='_blank'
-          rel="noopener noreferrer"
-        >Safe</a>. It allows you to
-        store assets with complete security and spin up a HOPR node in order to earn tokens as a node runner. To create
-        your own HOPR Safe, follow the instructions 
-        <a 
-        href="/staking/onboarding"
-        target='_blank'
-        rel="noopener noreferrer"
-        >here.</a>
+          target="_blank"
+          rel="noreferrer"
+        >
+          Safe
+        </a>
+        . It allows you to store assets with complete security and spin up a HOPR node in order to earn tokens as a node
+        runner. To create your own HOPR Safe, follow the instructions
+        <a
+          href="/staking/onboarding"
+          target="_blank"
+          rel="noreferrer"
+        >
+          here.
+        </a>
       </span>
     ),
   },
@@ -408,7 +417,7 @@ const StakingLandingPage = () => {
             onClick={() => set_openWeb3Modal(true)}
             disabled={status.connected}
           >
-            {status.connected ? 'WALLECT CONNECTED' : 'CONNECT WALLET'} 
+            {status.connected ? 'WALLECT CONNECTED' : 'CONNECT WALLET'}
           </StyledButton>
           <BrandsSection>
             <Brand>
@@ -509,7 +518,12 @@ const StakingLandingPage = () => {
             </BlueImageSide>
           </BlueSideToSideContainer>
           <Image src="/assets/create-you-hopr-safe-now.svg" />
-          <BlueSectionButton>Connect Wallet</BlueSectionButton>
+          <BlueSectionButton
+            onClick={() => set_openWeb3Modal(true)}
+            disabled={status.connected}
+          >
+            {status.connected ? 'WALLECT CONNECTED' : 'CONNECT WALLET'}
+          </BlueSectionButton>
         </StyledContainer>
       </Section>
       <Section
@@ -540,18 +554,23 @@ const StakingLandingPage = () => {
               <SideTitle>Hopr safe</SideTitle>
               <SideDescription>
                 The HOPR Safe is a secured smart contract wallet built using{' '}
-                <a 
-                href="https://safe.global/"
-                target='_blank'
-                rel="noopener noreferrer"
-                >Safe (previously called Gnosis Safe).</a> Assets deposited into your HOPR
-                Safe are secured by a customizable multisig, limiting exposure even when your HOPR node's private key
-                gets compromised.
+                <a
+                  href="https://safe.global/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Safe (previously called Gnosis Safe).
+                </a>{' '}
+                Assets deposited into your HOPR Safe are secured by a customizable multisig, limiting exposure even when
+                your HOPR node's private key gets compromised.
                 <br />
                 <a
-                  target='_blank'
-                  rel="noopener noreferrer"
-                >Read more LINK NEEEEEDED!</a>
+                  href="https://docs.hoprnet.org/developers/safestaking-by-hopr#what-is-safestaking"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Read more
+                </a>
               </SideDescription>
             </TextSide>
           </SideToSideContainer>
@@ -563,11 +582,13 @@ const StakingLandingPage = () => {
                 service. Your node will automatically request tokens from your Safe to fund these channels. Run a
                 well-connected node to maximize your earnings.
                 <br />
-                <a 
-                  href="https://docs.hoprnet.org/core/tickets-and-payment-channels" 
-                  target='_blank'
-                  rel="noopener noreferrer"
-                >Read more</a>
+                <a
+                  href="https://docs.hoprnet.org/core/tickets-and-payment-channels"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Read more
+                </a>
               </SideDescription>
             </TextSide>
             <ImageSide>
@@ -606,19 +627,51 @@ const StakingLandingPage = () => {
         <BigTitle>Further Reading</BigTitle>
         <br />
         <FurtherReadingButtonsSection>
-          <FurtherReadingButton href="" disabled>
+          <FurtherReadingButton
+            href="https://docs.hoprnet.org/"
+            target="_blank"
+            rel="noreferrer"
+          >
             <img src="/assets/docs-icon.svg" />
             View Docs
           </FurtherReadingButton>
-          <FurtherReadingButton disabled>Why use Safe?</FurtherReadingButton>
-          <FurtherReadingButton disabled>How to install</FurtherReadingButton>
+          <FurtherReadingButton
+            href="https://docs.hoprnet.org/developers/safestaking-by-hopr#why-use-safe"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Why use Safe?
+          </FurtherReadingButton>
+          <FurtherReadingButton
+            href="https://docs.hoprnet.org/node/start-here"
+            target="_blank"
+            rel="noreferrer"
+          >
+            How to install
+          </FurtherReadingButton>
           <br />
-          <FurtherReadingButton disabled>Buy Tokens</FurtherReadingButton>
-          <FurtherReadingButton disabled>How it works</FurtherReadingButton>
+          <FurtherReadingButton
+            href="https://docs.hoprnet.org/staking/how-to-get-hopr"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Buy Tokens
+          </FurtherReadingButton>
+          <FurtherReadingButton
+            href="https://docs.hoprnet.org/developers/safestaking-by-hopr#architecture"
+            target="_blank"
+            rel="noreferrer"
+          >
+            How it works
+          </FurtherReadingButton>
         </FurtherReadingButtonsSection>
         <MediumText>Still got questions? Contact us here.</MediumText>
         <br />
-        <FurtherReadingButton disabled>
+        <FurtherReadingButton
+          href="https://t.me/hoprnet"
+          target="_blank"
+          rel="noreferrer"
+        >
           <img src="/assets/telegram-icon.svg" />
           Telegram
         </FurtherReadingButton>
