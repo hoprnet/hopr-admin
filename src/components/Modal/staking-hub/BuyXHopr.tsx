@@ -187,7 +187,7 @@ const OptionsToBuy = ({
           height={30}
           width={170}
           src="/assets/exchanges/bridge.svg"
-          url=""
+          url="https://www.mtpelerin.com/cryptocurrency/xdai"
         />
         <Exchange
           alt="ramp exchange"
