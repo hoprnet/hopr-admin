@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouteObject, useSearchParams, Navigate } from 'react-router-dom';
+import { createBrowserRouter, RouteObject, useSearchParams, Navigate, useLocation } from 'react-router-dom';
 import { environment } from '../config';
 
 // Store
@@ -286,6 +286,7 @@ const LayoutEnhanced = () => {
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const apiEndpoint = searchParams.get('apiEndpoint');
   const apiToken = searchParams.get('apiToken');
 
@@ -341,6 +342,12 @@ const LayoutEnhanced = () => {
     };
   }, [apiEndpoint, apiToken]);
 
+  const showInfoBar = ()=> {
+    if(environment === 'web3' && location.pathname === "/") return false;
+    if(isConnected || nodeConnected) return true;
+    return false;
+  }
+
   return (
     <Layout
       drawer
@@ -360,7 +367,7 @@ const LayoutEnhanced = () => {
           {(environment === 'dev' || environment === 'node') && <ConnectNode />}
         </>
       }
-      drawerRight={(isConnected || nodeConnected) && <InfoBar />}
+      drawerRight={showInfoBar()&& <InfoBar />}
     />
   );
 };
