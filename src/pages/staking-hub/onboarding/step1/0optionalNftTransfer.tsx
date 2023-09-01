@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useWalletClient } from 'wagmi';
 
@@ -10,6 +10,7 @@ import { StepContainer, ConfirmButton } from '../components';
 import { useAppSelector, useAppDispatch } from '../../../../store';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
 import { web3ActionsAsync } from '../../../../store/slices/web3';
+import { safeActionsAsync } from '../../../../store/slices/safe';
 
 // Mui
 import Radio from '@mui/material/Radio';
@@ -77,6 +78,8 @@ const TransferNft = styled.div`
   }
 `;
 
+let interval: any;
+
 export default function optionalNftTtransfer() {
   const dispatch = useAppDispatch();
   const [option, set_option] = useState<0 | 1 | null>(null);
@@ -85,6 +88,20 @@ export default function optionalNftTtransfer() {
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const walletAddress = useAppSelector((store) => store.web3.account);
   const { data: walletClient } = useWalletClient();
+  const [startedNftTransfer, set_startedNftTransfer] = useState<boolean>(false);
+  const [sendingNFT, set_sendingNFT] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (startedNftTransfer && !communityNftIdInSafe && safeAddress) {
+      interval = setInterval(()=>{dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));}, 10_000);
+    } else if (startedNftTransfer && communityNftIdInSafe ) {
+      clearInterval(interval);
+      set_startedNftTransfer(false);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+  }, [safeAddress, communityNftIdInSafe, startedNftTransfer]);
 
   function whichNFTimage() {
     if (communityNftIdInSafe !== null) return '/assets/nft-in-safe.png';
@@ -128,7 +145,7 @@ export default function optionalNftTtransfer() {
           onClick={() => {
             set_option(0);
           }}
-          disabled={communityNftIdInWallet === null}
+          disabled={communityNftIdInSafe === null}
         >
           <OptionText>
             <div className="left">
@@ -143,21 +160,28 @@ export default function optionalNftTtransfer() {
           <TransferNft>
             <img src={whichNFTimage()} />
             <Button
-              onClick={(event) => {
+              onClick={async (event) => {
                 event.stopPropagation();
                 if (!walletClient) return;
                 if (walletAddress && safeAddress && communityNftIdInWallet !== null) {
-                  dispatch(
+                  set_startedNftTransfer(true);
+                  set_sendingNFT(true);
+                  await dispatch(
                     web3ActionsAsync.sendNftToSafeThunk({
                       walletAddress,
                       safeAddress,
                       walletClient,
                       communityNftId: communityNftIdInWallet,
                     }),
+                  ).unwrap().finally(
+                    ()=>{
+                      set_sendingNFT(false)
+                    }
                   );
                 }
               }}
-              disabled={communityNftIdInWallet === null}
+              disabled={communityNftIdInWallet === null || !!communityNftIdInSafe}
+              pending={sendingNFT}
             >
               Transfer NFT to Safe
             </Button>
