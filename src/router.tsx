@@ -62,6 +62,7 @@ import IncomingChannelsIcon from './future-hopr-lib-components/Icons/IncomingCha
 import OutgoingChannelsIcon from './future-hopr-lib-components/Icons/OutgoingChannels';
 import TrainIcon from './future-hopr-lib-components/Icons/TrainIcon';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
+import { stakingHubActions } from './store/slices/stakingHub';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -278,6 +279,7 @@ const LayoutEnhanced = () => {
   const location = useLocation();
   const apiEndpoint = searchParams.get('apiEndpoint');
   const apiToken = searchParams.get('apiToken');
+  const HOPRdNodeAddressForOnboarding = searchParams.get('HOPRdNodeAddressForOnboarding');
 
   useEffect(() => {
     if (environment === 'web3') {
@@ -339,6 +341,13 @@ const LayoutEnhanced = () => {
     };
   }, [apiEndpoint, apiToken]);
 
+  useEffect(() => {
+    if (!HOPRdNodeAddressForOnboarding) return;
+    dispatch(
+      stakingHubActions.setNodeAddressProvidedByMagicLink(HOPRdNodeAddressForOnboarding),
+    );
+  }, [HOPRdNodeAddressForOnboarding]);
+
   const showInfoBar = ()=> {
     if(environment === 'web3' && location.pathname === "/") return false;
     if(isConnected || nodeConnected) return true;
@@ -359,7 +368,7 @@ const LayoutEnhanced = () => {
       drawerType={environment === 'web3' ? 'blue' : undefined}
       itemsNavbarRight={
         <>
-          <NotificationBar />
+          {(environment === 'dev' || environment === 'node') && <NotificationBar />} 
           {(environment === 'dev' || environment === 'web3') && <ConnectSafe />}
           {(environment === 'dev' || environment === 'web3') && <ConnectWeb3 inTheAppBar />}
           {(environment === 'dev' || environment === 'node') && <ConnectNode />}

@@ -114,12 +114,6 @@ const CreateSafe = () => {
           <Text>{account}</Text>
           <IconButton
             size="small"
-            onClick={() => navigator.clipboard.writeText(account ? account : '')}
-          >
-            <CopyIcon />
-          </IconButton>
-          <IconButton
-            size="small"
             href={`https://gnosisscan.io/address/${account}`}
             target="_blank"
           >

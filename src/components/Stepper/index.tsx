@@ -106,7 +106,7 @@ const StepIcon = (props: StepIconProps) => {
   } else {
     return (
       <NumberWithBackground className={props.state === 'CURRENT' ? 'current' : ''}>
-        {props.position}
+        {props.position+1}
       </NumberWithBackground>
     );
   }

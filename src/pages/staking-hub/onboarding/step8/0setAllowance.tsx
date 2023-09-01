@@ -4,9 +4,10 @@ import Button from '../../../../future-hopr-lib-components/Button';
 import { useEthersSigner } from '../../../../hooks';
 import { StepContainer, ConfirmButton } from '../components';
 import { Lowercase, StyledCoinLabel, StyledInputGroup, StyledTextField } from '../safeOnboarding/styled';
+import { DEFAULT_ALLOWANCE } from '../../../../../config';
 
 // Blockchain
-import { Address, formatEther, parseEther } from 'viem';
+import { Address, formatEther, parseEther, parseUnits } from 'viem';
 import { HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../../../config';
 import { MAX_UINT256, createApproveTransactionData } from '../../../../utils/blockchain';
 
@@ -40,7 +41,7 @@ export default function SetAllowance() {
       set_loading(true);
       await dispatch(
         safeActionsAsync.createAndExecuteContractTransactionThunk({
-          data: createApproveTransactionData(nodeAddress, BigInt(wxHoprValue)),
+          data: createApproveTransactionData(nodeAddress,parseUnits(wxHoprValue, 18)),
           signer,
           safeAddress: selectedSafeAddress,
           smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
@@ -63,7 +64,7 @@ export default function SetAllowance() {
       buttons={
         <ConfirmButton
           onClick={setAllowance}
-          disabled={BigInt(wxHoprValue) <= BigInt(0) }
+          disabled={wxHoprValue === '' || wxHoprValue === '0' || wxHoprValue.includes('-') || wxHoprValue.includes('+')}
           pending={loading}
         >
           EXECUTE
@@ -77,18 +78,19 @@ export default function SetAllowance() {
           variant="outlined"
           placeholder="-"
           size="small"
-          value={formatEther(BigInt(wxHoprValue))}
-          onChange={(e) => set_wxHoprValue(parseEther(e.target.value).toString())}
+          value={wxHoprValue}
+          onChange={(e) => set_wxHoprValue(e.target.value)}
           InputProps={{ inputProps: {
             style: { textAlign: 'right' },
             min: 0,
             pattern: '[0-9]*',
           } }}
+          helperText={`Suggested value is ${DEFAULT_ALLOWANCE} wxHopr`}
         />
         <StyledCoinLabel>
           <Lowercase>wx</Lowercase>hopr
         </StyledCoinLabel>
-        <Button onClick={() => set_wxHoprValue(MAX_UINT256.toString())}>DEFAULT</Button>
+        <Button onClick={() => set_wxHoprValue(DEFAULT_ALLOWANCE.toString())}>DEFAULT</Button>
       </StyledInputGroup>
     </StepContainer>
   );

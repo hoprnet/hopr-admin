@@ -3,10 +3,11 @@ import Tooltip from '@mui/material/Tooltip';
 import { Container } from './styled';
 
 type CodeCopyBoxProps = {
-  code: string;
+  code: any;
+  copy?: string;
 };
 
-const CodeCopyBox = ({ code }: CodeCopyBoxProps) => {
+const CodeCopyBox = ({ code, copy: copyText }: CodeCopyBoxProps) => {
   const [copied, setCopied] = useState(false);
 
   const copy = (copyText: string) => {
@@ -14,7 +15,7 @@ const CodeCopyBox = ({ code }: CodeCopyBoxProps) => {
   };
 
   const handleClick = () => {
-    copy(code);
+    copy(copyText ? copyText : code);
     setCopied(true);
     setTimeout(() => {
       setCopied(false);

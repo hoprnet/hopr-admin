@@ -9,6 +9,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Card } from '@mui/materi
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import Footer from '../../future-hopr-lib-components/Layout/footer';
+import StartOnboarding from '../../components/Modal/staking-hub/StartOnboarding';
 
 const StyledContainer = styled.div`
   align-items: center;
@@ -380,6 +381,7 @@ const StakingLandingPage = () => {
         fullHeightMin
         gradient
       >
+        <StartOnboarding />
         <ContinueOnboarding />
         <StyledContainer>
           <ImageContainer>
