@@ -53,7 +53,6 @@ export const StyledForm = styled.div`
   &.underline{
     border-bottom: 1px solid #414141;
   }
-
 `;
 
 export const StyledInstructions = styled.div`
@@ -114,6 +113,8 @@ export const StyledCoinLabel = styled.p`
   line-height: 60px;
   letter-spacing: 0.35px;
   width: 60px;
+  margin: 0;
+  padding: 0;
 `;
 
 export const MaxButton = styled(Button)`

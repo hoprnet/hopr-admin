@@ -1,16 +1,15 @@
 import { ReactNode, useState } from 'react';
-import { useAppSelector } from '../../store';
+import { useAppSelector } from '../../../store';
 import styled from '@emotion/styled';
 
-import Button from '../../future-hopr-lib-components/Button';
-import Chart from 'react-apexcharts';
-import Section from '../../future-hopr-lib-components/Section';
+import Button from '../../../future-hopr-lib-components/Button';
+import Section from '../../../future-hopr-lib-components/Section';
 import { Card, Chip, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
-import BuyXHopr from '../../components/Modal/staking-hub/BuyXHopr';
+import BuyXHopr from '../../../components/Modal/staking-hub/BuyXHopr';
 
 const StyledCard = styled(Card)`
   display: flex;
@@ -44,6 +43,10 @@ const Content = styled.div`
   // for redeemed-tickets: (99px + 99px + 32px => 230px)
   grid-template-columns: 1fr 230px repeat(2, 99px) 230px 1fr;
 
+  & #no-node-added {
+    grid-column: 1/7;
+  }
+
   & #wxhopr-total-stake {
     grid-column: 1/4;
   }
@@ -63,17 +66,21 @@ const Content = styled.div`
   & #earned-rewards {
     grid-column: 5/6;
   }
-
-  & #stake-development {
-    grid-column: 1/7;
-  }
 `;
 
-const StyledGrayCard = styled(Card)`
-  background-color: #edf2f7;
+const StyledStakingCard = styled(Card)`
   display: flex;
   justify-content: space-between;
   padding: 1rem;
+
+  &.gray {
+    background-color: #edf2f7;
+  }
+
+  &.blueGradient {
+    background: linear-gradient(#000050, #0000b4);
+    color: #fff;
+  }
 `;
 
 const CardContent = styled.div`
@@ -100,6 +107,28 @@ const CardCurrency = styled.p`
   line-height: 1.4;
 `;
 
+const AddNodeContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const AddNodeTitle = styled.h3`
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+`;
+
+const AddNodeText = styled.p`
+  font-weight: 700;
+  margin: 0;
+`;
+
+const AddNodeLink = styled.a`
+  color: #b4f0ff;
+  text-decoration: underline;
+`;
+
 const ValueAndCurrency = styled.div`
   align-items: flex-end;
   display: flex;
@@ -121,12 +150,9 @@ const StyledChip = styled(Chip)<{ color: string }>`
   font-weight: 700;
 `;
 
-const ChartContainer = styled.div`
-  width: 100%;
-`;
-
-type GrayCardProps = {
+type StakingCardProps = {
   id: string;
+  variantColor?: 'gray' | 'blueGradient';
   title?: string;
   value?: string;
   currency?: 'xDAI' | 'xHOPR' | 'wxHOPR';
@@ -137,23 +163,28 @@ type GrayCardProps = {
   buttons?: {
     text: string;
     link?: string;
+    className?: string;
     disabled?: boolean;
-    onClick?: () => void
+    onClick?: () => void;
   }[];
   children?: ReactNode;
 };
 
-const GrayCard = ({
+const StakingCard = ({
   id,
+  variantColor = 'gray',
   title,
   value,
   currency,
   chip,
   buttons,
   children,
-}: GrayCardProps) => {
+}: StakingCardProps) => {
   return (
-    <StyledGrayCard id={id}>
+    <StyledStakingCard
+      id={id}
+      className={`staking-card ${variantColor}`}
+    >
       {(title || value) && (
         <CardContent>
           {title && <CardTitle>{title}</CardTitle>}
@@ -171,6 +202,7 @@ const GrayCard = ({
           )}
         </CardContent>
       )}
+      {children && <div>{children}</div>}
       {buttons && (
         <ButtonGroup>
           {buttons.map((button) => (
@@ -179,44 +211,19 @@ const GrayCard = ({
               disabled={button.disabled}
               onClick={button.onClick}
             >
-              {button.link ? <Link to={button.link}>{button.text}</Link>: <p>{button.text}</p>}
+              {button.link ? <Link to={button.link}>{button.text}</Link> : <p>{button.text}</p>}
             </Button>
           ))}
         </ButtonGroup>
       )}
-      {children}
-    </StyledGrayCard>
+    </StyledStakingCard>
   );
 };
 
-const ColumnChart = () => {
-  // Dummy data, modify this to make the graph look cool.
-  const options = {
-    chart: { id: 'column-chart' },
-    xaxis: { categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998] },
-  };
-  const series = [
-    {
-      name: 'Stake development',
-      data: [30, 40, 45, 50, 49, 60, 70, 91],
-    },
-  ];
-  return (
-    <ChartContainer>
-      <Chart
-        options={options}
-        series={series}
-        type="bar"
-        height="300"
-      />
-    </ChartContainer>
-  );
-};
-
-const StakingScreen = () => {
+const NoNodeAdded = () => {
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as `0x${string}`;
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
-  const [openBuyModal, set_openBuyModal] = useState(false)
+  const [openBuyModal, set_openBuyModal] = useState(false);
 
   return (
     <Section
@@ -244,10 +251,28 @@ const StakingScreen = () => {
           </FlexContainer>
         )}
         <Content>
-          <GrayCard
+          <StakingCard
+            id="no-node-added"
+            variantColor="blueGradient"
+            buttons={[
+              {
+                text: 'ADD NODES',
+                link: '#',
+                className: 'white',
+              },
+            ]}
+          >
+            <AddNodeContent>
+              <AddNodeTitle>Add nodes to your safe</AddNodeTitle>
+              <AddNodeText>
+                Only then you can start staking <AddNodeLink href="#">Read more</AddNodeLink>
+              </AddNodeText>
+            </AddNodeContent>
+          </StakingCard>
+          <StakingCard
             id="wxhopr-total-stake"
             title="wxHOPR Total Stake"
-            value={safeBalance.wxHopr.formatted ?? '-'}
+            value={safeBalance.wxHopr.formatted || '-'}
             chip={{
               label: '+%/24h',
               color: 'success',
@@ -255,11 +280,13 @@ const StakingScreen = () => {
             buttons={[
               {
                 text: 'BUY xHOPR',
-                onClick: () => { set_openBuyModal(true)},
+                onClick: () => {
+                  set_openBuyModal(true);
+                },
               },
               {
                 text: 'xHOPR → wxHOPR',
-                link: '/develop/wrapper',
+                link: '/staking/wrapper',
               },
               {
                 text: 'STAKE wxHOPR',
@@ -268,10 +295,10 @@ const StakingScreen = () => {
               },
             ]}
           />
-          <GrayCard
+          <StakingCard
             id="xdai-in-safe"
             title="xDAI in Safe"
-            value={safeBalance.xDai.formatted ?? '-'}
+            value={safeBalance.xDai.formatted || '-'}
             buttons={[
               {
                 text: 'FUND SAFE',
@@ -285,12 +312,12 @@ const StakingScreen = () => {
               },
             ]}
           />
-          <GrayCard
+          <StakingCard
             id="expected-apy"
             title="Expected APY"
             value="2 %"
           />
-          <GrayCard
+          <StakingCard
             id="redeemed-tickets"
             title="Redeemed Tickets"
             value="-"
@@ -299,7 +326,7 @@ const StakingScreen = () => {
               color: 'success',
             }}
           />
-          <GrayCard
+          <StakingCard
             id="earned-rewards"
             title="Earned rewards"
             value="-"
@@ -309,14 +336,14 @@ const StakingScreen = () => {
               color: 'error',
             }}
           />
-          <GrayCard id="stake-development">
-            <ColumnChart />
-          </GrayCard>
-          <BuyXHopr open={openBuyModal} onClose={() => set_openBuyModal(false)}/>
+          <BuyXHopr
+            open={openBuyModal}
+            onClose={() => set_openBuyModal(false)}
+          />
         </Content>
       </StyledCard>
     </Section>
   );
 };
 
-export default StakingScreen;
+export default NoNodeAdded;

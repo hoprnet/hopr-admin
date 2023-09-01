@@ -11,9 +11,12 @@ type InitialState = {
     notFinished: boolean;
     nodeAddress: string | null;
     safeAddress: string | null;
+    notStarted: boolean | null;
+    modalToSartOnboardingDismissed: boolean;
     moduleAddress: string | null;
     userIsInOnboarding: boolean;
     nodeXDaiBalance: string | null;
+    nodeAddressProvidedByMagicLink:  string | null;
     isFetching: boolean;
   };
   safeInfo: {
@@ -103,6 +106,9 @@ export const initialState: InitialState = {
     userIsInOnboarding: false,
     nodeXDaiBalance: null,
     isFetching: false,
+    notStarted: null,
+    modalToSartOnboardingDismissed: false,
+    nodeAddressProvidedByMagicLink: null,
   },
   safeInfo: {
     data: {

@@ -102,6 +102,8 @@ function Onboarding() {
 
   function whatIsCurrentStep(page: number) {
     switch (page) {
+    case ONBOARDING_PAGES.OPTIONAL_NFT_TRANSFER:
+      return 1;
     case ONBOARDING_PAGES.XDAI_TO_SAFE:
     case ONBOARDING_PAGES.SAFE_IS_FUNDED:
       return 2;
@@ -135,7 +137,7 @@ function Onboarding() {
         style={{ flex: '1 1 10%' }}
         steps={[
           { name: 'CREATE SAFE' },
-          { name: 'OPTIONAL NFT TRANSFER' },
+          { name: 'NFT TRANSFER (OPTIONAL)' },
           { name: 'FUND SAFE' },
           { name: 'CHOOSE YOUR NODE SETUP' },
           { name: 'WAITLIST' },

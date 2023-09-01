@@ -49,9 +49,9 @@ const stakingFaq: FaqData = {
     },
     {
       id: 5,
-      title: 'How do I get an NR NFT?',
+      title: 'How do I get an Network Registry NFT?',
       content:
-        'NR NFTs were given to node runners of previous HOPR releases. We no longer distribute this NFT. So unless you have already been airdropped one by HOPR, you will only be able to find them on NFT marketplaces.',
+        'Network Registry NFTs were given to node runners of previous HOPR releases. We no longer distribute this NFT. So unless you have already been airdropped one by HOPR, you will only be able to find them on NFT marketplaces.',
     },
   ],
   '/staking/onboarding#1': [
@@ -64,15 +64,15 @@ const stakingFaq: FaqData = {
   '/staking/onboarding#3': [
     {
       id: 1,
-      title: 'How do I get an NR NFT?',
+      title: 'How do I get an Network Registry NFT?',
       content:
-        'NR NFTs were given to node runners of previous HOPR releases. We no longer distribute this NFT. So unless you have already been airdropped one by HOPR, you will only be able to find them on NFT marketplaces.',
+        'Network Registry NFTs were given to node runners of previous HOPR releases. We no longer distribute this NFT. So unless you have already been airdropped one by HOPR, you will only be able to find them on NFT marketplaces.',
     },
     {
       id: 2,
-      title: 'What happens if I have multiple NR NFTS?',
+      title: 'What happens if I have multiple Network Registry NFTS?',
       content:
-        'If you have more than one NR NFT, only the one with the lowest ID number will be transferred to your safe, and the rest will remain in your wallet.',
+        'If you have more than one Network Registry NFT, only the one with the lowest ID number will be transferred to your safe, and the rest will remain in your wallet.',
     },
   ],
   '/staking/onboarding#4': [
@@ -138,7 +138,16 @@ const stakingFaq: FaqData = {
       title: 'Install Node',
       content: (
         <span>
-          You can view a complete breakdown of how to install a HOPR node using Docker <a href="#">here</a>
+          You can view a complete breakdown of how to install a HOPR node using Docker <a href="#">here</a>.
+        </span>
+      ),
+    },
+    {
+      id: 3,
+      title: 'Adding your IP address',
+      content: (
+        <span>
+          You will need to edit the Docker command to include your public IP address. To find your IP address and edit the command correctly follow the instructions <a href="#">here</a>
         </span>
       ),
     },
@@ -182,7 +191,7 @@ const stakingFaq: FaqData = {
         'One xDAI is sufficient to start your node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
     },
   ],
-  '/hub/onboarding#15': [
+  '/staking/onboarding#15': [
     {
       id: 1,
       title: 'What is node allowance?',
@@ -279,7 +288,7 @@ const stakingFaq: FaqData = {
         'One xDAI is sufficient to start running a node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
     },
   ],
-  '/hub/wrapper': [
+  '/staking/wrapper': [
     {
       id: 1,
       title: 'Where can I buy xHOPR?',

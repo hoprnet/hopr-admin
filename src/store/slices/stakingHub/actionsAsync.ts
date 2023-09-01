@@ -259,6 +259,11 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     if (action.payload) {
       state.safes.data = action.payload;
     }
+    if(action.payload.length === 0) {
+      state.onboarding.notStarted = true;
+    } else {
+      state.onboarding.notStarted = false;
+    }
     state.safes.isFetching = false;
   });
   builder.addCase(getSubgraphDataThunk.fulfilled, (state, action) => {
@@ -278,6 +283,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       state.onboarding.step = action.payload;
       if (state.onboarding.step !== 0 && state.onboarding.step !== 15 && state.onboarding.step !== 16) {
         state.onboarding.notFinished = true;
+        state.onboarding.notStarted = false;
       }
     }
   });

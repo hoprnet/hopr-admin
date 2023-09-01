@@ -1,13 +1,11 @@
 import styled from '@emotion/styled';
 import { ReactNode, useEffect, useState } from 'react';
-import { truncateHOPRPeerId } from '../../utils/helpers';
-import { useAppDispatch, useAppSelector } from '../../store';
-import { nodeActionsAsync } from '../../store/slices/node';
-import { safeActionsAsync } from '../../store/slices/safe';
-import { useEthersSigner } from '../../hooks';
+import { truncateHOPRPeerId } from '../../../utils/helpers';
+import { useAppDispatch, useAppSelector } from '../../../store';
+import { safeActionsAsync } from '../../../store/slices/safe';
+import { useEthersSigner } from '../../../hooks';
 
-import Button from '../../future-hopr-lib-components/Button';
-import Section from '../../future-hopr-lib-components/Section';
+import Button from '../../../future-hopr-lib-components/Button';
 import { Card, Chip, IconButton } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -16,19 +14,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
 
-const StyledCard = styled(Card)`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 2rem;
-  min-width: 1080px;
-`;
-
 const Content = styled.section`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
-
+  padding: 2rem;
   #node-graphic {
     grid-column: 1/3;
     grid-row: 1/3;
@@ -267,12 +257,6 @@ const NodeAdded = () => {
   // const [queryParams, set_queryParams] = useState(''); // later on well see how to get this params
 
   return (
-    <Section
-      lightBlue
-      center
-      fullHeightMin
-    >
-      <StyledCard>
         <Content>
           <GrayCard id="node-graphic">
             <Graphic>
@@ -284,7 +268,7 @@ const NodeAdded = () => {
               </NodeGraphic>
               <NodeInfo>
                 <NodeInfoRow>
-                  <p>Peer ID</p>
+                  <p>Node Address</p>
                   {nodeHoprAddress ? (
                     <>
                       <p>{truncateHOPRPeerId(nodeHoprAddress)}</p>
@@ -352,12 +336,12 @@ const NodeAdded = () => {
             title="Earned rewards"
             value="-"
             currency="wxHOPR"
-            chip={{
-              label: '-%/24h',
-              color: 'error',
-            }}
+            // chip={{
+            //   label: '-%/24h',
+            //   color: 'error',
+            // }}
           />
-          <GrayCard
+          {/* <GrayCard
             id="node-strategy"
             title="Node strategy"
             value={'-'}
@@ -367,19 +351,20 @@ const NodeAdded = () => {
                 link: '#', //`/node/configuration?${queryParams}`,
               },
             ]}
-          ></GrayCard>
+          ></GrayCard> */}
           <GrayCard
             id="redeemed-tickets"
             title="Redeemed Tickets"
             value="-"
             currency="Ticket/wxHOPR"
-            chip={{
-              label: '+%/24h',
-              color: 'success',
-            }}
+            // chip={{
+            //   label: '+%/24h',
+            //   color: 'success',
+            // }}
           ></GrayCard>
           <GrayCard
-            id="xdai"
+           // id="xdai"
+            id="earned-rewards"
             title="xDAI"
             value={safeBalance.xDai.formatted ?? '-'}
             buttons={[
@@ -388,16 +373,14 @@ const NodeAdded = () => {
                 link: '#',
                 disabled: true,
               },
-              {
-                text: 'Withdraw',
-                link: '#',
-                disabled: true,
-              },
+              // {
+              //   text: 'Withdraw',
+              //   link: '#',
+              //   disabled: true,
+              // },
             ]}
           ></GrayCard>
         </Content>
-      </StyledCard>
-    </Section>
   );
 };
 

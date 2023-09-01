@@ -12,25 +12,47 @@ const stakingHubSlice = createSlice({
       state.onboarding = {
         step: 0,
         nodeAddress: null,
+        nodeAddressProvidedByMagicLink: null,
         safeAddress: null,
         moduleAddress: null,
         notFinished: false,
         userIsInOnboarding: false,
         nodeXDaiBalance: null,
         isFetching: false,
+        notStarted: null,
+        modalToSartOnboardingDismissed: false,
       };
+    },
+    resetStateWithoutMagicLinkForOnboarding: (state) => {
+      state.safes.data = [];
+      state.safes.isFetching = false;
+      state.onboarding.step= 0;
+      state.onboarding.nodeAddress= null;
+      state.onboarding.safeAddress=null;
+      state.onboarding.moduleAddress= null;
+      state.onboarding.notFinished= false;
+      state.onboarding.userIsInOnboarding= false;
+      state.onboarding.nodeXDaiBalance= null;
+      state.onboarding.isFetching= false;
+      state.onboarding.notStarted= null;
     },
     resetOnboardingState: (state) => {
       state.onboarding = {
         step: 0,
         nodeAddress: null,
+        nodeAddressProvidedByMagicLink: null,
         safeAddress: null,
         moduleAddress: null,
         notFinished: false,
         userIsInOnboarding: false,
         nodeXDaiBalance: null,
         isFetching: false,
+        notStarted: null,
+        modalToSartOnboardingDismissed: false,
       };
+    },
+    dismissModalToSartOnboarding: (state) => {
+      state.onboarding.modalToSartOnboardingDismissed = true;
     },
     onboardingIsFetching: (state, action) => {
       state.onboarding.isFetching = action.payload;
@@ -47,6 +69,9 @@ const stakingHubSlice = createSlice({
       state.onboarding.safeAddress = action.payload.safeAddress;
       state.onboarding.moduleAddress = action.payload.moduleAddress;
       if (action.payload.nodeXDaiBalance) state.onboarding.nodeXDaiBalance = action.payload.nodeXDaiBalance;
+    },
+    setNodeAddressProvidedByMagicLink: (state, action) => {
+      state.onboarding.nodeAddressProvidedByMagicLink = action.payload;
     },
     setOnboardingNodeAddress: (state, action) => {
       state.onboarding.nodeAddress = action.payload;

@@ -7,6 +7,13 @@ import { ConfirmButton } from '../components';
 const Content = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 2rem;
+`;
+
+const TitleWithSVGContent = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
 `;
 
@@ -27,6 +34,7 @@ const ImageContainer = styled.div<{ width?: number; height?: number }>`
 const Image = styled.img`
   height: 100%;
   width: 100%;
+  object-fit: contain;
 `;
 
 const Title = styled.h2`
@@ -37,6 +45,7 @@ const Title = styled.h2`
   text-align: center;
   text-transform: uppercase;
   margin: 0;
+  text-align: left;
 `;
 
 const TextUnderImage = styled.div`
@@ -44,7 +53,7 @@ const TextUnderImage = styled.div`
   font-size: 16px;
   font-style: normal;
   font-weight: 450;
-  line-height: 18px;
+  line-height: 22px;
   p {
     margin-top: 12px;
     margin-bottom: 12px;
@@ -122,17 +131,26 @@ const OverlappingSVGs = ({
 };
 
 const TitleWithSVG = (props: {
-  title: string;
+  title: any;
   img?: {
     src: string;
     alt?: string;
     height?: number;
     width?: number;
   };
+  img2?: {
+    src: string;
+    alt?: string;
+    height?: number;
+    width?: number;
+  };
   children?: JSX.Element;
+  style?: object;
 }) => {
   return (
-    <Content>
+    <TitleWithSVGContent
+      style={props.style}
+    >
       <Title>{props.title}</Title>
       {props.img && (
         <ImageContainer
@@ -145,8 +163,19 @@ const TitleWithSVG = (props: {
           />
         </ImageContainer>
       )}
+      {props.img2 && (
+        <ImageContainer
+          height={props.img2.height}
+          width={props.img2.width}
+        >
+          <Image
+            src={props.img2.src}
+            alt={props.img2.alt}
+          />
+        </ImageContainer>
+      )}
       <div>{props.children}</div>
-    </Content>
+    </TitleWithSVGContent>
   );
 };
 
@@ -177,6 +206,11 @@ export default function WhatYouWillNeedPage() {
               height: 100,
               width: 100,
             }}
+            img2={{
+              src: '/assets/clock-waitlist.svg',
+              height: 100,
+              width: 100,
+            }}
           />
           <TitleWithSVG title="token">
             <CenteredFlex>
@@ -192,24 +226,35 @@ export default function WhatYouWillNeedPage() {
                   width: 90,
                 }}
               />
-              <TextUnderImage>
-                <p>min. 10k wxHOPR with NR NFT</p>
-                <p>min. 30k wxHOPR without NR NFT</p>
+              <TextUnderImage
+                style={{maxWidth: '280px'}}
+              >
+                <p>min. 10k wxHOPR with Network Registry NFT</p>
+                <p>min. 30k wxHOPR without Network Registry NFT</p>
                 <p>+</p>
                 <p>min. 1 xDAI</p>
               </TextUnderImage>
             </CenteredFlex>
           </TitleWithSVG>
           <TitleWithSVG
-            title="optional"
+            title="NODE"
+            img={{
+              src: '/assets/node-blue.svg',
+              height: 75,
+              width: 100,
+            }}
+          />
+          <TitleWithSVG
+            title={<>Network<br/>registry NFT*</>}
             img={{
               src: '/assets/network-registry-nft-icon.svg',
               height: 100,
               width: 100,
             }}
+            style={{maxWidth: '100px'}}
           >
             <TextUnderImage>
-              <p style={{textAlign:'center'}}>NR NFT</p>
+              <p style={{textAlign:'center'}}>*optional</p>
             </TextUnderImage>
           </TitleWithSVG>
         </Container>

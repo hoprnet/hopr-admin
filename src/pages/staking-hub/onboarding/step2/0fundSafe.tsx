@@ -31,16 +31,21 @@ import { StepContainer, ConfirmButton } from '../components';
 import styled from '@emotion/styled';
 import Button from '../../../../future-hopr-lib-components/Button';
 
-const GreenText = styled.span`
+const GreenText = styled.div`
   color: #004e00;
-  display: inline;
   font-weight: 700; 
-  font-size: 12px;
+  font-size: 18px;
   font-style: normal;
   line-height: 1.5;
-  margin-top: 16px;
-  margin-bottom: 10px;
-  min-height: 19px;
+  min-height: 30px;
+  width: 100%;
+  text-align: center;
+  &.underline{
+    border-bottom: 1px solid #414141;
+  }
+  &.mb16{
+    margin-bottom: 16px;
+  }
 `;
 
 const FundsToSafe = () => {
@@ -180,19 +185,16 @@ const FundsToSafe = () => {
             }}
             disabled={!xdaiEnoughBalance() || !wxhoprEnoughBalance()}
           >
-            Continue
+            CONTINUE
           </ConfirmButton>
         </>
       }
     >
-      <StyledForm className='underline'>
+      <StyledForm>
         <StyledInstructions>
           <Text>
             Move <Lowercase>x</Lowercase>DAI to safe
           </Text>
-          <GreenText>
-            {xdaiEnoughBalance() && 'You transfered enough xDai'}
-          </GreenText>
         </StyledInstructions>
         <StyledInputGroup>
           <StyledTextField
@@ -207,26 +209,31 @@ const FundsToSafe = () => {
               min: 0,
               pattern: '[0-9]*',
             } }}
+            helperText={`min. ${MINIMUM_XDAI_TO_FUND}`}
           />
           <StyledCoinLabel>
             xDAI
           </StyledCoinLabel>
-          <MaxButton onClick={setMax_xDAI}>Max</MaxButton>
+          <StyledGrayButton onClick={setMax_xDAI}>Max</StyledGrayButton>
           <Button
             onClick={handleFundxDai}
             disabled={!xdaiValue || xdaiValue === '' || xdaiValue === '0'}
+            pending={is_xDAI_to_safe_loading}
           >
             Fund
           </Button>
         </StyledInputGroup>
       </StyledForm>
+      <GreenText className='underline mb16'>
+        {xdaiEnoughBalance() && 'You transfered enough xDai'}
+      </GreenText>
       <StyledForm>
         <StyledInstructions>
           <Text>
             Stake <Lowercase>wx</Lowercase>HOPR into safe
           </Text>
           <GreenText>
-            {wxhoprEnoughBalance() && 'You transferred enough wxHOPR'}
+            
           </GreenText>
         </StyledInstructions>
         <StyledInputGroup>
@@ -242,20 +249,24 @@ const FundsToSafe = () => {
               min: 0,
               pattern: '[0-9]*',
             } }}
+            helperText={`min. ${MINIMUM_WXHOPR_TO_FUND}`}
           />
           <StyledCoinLabel>
            wxHOPR
           </StyledCoinLabel>
-          <MaxButton onClick={setMax_wxHOPR}>Max</MaxButton>
+          <StyledGrayButton onClick={setMax_wxHOPR}>Max</StyledGrayButton>
           <Button
             onClick={handleFundwxHopr}
             disabled={!wxhoprValue || wxhoprValue === '' || wxhoprValue === '0'}
+            pending={is_wxHOPR_to_safe_loading}
           >
             Fund
           </Button>
         </StyledInputGroup>
       </StyledForm>
-
+      <GreenText>
+      {wxhoprEnoughBalance() && 'You transferred enough wxHOPR'}
+      </GreenText>
       {(is_xDAI_to_safe_loading || is_wxHOPR_to_safe_loading) && <span>Check your Wallet...</span>}
     </StepContainer>
   );

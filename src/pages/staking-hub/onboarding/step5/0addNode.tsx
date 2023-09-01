@@ -23,13 +23,16 @@ const StyledGrayButton = styled(GrayButton)`
 export default function AddNode() {
   const dispatch = useAppDispatch();
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  
+  //http://localhost:5173/staking/onboarding?HOPRdNodeAddressForOnboarding=helloMyfield
+  const HOPRdNodeAddressForOnboarding = useAppSelector((store) => store.stakingHub.onboarding.nodeAddressProvidedByMagicLink);
   const nodesAddedToSafe = useAppSelector(
     (store) => store.stakingHub.safeInfo.data.registeredNodesInNetworkRegistryParsed,
   );
   const account = useAppSelector((store) => store.web3.account);
   const signer = useEthersSigner();
   const [isLoading, set_isLoading] = useState(false);
-  const [address, set_address] = useState('');
+  const [address, set_address] = useState(HOPRdNodeAddressForOnboarding ? HOPRdNodeAddressForOnboarding : '');
   const nodeInNetworkRegistry = nodesAddedToSafe.includes(address.toLocaleLowerCase());
 
   const addDelegate = async () => {

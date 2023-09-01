@@ -21,7 +21,7 @@ function Typography(props) {
     <Link
       className={`Typography--link ${props.className}`}
       target="_blank"
-      rel="noopener"
+      rel="noopener noreferrer"
       href={props.href}
     >
       {props.text}

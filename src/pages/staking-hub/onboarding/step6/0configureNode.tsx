@@ -47,7 +47,7 @@ export default function ConfigureNode() {
       title="Configure Node"
       description={'You need to sign a transaction to connect your node to your existing HOPR safe.'}
       image={{
-        src: '/assets/node-blue.svg',
+        src: '/assets/safe-and-node-chain.svg',
         height: 200,
       }}
       buttons={

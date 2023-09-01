@@ -5,6 +5,7 @@ import {
   Divider,
   List,
   ListItemButton,
+  ListItemButtonTypeMap,
   ListItemIcon,
   ListItemText,
   ListSubheader,
@@ -17,6 +18,11 @@ import Details from '../../components/InfoBar/details';
 
 const drawerWidth = 240;
 const minDrawerWidth = 56;
+
+
+interface SListItemButtonTypeMap extends ListItemButtonTypeMap {
+  rel?: string;
+}
 
 const StyledDrawer = styled(MuiDrawer)`
   .MuiDrawer-paper {
@@ -83,7 +89,7 @@ const StyledListSubheader = styled(ListSubheader)`
   color: #777;
 `;
 
-const StyledListItemButton = styled(ListItemButton)`
+const StyledListItemButton = styled(ListItemButton )`
   height: 48px;
   fill: rgba(0, 0, 0, 0.54);
   svg {
@@ -105,7 +111,7 @@ const StyledListItemButton = styled(ListItemButton)`
       fill: #0000b4;
     }
   }
-` as typeof ListItemButton;
+`;
 
 const SListItemIcon = styled(ListItemIcon)`
   &.GroupIcon {
@@ -194,9 +200,12 @@ const Drawer = ({
               >
                 <StyledListItemButton
                   component={Link}
-                  to={`${group.path}/${item.path}${searchParams ?? ''}`}
+                  to={item.path.includes('http') ? item.path : `${group.path}/${item.path}${searchParams ?? ''}`}
+                  target={item.path.includes('http') ? "_blank" : null}
+                  //@ts-ignore
+                  rel={item.path.includes('http') ? "noopener noreferrer" : null}
                   selected={location.pathname === `/${group.path}/${item.path}`}
-                  disabled={!item.element || (item.loginNeeded && !drawerLoginState?.[item.loginNeeded])}
+                  disabled={item.path.includes('http') ? false : (!item.element || (item.loginNeeded && !drawerLoginState?.[item.loginNeeded]))}
                   onClick={handleButtonClick}
                   className="StyledListItemButton"
                 >
