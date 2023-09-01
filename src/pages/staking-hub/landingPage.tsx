@@ -63,11 +63,6 @@ const Description = styled.p`
   max-width: 74ch;
 `;
 
-const Links = styled.div`
-  display: flex;
-  gap: 1rem;
-`;
-
 const StyledButton = styled(Button)`
   align-self: center;
   text-transform: uppercase;
@@ -76,18 +71,12 @@ const StyledButton = styled(Button)`
 const FurtherReadingButton = styled(Button)`
   align-self: center;
   text-transform: uppercase;
-  height: 45px;
   width: 204px;
   display: flex;
   justify-content: space-evenly;
   flex: '0 0 33.333333%';
 `;
 
-const StyledLink = styled(Link)`
-  color: #0000b4;
-  font-weight: 700;
-  text-decoration: underline;
-`;
 
 const SideToSideContainer = styled.div`
   display: flex;
@@ -350,9 +339,19 @@ const faq: FaqData = [
     title: 'What is the HOPR Safe?',
     content: (
       <span>
-        The HOPR Safe is a smart contract wallet built using <a href="https://Safe.global/">Safe</a>. It allows you to
+        The HOPR Safe is a smart contract wallet built using 
+        <a 
+          href="https://Safe.global/"
+          target='_blank'
+          rel="noopener noreferrer"
+        >Safe</a>. It allows you to
         store assets with complete security and spin up a HOPR node in order to earn tokens as a node runner. To create
-        your own HOPR Safe, follow the instructions <a href="/staking/onboarding">here.</a>
+        your own HOPR Safe, follow the instructions 
+        <a 
+        href="/staking/onboarding"
+        target='_blank'
+        rel="noopener noreferrer"
+        >here.</a>
       </span>
     ),
   },
@@ -523,11 +522,18 @@ const StakingLandingPage = () => {
               <SideTitle>Hopr safe</SideTitle>
               <SideDescription>
                 The HOPR Safe is a secured smart contract wallet built using{' '}
-                <a href="https://safe.global/">Safe (previously called Gnosis Safe).</a> Assets deposited into your HOPR
+                <a 
+                href="https://safe.global/"
+                target='_blank'
+                rel="noopener noreferrer"
+                >Safe (previously called Gnosis Safe).</a> Assets deposited into your HOPR
                 Safe are secured by a customizable multisig, limiting exposure even when your HOPR node's private key
                 gets compromised.
                 <br />
-                <a>Read more</a>
+                <a
+                  target='_blank'
+                  rel="noopener noreferrer"
+                >Read more LINK NEEEEEDED!</a>
               </SideDescription>
             </TextSide>
           </SideToSideContainer>
@@ -539,7 +545,11 @@ const StakingLandingPage = () => {
                 service. Your node will automatically request tokens from your Safe to fund these channels. Run a
                 well-connected node to maximize your earnings.
                 <br />
-                <a href="https://docs.hoprnet.org/core/tickets-and-payment-channels">Read more</a>
+                <a 
+                  href="https://docs.hoprnet.org/core/tickets-and-payment-channels" 
+                  target='_blank'
+                  rel="noopener noreferrer"
+                >Read more</a>
               </SideDescription>
             </TextSide>
             <ImageSide>
@@ -578,19 +588,19 @@ const StakingLandingPage = () => {
         <BigTitle>Further Reading</BigTitle>
         <br />
         <FurtherReadingButtonsSection>
-          <FurtherReadingButton href="">
+          <FurtherReadingButton href="" disabled>
             <img src="/assets/docs-icon.svg" />
             View Docs
           </FurtherReadingButton>
-          <FurtherReadingButton>Why use Safe?</FurtherReadingButton>
-          <FurtherReadingButton>How to install</FurtherReadingButton>
+          <FurtherReadingButton disabled>Why use Safe?</FurtherReadingButton>
+          <FurtherReadingButton disabled>How to install</FurtherReadingButton>
           <br />
-          <FurtherReadingButton>Buy Tokens</FurtherReadingButton>
-          <FurtherReadingButton>How it works</FurtherReadingButton>
+          <FurtherReadingButton disabled>Buy Tokens</FurtherReadingButton>
+          <FurtherReadingButton disabled>How it works</FurtherReadingButton>
         </FurtherReadingButtonsSection>
         <MediumText>Still got questions? Contact us here.</MediumText>
         <br />
-        <FurtherReadingButton>
+        <FurtherReadingButton disabled>
           <img src="/assets/telegram-icon.svg" />
           Telegram
         </FurtherReadingButton>

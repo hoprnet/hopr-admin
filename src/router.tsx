@@ -215,6 +215,7 @@ export const applicationMapStakingHub: ApplicationMapType = [
         name: 'Docs',
         path: 'https://docs.hoprnet.org/',
         icon: <DescriptionOutlinedIcon />,
+       // element: <span/>,
       },
     ]
   }
