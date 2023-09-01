@@ -218,6 +218,7 @@ const FundsToSafe = () => {
           <Button
             onClick={handleFundxDai}
             disabled={!xdaiValue || xdaiValue === '' || xdaiValue === '0'}
+            pending={is_xDAI_to_safe_loading}
           >
             Fund
           </Button>
@@ -257,6 +258,7 @@ const FundsToSafe = () => {
           <Button
             onClick={handleFundwxHopr}
             disabled={!wxhoprValue || wxhoprValue === '' || wxhoprValue === '0'}
+            pending={is_wxHOPR_to_safe_loading}
           >
             Fund
           </Button>
