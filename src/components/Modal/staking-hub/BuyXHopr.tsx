@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DialogTitle, IconButton } from '@mui/material';
 import Button from '../../../future-hopr-lib-components/Button';
@@ -232,15 +232,19 @@ const OptionsToBuy = ({
   );
 };
 
-const BuyXHopr = () => {
+const BuyXHopr = ({
+  open,
+  onClose,
+}:{ open: boolean, onClose: () => void }) => {
   const [step, set_step] = useState(0);
 
-  const handleOpenDisclaimer = () => {
-    set_step(1);
-  };
+  useEffect(() => {
+    if (open) set_step(1);
+  },[open])
 
   const handleCloseAllModals = () => {
     set_step(0);
+    onClose();
   };
 
   const handleBackToDisclaimer = () => {
@@ -253,9 +257,6 @@ const BuyXHopr = () => {
 
   return (
     <>
-      <div onClick={handleOpenDisclaimer}>
-        <p>here</p>
-      </div>
       <Disclaimer
         handleCloseModal={handleCloseAllModals}
         handleContinueModal={handleContinueToBuyModal}

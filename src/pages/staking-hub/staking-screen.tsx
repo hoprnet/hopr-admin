@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { useAppSelector } from '../../store';
 import styled from '@emotion/styled';
 
@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
+import BuyXHopr from '../../components/Modal/staking-hub/BuyXHopr';
 
 const StyledCard = styled(Card)`
   display: flex;
@@ -135,8 +136,9 @@ type GrayCardProps = {
   };
   buttons?: {
     text: string;
-    link: string;
+    link?: string;
     disabled?: boolean;
+    onClick?: () => void
   }[];
   children?: ReactNode;
 };
@@ -175,8 +177,9 @@ const GrayCard = ({
             <Button
               key={button.text}
               disabled={button.disabled}
+              onClick={button.onClick}
             >
-              <Link to={button.link}>{button.text}</Link>
+              {button.link ? <Link to={button.link}>{button.text}</Link>: <p>{button.text}</p>}
             </Button>
           ))}
         </ButtonGroup>
@@ -213,6 +216,7 @@ const ColumnChart = () => {
 const StakingScreen = () => {
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as `0x${string}`;
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
+  const [openBuyModal, set_openBuyModal] = useState(false)
 
   return (
     <Section
@@ -251,8 +255,7 @@ const StakingScreen = () => {
             buttons={[
               {
                 text: 'BUY xHOPR',
-                link: '#',
-                disabled: true,
+                onClick: () => { set_openBuyModal(true)},
               },
               {
                 text: 'xHOPR → wxHOPR',
@@ -309,6 +312,7 @@ const StakingScreen = () => {
           <GrayCard id="stake-development">
             <ColumnChart />
           </GrayCard>
+          <BuyXHopr open={openBuyModal} onClose={() => set_openBuyModal(false)}/>
         </Content>
       </StyledCard>
     </Section>
