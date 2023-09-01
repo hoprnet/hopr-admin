@@ -203,6 +203,7 @@ export const applicationMapStakingHub: ApplicationMapType = [
         path: 'wrapper',
         icon: <PaidIcon />,
         element: <WrapperPage />,
+        loginNeeded: 'web3',
       },
     ],
   },
