@@ -106,7 +106,7 @@ export default function JoinWaitListStep() {
 
   return (
     <StepContainer
-      title="Join the waitlist"
+      title="JOIN THE WAITLIST"
       description={`If you have correctly funded your safe, follow the steps below and we’ll onboard you to the HOPR network as soon as possible!`}
       buttons={
         <ConfirmButton>VIEW DASHBOARD</ConfirmButton>
@@ -118,7 +118,11 @@ export default function JoinWaitListStep() {
             <Content>
               <span>
                 Join the waitlist by filling out{' '}
-                <StyledLink to={`https://docs.hoprnet.org/node/start-here`}>this form.</StyledLink>
+                <StyledLink 
+                  to={`https://docs.hoprnet.org/node/start-here`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >this form</StyledLink>.
               </span>
               <StyledTransactionHashWithIcon>
                 <p>Safe address:</p>
@@ -140,9 +144,13 @@ export default function JoinWaitListStep() {
           <Instruction num={2}>
             <p>
               View your position on the waitlist{' '}
-              <StyledLink to={`https://cryptpad.fr/sheet/#/2/sheet/view/NYbRDH+C993dfHwEL1RyyKNtxG5pRoOaxtI4hbRVUBw/`}>
-                here.
-              </StyledLink>
+              <StyledLink 
+                to={`https://cryptpad.fr/sheet/#/2/sheet/view/NYbRDH+C993dfHwEL1RyyKNtxG5pRoOaxtI4hbRVUBw/`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                here
+              </StyledLink>.
             </p>
           </Instruction>
           <RightArrow>
@@ -156,8 +164,17 @@ export default function JoinWaitListStep() {
         <Note>
           Note: You can close this tab now, as it may take over a week to approve your address.
           Once approved, you can return to this point in the journey by re-visiting{' '}
-          <StyledLink to={`https://hub.hoprnet.org`}>hub.HOPRnet.org</StyledLink>{' '}and re-connecting your wallet.
-          For now, keep an eye on the <StyledLink to={`https://cryptpad.fr/sheet/#/2/sheet/view/NYbRDH+C993dfHwEL1RyyKNtxG5pRoOaxtI4hbRVUBw/`}>
+          <StyledLink 
+            to={`https://hub.hoprnet.org`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >hub.HOPRnet.org</StyledLink>{' '}and re-connecting your wallet.
+          For now, keep an eye on the{' '}
+          <StyledLink 
+            to={`https://cryptpad.fr/sheet/#/2/sheet/view/NYbRDH+C993dfHwEL1RyyKNtxG5pRoOaxtI4hbRVUBw/`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             waitlist
           </StyledLink>{' '} or view your funds in the dashboard by clicking the button below.
         </Note>
