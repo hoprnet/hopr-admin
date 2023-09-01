@@ -1,7 +1,8 @@
 import styled from '@emotion/styled';
 import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';
-import { Link } from 'react-router-dom';
+import ConnectWeb3 from '../../components/ConnectWeb3';
+import { useAppSelector } from '../../store';
 import ContinueOnboarding from '../../components/Modal/staking-hub/ContinueOnboarding';
 import { useState } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Card } from '@mui/material';
@@ -359,6 +360,12 @@ const faq: FaqData = [
 
 const StakingLandingPage = () => {
   const [expandedId, set_expandedId] = useState<number | false>(false);
+  const [openWeb3Modal, set_openWeb3Modal] = useState(false);
+  const status = useAppSelector((store) => store.web3.status);
+
+  const handleOnClose = () => {
+    set_openWeb3Modal(false);
+  };
 
   const handleAccordionClick = (id: number) => {
     set_expandedId((prevId) => {
@@ -391,7 +398,16 @@ const StakingLandingPage = () => {
             Earn $HOPR while providing web3 users with the data privacy and autonomy Web 2.0 never did. Create your HOPR
             safe and start running a node now!
           </Description>
-          <StyledButton>Connect Wallet</StyledButton>
+          <ConnectWeb3
+            open={openWeb3Modal}
+            onClose={handleOnClose}
+          />
+          <StyledButton
+            onClick={() => set_openWeb3Modal(true)}
+            disabled={status.connected}
+          >
+            {status.connected ? 'WALLECT CONNECTED' : 'CONNECT WALLET'} 
+          </StyledButton>
           <BrandsSection>
             <Brand>
               <BrandText>DEVELOPED USING</BrandText>
