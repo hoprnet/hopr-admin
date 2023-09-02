@@ -59,7 +59,7 @@ export default function AddNode() {
     <StepContainer
       title="ADD NODE"
       description={
-        'Please enter and confirm your node address. This will initiate a transaction which you will need to sign.'
+        'Please enter and confirm your node ethereum address. This will initiate a transaction which you will need to sign.'
       }
       image={{
         src: '/assets/node-blue.svg',
@@ -97,6 +97,7 @@ export default function AddNode() {
         onChange={(e) => set_address(e.target.value)}
         fullWidth
         style={{marginTop: '16px'}}
+        helperText={'Address should start with 0x'}
       />
     </StepContainer>
   );
