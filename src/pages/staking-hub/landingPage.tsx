@@ -374,6 +374,7 @@ const StakingLandingPage = () => {
   const [expandedId, set_expandedId] = useState<number | false>(false);
   const [openWeb3Modal, set_openWeb3Modal] = useState(false);
   const status = useAppSelector((store) => store.web3.status);
+  const onboardingStep = useAppSelector((store) => store.stakingHub.onboarding.step);
 
   const handleOnClose = () => {
     set_openWeb3Modal(false);
@@ -415,20 +416,34 @@ const StakingLandingPage = () => {
             open={openWeb3Modal}
             onClose={handleOnClose}
           />
-          {!status.connected ? 
+
+          {
+            !status.connected && 
             <StyledButton
               onClick={() => set_openWeb3Modal(true)}
               disabled={status.connected}
             >
               CONNECT WALLET
             </StyledButton>
-            :
+          }
+          {
+            status.connected && onboardingStep !== 16 &&
             <StyledButton
               onClick={() => {navigate('/staking/onboarding');}}
             >
               GO TO ONBOARDING
             </StyledButton>
           }
+          {
+            status.connected && onboardingStep === 16 &&
+            <StyledButton
+              onClick={()=>{navigate('/staking/dashboard')}}
+              style={{maxWidth: '300px'}}
+            >
+              VIEW STAKING OVERVIEW
+            </StyledButton>
+          }
+
           <BrandsSection>
             <Brand>
               <BrandText>DEVELOPED USING</BrandText>
@@ -553,20 +568,33 @@ const StakingLandingPage = () => {
             </BlueImageSide>
           </BlueSideToSideContainer>
           <Image src="/assets/create-you-hopr-safe-now.svg" />
-          {!status.connected ? 
+          {
+            !status.connected && 
             <BlueSectionButton
               onClick={() => set_openWeb3Modal(true)}
               disabled={status.connected}
             >
               CONNECT WALLET
             </BlueSectionButton>
-            :
+          }
+          {
+            status.connected && onboardingStep !== 16 &&
             <BlueSectionButton
               onClick={() => {navigate('/staking/onboarding');}}
             >
               GO TO ONBOARDING
             </BlueSectionButton>
           }
+          {
+            status.connected && onboardingStep === 16 &&
+            <BlueSectionButton
+              onClick={()=>{navigate('/staking/dashboard')}}
+              style={{maxWidth: '300px'}}
+            >
+              VIEW STAKING OVERVIEW
+            </BlueSectionButton>
+          }
+          
         </StyledContainer>
       </Section>
       <Section
