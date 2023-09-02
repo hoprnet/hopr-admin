@@ -1,5 +1,11 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouteObject, useSearchParams, Navigate, useLocation } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  RouteObject,
+  useSearchParams,
+  Navigate,
+  useLocation
+} from 'react-router-dom'
 import { environment } from '../config';
 
 // Store
@@ -30,7 +36,7 @@ import NodeAdded from './pages/staking-hub/dashboard/node';
 import SafeActions from './pages/staking-hub/dashboard/transactions';
 import NoNodeAdded from './pages/staking-hub/dashboard/noNodeAdded';
 import Onboarding from './pages/staking-hub/onboarding';
-import Dashboard from './pages/staking-hub/dashboard'
+import Dashboard from './pages/staking-hub/dashboard';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -63,6 +69,8 @@ import OutgoingChannelsIcon from './future-hopr-lib-components/Icons/OutgoingCha
 import TrainIcon from './future-hopr-lib-components/Icons/TrainIcon';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import { stakingHubActions } from './store/slices/stakingHub';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyNotice from './pages/PrivacyNotice';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -217,12 +225,11 @@ export const applicationMapStakingHub: ApplicationMapType = [
         name: 'Docs',
         path: 'https://docs.hoprnet.org/',
         icon: <DescriptionOutlinedIcon />,
-       // element: <span/>,
+        // element: <span/>,
       },
-    ]
-  }
+    ],
+  },
 ];
-
 
 export const applicationMapDevWeb3: ApplicationMapType = [
   {
@@ -283,9 +290,9 @@ const LayoutEnhanced = () => {
 
   useEffect(() => {
     if (environment === 'web3') {
-      document.title = "HOPR | Staking Hub"
+      document.title = 'HOPR | Staking Hub';
     } else if (environment === 'node') {
-      document.title = "HOPR | Node Admin"
+      document.title = 'HOPR | Node Admin';
     }
   }, []);
 
@@ -343,16 +350,14 @@ const LayoutEnhanced = () => {
 
   useEffect(() => {
     if (!HOPRdNodeAddressForOnboarding) return;
-    dispatch(
-      stakingHubActions.setNodeAddressProvidedByMagicLink(HOPRdNodeAddressForOnboarding),
-    );
+    dispatch(stakingHubActions.setNodeAddressProvidedByMagicLink(HOPRdNodeAddressForOnboarding));
   }, [HOPRdNodeAddressForOnboarding]);
 
-  const showInfoBar = ()=> {
-    if(environment === 'web3' && location.pathname === "/") return false;
-    if(isConnected || nodeConnected) return true;
+  const showInfoBar = () => {
+    if (environment === 'web3' && location.pathname === '/') return false;
+    if (isConnected || nodeConnected) return true;
     return false;
-  }
+  };
 
   return (
     <Layout
@@ -368,13 +373,13 @@ const LayoutEnhanced = () => {
       drawerType={environment === 'web3' ? 'blue' : undefined}
       itemsNavbarRight={
         <>
-          {(environment === 'dev' || environment === 'node') && <NotificationBar />} 
+          {(environment === 'dev' || environment === 'node') && <NotificationBar />}
           {(environment === 'dev' || environment === 'web3') && <ConnectSafe />}
           {(environment === 'dev' || environment === 'web3') && <ConnectWeb3 inTheAppBar />}
           {(environment === 'dev' || environment === 'node') && <ConnectNode />}
         </>
       }
-      drawerRight={showInfoBar()&& <InfoBar />}
+      drawerRight={showInfoBar() && <InfoBar />}
     />
   );
 };
@@ -387,7 +392,12 @@ var routes = [
   },
   {
     path: '*',
-    element: <Navigate to="/" replace />,
+    element: (
+      <Navigate
+        to="/"
+        replace
+      />
+    ),
     children: [] as RouteObject[],
   },
 ];
@@ -412,6 +422,15 @@ applicationMap.map((groups) => {
       });
     }
   });
+});
+
+routes[0].children.push({
+  path: '/tos',
+  element: <TermsOfService />,
+});
+routes[0].children.push({
+  path: '/privacy-notice',
+  element: <PrivacyNotice />,
 });
 
 const router = createBrowserRouter(routes);
