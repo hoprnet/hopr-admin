@@ -9,6 +9,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Card } from '@mui/materi
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Footer from '../../future-hopr-lib-components/Layout/footer';
 import StartOnboarding from '../../components/Modal/staking-hub/StartOnboarding';
+import { useNavigate } from 'react-router-dom';
 
 const StyledContainer = styled.div`
   align-items: center;
@@ -369,6 +370,7 @@ const faq: FaqData = [
 ];
 
 const StakingLandingPage = () => {
+  const navigate = useNavigate();
   const [expandedId, set_expandedId] = useState<number | false>(false);
   const [openWeb3Modal, set_openWeb3Modal] = useState(false);
   const status = useAppSelector((store) => store.web3.status);
@@ -413,12 +415,20 @@ const StakingLandingPage = () => {
             open={openWeb3Modal}
             onClose={handleOnClose}
           />
-          <StyledButton
-            onClick={() => set_openWeb3Modal(true)}
-            disabled={status.connected}
-          >
-            {status.connected ? 'WALLECT CONNECTED' : 'CONNECT WALLET'}
-          </StyledButton>
+          {!status.connected ? 
+            <StyledButton
+              onClick={() => set_openWeb3Modal(true)}
+              disabled={status.connected}
+            >
+              CONNECT WALLET
+            </StyledButton>
+            :
+            <StyledButton
+              onClick={() => {navigate('/staking/onboarding');}}
+            >
+              GO TO ONBOARDING
+            </StyledButton>
+          }
           <BrandsSection>
             <Brand>
               <BrandText>DEVELOPED USING</BrandText>
@@ -543,12 +553,20 @@ const StakingLandingPage = () => {
             </BlueImageSide>
           </BlueSideToSideContainer>
           <Image src="/assets/create-you-hopr-safe-now.svg" />
-          <BlueSectionButton
-            onClick={() => set_openWeb3Modal(true)}
-            disabled={status.connected}
-          >
-            {status.connected ? 'WALLECT CONNECTED' : 'CONNECT WALLET'}
-          </BlueSectionButton>
+          {!status.connected ? 
+            <BlueSectionButton
+              onClick={() => set_openWeb3Modal(true)}
+              disabled={status.connected}
+            >
+              CONNECT WALLET
+            </BlueSectionButton>
+            :
+            <BlueSectionButton
+              onClick={() => {navigate('/staking/onboarding');}}
+            >
+              GO TO ONBOARDING
+            </BlueSectionButton>
+          }
         </StyledContainer>
       </Section>
       <Section
@@ -589,13 +607,13 @@ const StakingLandingPage = () => {
                 Assets deposited into your HOPR Safe are secured by a customizable multisig, limiting exposure even when
                 your HOPR node's private key gets compromised.
                 <br />
-                <a
+                {/* <a
                   href="https://docs.hoprnet.org/developers/safestaking-by-hopr#what-is-safestaking"
                   target="_blank"
                   rel="noreferrer"
                 >
                   Read more
-                </a>
+                </a> */}
               </SideDescription>
             </TextSide>
           </SideToSideContainer>
