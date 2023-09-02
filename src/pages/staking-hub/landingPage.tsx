@@ -423,19 +423,37 @@ const StakingLandingPage = () => {
             <Brand>
               <BrandText>DEVELOPED USING</BrandText>
               <BrandImage>
-                <img src="/assets/safe-icon2.svg" />
+                <a
+                  href="https://safe.global/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img src="/assets/safe-icon2.svg" />
+                </a>
               </BrandImage>
             </Brand>
             <Brand>
               <BrandText>RUNNING ON</BrandText>
               <BrandImage>
-                <img src="/assets/gnosis-chain-logo.svg" />
+                <a
+                  href="https://www.gnosis.io/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img src="/assets/gnosis-chain-logo.svg" />
+                </a>
               </BrandImage>
             </Brand>
             <Brand>
               <BrandText>POWERED BY</BrandText>
               <BrandImage>
-                <img src="/assets/the-graph-logo.svg" />
+                <a
+                  href="https://thegraph.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img src="/assets/the-graph-logo.svg" />
+                </a>
               </BrandImage>
             </Brand>
           </BrandsSection>
@@ -454,7 +472,14 @@ const StakingLandingPage = () => {
               </SideTitle>
               <SideDescription>
                 You earn $HOPR for every packet of data you relay. This is done in a secure and decentralized fashion
-                through our proof-of-relay mechanism.
+                through our{' '}
+                <a
+                  href="https://docs.hoprnet.org/core/proof-of-relay"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  proof-of-relay mechanism.
+                </a>
               </SideDescription>
             </TextSide>
           </SideToSideContainer>
