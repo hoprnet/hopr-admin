@@ -12,6 +12,7 @@ import { stakingHubActions, stakingHubActionsAsync } from '../../store/slices/st
 
 export default function WagmiUpdater() {
   const dispatch = useAppDispatch();
+  const nodeHoprAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress); // Staking Hub
 
   // Wallet Account
   const {
@@ -75,6 +76,11 @@ export default function WagmiUpdater() {
     watch: true,
   }).data;
 
+  const nodeLinkedToSafe_xDai_balance = useBalance({
+    address: nodeHoprAddress as `0x${string}`,
+    watch: true,
+  }).data;
+
   useEffect(() => {
     if (xDAI_balance)
       dispatch(
@@ -134,6 +140,17 @@ export default function WagmiUpdater() {
         }),
       );
   }, [safe_xHopr_balance]);
+
+
+  useEffect(() => {
+    if (nodeLinkedToSafe_xDai_balance)
+      dispatch(
+        stakingHubActions.setNodeLinkedToSafeBalance_xDai({
+          ...nodeLinkedToSafe_xDai_balance,
+          value: nodeLinkedToSafe_xDai_balance.value.toString(),
+        }),
+      );
+  }, [nodeLinkedToSafe_xDai_balance]);
 
   return <></>;
 }
