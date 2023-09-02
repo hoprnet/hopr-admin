@@ -37,6 +37,10 @@ import SafeActions from './pages/staking-hub/dashboard/transactions';
 import NoNodeAdded from './pages/staking-hub/dashboard/noNodeAdded';
 import Onboarding from './pages/staking-hub/onboarding';
 import Dashboard from './pages/staking-hub/dashboard';
+import StakewxHOPR from './pages/staking-hub/stakewxHOPR';
+import StakexDAI from './pages/staking-hub/stakexDai';
+import SetAllowance from './pages/staking-hub/setAllowance';
+import FundNode from './pages/staking-hub/fundNode';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -77,11 +81,12 @@ export type ApplicationMapType = {
   path: string;
   icon: JSX.Element;
   items: {
-    name: string;
+    name?: string;
     path: string;
     overwritePath?: string;
-    icon: JSX.Element;
+    icon?: JSX.Element;
     element?: JSX.Element;
+    inDrawer?: boolean | null;
     loginNeeded?: 'node' | 'web3' | 'safe';
   }[];
 }[];
@@ -213,6 +218,30 @@ export const applicationMapStakingHub: ApplicationMapType = [
         icon: <PaidIcon />,
         element: <WrapperPage />,
         loginNeeded: 'web3',
+      },
+      {
+        path: 'stake-wxHOPR',
+        element: <StakewxHOPR />,
+        loginNeeded: 'safe',
+        inDrawer: false,
+      },
+      {
+        path: 'stake-xDAI',
+        element: <StakexDAI />,
+        loginNeeded: 'safe',
+        inDrawer: false,
+      },
+      {
+        path: 'set-allowance',
+        element: <SetAllowance />,
+        loginNeeded: 'safe',
+        inDrawer: false,
+      },
+      {
+        path: 'fund-node',
+        element: <FundNode />,
+        loginNeeded: 'safe',
+        inDrawer: false,
       },
     ],
   },

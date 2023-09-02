@@ -117,7 +117,7 @@ const ButtonGroup = styled.div`
   gap: 0.5rem;
 `;
 
-const StyledChip = styled(Chip)<{ color: string }>`
+const StyledChip = styled(Chip) <{ color: string }>`
   align-self: flex-start;
   background-color: ${(props) => props.color === 'error' && '#ffcbcb'};
   background-color: ${(props) => props.color === 'success' && '#cbffd0'};
@@ -220,28 +220,49 @@ const ColumnChart = () => {
 
 const StakingScreen = () => {
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as `0x${string}`;
+  const moduleAddress = useAppSelector((store) => store.stakingHub.onboarding.moduleAddress) as `0x${string}`;
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
   const [openBuyModal, set_openBuyModal] = useState(false);
 
   return (
     <Container>
       {selectedSafeAddress && (
-        <FlexContainer>
-          <SafeAddress>Safe address: {selectedSafeAddress}</SafeAddress>
-          <div>
-            <StyledIconButton
-              size="small"
-              onClick={() => navigator.clipboard.writeText(selectedSafeAddress)}
-            >
-              <CopyIcon />
-            </StyledIconButton>
-            <StyledIconButton size="small">
-              <Link to={`https://gnosisscan.io/address/${selectedSafeAddress}`}>
-                <LaunchIcon />
-              </Link>
-            </StyledIconButton>
-          </div>
-        </FlexContainer>
+        <div>
+          <FlexContainer>
+            <SafeAddress>Safe address: {selectedSafeAddress}</SafeAddress>
+            <div>
+              <StyledIconButton
+                size="small"
+                onClick={() => navigator.clipboard.writeText(selectedSafeAddress)}
+              >
+                <CopyIcon />
+              </StyledIconButton>
+              <StyledIconButton size="small">
+                <Link to={`https://gnosisscan.io/address/${selectedSafeAddress}`}>
+                  <LaunchIcon />
+                </Link>
+              </StyledIconButton>
+            </div>
+          </FlexContainer>
+          <FlexContainer
+            style={{}}
+          >
+            <SafeAddress>Module address: {moduleAddress}</SafeAddress>
+            <div>
+              <StyledIconButton
+                size="small"
+                onClick={() => navigator.clipboard.writeText(moduleAddress)}
+              >
+                <CopyIcon />
+              </StyledIconButton>
+              <StyledIconButton size="small">
+                <Link to={`https://gnosisscan.io/address/${moduleAddress}`}>
+                  <LaunchIcon />
+                </Link>
+              </StyledIconButton>
+            </div>
+          </FlexContainer>
+        </div>
       )}
       <Content>
         <div className="line">
@@ -266,8 +287,7 @@ const StakingScreen = () => {
               },
               {
                 text: 'STAKE wxHOPR',
-                link: '#',
-                disabled: true,
+                link: '/staking/stake-wxHOPR',
               },
             ]}
           />
@@ -278,13 +298,11 @@ const StakingScreen = () => {
             buttons={[
               {
                 text: 'FUND SAFE',
-                link: '#',
-                disabled: true,
+                link: '/staking/stake-xDAI',
               },
               {
                 text: 'SEND TO NODE',
-                link: '#',
-                disabled: true,
+                link: '/staking/fund-node',
               },
             ]}
           />
@@ -294,20 +312,20 @@ const StakingScreen = () => {
             id="redeemed-tickets"
             title="Redeemed Tickets"
             value="-"
-            // chip={{
-            //   label: '+%/24h',
-            //   color: 'success',
-            // }}
+          // chip={{
+          //   label: '+%/24h',
+          //   color: 'success',
+          // }}
           />
           <GrayCard
             id="earned-rewards"
             title="Earned rewards"
             value="-"
             currency="wxHOPR"
-            // chip={{
-            //   label: '-%/24h',
-            //   color: 'error',
-            // }}
+          // chip={{
+          //   label: '-%/24h',
+          //   color: 'error',
+          // }}
           />
         </div>
         <BuyXHopr

@@ -326,8 +326,7 @@ const NodeAdded = () => {
             buttons={[
               {
                 text: 'Adjust',
-                link: '#',
-                disabled: true,
+                link: '/staking/set-allowance',
               },
             ]}
           ></GrayCard>
@@ -362,7 +361,7 @@ const NodeAdded = () => {
             //   color: 'success',
             // }}
           ></GrayCard>
-          <GrayCard
+          {/* <GrayCard
            // id="xdai"
             id="earned-rewards"
             title="xDAI"
@@ -379,7 +378,7 @@ const NodeAdded = () => {
               //   disabled: true,
               // },
             ]}
-          ></GrayCard>
+          ></GrayCard> */}
         </Content>
   );
 };

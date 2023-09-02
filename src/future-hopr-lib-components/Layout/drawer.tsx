@@ -193,6 +193,7 @@ const Drawer = ({
             }
           >
             {group.items.map((item) => (
+              item.inDrawer !== false &&
               <Tooltip
                 key={item.name}
                 title={!openedNavigationDrawer && item.name}

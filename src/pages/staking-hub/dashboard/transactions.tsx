@@ -904,7 +904,7 @@ const PendingTransactionsTable = () => {
                 key={key}
               />
             ))}
-          {pendingTransactions && !pendingTransactions?.count && <span>No entries</span>}
+          {pendingTransactions && !pendingTransactions?.count && <div style={{margin: '16px'}}>No entries</div>}
         </TableBody>
       </Table>
     </TableContainer>

@@ -145,7 +145,7 @@ export default function FundNode() {
             <StyledCoinLabel>xDAI</StyledCoinLabel>
           </StyledInputGroup>
         </StyledForm>
-        {isExecutionLoading && <p>Executing transaction with nonce...</p>}
+        {isExecutionLoading && <p>Executing transaction...</p>}
       </div>
     </StepContainer>
   );
