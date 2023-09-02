@@ -1,15 +1,15 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { useAppSelector } from '../../../store';
 import styled from '@emotion/styled';
 
 import Button from '../../../future-hopr-lib-components/Button';
 import Chart from 'react-apexcharts';
-import Section from '../../../future-hopr-lib-components/Section';
 import { Card, Chip, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
+import BuyXHopr from '../../../components/Modal/staking-hub/BuyXHopr';
 
 const Container = styled.div`
   display: flex;
@@ -47,7 +47,6 @@ const Content = styled.div`
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
-    
   }
 
   #wxhopr-total-stake {
@@ -142,8 +141,9 @@ type GrayCardProps = {
   };
   buttons?: {
     text: string;
-    link: string;
+    link?: string;
     disabled?: boolean;
+    onClick?: () => void;
   }[];
   children?: ReactNode;
 };
@@ -182,8 +182,9 @@ const GrayCard = ({
             <Button
               key={button.text}
               disabled={button.disabled}
+              onClick={button.onClick}
             >
-              <Link to={button.link}>{button.text}</Link>
+              {button.link ? <Link to={button.link}>{button.text}</Link> : <p>{button.text}</p>}
             </Button>
           ))}
         </ButtonGroup>
@@ -220,94 +221,100 @@ const ColumnChart = () => {
 const StakingScreen = () => {
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as `0x${string}`;
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
+  const [openBuyModal, set_openBuyModal] = useState(false);
 
   return (
     <Container>
-        {selectedSafeAddress && (
-          <FlexContainer>
-            <SafeAddress>Safe address: {selectedSafeAddress}</SafeAddress>
-            <div>
-              <StyledIconButton
-                size="small"
-                onClick={() => navigator.clipboard.writeText(selectedSafeAddress)}
-              >
-                <CopyIcon />
-              </StyledIconButton>
-              <StyledIconButton size="small">
-                <Link to={`https://gnosisscan.io/address/${selectedSafeAddress}`}>
-                  <LaunchIcon />
-                </Link>
-              </StyledIconButton>
-            </div>
-          </FlexContainer>
-        )}
-        <Content>
-          <div className='line'>
-            <GrayCard
-              id="wxhopr-total-stake"
-              title="wxHOPR Total Stake"
-              value={safeBalance.wxHopr.formatted ?? '-'}
-              // chip={{
-              //   label: '+%/24h',
-              //   color: 'success',
-              // }}
-              buttons={[
-                {
-                  text: 'BUY xHOPR',
-                  link: '#',
-                  disabled: true,
-                },
-                {
-                  text: 'xHOPR → wxHOPR',
-                  link: '/staking/wrapper',
-                },
-                {
-                  text: 'STAKE wxHOPR',
-                  link: '#',
-                  disabled: true,
-                },
-              ]}
-            />
-            <GrayCard
-              id="xdai-in-safe"
-              title="xDAI in Safe"
-              value={safeBalance.xDai.formatted ?? '-'}
-              buttons={[
-                {
-                  text: 'FUND SAFE',
-                  link: '#',
-                  disabled: true,
-                },
-                {
-                  text: 'SEND TO NODE',
-                  link: '#',
-                  disabled: true,
-                },
-              ]}
-            />
+      {selectedSafeAddress && (
+        <FlexContainer>
+          <SafeAddress>Safe address: {selectedSafeAddress}</SafeAddress>
+          <div>
+            <StyledIconButton
+              size="small"
+              onClick={() => navigator.clipboard.writeText(selectedSafeAddress)}
+            >
+              <CopyIcon />
+            </StyledIconButton>
+            <StyledIconButton size="small">
+              <Link to={`https://gnosisscan.io/address/${selectedSafeAddress}`}>
+                <LaunchIcon />
+              </Link>
+            </StyledIconButton>
           </div>
-          <div className='line'>
-            <GrayCard
-              id="redeemed-tickets"
-              title="Redeemed Tickets"
-              value="-"
-              // chip={{
-              //   label: '+%/24h',
-              //   color: 'success',
-              // }}
-            />
-            <GrayCard
-              id="earned-rewards"
-              title="Earned rewards"
-              value="-"
-              currency="wxHOPR"
-              // chip={{
-              //   label: '-%/24h',
-              //   color: 'error',
-              // }}
-            />
-          </div>
-        </Content>
+        </FlexContainer>
+      )}
+      <Content>
+        <div className="line">
+          <GrayCard
+            id="wxhopr-total-stake"
+            title="wxHOPR Total Stake"
+            value={safeBalance.wxHopr.formatted ?? '-'}
+            // chip={{
+            //   label: '+%/24h',
+            //   color: 'success',
+            // }}
+            buttons={[
+              {
+                text: 'BUY xHOPR',
+                onClick: () => {
+                  set_openBuyModal(true);
+                },
+              },
+              {
+                text: 'xHOPR → wxHOPR',
+                link: '/staking/wrapper',
+              },
+              {
+                text: 'STAKE wxHOPR',
+                link: '#',
+                disabled: true,
+              },
+            ]}
+          />
+          <GrayCard
+            id="xdai-in-safe"
+            title="xDAI in Safe"
+            value={safeBalance.xDai.formatted ?? '-'}
+            buttons={[
+              {
+                text: 'FUND SAFE',
+                link: '#',
+                disabled: true,
+              },
+              {
+                text: 'SEND TO NODE',
+                link: '#',
+                disabled: true,
+              },
+            ]}
+          />
+        </div>
+        <div className="line">
+          <GrayCard
+            id="redeemed-tickets"
+            title="Redeemed Tickets"
+            value="-"
+            // chip={{
+            //   label: '+%/24h',
+            //   color: 'success',
+            // }}
+          />
+          <GrayCard
+            id="earned-rewards"
+            title="Earned rewards"
+            value="-"
+            currency="wxHOPR"
+            // chip={{
+            //   label: '-%/24h',
+            //   color: 'error',
+            // }}
+          />
+        </div>
+        <BuyXHopr
+          open={openBuyModal}
+          onClose={() => set_openBuyModal(false)}
+        />
+      </Content>
     </Container>
   );
 };

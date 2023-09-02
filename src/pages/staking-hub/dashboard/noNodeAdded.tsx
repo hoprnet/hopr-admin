@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { useAppSelector } from '../../../store';
 import styled from '@emotion/styled';
 
@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
+import BuyXHopr from '../../../components/Modal/staking-hub/BuyXHopr';
 
 const StyledCard = styled(Card)`
   display: flex;
@@ -161,9 +162,10 @@ type StakingCardProps = {
   };
   buttons?: {
     text: string;
-    link: string;
+    link?: string;
     className?: string;
     disabled?: boolean;
+    onClick?: () => void;
   }[];
   children?: ReactNode;
 };
@@ -207,9 +209,9 @@ const StakingCard = ({
             <Button
               key={button.text}
               disabled={button.disabled}
-              className={button.className}
+              onClick={button.onClick}
             >
-              <Link to={button.link}>{button.text}</Link>
+              {button.link ? <Link to={button.link}>{button.text}</Link> : <p>{button.text}</p>}
             </Button>
           ))}
         </ButtonGroup>
@@ -221,6 +223,7 @@ const StakingCard = ({
 const NoNodeAdded = () => {
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as `0x${string}`;
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
+  const [openBuyModal, set_openBuyModal] = useState(false);
 
   return (
     <Section
@@ -277,8 +280,9 @@ const NoNodeAdded = () => {
             buttons={[
               {
                 text: 'BUY xHOPR',
-                link: '#',
-                disabled: true,
+                onClick: () => {
+                  set_openBuyModal(true);
+                },
               },
               {
                 text: 'xHOPR → wxHOPR',
@@ -331,6 +335,10 @@ const NoNodeAdded = () => {
               label: '-%/24h',
               color: 'error',
             }}
+          />
+          <BuyXHopr
+            open={openBuyModal}
+            onClose={() => set_openBuyModal(false)}
           />
         </Content>
       </StyledCard>
