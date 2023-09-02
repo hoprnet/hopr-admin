@@ -53,7 +53,6 @@ const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
     <>
       <SDialog
         open={openModal}
-        onClick={()=>{handleCloseModal()}}
         disableScrollLock={true}
       >
         <TopBar>
