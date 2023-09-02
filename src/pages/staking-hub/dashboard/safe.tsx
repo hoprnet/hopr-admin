@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled'
-
+import { useAppSelector } from '../../../store';
 
 // HOPR Components
 import Button from '../../../future-hopr-lib-components/Button';
@@ -30,7 +30,7 @@ const Container = styled.div`
 
 
 function SafeDashboard() {
-
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as `0x${string}`;
   return (
     <Container
         className='SafeDashboard'
@@ -39,13 +39,13 @@ function SafeDashboard() {
         <div>
             <Button
 
-                href={'https://safe.global/'}
+                href={`https://app.safe.global/home?safe=gno:${selectedSafeAddress}`}
             >
                 safe.global
             </Button>
             <Button
 
-                href={'https://app.onchainden.com/safes/gnosis:0x7FAE0c531719A2ae946f098a177F90040910B2aa'}
+                href={`https://app.onchainden.com/safes/gnosis:${selectedSafeAddress}`}
             >
                 OnChainDen.com
             </Button>
