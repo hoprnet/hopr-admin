@@ -297,7 +297,7 @@ function createApplicationMap() {
   const temp: ApplicationMapType = [];
   if (environment === 'dev' || environment === 'node') applicationMapNode.map((elem) => temp.push(elem));
   if (environment === 'dev' || environment === 'web3') applicationMapStakingHub.map((elem) => temp.push(elem));
-  if (environment === 'dev' || environment === 'web3') applicationMapDevWeb3.map((elem) => temp.push(elem));
+  if (environment === 'dev' ) applicationMapDevWeb3.map((elem) => temp.push(elem));
   //if (environment === 'dev') applicationMapDev.map((elem) => temp.push(elem));
   return temp;
 }
