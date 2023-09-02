@@ -243,6 +243,12 @@ export const applicationMapStakingHub: ApplicationMapType = [
         loginNeeded: 'safe',
         inDrawer: false,
       },
+      {
+        path: 'dev',
+        element: <SectionSafe />,
+        loginNeeded: 'web3',
+        inDrawer: false,
+      },
     ],
   },
   {
