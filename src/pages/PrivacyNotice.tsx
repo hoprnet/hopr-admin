@@ -49,6 +49,7 @@ const PrivacyNotice = () => {
     <Section
       center
       fullHeightMin
+      lightBlue
     >
       <StyledContainer>
         <BigTitle>Privacy Notice of HOPR Services Ltd.</BigTitle>
@@ -59,7 +60,7 @@ const PrivacyNotice = () => {
           data privacy and reducing reliance on personal data. This Privacy Notice ("Notice") shows what kind of
           personal data we process and in what manner. However, please note that circumstances on how we collect and
           process Your personal data may change, and thus, we may update this Notice from time to time to reflect
-          current circumstances. An actual version of this Notice is available on our website at
+          current circumstances. An actual version of this Notice is available on our website at{' '}
           <a
             href="https://hoprnet.org/disclaimer"
             target="_blank"

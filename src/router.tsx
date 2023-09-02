@@ -354,7 +354,13 @@ const LayoutEnhanced = () => {
   }, [HOPRdNodeAddressForOnboarding]);
 
   const showInfoBar = () => {
-    if (environment === 'web3' && location.pathname === '/') return false;
+    if (
+      environment === 'web3' &&
+      ( location.pathname === '/' ||
+        location.pathname === '/privacy-notice' ||
+        location.pathname === '/tos' 
+      )
+    ) return false;
     if (isConnected || nodeConnected) return true;
     return false;
   };

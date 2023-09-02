@@ -49,6 +49,7 @@ const TermsOfService = () => {
     <Section
       center
       fullHeightMin
+      lightBlue
     >
       <StyledContainer>
         <BigTitle>Terms of Service</BigTitle>
