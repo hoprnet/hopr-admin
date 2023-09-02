@@ -57,7 +57,7 @@ export default function AddNode() {
 
   return (
     <StepContainer
-      title="Add Node"
+      title="ADD NODE"
       description={
         'Please enter and confirm your node address. This will initiate a transaction which you will need to sign.'
       }
@@ -82,7 +82,7 @@ export default function AddNode() {
               pending={isLoading}
               style={{width: '250px'}}
             >
-              Continue
+              CONTINUE
             </ConfirmButton>
           </span>
         </Tooltip>

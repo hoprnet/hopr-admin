@@ -25,6 +25,8 @@ const StyledText = styled.h3`
   font-weight: 500;
   letter-spacing: 0.35px;
   text-align: end;
+  margin: 0;
+  margin-top: 5px;
 `;
 
 
@@ -71,8 +73,11 @@ export default function SetAllowance() {
         </ConfirmButton>
       }
     >
-      <StyledInputGroup>
-        <StyledText>NODE ALLOWANCE</StyledText>
+      <StyledInputGroup
+        style={{alignItems: 'flex-start'}}
+      >
+        <StyledText
+        >NODE ALLOWANCE</StyledText>
         <StyledTextField
           type="number"
           variant="outlined"
@@ -87,8 +92,10 @@ export default function SetAllowance() {
           } }}
           helperText={`Suggested value is ${DEFAULT_ALLOWANCE} wxHopr`}
         />
-        <StyledCoinLabel>
-          <Lowercase>wx</Lowercase>hopr
+        <StyledCoinLabel
+          style={{lineHeight: '40px'}}
+        >
+          <Lowercase>wx</Lowercase>HOPR
         </StyledCoinLabel>
         <Button onClick={() => set_wxHoprValue(DEFAULT_ALLOWANCE.toString())}>DEFAULT</Button>
       </StyledInputGroup>

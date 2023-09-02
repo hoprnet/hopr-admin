@@ -6,6 +6,7 @@ import { IconButton, Tooltip } from '@mui/material';
 import { truncateEthereumAddress } from '../../../../utils/blockchain';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { StepContainer, ConfirmButton } from '../components';
+import { useNavigate } from 'react-router-dom';
 
 //Store
 import { useAppSelector } from '../../../../store';
@@ -102,6 +103,7 @@ const Instruction = (props: { num: number; description?: string; children?: JSX.
 };
 
 export default function JoinWaitListStep() {
+  const navigate = useNavigate();
   const safeAddress = useAppSelector((store) => store.stakingHub.onboarding.safeAddress);
 
   return (
@@ -109,7 +111,11 @@ export default function JoinWaitListStep() {
       title="JOIN THE WAITLIST"
       description={`If you have correctly funded your safe, follow the steps below and we’ll onboard you to the HOPR network as soon as possible!`}
       buttons={
-        <ConfirmButton>VIEW DASHBOARD</ConfirmButton>
+        <ConfirmButton
+          onClick={()=>{navigate('/staking/dashboard');}}
+        >
+          VIEW DASHBOARD
+        </ConfirmButton>
       }
     >
       <Content>
