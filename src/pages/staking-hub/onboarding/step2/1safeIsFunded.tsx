@@ -10,7 +10,6 @@ export default function safeIsReady() {
   return (
     <StepContainer
       title="SAFE IS FUNDED!"
-      description={'Funds successfully transferred to Safe. Now let's set up your HOPR node!'}
       image={{
         src: '/assets/safe-success-2.svg',
         alt: 'Safe deployed successfully',
