@@ -745,7 +745,11 @@ const StakingLandingPage = () => {
         >
           <img src="/assets/telegram-icon.svg" />
           Telegram
-        </FurtherReadingButton>
+        </FurtherReadingButton
+        href="https://t.me/hoprnet"
+          target="_blank"
+          rel="noreferrer"
+        >
         <br />
         <br />
       </Section>
