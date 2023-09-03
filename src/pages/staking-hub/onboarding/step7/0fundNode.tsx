@@ -49,9 +49,9 @@ const StyledCoinLabel = styled.p`
   letter-spacing: 0.35px;
 `;
 
-const StyledBlueButton = styled(Button)`
-  text-transform: uppercase;
-  padding: 0.2rem 4rem;
+export const StyledGrayButton = styled(GrayButton)`
+  border: 1px solid black;
+  height: 39px;
 `;
 
 export default function FundNode() {
@@ -143,7 +143,7 @@ export default function FundNode() {
               error={!!xdaiValue && error}
             />
             <StyledCoinLabel>xDAI</StyledCoinLabel>
-            <Button onClick={() => set_xdaiValue('1')}>DEFAULT</Button>
+            <StyledGrayButton onClick={() => set_xdaiValue('1')}>MIN</StyledGrayButton>
           </StyledInputGroup>
         </StyledForm>
         {isExecutionLoading && <p>Executing transaction...</p>}
