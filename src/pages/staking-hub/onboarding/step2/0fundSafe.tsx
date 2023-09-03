@@ -8,7 +8,7 @@ import {
   usePrepareSendTransaction,
   useSendTransaction
 } from 'wagmi';
-import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, MINIMUM_XDAI_TO_FUND, MINIMUM_WXHOPR_TO_FUND } from '../../../../../config'
+import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, MINIMUM_XDAI_TO_FUND, MINIMUM_WXHOPR_TO_FUND, MINIMUM_WXHOPR_TO_FUND_NFT } from '../../../../../config'
 
 //Store
 import { useAppSelector, useAppDispatch } from '../../../../store';
@@ -51,9 +51,11 @@ const GreenText = styled.div`
 const FundsToSafe = () => {
   const dispatch = useAppDispatch();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const communityNftIdInSafe = useAppSelector((store) => store.safe.communityNftId);
   const walletBalance = useAppSelector((store) => store.web3.balance);
   const [xdaiValue, set_xdaiValue] = useState('');
   const [wxhoprValue, set_wxhoprValue] = useState('');
+  const [wxhoprValueMin, set_wxhoprValueMin] = useState(MINIMUM_WXHOPR_TO_FUND);
 
   const {
     refetch: refetchXDaiSafeBalance,
@@ -86,6 +88,13 @@ const FundsToSafe = () => {
       clearInterval(fetchBalanceInterval)
     }
   }, [])
+
+  useEffect(() => {
+    if (communityNftIdInSafe) {
+      set_wxhoprValueMin(MINIMUM_WXHOPR_TO_FUND_NFT)
+    }
+  }, [communityNftIdInSafe])
+
 
   const { config: xDAI_to_safe_config } = usePrepareSendTransaction({
     to: selectedSafeAddress ?? undefined,
@@ -155,7 +164,7 @@ const FundsToSafe = () => {
   };
 
   const wxhoprEnoughBalance = (): boolean => {
-    if (wxHoprSafeBalance?.value && BigInt(wxHoprSafeBalance.value) >= BigInt(MINIMUM_WXHOPR_TO_FUND * 1e18)) {
+    if (wxHoprSafeBalance?.value && BigInt(wxHoprSafeBalance.value) >= BigInt(wxhoprValueMin * 1e18)) {
       return true;
     }
     return false;
@@ -249,7 +258,7 @@ const FundsToSafe = () => {
               min: 0,
               pattern: '[0-9]*',
             } }}
-            helperText={`min. ${MINIMUM_WXHOPR_TO_FUND}`}
+            helperText={`min. ${wxhoprValueMin}`}
           />
           <StyledCoinLabel>
            wxHOPR

@@ -232,7 +232,7 @@ export default function WhatYouWillNeedPage() {
                 <p>min. 10k wxHOPR with Network Registry NFT</p>
                 <p>min. 30k wxHOPR without Network Registry NFT</p>
                 <p>+</p>
-                <p>min. 1 xDAI</p>
+                <p>min. 3 xDAI</p>
               </TextUnderImage>
             </CenteredFlex>
           </TitleWithSVG>
