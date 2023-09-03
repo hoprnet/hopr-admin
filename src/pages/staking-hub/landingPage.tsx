@@ -714,7 +714,7 @@ const StakingLandingPage = () => {
             Why use Safe?
           </FurtherReadingButton>
           <FurtherReadingButton
-            href="https://docs.hoprnet.org/staking/why-use-safe "
+            href="https://docs.hoprnet.org/staking/why-use-safe"
             target="_blank"
             rel="noreferrer"
           >
