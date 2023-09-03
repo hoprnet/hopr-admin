@@ -230,7 +230,7 @@ const FundsToSafe = () => {
       <StyledForm>
         <StyledInstructions>
           <Text>
-            Stake <Lowercase>wx</Lowercase>HOPR into safe
+            Move <Lowercase>wx</Lowercase>HOPR into safe
           </Text>
           <GreenText>
             
