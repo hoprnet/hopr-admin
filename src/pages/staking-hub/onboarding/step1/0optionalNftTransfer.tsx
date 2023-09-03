@@ -44,11 +44,7 @@ const Option = styled(MuiButton)`
     border: 2px solid #000050;
   }
 `;
-const StyledLink = styled(Link)`
-  color: #0000b4;
-  font-weight: 700;
-  text-decoration: underline;
-`;
+
 const OptionText = styled.div`
   display: flex;
   flex-direction: row;
@@ -122,12 +118,7 @@ export default function optionalNftTtransfer() {
   return (
     <StepContainer
       title="NFT TRANSFER (OPTIONAL)"
-      description={'Transfer your Network Registry NFT to join the network with only 10,000 wxHOPR. If you do not have one Please select the 30k option and continue.'}
-      <StyledLink 
-                to={`https://docs.hoprnet.org/node/start-here` }
-                target="_blank"
-                rel="noopener noreferrer"
-              >here</StyledLink>
+      description={'Transfer your NR (Network Registry) NFT to join the network with only 10,000 wxHOPR. If you do not have one Please select the 30k option and continue.'}
       buttons={
         <Tooltip 
           title={tooltipText()}
