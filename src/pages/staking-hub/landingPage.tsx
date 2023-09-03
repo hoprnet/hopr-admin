@@ -515,7 +515,7 @@ const StakingLandingPage = () => {
               </SideTitle>
               <SideDescription>
                 We compartmentalize access to your funds and node through our unique key management protocol, minimizing
-                your funds at risk in case of a compromised node. Read more here.{' '}
+                your funds at risk in case of a compromised node.
               </SideDescription>
             </TextSide>
             <ImageSide>
@@ -635,13 +635,13 @@ const StakingLandingPage = () => {
                 Assets deposited into your HOPR Safe are secured by a customizable multisig, limiting exposure even when
                 your HOPR node's private key gets compromised.
                 <br />
-                {/* <a
-                  href="https://docs.hoprnet.org/developers/safestaking-by-hopr#what-is-safestaking"
+                { <a
+                  href="https://docs.hoprnet.org/staking/what-is-safestaking"
                   target="_blank"
                   rel="noreferrer"
                 >
                   Read more
-                </a> */}
+                </a> }
               </SideDescription>
             </TextSide>
           </SideToSideContainer>
@@ -707,7 +707,7 @@ const StakingLandingPage = () => {
             View Docs
           </FurtherReadingButton>
           <FurtherReadingButton
-            href="https://docs.hoprnet.org/developers/safestaking-by-hopr#why-use-safe"
+            href="https://docs.hoprnet.org/staking/why-use-safe"
             target="_blank"
             rel="noreferrer"
           >
@@ -729,7 +729,7 @@ const StakingLandingPage = () => {
             Buy Tokens
           </FurtherReadingButton>
           <FurtherReadingButton
-            href="https://docs.hoprnet.org/developers/safestaking-by-hopr#architecture"
+            href="https://docs.hoprnet.org/staking/what-is-safestaking"
             target="_blank"
             rel="noreferrer"
           >

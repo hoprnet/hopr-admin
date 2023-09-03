@@ -125,7 +125,7 @@ export default function JoinWaitListStep() {
               <span>
                 Join the waitlist by filling out{' '}
                 <StyledLink 
-                  to={`https://docs.hoprnet.org/node/start-here`}
+                  to={`https://cryptpad.fr/form/#/2/form/view/K3KSF-UAM-mLjUCs4w3Cruu4wZeOdwQFLNG1aYqrjbg/`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >this form</StyledLink>.

@@ -158,7 +158,7 @@ const stakingFaq: FaqData = {
         <span>
           You will need to install Docker on your device to complete this installation. Follow{' '}
           <a
-            href="https://docs.hoprnet.org/node/using-docker#installing-docker"
+            href="https://docs.hoprnet.org/node/using-docker#1-install-docker"
             target="_blank"
             rel="noreferrer"
           >
@@ -193,7 +193,7 @@ const stakingFaq: FaqData = {
           You will need to edit the Docker command to include your public IP address. To find your IP address and edit
           the command correctly follow the instructions{' '}
           <a
-            href="https://docs.hoprnet.org/node/using-docker#find-your-ip-address"
+            href="https://docs.hoprnet.org/node/hidden-page#find-your-ip-address"
             target="_blank"
             rel="noreferrer"
           >

@@ -118,9 +118,7 @@ export default function optionalNftTtransfer() {
   return (
     <StepContainer
       title="NFT TRANSFER (OPTIONAL)"
-      description={
-        'Transfer your Network Registry NFT to join the network with only 10,000 wxHOPR. If you do not have one Please select the 30k option and continue.'
-      }
+      description={'Transfer your NR (Network Registry) NFT to join the network with only 10,000 wxHOPR. If you do not have one Please select the 30k option and continue.'}
       buttons={
         <Tooltip 
           title={tooltipText()}
@@ -154,7 +152,7 @@ export default function optionalNftTtransfer() {
             <div className="right">
               <span className="big">Minimum 10,000 wxHOPR</span>
               <br />
-              <span className="smaller">WITH transferred Network Registry NFT in your safe</span>
+              <span className="smaller">WITH transferred  NR NFT in your Safe</span>
             </div>
           </OptionText>
           <TransferNft>

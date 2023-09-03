@@ -9,7 +9,7 @@ export default function safeIsReady() {
   const dispatch = useAppDispatch();
   return (
     <StepContainer
-      title="SAFE IS FUNDED"
+      title="SAFE IS FUNDED!"
       image={{
         src: '/assets/safe-success-2.svg',
         alt: 'Safe deployed successfully',

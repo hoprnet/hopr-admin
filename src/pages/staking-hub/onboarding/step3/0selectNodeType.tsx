@@ -138,7 +138,7 @@ export default function SelectNodeType() {
               <ImageContainer>
                 <Image src="/assets/docker.svg" />
               </ImageContainer>
-              If you want to run a node on your own hardware without the HOPR Node PC, that's perfectly acceptable and
+              If you want to run a node on your own hardware without the Dappnode, that's perfectly acceptable and
               possible as well!
             </div>
           </OptionText>
