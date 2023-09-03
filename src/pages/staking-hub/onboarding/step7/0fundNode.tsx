@@ -143,6 +143,7 @@ export default function FundNode() {
               error={!!xdaiValue && error}
             />
             <StyledCoinLabel>xDAI</StyledCoinLabel>
+            <Button onClick={() => set_xdaiValue('1')}>DEFAULT</Button>
           </StyledInputGroup>
         </StyledForm>
         {isExecutionLoading && <p>Executing transaction...</p>}
