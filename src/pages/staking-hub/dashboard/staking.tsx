@@ -276,18 +276,22 @@ const StakingScreen = () => {
             // }}
             buttons={[
               {
-                text: 'BUY xHOPR',
+                text: 'Buy xHOPR',
                 onClick: () => {
                   set_openBuyModal(true);
                 },
               },
               {
-                text: 'xHOPR → wxHOPR',
+                text: 'Wrap xHOPR',
                 link: '/staking/wrapper',
               },
               {
-                text: 'STAKE wxHOPR',
+                text: 'Deposit',
                 link: '/staking/stake-wxHOPR',
+              },
+              {
+                text: 'Withdraw',
+                link: '/staking/withdraw?token=wxhopr',
               },
             ]}
           />
@@ -297,12 +301,22 @@ const StakingScreen = () => {
             value={safeBalance.xDai.formatted ?? '-'}
             buttons={[
               {
-                text: 'FUND SAFE',
+                text: 'Buy xDAI',
+                onClick: () => {
+                  set_openBuyModal(true);
+                },
+              },
+              {
+                text: 'Send to Node',
+                link: '/staking/fund-node',
+              },
+              {
+                text: 'Deposit',
                 link: '/staking/stake-xDAI',
               },
               {
-                text: 'SEND TO NODE',
-                link: '/staking/fund-node',
+                text: 'Withdraw',
+                link: '/staking/withdraw?token=xdai',
               },
             ]}
           />
