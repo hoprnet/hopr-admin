@@ -108,9 +108,13 @@ const FundsToSafe = () => {
     args: [selectedSafeAddress as Address, parseUnits(wxhoprValue, 18)],
   });
 
-  const setMax_xDAI = () => {
+  const setMin_xDAI = () => {
     if (walletBalance.xDai.value) {
-      set_xdaiValue(formatEther(BigInt(walletBalance.xDai.value) - parseUnits(`${0.002}`, 18)));
+      if(BigInt(walletBalance.xDai.value) > parseUnits('2', 18)){
+        set_xdaiValue('2');
+      } else {
+        set_xdaiValue(formatEther(BigInt(walletBalance.xDai.value) - parseUnits(`${0.002}`, 18)));
+      }
     }
   };
 
@@ -223,7 +227,7 @@ const FundsToSafe = () => {
           <StyledCoinLabel>
             xDAI
           </StyledCoinLabel>
-          <StyledGrayButton onClick={setMax_xDAI}>Max</StyledGrayButton>
+          <StyledGrayButton onClick={setMin_xDAI}>Min</StyledGrayButton>
           <Button
             onClick={handleFundxDai}
             disabled={!xdaiValue || xdaiValue === '' || xdaiValue === '0'}
