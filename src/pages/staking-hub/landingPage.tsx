@@ -707,14 +707,14 @@ const StakingLandingPage = () => {
             View Docs
           </FurtherReadingButton>
           <FurtherReadingButton
-            href="https://docs.hoprnet.org/developers/safestaking-by-hopr#why-use-safe"
+            href="https://docs.hoprnet.org/staking/why-use-safe"
             target="_blank"
             rel="noreferrer"
           >
             Why use Safe?
           </FurtherReadingButton>
           <FurtherReadingButton
-            href="https://docs.hoprnet.org/staking/why-use-safe"
+            href="https://docs.hoprnet.org/node/start-here"
             target="_blank"
             rel="noreferrer"
           >
@@ -722,14 +722,14 @@ const StakingLandingPage = () => {
           </FurtherReadingButton>
           <br />
           <FurtherReadingButton
-            href="https://docs.hoprnet.org/node/start-here"
+            href="https://docs.hoprnet.org/staking/how-to-get-hopr"
             target="_blank"
             rel="noreferrer"
           >
             Buy Tokens
           </FurtherReadingButton>
           <FurtherReadingButton
-            href="https://docs.hoprnet.org/developers/safestaking-by-hopr#architecture"
+            href="https://docs.hoprnet.org/staking/what-is-safestaking"
             target="_blank"
             rel="noreferrer"
           >
