@@ -185,7 +185,7 @@ export default function WhatYouWillNeedPage() {
     <StepContainer
       title={'WHAT YOU WILL NEED'}
       description={
-        'It will take 20 minutes to join the network waitlist. Before starting make sure you have got the required tokens.'
+        'It will take 20 minutes to set up your Safe/node and join the network waitlist. Before starting, make sure you have the required tokens.'
       }
       buttons={
         <ConfirmButton
