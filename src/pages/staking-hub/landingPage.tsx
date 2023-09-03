@@ -722,7 +722,7 @@ const StakingLandingPage = () => {
           </FurtherReadingButton>
           <br />
           <FurtherReadingButton
-            href="https://docs.hoprnet.org/staking/how-to-get-hopr"
+            href="https://docs.hoprnet.org/node/start-here"
             target="_blank"
             rel="noreferrer"
           >
