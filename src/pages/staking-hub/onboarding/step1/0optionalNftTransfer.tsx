@@ -152,7 +152,7 @@ export default function optionalNftTtransfer() {
             <div className="right">
               <span className="big">Minimum 10,000 wxHOPR</span>
               <br />
-              <span className="smaller">WITH transferred Network Registry NFT in your safe</span>
+              <span className="smaller">WITH transferred  NR NFT in your Safe</span>
             </div>
           </OptionText>
           <TransferNft>
