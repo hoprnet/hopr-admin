@@ -109,7 +109,7 @@ export default function JoinWaitListStep() {
   return (
     <StepContainer
       title="JOIN THE WAITLIST"
-      //description={`If you have correctly funded your safe, follow the steps below and we’ll onboard you to the HOPR network as soon as possible!`}
+      description={`If you have correctly funded your safe, follow the steps below and we’ll onboard you to the HOPR network as soon as possible!`}
       buttons={
         <ConfirmButton
           onClick={()=>{navigate('/staking/dashboard');}}
@@ -119,9 +119,6 @@ export default function JoinWaitListStep() {
       }
     >
       <Content>
-        <div>
-            <p>If you have correctly funded your safe, follow the steps below and we’ll onboard you to the HOPR network as soon as possible!<p/>
-          <div/>
         <StepsContainer>
           <Instruction num={1}>
             <Content>
