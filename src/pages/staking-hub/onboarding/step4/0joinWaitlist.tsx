@@ -109,7 +109,7 @@ export default function JoinWaitListStep() {
   return (
     <StepContainer
       title="JOIN THE WAITLIST"
-      description={`If you have correctly funded your safe, follow the steps below and we’ll onboard you to the HOPR network as soon as possible!`}
+      //description={`If you have correctly funded your safe, follow the steps below and we’ll onboard you to the HOPR network as soon as possible!`}
       buttons={
         <ConfirmButton
           onClick={()=>{navigate('/staking/dashboard');}}
@@ -119,13 +119,16 @@ export default function JoinWaitListStep() {
       }
     >
       <Content>
+        <div>
+            <p>If you have correctly funded your safe, follow the steps below and we’ll onboard you to the HOPR network as soon as possible!<p/>
+          <div/>
         <StepsContainer>
           <Instruction num={1}>
             <Content>
               <span>
                 Join the waitlist by filling out{' '}
                 <StyledLink 
-                  to={`https://docs.hoprnet.org/node/start-here`}
+                  to={`https://cryptpad.fr/form/#/2/form/view/K3KSF-UAM-mLjUCs4w3Cruu4wZeOdwQFLNG1aYqrjbg/`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >this form</StyledLink>.
