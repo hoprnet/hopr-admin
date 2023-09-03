@@ -158,7 +158,7 @@ const stakingFaq: FaqData = {
         <span>
           You will need to install Docker on your device to complete this installation. Follow{' '}
           <a
-            href="https://docs.hoprnet.org/node/using-docker#installing-docker"
+            href="https://docs.hoprnet.org/node/using-docker#1-install-docker"
             target="_blank"
             rel="noreferrer"
           >
