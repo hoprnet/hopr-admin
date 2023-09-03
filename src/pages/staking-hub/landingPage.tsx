@@ -739,17 +739,13 @@ const StakingLandingPage = () => {
         <MediumText>Still got questions? Contact us here.</MediumText>
         <br />
         <FurtherReadingButton
-          href="https://docs.hoprnet.org/staking/what-is-safestaking"
+          href="https://t.me/hoprnet"
           target="_blank"
           rel="noreferrer"
         >
           <img src="/assets/telegram-icon.svg" />
           Telegram
-        </FurtherReadingButton
-        href="https://t.me/hoprnet"
-          target="_blank"
-          rel="noreferrer"
-        >
+        </FurtherReadingButton>
         <br />
         <br />
       </Section>
