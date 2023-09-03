@@ -83,7 +83,7 @@ const CreateSafe = () => {
   return (
     <StepContainer
       title="Create Safe"
-      description="Set the owner wallets of your Safe and how many need to confirm to execute a valid transaction."
+      description="Set an owner for your Safe. This is an external wallet address whose private keys will be used to sign transactions."
       image={{
         src: '/assets/Safe_with_plus.svg',
         alt: 'Safe deployed successfully',
