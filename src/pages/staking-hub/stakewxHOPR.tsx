@@ -142,7 +142,7 @@ const StakewxHOPR = () => {
           alt: 'Funds to safe image',
           height: 134,
         }}
-        title="MOVE FUNDS TO SAFE"
+        title="MOVE wxHOPR TO SAFE"
         description="You're about to fund a safe with wxHOPR."
         buttons={
           <ConfirmButton
@@ -157,7 +157,7 @@ const StakewxHOPR = () => {
         <StyledForm>
           <StyledInstructions>
             <Text>
-              Stake <Lowercase>wx</Lowercase>HOPR into safe
+              Move <Lowercase>wx</Lowercase>HOPR into safe
             </Text>
           </StyledInstructions>
           <StyledInputGroup>

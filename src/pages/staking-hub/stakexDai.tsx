@@ -87,7 +87,7 @@ const StakexDai = () => {
         alt: 'Funds to safe image',
         height: 134,
       }}
-      title="MOVE FUNDS TO SAFE"
+      title="MOVE xDai TO SAFE"
       description="You're about to fund a safe with xDAI."
       buttons={
         <ConfirmButton
@@ -102,7 +102,7 @@ const StakexDai = () => {
       <StyledForm>
         <StyledInstructions>
           <Text>
-            Stake <Lowercase>x</Lowercase>DAI into safe
+            Move <Lowercase>x</Lowercase>DAI into safe
           </Text>
         </StyledInstructions>
         <StyledInputGroup>
