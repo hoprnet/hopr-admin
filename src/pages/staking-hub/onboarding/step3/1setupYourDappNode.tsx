@@ -119,7 +119,8 @@ export default function SetupYourDappNode() {
         <StepsContainer>
           <Instruction num={1}>
             <div>
-              <p>Install the HOPR package using the instructions <StyledLink to={`https://docs.hoprnet.org/node/using-dappnode`}>
+              <p>Install the HOPR package using the instructions <StyledLink to={`https://docs.hoprnet.org/node/using-dappnode`} target="_blank"
+                rel="noopener noreferrer">
                   here
                 </StyledLink>.</p>
             </div>
