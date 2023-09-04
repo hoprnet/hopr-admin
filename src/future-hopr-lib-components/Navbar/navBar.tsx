@@ -84,12 +84,9 @@ const Logo = styled.div`
     align-items: center;
     overflow: hidden;
     img {
-      width: 0;
-      height: 0;
-      min-width: 100%;
-      max-width: 100%;
-      min-height: 100%;
-      max-height: 100%;
+      height: 50px;
+      width: auto;
+      margin-left: 10px;
     }
   }
 `;
