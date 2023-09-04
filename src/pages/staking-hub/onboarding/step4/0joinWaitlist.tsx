@@ -6,6 +6,7 @@ import { IconButton, Tooltip } from '@mui/material';
 import { truncateEthereumAddress } from '../../../../utils/blockchain';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { StepContainer, ConfirmButton } from '../components';
+import { useNavigate } from 'react-router-dom';
 
 //Store
 import { useAppSelector } from '../../../../store';
@@ -102,14 +103,31 @@ const Instruction = (props: { num: number; description?: string; children?: JSX.
 };
 
 export default function JoinWaitListStep() {
+  const navigate = useNavigate();
   const safeAddress = useAppSelector((store) => store.stakingHub.onboarding.safeAddress);
 
   return (
     <StepContainer
       title="JOIN THE WAITLIST"
-      description={`If you have correctly funded your safe, follow the steps below and we’ll onboard you to the HOPR network as soon as possible!`}
+      description={
+        <>
+          If you have correctly funded your Safe, follow the steps below and we’ll onboard you to the HOPR network as soon as possible! For any additional information visit our{' '}
+          <a
+            href="https://docs.hoprnet.org/node/waitlist-FAQ"
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: '#007bff', textDecoration: 'underline'}}
+          >
+            FAQ
+          </a>.
+        </>
+      }
       buttons={
-        <ConfirmButton>VIEW DASHBOARD</ConfirmButton>
+        <ConfirmButton
+          onClick={()=>{navigate('/staking/dashboard');}}
+        >
+          VIEW DASHBOARD
+        </ConfirmButton>
       }
     >
       <Content>
@@ -119,7 +137,7 @@ export default function JoinWaitListStep() {
               <span>
                 Join the waitlist by filling out{' '}
                 <StyledLink 
-                  to={`https://docs.hoprnet.org/node/start-here`}
+                  to={`https://cryptpad.fr/form/#/2/form/view/K3KSF-UAM-mLjUCs4w3Cruu4wZeOdwQFLNG1aYqrjbg/`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >this form</StyledLink>.

@@ -111,11 +111,11 @@ const Addresses = styled.div`
 const links = [
   {
     name: 'Terms of Service',
-    link: 'https://hoprnet.org/disclaimer',
+    link: '/tos',
   },
   {
     name: 'Privacy Policy',
-    link: 'https://hoprnet.org/disclaimer',
+    link: '/privacy-notice',
   },
 ];
 
@@ -225,6 +225,8 @@ const Footer = (props) => {
                 key={i}
                 title={x.name}
                 href={x.link}
+                target="_blank"
+                rel="noreferrer"
               >
                 {x.name}
               </a>

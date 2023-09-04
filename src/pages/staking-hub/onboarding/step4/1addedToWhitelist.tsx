@@ -9,7 +9,7 @@ export default function AddedToWhitelist() {
   const dispatch = useAppDispatch();
   return (
     <StepContainer
-      title="Congratulations!"
+      title="CONGRATULATIONS!"
       description={'You are now eligible to join the HOPR network! Continue below to set up your HOPR node.'}
       image={{
         src: '/assets/green-check.svg',
@@ -22,7 +22,7 @@ export default function AddedToWhitelist() {
             dispatch(stakingHubActions.setOnboardingStep(12));
           }}
         >
-          Continue
+          CONTINUE
         </ConfirmButton>
       }
     />

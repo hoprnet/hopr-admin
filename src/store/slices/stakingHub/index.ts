@@ -21,6 +21,12 @@ const stakingHubSlice = createSlice({
         isFetching: false,
         notStarted: null,
         modalToSartOnboardingDismissed: false,
+        nodeBalance: {
+          xDai: {
+            value: null,
+            formatted: null,
+          },
+        }
       };
     },
     resetStateWithoutMagicLinkForOnboarding: (state) => {
@@ -35,6 +41,12 @@ const stakingHubSlice = createSlice({
       state.onboarding.nodeXDaiBalance= null;
       state.onboarding.isFetching= false;
       state.onboarding.notStarted= null;
+      state.onboarding.nodeBalance= {
+        xDai: {
+          value: null,
+          formatted: null,
+        },
+      }
     },
     resetOnboardingState: (state) => {
       state.onboarding = {
@@ -49,6 +61,12 @@ const stakingHubSlice = createSlice({
         isFetching: false,
         notStarted: null,
         modalToSartOnboardingDismissed: false,
+        nodeBalance: {
+          xDai: {
+            value: null,
+            formatted: null,
+          },
+        }
       };
     },
     dismissModalToSartOnboarding: (state) => {
@@ -78,6 +96,10 @@ const stakingHubSlice = createSlice({
     },
     setOnboardingStep: (state, action) => {
       state.onboarding.step = action.payload;
+    },
+    setNodeLinkedToSafeBalance_xDai: (state, action) => {
+      state.onboarding.nodeBalance.xDai.value = action.payload ? action.payload.value : null;
+      state.onboarding.nodeBalance.xDai.formatted = action.payload ? action.payload.formatted : null;
     },
   },
   extraReducers: (builder) => {

@@ -119,19 +119,10 @@ export default function SetupYourDappNode() {
         <StepsContainer>
           <Instruction num={1}>
             <div>
-              <p>Update your node using the instructions below: </p>
-              <p>
-                For Docker,{' '}
-                <StyledLink to={`https://docs.hoprnet.org/node/using-docker#updating-to-a-new-release`}>
-                  here.
-                </StyledLink>
-              </p>
-              <p>
-                For Dappnode,{' '}
-                <StyledLink to={`https://docs.hoprnet.org/node/using-dappnode#updating-to-a-new-release`}>
-                  here.
-                </StyledLink>
-              </p>
+              <p>Install the HOPR package using the instructions <StyledLink to={`https://docs.hoprnet.org/node/using-dappnode`} target="_blank"
+                rel="noopener noreferrer">
+                  here
+                </StyledLink>.</p>
             </div>
           </Instruction>
           <RightArrow>

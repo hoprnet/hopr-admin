@@ -3,7 +3,9 @@ import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 
 // Store
-import { useAppSelector } from '../../../store';
+import { useAppDispatch, useAppSelector } from '../../../store';
+import { safeActions, safeActionsAsync } from '../../../store/slices/safe';
+import { stakingHubActions, stakingHubActionsAsync } from '../../../store/slices/stakingHub';
 
 // HOPR Components
 
@@ -77,8 +79,22 @@ const SPaper = styled(Paper)`
 
 
 function Dashboard() {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [tabIndex, set_tabIndex] = useState(getTabIndexFromUrl());
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as string;
+  const moduleAddress =  useAppSelector((store) => store.stakingHub.onboarding.moduleAddress);
+
+  useEffect(()=>{
+    if(safeAddress && moduleAddress) {
+      dispatch(
+        stakingHubActionsAsync.getSubgraphDataThunk({
+          safeAddress,
+          moduleAddress,
+        }),
+      );
+    }
+  },[]);
 
   const handleTabChange = (event: React.SyntheticEvent<Element, Event>, newTabIndex: number) => {
     set_tabIndex(newTabIndex);

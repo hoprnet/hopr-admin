@@ -343,7 +343,7 @@ function SafeWithdraw() {
           height: 130,
           alt: 'Withdraw Token from Safe',
         }}
-        title="Withdraw from Staking Hub"
+        title="Withdraw from Safe"
       >
         <div>
           <StyledForm>

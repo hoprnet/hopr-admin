@@ -286,7 +286,7 @@ function InfoPage() {
                   title="Your node's HOPR address, used by other node's to identify your node and send it messages (equivalent to a public key). "
                   notWide
                 >
-                  <span>HOPR Address</span>
+                  <span>Node PeerID</span>
                 </Tooltip>
               </th>
               <td>{addresses?.hopr}</td>
@@ -297,7 +297,7 @@ function InfoPage() {
                   title="Your node's Ethereum address, this is where you send your node tokens/funds."
                   notWide
                 >
-                  <span>Node Eth Address</span>
+                  <span>Node Address</span>
                 </Tooltip>
               </th>
               <td>{addresses?.native}</td>

@@ -14,6 +14,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
 
+//web3
+import { Address } from 'viem';
+import { browserClient } from '../../../providers/wagmi';
+
+
 const Content = styled.section`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -245,16 +250,11 @@ const GrayCard = ({
 
 const NodeAdded = () => {
   const dispatch = useAppDispatch();
-  const nodeNativeAddress = useAppSelector((store) => store.node.addresses.data.native);
-  const nodeHoprAddress = useAppSelector((store) => store.node.addresses.data.hopr);
-  const safeBalance = useAppSelector((store) => store.safe.balance.data);
-  const wxHoprAllowance = useAppSelector((store) => store.stakingHub.safeInfo.data.allowance.wxHoprAllowance);
-  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
-
-  const signer = useEthersSigner();
-
   const navigate = useNavigate();
-  // const [queryParams, set_queryParams] = useState(''); // later on well see how to get this params
+  const nodeNativeAddress = useAppSelector((store) => store.node.addresses.data.native);
+  const nodeHoprAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress);
+  const nodeBalance = useAppSelector((store) => store.stakingHub.onboarding.nodeBalance.xDai.formatted);
+  const wxHoprAllowance = useAppSelector((store) => store.stakingHub.safeInfo.data.allowance.wxHoprAllowance);
 
   return (
         <Content>
@@ -326,8 +326,7 @@ const NodeAdded = () => {
             buttons={[
               {
                 text: 'Adjust',
-                link: '#',
-                disabled: true,
+                link: '/staking/set-allowance',
               },
             ]}
           ></GrayCard>
@@ -364,21 +363,9 @@ const NodeAdded = () => {
           ></GrayCard>
           <GrayCard
            // id="xdai"
-            id="earned-rewards"
+            id="node-balance"
             title="xDAI"
-            value={safeBalance.xDai.formatted ?? '-'}
-            buttons={[
-              {
-                text: 'Send to node',
-                link: '#',
-                disabled: true,
-              },
-              // {
-              //   text: 'Withdraw',
-              //   link: '#',
-              //   disabled: true,
-              // },
-            ]}
+            value={nodeBalance ?? '-'}
           ></GrayCard>
         </Content>
   );

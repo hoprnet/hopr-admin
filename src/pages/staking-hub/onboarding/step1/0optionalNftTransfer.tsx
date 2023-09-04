@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useWalletClient } from 'wagmi';
 
@@ -49,7 +49,7 @@ const OptionText = styled.div`
   display: flex;
   flex-direction: row;
   max-width: 300px;
-  min-height: 180px;
+  min-height: 170px;
   align-items: center;
   .big {
     font-size: 20px;
@@ -118,9 +118,16 @@ export default function optionalNftTtransfer() {
   return (
     <StepContainer
       title="NFT TRANSFER (OPTIONAL)"
-      description={
-        'Transfer your Network Registry NFT to join the network with only 10,000 wxHOPR. If you do not have one Please select the 30k option and continue.'
-      }
+      description={<>Transfer your NR (Network Registry) NFT to join the network with only 10,000 wxHOPR. If you do not have one Please select the 30k option and continue. Read more about NR NFTs{' '}
+        <a
+          href="https://docs.hoprnet.org/node/waitlist-FAQ"
+          target="_blank"
+          rel="noreferrer"
+          style={{ color: '#007bff', textDecoration: 'underline'}}
+        >
+          here
+        </a>.
+      </>}
       buttons={
         <Tooltip 
           title={tooltipText()}
@@ -145,7 +152,7 @@ export default function optionalNftTtransfer() {
           onClick={() => {
             set_option(0);
           }}
-          disabled={communityNftIdInSafe === null}
+          style={communityNftIdInSafe === null ? {pointerEvents: 'none'} : {}}
         >
           <OptionText>
             <div className="left">
@@ -154,7 +161,7 @@ export default function optionalNftTtransfer() {
             <div className="right">
               <span className="big">Minimum 10,000 wxHOPR</span>
               <br />
-              <span className="smaller">WITH transferred Network Registry NFT in your safe</span>
+              <span className="smaller">WITH transferred NR NFT in your Safe</span>
             </div>
           </OptionText>
           <TransferNft>
@@ -182,6 +189,7 @@ export default function optionalNftTtransfer() {
               }}
               disabled={communityNftIdInWallet === null || !!communityNftIdInSafe}
               pending={sendingNFT}
+              style={{pointerEvents: 'all'}}
             >
               Transfer NFT to Safe
             </Button>

@@ -44,7 +44,7 @@ export default function ConfigureNode() {
 
   return (
     <StepContainer
-      title="Configure Node"
+      title='CONFIGURE NODE'
       description={'You need to sign a transaction to connect your node to your existing HOPR safe.'}
       image={{
         src: '/assets/safe-and-node-chain.svg',

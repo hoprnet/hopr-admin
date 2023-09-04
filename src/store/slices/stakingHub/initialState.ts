@@ -10,6 +10,12 @@ type InitialState = {
     step: number;
     notFinished: boolean;
     nodeAddress: string | null;
+    nodeBalance: {
+      xDai: {
+        value: string | null;
+        formatted: string | null;
+      };
+    }
     safeAddress: string | null;
     notStarted: boolean | null;
     modalToSartOnboardingDismissed: boolean;
@@ -109,6 +115,12 @@ export const initialState: InitialState = {
     notStarted: null,
     modalToSartOnboardingDismissed: false,
     nodeAddressProvidedByMagicLink: null,
+    nodeBalance: {
+      xDai: {
+        value: null,
+        formatted: null,
+      },
+    }
   },
   safeInfo: {
     data: {

@@ -942,7 +942,7 @@ const PendingTransactionsTable = () => {
                 key={key}
               />
             ))}
-          {pendingTransactions && !pendingTransactions?.count && <span>No entries</span>}
+          {pendingTransactions && !pendingTransactions?.count && <div style={{margin: '16px'}}>No entries</div>}
         </TableBody>
       </Table>
     </TableContainer>
@@ -954,8 +954,8 @@ function SafeActions() {
     <StyledContainer>
       <div>
         <Title>pending transactions</Title>
-        <p>1. Transaction have to be signed/rejected according to their tabular order.</p>
-        <p>2. After signing all parties can click on EXECUTE. One signature is sufficient.</p>
+        <p>1. Transactions have to be signed/rejected in the order they appear in the table below.</p>
+        <p>2. Once a transaction is signed, anyone can execute it.</p>
       </div>
       <PendingTransactionsTable />
       <Title>history</Title>

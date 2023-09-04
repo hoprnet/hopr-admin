@@ -185,7 +185,7 @@ export default function WhatYouWillNeedPage() {
     <StepContainer
       title={'WHAT YOU WILL NEED'}
       description={
-        'It will take 20 minutes to join the network waitlist. Before starting make sure you have got the required tokens.'
+        'It will take 20 minutes to set up your Safe/node and join the network waitlist. Before starting, make sure you have the required tokens.'
       }
       buttons={
         <ConfirmButton
@@ -232,7 +232,7 @@ export default function WhatYouWillNeedPage() {
                 <p>min. 10k wxHOPR with Network Registry NFT</p>
                 <p>min. 30k wxHOPR without Network Registry NFT</p>
                 <p>+</p>
-                <p>min. 1 xDAI</p>
+                <p>min. 3 xDAI</p>
               </TextUnderImage>
             </CenteredFlex>
           </TitleWithSVG>

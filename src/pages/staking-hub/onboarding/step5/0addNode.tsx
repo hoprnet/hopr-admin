@@ -57,9 +57,29 @@ export default function AddNode() {
 
   return (
     <StepContainer
-      title="Add Node"
+      title="ADD NODE"
       description={
-        'Please enter and confirm your node address. This will initiate a transaction which you will need to sign.'
+        <>
+          Please enter and confirm your node address. This will initiate a transaction which you will need to sign. If you do not have your node address follow the instructions here for{' '}
+          <a
+            href="https://docs.hoprnet.org/node/using-dappnode#2-link-your-node-to-your-safe"
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: '#007bff', textDecoration: 'underline'}}
+          >
+            Dappnode
+          </a>
+          {' '}or{' '}
+          <a
+            href="https://docs.hoprnet.org/node/using-docker#4-link-your-node-to-your-safe"
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: '#007bff', textDecoration: 'underline'}}
+          >
+            Docker
+          </a>
+          .
+        </>
       }
       image={{
         src: '/assets/node-blue.svg',
@@ -82,7 +102,7 @@ export default function AddNode() {
               pending={isLoading}
               style={{width: '250px'}}
             >
-              Continue
+              CONTINUE
             </ConfirmButton>
           </span>
         </Tooltip>
@@ -97,6 +117,7 @@ export default function AddNode() {
         onChange={(e) => set_address(e.target.value)}
         fullWidth
         style={{marginTop: '16px'}}
+        helperText={'Address should start with 0x'}
       />
     </StepContainer>
   );
