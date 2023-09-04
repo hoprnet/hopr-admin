@@ -11,11 +11,13 @@ import { useAppSelector } from '../../store';
 import Button from '../../future-hopr-lib-components/Button';
 
 const Overlay = styled.div`
+  transition: margin-left 0.4s ease-out;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  padding: 8px;
   display: flex;
   flex-direction: column;
   color: #000050;
@@ -27,7 +29,38 @@ const Overlay = styled.div`
   .bold {
     font-weight: 700;
   }
+  div {
+    width: 100%;
+    text-align: center;
+  }
+  button {
+    height: unset;
+  }
+  @media screen and (min-width: 500px) {
+    padding: 16px;
+  }
 `;
+
+const css = `
+
+  .drawerHidden .OverlayWrongNetwork {
+    margin-left: 0px;
+    width: calc( 100%  - 16px);
+  }
+
+  @media screen and (min-width: 500px) {
+    .drawerOpen .OverlayWrongNetwork {
+      margin-left: 240px;
+      width: calc( 100% - 240px - 32px);
+    }
+  
+    .drawerClosed .OverlayWrongNetwork {
+      margin-left: 56px;
+      width: calc( 100% - 56px - 32px);
+    }
+  }
+
+`
 
 export default function NetworkOverlay() {
   const chainId = useAppSelector((store) => store.web3.chainId);
@@ -66,12 +99,15 @@ export default function NetworkOverlay() {
             console.log(error)
         }
     }
-}
+  }
 
   return (
     <>
       {isConnected && chainId?.toString() !== '100' && (
-        <Overlay>
+        <Overlay
+          className={'OverlayWrongNetwork'}
+        >
+          <style>{css}</style>
           {chain && <div>You are connected to {getNetworkName(chainId)}</div>}
           <div>Staking Hub is designed to work on <span className='bold'>GNOSIS Chain</span></div>
           <Button
