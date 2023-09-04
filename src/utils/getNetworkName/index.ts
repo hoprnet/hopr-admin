@@ -1053,7 +1053,7 @@ const netowork_names = {
     "666301171999": "PDC Mainnet",
     "6022140761023": "Molereum Network",
     "868455272153094": "Godwoken Testnet (V1)"
-} as { [key: string]: string}
+} as { [key: string]: string }
 
 // info from https://github.com/xdaichain/ethereum-lists-chains
 
