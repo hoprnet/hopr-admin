@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useWalletClient } from 'wagmi';
 
@@ -152,7 +152,7 @@ export default function optionalNftTtransfer() {
           onClick={() => {
             set_option(0);
           }}
-          disabled={communityNftIdInSafe === null}
+          style={communityNftIdInSafe === null ? {pointerEvents: 'none'} : {}}
         >
           <OptionText>
             <div className="left">
@@ -189,6 +189,7 @@ export default function optionalNftTtransfer() {
               }}
               disabled={communityNftIdInWallet === null || !!communityNftIdInSafe}
               pending={sendingNFT}
+              style={{pointerEvents: 'all'}}
             >
               Transfer NFT to Safe
             </Button>
@@ -199,6 +200,7 @@ export default function optionalNftTtransfer() {
           onClick={() => {
             set_option(1);
           }}
+          component={'div'}
         >
           <OptionText>
             <div className="left">
