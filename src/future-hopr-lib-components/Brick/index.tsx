@@ -2,7 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 
 import Typography from '../Typography/index.jsx';
-import Button from '../Button/index.jsx';
+import Button from '../Button';
 
 const SBrick = styled.div`
   display: flex;
@@ -19,7 +19,12 @@ const SBrick = styled.div`
   }
 `;
 
-const TextContainer = styled.div`
+type TextContainerProps = {
+  centerText?: boolean
+}
+
+
+const TextContainer = styled.div<TextContainerProps>`
   flex: 6;
   display: flex;
   flex-direction: column;
@@ -33,14 +38,17 @@ const TextContainer = styled.div`
 const ImageContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-self: flex-start;
   flex: 5;
   @media (max-width: 699px) {
     display: none;
   }
 `;
 
-const Image = styled.img`
+type ImageProps = {
+  noShadow?: boolean
+}
+
+const Image = styled.img<ImageProps>`
   height: auto;
   max-width: 100%;
   border-radius: 28px;
@@ -53,7 +61,7 @@ const Image = styled.img`
   }
 `;
 
-function Brick(props) {
+function Brick(props: any) {
   return (
     <SBrick className={`Brick ${props.reverse ? 'Brick--reverse' : ''} ${props.className}`}>
       <TextContainer centerText={props.centerText}>
@@ -66,7 +74,6 @@ function Brick(props) {
         <Typography>{props.text}</Typography>
         {props.button && (
           <Button
-            hopr
             href={props.buttonHref}
             target="_blank"
           >

@@ -52,7 +52,7 @@ const SFooter = styled.footer`
 `;
 
 const Content = styled.div`
-  width: 100%;
+  width: calc( 100% - 32px );
   max-width: 1098px;
   margin: auto;
   display: flex;
@@ -62,7 +62,7 @@ const Content = styled.div`
 `;
 
 const Newsletter = styled.div`
-  width: 100%;
+  width: calc( 100% - 32px );
   max-width: 1098px;
   margin: auto;
   display: flex;
@@ -172,7 +172,7 @@ const Footer = (props) => {
             <iframe
               title="substack"
               src="https://hopr.substack.com/embed"
-              width={1080}
+              width={'100%'}
               style={{ border: 'none', marginTop: 0, paddingTop: 0 }}
               loading="lazy"
             ></iframe>
