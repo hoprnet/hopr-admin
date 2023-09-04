@@ -8,6 +8,7 @@ import { safeActions, safeActionsAsync } from '../../../store/slices/safe';
 import { stakingHubActions, stakingHubActionsAsync } from '../../../store/slices/stakingHub';
 
 // HOPR Components
+import NetworkOverlay from '../../../components/NetworkOverlay';
 
 // Mui
 import Paper from '@mui/material/Paper/Paper';
@@ -115,7 +116,6 @@ function Dashboard() {
 
   return (
     <DashboardContainer className="DashboardContainer">
-
       <SPaper>
         <Tabs value={tabIndex} onChange={handleTabChange} aria-label="basic tabs example">
           <Tab label="STAKING" {...a11yProps(0)} />
@@ -130,6 +130,7 @@ function Dashboard() {
           { tabIndex === DASHBOARD.transactions && <SafeActions/>}
         </div>
       </SPaper>
+      <NetworkOverlay/>
     </DashboardContainer>
   );
 }

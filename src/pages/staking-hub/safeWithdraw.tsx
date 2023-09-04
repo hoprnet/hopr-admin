@@ -13,6 +13,7 @@ import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS
 import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';
 import Card from '../../components/Card';
+import NetworkOverlay from '../../components/NetworkOverlay';
 
 // Mui
 import TextField from '@mui/material/TextField';
@@ -436,6 +437,7 @@ function SafeWithdraw() {
           {isSigning && <p>Signing transaction with nonce...</p>}
         </div>
       </Card>
+      <NetworkOverlay/>
     </Section>
   );
 }

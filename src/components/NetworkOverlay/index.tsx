@@ -1,68 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNetwork, useSwitchNetwork } from 'wagmi'
+import 'wagmi/window';
+import { getNetworkName } from '../../utils/getNetworkName';
 
 // Store
-import { useAppDispatch, useAppSelector } from '../../store';
-import { authActions } from '../../store/slices/auth';
-import { nodeActions } from '../../store/slices/node';
-import { appActions } from '../../store/slices/app';
+import { useAppSelector } from '../../store';
 
-//MUI
-import { Button, Menu, MenuItem, CircularProgress } from '@mui/material';
-
-const Container = styled(Button)`
-  align-items: center;
-  border-left: 1px lightgray solid;
-  cursor: pointer;
-  color: black;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  height: 59px;
-  width: 240px;
-  border-radius: 0;
-  div {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    justify-content: center;
-    width: 100%;
-  }
-  .image-container {
-    height: 50px;
-    margin-left: 8px;
-    width: 50px;
-    img {
-      height: 100%;
-      width: 100%;
-    }
-  }
-`;
-
-const NodeButton = styled.div`
-  font-family: 'Source Code Pro';
-  min-width: 150px;
-  display: flex;
-  flex-direction: row !important;
-  align-items: center;
-  color: #414141;
-  gap: 10px;
-  text-align: left;
-  p {
-    margin: 0;
-    font-size: 12px;
-  }
-  .node-info {
-    color: #414141;
-    line-height: 12px;
-  }
-`;
-
-const DropdownArrow = styled.img`
-  align-self: center;
-`;
+// HOPR Components
+import Button from '../../future-hopr-lib-components/Button';
 
 const Overlay = styled.div`
   position: fixed;
@@ -73,42 +19,66 @@ const Overlay = styled.div`
   display: flex;
   flex-direction: column;
   color: #000050;
-  gap: 32px;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.78);
-  z-index: 10000;
+  background: rgba(255, 255, 255, 0.85);
+  gap: 32px;
+  z-index: 1000;
+  .bold {
+    font-weight: 700;
+  }
 `;
 
 export default function NetworkOverlay() {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const [modalVisible, set_modalVisible] = useState(false);
-  const connected = useAppSelector((store) => store.auth.status.connected);
-  const connecting = useAppSelector((store) => store.auth.status.connecting);
-  const error = useAppSelector((store) => store.auth.status.error);
-  const openLoginModalToNode = useAppSelector((store) => store.auth.helper.openLoginModalToNode);
-  const peerId = useAppSelector((store) => store.node.addresses.data.hopr);
-  const localName = useAppSelector((store) => store.auth.loginData.localName);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
+  const chainId = useAppSelector((store) => store.web3.chainId);
+  const isConnected = useAppSelector((store) => store.web3.status.connected);
 
-  const containerRef = useRef<HTMLButtonElement>(null);
+  const { chain } = useNetwork()
 
-  useEffect(() => {
-    if (error) set_modalVisible(true);
-  }, [error]);
-
-  // New function to handle closing the menu
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
+  const switchChain = async () => {
+    if (!window.ethereum) return;
+    const rawEthereumProvider = window.ethereum;
+    try {
+        await rawEthereumProvider.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0x64' }]
+        })
+    } catch (error: any) {
+        try {
+            if (error.code === 4902) {
+                await rawEthereumProvider.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [{
+                        chainId: '0x64',
+                        chainName: 'Gnosis Chain',
+                        nativeCurrency: {
+                            symbol: 'xDAI',
+                            name: 'xDAI',
+                            decimals: 18
+                        },
+                        rpcUrls: ['https://rpc.gnosischain.com/'],
+                    }],
+                })
+            } else {
+                console.log(error)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+}
 
   return (
     <>
-      {connecting && (
+      {isConnected && chainId?.toString() !== '100' && (
         <Overlay>
-          <CircularProgress />
-          Connecting to Node
+          {chain && <div>You are connected to {getNetworkName(chainId)}</div>}
+          <div>Staking Hub is designed to work on <span className='bold'>GNOSIS Chain</span></div>
+          <Button
+            onClick={switchChain}
+          >
+            Switch network to GNOSIS
+          </Button>
         </Overlay>
       )}
     </>

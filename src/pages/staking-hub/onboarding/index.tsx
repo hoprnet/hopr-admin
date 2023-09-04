@@ -7,6 +7,7 @@ import { useAppSelector } from '../../../store';
 
 // HOPR Components
 import { Stepper } from '../../../components/Stepper';
+import NetworkOverlay from '../../../components/NetworkOverlay';
 
 //Steps
 import OnboardingIsFetching from './isFetching';
@@ -173,6 +174,7 @@ function Onboarding() {
         </>
       }
       <div style={{ flex: 1 }} />
+      <NetworkOverlay/>
     </OnboardingContainer>
   );
 }
