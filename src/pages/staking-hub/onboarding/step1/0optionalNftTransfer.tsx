@@ -200,7 +200,6 @@ export default function optionalNftTtransfer() {
           onClick={() => {
             set_option(1);
           }}
-          component={'div'}
         >
           <OptionText>
             <div className="left">
