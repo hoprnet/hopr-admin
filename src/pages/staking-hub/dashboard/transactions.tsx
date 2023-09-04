@@ -51,7 +51,6 @@ import { truncateEthereumAddress } from '../../../utils/blockchain';
 import { getUserActionForPendingTransaction } from '../../../utils/safeTransactions';
 
 const StyledContainer = styled(Paper)`
-  min-width: 800px;
   padding: 2rem;
   display: flex;
   flex-direction: column;
@@ -557,7 +556,6 @@ function EthereumTransactionRow(props: { transaction: CustomEthereumTxWithTransf
               ? transaction.value.slice(0, 18).concat('...')
               : transaction.value
           } ${transaction.currency}`}</TableCell>
-        <TableCell align="right">?</TableCell>
       </StyledHistoryTableRow>
       <StyledHistoryTableRow>
         <StyledCollapsibleCell colSpan={6}>
@@ -610,7 +608,6 @@ function EthereumTransactionRow(props: { transaction: CustomEthereumTxWithTransf
 
 function MultisigTransactionRow(props: { transaction: CustomSafeMultisigTransactionWithTransfersResponse }) {
   const { transaction } = props;
-  const account = useAppSelector(state => state.web3.account)
   const [open, set_open] = useState(false);
   const [date, set_date] = useState<string>();
   const [time, set_time] = useState<string>();
@@ -619,21 +616,6 @@ function MultisigTransactionRow(props: { transaction: CustomSafeMultisigTransact
     set_date(formatDateToUserTimezone(transaction.executionDate ?? transaction.submissionDate));
     set_time(formatTimeToUserTimezone(transaction.executionDate ?? transaction.submissionDate));
   }, []);
-
-  const getTransactionAction = (transaction: CustomSafeMultisigTransactionWithTransfersResponse) => {
-    if (!account) return '?'
-
-    if (account === transaction.executor) {
-      return 'Executed'
-    }
-
-    if (transaction.confirmations?.find(conf => conf.owner === account)) {
-      return 'Signed'
-    }
-
-    // user did nothing on this tx
-    return '?'
-  }
 
   return (
     <>
@@ -663,7 +645,6 @@ function MultisigTransactionRow(props: { transaction: CustomSafeMultisigTransact
               ? transaction.value.slice(0, 10).concat('...')
               : transaction.value
           } ${transaction.currency}`}</TableCell>
-        <TableCell align="right">{getTransactionAction(transaction)}</TableCell>
       </StyledHistoryTableRow>
       <StyledHistoryTableRow className={!transaction.isExecuted ? 'rejected' : ''}>
         <StyledCollapsibleCell colSpan={6}>
@@ -797,7 +778,6 @@ function ModuleTransactionRow(props: { transaction: CustomSafeModuleTransactionW
             ? transaction.value.slice(0, 18).concat('...')
             : transaction.value
         } ${transaction.currency}`}</TableCell>
-        <TableCell>?</TableCell>
       </StyledHistoryTableRow>
     </>
   );
@@ -859,8 +839,6 @@ function TransactionHistoryTable() {
             <TableCell align="right">Source</TableCell>
             <TableCell align="right">Capability</TableCell>
             <TableCell align="right">Value</TableCell>
-            <TableCell align="right">Action</TableCell>
-            <TableCell />
           </StyledHistoryTableRow>
         </StyledTableHead>
         <TableBody>
