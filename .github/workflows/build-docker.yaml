@@ -8,6 +8,10 @@ on:
         type: string
         required: true
         default: main
+      tag:
+        type: string
+        required: true
+        default: latest
 
 concurrency:
   group: hopr-admin
@@ -43,5 +47,5 @@ jobs:
         with:
           push: true
           file: Dockerfile
-          tags: europe-west3-docker.pkg.dev/${{ secrets.GOOGLE_HOPRASSOCIATION_PROJECT }}/docker-images/hopr-admin:latest
+          tags: europe-west3-docker.pkg.dev/${{ secrets.GOOGLE_HOPRASSOCIATION_PROJECT }}/docker-images/hopr-admin:${{ github.event.inputs.branch }}
   
