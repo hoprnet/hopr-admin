@@ -9,7 +9,7 @@ type SubpageTitleProps = {
   disabled?: boolean;
   onClick?: () => void;
   iconComponent?: any;
-  tooltipText?: string;
+  tooltipText?: string | JSX.Element;
   className?: string;
   style?: Object;
   pending?: boolean;

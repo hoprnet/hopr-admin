@@ -143,7 +143,7 @@ export default function NotificationBar() {
             They will delete on refresh.
             <IconButton
               iconComponent={<DeleteIcon />}
-              tooltipText="Clear"
+              tooltipText="CLEAR"
               onClick={() => {
                 dispatch(appActions.clearNotifications());
               }}

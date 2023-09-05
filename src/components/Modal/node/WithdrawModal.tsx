@@ -126,7 +126,13 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
     <>
       <IconButton
         iconComponent={<WithdrawIcon />}
-        tooltipText="Withdraw tokens"
+        tooltipText={
+          <span>
+            WITHDRAW
+            <br />
+            tokens
+          </span>
+        }
         onClick={handleOpenModal}
       />
       <SDialog

@@ -159,7 +159,13 @@ function ChannelsPage() {
           <>
             <IconButton
               iconComponent={<GetAppIcon />}
-              tooltipText={`Export ${tabLabel} channels as a CSV`}
+              tooltipText={
+                <span>
+                  EXPORT
+                  <br />
+                  {tabLabel} channels as a CSV
+                </span>
+              }
               disabled={!channelsData || Object.keys(channelsData).length === 0}
               onClick={handleExport}
             />

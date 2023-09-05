@@ -222,14 +222,26 @@ function ChannelsPage() {
           <OpenOrFundChannelModal
             // peerAddress={channel.peerId} //FIXME: peerId should be peerAddress here
             title="Fund outgoing channel"
-            modalBtnText="Fund outgoing channel"
+            modalBtnText={
+              <span>
+                FUND
+                <br />
+                outgoing channel
+              </span>
+            }
             actionBtnText="Fund outgoing channel"
             type="fund"
           />
           <IconButton
             iconComponent={<CloseChannelIcon />}
             pending={closingStates[channel.id]?.closing}
-            tooltipText={`Close outgoing channel`}
+            tooltipText={
+              <span>
+                CLOSE
+                <br />
+                outgoing channel
+              </span>
+            }
             onClick={() => handleCloseChannels(channel.id)}
           />
         </>
@@ -255,12 +267,24 @@ function ChannelsPage() {
             <OpenOrFundChannelModal
               type={'fund'}
               title="Fund outgoing channel"
-              modalBtnText="Fund outgoing channel"
+              modalBtnText={
+                <span>
+                  FUND
+                  <br />
+                  outgoing channel
+                </span>
+              }
               actionBtnText="Fund outgoing channel"
             />
             <IconButton
               iconComponent={<GetAppIcon />}
-              tooltipText={`Export ${tabLabel} channels as a CSV`}
+              tooltipText={
+                <span>
+                  EXPORT
+                  <br />
+                  {tabLabel} channels as a CSV
+                </span>
+              }
               disabled={!channelsData || Object.keys(channelsData).length === 0}
               onClick={handleExport}
             />
