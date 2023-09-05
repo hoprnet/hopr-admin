@@ -122,8 +122,16 @@ const STextField = styled(TextField)`
 `;
 
 interface Props {
-  data: any[];
-  header: any[];
+  data: {id: string, actions: JSX.Element, [key: string]: string | JSX.Element;  }[];
+  header: {
+    key: string,
+    name: string,
+    search?: boolean,
+    tooltip?: boolean,
+    width?: string,
+    wrap?: boolean,
+    maxWidth?: string,
+  }[];
   search?: boolean;
   loading?: boolean;
 }
@@ -132,7 +140,7 @@ export default function CustomPaginationActionsTable(props: Props) {
   const [page, set_Page] = React.useState(0);
   const [rowsPerPage, set_RowsPerPage] = React.useState(10);
   const [searchPhrase, set_searchPhrase] = React.useState('');
-  const [filteredData, set_filteredData] = React.useState<any[]>([]);
+  const [filteredData, set_filteredData] = React.useState<typeof props.data>([]);
 
   useEffect(() => {
     filterData(searchPhrase);
@@ -162,8 +170,7 @@ export default function CustomPaginationActionsTable(props: Props) {
     set_Page(0);
 
     const data = props.data;
-    let filterBy = props.header.map((elem) => elem.search === true && elem.key);
-    filterBy = filterBy.filter((elem) => elem);
+    const filterBy = props.header.filter((elem) => elem.search === true).map(header => header.key);
 
     // SearchPhrase filter
     if (!searchPhrase || searchPhrase === '') {
@@ -172,7 +179,7 @@ export default function CustomPaginationActionsTable(props: Props) {
     }
     const filtered = data.filter((elem) => {
       for (let i = 0; i < filterBy.length; i++) {
-        if (elem[filterBy[i]].toLowerCase().includes(searchPhrase.toLowerCase())) return true;
+        if (typeof elem[filterBy[i]] === 'string' && (elem[filterBy[i]] as string).toLowerCase().includes(searchPhrase.toLowerCase())) return true;
       }
     });
     set_filteredData(filtered);
@@ -216,10 +223,11 @@ export default function CustomPaginationActionsTable(props: Props) {
       <STable aria-label="custom pagination table">
         <thead>
           <TableRow>
-            {props.header.map((headElem) => (
+            {props.header.map((headElem, idx) => (
               <STableCell
+                key={idx}
                 className={`TableCell TableCellHeader`}
-                width={headElem.width}
+                width={headElem?.width ?? ''}
               >
                 {headElem.name}
               </STableCell>
@@ -231,9 +239,10 @@ export default function CustomPaginationActionsTable(props: Props) {
             ? filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : filteredData
           ).map((row) => (
-            <TableRow key={row.name}>
+            <TableRow key={row.id}>
               {props.header.map((headElem) => (
                 <STableCell
+                  key={headElem.key}
                   className={`TableCell ${headElem.key} ${headElem.wrap ? 'wrap' : ''} ${
                     headElem.maxWidth ? 'wrap' : ''
                   }`}
@@ -241,7 +250,7 @@ export default function CustomPaginationActionsTable(props: Props) {
                   style={{ maxWidth: headElem.maxWidth }}
                 >
                   {headElem.tooltip ? (
-                    <Tooltip title={row[headElem.key]}>{row[headElem.key]}</Tooltip>
+                    <Tooltip title={row[headElem.key]}>{typeof row[headElem.key] === 'string' ? row[headElem.key] : ''}</Tooltip>
                   ) : (
                     row[headElem.key]
                   )}
