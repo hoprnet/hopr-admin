@@ -1,13 +1,12 @@
 import styled from '@emotion/styled';
-import Button from '../../../../future-hopr-lib-components/Button';
-import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { Link } from 'react-router-dom';
 import CodeCopyBox from '../../../../components/CodeCopyBox';
-import { StepContainer, ConfirmButton } from '../components';
+import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
+import { ConfirmButton, StepContainer } from '../components';
 
 //Store
-import { useAppSelector, useAppDispatch } from '../../../../store';
+import { useAppDispatch, useAppSelector } from '../../../../store';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
 const Content = styled.div`
@@ -66,12 +65,6 @@ const CodeContainer = styled.div`
   text-transform: uppercase;
 `;
 
-const ButtonContainer = styled.div`
-  align-self: center;
-  display: flex;
-  gap: 1rem;
-`;
-
 const StyledGrayButton = styled(GrayButton)`
   border: 1px solid black;
   height: 39px;
@@ -112,17 +105,24 @@ export default function SetupYourDappNode() {
           >
             CONTINUE
           </ConfirmButton>
-      </>
+        </>
       }
     >
       <Content>
         <StepsContainer>
           <Instruction num={1}>
             <div>
-              <p>Install the HOPR package using the instructions <StyledLink to={`https://docs.hoprnet.org/node/using-dappnode`} target="_blank"
-                rel="noopener noreferrer">
+              <p>
+                Install the HOPR package using the instructions{' '}
+                <StyledLink
+                  to={`https://docs.hoprnet.org/node/using-dappnode#2-link-your-node-to-your-safe`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   here
-                </StyledLink>.</p>
+                </StyledLink>
+                .
+              </p>
             </div>
           </Instruction>
           <RightArrow>
@@ -144,6 +144,13 @@ export default function SetupYourDappNode() {
               </CodeContainer>
             </Content>
           </Instruction>
+          <RightArrow>
+            <ArrowRightAltIcon style={{ fontSize: '60px' }} />
+          </RightArrow>
+          <Instruction
+            num={3}
+            description="Return here to continue, once you have set up your node"
+          />
         </StepsContainer>
       </Content>
     </StepContainer>
