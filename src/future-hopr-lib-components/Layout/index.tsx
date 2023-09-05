@@ -70,7 +70,7 @@ const Layout: React.FC<{
   };
   drawerType?: 'blue' | 'white';
   drawerItems: ApplicationMapType;
-  drawerFunctionItems? : any;
+  drawerFunctionItems? : ApplicationMapType;
   drawerRight?: React.ReactNode;
 }> = ({
   className = '',

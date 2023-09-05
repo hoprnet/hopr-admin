@@ -123,7 +123,7 @@ const SListItemIcon = styled(ListItemIcon)`
 
 type DrawerProps = {
   drawerItems: ApplicationMapType;
-  drawerFunctionItems: ApplicationMapType;
+  drawerFunctionItems?: ApplicationMapType;
   drawerLoginState?: {
     node?: boolean;
     web3?: boolean;
