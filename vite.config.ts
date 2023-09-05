@@ -23,6 +23,14 @@ export default defineConfig(() => {
         babel: { plugins: ['@emotion/babel-plugin'] },
       }),
     ],
-    build: { outDir: 'build' },
+    build: {
+      outDir: 'build',
+      rollupOptions: { onwarn(warning, warn) {
+        if (warning.code === 'MODULE_LEVEL_DIRECTIVE') {
+          return
+        }
+        warn(warning)
+      } },
+    },  
   };
 });

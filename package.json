@@ -1,12 +1,12 @@
 {
   "name": "hopr-admin",
-  "version": "0.1.1",
+  "version": "0.4.1",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.0",
-    "@hoprnet/hopr-sdk": "0.0.1-alpha.14",
+    "@hoprnet/hopr-sdk": "^2.0.0-beta.7",
     "@metamask/jazzicon": "^2.0.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.0",
@@ -22,6 +22,7 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "apexcharts": "^3.41.0",
+    "canvas-confetti": "^1.6.0",
     "dayjs": "^1.11.9",
     "ethers": "5.7.2",
     "fathom-client": "^3.5.0",
@@ -59,7 +60,7 @@
     ]
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   },
   "browserslist": {
     "production": [
@@ -75,6 +76,7 @@
   },
   "packageManager": "yarn@1.22.19",
   "devDependencies": {
+    "@types/canvas-confetti": "^1.6.0",
     "@types/lodash": "^4.14.197",
     "@types/md5": "^2.3.2",
     "@typescript-eslint/eslint-plugin": "^6.1.0",

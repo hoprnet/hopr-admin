@@ -7,7 +7,89 @@ type FaqElement = {
 type FaqData = Record<string, FaqElement[]>;
 
 const stakingFaq: FaqData = {
-  '/steps/fund-safe': [
+  '/staking/onboarding#0': [
+    {
+      id: 1,
+      title: 'Token addresses',
+      content: (
+        <span>
+          HOPR (Ethereum): 0xf5581dfefd8fb0e4aec526be659cfab1f8c781dax
+          <br />
+          xHOPR (Gnosis chain): 0xD057604A14982FE8D88c5fC25Aac3267eA142a08
+          <br />
+          wxHOPR (Gnosis chain): 0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1
+        </span>
+      ),
+    },
+    {
+      id: 2,
+      title: 'Buying xDAI & HOPR',
+      content: (
+        <span>
+          You can find the best options for buying HOPR, DAI, xDAI and xHOPR in our{' '}
+          <a
+            href="https://docs.hoprnet.org/staking/how-to-get-hopr"
+            target="_blank"
+            rel="noreferrer"
+          >
+            docs
+          </a>
+          .
+        </span>
+      ),
+    },
+    {
+      id: 3,
+      title: 'Why do I need wxHOPR?',
+      content:
+        'wxHOPR is used to fund channels with other nodes on the network. Well-connected nodes are able to relay more data and earn a higher yield.',
+    },
+    {
+      id: 4,
+      title: 'Wrapping xHOPR → wxHOPR',
+      content: (
+        <span>
+          You can convert your xHOPR to wxHOPR by using our wrapper on the{' '}
+          <a
+            href="https://wrapper.hoprnet.org/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            staking hub
+          </a>
+          .
+        </span>
+      ),
+    },
+    {
+      id: 5,
+      title: 'How do I get an Network Registry NFT?',
+      content:
+        'Network Registry NFTs were given to node runners of previous HOPR releases. We no longer distribute this NFT. So unless you have already been airdropped one by HOPR, you will only be able to find them on NFT marketplaces.',
+    },
+  ],
+  '/staking/onboarding#1': [
+    {
+      id: 1,
+      title: 'Managing owners',
+      content: 'You can change ownership after safe creation.',
+    },
+  ],
+  '/staking/onboarding#3': [
+    {
+      id: 1,
+      title: 'How do I get an Network Registry NFT?',
+      content:
+        'Network Registry NFTs were given to node runners of previous HOPR releases. We no longer distribute this NFT. So unless you have already been airdropped one by HOPR, you will only be able to find them on NFT marketplaces.',
+    },
+    {
+      id: 2,
+      title: 'What happens if I have multiple Network Registry NFTS?',
+      content:
+        'If you have more than one Network Registry NFT, only the one with the lowest ID number will be transferred to your safe, and the rest will remain in your wallet.',
+    },
+  ],
+  '/staking/onboarding#4': [
     {
       id: 1,
       title: 'Token addresses',
@@ -36,7 +118,7 @@ const stakingFaq: FaqData = {
           <a
             href="https://docs.hoprnet.org/staking/how-to-get-hopr"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             docs
           </a>
@@ -53,7 +135,7 @@ const stakingFaq: FaqData = {
           <a
             href="https://wrapper.hoprnet.org/"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             staking hub
           </a>
@@ -68,28 +150,7 @@ const stakingFaq: FaqData = {
         'One xDAI is sufficient to start running a node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
     },
   ],
-  '/steps/set-owner': [
-    {
-      id: 1,
-      title: 'Managing owners',
-      content: 'You can change ownership after safe creation.',
-    },
-  ],
-  '/steps/nft-transfer': [
-    {
-      id: 1,
-      title: 'How do I get an NR NFT?',
-      content:
-        'NR NFTs were given to node runners of previous HOPR releases. We no longer distribute this NFT. So unless you have already been airdropped one by HOPR, you will only be able to find them on NFT marketplaces.',
-    },
-    {
-      id: 2,
-      title: 'What happens if I have multiple NR NFTS?',
-      content:
-        'If you have more than one NR NFT, only the one with the lowest ID number will be transferred to your safe, and the rest will remain in your wallet.',
-    },
-  ],
-  '/steps/setup-your-node': [
+  '/staking/onboarding#7': [
     {
       id: 1,
       title: 'Setup Docker',
@@ -97,9 +158,9 @@ const stakingFaq: FaqData = {
         <span>
           You will need to install Docker on your device to complete this installation. Follow{' '}
           <a
-            href="#"
+            href="https://docs.hoprnet.org/node/using-docker#1-install-docker"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             these instructions
           </a>{' '}
@@ -114,68 +175,9 @@ const stakingFaq: FaqData = {
         <span>
           You can view a complete breakdown of how to install a HOPR node using Docker{' '}
           <a
-            href="#"
+            href="https://docs.hoprnet.org/node/using-docker"
             target="_blank"
-            rel="noopener noreferrer"
-          >
-            here
-          </a>
-        </span>
-      ),
-    },
-  ],
-  '/steps/update-your-node': [
-    {
-      id: 1,
-      title: 'How to update my node',
-      content: (
-        <span>
-          The process for updating your node depends on the device you're using. Follow the appropriate link for your
-          setup.
-          <br />
-          <br />- For Dappnode users, click{' '}
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            here
-          </a>{' '}
-          for the steps.
-          <br />- Docker users, find your instructions{' '}
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            here
-          </a>
-          .
-        </span>
-      ),
-    },
-    {
-      id: 2,
-      title: 'How to restart my node',
-      content: (
-        <span>
-          The process for restarting your node depends on the device you're using. Follow the appropriate link for your
-          setup.
-          <br />
-          <br />- For Dappnode users, click{' '}
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            here
-          </a>{' '}
-          for the steps.
-          <br />- Docker users, find your instructions{' '}
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             here
           </a>
@@ -185,12 +187,23 @@ const stakingFaq: FaqData = {
     },
     {
       id: 3,
-      title: 'How much xDAI should I transfer?',
-      content:
-        'One xDAI is sufficient to start running a node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
+      title: 'Adding your IP address',
+      content: (
+        <span>
+          You will need to edit the Docker command to include your public IP address. To find your IP address and edit
+          the command correctly follow the instructions{' '}
+          <a
+            href="https://docs.hoprnet.org/node/hidden-page#find-your-ip-address"
+            target="_blank"
+            rel="noreferrer"
+          >
+            here
+          </a>
+        </span>
+      ),
     },
   ],
-  '/steps/join-waitlist': [
+  '/staking/onboarding#10': [
     {
       id: 1,
       title: 'How long do I have to wait to be approved?',
@@ -221,7 +234,7 @@ const stakingFaq: FaqData = {
         'One xDAI is sufficient to start running a node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
     },
   ],
-  '/steps/xdai-to-node': [
+  '/staking/onboarding#14': [
     {
       id: 1,
       title: 'How much xDAI should I transfer?',
@@ -229,7 +242,7 @@ const stakingFaq: FaqData = {
         'One xDAI is sufficient to start your node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
     },
   ],
-  '/steps/set-allowance': [
+  '/staking/onboarding#15': [
     {
       id: 1,
       title: 'What is node allowance?',
@@ -242,14 +255,50 @@ const stakingFaq: FaqData = {
       content:
         'Setting it too high may result in a drainage of funds if your node is ever compromised, but a sufficient amount is needed in order to create a well connected node that can maximize its APY. You are free to choose your own risk profile but we recommend using the default value as it is more than sufficient to fund a well connected node.',
     },
+  ],
+  '/steps/update-your-node': [
+    {
+      id: 1,
+      title: 'How to update my node',
+      content: (
+        <span>
+          The process for updating your node depends on the device you're using. Follow the appropriate link for your
+          setup.
+          <br />
+          <br />- For Dappnode users, click <a href="#">here</a> for the steps.
+          <br />- Docker users, find your instructions{' '}
+          <a
+            href="https://docs.hoprnet.org/node/using-docker#updating-to-a-new-release"
+            target="_blank"
+            rel="noreferrer"
+          >
+            here
+          </a>
+          .
+        </span>
+      ),
+    },
+    {
+      id: 2,
+      title: 'How to restart my node',
+      content: (
+        <span>
+          The process for restarting your node depends on the device you're using. Follow the appropriate link for your
+          setup.
+          <br />
+          <br />- For Dappnode users, click <a href="#">here</a> for the steps.
+          <br />- Docker users, find your instructions <a href="#">here</a>.
+        </span>
+      ),
+    },
     {
       id: 3,
-      title: 'Funds at risk',
+      title: 'How much xDAI should I transfer?',
       content:
-        'If your node is ever compromised it may lead to your entire allowance of wxHOPR being drained. Please set a reasonable allowance, and use our default value as a guideline.',
+        'One xDAI is sufficient to start running a node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
     },
   ],
-  '/steps/stake': [
+  'send wxHopr to safe (stake in figma)': [
     {
       id: 1,
       title: 'Token addresses',
@@ -257,7 +306,7 @@ const stakingFaq: FaqData = {
         <span>
           HOPR (Ethereum): 0xf5581dfefd8fb0e4aec526be659cfab1f8c781dax
           <br />
-          HOPR (Gnosis chain): 0xD057604A14982FE8D88c5fC25Aac3267eA142a08
+          xHOPR (Gnosis chain): 0xD057604A14982FE8D88c5fC25Aac3267eA142a08
           <br />
           wxHOPR (Gnosis chain): 0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1
         </span>
@@ -281,7 +330,7 @@ const stakingFaq: FaqData = {
       ),
     },
   ],
-  '/steps/xdai-to-safe': [
+  'additional xdai to safe': [
     {
       id: 1,
       title: 'Buying xDAI & HOPR',
@@ -291,7 +340,7 @@ const stakingFaq: FaqData = {
           <a
             href="https://docs.hoprnet.org/staking/how-to-get-hopr"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             docs
           </a>
@@ -306,87 +355,32 @@ const stakingFaq: FaqData = {
         'One xDAI is sufficient to start running a node without any concerns. A lower amount may lead to insufficient funds for on-chain transactions.',
     },
   ],
-  '/steps/what-you-will-need': [
-    {
-      id: 1,
-      title: 'Token addresses',
-      content: (
-        <span>
-          HOPR (Ethereum): 0xf5581dfefd8fb0e4aec526be659cfab1f8c781dax
-          <br />
-          HOPR (Gnosis chain): 0xD057604A14982FE8D88c5fC25Aac3267eA142a08
-          <br />
-          wxHOPR (Gnosis chain): 0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1
-        </span>
-      ),
-    },
-    {
-      id: 1,
-      title: 'Buying xDAI & HOPR',
-      content: (
-        <span>
-          You can find the best options for buying HOPR, DAI, xDAI and xHOPR in our{' '}
-          <a
-            href="https://docs.hoprnet.org/staking/how-to-get-hopr"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            docs
-          </a>
-          .
-        </span>
-      ),
-    },
-    {
-      id: 1,
-      title: 'Why do I need wxHOPR?',
-      content:
-        'wxHOPR is used to fund channels with other nodes on the network. Well-connected nodes are able to relay more data and earn a higher yield.',
-    },
-    {
-      id: 1,
-      title: 'Wrapping xHOPR → wxHOPR',
-      content: (
-        <span>
-          You can convert your xHOPR to wxHOPR by using our wrapper on the{' '}
-          <a
-            href="https://wrapper.hoprnet.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            staking hub
-          </a>
-          .
-        </span>
-      ),
-    },
-    {
-      id: 1,
-      title: 'How do I get an NR NFT?',
-      content:
-        'NR NFTs were given to node runners of previous HOPR releases. We no longer distribute this NFT. So unless you have already been airdropped one by HOPR, you will only be able to find them on NFT marketplaces.',
-    },
-  ],
-  '/hub/wrapper': [
+  '/staking/wrapper': [
     {
       id: 1,
       title: 'Where can I buy xHOPR?',
       content: (
         <span>
-          You can find the best options for buying HOPR, DAI, xDAI and xHOPR in our{' '}
+          You can find the best options for buying HOPR, DAI, xDAI and xHOPR in{' '}
           <a
             href="https://docs.hoprnet.org/staking/how-to-get-hopr"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
-            docs
+            our docs
           </a>
           .
         </span>
       ),
     },
+    {
+      id: 2,
+      title: 'What is wrapping?',
+      content:
+        'Wrapping a token allows it to be used on a non-native blockchain. Similar to switching a dollar for four quarters so you can use the machine that only takes quarters. You need to wxHOPR to fund payment channels in the HOPR network, but you can always swap the wxHOPR back for an equal amount of xHOPR ot HOPR.',
+    },
   ],
-  '/hub/staking-screen': [
+  '/staking/dashboard#staking': [
     {
       id: 1,
       title: 'How much xDAI should I deposit',
@@ -402,7 +396,7 @@ const stakingFaq: FaqData = {
           <a
             href="https://docs.hoprnet.org/staking/how-to-get-hopr"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             docs
           </a>
@@ -418,9 +412,9 @@ const stakingFaq: FaqData = {
           This will vary depending on how many nodes are in the network, how much wxHOPR you have staked and how many
           nodes you are running. You can view a complete breakdown of the economic model{' '}
           <a
-            href="#"
+            href="https://twitter.com/hoprnet/status/1696539901305790534"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             here
           </a>
@@ -442,7 +436,7 @@ const stakingFaq: FaqData = {
       ),
     },
   ],
-  '/hub/node-added': [
+  '/staking/dashboard#node': [
     {
       id: 1,
       title: 'How much xDAI should I deposit?',
@@ -462,9 +456,9 @@ const stakingFaq: FaqData = {
           After creating and funding your safe, you will need to register your safe address on to the waitlist using
           this{' '}
           <a
-            href="#"
+            href="https://cryptpad.fr/form/#/2/form/view/K3KSF-UAM-mLjUCs4w3Cruu4wZeOdwQFLNG1aYqrjbg/"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             form
           </a>
@@ -481,15 +475,8 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           Make sure your allowance aligns with your node strategy and is not draining your tokens or preventing you from
-          producing well-connected nodes. You can always change your node allowance{' '}
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            here
-          </a>
-          .
+          producing well-connected nodes. You can always change your node allowance <a href="#node">here</a>.{' '}
+          {/*FIXME: put link to specific page */}
         </span>
       ),
     },
@@ -500,9 +487,9 @@ const stakingFaq: FaqData = {
         <span>
           To remove your node from your safe, first, execute the removeNode(address nodeAddress) function on the{' '}
           <a
-            href="#"
+            href="https://gnosisscan.io/address/0xB7397C218766eBe6A1A634df523A1a7e412e67eA#writeContract"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             NodeManagementModule contract
           </a>
@@ -510,9 +497,9 @@ const stakingFaq: FaqData = {
           <br />
           Then remove the node as a delegate from the safe. You can view how to do this two-step procedure in our docs{' '}
           <a
-            href="#"
+            href="https://docs.hoprnet.org/node/using-hopr-admin#remove-your-node"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             here
           </a>
@@ -525,107 +512,14 @@ const stakingFaq: FaqData = {
       title: 'How is node health calculated?',
       content: (
         <span>
-          It is calculated using the network's heartbeat mechanism.\n\nYou can read what differentiates each category{' '}
+          It is calculated using the network's heartbeat mechanism.
+          <br />
+          <br />
+          You can read what differentiates each category{' '}
           <a
             href="https://docs.hoprnet.org/node/hoprd-commands#info"
             target="_blank"
-            rel="noopener noreferrer"
-          >
-            here
-          </a>
-          .
-        </span>
-      ),
-    },
-  ],
-  '/hub/no-node': [
-    {
-      id: 1,
-      title: 'How much xDAI should I deposit?',
-      content:
-        'Your node can be funded and run successfully with 1 xDAI. Depositing more in your safe will make refunding your node easier but in general, node running with HOPR does not require much xDAI.',
-    },
-    {
-      id: 2,
-      title: 'Suggested node strategy',
-      content: 'Not defined TBD',
-    },
-    {
-      id: 3,
-      title: 'Waitlist status and policy',
-      content: (
-        <span>
-          After creating and funding your safe, you will need to register your safe address on to the waitlist using
-          this{' '}
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            form
-          </a>
-          .<br />
-          <br />
-          Nodes are onboarded into the HOPR network in a first come, first serve basis. So fill out the form as soon as
-          possible if you have't already.
-        </span>
-      ),
-    },
-    {
-      id: 4,
-      title: 'Managing wxHOPR allowance',
-      content: (
-        <span>
-          Make sure your allowance aligns with your node strategy and is not draining your tokens or preventing you from
-          producing well-connected nodes. You can always change your node allowance{' '}
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            here
-          </a>
-          .
-        </span>
-      ),
-    },
-    {
-      id: 5,
-      title: 'Remove node from safe',
-      content: (
-        <span>
-          To remove your node from your safe, first, execute the removeNode(address nodeAddress) function on the{' '}
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            NodeManagementModule contract
-          </a>
-          .<br />
-          <br />
-          Then remove the node as a delegate from the safe. You can view how to do this two-step procedure in our docs{' '}
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            here
-          </a>
-          .
-        </span>
-      ),
-    },
-    {
-      id: 6,
-      title: 'How is node health calculated?',
-      content: (
-        <span>
-          It is calculated using the network's heartbeat mechanism.\n\nYou can read what differentiates each category{' '}
-          <a
-            href="https://docs.hoprnet.org/node/hoprd-commands#info"
-            target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             here
           </a>

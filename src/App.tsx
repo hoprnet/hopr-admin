@@ -23,7 +23,9 @@ const VersionComponent = styled.div`
 function App() {
   useEffect(() => {
     if (environment === 'node') {
-      Fathom.load('MJISRYNH', { url: 'https://cdn-eu.usefathom.com/script.js' });
+      Fathom.load('MJISRYNH', { url: 'https://cdn-eu.usefathom.com/script.js', spa: 'auto', excludedDomains: ['localhost:5173'] });
+    } else if (environment === 'web3') {
+      Fathom.load('KBDXKTMO', { url: 'https://cdn-eu.usefathom.com/script.js', spa: 'auto', excludedDomains: ['localhost:5173']  });
     }
   }, []);
 

@@ -13,6 +13,7 @@ import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS
 import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';
 import Card from '../../components/Card';
+import NetworkOverlay from '../../components/NetworkOverlay';
 
 // Mui
 import TextField from '@mui/material/TextField';
@@ -343,7 +344,7 @@ function SafeWithdraw() {
           height: 130,
           alt: 'Withdraw Token from Safe',
         }}
-        title="Withdraw from Staking Hub"
+        title="Withdraw from Safe"
       >
         <div>
           <StyledForm>
@@ -409,7 +410,7 @@ function SafeWithdraw() {
           )}
           <StyledButtonGroup>
             {!userCanSkipProposal ? (
-              <Tooltip title={isSigning ? 'Signing transation' : getErrorsForApproveButton().at(0)}>
+              <Tooltip title={isSigning ? 'Signing transaction' : getErrorsForApproveButton().at(0)}>
                 <span>
                   <StyledBlueButton
                     disabled={!!getErrorsForApproveButton().length || isSigning}
@@ -420,7 +421,7 @@ function SafeWithdraw() {
                 </span>
               </Tooltip>
             ) : (
-              <Tooltip title={isExecuting ? 'Executing transation' : getErrorsForExecuteButton().at(0)}>
+              <Tooltip title={isExecuting ? 'Executing transaction' : getErrorsForExecuteButton().at(0)}>
                 <span>
                   <StyledBlueButton
                     disabled={!!getErrorsForExecuteButton().length || isExecuting}
@@ -436,6 +437,7 @@ function SafeWithdraw() {
           {isSigning && <p>Signing transaction with nonce...</p>}
         </div>
       </Card>
+      <NetworkOverlay/>
     </Section>
   );
 }

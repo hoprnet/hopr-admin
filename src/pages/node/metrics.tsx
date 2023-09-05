@@ -1,15 +1,15 @@
-import { useEffect } from 'react';
 import styled from '@emotion/styled';
+import { useEffect } from 'react';
+import Chart from 'react-apexcharts';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
-import Chart from 'react-apexcharts';
 import { exportToFile } from '../../utils/helpers';
 
 // HOPR components
-import Section from '../../future-hopr-lib-components/Section';
-import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
 import { SubpageTitle } from '../../components/SubpageTitle';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+import Section from '../../future-hopr-lib-components/Section';
+import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
 
 // Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
@@ -129,8 +129,12 @@ function MetricsPage() {
   };
 
   function renderMetricsTable() {
-    const render: any[] = [];
+    const render: JSX.Element[] = [];
     for (const [key, value] of Object.entries(metrics.parsed)) {
+      if (!value.data) return;
+      if (!value.data[0]) return;
+      if (typeof value.data[0] !== 'string') return;
+
       if (value.length === 1) {
         render.push(
           <tr key={key}>
@@ -149,6 +153,10 @@ function MetricsPage() {
     }
     return <tbody>{render}</tbody>;
   }
+
+  const getNumberArrayFromUnknown = (unknownMetrics: typeof metrics, property: string): number[] => {
+    return unknownMetrics?.parsed?.[property]?.data.map(Number);
+  };
 
   return (
     <Section
@@ -194,11 +202,7 @@ function MetricsPage() {
           options={{ xaxis: { categories: metrics?.parsed?.core_histogram_ping_time_seconds?.categories
             ? metrics?.parsed?.core_histogram_ping_time_seconds?.categories
             : [] } }}
-          series={[
-            { data: metrics?.parsed?.core_histogram_ping_time_seconds?.data
-              ? metrics?.parsed?.core_histogram_ping_time_seconds?.data
-              : [] },
-          ]}
+          series={[{ data: getNumberArrayFromUnknown(metrics, 'core_histogram_ping_time_seconds') ?? [] }]}
           type="bar"
           height={300}
           style={{
@@ -219,11 +223,7 @@ function MetricsPage() {
           options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_startup_time_seconds?.categories
             ? metrics?.parsed?.hoprd_histogram_startup_time_seconds?.categories
             : [] } }}
-          series={[
-            { data: metrics?.parsed?.hoprd_histogram_startup_time_seconds?.data
-              ? metrics?.parsed?.hoprd_histogram_startup_time_seconds?.data
-              : [] },
-          ]}
+          series={[{ data: getNumberArrayFromUnknown(metrics, 'hoprd_histogram_startup_time_seconds') ?? [] }]}
           type="bar"
           height={300}
           style={{
@@ -244,11 +244,7 @@ function MetricsPage() {
           options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_time_to_green_second?.categories
             ? metrics?.parsed?.hoprd_histogram_time_to_green_seconds?.categories
             : [] } }}
-          series={[
-            { data: metrics?.parsed?.hoprd_histogram_time_to_green_seconds?.data
-              ? metrics?.parsed?.hoprd_histogram_time_to_green_seconds?.data
-              : [] },
-          ]}
+          series={[{ data: getNumberArrayFromUnknown(metrics, 'hoprd_histogram_time_to_green_seconds') ?? [] }]}
           type="bar"
           height={300}
           style={{
@@ -267,11 +263,7 @@ function MetricsPage() {
           options={{ xaxis: { categories: metrics?.parsed?.hoprd_histogram_message_latency_ms?.categories
             ? metrics?.parsed?.hoprd_histogram_message_latency_ms?.categories
             : [] } }}
-          series={[
-            { data: metrics?.parsed?.hoprd_histogram_message_latency_ms?.data
-              ? metrics?.parsed?.hoprd_histogram_message_latency_ms?.data
-              : [] },
-          ]}
+          series={[{ data: getNumberArrayFromUnknown(metrics, 'hoprd_histogram_message_latency_ms') ?? [] }]}
           type="bar"
           height={300}
           style={{
@@ -290,11 +282,7 @@ function MetricsPage() {
           options={{ xaxis: { categories: metrics?.parsed?.core_mgauge_peers_by_quality?.categories
             ? metrics?.parsed?.core_mgauge_peers_by_quality?.categories
             : [] } }}
-          series={[
-            { data: metrics?.parsed?.core_mgauge_peers_by_quality?.data
-              ? metrics?.parsed?.core_mgauge_peers_by_quality?.data
-              : [] },
-          ]}
+          series={[{ data: getNumberArrayFromUnknown(metrics, 'core_mgauge_peers_by_quality') ?? [] }]}
           type="bar"
           height={300}
           style={{

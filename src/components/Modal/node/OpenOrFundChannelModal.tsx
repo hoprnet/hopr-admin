@@ -18,8 +18,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import HubIcon from '@mui/icons-material/Hub';
 
 type OpenOrFundChannelModalProps = {
-  peerId?: string;
-  channelId?: string;
+  peerAddress?: string;
   modalBtnText?: string;
   actionBtnText?: string;
   title?: string;
@@ -27,7 +26,6 @@ type OpenOrFundChannelModalProps = {
 };
 
 export const OpenOrFundChannelModal = ({
-  channelId,
   title,
   modalBtnText,
   actionBtnText,
@@ -38,7 +36,7 @@ export const OpenOrFundChannelModal = ({
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [openChannelModal, set_openChannelModal] = useState(false);
   const [amount, set_amount] = useState('');
-  const [peerId, set_peerId] = useState(props.peerId ? props.peerId : '');
+  const [peerAddress, set_peerAddress] = useState(props.peerAddress ? props.peerAddress : '');
 
   const handleOpenChannelDialog = () => {
     set_openChannelModal(true);
@@ -47,23 +45,23 @@ export const OpenOrFundChannelModal = ({
   const handleCloseModal = () => {
     set_openChannelModal(false);
     set_amount('');
-    set_peerId(props.peerId ? props.peerId : '');
+    set_peerAddress(props.peerAddress ? props.peerAddress : '');
   };
 
   const handleAction = async () => {
-    const handleOpenChannel = async (weiValue: string, peerId: string) => {
+    const handleOpenChannel = async (weiValue: string, peerAddress: string) => {
       await dispatch(
         actionsAsync.openChannelThunk({
           apiEndpoint: loginData.apiEndpoint!,
           apiToken: loginData.apiToken!,
           amount: weiValue,
-          peerId: peerId,
+          peerAddress: peerAddress,
           timeout: 60e3,
         }),
       )
         .unwrap()
         .then(() => {
-          const msg = `Channel to ${peerId} is ${type === 'open' ? 'opened' : 'funded'}`;
+          const msg = `Channel to ${peerAddress} is ${type === 'open' ? 'opened' : 'funded'}`;
           sendNotification({
             notificationPayload: {
               source: 'node',
@@ -76,7 +74,7 @@ export const OpenOrFundChannelModal = ({
           });
         })
         .catch((e) => {
-          let errMsg = `Channel to ${peerId} failed to be ${type === 'open' ? 'opened' : 'funded'}`;
+          let errMsg = `Channel to ${peerAddress} failed to be ${type === 'open' ? 'opened' : 'funded'}`;
           if (e.status) errMsg = errMsg + `\n${e.status}`;
           sendNotification({
             notificationPayload: {
@@ -91,31 +89,10 @@ export const OpenOrFundChannelModal = ({
         });
     };
 
-    const handleFundChannels = async (weiValue: string, peerId: string, channelId: string) => {
-      await dispatch(
-        actionsAsync.fundChannelsThunk({
-          apiEndpoint: loginData.apiEndpoint!,
-          apiToken: loginData.apiToken!,
-          peerId: peerId,
-          incomingAmount: '0',
-          outgoingAmount: weiValue,
-          timeout: 60e3,
-        }),
-      )
-        .unwrap()
-        .catch((e) => {
-          console.log(e.error);
-        });
-    };
-
     handleCloseModal();
     const parsedOutgoing = parseFloat(amount ?? '0') >= 0 ? amount ?? '0' : '0';
     const weiValue = ethers.utils.parseEther(parsedOutgoing).toString();
-    if (channelId) {
-      await handleFundChannels(weiValue, peerId, channelId);
-    } else {
-      await handleOpenChannel(weiValue, peerId);
-    }
+    await handleOpenChannel(weiValue, peerAddress);
     dispatch(
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
@@ -158,10 +135,10 @@ export const OpenOrFundChannelModal = ({
         </TopBar>
         <SDialogContent>
           <TextField
-            label="Peer ID"
-            value={peerId}
-            placeholder="16Uiu2HA..."
-            onChange={(e) => set_peerId(e.target.value)}
+            label="Peer Address"
+            value={peerAddress}
+            placeholder="0x4f5a...1728"
+            onChange={(e) => set_peerAddress(e.target.value)}
             sx={{ mt: '6px' }}
           />
           <TextField
@@ -177,7 +154,7 @@ export const OpenOrFundChannelModal = ({
         <DialogActions>
           <Button
             onClick={handleAction}
-            disabled={!amount || parseFloat(amount) <= 0 || !peerId}
+            disabled={!amount || parseFloat(amount) <= 0 || !peerAddress}
             style={{
               marginRight: '16px',
               marginBottom: '6px',

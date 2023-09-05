@@ -10,9 +10,14 @@ import CloseIcon from '@mui/icons-material/Close';
 
 const Content = styled(SDialogContent)`
   gap: 1rem;
-  & button {
-    align-self: center;
-    padding-inline: 2rem;
+  div {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    button {
+      margin-top: 16px;;
+      padding-inline: 2rem;
+    }
   }
 `;
 
@@ -56,7 +61,8 @@ const ContinueOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
           </SIconButton>
         </TopBar>
         <Content>
-          <p>Looks like we ran into an unexpected error. Would you like to try again?</p>
+          <p>It looks like you didn't finish your onboarding. Would you like to continue?</p>
+          <div>
           <Button
             onClick={handleCloseModal}
             outlined
@@ -65,11 +71,13 @@ const ContinueOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
           </Button>
           <Button
             onClick={() => {
-              navigate(`/hub/onboarding`);
+              navigate(`/staking/onboarding`);
             }}
+            style={{width: '160px'}}
           >
             YES
           </Button>
+          </div>
         </Content>
       </SDialog>
     </>

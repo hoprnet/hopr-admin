@@ -15,10 +15,7 @@ import { HOPR_TOKEN_USED } from '../../../config';
 
 function InfoPage() {
   const dispatch = useAppDispatch();
-  const {
-    apiEndpoint,
-    apiToken,
-  } = useAppSelector((store) => store.auth.loginData);
+  const { apiEndpoint, apiToken } = useAppSelector((store) => store.auth.loginData);
   const balances = useAppSelector((store) => store.node.balances.data);
   const balancesFetching = useAppSelector((store) => store.node.balances.isFetching);
   const addresses = useAppSelector((store) => store.node.addresses.data);
@@ -46,49 +43,49 @@ function InfoPage() {
         actionsAsync.getBalancesThunk({
           apiEndpoint,
           apiToken,
-        }),
+        })
       );
       dispatch(
         actionsAsync.getChannelsThunk({
           apiEndpoint,
           apiToken,
-        }),
+        })
       );
       dispatch(
         actionsAsync.getAddressesThunk({
           apiEndpoint,
           apiToken,
-        }),
+        })
       );
       dispatch(
         actionsAsync.getVersionThunk({
           apiEndpoint,
           apiToken,
-        }),
+        })
       );
       dispatch(
         actionsAsync.getInfoThunk({
           apiEndpoint,
           apiToken,
-        }),
+        })
       );
       dispatch(
         actionsAsync.getPeersThunk({
           apiEndpoint,
           apiToken,
-        }),
+        })
       );
       dispatch(
         actionsAsync.getAliasesThunk({
           apiEndpoint,
           apiToken,
-        }),
+        })
       );
       dispatch(
         actionsAsync.getStatisticsThunk({
           apiEndpoint,
           apiToken,
-        }),
+        })
       );
     }
   };
@@ -163,7 +160,7 @@ function InfoPage() {
                   <span>Blockchain Network</span>
                 </Tooltip>
               </th>
-              <td>{info?.network}</td>
+              <td>{info?.chain}</td>
             </tr>
             <tr>
               <th>
@@ -256,7 +253,7 @@ function InfoPage() {
                   title="Your node's HOPR address, used by other node's to identify your node and send it messages (equivalent to a public key). "
                   notWide
                 >
-                  <span>HOPR Address</span>
+                  <span>Node PeerID</span>
                 </Tooltip>
               </th>
               <td>{addresses?.hopr}</td>
@@ -267,7 +264,7 @@ function InfoPage() {
                   title="Your node's Ethereum address, this is where you send your node tokens/funds."
                   notWide
                 >
-                  <span>Node Eth Address</span>
+                  <span>Node Address</span>
                 </Tooltip>
               </th>
               <td>{addresses?.native}</td>
@@ -322,7 +319,7 @@ function InfoPage() {
                   <span>Environment</span>
                 </Tooltip>
               </th>
-              <td>{info?.environment}</td>
+              <td>{info?.network}</td>
             </tr>
           </tbody>
         </TableExtended>

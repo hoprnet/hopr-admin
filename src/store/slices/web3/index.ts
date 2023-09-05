@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { actionsAsync, createExtraReducers } from './actionsAsync';
+import { actionsAsync, createAsyncReducer } from './actionsAsync';
 import { initialState } from './initialState';
 
 const web3Slice = createSlice({
@@ -26,6 +26,9 @@ const web3Slice = createSlice({
     setWallet(state, action) {
       state.wallet = action.payload ? action.payload : null;
     },
+    setModalOpen(state, action) {
+      state.modalOpen = action.payload ? action.payload : false;
+    },
     setWalletPresent(state, action) {
       state.walletPresent = action.payload;
     },
@@ -48,7 +51,7 @@ const web3Slice = createSlice({
       state.balance.wxHopr.formatted = action.payload ? action.payload.formatted : null;
     },
   },
-  extraReducers: (builder) => createExtraReducers(builder),
+  extraReducers: (builder) => createAsyncReducer(builder),
 });
 
 export const web3Actions = web3Slice.actions;

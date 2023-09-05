@@ -19,7 +19,7 @@ const nodeFaq: FaqData = {
           <a
             href="https://docs.hoprnet.org/node/using-dappnode"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             Dappnode
           </a>
@@ -28,7 +28,7 @@ const nodeFaq: FaqData = {
           <a
             href="https://docs.hoprnet.org/node/using-docker"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             Docker
           </a>
@@ -50,9 +50,9 @@ const nodeFaq: FaqData = {
           being approved by the HOPR association to join the network, as it is currently permissioned. You can join the
           network by creating a safe{' '}
           <a
-            href="#"
+            href="/staking/onboarding"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             here
           </a>
@@ -72,7 +72,7 @@ const nodeFaq: FaqData = {
           <a
             href="https://docs.hoprnet.org/node/hoprd-commands#info"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             here
           </a>
@@ -171,7 +171,7 @@ const nodeFaq: FaqData = {
           <a
             href="https://t.me/hoprnet"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             https://t.me/hoprnet
           </a>
@@ -278,7 +278,7 @@ const nodeFaq: FaqData = {
           <a
             href="https://docs.hoprnet.org/developers/smart-contract#lifecycle-of-payment-channel"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
           >
             https://docs.hoprnet.org/developers/smart-contract#lifecycle-of-payment-channel
           </a>

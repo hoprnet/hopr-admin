@@ -6,7 +6,7 @@ type FaqElement = {
 
 type FaqData = Record<string, FaqElement[]>;
 
-const stakingAlerts: FaqData = { '/steps/set-allowance': [
+const stakingAlerts: FaqData = { '/staking/onboarding#15': [
   {
     id: 1,
     title: 'Funds at risk',

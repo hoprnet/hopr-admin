@@ -1,11 +1,15 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, Link, RouteObject, useSearchParams } from 'react-router-dom';
+import { createBrowserRouter, RouteObject, useSearchParams, Navigate, useLocation } from 'react-router-dom';
 import { environment } from '../config';
+import { useDisconnect } from 'wagmi';
 
 // Store
 import { useAppDispatch, useAppSelector } from './store';
 import { authActions, authActionsAsync } from './store/slices/auth';
 import { nodeActions, nodeActionsAsync } from './store/slices/node';
+import { web3Actions } from './store/slices/web3';
+import { appActions } from './store/slices/app';
+import { safeActions } from './store/slices/safe';
 
 // Sections
 import NodeLandingPage from './pages/node/landingPage';
@@ -21,26 +25,19 @@ import TicketsPage from './pages/node/tickets';
 import ChannelsPageIncoming from './pages/node/channelsIncoming';
 import ChannelsPageOutgoing from './pages/node/channelsOutgoing';
 import MetricsPage from './pages/node/metrics';
-import SafeStakingPage from './pages/staking-hub/safeStaking';
 import ConfigurationPage from './pages/node/configuration';
-import AddNode from './steps/installNode/addNode';
-import SelectNodeType from './steps/installNode/selectNodeType';
 import WrapperPage from './pages/staking-hub/wrapper';
-import XdaiToNodePage from './steps/xdaiToNode';
-import StakingScreen from './pages/staking-hub/staking-screen';
+import StakingScreen from './pages/staking-hub/dashboard/staking';
 import SafeWithdraw from './pages/staking-hub/safeWithdraw';
-import UpdateNodePage from './steps/updateNode';
-import SetupNodePage from './steps/setupYourNode';
-import AddedToWhitelist from './steps/addedToWhitelist';
-import JoinWaitlistPage from './steps/joinWaitlist';
-import WhatYouWillNeedPage from './steps/step0_whatYouWillNeed';
-import DockerInstallation from './steps/installNode/dockerInstallation';
-import NodeAddress from './steps/installNode/nodeAddress';
-import SafeOnboarding from './steps/safeOnboarding';
-import NodeAdded from './pages/staking-hub/nodeAdded';
-import SafeActions from './pages/staking-hub/actions';
-import NoNodeAdded from './pages/staking-hub/noNodeAdded';
+import NodeAdded from './pages/staking-hub/dashboard/node';
+import SafeActions from './pages/staking-hub/dashboard/transactions';
+import NoNodeAdded from './pages/staking-hub/dashboard/noNodeAdded';
 import Onboarding from './pages/staking-hub/onboarding';
+import Dashboard from './pages/staking-hub/dashboard';
+import StakewxHOPR from './pages/staking-hub/stakewxHOPR';
+import StakexDAI from './pages/staking-hub/stakexDai';
+import SetAllowance from './pages/staking-hub/setAllowance';
+import FundNode from './pages/staking-hub/fundNode';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -57,7 +54,6 @@ import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import SettingsIcon from '@mui/icons-material/Settings';
 import TerminalIcon from '@mui/icons-material/Terminal';
 import MailIcon from '@mui/icons-material/Mail';
-import HubIcon from '@mui/icons-material/Hub';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LockIcon from '@mui/icons-material/Lock';
 import ContactPhone from '@mui/icons-material/ContactPhone';
@@ -66,8 +62,7 @@ import NodeIcon from '@mui/icons-material/Router';
 import NetworkingIcon from '@mui/icons-material/Diversity3';
 import DevelopIcon from '@mui/icons-material/Code';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import SwapVertIcon from '@mui/icons-material/SwapVert';
-import AddBoxIcon from '@mui/icons-material/AddBox';
+import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import PaidIcon from '@mui/icons-material/Paid';
 import WalletIcon from '@mui/icons-material/Wallet';
 import LinkIcon from '@mui/icons-material/Link';
@@ -75,18 +70,28 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import IncomingChannelsIcon from './future-hopr-lib-components/Icons/IncomingChannels';
 import OutgoingChannelsIcon from './future-hopr-lib-components/Icons/OutgoingChannels';
+import TrainIcon from './future-hopr-lib-components/Icons/TrainIcon';
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
+import { stakingHubActions } from './store/slices/stakingHub';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyNotice from './pages/PrivacyNotice';
+import MetaMaskFox from './future-hopr-lib-components/Icons/MetaMaskFox';
 
 export type ApplicationMapType = {
   groupName: string;
   path: string;
   icon: JSX.Element;
+  mobileOnly?: boolean | null;
   items: {
-    name: string;
+    name?: string;
     path: string;
-    icon: JSX.Element;
+    overwritePath?: string;
+    icon?: JSX.Element;
     element?: JSX.Element;
-    loginNeeded?: 'node' | 'web3';
-    externalLink?: string;
+    inDrawer?: boolean | null;
+    loginNeeded?: 'node' | 'web3' | 'safe';
+    onClick?: () => void;
+    mobileOnly?: boolean | null;
   }[];
 }[];
 
@@ -103,13 +108,13 @@ export const applicationMapNode: ApplicationMapType = [
         element: <InfoPage />,
         loginNeeded: 'node',
       },
-      {
-        name: 'LOGS',
-        path: 'logs',
-        icon: <TerminalIcon />,
-        element: <SectionLogs />,
-        loginNeeded: 'node',
-      },
+      // {
+      //   name: 'LOGS',
+      //   path: 'logs',
+      //   icon: <TerminalIcon />,
+      //   element: <SectionLogs />,
+      //   loginNeeded: 'node',
+      // },
       {
         name: 'TICKETS',
         path: 'tickets',
@@ -190,13 +195,11 @@ export const applicationMapNode: ApplicationMapType = [
         name: 'Docs',
         path: 'https://docs.hoprnet.org/',
         icon: <LibraryBooksIcon />,
-        externalLink: 'https://docs.hoprnet.org/',
       },
       {
         name: 'Telegram',
         path: 'https://t.me/hoprnet',
         icon: <TelegramIcon />,
-        externalLink: 'https://t.me/hoprnet',
       },
     ],
   },
@@ -204,28 +207,87 @@ export const applicationMapNode: ApplicationMapType = [
 
 export const applicationMapStakingHub: ApplicationMapType = [
   {
-    groupName: 'Staking Hub',
-    path: 'hub',
+    groupName: 'STAKING HUB',
+    path: 'staking',
     icon: <DevelopIcon />,
     items: [
       {
         name: 'Staking Hub',
         path: 'staking-hub-landing',
+        overwritePath: '/',
         icon: <SavingsIcon />,
         element: <StakingLandingPage />,
       },
       {
         name: 'Onboarding',
         path: 'onboarding',
-        icon: <LockIcon />,
+        icon: <TrainIcon />,
         element: <Onboarding />,
         loginNeeded: 'web3',
+      },
+      {
+        name: 'Dashboard',
+        path: 'dashboard',
+        icon: <SpaceDashboardIcon />,
+        element: <Dashboard />,
+        loginNeeded: 'safe',
+      },
+      {
+        name: 'Withdraw',
+        path: 'withdraw',
+        icon: <WalletIcon />,
+        element: <SafeWithdraw />,
+        loginNeeded: 'safe',
       },
       {
         name: 'Wrapper',
         path: 'wrapper',
         icon: <PaidIcon />,
         element: <WrapperPage />,
+        loginNeeded: 'web3',
+      },
+      {
+        path: 'stake-wxHOPR',
+        element: <StakewxHOPR />,
+        loginNeeded: 'safe',
+        inDrawer: false,
+      },
+      {
+        path: 'stake-xDAI',
+        element: <StakexDAI />,
+        loginNeeded: 'safe',
+        inDrawer: false,
+      },
+      {
+        path: 'set-allowance',
+        element: <SetAllowance />,
+        loginNeeded: 'safe',
+        inDrawer: false,
+      },
+      {
+        path: 'fund-node',
+        element: <FundNode />,
+        loginNeeded: 'safe',
+        inDrawer: false,
+      },
+      {
+        path: 'dev',
+        element: <SectionSafe />,
+        loginNeeded: 'web3',
+        inDrawer: false,
+      },
+    ],
+  },
+  {
+    groupName: 'RESOURCES',
+    path: 'networking',
+    icon: <DevelopIcon />,
+    items: [
+      {
+        name: 'Docs',
+        path: 'https://docs.hoprnet.org/',
+        icon: <DescriptionOutlinedIcon />,
+        // element: <span/>,
       },
     ],
   },
@@ -251,48 +313,6 @@ export const applicationMapDevWeb3: ApplicationMapType = [
         element: <SectionSafe />,
         loginNeeded: 'web3',
       },
-      {
-        name: 'Staking screen',
-        path: 'staking-screen',
-        icon: <SavingsIcon />,
-        element: <StakingScreen />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'No node added',
-        path: 'no-node',
-        icon: <SavingsIcon />,
-        element: <NoNodeAdded />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Node added',
-        path: 'node-added',
-        icon: <SavingsIcon />,
-        element: <NodeAdded />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Actions',
-        path: 'safe/actions',
-        icon: <SwapVertIcon />,
-        element: <SafeActions />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Safe/Staking',
-        path: 'safe/staking',
-        icon: <SavingsIcon />,
-        element: <SafeStakingPage />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Withdraw',
-        path: 'withdraw',
-        icon: <WalletIcon />,
-        element: <SafeWithdraw />,
-        loginNeeded: 'web3',
-      },
     ],
   },
 ];
@@ -302,81 +322,7 @@ export const applicationMapDev: ApplicationMapType = [
     groupName: 'DEVELOP / Steps',
     path: 'steps',
     icon: <DevelopIcon />,
-    items: [
-      {
-        name: 'Safe Onboarding',
-        path: 'safe-onboarding',
-        icon: <LockIcon />,
-        element: <SafeOnboarding />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Add node',
-        path: 'add-node',
-        icon: <AddBoxIcon />,
-        element: <AddNode />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Select node',
-        path: 'select-node-type',
-        icon: <AddBoxIcon />,
-        element: <SelectNodeType />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Docker',
-        path: 'docker-installation',
-        icon: <AddBoxIcon />,
-        element: <DockerInstallation />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Node Address',
-        path: 'node-address',
-        icon: <AddBoxIcon />,
-        element: <NodeAddress />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Update your node',
-        path: 'update-your-node',
-        icon: <AddBoxIcon />,
-        element: <UpdateNodePage />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Set up your node',
-        path: 'setup-your-node',
-        icon: <AddBoxIcon />,
-        element: <SetupNodePage />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Added to whitelist',
-        path: 'added-to-whitelist',
-        icon: <AddBoxIcon />,
-        element: <AddedToWhitelist />,
-      },
-      {
-        name: 'Join the waitlist',
-        path: 'join-waitlist',
-        icon: <AddBoxIcon />,
-        element: <JoinWaitlistPage />,
-      },
-      {
-        name: 'What you will need',
-        path: 'what-you-will-need',
-        icon: <AddBoxIcon />,
-        element: <WhatYouWillNeedPage />,
-      },
-      {
-        name: 'xdai to node',
-        path: 'xdai-to-node',
-        icon: <AddBoxIcon />,
-        element: <XdaiToNodePage />,
-      },
-    ],
+    items: [],
   },
 ];
 
@@ -384,7 +330,7 @@ function createApplicationMap() {
   const temp: ApplicationMapType = [];
   if (environment === 'dev' || environment === 'node') applicationMapNode.map((elem) => temp.push(elem));
   if (environment === 'dev' || environment === 'web3') applicationMapStakingHub.map((elem) => temp.push(elem));
-  if (environment === 'dev' || environment === 'web3') applicationMapDevWeb3.map((elem) => temp.push(elem));
+  if (environment === 'dev') applicationMapDevWeb3.map((elem) => temp.push(elem));
   if (environment === 'dev') applicationMapDev.map((elem) => temp.push(elem));
   return temp;
 }
@@ -393,13 +339,25 @@ export const applicationMap: ApplicationMapType = createApplicationMap();
 
 const LayoutEnhanced = () => {
   const dispatch = useAppDispatch();
+  const { disconnect } = useDisconnect();
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const web3Connected = useAppSelector((store) => store.web3.status.connected);
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const apiEndpoint = searchParams.get('apiEndpoint');
   const apiToken = searchParams.get('apiToken');
+  const HOPRdNodeAddressForOnboarding = searchParams.get('HOPRdNodeAddressForOnboarding');
+
+  useEffect(() => {
+    if (environment === 'web3') {
+      document.title = 'HOPR | Staking Hub';
+    } else if (environment === 'node') {
+      document.title = 'HOPR | Node Admin';
+    }
+  }, []);
 
   useEffect(() => {
     if (!apiEndpoint) return;
@@ -408,7 +366,7 @@ const LayoutEnhanced = () => {
       authActions.useNodeData({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      }),
+      })
     );
     if (!apiToken) return;
     const useNode = async () => {
@@ -417,26 +375,26 @@ const LayoutEnhanced = () => {
           authActionsAsync.loginThunk({
             apiEndpoint,
             apiToken,
-          }),
+          })
         ).unwrap();
         if (loginInfo) {
           dispatch(
             nodeActionsAsync.getInfoThunk({
               apiToken,
               apiEndpoint,
-            }),
+            })
           );
           dispatch(
             nodeActionsAsync.getAddressesThunk({
               apiToken,
               apiEndpoint,
-            }),
+            })
           );
           dispatch(
             nodeActionsAsync.getAliasesThunk({
               apiToken,
               apiEndpoint,
-            }),
+            })
           );
           dispatch(nodeActions.initializeMessagesWebsocket());
           dispatch(nodeActions.initializeLogsWebsocket());
@@ -453,26 +411,72 @@ const LayoutEnhanced = () => {
     };
   }, [apiEndpoint, apiToken]);
 
+  useEffect(() => {
+    if (!HOPRdNodeAddressForOnboarding) return;
+    dispatch(stakingHubActions.setNodeAddressProvidedByMagicLink(HOPRdNodeAddressForOnboarding));
+  }, [HOPRdNodeAddressForOnboarding]);
+
+  const showInfoBar = () => {
+    if (
+      environment === 'web3' &&
+      (location.pathname === '/' || location.pathname === '/privacy-notice' || location.pathname === '/tos')
+    )
+      return false;
+    if (isConnected || nodeConnected) return true;
+    return false;
+  };
+
+  const handleDisconnectMM = () => {
+    disconnect();
+    dispatch(appActions.resetSafeState());
+    dispatch(web3Actions.resetState());
+    dispatch(safeActions.resetState());
+    dispatch(stakingHubActions.resetState());
+  };
+
+  const drawerFunctionItems: ApplicationMapType = [
+    {
+      groupName: 'CONNECTION',
+      path: 'function',
+      icon: <DevelopIcon />,
+      mobileOnly: true,
+      items: [
+        {
+          name: web3Connected ? 'Disconnect' : 'Connect Wallet',
+          path: 'function',
+          icon: <MetaMaskFox />,
+          onClick: () => {
+            if (web3Connected) handleDisconnectMM();
+            else dispatch(web3Actions.setModalOpen(true));
+          },
+          mobileOnly: true,
+        },
+      ],
+    },
+  ];
+
   return (
     <Layout
       drawer
       webapp
       drawerItems={applicationMap}
+      drawerFunctionItems={drawerFunctionItems}
       drawerLoginState={{
         node: nodeConnected,
         web3: web3Connected,
+        safe: !!safeAddress,
       }}
       className={environment}
       drawerType={environment === 'web3' ? 'blue' : undefined}
       itemsNavbarRight={
         <>
-          <NotificationBar />
+          {(environment === 'dev' || environment === 'node') && <NotificationBar />}
           {(environment === 'dev' || environment === 'web3') && <ConnectSafe />}
           {(environment === 'dev' || environment === 'web3') && <ConnectWeb3 inTheAppBar />}
           {(environment === 'dev' || environment === 'node') && <ConnectNode />}
         </>
       }
-      drawerRight={(isConnected || nodeConnected) && <InfoBar />}
+      drawerRight={showInfoBar() && <InfoBar />}
     />
   );
 };
@@ -481,6 +485,16 @@ var routes = [
   {
     path: '/',
     element: <LayoutEnhanced />,
+    children: [] as RouteObject[],
+  },
+  {
+    path: '*',
+    element: (
+      <Navigate
+        to="/"
+        replace
+      />
+    ),
     children: [] as RouteObject[],
   },
 ];
@@ -500,11 +514,20 @@ applicationMap.map((groups) => {
     }
     if (item.path && item.element) {
       routes[0].children.push({
-        path: groups.path + '/' + item.path,
+        path: item.overwritePath ? item.overwritePath : groups.path + '/' + item.path,
         element: item.element,
       });
     }
   });
+});
+
+routes[0].children.push({
+  path: '/tos',
+  element: <TermsOfService />,
+});
+routes[0].children.push({
+  path: '/privacy-notice',
+  element: <PrivacyNotice />,
 });
 
 const router = createBrowserRouter(routes);

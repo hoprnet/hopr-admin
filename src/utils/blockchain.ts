@@ -2,6 +2,9 @@ import { Address, encodeFunctionData, encodePacked } from 'viem';
 import { erc20ABI } from 'wagmi';
 import { nodeManagementModuleAbi } from '../abi/nodeManagementModuleAbi';
 
+// Maximum possible value for uint256
+export const MAX_UINT256 = BigInt(2 ** 256) - BigInt(1);
+
 export const createApproveTransactionData = (spender: Address, value: bigint) => {
   const approveData = encodeFunctionData({
     abi: erc20ABI,

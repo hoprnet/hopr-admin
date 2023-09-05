@@ -12,6 +12,7 @@ const SFooter = styled.footer`
   font-size: 15px;
   text-align: left;
   min-height: 170px;
+  flex-direction: column;
   @media (max-width: 850px) {
     min-height: 294px;
   }
@@ -36,6 +37,11 @@ const SFooter = styled.footer`
       width: auto;
     }
 
+    .links {
+      display: flex;
+      justify-content: center;
+    }
+
     .links a {
       font-size: 13px;
       margin-right: 15px;
@@ -46,13 +52,39 @@ const SFooter = styled.footer`
 `;
 
 const Content = styled.div`
-  width: 100%;
+  width: calc( 100% - 32px );
   max-width: 1098px;
   margin: auto;
   display: flex;
   padding: 16px;
   justify-content: space-between;
   flex-wrap: wrap;
+`;
+
+const Newsletter = styled.div`
+  width: calc( 100% - 32px );
+  max-width: 1098px;
+  margin: auto;
+  display: flex;
+  padding: 0 16px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  color: black;
+  flex-direction: column;
+  margin-bottom: 3rem;
+  margin-top: 5rem;
+
+  .substack-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .title {
+    font-size: 28px;
+    position: relative;
+    top: 40px;
+  }
 `;
 
 const LeftColumn = styled.div`
@@ -78,69 +110,80 @@ const Addresses = styled.div`
 
 const links = [
   {
-    name: 'CONTACT',
-    link: 'mailto:contact@hoprnet.org',
+    name: 'Terms of Service',
+    link: '/tos',
   },
   {
-    name: 'ABOUT US',
-    link: 'https://hoprnet.org/about-us/mission',
-  },
-  {
-    name: 'PARTNERS',
-    link: 'https://hoprnet.org/about-us/partners',
-  },
-  {
-    name: 'DISCLAIMER',
-    link: 'https://hoprnet.org/disclaimer',
+    name: 'Privacy Policy',
+    link: '/privacy-notice',
   },
 ];
 
 const socials = [
   {
     network: 'twitter',
-    img: '/assets/icons/social-networks/twitter.svg',
+    img: '/assets/social-networks/twitter.svg',
     link: 'https://twitter.com/hoprnet',
   },
   {
     network: 'telegram',
-    img: '/assets/icons/social-networks/telegram.svg',
+    img: '/assets/social-networks/telegram.svg',
     link: 'https://t.me/hoprnet',
   },
   {
     network: 'linkedin',
-    img: '/assets/icons/social-networks/linkedin.svg',
+    img: '/assets/social-networks/linkedin.svg',
     link: 'https://www.linkedin.com/company/hoprnet',
   },
   {
     network: 'github',
-    img: '/assets/icons/social-networks/github.svg',
+    img: '/assets/social-networks/github.svg',
     link: 'https://github.com/hoprnet',
   },
   {
     network: 'medium',
-    img: '/assets/icons/social-networks/medium.svg',
+    img: '/assets/social-networks/medium.svg',
     link: 'https://medium.com/hoprnet',
   },
   {
     network: 'youtube',
-    img: '/assets/icons/social-networks/youtube.svg',
+    img: '/assets/social-networks/youtube.svg',
     link: 'https://www.youtube.com/channel/UC2DzUtC90LXdW7TfT3igasA',
   },
   {
     network: 'discord',
-    img: '/assets/icons/social-networks/discord.svg',
+    img: '/assets/social-networks/discord.svg',
     link: 'https://discord.gg/dEAWC4G',
   },
 ];
 
-const Footer = () => {
+const Footer = (props) => {
   return (
     <SFooter>
+      {props.newsletter && (
+        <Newsletter>
+          <div
+            className="substack-section"
+            style={{
+              backgroundColor: 'white',
+            }}
+          >
+            <h3 className="title">HOPR Newsletter</h3>
+            <iframe
+              title="substack"
+              src="https://hopr.substack.com/embed"
+              width={'100%'}
+              style={{ border: 'none', marginTop: 0, paddingTop: 0 }}
+              loading="lazy"
+            ></iframe>
+          </div>
+        </Newsletter>
+      )}
       <Content>
         <LeftColumn className="left-column">
           <Logo className="logo">
             <img
-              src="/hopr_token-icon.svg"
+              src="/assets/hopr_logo.svg"
               alt="HOPR Logo"
             />
           </Logo>
@@ -154,15 +197,6 @@ const Footer = () => {
                 8002 Zürich
                 <br />
                 Switzerland
-              </address>
-              <address>
-                HOPR Tech Pte. Ltd.
-                <br />
-                68 Circular Road, #02-01,
-                <br />
-                049422 Singapore
-                <br />
-                Singapore
               </address>
             </Addresses>
             <div>© HOPR Association, all rights reserved</div>
@@ -184,12 +218,15 @@ const Footer = () => {
               </a>
             ))}
           </div>
+
           <div className="links">
             {links?.map((x, i) => (
               <a
                 key={i}
                 title={x.name}
                 href={x.link}
+                target="_blank"
+                rel="noreferrer"
               >
                 {x.name}
               </a>
@@ -197,6 +234,8 @@ const Footer = () => {
           </div>
         </div>
       </Content>
+
+      <br />
     </SFooter>
   );
 };

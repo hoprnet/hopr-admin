@@ -11,6 +11,7 @@ export const initialState = {
   chain: null as string | null,
   blockNumber: '',
   walletPresent: false as boolean,
+  modalOpen: false as boolean,
   balance: {
     xDai: {
       value: null as string | null,
