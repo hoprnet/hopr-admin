@@ -2,7 +2,8 @@ import styled from '@emotion/styled';
 import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';
 import ConnectWeb3 from '../../components/ConnectWeb3';
-import { useAppSelector } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { web3Actions } from '../../store/slices/web3';
 import ContinueOnboarding from '../../components/Modal/staking-hub/ContinueOnboarding';
 import { useState } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Card } from '@mui/material';
@@ -10,6 +11,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Footer from '../../future-hopr-lib-components/Layout/footer';
 import StartOnboarding from '../../components/Modal/staking-hub/StartOnboarding';
 import { useNavigate } from 'react-router-dom';
+import Brick from '../../future-hopr-lib-components/Brick';
 
 const StyledContainer = styled.div`
   align-items: center;
@@ -18,15 +20,12 @@ const StyledContainer = styled.div`
   flex-direction: column;
   gap: 2rem;
   max-width: 1080px;
+  width: 100%;
   padding: 2rem;
 `;
 
 const ImageContainer = styled.div`
-  /* margin-left: 12rem; */
   margin: 0 auto;
-  min-height: 256px;
-  min-width: 512px;
-  /* padding: 1rem; */
   position: relative;
   justify-content: center;
   display: flex;
@@ -55,6 +54,7 @@ const BigTitle = styled.h2`
   margin-block: 0rem;
   text-transform: uppercase;
   padding-top: 2rem;
+  text-align: center;
 `;
 
 const Description = styled.p`
@@ -82,38 +82,44 @@ const FurtherReadingButton = styled(Button)`
 const SideToSideContainer = styled.div`
   display: flex;
   flex-direction: row;
-  column-gap: 20rem;
+  &.reverse {
+    flex-direction: row-reverse;
+  }
   margin-bottom: 2rem;
   align-items: center;
-`;
-
-const BlueSideToSideContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  column-gap: 15rem;
-  margin-bottom: 2rem;
-  align-items: center;
-`;
-
-const TextSide = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 31.25rem;
-`;
-
-const BlueTextSide = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 27.25rem;
+  width: 100%;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 32px;
+  &.evenSplit{
+    .TextSide {
+      flex: 1;
+    }
+  }
+  .TextSide {
+    display: flex;
+    flex-direction: column;
+    flex: 3;
+    max-width: 600px;
+    h2 {
+      color: #414141;
+      font-size: 50px;
+      font-weight: 400;
+      margin-block: 0rem;
+      text-transform: uppercase;
+      text-align: left;
+      text-align: center;
+    }
+  }
+  .ImageSide {
+    align-items: center;
+    flex: 1;
+    max-width: 100%;
+  }
 `;
 
 const SideTitle = styled.h2`
-  color: #414141;
-  font-size: 50px;
-  font-weight: 400;
-  margin-block: 0rem;
-  text-transform: uppercase;
-  text-align: left;
+
 `;
 
 const SideDescription = styled.p`
@@ -129,7 +135,7 @@ const SideDescription = styled.p`
 `;
 
 const WhiteSideTitle = styled.h2`
-  color: #ffffff;
+  color: #ffffff!important;
   font-size: 50px;
   font-weight: 400;
   margin-block: 0rem;
@@ -137,7 +143,7 @@ const WhiteSideTitle = styled.h2`
   text-align: left;
 `;
 
-const WhiteSideDescription = styled.p`
+const WhiteSideDescription = styled.ul`
   color: #ffffff;
   font-size: 18px;
   font-weight: 600;
@@ -161,13 +167,6 @@ const MediumText = styled.p`
   text-align: left;
 `;
 
-const ImageSide = styled.div`
-  align-items: center;
-  width: 31.25rem;
-`;
-
-const BlueImageSide = styled.div``;
-
 const BlueText = styled.div`
   display: inline;
   color: #0000b4;
@@ -179,6 +178,7 @@ const BrandsSection = styled.div`
   flex-direction: row;
   width: 100%;
   justify-content: space-evenly;
+  flex-wrap: wrap;
 `;
 
 const Brand = styled.div`
@@ -197,7 +197,7 @@ const BrandImage = styled.div`
   align-items: center;
   justify-content: center;
   height: 50px;
-  width: 200px;
+  margin-bottom: 24px;
 `;
 
 const WhiteTitle = styled.h2`
@@ -298,79 +298,9 @@ type FaqElement = {
 
 type FaqData = FaqElement[];
 
-const faq: FaqData = [
-  {
-    id: 1,
-    title: 'Can anyone join the network?',
-    content:
-      'Yes, but after creating your HOPR Safe and funding it, you must wait to be given access to the network. You can only run a HOPR node within the latest version of the HOPR network.',
-  },
-  {
-    id: 2,
-    title: 'How much can I expect to earn running a HOPR node?',
-    content: (
-      <span>
-        The amount of $HOPR earned will vary depending on your stake, the number of nodes in the network, your
-        availability and how well-connected you are in the network. It's expected that the average node will earn an APY
-        of 10-15%, but you can find a complete breakdown of the economic model of reward distribution and strategies to
-        increase your share{' '}
-        <a
-          href="https://twitter.com/hoprnet/status/1696539901305790534"
-          target="_blank"
-          rel="noreferrer"
-        >
-          here.
-        </a>
-      </span>
-    ),
-  },
-  {
-    id: 3,
-    title: 'How much do I need to stake to earn money?',
-    content:
-      'You need to stake a minimum of 30,000 wxHOPR to join the network (or 10,000 if you are a returning node runner with an access NFT). All node runners with reachable, connected nodes will earn wxHOPR tokens based on their stake.',
-  },
-  {
-    id: 4,
-    title: 'Can I use my HOPR boost NFTs to increase my earnings?',
-    content:
-      'All previous HOPR boost NFTs are no longer usable. Your earnings are purely dependent on the data relayed. However, you are still guaranteed to earn $HOPR if you run a HOPR node, as every connected node will be used to relay cover traffic. ',
-  },
-  {
-    id: 5,
-    title: 'What is HOPR?',
-    content:
-      'The HOPR network is an incentivized p2p mixnet where nodes are relay points for transferring data between users. Data is encrypted and mixed in between nodes so only the users at the source and destination of the data can know the source and destination and decrypt the data.',
-  },
-  {
-    id: 6,
-    title: 'What is the HOPR Safe?',
-    content: (
-      <span>
-        The HOPR Safe is a smart contract wallet built using{' '}
-        <a
-          href="https://Safe.global/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Safe
-        </a>
-        . It allows you to store assets with complete security and spin up a HOPR node in order to earn tokens as a node
-        runner. To create your own HOPR Safe, follow the instructions{' '}
-        <a
-          href="/staking/onboarding"
-          target="_blank"
-          rel="noreferrer"
-        >
-          here.
-        </a>
-      </span>
-    ),
-  },
-];
-
 const StakingLandingPage = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [expandedId, set_expandedId] = useState<number | false>(false);
   const [openWeb3Modal, set_openWeb3Modal] = useState(false);
   const status = useAppSelector((store) => store.web3.status);
@@ -412,15 +342,10 @@ const StakingLandingPage = () => {
             Earn $HOPR while providing web3 users with the data privacy and autonomy Web 2.0 never did. Create your HOPR
             safe and start running a node now!
           </Description>
-          <ConnectWeb3
-            open={openWeb3Modal}
-            onClose={handleOnClose}
-          />
-
           {
             !status.connected && 
             <StyledButton
-              onClick={() => set_openWeb3Modal(true)}
+              onClick={() => {dispatch(web3Actions.setModalOpen(true));}}
               disabled={status.connected}
             >
               CONNECT WALLET
@@ -486,15 +411,15 @@ const StakingLandingPage = () => {
           <Title>Run a node, earn hopr</Title>
           <br />
           <SideToSideContainer>
-            <ImageSide>
+            <div className="ImageSide">
               <img src="/assets/HOPR_Node_staking.svg" />
-            </ImageSide>
-            <TextSide>
-              <SideTitle>
+            </div>
+            <div className="TextSide">
+              <h2>
                 <BlueText>&lt;Earn&gt;</BlueText> $Hopr
                 <br />
                 to relay data
-              </SideTitle>
+              </h2>
               <SideDescription>
                 You earn $HOPR for every packet of data you relay. This is done in a secure and decentralized fashion
                 through our{' '}
@@ -506,36 +431,38 @@ const StakingLandingPage = () => {
                   proof-of-relay mechanism.
                 </a>
               </SideDescription>
-            </TextSide>
+            </div>
           </SideToSideContainer>
-          <SideToSideContainer>
-            <TextSide>
-              <SideTitle>
+          <SideToSideContainer
+            className='reverse'
+          >
+            <div className="ImageSide">
+              <img src="/assets/hopr_tokens.svg" />
+            </div>
+            <div className="TextSide">
+              <h2>
                 Store funds with <BlueText>&lt;complete security&gt;</BlueText>
-              </SideTitle>
+              </h2>
               <SideDescription>
                 We compartmentalize access to your funds and node through our unique key management protocol, minimizing
                 your funds at risk in case of a compromised node.
               </SideDescription>
-            </TextSide>
-            <ImageSide>
-              <img src="/assets/hopr_tokens.svg" />
-            </ImageSide>
+            </div>
           </SideToSideContainer>
           <SideToSideContainer>
-            <ImageSide>
+            <div className="ImageSide">
               <img src="/assets/web3-private.svg" />
-            </ImageSide>
-            <TextSide>
-              <SideTitle>
+            </div>
+            <div className="TextSide">
+              <h2>
                 Make web3 <BlueText>&lt;private&gt;</BlueText>
-              </SideTitle>
+              </h2>
               <SideDescription>
                 Every node on the HOPR mixnet serves as a point to relay data and anonymize traffic sent across the
                 network. As such, every node not only earns you $HOPR for the data you relay, but contributes to
                 providing web3 with a truly decentralized and private transport layer.
               </SideDescription>
-            </TextSide>
+            </div>
           </SideToSideContainer>
         </StyledContainer>
       </Section>
@@ -547,28 +474,23 @@ const StakingLandingPage = () => {
         <StyledContainer>
           <br />
           <WhiteTitle>Complete control over your funds & node</WhiteTitle>
-          <BlueSideToSideContainer>
-            <BlueTextSide>
+          <SideToSideContainer>
+          <div className="TextSide">
               <WhiteMediumText>
                 Use our interactive HOPR node admin interface to control, customize and track your node with ease.
               </WhiteMediumText>
               <WhiteSideTitle>Features</WhiteSideTitle>
               <WhiteSideDescription>
-                &bull; View detailed real-time metrics
-                <br />
-                &bull; Manage, transfer and secure your funds in a few clicks
-                <br />
-                &bull; Directly access your node and all of its features
-                <br />
-                &bull; Easily manage requests and transactions
+                <li>View detailed real-time metrics</li>
+                <li>Manage, transfer and secure your funds in a few clicks</li>
+                <li>Directly access your node and all of its features</li>
+                <li>Easily manage requests and transactions</li>
               </WhiteSideDescription>
-            </BlueTextSide>
-            <BlueImageSide>
-              <img src="/assets/staking-hub-example.svg" />
-            </BlueImageSide>
-          </BlueSideToSideContainer>
+            </div>
+            <img style={{  maxWidth: '100%' }}src="/assets/staking-hub-example.svg" />
+          </SideToSideContainer>
           <Image src="/assets/create-you-hopr-safe-now.svg" />
-          {
+          {/* {
             !status.connected && 
             <BlueSectionButton
               onClick={() => set_openWeb3Modal(true)}
@@ -593,7 +515,7 @@ const StakingLandingPage = () => {
             >
               VIEW STAKING OVERVIEW
             </BlueSectionButton>
-          }
+          } */}
           
         </StyledContainer>
       </Section>
@@ -604,26 +526,19 @@ const StakingLandingPage = () => {
         <StyledContainer>
           <br />
           <Title>How it works</Title>
-          <SideToSideContainer>
-            <TextSide>
-              <SideTitle>Hopr Node</SideTitle>
-              <SideDescription>
-                Your HOPR node gives you complete access to the HOPR network's functionality and the ability to earn
-                $HOPR from your staked tokens. Your node can request funds from your HOPR Safe to complete certain tasks
-                and interact with other nodes on the network.
-              </SideDescription>
-            </TextSide>
-            <ImageSide>
-              <img src="/assets/hopr-node.svg" />
-            </ImageSide>
-          </SideToSideContainer>
-          <SideToSideContainer>
-            <ImageSide>
-              <img src="/assets/safe-with-shadow.svg" />
-            </ImageSide>
-            <TextSide>
-              <SideTitle>Hopr safe</SideTitle>
-              <SideDescription>
+          <Brick
+            noShadow
+            title='Hopr Node'
+            image="/assets/hopr-node.svg"
+            text="Your HOPR node gives you complete access to the HOPR network's functionality and the ability to earn $HOPR from your staked tokens. Your node can request funds from your HOPR Safe to complete certain tasks and interact with other nodes on the network."
+          />
+          <Brick
+            reverse
+            noShadow
+            title='Hopr safe'
+            image="/assets/safe-with-shadow.svg"
+            text={
+              <>
                 The HOPR Safe is a secured smart contract wallet built using{' '}
                 <a
                   href="https://safe.global/"
@@ -642,13 +557,15 @@ const StakingLandingPage = () => {
                 >
                   Read more
                 </a> }
-              </SideDescription>
-            </TextSide>
-          </SideToSideContainer>
-          <SideToSideContainer>
-            <TextSide>
-              <SideTitle>Payment Channels</SideTitle>
-              <SideDescription>
+              </>
+            }
+          />
+          <Brick
+            noShadow
+            title='Payment Channels'
+            image="/assets/payment-channels.svg"
+            text={
+              <>
                 HORP payment channels are a scalable and privacy respecting way of incentivizing HOPR nodes for their
                 service. Your node will automatically request tokens from your Safe to fund these channels. Run a
                 well-connected node to maximize your earnings.
@@ -660,12 +577,9 @@ const StakingLandingPage = () => {
                 >
                   Read more
                 </a>
-              </SideDescription>
-            </TextSide>
-            <ImageSide>
-              <img src="/assets/payment-channels.svg" />
-            </ImageSide>
-          </SideToSideContainer>
+              </>
+            }
+          />
           <br />
           <BigTitle>FAQ</BigTitle>
           <StyledCard className={`Faq blue`}>
@@ -753,5 +667,78 @@ const StakingLandingPage = () => {
     </>
   );
 };
+
+
+const faq: FaqData = [
+  {
+    id: 1,
+    title: 'Can anyone join the network?',
+    content:
+      'Yes, but after creating your HOPR Safe and funding it, you must wait to be given access to the network. You can only run a HOPR node within the latest version of the HOPR network.',
+  },
+  {
+    id: 2,
+    title: 'How much can I expect to earn running a HOPR node?',
+    content: (
+      <span>
+        The amount of $HOPR earned will vary depending on your stake, the number of nodes in the network, your
+        availability and how well-connected you are in the network. It's expected that the average node will earn an APY
+        of 10-15%, but you can find a complete breakdown of the economic model of reward distribution and strategies to
+        increase your share{' '}
+        <a
+          href="https://twitter.com/hoprnet/status/1696539901305790534"
+          target="_blank"
+          rel="noreferrer"
+        >
+          here.
+        </a>
+      </span>
+    ),
+  },
+  {
+    id: 3,
+    title: 'How much do I need to stake to earn money?',
+    content:
+      'You need to stake a minimum of 30,000 wxHOPR to join the network (or 10,000 if you are a returning node runner with an access NFT). All node runners with reachable, connected nodes will earn wxHOPR tokens based on their stake.',
+  },
+  {
+    id: 4,
+    title: 'Can I use my HOPR boost NFTs to increase my earnings?',
+    content:
+      'All previous HOPR boost NFTs are no longer usable. Your earnings are purely dependent on the data relayed. However, you are still guaranteed to earn $HOPR if you run a HOPR node, as every connected node will be used to relay cover traffic. ',
+  },
+  {
+    id: 5,
+    title: 'What is HOPR?',
+    content:
+      'The HOPR network is an incentivized p2p mixnet where nodes are relay points for transferring data between users. Data is encrypted and mixed in between nodes so only the users at the source and destination of the data can know the source and destination and decrypt the data.',
+  },
+  {
+    id: 6,
+    title: 'What is the HOPR Safe?',
+    content: (
+      <span>
+        The HOPR Safe is a smart contract wallet built using{' '}
+        <a
+          href="https://Safe.global/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Safe
+        </a>
+        . It allows you to store assets with complete security and spin up a HOPR node in order to earn tokens as a node
+        runner. To create your own HOPR Safe, follow the instructions{' '}
+        <a
+          href="/staking/onboarding"
+          target="_blank"
+          rel="noreferrer"
+        >
+          here.
+        </a>
+      </span>
+    ),
+  },
+];
+
 
 export default StakingLandingPage;

@@ -17,7 +17,7 @@ import { web3Actions } from '../../store/slices/web3';
 
 const AppBarContainer = styled(Button)`
   align-items: center;
-  display: flex;
+  display: none;
   cursor: pointer;
   height: 59px;
   justify-content: center;
@@ -30,6 +30,9 @@ const AppBarContainer = styled(Button)`
       width: 100%;
       height: 100%;
     }
+  }
+  @media screen and (min-width: 500px) {
+    display: flex;
   }
 `;
 
@@ -77,7 +80,6 @@ export default function ConnectWeb3({
   onClose,
 }: ConnectWeb3Props) {
   const dispatch = useAppDispatch();
-  const [chooseWalletModal, set_chooseWalletModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const {
     connectors,
@@ -90,6 +92,7 @@ export default function ConnectWeb3({
   const { disconnect } = useDisconnect();
   const account = useAppSelector((store) => store.web3.account);
   const isConnected = useAppSelector((store) => store.web3.status.connected);
+  const modalOpen = useAppSelector((store) => store.web3.modalOpen);
   const chain = useAppSelector((store) => store.web3.chain);
   const walletPresent = useAppSelector((store) => store.web3.walletPresent);
   const [localError, set_localError] = useState<false | string>(false);
@@ -118,7 +121,7 @@ export default function ConnectWeb3({
 
   useEffect(() => {
     if (open) {
-      set_chooseWalletModal(open);
+      dispatch(web3Actions.setModalOpen(open));
     }
   }, [open]);
 
@@ -137,7 +140,7 @@ export default function ConnectWeb3({
     if (onClose) {
       onClose();
     }
-    set_chooseWalletModal(false);
+    dispatch(web3Actions.setModalOpen(false));
     setTimeout(() => {
       set_localError(false);
     }, 250);
@@ -174,7 +177,7 @@ export default function ConnectWeb3({
 
   const handleWeb3ButtonClick = (event: React.MouseEvent<HTMLElement>) => {
     if (!isConnected) {
-      set_chooseWalletModal(true);
+      dispatch(web3Actions.setModalOpen(true));
     } else {
       handleOpenMenu(event);
     }
@@ -225,7 +228,7 @@ export default function ConnectWeb3({
         </AppBarContainer>
       )}
       <Modal
-        open={chooseWalletModal}
+        open={modalOpen}
         onClose={handleClose}
         title={localError ? 'ERROR' : 'CONNECT A WALLET'}
         disableScrollLock={true}

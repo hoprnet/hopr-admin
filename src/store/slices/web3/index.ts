@@ -26,6 +26,9 @@ const web3Slice = createSlice({
     setWallet(state, action) {
       state.wallet = action.payload ? action.payload : null;
     },
+    setModalOpen(state, action) {
+      state.modalOpen = action.payload ? action.payload : false;
+    },
     setWalletPresent(state, action) {
       state.walletPresent = action.payload;
     },

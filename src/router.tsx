@@ -7,11 +7,15 @@ import {
   useLocation
 } from 'react-router-dom'
 import { environment } from '../config';
+import { useDisconnect } from 'wagmi';
 
 // Store
 import { useAppDispatch, useAppSelector } from './store';
 import { authActions, authActionsAsync } from './store/slices/auth';
 import { nodeActions, nodeActionsAsync } from './store/slices/node';
+import { web3Actions } from './store/slices/web3';
+import { appActions } from './store/slices/app';
+import { safeActions } from './store/slices/safe';
 
 // Sections
 import NodeLandingPage from './pages/node/landingPage';
@@ -27,7 +31,6 @@ import TicketsPage from './pages/node/tickets';
 import ChannelsPageIncoming from './pages/node/channelsIncoming';
 import ChannelsPageOutgoing from './pages/node/channelsOutgoing';
 import MetricsPage from './pages/node/metrics';
-import SafeStakingPage from './pages/staking-hub/safeStaking';
 import ConfigurationPage from './pages/node/configuration';
 import WrapperPage from './pages/staking-hub/wrapper';
 import StakingScreen from './pages/staking-hub/dashboard/staking';
@@ -75,11 +78,15 @@ import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import { stakingHubActions } from './store/slices/stakingHub';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyNotice from './pages/PrivacyNotice';
+import MetaMaskFox from './future-hopr-lib-components/Icons/MetaMaskFox';
+
+
 
 export type ApplicationMapType = {
   groupName: string;
   path: string;
   icon: JSX.Element;
+  mobileOnly?: boolean | null;
   items: {
     name?: string;
     path: string;
@@ -88,6 +95,8 @@ export type ApplicationMapType = {
     element?: JSX.Element;
     inDrawer?: boolean | null;
     loginNeeded?: 'node' | 'web3' | 'safe';
+    onClick?: ()=>void;
+    mobileOnly?: boolean | null;
   }[];
 }[];
 
@@ -180,7 +189,7 @@ export const applicationMapNode: ApplicationMapType = [
 
 export const applicationMapStakingHub: ApplicationMapType = [
   {
-    groupName: 'Staking Hub',
+    groupName: 'STAKING HUB',
     path: 'staking',
     icon: <DevelopIcon />,
     items: [
@@ -254,7 +263,7 @@ export const applicationMapStakingHub: ApplicationMapType = [
   {
     groupName: 'RESOURCES',
     path: 'networking',
-    icon: <NetworkingIcon />,
+    icon: <DevelopIcon />,
     items: [
       {
         name: 'Docs',
@@ -304,7 +313,7 @@ function createApplicationMap() {
   if (environment === 'dev' || environment === 'node') applicationMapNode.map((elem) => temp.push(elem));
   if (environment === 'dev' || environment === 'web3') applicationMapStakingHub.map((elem) => temp.push(elem));
   if (environment === 'dev' ) applicationMapDevWeb3.map((elem) => temp.push(elem));
-  //if (environment === 'dev') applicationMapDev.map((elem) => temp.push(elem));
+  if (environment === 'dev') applicationMapDev.map((elem) => temp.push(elem));
   return temp;
 }
 
@@ -312,6 +321,7 @@ export const applicationMap: ApplicationMapType = createApplicationMap();
 
 const LayoutEnhanced = () => {
   const dispatch = useAppDispatch();
+  const { disconnect } = useDisconnect();
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const web3Connected = useAppSelector((store) => store.web3.status.connected);
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
@@ -400,11 +410,39 @@ const LayoutEnhanced = () => {
     return false;
   };
 
+  const handleDisconnectMM = () => {
+    disconnect();
+    dispatch(appActions.resetSafeState());
+    dispatch(web3Actions.resetState());
+    dispatch(safeActions.resetState());
+    dispatch(stakingHubActions.resetState());
+  };
+
+  const drawerFunctionItems: ApplicationMapType = [{
+    groupName: 'CONNECTION',
+    path: 'function',
+    icon: <DevelopIcon />,
+    mobileOnly: true,
+    items: [
+      {
+        name: web3Connected ? 'Disconnect' : 'Connect Wallet',
+        path: 'function',
+        icon: <MetaMaskFox/>,
+        onClick: ()=>{
+          if(web3Connected) handleDisconnectMM();
+          else dispatch(web3Actions.setModalOpen(true));
+        },
+        mobileOnly: true,
+      },
+    ],
+  }];
+
   return (
     <Layout
       drawer
       webapp
       drawerItems={applicationMap}
+      drawerFunctionItems={drawerFunctionItems}
       drawerLoginState={{
         node: nodeConnected,
         web3: web3Connected,

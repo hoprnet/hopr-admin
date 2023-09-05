@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { ApplicationMapType } from '../../router';
+import { useMediaQuery } from '@mui/material';
 import Details from '../../components/InfoBar/details';
 
 const drawerWidth = 240;
@@ -92,6 +93,7 @@ const StyledListSubheader = styled(ListSubheader)`
 const StyledListItemButton = styled(ListItemButton )`
   height: 48px;
   fill: rgba(0, 0, 0, 0.54);
+  width: 100%;
   svg {
     width: 24px;
     height: 24px;
@@ -121,6 +123,7 @@ const SListItemIcon = styled(ListItemIcon)`
 
 type DrawerProps = {
   drawerItems: ApplicationMapType;
+  drawerFunctionItems?: ApplicationMapType;
   drawerLoginState?: {
     node?: boolean;
     web3?: boolean;
@@ -137,10 +140,11 @@ const Drawer = ({
   openedNavigationDrawer,
   set_openedNavigationDrawer,
   drawerType,
+  drawerFunctionItems,
 }: DrawerProps) => {
   const location = useLocation();
   const searchParams = location.search;
-
+  const isMobile = !useMediaQuery('(min-width: 500px)');
   const [drawerVariant, set_drawerVariant] = useState<'permanent' | 'temporary'>('permanent');
 
   useEffect(() => {
@@ -166,14 +170,18 @@ const Drawer = ({
     }
   };
 
+  const allItems = [...drawerFunctionItems, ...drawerItems];
+
   return (
     <StyledDrawer
       variant={drawerVariant}
       open={openedNavigationDrawer}
       onClose={() => set_openedNavigationDrawer(false)}
       className={drawerType === 'blue' ? 'type-blue' : 'type-white'}
+      disableScrollLock={true}
     >
-      {drawerItems.map((group) => (
+      {allItems.map((group) => (
+        ((group.mobileOnly === true && isMobile) || !group.mobileOnly) &&
         <div key={group.groupName}>
           <Divider />
           <List
@@ -194,20 +202,21 @@ const Drawer = ({
           >
             {group.items.map((item) => (
               item.inDrawer !== false &&
+              ((item.mobileOnly === true && isMobile) || !item.mobileOnly) &&
               <Tooltip
                 key={item.name}
                 title={!openedNavigationDrawer && item.name}
                 placement="right"
               >
                 <StyledListItemButton
-                  component={Link}
+                  component={item.onClick ? null : Link}
                   to={item.path.includes('http') ? item.path : `${group.path}/${item.path}${searchParams ?? ''}`}
                   target={item.path.includes('http') ? "_blank" : null}
                   //@ts-ignore
                   rel={item.path.includes('http') ? "noopener noreferrer" : null}
                   selected={location.pathname === `/${group.path}/${item.path}`}
-                  disabled={item.path.includes('http') ? false : (!item.element || (item.loginNeeded && !drawerLoginState?.[item.loginNeeded]))}
-                  onClick={handleButtonClick}
+                  disabled={item.path.includes('http') ? false : ((!item.element && !item.onClick) || (item.loginNeeded && !drawerLoginState?.[item.loginNeeded]))}
+                  onClick={item.onClick ? item.onClick : handleButtonClick}
                   className="StyledListItemButton"
                 >
                   <SListItemIcon className="SListItemIcon">{item.icon}</SListItemIcon>
