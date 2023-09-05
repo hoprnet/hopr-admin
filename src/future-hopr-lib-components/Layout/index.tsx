@@ -100,7 +100,7 @@ const Layout: React.FC<{
     if (isConnected) set_openedNavigationDrawerPC(true);
   }, [isConnected]);
   return (
-    <SLayout className={`Layout${webapp ? ' webapp' : ''} ${className} ${openedNavigationDrawerPC ? 'drawerOpen' : 'drawerClosed'}`}>
+    <SLayout className={`Layout${webapp ? ' webapp' : ''} ${className} ${isMobile ? 'drawerHidden' : ''} ${(isMobile ? openedNavigationDrawerMobile : openedNavigationDrawerPC) ? 'drawerOpen' : 'drawerClosed'}`}>
       <NavBar
         mainLogo="/logo.svg"
         mainLogoAlt="hopr logo"

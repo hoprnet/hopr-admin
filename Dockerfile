@@ -14,7 +14,7 @@ WORKDIR /app
 COPY package.json .
 COPY yarn.lock .
 
-RUN jq .version package.json -r > /version.txt
+RUN jq .version package.json -r > /app/version.txt
 RUN yarn --frozen-lockfile --network-timeout 100000
 
 FROM --platform=linux/amd64 node:18-bullseye-slim AS build
@@ -33,7 +33,7 @@ WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 
 COPY --from=build /app/build .
-COPY --from=deps /version.txt .
+COPY --from=deps /app/version.txt .
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

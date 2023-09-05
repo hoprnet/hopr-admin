@@ -11,6 +11,7 @@ import { useAppSelector } from '../../store';
 // HOPR Components
 import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';
+import NetworkOverlay from '../../components/NetworkOverlay';
 
 // Mui
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
@@ -332,6 +333,7 @@ function WrapperPage() {
           )}
         </WrapperContainer>
       </StyledPaper>
+      <NetworkOverlay/>
     </Section>
   );
 }

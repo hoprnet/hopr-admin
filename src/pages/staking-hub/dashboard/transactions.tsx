@@ -27,7 +27,6 @@ import { safeActionsAsync } from '../../../store/slices/safe';
 
 // COMPONENTS
 import Button from '../../../future-hopr-lib-components/Button';
-import Section from '../../../future-hopr-lib-components/Section';
 
 // LIBS
 import styled from '@emotion/styled';
@@ -52,7 +51,6 @@ import { truncateEthereumAddress } from '../../../utils/blockchain';
 import { getUserActionForPendingTransaction } from '../../../utils/safeTransactions';
 
 const StyledContainer = styled(Paper)`
-  min-width: 800px;
   padding: 2rem;
   display: flex;
   flex-direction: column;
@@ -70,14 +68,23 @@ const Title = styled.h2`
 const StyledBlueButton = styled(Button)`
   align-self: flex-end;
   text-transform: uppercase;
+  flex-basis: 0;
+
+  &.positive-action {
+    width: 100%;
+  }
 `;
 
 const StyledButtonGroup = styled.div`
-  margin: 1rem;
   display: flex;
-  justify-content: flex-end;
+  flex-direction: row; 
+  align-items: baseline;
   gap: 0.5rem;
-  align-content: baseline;
+  
+  // allows the execute/sign button to grow
+  & span:last-child {
+    flex: 1 0 auto; /* grow, don't shrink, and auto basis */
+  }
 `;
 
 const StyledCollapsibleCell = styled(TableCell)`
@@ -250,6 +257,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           <Tooltip title={transactionAfterSafeNonce && `Earlier actions should be handled first`}>
             <span>
               <StyledBlueButton
+                className='positive-action'
                 disabled={transactionAfterSafeNonce}
                 onClick={() => executeTx(transaction)}
               >
@@ -266,10 +274,21 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
     return (
       <>
         <StyledButtonGroup>
+          <Tooltip title={transactionAfterSafeNonce && `Earlier actions should be handled first`}>
+            <span>
+              <StyledBlueButton
+                disabled={transactionAfterSafeNonce}
+                onClick={() => rejectTx(transaction)}
+              >
+                reject
+              </StyledBlueButton>
+            </span>
+          </Tooltip>
           {/* If there is no user action it is because the user has already signed */}
           <Tooltip title={!userAction && 'You have already approved'}>
             <span>
               <StyledBlueButton
+                className='positive-action'
                 onClick={() => approveTx(transaction)}
                 disabled={!userAction}
               >
@@ -525,14 +544,13 @@ function EthereumTransactionRow(props: { transaction: CustomEthereumTxWithTransf
           </IconButton>
           {date}
         </TableCell>
-        <TableCell>{time}</TableCell>
+        <TableCell align="right">{time}</TableCell>
         <TableCell align="right">
           <TruncatedEthereumAddressWithTooltip address={transaction.source} />
         </TableCell>
         <TableCell align="right">{transaction.request}</TableCell>
         <TableCell
           align="right"
-          colSpan={2}
         >{`${
             transaction.value && transaction.value.length > 18
               ? transaction.value.slice(0, 18).concat('...')
@@ -621,7 +639,6 @@ function MultisigTransactionRow(props: { transaction: CustomSafeMultisigTransact
         </TableCell>
         <TableCell align="right">{transaction.request}</TableCell>
         <TableCell
-          colSpan={2}
           align="right"
         >{`${
             transaction.value && transaction.value.length > 10
@@ -820,9 +837,8 @@ function TransactionHistoryTable() {
             <TableCell>Date</TableCell>
             <TableCell align="right">Time</TableCell>
             <TableCell align="right">Source</TableCell>
-            <TableCell align="right">Request</TableCell>
-            <TableCell align="right">Value/Currency</TableCell>
-            <TableCell />
+            <TableCell align="right">Capability</TableCell>
+            <TableCell align="right">Value</TableCell>
           </StyledHistoryTableRow>
         </StyledTableHead>
         <TableBody>
@@ -889,8 +905,8 @@ const PendingTransactionsTable = () => {
           <StyledPendingTableRow>
             <TableCell>Date</TableCell>
             <TableCell align="left">Source</TableCell>
-            <TableCell align="left">Request</TableCell>
-            <TableCell align="left">Value/Currency</TableCell>
+            <TableCell align="left">Capability</TableCell>
+            <TableCell align="left">Value</TableCell>
             <TableCell align="left">Action</TableCell>
             <TableCell />
           </StyledPendingTableRow>
