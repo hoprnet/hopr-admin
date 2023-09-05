@@ -221,7 +221,6 @@ export default function Details(props: Props) {
         <DataTitle>Node</DataTitle>
         <Data className="nodeOnly">
           <p>{info?.connectivityStatus}</p>
-          <p>{balances.hopr?.formatted ?? '-'}</p>
           <p>{balances.native?.formatted ?? '-'}</p>
           <p>{truncateBalanceto5charsWhenNoDecimals(peers?.announced?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.outgoing?.length) || '-'}</p>
