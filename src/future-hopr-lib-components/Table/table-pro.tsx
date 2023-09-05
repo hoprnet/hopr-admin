@@ -250,7 +250,7 @@ export default function CustomPaginationActionsTable(props: Props) {
                   style={{ maxWidth: headElem.maxWidth }}
                 >
                   {headElem.tooltip ? (
-                    <Tooltip title={row[headElem.key]}>{typeof row[headElem.key] === 'string' ? row[headElem.key] : ''}</Tooltip>
+                    <Tooltip title={row[headElem.key]}><span>{row[headElem.key]}</span></Tooltip>
                   ) : (
                     row[headElem.key]
                   )}
