@@ -170,7 +170,8 @@ const Drawer = ({
     }
   };
 
-  const allItems = [...drawerFunctionItems, ...drawerItems];
+  const preare = drawerFunctionItems ? drawerFunctionItems : [];
+  const allItems = [...preare, ...drawerItems];
 
   return (
     <StyledDrawer
