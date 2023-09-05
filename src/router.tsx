@@ -7,12 +7,15 @@ import {
   useLocation
 } from 'react-router-dom'
 import { environment } from '../config';
+import { useDisconnect } from 'wagmi';
 
 // Store
 import { useAppDispatch, useAppSelector } from './store';
 import { authActions, authActionsAsync } from './store/slices/auth';
 import { nodeActions, nodeActionsAsync } from './store/slices/node';
 import { web3Actions } from './store/slices/web3';
+import { appActions } from './store/slices/app';
+import { safeActions } from './store/slices/safe';
 
 // Sections
 import NodeLandingPage from './pages/node/landingPage';
@@ -318,6 +321,7 @@ export const applicationMap: ApplicationMapType = createApplicationMap();
 
 const LayoutEnhanced = () => {
   const dispatch = useAppDispatch();
+  const { disconnect } = useDisconnect();
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const web3Connected = useAppSelector((store) => store.web3.status.connected);
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
@@ -406,6 +410,14 @@ const LayoutEnhanced = () => {
     return false;
   };
 
+  const handleDisconnectMM = () => {
+    disconnect();
+    dispatch(appActions.resetSafeState());
+    dispatch(web3Actions.resetState());
+    dispatch(safeActions.resetState());
+    dispatch(stakingHubActions.resetState());
+  };
+
   const drawerFunctionItems: ApplicationMapType = [{
     groupName: 'CONNECTION',
     path: 'function',
@@ -413,10 +425,13 @@ const LayoutEnhanced = () => {
     mobileOnly: true,
     items: [
       {
-        name: 'Connect Wallet',
+        name: web3Connected ? 'Disconnect' : 'Connect Wallet',
         path: 'function',
         icon: <MetaMaskFox/>,
-        onClick: ()=>{dispatch(web3Actions.setModalOpen(true));},
+        onClick: ()=>{
+          if(web3Connected) handleDisconnectMM();
+          else dispatch(web3Actions.setModalOpen(true));
+        },
         mobileOnly: true,
       },
     ],
