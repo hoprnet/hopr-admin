@@ -76,19 +76,19 @@ const Logo = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  a {
+  /* a {
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow: hidden; */
     img {
       height: 50px;
       width: auto;
       margin-left: 10px;
     }
-  }
+//  }
 `;
 
 const NavBar: React.FC<{

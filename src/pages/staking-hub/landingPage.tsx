@@ -2,7 +2,8 @@ import styled from '@emotion/styled';
 import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';
 import ConnectWeb3 from '../../components/ConnectWeb3';
-import { useAppSelector } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { web3Actions } from '../../store/slices/web3';
 import ContinueOnboarding from '../../components/Modal/staking-hub/ContinueOnboarding';
 import { useState } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Card } from '@mui/material';
@@ -299,6 +300,7 @@ type FaqData = FaqElement[];
 
 const StakingLandingPage = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [expandedId, set_expandedId] = useState<number | false>(false);
   const [openWeb3Modal, set_openWeb3Modal] = useState(false);
   const status = useAppSelector((store) => store.web3.status);
@@ -340,15 +342,10 @@ const StakingLandingPage = () => {
             Earn $HOPR while providing web3 users with the data privacy and autonomy Web 2.0 never did. Create your HOPR
             safe and start running a node now!
           </Description>
-          <ConnectWeb3
-            open={openWeb3Modal}
-            onClose={handleOnClose}
-          />
-
           {
             !status.connected && 
             <StyledButton
-              onClick={() => set_openWeb3Modal(true)}
+              onClick={() => {dispatch(web3Actions.setModalOpen(true));}}
               disabled={status.connected}
             >
               CONNECT WALLET

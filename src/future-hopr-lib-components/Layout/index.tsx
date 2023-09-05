@@ -70,6 +70,7 @@ const Layout: React.FC<{
   };
   drawerType?: 'blue' | 'white';
   drawerItems: ApplicationMapType;
+  drawerFunctionItems? : any;
   drawerRight?: React.ReactNode;
 }> = ({
   className = '',
@@ -82,8 +83,9 @@ const Layout: React.FC<{
   drawerLoginState,
   drawerRight,
   drawerType,
+  drawerFunctionItems,
 }) => {
-  const isMobile = useMediaQuery('(max-width: 500px)');
+  const isMobile = !useMediaQuery('(min-width: 500px)');
   const isConnected = useAppSelector((store) => store.auth.status.connected);
 
   const [openedNavigationDrawerPC, set_openedNavigationDrawerPC] = useState(environment === 'web3' || environment === 'dev' ? true : false);
@@ -112,6 +114,7 @@ const Layout: React.FC<{
         <Drawer
           drawerType={drawerType}
           drawerItems={drawerItems}
+          drawerFunctionItems={drawerFunctionItems}
           drawerLoginState={drawerLoginState}
           set_openedNavigationDrawer={handleOpenedNavigationDrawer}
           openedNavigationDrawer={isMobile ? openedNavigationDrawerMobile : openedNavigationDrawerPC}
