@@ -88,13 +88,13 @@ function ChannelsPage() {
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      }),
+      })
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      }),
+      })
     );
   };
 
@@ -118,7 +118,7 @@ function ChannelsPage() {
           status: channel.status,
           dedicatedFunds: channel.balance,
         })),
-        `${tabLabel}-channels.csv`,
+        `${tabLabel}-channels.csv`
       );
     }
   };
@@ -138,7 +138,7 @@ function ChannelsPage() {
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
         channelId: channelId,
-      }),
+      })
     )
       .unwrap()
       .then(() => {
@@ -236,7 +236,7 @@ function ChannelsPage() {
         <>
           <PingModal peerId={channel.peerId} />
           <OpenOrFundChannelModal
-            peerId={channel.peerId}
+            // peerAddress={channel.peerId} //FIXME: peerId should be peerAddress here
             title="Fund outgoing channel"
             modalBtnText="Fund outgoing channel"
             actionBtnText="Fund outgoing channel"
