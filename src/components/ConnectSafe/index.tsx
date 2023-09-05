@@ -71,8 +71,9 @@ const SafeAddress = styled.div`
 
 export default function ConnectSafe() {
   const dispatch = useAppDispatch();
-  const connected = useAppSelector((store) => store.web3.status);
   const signer = useEthersSigner();
+  const isConnected = useAppSelector((store) => store.web3.status.connected);
+  const account = useAppSelector((store) => store.web3.account);
   //const safes = useAppSelector((store) => store.safe.safesByOwner.data);
   const safes = useAppSelector((store) => store.stakingHub.safes.data);
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
@@ -99,8 +100,19 @@ export default function ConnectSafe() {
   }, []);
 
   useEffect(() => {
+    const fetchInitialStateForSigner = async () => {
+      if (signer) {
+        dispatch(safeActions.resetState());
+        dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer }));
+      }
+    };
+
     fetchInitialStateForSigner();
   }, [signer]);
+
+  useEffect(() => {
+    if (safes.length > 0 && !safeAddress) dispatch(safeActions.setSelectedSafe(safes[0].safeAddress));
+  }, [safes]);
 
   useEffect(() => {
     if (safeAddress) {
@@ -108,17 +120,6 @@ export default function ConnectSafe() {
       getOnboardingData(safeAddress);
     }
   }, [safeAddress]);
-
-  useEffect(() => {
-    if (safes.length > 0 && !safeAddress) dispatch(safeActions.setSelectedSafe(safes[0].safeAddress));
-  }, [safes]);
-
-  const fetchInitialStateForSigner = async () => {
-    if (signer) {
-      dispatch(safeActions.resetState());
-      dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer }));
-    }
-  };
 
   const useSelectedSafe = async (safeAddress: string) => {
     if (signer) {
@@ -199,7 +200,7 @@ export default function ConnectSafe() {
   };
 
   const handleSafeButtonClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (connected.connected && safes.length > 0) {
+    if (isConnected && safes.length > 0) {
       handleOpenMenu(event);
     }
   };
@@ -208,7 +209,7 @@ export default function ConnectSafe() {
     <AppBarContainer
       onClick={handleSafeButtonClick}
       ref={menuRef}
-      disabled={!connected.connected}
+      disabled={!isConnected}
       className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${
         environment === 'dev' ? 'display' : 'display-none'
       }`}
@@ -219,7 +220,7 @@ export default function ConnectSafe() {
           alt="Safe Icon"
         />
       </div>
-      {connected.connected ? (
+      {isConnected ? (
         <>
           <SafeAddress>
             {truncateEthereumAddress(safeAddress || '...') || '...'} <DropdownArrow src="/assets/dropdown-arrow.svg" />

@@ -110,11 +110,11 @@ export default function ConnectWeb3({
   }, []);
 
   useEffect(() => {
-    if (isConnected && account) {
+    if (isConnected && account && chain) {
       dispatch(stakingHubActionsAsync.getHubSafesByOwnerThunk(account));
       handleClose();
     }
-  }, [isConnected, account]);
+  }, [isConnected, account, chain]);
 
   useEffect(() => {
     if (open) {
