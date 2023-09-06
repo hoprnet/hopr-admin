@@ -115,7 +115,7 @@ export default function SetupYourDappNode() {
               <p>
                 Install the HOPR package using the instructions{' '}
                 <StyledLink
-                  to={`https://docs.hoprnet.org/node/using-dappnode#2-link-your-node-to-your-safe`}
+                  to={`https://docs.hoprnet.org/node/using-dappnode`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
