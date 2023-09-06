@@ -1,4 +1,4 @@
-export const environment: 'dev' | 'node' | 'web3' = 'dev';
+export const environment: 'dev' | 'node' | 'web3' = 'web3';
 
 // Smart Contracts
 export const HOPR_CHANNELS_SMART_CONTRACT_ADDRESS = '0xfabee463f31e39ec8952bbfb4490c41103bf573e';
@@ -20,10 +20,8 @@ export const HOPR_NODE_SAFE_REGISTRY = '0xe15C24a0910311c83aC78B5930d771089E9307
 export const HOPR_NETWORK_REGISTRY = '0x582b4b586168621dAf83bEb2AeADb5fb20F8d50d';
 
 //Subgraphs
-export const STAKE_SUBGRAPH = 'https://api.studio.thegraph.com/query/40439/hopr-stake-all-seasons/v0.0.10';
-export const STAKING_V2_SUBGRAPH = 'https://api.studio.thegraph.com/query/40439/hopr-nodes-dufour/version/latest';
-//export const STAKING_V2_SUBGRAPH = 'https://api.studio.thegraph.com/query/40439/hopr-nodes-rotsee/version/latest';
-
+export const STAKE_SUBGRAPH = 'https://stake.hoprnet.org/api/hub/subgraph-allSeasons';
+export const STAKING_V2_SUBGRAPH = 'https://stake.hoprnet.org/api/hub/subgraph-dufour';
 
 // Wallet Connect
 export const VITE_WALLET_CONNECT_PROJECT_ID = 'efdce6b5c6b10913211ff1b40bc4d54d';
