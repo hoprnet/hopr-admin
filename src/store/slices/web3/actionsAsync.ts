@@ -96,7 +96,6 @@ const sendNftToSafeThunk = createAsyncThunk<
 
 export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   builder.addCase(getCommunityNftsOwnedByWallet.fulfilled, (state, action) => {
-    console.log('getCommunityNftsOwnedByWallet', action.payload)
     if (action.payload) {
       if (action.payload?.boosts.length > 0 && action.payload?.boosts[0].id) {
         state.communityNftId = parseInt(action.payload?.boosts[0].id);
