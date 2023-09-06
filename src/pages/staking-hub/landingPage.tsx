@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { web3Actions } from '../../store/slices/web3';
 import ContinueOnboarding from '../../components/Modal/staking-hub/ContinueOnboarding';
 import { useState } from 'react';
-import { Accordion, AccordionDetails, AccordionSummary, Card } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Card, Chip } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Footer from '../../future-hopr-lib-components/Layout/footer';
 import StartOnboarding from '../../components/Modal/staking-hub/StartOnboarding';
@@ -343,9 +343,9 @@ const StakingLandingPage = () => {
             safe and start running a node now!
           </Description>
           {
-            !status.connected && 
+            !status.connected &&
             <StyledButton
-              onClick={() => {dispatch(web3Actions.setModalOpen(true));}}
+              onClick={() => { dispatch(web3Actions.setModalOpen(true)); }}
               disabled={status.connected}
             >
               CONNECT WALLET
@@ -354,7 +354,7 @@ const StakingLandingPage = () => {
           {
             status.connected && onboardingStep !== 16 &&
             <StyledButton
-              onClick={() => {navigate('/staking/onboarding');}}
+              onClick={() => { navigate('/staking/onboarding'); }}
             >
               GO TO ONBOARDING
             </StyledButton>
@@ -362,8 +362,8 @@ const StakingLandingPage = () => {
           {
             status.connected && onboardingStep === 16 &&
             <StyledButton
-              onClick={()=>{navigate('/staking/dashboard')}}
-              style={{maxWidth: '300px'}}
+              onClick={() => { navigate('/staking/dashboard') }}
+              style={{ maxWidth: '300px' }}
             >
               VIEW STAKING OVERVIEW
             </StyledButton>
@@ -475,7 +475,7 @@ const StakingLandingPage = () => {
           <br />
           <WhiteTitle>Complete control over your funds & node</WhiteTitle>
           <SideToSideContainer>
-          <div className="TextSide">
+            <div className="TextSide">
               <WhiteMediumText>
                 Use our interactive HOPR node admin interface to control, customize and track your node with ease.
               </WhiteMediumText>
@@ -487,11 +487,12 @@ const StakingLandingPage = () => {
                 <li>Easily manage requests and transactions</li>
               </WhiteSideDescription>
             </div>
-            <img style={{  maxWidth: '100%' }}src="/assets/staking-hub-example.svg" />
+            <img style={{ maxWidth: '100%' }} src="/assets/staking-hub-example.svg" />
           </SideToSideContainer>
-          <Image src="/assets/create-you-hopr-safe-now.svg" />
+          {/* <Image src="/assets/create-you-hopr-safe-now.svg" /> */}
+          <CreateSafeNow />
           {/* {
-            !status.connected && 
+            !status.connected &&
             <BlueSectionButton
               onClick={() => set_openWeb3Modal(true)}
               disabled={status.connected}
@@ -516,7 +517,7 @@ const StakingLandingPage = () => {
               VIEW STAKING OVERVIEW
             </BlueSectionButton>
           } */}
-          
+
         </StyledContainer>
       </Section>
       <Section
@@ -550,13 +551,13 @@ const StakingLandingPage = () => {
                 Assets deposited into your HOPR Safe are secured by a customizable multisig, limiting exposure even when
                 your HOPR node's private key gets compromised.
                 <br />
-                { <a
+                {<a
                   href="https://docs.hoprnet.org/staking/what-is-safestaking"
                   target="_blank"
                   rel="noreferrer"
                 >
                   Read more
-                </a> }
+                </a>}
               </>
             }
           />
@@ -739,6 +740,268 @@ const faq: FaqData = [
     ),
   },
 ];
+
+const SafeSideToSideContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  background-color: #E8F6FA;
+  &.reverse {
+    flex-direction: row-reverse;
+  }
+  margin-bottom: 2rem;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 32px;
+  &.evenSplit{
+    .TextSide {
+      flex: 1;
+    }
+  }
+  .TextSide {
+    display: flex;
+    flex-direction: column;
+    flex: 3;
+    max-width: 600px;
+    h2 {
+      color: #414141;
+      font-size: 50px;
+      font-weight: 400;
+      margin-block: 0rem;
+      text-transform: uppercase;
+      text-align: left;
+      text-align: center;
+    }
+  }
+  .ImageSide {
+    align-items: center;
+  flex: 1;
+  max-width: 100%;
+  height: 420px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  }
+`;
+
+
+const SafeCard = styled(Card)`
+  display: flex;
+  flex-direction: column;
+  width: 405px;
+  font-size: 12px;
+  border-radius: 1rem;
+  margin-right: 0px;
+  margin-left: 30px;
+  padding: 8px;
+  box-shadow: none;
+  background-color: #E8F6FA;
+  /* border-radius: 60px; */
+  gap: 0.5rem;
+`;
+
+const SafeAccordion = styled(Accordion)`
+  box-shadow: none;
+  border: 2px solid #000050;
+  margin: 0;
+  background-color: #E8F6FA;
+  border-radius: 2rem !important;
+  padding: 0rem 0.5rem;
+  overflow: hidden;
+
+  /* border-top-left-radius: 5rem;
+  border-top-right-radius: 5rem;
+  border-bottom-right-radius: 5rem;
+  border-bottom-left-radius: 5rem ; */
+
+  &::before {
+    display: none;
+  }
+
+  &.MuiPaper-root-MuiAccordion-root-SafeAccordion:first-of-type,
+  &.MuiPaper-root-MuiAccordion-root-SafeAccordion:last-of-type  {
+    border-top-left-radius: 5rem;
+    border-top-right-radius: 5rem;
+    border-bottom-right-radius: 5rem;
+    border-bottom-left-radius: 5rem ;
+  }
+
+  &.MuiPaper-root-MuiAccordion-root-SafeAccordion:first-of-type.Mui-expanded,
+  &.MuiPaper-root-MuiAccordion-root-SafeAccordion:last-of-type.Mui-expanded {
+    margin: 0;
+    border-top-left-radius: 2rem;
+    border-top-right-radius: 2rem;
+    border-bottom-right-radius: 2rem;
+    border-bottom-left-radius: 2rem;
+  }
+
+  &.Mui-expanded {
+    margin: 0;
+    /* border-top-left-radius: 2rem;
+    border-top-right-radius: 2rem;
+    border-bottom-right-radius: 2rem;
+    border-bottom-left-radius: 2rem; */
+  }
+`;
+
+const SafeAccordionSummary = styled(AccordionSummary)`
+  /* border-bottom: 2px solid #414141; */
+  /* padding: 0; */
+  background-color: #E8F6FA;
+
+  &.Mui-expanded {
+    min-height: 48px;
+  }
+
+  .MuiAccordionSummary-content,
+  .MuiAccordionSummary-content.Mui-expanded {
+    margin: 4px 2px;
+  }
+
+  & .MuiAccordionSummary-expandIconWrapper.Mui-expanded {
+    transform: rotate(0) !important;
+    -webkit-transform: rotate(0) !important;
+  }
+`;
+
+const SafeTitle = styled.h3`
+  color: #000050;
+  font-weight: 400;
+  font-size: 26px;
+  margin: 0;
+
+`;
+
+const MainTitle = styled.h2`
+  color: #414141;
+  font-size: 60px;
+  font-weight: 400;
+  margin-block: 0rem;
+  text-transform: uppercase;
+  /* padding-top: 2rem; */
+  padding-bottom: 3rem;
+`;
+
+
+const SafeAccordionContent = styled(AccordionDetails)`
+  margin: 0;
+`;
+
+const CreateSafeContainer = styled.div`
+  background-color: #E8F6FA;
+  border-radius: 4rem;
+  padding: 4rem;
+`
+
+const SafeContent = styled.div`
+  color: #000050;
+  overflow-wrap: break-word;
+  font-size: 18px;
+  text-align: left;
+`;
+
+const CreateSafeNow = () => {
+  const [expandedId, set_expandedId] = useState<number | false>(0);
+  const [imageSrc, set_imageSrc] = useState<string>("/assets/get-ready.svg")
+
+  const handleAccordionClick = (id: number) => {
+    set_expandedId(id);
+    setImageById(id);
+  };
+
+  const setImageById = (id: number) => {
+    switch (id) {
+      case 0:
+        set_imageSrc("/assets/get-ready.svg")
+        break;
+      case 1:
+        set_imageSrc('/assets/create-safe.svg')
+        break
+      case 2:
+        set_imageSrc('/assets/move-funds.svg')
+        break
+      case 3:
+        set_imageSrc('/assets/HOPR_Node_Adming_with_plus.svg')
+        break
+      default:
+        break;
+    }
+  }
+
+  return (
+    <CreateSafeContainer>
+      <MainTitle>Create your Hopr safe now!</MainTitle>
+      <SafeSideToSideContainer>
+        <SafeCard>
+          <SafeAccordion
+            key={0}
+            expanded={expandedId === 0}
+            onChange={() => handleAccordionClick(0)}
+          >
+            <SafeAccordionSummary
+              className={`SafeAccordionSummary`}
+              expandIcon={<img src='/assets/1create-safe.svg' />}
+            >
+              <SafeTitle>GET READY</SafeTitle>
+            </SafeAccordionSummary>
+            <SafeAccordionContent>
+              <SafeContent>Connect your wallet and make sure you have enough wxHOPR.</SafeContent>
+            </SafeAccordionContent>
+          </SafeAccordion>
+          <SafeAccordion
+            key={1}
+            expanded={expandedId === 1}
+            onChange={() => handleAccordionClick(1)}
+          >
+            <SafeAccordionSummary
+              className={`SafeAccordionSummary`}
+              expandIcon={<img src='/assets/2create-safe.svg' />}
+            >
+              <SafeTitle>CREATE Safe</SafeTitle>
+            </SafeAccordionSummary>
+            <SafeAccordionContent>
+              <SafeContent>Deploy your new HOPR safe and configure who has access.</SafeContent>
+            </SafeAccordionContent>
+          </SafeAccordion>
+          <SafeAccordion
+            key={2}
+            expanded={expandedId === 2}
+            onChange={() => handleAccordionClick(2)}
+          >
+            <SafeAccordionSummary
+              className={`SafeAccordionSummary`}
+              expandIcon={<img src='/assets/3create-safe.svg' />}
+            >
+              <SafeTitle>MOVE FUNDS</SafeTitle>
+            </SafeAccordionSummary>
+            <SafeAccordionContent>
+              <SafeContent>Fund your Safe with the xDAI and wxHOPR your node will need.</SafeContent>
+            </SafeAccordionContent>
+          </SafeAccordion>
+          <SafeAccordion
+            key={3}
+            expanded={expandedId === 3}
+            onChange={() => handleAccordionClick(3)}
+          >
+            <SafeAccordionSummary
+              className={`SafeAccordionSummary`}
+              expandIcon={<img src='/assets/4create-safe.svg' />}
+            >
+              <SafeTitle>ADD NODE</SafeTitle>
+            </SafeAccordionSummary>
+            <SafeAccordionContent>
+              <SafeContent>Use your Safe to spin up a new HOPR node, and start earning $HOPR!</SafeContent>
+            </SafeAccordionContent>
+          </SafeAccordion>
+        </SafeCard>
+        <div className='ImageSide'>
+          <img src={imageSrc} />
+        </div>
+      </SafeSideToSideContainer>
+    </CreateSafeContainer>
+  );
+}
 
 
 export default StakingLandingPage;
