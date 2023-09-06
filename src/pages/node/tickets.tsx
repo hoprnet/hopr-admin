@@ -34,13 +34,13 @@ function TicketsPage() {
       actionsAsync.getStatisticsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      }),
+      })
     );
     dispatch(
       actionsAsync.getTicketsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      }),
+      })
     );
   };
 
@@ -49,7 +49,7 @@ function TicketsPage() {
       actionsAsync.redeemTicketsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      }),
+      })
     )
       .unwrap()
       .then(() => {
@@ -72,13 +72,25 @@ function TicketsPage() {
           <>
             <IconButton
               iconComponent={<ExitToAppIcon />}
-              tooltipText="Redeem all tickets"
+              tooltipText={
+                <span>
+                  REDEEM
+                  <br />
+                  all tickets
+                </span>
+              }
               reloading={redeemTicketsFetching}
               onClick={handleRedeemAllTickets}
             />
             <IconButton
               iconComponent={<GetAppIcon />}
-              tooltipText="Download all tickets as JSON"
+              tooltipText={
+                <span>
+                  EXPORT
+                  <br />
+                  all tickets as JSON
+                </span>
+              }
               onClick={() => {
                 exportToFile(JSON.stringify(tickets), 'tickets.json', 'text/json');
               }}

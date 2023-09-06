@@ -30,7 +30,7 @@ export const OpenMultipleChannelsModal = () => {
         actionsAsync.getChannelsThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        }),
+        })
       );
     }
   };
@@ -49,7 +49,7 @@ export const OpenMultipleChannelsModal = () => {
         amount: weiValue,
         peerAddress: peerId,
         timeout: 60e3,
-      }),
+      })
     )
       .unwrap()
       .then(() => {
@@ -175,7 +175,13 @@ export const OpenMultipleChannelsModal = () => {
     <>
       <IconButton
         iconComponent={<AddChannelsIcon />}
-        tooltipText={'Open multiple outgoing channels by csv'}
+        tooltipText={
+          <span>
+            OPEN
+            <br />
+            multiple outgoing channels by csv
+          </span>
+        }
         onClick={handleImportClick}
       />
       <input

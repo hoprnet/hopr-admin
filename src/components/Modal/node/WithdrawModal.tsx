@@ -2,14 +2,7 @@ import styled from '@emotion/styled';
 import { HOPR_TOKEN_USED } from '../../../../config';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../store';
-import {
-  CircularProgress,
-  DialogTitle,
-  InputAdornment,
-  MenuItem,
-  Button as MuiButton,
-  TextField
-} from '@mui/material'
+import { CircularProgress, DialogTitle, InputAdornment, MenuItem, Button as MuiButton, TextField } from '@mui/material';
 import Button from '../../../future-hopr-lib-components/Button';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../../future-hopr-lib-components/Modal/styled';
 import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
@@ -78,10 +71,7 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
   const dispatch = useAppDispatch();
   const hoprBalance = useAppSelector((state) => state.node.balances.data.hopr);
   const nativeBalance = useAppSelector((state) => state.node.balances.data.native);
-  const {
-    apiEndpoint,
-    apiToken,
-  } = useAppSelector((state) => state.auth.loginData);
+  const { apiEndpoint, apiToken } = useAppSelector((state) => state.auth.loginData);
   // local states
   const [openModal, set_openModal] = useState(false);
   const [currency, set_currency] = useState<'HOPR' | 'NATIVE'>(initialCurrency ?? 'NATIVE');
@@ -120,7 +110,7 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
           ethereumAddress: recipient,
           apiEndpoint,
           apiToken,
-        }),
+        })
       )
         .unwrap()
         .then((hash) => {
@@ -136,7 +126,13 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
     <>
       <IconButton
         iconComponent={<WithdrawIcon />}
-        tooltipText="Withdraw tokens"
+        tooltipText={
+          <span>
+            WITHDRAW
+            <br />
+            tokens
+          </span>
+        }
         onClick={handleOpenModal}
       />
       <SDialog

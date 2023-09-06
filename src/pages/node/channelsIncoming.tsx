@@ -25,17 +25,16 @@ function ChannelsPage() {
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
-  const [tabIndex, set_tabIndex] = useState(0);
-  const tabLabel = tabIndex === 0 ? 'outgoing' : 'incoming';
-  const channelsData = tabIndex === 0 ? channels?.outgoing : channels?.incoming;
+
+  const tabLabel = 'incoming';
+  const channelsData = channels?.incoming;
 
   const [queryParams, set_queryParams] = useState('');
 
   const navigate = useNavigate();
-
-  const handleHash = (newTabIndex: number) => {
-    const newHash = newTabIndex === 0 ? 'outgoing' : 'incoming';
-    navigate(`?${queryParams}#${newHash}`, { replace: true });
+        
+  const handleHash = () => {
+    navigate(`?${queryParams}#incoming`, { replace: true });
   };
 
   useEffect(() => {
@@ -49,17 +48,9 @@ function ChannelsPage() {
   }, [loginData.apiToken, loginData.apiEndpoint]);
 
   useEffect(() => {
-    const currentHash = window.location.hash;
-    const defaultHash = currentHash === '#incoming' || currentHash === '#outgoing' ? currentHash : '#outgoing';
-
-    const defaultTabIndex = defaultHash === '#outgoing' ? 0 : 1;
-    set_tabIndex(defaultTabIndex);
-    handleHash(defaultTabIndex);
-
+    handleHash();
     handleRefresh();
   }, [queryParams]);
-
-  useEffect(() => {}, [tabIndex]);
 
   const handleRefresh = () => {
     dispatch(
@@ -169,7 +160,13 @@ function ChannelsPage() {
           <>
             <IconButton
               iconComponent={<GetAppIcon />}
-              tooltipText={`Export ${tabLabel} channels as a CSV`}
+              tooltipText={
+                <span>
+                  EXPORT
+                  <br />
+                  {tabLabel} channels as a CSV
+                </span>
+              }
               disabled={!channelsData || Object.keys(channelsData).length === 0}
               onClick={handleExport}
             />

@@ -29,10 +29,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
   const [openModal, setOpenModal] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const {
-      name,
-      value,
-    } = event.target;
+    const { name, value } = event.target;
     duplicateAlias && set_duplicateAlias(false);
     set_modal({
       ...modal,
@@ -65,7 +62,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
           peerId: modal.peerId,
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        }),
+        })
       )
         .unwrap()
         .then(() => {
@@ -104,7 +101,13 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
     <>
       <IconButton
         iconComponent={<AddAliasIcon />}
-        tooltipText="Add new alias"
+        tooltipText={
+          <span>
+            ADD
+            <br />
+            new alias
+          </span>
+        }
         onClick={handleOpenModal}
       />
       <SDialog

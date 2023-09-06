@@ -85,6 +85,11 @@ const Data = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;
   }
+
+  a {
+    color: #007bff; /* Set the desired color for links */
+    text-decoration: underline;
+  }
 `;
 
 // TODO: make batter to work with balances
@@ -134,6 +139,8 @@ export default function Details(props: Props) {
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const walletBalance = useAppSelector((store) => store.web3.balance);
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
+  const loginData = useAppSelector((store) => store.auth.loginData);
+  const statistics = useAppSelector((store) => store.node.statistics.data);
 
   const web3Drawer = (
     <Web3Container style={props.style}>
@@ -226,6 +233,10 @@ export default function Details(props: Props) {
           <IconContainer></IconContainer>
           <Text>Incoming Chanels</Text>
         </IconAndText>
+        <IconAndText>
+          <IconContainer></IconContainer>
+          <Text>Unredeemed tickets</Text>
+        </IconAndText>
       </TitleColumn>
       <DataColumn>
         <DataTitle>Node</DataTitle>
@@ -236,6 +247,7 @@ export default function Details(props: Props) {
           <p>{truncateBalanceto5charsWhenNoDecimals(peers?.announced?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.outgoing?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.incoming?.length) || '-'}</p>
+          <p className="double">{truncateBalanceto5charsWhenNoDecimals(statistics?.unredeemed) || '-'}</p>
         </Data>
       </DataColumn>
     </Web3Container>
