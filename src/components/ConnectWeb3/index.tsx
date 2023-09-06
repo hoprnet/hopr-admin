@@ -68,6 +68,25 @@ const DropdownArrow = styled.img`
   align-self: center;
 `;
 
+const ErrorContent = styled.div`
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 350px;
+  overflow-wrap: anywhere;
+  white-space: break-spaces;
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #3c64a5;
+    border-radius: 10px;
+    border: 3px solid white;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: #000050;
+  }
+`;
+
 type ConnectWeb3Props = {
   inTheAppBar?: boolean;
   open?: boolean;
@@ -127,7 +146,15 @@ export default function ConnectWeb3({
 
   useEffect(() => {
     if (error) { 
-      set_localError(JSON.stringify(error)); 
+      let parsedError = '';
+      //@ts-ignore
+      if(error.shortMessage && error.shortMessage.length > 10) parsedError = error.shortMessage; 
+      //@ts-ignore
+      if(error.details && error.details.length > 10) parsedError = parsedError + '\n\n' + error.details;
+      if(parsedError === '') parsedError = JSON.stringify(error); 
+
+
+      set_localError(parsedError); 
       // wallet connect modal can 
       // cause errors if it is closed without connecting
       if (pendingConnector?.id === 'walletConnect') {
@@ -252,8 +279,10 @@ export default function ConnectWeb3({
             </p>
           </ConnectWalletContent>
         )}
-        {localError && !walletPresent && <p>Wallet was not detected. Please install a wallet, e.g. MetaMask</p>}
-        {localError && walletPresent && <p>{localError}</p>}
+        <ErrorContent>
+          {localError && !walletPresent && <p>Wallet was not detected. Please install a wallet, e.g. MetaMask</p>}
+          {localError && walletPresent && <p>{localError}</p>}
+        </ErrorContent>
       </Modal>
     </>
   );
