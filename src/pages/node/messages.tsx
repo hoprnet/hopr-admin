@@ -46,6 +46,7 @@ const messages = () => {
 
   const parsedTableData = messages.map((message) => {
     return {
+      id: message.id,
       body: message.body,
       actions: (
         <>

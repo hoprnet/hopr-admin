@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { exportToCsv } from '../../utils/helpers';
-import styled from '@emotion/styled';
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
@@ -11,7 +10,6 @@ import { CreateAliasModal } from '../../components/Modal/node//AddAliasModal';
 import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
 import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
-import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 //  Modals
@@ -54,17 +52,6 @@ function PeersPage() {
       }
     }
     return ''; // Return 'N/A' if alias not found for the given peerId
-  };
-
-  const splitString = (addresses: string): string[] => {
-    const splitParts = addresses.split('/');
-    const formattedAddress = [];
-
-    for (let i = 1; i < splitParts.length; i += 2) {
-      formattedAddress.push(`/${splitParts[i]}/${splitParts[i + 1]}`);
-    }
-
-    return formattedAddress;
   };
 
   const handleExport = () => {
@@ -124,8 +111,9 @@ function PeersPage() {
 
   const parsedTableData = Object.entries(peers?.announced ?? {}).map(([id, peer]) => {
     return {
+      id: id,
       number: id,
-      alias: aliases && getAliasByPeerId(peer.peerId),
+      alias: aliases ? getAliasByPeerId(peer.peerId) : '',
       peerId: peer.peerId,
       quality: peer.quality.toFixed(2),
       lastSeen: new Date(peer.lastSeen).toLocaleString('en-US', {

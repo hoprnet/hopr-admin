@@ -104,7 +104,8 @@ function AliasesPage() {
 
   const parsedTableData = Object.entries(aliases ?? {}).map(([alias, peerId], key) => {
     return {
-      key,
+      id: peerId,
+      key: key.toString(),
       alias,
       peerId,
       actions: (

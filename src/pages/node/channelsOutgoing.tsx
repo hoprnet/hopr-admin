@@ -212,7 +212,8 @@ function ChannelsPage() {
 
   const parsedTableData = Object.entries(channels?.outgoing ?? []).map(([, channel], key) => {
     return {
-      key: key,
+      id: channel.id,
+      key: key.toString(),
       peerId: getAliasByPeerId(channel.peerId),
       status: channel.status,
       funds: `${utils.formatEther(channel.balance)} ${HOPR_TOKEN_USED}`,
