@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react';
 import { HOPR_TOKEN_USED } from '../../../config';
 import { useAppSelector } from '../../store';
 import styled from '@emotion/styled';
-import { useNavigate } from 'react-router-dom';
 
 interface Props {
   style?: object;
@@ -249,7 +247,6 @@ export default function Details(props: Props) {
           <p>{truncateBalanceto5charsWhenNoDecimals(peers?.announced?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.outgoing?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.incoming?.length) || '-'}</p>
-          <br />
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(statistics?.unredeemed) || '-'}</p>
         </Data>
       </DataColumn>
