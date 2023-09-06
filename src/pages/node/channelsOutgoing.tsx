@@ -15,7 +15,6 @@ import CloseChannelIcon from '../../future-hopr-lib-components/Icons/CloseChanne
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 // Modals
-import { PingModal } from '../../components/Modal/node/PingModal';
 import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
 import { OpenMultipleChannelsModal } from '../../components/Modal/node/OpenMultipleChannelsModal';
 
@@ -26,7 +25,6 @@ function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((store) => store.node.channels.data);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
-  const aliases = useAppSelector((store) => store.node.aliases.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [closingStates, set_closingStates] = useState<
     Record<
@@ -82,23 +80,24 @@ function ChannelsPage() {
     );
   };
 
-  const getAliasByPeerId = (peerId: string): string => {
-    if (aliases) {
-      for (const [alias, id] of Object.entries(aliases)) {
-        if (id === peerId) {
-          return alias;
-        }
-      }
-    }
-    return peerId; // Return the peerId if alias not found for the given peerId
-  };
+  // TODO: update to getAliasByPeerAddress
+  // const getAliasByPeerId = (peerId: string): string => {
+  //   if (aliases) {
+  //     for (const [alias, id] of Object.entries(aliases)) {
+  //       if (id === peerId) {
+  //         return alias;
+  //       }
+  //     }
+  //   }
+  //   return peerId; // Return the peerId if alias not found for the given peerId
+  // };
 
   const handleExport = () => {
     if (channelsData) {
       exportToCsv(
         Object.entries(channelsData).map(([, channel]) => ({
           channelId: channel.id,
-          peerId: channel.peerId,
+          peerAddress: channel.peerAddress,
           status: channel.status,
           dedicatedFunds: channel.balance,
         })),
@@ -182,8 +181,8 @@ function ChannelsPage() {
       name: '#',
     },
     {
-      key: 'peerId',
-      name: 'Peer Id',
+      key: 'peerAddress',
+      name: 'Peer Address',
       search: true,
       tooltip: true,
       maxWidth: '168px',
@@ -214,14 +213,15 @@ function ChannelsPage() {
     return {
       id: channel.id,
       key: key.toString(),
-      peerId: getAliasByPeerId(channel.peerId),
+      peerAddress: channel.peerAddress,
       status: channel.status,
       funds: `${utils.formatEther(channel.balance)} ${HOPR_TOKEN_USED}`,
       actions: (
         <>
-          <PingModal peerId={channel.peerId} />
+          {/* we need a way to get peer id to ping from channel */}
+          {/* <PingModal peerId={channel.peerId} /> */}
           <OpenOrFundChannelModal
-            // peerAddress={channel.peerId} //FIXME: peerId should be peerAddress here
+            peerAddress={channel.peerAddress}
             title="Fund outgoing channel"
             modalBtnText={
               <span>

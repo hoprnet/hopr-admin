@@ -13,7 +13,6 @@ import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 // Modals
-import { PingModal } from '../../components/Modal/node/PingModal';
 import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
 
 // Mui
@@ -23,7 +22,6 @@ function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((store) => store.node.channels.data);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
-  const aliases = useAppSelector((store) => store.node.aliases.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
 
   const tabLabel = 'incoming';
@@ -67,39 +65,39 @@ function ChannelsPage() {
     );
   };
 
-  const getAliasByPeerId = (peerId: string): string => {
-    if (aliases) {
-      for (const [alias, id] of Object.entries(aliases)) {
-        if (id === peerId) {
-          return alias;
-        }
-      }
-    }
-    return peerId; // Return the peerId if alias not found for the given peerId
-  };
+  // const getAliasByPeerId = (peerId: string): string => {
+  //   if (aliases) {
+  //     for (const [alias, id] of Object.entries(aliases)) {
+  //       if (id === peerId) {
+  //         return alias;
+  //       }
+  //     }
+  //   }
+  //   return peerId; // Return the peerId if alias not found for the given peerId
+  // };
 
   const handleExport = () => {
     if (channelsData) {
       exportToCsv(
         Object.entries(channelsData).map(([, channel]) => ({
           channelId: channel.id,
-          peerId: channel.peerId,
+          peerAddress: channel.peerAddress,
           status: channel.status,
           dedicatedFunds: channel.balance,
         })),
-        `${tabLabel}-channels.csv`
+        `${tabLabel}-channels.csv`,
       );
     }
   };
 
-  const headerIncomming = [
+  const headerIncoming = [
     {
       key: 'key',
       name: '#',
     },
     {
-      key: 'peerId',
-      name: 'Peer Id',
+      key: 'peerAddress',
+      name: 'Peer Address',
       search: true,
       maxWidth: '568px',
       tooltip: true,
@@ -125,18 +123,19 @@ function ChannelsPage() {
     },
   ];
 
-  const parsedTableDataIncomming = Object.entries(channels?.incoming ?? []).map(([, channel], key) => {
+  const parsedTableDataIncoming = Object.entries(channels?.incoming ?? []).map(([, channel], key) => {
     return {
       id: channel.id,
       key: key.toString(),
-      peerId: getAliasByPeerId(channel.peerId),
+      peerAddress: channel.peerAddress,
       status: channel.status,
       funds: `${utils.formatEther(channel.balance)} ${HOPR_TOKEN_USED}`,
       actions: (
         <>
-          <PingModal peerId={channel.peerId} />
+          {/* we need a peer id from channels to make this work
+          <PingModal /> */}
           <OpenOrFundChannelModal
-            // peerAddress={channel.peerId} // FIXME: peerId should be peerAddress here
+            peerAddress={channel.peerAddress}
             title="Open outgoing channel"
             type={'open'}
           />
@@ -174,10 +173,10 @@ function ChannelsPage() {
         }
       />
       <TablePro
-        data={parsedTableDataIncomming}
-        header={headerIncomming}
+        data={parsedTableDataIncoming}
+        header={headerIncoming}
         search
-        loading={parsedTableDataIncomming.length === 0 && channelsFetching}
+        loading={parsedTableDataIncoming.length === 0 && channelsFetching}
       />
     </Section>
   );
