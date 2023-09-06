@@ -190,10 +190,10 @@ const getSubgraphDataThunk = createAsyncThunk<
       const json = await resp.json();
       console.log('SubgraphOutput', json);
 
-      let output = JSON.parse(JSON.stringify(initialState.safeInfo.data));
-      if (json.data.safes.length > 0) output = json.data.safes[0];
-      if (json.data.nodeManagementModules.length > 0) output.module = json.data.nodeManagementModules[0];
-      if (json.data.balances.length > 0) output.overall_staking_v2_balances = json.data.balances[0];
+      let output = JSON.parse(JSON.stringify(initialState.safeInfo));
+      if (json.safes.length > 0) output = json.safes[0];
+      if (json.nodeManagementModules.length > 0) output.module = json.nodeManagementModules[0];
+      if (json.balances.length > 0) output.overall_staking_v2_balances = json.balances[0];
 
       console.log('SubgraphParsedOutput', output);
       return output;

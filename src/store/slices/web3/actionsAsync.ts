@@ -32,12 +32,10 @@ const getCommunityNftsOwnedByWallet = createAsyncThunk(
         body: GET_THEGRAPH_QUERY
       });
       const responseJson: {
-        data: {
-          boosts: { id: string }[];
-        } | null;
+        boosts: { id: string }[];
       } = await response.json();
 
-      return responseJson.data;
+      return responseJson;
     } catch (e) {
       return rejectWithValue(e);
     }
@@ -98,6 +96,7 @@ const sendNftToSafeThunk = createAsyncThunk<
 
 export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   builder.addCase(getCommunityNftsOwnedByWallet.fulfilled, (state, action) => {
+    console.log('getCommunityNftsOwnedByWallet', action.payload)
     if (action.payload) {
       if (action.payload?.boosts.length > 0 && action.payload?.boosts[0].id) {
         state.communityNftId = parseInt(action.payload?.boosts[0].id);

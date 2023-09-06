@@ -1220,12 +1220,10 @@ const getCommunityNftsOwnedBySafeThunk = createAsyncThunk(
         body: GET_THEGRAPH_QUERY
       });
       const responseJson: {
-        data: {
-          boosts: { id: string }[];
-        } | null;
+        boosts: { id: string }[] | null;
       } = await response.json();
 
-      return responseJson.data;
+      return responseJson;
     } catch (e) {
       if (e instanceof Error) {
         return rejectWithValue(e.message);
