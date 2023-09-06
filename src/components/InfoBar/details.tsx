@@ -144,19 +144,6 @@ export default function Details(props: Props) {
   const loginData = useAppSelector((store) => store.auth.loginData);
   const statistics = useAppSelector((store) => store.node.statistics.data);
 
-  const navigate = useNavigate();
-  const [queryParams, set_queryParams] = useState('');
-
-  useEffect(() => {
-    if (loginData.apiEndpoint && loginData.apiToken) {
-      const queryParams = new URLSearchParams({
-        apiToken: loginData.apiToken,
-        apiEndpoint: loginData.apiEndpoint,
-      }).toString();
-      set_queryParams(queryParams);
-    }
-  }, [loginData.apiToken, loginData.apiEndpoint]);
-
   const web3Drawer = (
     <Web3Container style={props.style}>
       <TitleColumn className="web3">

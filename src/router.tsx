@@ -187,9 +187,8 @@ export const applicationMapNode: ApplicationMapType = [
     items: [
       {
         name: 'Staking Hub',
-        path: 'staking-hub-landing',
+        path: 'https://hub.hoprnet.org/',
         icon: <SavingsIcon />,
-        element: <StakingLandingPage />,
       },
       {
         name: 'Docs',
