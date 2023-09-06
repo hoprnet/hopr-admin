@@ -14,6 +14,7 @@ import { Button, Menu, MenuItem } from '@mui/material';
 import { Connector, useConnect, useDisconnect } from 'wagmi';
 import { truncateEthereumAddress } from '../../utils/blockchain';
 import { web3Actions } from '../../store/slices/web3';
+import { UserRejectedRequestError } from 'viem';
 
 const AppBarContainer = styled(Button)`
   align-items: center;
@@ -146,15 +147,15 @@ export default function ConnectWeb3({
 
   useEffect(() => {
     if (error) { 
-      let parsedError = '';
-      //@ts-ignore
-      if(error.shortMessage && error.shortMessage.length > 10) parsedError = error.shortMessage; 
-      //@ts-ignore
-      if(error.details && error.details.length > 10) parsedError = parsedError + '\n\n' + error.details;
-      if(parsedError === '') parsedError = JSON.stringify(error); 
-
-
-      set_localError(parsedError); 
+      if (error instanceof UserRejectedRequestError) {
+        let parsedError = error.shortMessage; 
+        if(error.details && error.details.length > 10) {
+          parsedError = parsedError + '\n\n' + error.details;
+        }
+        set_localError(parsedError); 
+      } else {
+        set_localError( JSON.stringify(error))
+      }
       // wallet connect modal can 
       // cause errors if it is closed without connecting
       if (pendingConnector?.id === 'walletConnect') {
