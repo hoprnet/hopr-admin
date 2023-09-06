@@ -263,7 +263,7 @@ export default function Details(props: Props) {
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.outgoing?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.incoming?.length) || '-'}</p>
           <br />
-          <p>{statistics?.unredeemed}</p>
+          <p className="double">{truncateBalanceto5charsWhenNoDecimals(statistics?.unredeemed) || '-'}</p>
         </Data>
       </DataColumn>
     </Web3Container>
