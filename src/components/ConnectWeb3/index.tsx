@@ -149,7 +149,7 @@ export default function ConnectWeb3({
     if (error) { 
       if (error instanceof UserRejectedRequestError) {
         let parsedError = error.shortMessage; 
-        if(error.details && error.details.length > 10) {
+        if(error.details && error.details !== error.shortMessage && error.details.length > 10) {
           parsedError = parsedError + '\n\n' + error.details;
         }
         set_localError(parsedError); 
