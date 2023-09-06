@@ -33,11 +33,6 @@ function ChannelsPage() {
 
   const navigate = useNavigate();
 
-  const handleTabChange = (event: React.SyntheticEvent<Element, Event>, newTabIndex: number) => {
-    set_tabIndex(newTabIndex);
-    handleHash(newTabIndex);
-  };
-
   const handleHash = (newTabIndex: number) => {
     const newHash = newTabIndex === 0 ? 'outgoing' : 'incoming';
     navigate(`?${queryParams}#${newHash}`, { replace: true });
@@ -141,7 +136,8 @@ function ChannelsPage() {
 
   const parsedTableDataIncomming = Object.entries(channels?.incoming ?? []).map(([, channel], key) => {
     return {
-      key: key,
+      id: channel.id,
+      key: key.toString(),
       peerId: getAliasByPeerId(channel.peerId),
       status: channel.status,
       funds: `${utils.formatEther(channel.balance)} ${HOPR_TOKEN_USED}`,
