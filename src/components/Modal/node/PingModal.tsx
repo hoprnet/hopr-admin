@@ -27,7 +27,7 @@ export const PingModal = (props: PingModalProps) => {
   };
 
   const setPropPeerId = () => {
-    if (peerId) set_peerId(peerId);
+    if (props.peerId) set_peerId(props.peerId);
   };
   useEffect(setPropPeerId, []);
 
