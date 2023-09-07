@@ -79,7 +79,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
       apiToken: loginData.apiToken,
       apiEndpoint: loginData.apiEndpoint,
       body: message,
-      peerAddress: validatedReceiver,
+      peerId: validatedReceiver,
       tag: 1,
     };
     if (numberOfHops !== '') {
