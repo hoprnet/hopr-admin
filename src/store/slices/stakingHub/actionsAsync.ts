@@ -10,6 +10,7 @@ import {
 } from '../../../../config';
 import NetworkRegistryAbi from '../../../abi/network-registry-abi.json';
 import { Address, PublicClient, WalletClient, publicActions } from 'viem';
+import { gql } from 'graphql-request';
 import { stakingHubActions } from '.';
 import { safeActionsAsync } from '../safe';
 
@@ -109,22 +110,92 @@ const getSubgraphDataThunk = createAsyncThunk<
     safeAddress = safeAddress.toLocaleLowerCase();
     moduleAddress = moduleAddress.toLocaleLowerCase();
 
-    // eslint-disable-next-line no-useless-escape
-    const QUERY = `{\"query\":\"{\\n  safes(first: 1, where: {id: \\\"${safeAddress}\\\"}) {\\n    id\\n    balance {\\n      mHoprBalance\\n      wxHoprBalance\\n      xHoprBalance\\n    }\\n    threshold\\n    owners {\\n      owner {\\n        id\\n      }\\n    }\\n    isCreatedByNodeStakeFactory\\n    targetedModules {\\n      id\\n    }\\n    allowance {\\n      xHoprAllowance\\n      wxHoprAllowance\\n      mHoprAllowance\\n      grantedToChannelsContract\\n    }\\n    addedModules {\\n      module {\\n        id\\n      }\\n    }\\n    isEligibleOnNetworkRegistry\\n    registeredNodesInSafeRegistry {\\n      node {\\n        id\\n      }\\n    }\\n    registeredNodesInNetworkRegistry {\\n      node {\\n        id\\n      }\\n    }\\n  }\\n  nodeManagementModules(\\n    first: 1\\n    where: {id: \\\"${moduleAddress}\\\"}\\n  ) {\\n    id\\n    implementation\\n    includedNodes {\\n      node {\\n        id\\n      }\\n    }\\n    multiSend\\n    target {\\n      id\\n    }\\n  }\\n  balances(where: {id: \\\"all_the_safes\\\"}) {\\n    mHoprBalance\\n    wxHoprBalance\\n    xHoprBalance\\n  }\\n  _meta {\\n    hasIndexingErrors\\n    deployment\\n    block {\\n      hash\\n      timestamp\\n    }\\n  }\\n}\",\"variables\":null,\"extensions\":{\"headers\":null}}`;
+    const GET_THEGRAPH_QUERY = gql`{
+      safes(first: 1, where: {id: "${safeAddress}"}) {
+        id
+        balance {
+          mHoprBalance
+          wxHoprBalance
+          xHoprBalance
+        }
+        threshold
+        owners {
+          owner {
+            id
+          }
+        }
+        isCreatedByNodeStakeFactory
+        targetedModules {
+          id
+        }
+        allowance {
+          xHoprAllowance
+          wxHoprAllowance
+          mHoprAllowance
+          grantedToChannelsContract
+        }
+        addedModules {
+          module {
+            id
+          }
+        }
+        isEligibleOnNetworkRegistry
+        registeredNodesInSafeRegistry {
+          node {
+            id
+          }
+        }
+        registeredNodesInNetworkRegistry {
+          node {
+            id
+          }
+        }
+      }
+      nodeManagementModules(
+        first: 1
+        where: {id: "${moduleAddress}"}
+      ) {
+        id
+        implementation
+        includedNodes {
+          node {
+            id
+          }
+        }
+        multiSend
+        target {
+          id
+        }
+      }
+      balances(where: {id: "all_the_safes"}) {
+        mHoprBalance
+        wxHoprBalance
+        xHoprBalance
+      }
+      _meta {
+        hasIndexingErrors
+        deployment
+        block {
+          hash
+          timestamp
+        }
+      }
+    }`
+
+
 
     try {
       const resp = await fetch(STAKING_V2_SUBGRAPH, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: QUERY,
+        body: GET_THEGRAPH_QUERY,
       });
       const json = await resp.json();
       console.log('SubgraphOutput', json);
 
-      let output = JSON.parse(JSON.stringify(initialState.safeInfo.data));
-      if (json.data.safes.length > 0) output = json.data.safes[0];
-      if (json.data.nodeManagementModules.length > 0) output.module = json.data.nodeManagementModules[0];
-      if (json.data.balances.length > 0) output.overall_staking_v2_balances = json.data.balances[0];
+      let output = JSON.parse(JSON.stringify(initialState.safeInfo));
+      if (json.safes.length > 0) output = json.safes[0];
+      if (json.nodeManagementModules.length > 0) output.module = json.nodeManagementModules[0];
+      if (json.balances.length > 0) output.overall_staking_v2_balances = json.balances[0];
 
       console.log('SubgraphParsedOutput', output);
       return output;
