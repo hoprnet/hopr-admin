@@ -1,11 +1,19 @@
 import styled from '@emotion/styled';
 import { Dialog, DialogContent, IconButton } from '@mui/material';
 
-export const SDialog = styled(Dialog)`
+export const SDialog = styled(({
+  width,
+  ...rest
+}: any) => <Dialog {...rest} />)`
   .MuiPaper-root {
     width: 100%;
+    ${(props) =>
+      props.maxWidth && `
+      max-width: ${props.maxWidth};
+    `}
   }
 `;
+
 export const TopBar = styled.div`
   width: 100%;
   display: flex;

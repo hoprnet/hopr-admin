@@ -39,8 +39,9 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
   const [loader, set_loader] = useState<boolean>(false);
   const [status, set_status] = useState<string>('');
   const [numberOfHops, set_numberOfHops] = useState<number | ''>('');
-  const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops'>('automaticPath');
-  const [automaticPath, set_automaticPath] = useState<boolean>(true);
+  const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops' | 'directMessage'>('directMessage');
+  const [automaticPath, set_automaticPath] = useState<boolean>(false);
+  const [directMessage, set_directMessage] = useState<boolean>(true);
   const [message, set_message] = useState<string>('');
   const [receiver, set_receiver] = useState<string>(peerId ? peerId : '');
   const [openModal, set_openModal] = useState<boolean>(false);
@@ -48,7 +49,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
   const maxLength = 500;
   const remainingChars = maxLength - message.length;
 
-  const nonAutomaticPathTooltip = 'Disable `automatic path` to enable `Number of hops`';
+  const nonAutomaticPathTooltip = 'Disable `direct message` and `automatic path` to enable this field';
 
   const loginData = useAppSelector((store) => store.auth.loginData);
   const aliases = useAppSelector((store) => store.node.aliases.data);
@@ -60,6 +61,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
         set_numberOfHops('');
         break;
       case 'numberOfHops':
+      case 'directMessage':
         set_automaticPath(false);
         set_path('');
         break;
@@ -75,14 +77,17 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
     set_loader(true);
     const validatedReceiver = validatePeerId(receiver);
 
-    const messagePayload: SendMessagePayloadType = {
+    let messagePayload: SendMessagePayloadType = {
       apiToken: loginData.apiToken,
       apiEndpoint: loginData.apiEndpoint,
       body: message,
       peerId: validatedReceiver,
       tag: 1,
     };
-    if (numberOfHops !== '') {
+
+    if (sendMode === 'directMessage') {
+      messagePayload.path = [];
+    } else if (numberOfHops !== '') {
       messagePayload.hops = numberOfHops;
     } else if (path !== '') {
       const pathElements = path.replace(/(\r\n|\n|\r| )/gm, '').split(',');
@@ -106,9 +111,16 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
       });
   };
 
+  const handleDirectMessage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    set_sendMode('directMessage');
+    set_directMessage(event.target.checked);
+    set_automaticPath(false);
+  };
+
   const handleAutomaticPath = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_sendMode('automaticPath');
     set_automaticPath(event.target.checked);
+    set_directMessage(false);
   };
 
   const handlePath = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -167,8 +179,9 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
       <SDialog
         open={openModal}
         onClose={handleCloseModal}
-        fullWidth={true}
+       // fullWidth={true}
         disableScrollLock={true}
+        maxWidth={'800px'}
       >
         <TopBar>
           <DialogTitle>Send Message</DialogTitle>
@@ -179,9 +192,10 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
             <CloseIcon />
           </SIconButton>
         </TopBar>
-        <SDialogContent>
+        <SDialogContent
+        >
           <TextField
-            label="Receiver"
+            label="Receiver (Peer Id)"
             placeholder="16Uiu2..."
             value={receiver}
             onChange={(e) => set_receiver(e.target.value)}
@@ -204,6 +218,12 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
           <span style={{ margin: '0px 0px -6px' }}>Send mode:</span>
           <PathOrHops>
             <Checkbox
+              label="Direct message"
+              value={directMessage}
+              onChange={handleDirectMessage}
+            />
+            or
+            <Checkbox
               label="Automatic path"
               value={automaticPath}
               onChange={handleAutomaticPath}
@@ -225,7 +245,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
                   max: 10,
                   step: 1,
                 }}
-                disabled={automaticPath}
+                disabled={automaticPath || directMessage}
               />
             </Tooltip>
             or
@@ -238,7 +258,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
                 placeholder="16Uiu2...9cTYntS3, 16Uiu2...9cDFSAa"
                 value={path}
                 onChange={handlePath}
-                disabled={automaticPath}
+                disabled={automaticPath || directMessage}
                 fullWidth
                 sx={{ maxWidth: '240px' }}
               />
@@ -248,9 +268,9 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
         <DialogActions>
           <Button
             onClick={handleSendMessage}
-            disabled={
-              (!automaticPath && numberOfHops === '' && path === '') || message.length === 0 || receiver.length === 0
-            }
+            // disabled={
+            //   (!automaticPath && numberOfHops === '' && path === '') || message.length === 0 || receiver.length === 0
+            // }
             style={{
               width: '100%',
               marginTop: '8px',
