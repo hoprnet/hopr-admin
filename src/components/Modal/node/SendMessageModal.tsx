@@ -179,7 +179,6 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
       <SDialog
         open={openModal}
         onClose={handleCloseModal}
-       // fullWidth={true}
         disableScrollLock={true}
         maxWidth={'800px'}
       >
