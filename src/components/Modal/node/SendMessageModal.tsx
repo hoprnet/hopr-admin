@@ -230,7 +230,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
             or
             <Tooltip
               title={nonAutomaticPathTooltip}
-              disableHoverListener={!automaticPath}
+              disableHoverListener={!(automaticPath || directMessage)}
             >
               <TextField
                 style={{ width: '180px' }}
@@ -250,7 +250,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
             or
             <Tooltip
               title={nonAutomaticPathTooltip}
-              disableHoverListener={!automaticPath}
+              disableHoverListener={!(automaticPath || directMessage)}
             >
               <TextField
                 label="Path"
