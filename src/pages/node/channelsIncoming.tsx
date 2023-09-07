@@ -13,7 +13,6 @@ import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 // Modals
-import { PingModal } from '../../components/Modal/node/PingModal';
 import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
 
 // Mui
@@ -23,19 +22,17 @@ function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((store) => store.node.channels.data);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
-  const aliases = useAppSelector((store) => store.node.aliases.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
-  const [tabIndex, set_tabIndex] = useState(0);
-  const tabLabel = tabIndex === 0 ? 'outgoing' : 'incoming';
-  const channelsData = tabIndex === 0 ? channels?.outgoing : channels?.incoming;
+
+  const tabLabel = 'incoming';
+  const channelsData = channels?.incoming;
 
   const [queryParams, set_queryParams] = useState('');
 
   const navigate = useNavigate();
-
-  const handleHash = (newTabIndex: number) => {
-    const newHash = newTabIndex === 0 ? 'outgoing' : 'incoming';
-    navigate(`?${queryParams}#${newHash}`, { replace: true });
+        
+  const handleHash = () => {
+    navigate(`?${queryParams}#incoming`, { replace: true });
   };
 
   useEffect(() => {
@@ -49,17 +46,9 @@ function ChannelsPage() {
   }, [loginData.apiToken, loginData.apiEndpoint]);
 
   useEffect(() => {
-    const currentHash = window.location.hash;
-    const defaultHash = currentHash === '#incoming' || currentHash === '#outgoing' ? currentHash : '#outgoing';
-
-    const defaultTabIndex = defaultHash === '#outgoing' ? 0 : 1;
-    set_tabIndex(defaultTabIndex);
-    handleHash(defaultTabIndex);
-
+    handleHash();
     handleRefresh();
   }, [queryParams]);
-
-  useEffect(() => {}, [tabIndex]);
 
   const handleRefresh = () => {
     dispatch(
@@ -76,39 +65,39 @@ function ChannelsPage() {
     );
   };
 
-  const getAliasByPeerId = (peerId: string): string => {
-    if (aliases) {
-      for (const [alias, id] of Object.entries(aliases)) {
-        if (id === peerId) {
-          return alias;
-        }
-      }
-    }
-    return peerId; // Return the peerId if alias not found for the given peerId
-  };
+  // const getAliasByPeerId = (peerId: string): string => {
+  //   if (aliases) {
+  //     for (const [alias, id] of Object.entries(aliases)) {
+  //       if (id === peerId) {
+  //         return alias;
+  //       }
+  //     }
+  //   }
+  //   return peerId; // Return the peerId if alias not found for the given peerId
+  // };
 
   const handleExport = () => {
     if (channelsData) {
       exportToCsv(
         Object.entries(channelsData).map(([, channel]) => ({
           channelId: channel.id,
-          peerId: channel.peerId,
+          peerAddress: channel.peerAddress,
           status: channel.status,
           dedicatedFunds: channel.balance,
         })),
-        `${tabLabel}-channels.csv`
+        `${tabLabel}-channels.csv`,
       );
     }
   };
 
-  const headerIncomming = [
+  const headerIncoming = [
     {
       key: 'key',
       name: '#',
     },
     {
-      key: 'peerId',
-      name: 'Peer Id',
+      key: 'peerAddress',
+      name: 'Peer Address',
       search: true,
       maxWidth: '568px',
       tooltip: true,
@@ -134,18 +123,19 @@ function ChannelsPage() {
     },
   ];
 
-  const parsedTableDataIncomming = Object.entries(channels?.incoming ?? []).map(([, channel], key) => {
+  const parsedTableDataIncoming = Object.entries(channels?.incoming ?? []).map(([, channel], key) => {
     return {
       id: channel.id,
       key: key.toString(),
-      peerId: getAliasByPeerId(channel.peerId),
+      peerAddress: channel.peerAddress,
       status: channel.status,
       funds: `${utils.formatEther(channel.balance)} ${HOPR_TOKEN_USED}`,
       actions: (
         <>
-          <PingModal peerId={channel.peerId} />
+          {/* we need a peer id from channels to make this work
+          <PingModal /> */}
           <OpenOrFundChannelModal
-            // peerAddress={channel.peerId} // FIXME: peerId should be peerAddress here
+            peerAddress={channel.peerAddress}
             title="Open outgoing channel"
             type={'open'}
           />
@@ -169,7 +159,13 @@ function ChannelsPage() {
           <>
             <IconButton
               iconComponent={<GetAppIcon />}
-              tooltipText={`Export ${tabLabel} channels as a CSV`}
+              tooltipText={
+                <span>
+                  EXPORT
+                  <br />
+                  {tabLabel} channels as a CSV
+                </span>
+              }
               disabled={!channelsData || Object.keys(channelsData).length === 0}
               onClick={handleExport}
             />
@@ -177,10 +173,10 @@ function ChannelsPage() {
         }
       />
       <TablePro
-        data={parsedTableDataIncomming}
-        header={headerIncomming}
+        data={parsedTableDataIncoming}
+        header={headerIncoming}
         search
-        loading={parsedTableDataIncomming.length === 0 && channelsFetching}
+        loading={parsedTableDataIncoming.length === 0 && channelsFetching}
       />
     </Section>
   );

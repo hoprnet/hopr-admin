@@ -8,13 +8,7 @@ import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
 import Button from '../../../future-hopr-lib-components/Button';
 
 // Mui
-import {
-  DialogTitle,
-  DialogActions,
-  CircularProgress,
-  TextField,
-  Tooltip
-} from '@mui/material'
+import { DialogTitle, DialogActions, CircularProgress, TextField, Tooltip } from '@mui/material';
 
 import { SendMessagePayloadType } from '@hoprnet/hopr-sdk';
 import CloseIcon from '@mui/icons-material/Close';
@@ -61,17 +55,17 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
 
   useEffect(() => {
     switch (sendMode) {
-    case 'path':
-      set_automaticPath(false);
-      set_numberOfHops('');
-      break;
-    case 'numberOfHops':
-      set_automaticPath(false);
-      set_path('');
-      break;
-    default: //'automaticPath'
-      set_numberOfHops('');
-      set_path('');
+      case 'path':
+        set_automaticPath(false);
+        set_numberOfHops('');
+        break;
+      case 'numberOfHops':
+        set_automaticPath(false);
+        set_path('');
+        break;
+      default: //'automaticPath'
+        set_numberOfHops('');
+        set_path('');
     }
   }, [sendMode, path, automaticPath, numberOfHops]);
 
@@ -85,7 +79,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
       apiToken: loginData.apiToken,
       apiEndpoint: loginData.apiEndpoint,
       body: message,
-      peerAddress: validatedReceiver,
+      peerId: validatedReceiver,
       tag: 1,
     };
     if (numberOfHops !== '') {
@@ -101,6 +95,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
       .then((res) => {
         console.log('@message: ', res?.challenge);
         set_status('Message sent');
+        handleCloseModal();
       })
       .catch((e) => {
         console.log('@message err:', e);
@@ -124,7 +119,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
   const handleNumberOfHops = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_sendMode('numberOfHops');
     set_numberOfHops(
-      parseInt(event.target.value) || parseInt(event.target.value) === 0 ? parseInt(event.target.value) : '',
+      parseInt(event.target.value) || parseInt(event.target.value) === 0 ? parseInt(event.target.value) : ''
     );
   };
 
@@ -159,7 +154,13 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
     <>
       <IconButton
         iconComponent={<ForwardToInboxIcon />}
-        tooltipText="Send Message"
+        tooltipText={
+          <span>
+            SEND
+            <br />
+            message
+          </span>
+        }
         onClick={handleOpenModal}
       />
 

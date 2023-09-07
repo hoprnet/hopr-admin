@@ -1,4 +1,3 @@
-import { HOPR_TOKEN_USED } from '../../../config';
 import { useAppSelector } from '../../store';
 import styled from '@emotion/styled';
 
@@ -85,6 +84,11 @@ const Data = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;
   }
+
+  a {
+    color: #007bff; /* Set the desired color for links */
+    text-decoration: underline;
+  }
 `;
 
 // TODO: make batter to work with balances
@@ -134,6 +138,8 @@ export default function Details(props: Props) {
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const walletBalance = useAppSelector((store) => store.web3.balance);
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
+  const loginData = useAppSelector((store) => store.auth.loginData);
+  const statistics = useAppSelector((store) => store.node.statistics.data);
 
   const web3Drawer = (
     <Web3Container style={props.style}>
@@ -199,15 +205,6 @@ export default function Details(props: Props) {
         <IconAndText>
           <IconContainer>
             <Icon
-              src="/assets/xHoprIcon.svg"
-              alt="xHOPR Icon"
-            />
-          </IconContainer>
-          <Text>{HOPR_TOKEN_USED}</Text>
-        </IconAndText>
-        <IconAndText>
-          <IconContainer>
-            <Icon
               src="/assets/xDaiIcon.svg"
               alt="xDai Icon"
             />
@@ -220,22 +217,26 @@ export default function Details(props: Props) {
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
-          <Text>Outgoing Chanels</Text>
+          <Text>Outgoing Channels</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
-          <Text>Incoming Chanels</Text>
+          <Text>Incoming Channels</Text>
+        </IconAndText>
+        <IconAndText>
+          <IconContainer></IconContainer>
+          <Text>Unredeemed tickets</Text>
         </IconAndText>
       </TitleColumn>
       <DataColumn>
         <DataTitle>Node</DataTitle>
         <Data className="nodeOnly">
           <p>{info?.connectivityStatus}</p>
-          <p>{balances.hopr?.formatted ?? '-'}</p>
           <p>{balances.native?.formatted ?? '-'}</p>
           <p>{truncateBalanceto5charsWhenNoDecimals(peers?.announced?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.outgoing?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.incoming?.length) || '-'}</p>
+          <p className="double">{truncateBalanceto5charsWhenNoDecimals(statistics?.unredeemed) || '-'}</p>
         </Data>
       </DataColumn>
     </Web3Container>

@@ -318,7 +318,14 @@ const stakingFaq: FaqData = {
       content: (
         <span>
           You can convert your xHOPR to wxHOPR by using our wrapper on the{' '}
-          <a href="https://wrapper.hoprnet.org/">staking hub</a>.
+          <a
+            href="https://wrapper.hoprnet.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            staking hub
+          </a>
+          .
         </span>
       ),
     },

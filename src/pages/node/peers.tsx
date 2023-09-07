@@ -35,13 +35,13 @@ function PeersPage() {
       actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      }),
+      })
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      }),
+      })
     );
   };
 
@@ -66,7 +66,7 @@ function PeersPage() {
           backoff: peer.backoff,
           isNew: peer.isNew,
         })),
-        'peers.csv',
+        'peers.csv'
       );
     }
   };
@@ -155,7 +155,13 @@ function PeersPage() {
             <PingModal />
             <IconButton
               iconComponent={<GetAppIcon />}
-              tooltipText="Export seen peers as a CSV"
+              tooltipText={
+                <span>
+                  EXPORT
+                  <br />
+                  seen peers as a CSV
+                </span>
+              }
               disabled={!peers?.announced || Object.keys(peers.announced).length === 0}
               onClick={handleExport}
             />

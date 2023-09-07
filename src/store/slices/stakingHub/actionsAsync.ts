@@ -9,8 +9,10 @@ import {
   MINIMUM_XDAI_TO_FUND_NODE
 } from '../../../../config';
 import NetworkRegistryAbi from '../../../abi/network-registry-abi.json';
-import { WalletClient, publicActions } from 'viem';
+import { Address, PublicClient, WalletClient, publicActions } from 'viem';
 import { gql } from 'graphql-request';
+import { stakingHubActions } from '.';
+import { safeActionsAsync } from '../safe';
 
 const getHubSafesByOwnerThunk = createAsyncThunk<
   {
@@ -321,6 +323,50 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
   },
 );
 
+const getOnboardingDataThunk = createAsyncThunk<
+  void,
+  { browserClient: PublicClient; safeAddress: string; safes: RootState['stakingHub']['safes']['data'] },
+  { state: RootState }
+>('stakingHub/getOnboardingData', async (payload, {
+  rejectWithValue,
+  dispatch,
+}) => {
+  dispatch(stakingHubActions.onboardingIsFetching(true));
+  await dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(payload.safeAddress)).unwrap();
+  const moduleAddress = payload.safes.find((elem) => elem.safeAddress === payload.safeAddress)?.moduleAddress;
+
+  if (!moduleAddress) {
+    return rejectWithValue('No module address found');
+  }
+
+  const subgraphResponse = await dispatch(
+    getSubgraphDataThunk({
+      safeAddress: payload.safeAddress,
+      moduleAddress,
+    }),
+  ).unwrap();
+
+  let nodeXDaiBalance = '0';
+
+  if (
+    subgraphResponse.registeredNodesInNetworkRegistryParsed?.length > 0 &&
+    subgraphResponse.registeredNodesInNetworkRegistryParsed[0] !== null
+  ) {
+    const nodeBalanceInBigInt = await payload.browserClient?.getBalance({ address: subgraphResponse.registeredNodesInNetworkRegistryParsed[0] as Address });
+    nodeXDaiBalance = nodeBalanceInBigInt?.toString() ?? '0';
+  }
+
+  dispatch(
+    stakingHubActions.useSafeForOnboarding({
+      safeAddress: payload.safeAddress,
+      moduleAddress,
+      nodeXDaiBalance,
+    }),
+  );
+  dispatch(goToStepWeShouldBeOnThunk());
+  dispatch(stakingHubActions.onboardingIsFetching(false));
+});
+
 // Helper actions to update the isFetching state
 const setHubSafesByOwnerFetching = createAction<boolean>('stakingHub/setHubSafesByOwnerFetching');
 const setSubgraphDataFetching = createAction<boolean>('stakingHub/setSubgraphDataFetching');
@@ -330,7 +376,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     if (action.payload) {
       state.safes.data = action.payload;
     }
-    if(action.payload.length === 0) {
+    if (action.payload.length === 0) {
       state.onboarding.notStarted = true;
     } else {
       state.onboarding.notStarted = false;
@@ -365,4 +411,5 @@ export const actionsAsync = {
   registerNodeAndSafeToNRThunk,
   getSubgraphDataThunk,
   goToStepWeShouldBeOnThunk,
+  getOnboardingDataThunk,
 };

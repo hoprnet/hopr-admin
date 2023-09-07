@@ -19,7 +19,7 @@ import HubIcon from '@mui/icons-material/Hub';
 
 type OpenOrFundChannelModalProps = {
   peerAddress?: string;
-  modalBtnText?: string;
+  modalBtnText?: string | JSX.Element;
   actionBtnText?: string;
   title?: string;
   type?: 'open' | 'fund';
@@ -57,7 +57,7 @@ export const OpenOrFundChannelModal = ({
           amount: weiValue,
           peerAddress: peerAddress,
           timeout: 60e3,
-        }),
+        })
       )
         .unwrap()
         .then(() => {
@@ -97,18 +97,18 @@ export const OpenOrFundChannelModal = ({
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      }),
+      })
     );
   };
 
   const icon = () => {
     switch (type) {
-    case 'open':
-      return <AddChannelIcon />;
-    case 'fund':
-      return <FundChannelIcon />;
-    default:
-      return <HubIcon />;
+      case 'open':
+        return <AddChannelIcon />;
+      case 'fund':
+        return <FundChannelIcon />;
+      default:
+        return <HubIcon />;
     }
   };
 
@@ -116,7 +116,17 @@ export const OpenOrFundChannelModal = ({
     <>
       <IconButton
         iconComponent={icon()}
-        tooltipText={modalBtnText ? modalBtnText : 'Open outgoing channel'}
+        tooltipText={
+          modalBtnText ? (
+            modalBtnText
+          ) : (
+            <span>
+              OPEN
+              <br />
+              outgoing channel
+            </span>
+          )
+        }
         onClick={handleOpenChannelDialog}
       />
       <SDialog
@@ -135,7 +145,7 @@ export const OpenOrFundChannelModal = ({
         </TopBar>
         <SDialogContent>
           <TextField
-            label="Peer Address"
+            label="Node Address"
             value={peerAddress}
             placeholder="0x4f5a...1728"
             onChange={(e) => set_peerAddress(e.target.value)}

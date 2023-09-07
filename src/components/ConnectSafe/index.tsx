@@ -15,7 +15,6 @@ import { appActions } from '../../store/slices/app';
 import { truncateEthereumAddress } from '../../utils/blockchain';
 
 //web3
-import { Address } from 'viem';
 import { browserClient } from '../../providers/wagmi';
 
 const AppBarContainer = styled(Button)`
@@ -73,8 +72,6 @@ export default function ConnectSafe() {
   const dispatch = useAppDispatch();
   const signer = useEthersSigner();
   const isConnected = useAppSelector((store) => store.web3.status.connected);
-  const account = useAppSelector((store) => store.web3.account);
-  //const safes = useAppSelector((store) => store.safe.safesByOwner.data);
   const safes = useAppSelector((store) => store.stakingHub.safes.data);
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
@@ -115,9 +112,15 @@ export default function ConnectSafe() {
   }, [safes]);
 
   useEffect(() => {
-    if (safeAddress) {
+    if (safeAddress && browserClient && safes) {
       useSelectedSafe(safeAddress);
-      getOnboardingData(safeAddress);
+      dispatch(
+        stakingHubActionsAsync.getOnboardingDataThunk({
+          browserClient,
+          safeAddress,
+          safes,
+        }),
+      );
     }
   }, [safeAddress]);
 
@@ -153,41 +156,6 @@ export default function ConnectSafe() {
         }),
       );
     }
-  };
-
-  const getOnboardingData = async (safeAddress: string) => {
-    dispatch(stakingHubActions.onboardingIsFetching(true));
-    await dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));
-    const moduleAddress = safes.filter((elem) => elem.safeAddress === safeAddress)[0].moduleAddress;
-    console.log('moduleAddress', moduleAddress);
-    const subgraphResponse = await dispatch(
-      stakingHubActionsAsync.getSubgraphDataThunk({
-        safeAddress,
-        moduleAddress,
-      }),
-    ).unwrap();
-    console.log('subgraphResponse', subgraphResponse);
-    let nodeXDaiBalance = '0';
-
-    if (
-      subgraphResponse.registeredNodesInNetworkRegistryParsed?.length > 0 &&
-      subgraphResponse.registeredNodesInNetworkRegistryParsed[0] !== null
-    ) {
-      console.log('Onboarding: we have a nodeAddress');
-      const nodeBalanceInBigInt = await browserClient?.getBalance({ address: subgraphResponse.registeredNodesInNetworkRegistryParsed[0] as Address });
-      nodeBalanceInBigInt && console.log('Onboarding: node xDai balance is', nodeBalanceInBigInt / BigInt(1e18));
-      nodeXDaiBalance = nodeBalanceInBigInt?.toString() ?? '0';
-    }
-
-    dispatch(
-      stakingHubActions.useSafeForOnboarding({
-        safeAddress,
-        moduleAddress,
-        nodeXDaiBalance,
-      }),
-    );
-    dispatch(stakingHubActionsAsync.goToStepWeShouldBeOnThunk());
-    dispatch(stakingHubActions.onboardingIsFetching(false));
   };
 
   // New function to handle opening the menu

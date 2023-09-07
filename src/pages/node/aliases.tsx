@@ -155,7 +155,13 @@ function AliasesPage() {
             <CSVUploader onParse={handleCSVUpload} />
             <IconButton
               iconComponent={<GetAppIcon />}
-              tooltipText="Export seen peers as a CSV"
+              tooltipText={
+                <span>
+                  EXPORT
+                  <br />
+                  aliases as a CSV
+                </span>
+              }
               disabled={aliases !== null && Object.keys(aliases).length === 0}
               onClick={handleExport}
             />
@@ -210,7 +216,13 @@ function DeleteAliasButton({
     <IconButton
       iconComponent={<RemoveAliasIcon />}
       aria-label="delete alias"
-      tooltipText={'Delete alias'}
+      tooltipText={
+        <span>
+          DELETE
+          <br />
+          alias
+        </span>
+      }
       onClick={() => {
         if (loginData.apiEndpoint && loginData.apiToken) {
           dispatch(
@@ -394,7 +406,13 @@ function CSVUploader<T extends ParsedData>({ onParse }: CSVUploaderProps<T>) {
     <div>
       <IconButton
         iconComponent={<DriveFolderUploadIcon />}
-        tooltipText="Import aliases from a CSV"
+        tooltipText={
+          <span>
+            IMPORT
+            <br />
+            aliases from a CSV
+          </span>
+        }
         onClick={handleImportClick}
       />
 

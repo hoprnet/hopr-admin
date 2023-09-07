@@ -15,7 +15,6 @@ import CloseChannelIcon from '../../future-hopr-lib-components/Icons/CloseChanne
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 // Modals
-import { PingModal } from '../../components/Modal/node/PingModal';
 import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
 import { OpenMultipleChannelsModal } from '../../components/Modal/node/OpenMultipleChannelsModal';
 
@@ -26,9 +25,7 @@ function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((store) => store.node.channels.data);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
-  const aliases = useAppSelector((store) => store.node.aliases.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
-  const [tabIndex, set_tabIndex] = useState(0);
   const [closingStates, set_closingStates] = useState<
     Record<
       string,
@@ -42,16 +39,15 @@ function ChannelsPage() {
       }
     >
   >({});
-  const tabLabel = tabIndex === 0 ? 'outgoing' : 'incoming';
-  const channelsData = tabIndex === 0 ? channels?.outgoing : channels?.incoming;
+  const tabLabel = 'outgoing';
+  const channelsData = channels?.outgoing;
 
   const [queryParams, set_queryParams] = useState('');
 
   const navigate = useNavigate();
 
-  const handleHash = (newTabIndex: number) => {
-    const newHash = newTabIndex === 0 ? 'outgoing' : 'incoming';
-    navigate(`?${queryParams}#${newHash}`, { replace: true });
+  const handleHash = () => {
+    navigate(`?${queryParams}#outgoing`, { replace: true });
   };
 
   useEffect(() => {
@@ -65,17 +61,9 @@ function ChannelsPage() {
   }, [loginData.apiToken, loginData.apiEndpoint]);
 
   useEffect(() => {
-    const currentHash = window.location.hash;
-    const defaultHash = currentHash === '#incoming' || currentHash === '#outgoing' ? currentHash : '#outgoing';
-
-    const defaultTabIndex = defaultHash === '#outgoing' ? 0 : 1;
-    set_tabIndex(defaultTabIndex);
-    handleHash(defaultTabIndex);
-
+    handleHash();
     handleRefresh();
   }, [queryParams]);
-
-  useEffect(() => {}, [tabIndex]);
 
   const handleRefresh = () => {
     dispatch(
@@ -92,23 +80,24 @@ function ChannelsPage() {
     );
   };
 
-  const getAliasByPeerId = (peerId: string): string => {
-    if (aliases) {
-      for (const [alias, id] of Object.entries(aliases)) {
-        if (id === peerId) {
-          return alias;
-        }
-      }
-    }
-    return peerId; // Return the peerId if alias not found for the given peerId
-  };
+  // TODO: update to getAliasByPeerAddress
+  // const getAliasByPeerId = (peerId: string): string => {
+  //   if (aliases) {
+  //     for (const [alias, id] of Object.entries(aliases)) {
+  //       if (id === peerId) {
+  //         return alias;
+  //       }
+  //     }
+  //   }
+  //   return peerId; // Return the peerId if alias not found for the given peerId
+  // };
 
   const handleExport = () => {
     if (channelsData) {
       exportToCsv(
         Object.entries(channelsData).map(([, channel]) => ({
           channelId: channel.id,
-          peerId: channel.peerId,
+          peerAddress: channel.peerAddress,
           status: channel.status,
           dedicatedFunds: channel.balance,
         })),
@@ -192,8 +181,8 @@ function ChannelsPage() {
       name: '#',
     },
     {
-      key: 'peerId',
-      name: 'Peer Id',
+      key: 'peerAddress',
+      name: 'Peer Address',
       search: true,
       tooltip: true,
       maxWidth: '168px',
@@ -224,23 +213,36 @@ function ChannelsPage() {
     return {
       id: channel.id,
       key: key.toString(),
-      peerId: getAliasByPeerId(channel.peerId),
+      peerAddress: channel.peerAddress,
       status: channel.status,
       funds: `${utils.formatEther(channel.balance)} ${HOPR_TOKEN_USED}`,
       actions: (
         <>
-          <PingModal peerId={channel.peerId} />
+          {/* we need a way to get peer id to ping from channel */}
+          {/* <PingModal peerId={channel.peerId} /> */}
           <OpenOrFundChannelModal
-            // peerAddress={channel.peerId} //FIXME: peerId should be peerAddress here
+            peerAddress={channel.peerAddress}
             title="Fund outgoing channel"
-            modalBtnText="Fund outgoing channel"
+            modalBtnText={
+              <span>
+                FUND
+                <br />
+                outgoing channel
+              </span>
+            }
             actionBtnText="Fund outgoing channel"
             type="fund"
           />
           <IconButton
             iconComponent={<CloseChannelIcon />}
             pending={closingStates[channel.id]?.closing}
-            tooltipText={`Close outgoing channel`}
+            tooltipText={
+              <span>
+                CLOSE
+                <br />
+                outgoing channel
+              </span>
+            }
             onClick={() => handleCloseChannels(channel.id)}
           />
         </>
@@ -266,12 +268,24 @@ function ChannelsPage() {
             <OpenOrFundChannelModal
               type={'fund'}
               title="Fund outgoing channel"
-              modalBtnText="Fund outgoing channel"
+              modalBtnText={
+                <span>
+                  FUND
+                  <br />
+                  outgoing channel
+                </span>
+              }
               actionBtnText="Fund outgoing channel"
             />
             <IconButton
               iconComponent={<GetAppIcon />}
-              tooltipText={`Export ${tabLabel} channels as a CSV`}
+              tooltipText={
+                <span>
+                  EXPORT
+                  <br />
+                  {tabLabel} channels as a CSV
+                </span>
+              }
               disabled={!channelsData || Object.keys(channelsData).length === 0}
               onClick={handleExport}
             />

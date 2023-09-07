@@ -49,7 +49,7 @@ export const PingModal = (props: PingModalProps) => {
           peerId,
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        }),
+        })
       )
         .unwrap()
         .then((resp: any) => {
@@ -91,7 +91,13 @@ export const PingModal = (props: PingModalProps) => {
     <>
       <IconButton
         iconComponent={<RssFeedIcon />}
-        tooltipText="Ping node"
+        tooltipText={
+          <span>
+            PING
+            <br />
+            node
+          </span>
+        }
         onClick={handleOpenModal}
       />
       <SDialog

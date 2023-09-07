@@ -33,7 +33,8 @@ import {
   utils,
   OpenChannelResponseType,
   CreateTokenResponseType,
-  GetPeerResponseType
+  GetPeerResponseType,
+  GetBalancesResponseType
 } from '@hoprnet/hopr-sdk';
 import { parseMetrics } from '../../../utils/metrics';
 import { RootState } from '../..';
@@ -167,7 +168,7 @@ const getAliasesThunk = createAsyncThunk<GetAliasesResponseType | undefined, Bas
 );
 
 const getBalancesThunk = createAsyncThunk<
-  { hopr: string; native: string } | undefined,
+  GetBalancesResponseType | undefined,
   BasePayloadType & { force?: boolean },
   { state: RootState; dispatch: ThunkDispatch<RootState, unknown, AnyAction> }
 >(
@@ -1045,7 +1046,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     }
     state.peerInfo.isFetching = false;
   });
-  builder.addCase(getPeerInfoThunk.rejected, (state, action) => {
+  builder.addCase(getPeerInfoThunk.rejected, (state) => {
     state.peerInfo.isFetching = false;
   });
   // getSettings
@@ -1199,14 +1200,14 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       const {
         balance,
         channelId,
-        destinationPeerId,
+        destinationAddress,
         status,
         sourcePeerId,
       } = action.payload[0];
 
       const personalPeerId = state.addresses.data.hopr;
 
-      // Check if it's incming or outgoing depending on the local peer id and the source peer id of the channel
+      // Check if it's incoming or outgoing depending on the local peer id and the source peer id of the channel
       const type = personalPeerId === sourcePeerId ? 'outgoing' : 'incoming';
 
       // find channel if it already exists
@@ -1218,7 +1219,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
           state.channels.data[type][channelIndex] = {
             balance,
             id: channelId,
-            peerId: destinationPeerId,
+            peerAddress: destinationAddress,
             status,
             type,
           };
@@ -1227,7 +1228,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
           state.channels.data[type].push({
             balance,
             id: channelId,
-            peerId: destinationPeerId,
+            peerAddress: destinationAddress,
             status,
             type,
           });
@@ -1242,7 +1243,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
             {
               balance,
               id: channelId,
-              peerId: destinationPeerId,
+              peerId: destinationAddress,
               status,
               type,
             },
@@ -1260,25 +1261,21 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     if (action.payload) {
       for (const updatedTicket of action.payload) {
         // using challenge as an id between tickets
-        const uniqueIdentifier = updatedTicket.challenge;
-        const existingIndex = state.tickets.data?.findIndex((ticket) => ticket.challenge === uniqueIdentifier);
-        const updatedTicketWithChannelId = {
-          ...updatedTicket,
-          channelId: action.meta.arg.channelId,
-        };
-
+        const uniqueIdentifier = updatedTicket.index;
+        const existingIndex = state.tickets.data?.findIndex((ticket) => ticket.index === uniqueIdentifier);
+  
         if (existingIndex && existingIndex !== -1 && state.tickets.data) {
           // Update the existing ticket with the new values
           state.tickets.data[existingIndex] = {
             ...state.tickets.data[existingIndex],
-            ...updatedTicketWithChannelId,
+            ...updatedTicket,
           };
         } else if (state.tickets.data) {
           // Add the updated ticket as a new object
-          state.tickets.data.push(updatedTicketWithChannelId);
+          state.tickets.data.push(updatedTicket);
         } else {
           // initialize tickets array
-          state.tickets.data = [updatedTicketWithChannelId];
+          state.tickets.data = [updatedTicket];
         }
       }
     }

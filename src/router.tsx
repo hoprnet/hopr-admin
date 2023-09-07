@@ -1,11 +1,5 @@
 import { useEffect } from 'react';
-import {
-  createBrowserRouter,
-  RouteObject,
-  useSearchParams,
-  Navigate,
-  useLocation
-} from 'react-router-dom'
+import { createBrowserRouter, RouteObject, useSearchParams, Navigate, useLocation } from 'react-router-dom';
 import { environment } from '../config';
 import { useDisconnect } from 'wagmi';
 
@@ -71,6 +65,9 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import PaidIcon from '@mui/icons-material/Paid';
 import WalletIcon from '@mui/icons-material/Wallet';
+import LinkIcon from '@mui/icons-material/Link';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import TelegramIcon from '@mui/icons-material/Telegram';
 import IncomingChannelsIcon from './future-hopr-lib-components/Icons/IncomingChannels';
 import OutgoingChannelsIcon from './future-hopr-lib-components/Icons/OutgoingChannels';
 import TrainIcon from './future-hopr-lib-components/Icons/TrainIcon';
@@ -79,8 +76,6 @@ import { stakingHubActions } from './store/slices/stakingHub';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyNotice from './pages/PrivacyNotice';
 import MetaMaskFox from './future-hopr-lib-components/Icons/MetaMaskFox';
-
-
 
 export type ApplicationMapType = {
   groupName: string;
@@ -95,7 +90,7 @@ export type ApplicationMapType = {
     element?: JSX.Element;
     inDrawer?: boolean | null;
     loginNeeded?: 'node' | 'web3' | 'safe';
-    onClick?: ()=>void;
+    onClick?: () => void;
     mobileOnly?: boolean | null;
   }[];
 }[];
@@ -170,18 +165,40 @@ export const applicationMapNode: ApplicationMapType = [
         loginNeeded: 'node',
       },
       {
-        name: 'INCOMING CHANNELS',
+        name: 'CHANNELS: IN',
         path: 'channels-INCOMING',
         icon: <IncomingChannelsIcon />,
         element: <ChannelsPageIncoming />,
         loginNeeded: 'node',
       },
       {
-        name: 'OUTGOING CHANNELS',
+        name: 'CHANNELS: OUT',
         path: 'channels-OUTGOING',
         icon: <OutgoingChannelsIcon />,
         element: <ChannelsPageOutgoing />,
         loginNeeded: 'node',
+      },
+    ],
+  },
+  {
+    groupName: 'LINKS',
+    path: 'links',
+    icon: <LinkIcon />,
+    items: [
+      {
+        name: 'Staking Hub',
+        path: 'https://hub.hoprnet.org/',
+        icon: <SavingsIcon />,
+      },
+      {
+        name: 'Docs',
+        path: 'https://docs.hoprnet.org/',
+        icon: <LibraryBooksIcon />,
+      },
+      {
+        name: 'Telegram',
+        path: 'https://t.me/hoprnet',
+        icon: <TelegramIcon />,
       },
     ],
   },
@@ -312,7 +329,7 @@ function createApplicationMap() {
   const temp: ApplicationMapType = [];
   if (environment === 'dev' || environment === 'node') applicationMapNode.map((elem) => temp.push(elem));
   if (environment === 'dev' || environment === 'web3') applicationMapStakingHub.map((elem) => temp.push(elem));
-  if (environment === 'dev' ) applicationMapDevWeb3.map((elem) => temp.push(elem));
+  if (environment === 'dev') applicationMapDevWeb3.map((elem) => temp.push(elem));
   if (environment === 'dev') applicationMapDev.map((elem) => temp.push(elem));
   return temp;
 }
@@ -348,7 +365,7 @@ const LayoutEnhanced = () => {
       authActions.useNodeData({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      }),
+      })
     );
     if (!apiToken) return;
     const useNode = async () => {
@@ -357,26 +374,26 @@ const LayoutEnhanced = () => {
           authActionsAsync.loginThunk({
             apiEndpoint,
             apiToken,
-          }),
+          })
         ).unwrap();
         if (loginInfo) {
           dispatch(
             nodeActionsAsync.getInfoThunk({
               apiToken,
               apiEndpoint,
-            }),
+            })
           );
           dispatch(
             nodeActionsAsync.getAddressesThunk({
               apiToken,
               apiEndpoint,
-            }),
+            })
           );
           dispatch(
             nodeActionsAsync.getAliasesThunk({
               apiToken,
               apiEndpoint,
-            }),
+            })
           );
           dispatch(nodeActions.initializeMessagesWebsocket());
           dispatch(nodeActions.initializeLogsWebsocket());
@@ -401,11 +418,9 @@ const LayoutEnhanced = () => {
   const showInfoBar = () => {
     if (
       environment === 'web3' &&
-      ( location.pathname === '/' ||
-        location.pathname === '/privacy-notice' ||
-        location.pathname === '/tos' 
-      )
-    ) return false;
+      (location.pathname === '/' || location.pathname === '/privacy-notice' || location.pathname === '/tos')
+    )
+      return false;
     if (isConnected || nodeConnected) return true;
     return false;
   };
@@ -418,24 +433,26 @@ const LayoutEnhanced = () => {
     dispatch(stakingHubActions.resetState());
   };
 
-  const drawerFunctionItems: ApplicationMapType = [{
-    groupName: 'CONNECTION',
-    path: 'function',
-    icon: <DevelopIcon />,
-    mobileOnly: true,
-    items: [
-      {
-        name: web3Connected ? 'Disconnect' : 'Connect Wallet',
-        path: 'function',
-        icon: <MetaMaskFox/>,
-        onClick: ()=>{
-          if(web3Connected) handleDisconnectMM();
-          else dispatch(web3Actions.setModalOpen(true));
+  const drawerFunctionItems: ApplicationMapType = [
+    {
+      groupName: 'CONNECTION',
+      path: 'function',
+      icon: <DevelopIcon />,
+      mobileOnly: true,
+      items: [
+        {
+          name: web3Connected ? 'Disconnect' : 'Connect Wallet',
+          path: 'function',
+          icon: <MetaMaskFox />,
+          onClick: () => {
+            if (web3Connected) handleDisconnectMM();
+            else dispatch(web3Actions.setModalOpen(true));
+          },
+          mobileOnly: true,
         },
-        mobileOnly: true,
-      },
-    ],
-  }];
+      ],
+    },
+  ];
 
   return (
     <Layout
