@@ -29,7 +29,7 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 
 
-### `docker build -t europe-west3-docker.pkg.dev/hoprassociation/docker-images/hopr-admin:latest .`
+### `docker build -f ./scripts/NodeAdmin.Dockerfile .`
 
 Builds the Node Admin docker image.
 
