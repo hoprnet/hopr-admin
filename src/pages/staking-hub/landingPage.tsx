@@ -776,12 +776,20 @@ const SafeSideToSideContainer = styled.div`
   }
   .ImageSide {
     align-items: center;
-  flex: 1;
-  max-width: 100%;
-  height: 420px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    flex: 1;
+    max-width: 100%;
+    height: 420px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @media screen and (max-width:320px) {
+      height: 310px;
+      img {
+        max-width: 200px;
+      }
+
+    }
   }
 `;
 
@@ -799,6 +807,10 @@ const SafeCard = styled(Card)`
   background-color: #E8F6FA;
   /* border-radius: 60px; */
   gap: 0.5rem;
+
+  @media screen and (max-width:320px) {
+    margin-left:0;
+  }
 `;
 
 const SafeAccordion = styled(Accordion)`
@@ -881,6 +893,10 @@ const MainTitle = styled.h2`
   text-transform: uppercase;
   /* padding-top: 2rem; */
   padding-bottom: 3rem;
+  @media screen and (max-width:320px) {
+    max-width: 320px;
+    font-size: 30px;
+  }
 `;
 
 
@@ -892,6 +908,10 @@ const CreateSafeContainer = styled.div`
   background-color: #E8F6FA;
   border-radius: 4rem;
   padding: 4rem;
+
+  @media screen and (max-width:320px) {
+    max-width: 320px;
+  }
 `
 
 const SafeContent = styled.div`
