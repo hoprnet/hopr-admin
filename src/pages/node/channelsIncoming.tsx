@@ -17,6 +17,7 @@ import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundCh
 
 // Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
+import { PingModal } from '../../components/Modal/node/PingModal';
 
 function ChannelsPage() {
   const dispatch = useAppDispatch();
@@ -83,7 +84,6 @@ function ChannelsPage() {
 
     if (aliases) {
       for (const [alias, id] of Object.entries(aliases)) {
-        console.log(`ID: ${id}: ${alias}`)
         if (id === peerId) {
           return alias;
         }
@@ -91,6 +91,14 @@ function ChannelsPage() {
     }
 
     return peerAddress
+  }
+
+
+  const getPeerIdFromPeerAddress = (peerAddress: string): string | undefined => {
+    const peerId = peers?.announced.find(peer => peer.peerAddress === peerAddress)?.peerId;
+    // console.log(`peeraddress ${peerAddress} | peerId ${peerId}`)
+
+    return peerId;
   }
 
   const handleExport = () => {
@@ -149,8 +157,7 @@ function ChannelsPage() {
       funds: `${utils.formatEther(channel.balance)} ${HOPR_TOKEN_USED}`,
       actions: (
         <>
-          {/* we need a peer id from channels to make this work
-          <PingModal /> */}
+          <PingModal peerId={getPeerIdFromPeerAddress(channel.peerAddress)} />
           <OpenOrFundChannelModal
             peerAddress={channel.peerAddress}
             title="Open outgoing channel"
