@@ -16,6 +16,8 @@ import Checkbox from '../../future-hopr-lib-components/Toggles/Checkbox';
 import Modal from '../../future-hopr-lib-components/Modal';
 import TextField from '../../future-hopr-lib-components/TextField';
 import Button from '../../future-hopr-lib-components/Button';
+import StyledGrayButton from '../../future-hopr-lib-components/Button/gray';
+
 
 // MUI
 import { Tooltip, IconButton } from '@mui/material';
@@ -120,6 +122,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   const [apiEndpoint, set_apiEndpoint] = useState(loginData.apiEndpoint ? loginData.apiEndpoint : '');
   const [apiToken, set_apiToken] = useState(loginData.apiToken ? loginData.apiToken : '');
   const [saveApiToken, set_saveApiToken] = useState(false);
+  const [areYouSureYouWannaDeleteAllSavedNodes, set_areYouSureYouWannaDeleteAllSavedNodes] = useState(false);
   const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] = useState('' as string);
 
   useEffect(() => {
@@ -269,6 +272,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   };
 
   return (
+    <>
     <SModal
       open={props.open}
       onClose={handleClose}
@@ -292,7 +296,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
             <IconButton
               aria-label="delete"
               disabled={nodesSavedLocally.length === 0}
-              onClick={clearLocalNodes}
+              onClick={()=>{set_areYouSureYouWannaDeleteAllSavedNodes(true)}}
             >
               <DeleteIcon />
             </IconButton>
@@ -372,6 +376,24 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         </Overlay>
       )}
     </SModal>
+
+    <Modal
+        open={areYouSureYouWannaDeleteAllSavedNodes}
+        onClose={()=>{set_areYouSureYouWannaDeleteAllSavedNodes(false)}}
+        disableScrollLock={true}
+        title='Are you sure that you wanna remove all saved nodes?'
+      >
+        <br/>
+        <ConnectContainer>
+          <StyledGrayButton onClick={()=>{set_areYouSureYouWannaDeleteAllSavedNodes(false)}}>No</StyledGrayButton>
+          <Button
+            onClick={clearLocalNodes}
+          >
+            Remove all
+          </Button>
+        </ConnectContainer>
+      </Modal>
+    </>
   );
 }
 
