@@ -22,8 +22,11 @@ function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((store) => store.node.channels.data);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
+<<<<<<< HEAD
   const aliases = useAppSelector((store) => store.node.aliases.data)
   const peers = useAppSelector((store) => store.node.peers.data)
+=======
+>>>>>>> main
   const loginData = useAppSelector((store) => store.auth.loginData);
 
   const tabLabel = 'incoming';
