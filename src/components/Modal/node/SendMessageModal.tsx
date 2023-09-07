@@ -267,9 +267,9 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
         <DialogActions>
           <Button
             onClick={handleSendMessage}
-            // disabled={
-            //   (!automaticPath && numberOfHops === '' && path === '') || message.length === 0 || receiver.length === 0
-            // }
+            disabled={
+              !directMessage && (!automaticPath && numberOfHops === '' && path === '') || message.length === 0 || receiver.length === 0
+            }
             style={{
               width: '100%',
               marginTop: '8px',
