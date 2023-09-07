@@ -58,6 +58,7 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
             onClose: () => {
               dispatch(updateMessagesWebsocketStatus(null));
             },
+            decodeMessage: false,
             onMessage: (message) => {
               dispatch(
                 messageReceived({
