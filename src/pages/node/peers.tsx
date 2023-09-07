@@ -59,6 +59,7 @@ function PeersPage() {
       exportToCsv(
         peers.announced.map((peer) => ({
           peerId: peer.peerId,
+          nodeAddress: peer.peerAddress,
           quality: peer.quality,
           multiAddr: peer.multiAddr,
           heartbeats: peer.heartbeats,
@@ -90,6 +91,13 @@ function PeersPage() {
       maxWidth: '160px',
     },
     {
+      key: 'peerAddress',
+      name: 'Node Address',
+      search: true,
+      tooltip: true,
+      maxWidth: '160px',
+    },
+    {
       key: 'lastSeen',
       name: 'Last seen',
       tooltip: true,
@@ -98,7 +106,7 @@ function PeersPage() {
     {
       key: 'quality',
       name: 'Quality',
-      maxWidth: '30px',
+      maxWidth: '20px',
     },
     {
       key: 'actions',
@@ -115,6 +123,7 @@ function PeersPage() {
       number: id,
       alias: aliases ? getAliasByPeerId(peer.peerId) : '',
       peerId: peer.peerId,
+      peerAddress: peer.peerAddress,
       quality: peer.quality.toFixed(2),
       lastSeen: new Date(peer.lastSeen).toLocaleString('en-US', {
         year: 'numeric',

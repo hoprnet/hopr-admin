@@ -1,4 +1,3 @@
-import { HOPR_TOKEN_USED } from '../../../config';
 import { useAppSelector } from '../../store';
 import styled from '@emotion/styled';
 
@@ -206,15 +205,6 @@ export default function Details(props: Props) {
         <IconAndText>
           <IconContainer>
             <Icon
-              src="/assets/xHoprIcon.svg"
-              alt="xHOPR Icon"
-            />
-          </IconContainer>
-          <Text>{HOPR_TOKEN_USED}</Text>
-        </IconAndText>
-        <IconAndText>
-          <IconContainer>
-            <Icon
               src="/assets/xDaiIcon.svg"
               alt="xDai Icon"
             />
@@ -227,11 +217,11 @@ export default function Details(props: Props) {
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
-          <Text>Outgoing Chanels</Text>
+          <Text>Outgoing Channels</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
-          <Text>Incoming Chanels</Text>
+          <Text>Incoming Channels</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
@@ -242,7 +232,6 @@ export default function Details(props: Props) {
         <DataTitle>Node</DataTitle>
         <Data className="nodeOnly">
           <p>{info?.connectivityStatus}</p>
-          <p>{balances.hopr?.formatted ?? '-'}</p>
           <p>{balances.native?.formatted ?? '-'}</p>
           <p>{truncateBalanceto5charsWhenNoDecimals(peers?.announced?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.outgoing?.length) || '-'}</p>

@@ -6,25 +6,36 @@ import erc721ABI from '../../../abi/erc721-abi.json';
 import { initialState } from './initialState';
 import { web3Actions } from '.';
 import { safeActions } from '../safe';
+import { gql } from 'graphql-request';
 
 const getCommunityNftsOwnedByWallet = createAsyncThunk(
   'web3/getCommunityNftsOwnedByWallet',
   async (payload: { account: string }, { rejectWithValue }) => {
     try {
       const account = payload.account;
+      const GET_THEGRAPH_QUERY = gql`
+        query getSubGraphNFTsUserDataForWallet {
+          _meta {
+            block {
+              timestamp
+              number
+            }
+          }
+          boosts(first: 1, where: {owner: "${account.toLocaleLowerCase()}", uri_ends_with: "Network_registry/community"}) {
+            id
+          }
+        }
+      `;
+
       const response = await fetch(STAKE_SUBGRAPH, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        // eslint-disable-next-line no-useless-escape
-        body: `{\"query\":\"\\n  query getSubGraphNFTsUserDataForWallet {\\n    _meta {\\n      block {\\n        timestamp\\n        number\\n      }\\n    }\\n    boosts(first: 1, where: {owner: \\\"${account.toLocaleLowerCase()}\\\", uri_ends_with: \\\"Network_registry/community\\\"}) {\\n      id}\\n  }\\n\"}`,
+        body: GET_THEGRAPH_QUERY
       });
       const responseJson: {
-        data: {
-          boosts: { id: string }[];
-        } | null;
+        boosts: { id: string }[];
       } = await response.json();
 
-      return responseJson.data;
+      return responseJson;
     } catch (e) {
       return rejectWithValue(e);
     }

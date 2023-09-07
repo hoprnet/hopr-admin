@@ -61,6 +61,8 @@ export const useWatcher = ({ intervalDuration = 15000 }: { intervalDuration?: nu
         minimumNodeBalances: {
           hopr: '0',
           native: parseEther('0.003').toString(),
+          safeHopr: '0',
+          safeNative: '0',
         },
         previousState: prevNodeBalances,
         updatePreviousData: (newNodeBalances) => {

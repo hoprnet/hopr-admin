@@ -145,7 +145,7 @@ export const OpenOrFundChannelModal = ({
         </TopBar>
         <SDialogContent>
           <TextField
-            label="Peer Address"
+            label="Node Address"
             value={peerAddress}
             placeholder="0x4f5a...1728"
             onChange={(e) => set_peerAddress(e.target.value)}

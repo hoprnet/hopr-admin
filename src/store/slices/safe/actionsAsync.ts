@@ -34,6 +34,7 @@ import {
   SAFE_SERVICE_URL,
   STAKE_SUBGRAPH
 } from '../../../../config';
+import { gql } from 'graphql-request';
 import hoprNodeStakeFactoryAbi from '../../../abi/nodeStakeFactoryAbi.json';
 import {
   getCurrencyFromHistoryTransaction,
@@ -1200,20 +1201,29 @@ const createSafeWithConfigThunk = createAsyncThunk<
 const getCommunityNftsOwnedBySafeThunk = createAsyncThunk(
   'web3/getCommunityNftsOwnedBySafe',
   async (account: string, { rejectWithValue }) => {
+    const GET_THEGRAPH_QUERY = gql`
+      query getSubGraphNFTsUserDataForSafe {
+        _meta {
+          block {
+            timestamp
+            number
+          }
+        }
+        boosts(first: 1, where: {owner: "${account.toLocaleLowerCase()}", uri_ends_with: "Network_registry/community"}) {
+          id
+        }
+      }
+    `;
     try {
       const response = await fetch(STAKE_SUBGRAPH, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        // eslint-disable-next-line no-useless-escape
-        body: `{\"query\":\"\\n  query getSubGraphNFTsUserDataForSafe {\\n    _meta {\\n      block {\\n        timestamp\\n        number\\n      }\\n    }\\n    boosts(first: 1, where: {owner: \\\"${account.toLocaleLowerCase()}\\\", uri_ends_with: \\\"Network_registry/community\\\"}) {\\n      id}\\n  }\\n\"}`,
+        body: GET_THEGRAPH_QUERY
       });
       const responseJson: {
-        data: {
-          boosts: { id: string }[];
-        } | null;
+        boosts: { id: string }[] | null;
       } = await response.json();
 
-      return responseJson.data;
+      return responseJson;
     } catch (e) {
       if (e instanceof Error) {
         return rejectWithValue(e.message);
@@ -1414,7 +1424,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   builder.addCase(getCommunityNftsOwnedBySafeThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      if (action.payload?.boosts.length > 0 && action.payload?.boosts[0].id) {
+      if (action.payload.boosts && action.payload.boosts.length > 0 && action.payload.boosts[0].id) {
         state.communityNftId = parseInt(action.payload?.boosts[0].id);
       }
     }

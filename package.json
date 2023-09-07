@@ -1,12 +1,12 @@
 {
   "name": "hopr-admin",
-  "version": "0.4.1",
+  "version": "0.5.1",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.0",
-    "@hoprnet/hopr-sdk": "^2.0.0-beta.7",
+    "@hoprnet/hopr-sdk": "^2.0.0-beta.9",
     "@metamask/jazzicon": "^2.0.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.0",
@@ -26,6 +26,8 @@
     "dayjs": "^1.11.9",
     "ethers": "5.7.2",
     "fathom-client": "^3.5.0",
+    "graphql": "^16.8.0",
+    "graphql-request": "^6.1.0",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
     "node-stdlib-browser": "^1.2.0",

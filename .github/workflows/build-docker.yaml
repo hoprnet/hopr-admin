@@ -1,5 +1,5 @@
 ---
-name: Build Docker
+name: Build Node Admin Docker
 
 on:
   workflow_dispatch:
@@ -46,6 +46,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          file: Dockerfile
+          file: scripts/NodeAdmin.Dockerfile
           tags: europe-west3-docker.pkg.dev/${{ secrets.GOOGLE_HOPRASSOCIATION_PROJECT }}/docker-images/hopr-admin:${{ github.event.inputs.tag }}
   
