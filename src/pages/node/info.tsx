@@ -11,7 +11,6 @@ import { TableExtended } from '../../future-hopr-lib-components/Table/columed-da
 import { SubpageTitle } from '../../components/SubpageTitle';
 import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
 import WithdrawModal from '../../components/Modal/node/WithdrawModal';
-import { HOPR_TOKEN_USED } from '../../../config';
 
 function InfoPage() {
   const dispatch = useAppDispatch();
@@ -225,19 +224,6 @@ function InfoPage() {
                 </Tooltip>
               </th>
               <td>{balances.native?.formatted} xDai</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title={`The amount of ${HOPR_TOKEN_USED} tokens stored on your node`}
-                  notWide
-                >
-                  <span>Hopr</span>
-                </Tooltip>
-              </th>
-              <td>
-                {balances.hopr?.formatted} {HOPR_TOKEN_USED}
-              </td>
             </tr>
           </tbody>
         </TableExtended>
