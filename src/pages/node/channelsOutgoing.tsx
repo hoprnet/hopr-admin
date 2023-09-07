@@ -20,6 +20,7 @@ import { OpenMultipleChannelsModal } from '../../components/Modal/node/OpenMulti
 
 // Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
+import { PingModal } from '../../components/Modal/node/PingModal';
 
 function ChannelsPage() {
   const dispatch = useAppDispatch();
@@ -107,6 +108,13 @@ function ChannelsPage() {
 
     return peerAddress
   }
+
+  const getPeerIdFromPeerAddress = (peerAddress: string): string => {
+    const peerId = peers?.announced.find(peer => peer.peerAddress === peerAddress)?.peerId;
+
+    return peerId!;
+  }
+
 
   const handleExport = () => {
     if (channelsData) {
@@ -234,8 +242,7 @@ function ChannelsPage() {
       funds: `${utils.formatEther(channel.balance)} ${HOPR_TOKEN_USED}`,
       actions: (
         <>
-          {/* we need a way to get peer id to ping from channel */}
-          {/* <PingModal peerId={channel.peerId} /> */}
+          <PingModal peerId={getPeerIdFromPeerAddress(channel.peerAddress)} />
           <OpenOrFundChannelModal
             peerAddress={channel.peerAddress}
             title="Fund outgoing channel"
