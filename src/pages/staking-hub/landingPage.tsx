@@ -788,7 +788,14 @@ const SafeSideToSideContainer = styled.div`
       img {
         max-width: 200px;
       }
+    }
 
+    @media screen and (min-width:321px) and (max-width: 560px) {
+      height: 310px;
+      margin: auto;
+      img {
+        max-width: 250px;
+      }
     }
   }
 `;
@@ -808,8 +815,8 @@ const SafeCard = styled(Card)`
   /* border-radius: 60px; */
   gap: 0.5rem;
 
-  @media screen and (max-width:320px) {
-    margin-left:0;
+  @media screen and (min-width: 200px) and (max-width: 1024px) {
+    margin: auto;
   }
 `;
 
@@ -822,10 +829,6 @@ const SafeAccordion = styled(Accordion)`
   padding: 0rem 0.5rem;
   overflow: hidden;
 
-  /* border-top-left-radius: 5rem;
-  border-top-right-radius: 5rem;
-  border-bottom-right-radius: 5rem;
-  border-bottom-left-radius: 5rem ; */
 
   &::before {
     display: none;
@@ -891,10 +894,15 @@ const MainTitle = styled.h2`
   font-weight: 400;
   margin-block: 0rem;
   text-transform: uppercase;
-  /* padding-top: 2rem; */
   padding-bottom: 3rem;
+
   @media screen and (max-width:320px) {
     max-width: 320px;
+    font-size: 30px;
+  }
+
+  @media screen and (min-width:321px) and (max-width: 560px) {
+    max-width: 321px;
     font-size: 30px;
   }
 `;
@@ -911,6 +919,10 @@ const CreateSafeContainer = styled.div`
 
   @media screen and (max-width:320px) {
     max-width: 320px;
+  }
+
+  @media screen and (min-width:321px) and (max-width: 560px) {
+    max-width: 321px;
   }
 `
 
