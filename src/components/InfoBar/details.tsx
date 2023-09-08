@@ -78,7 +78,7 @@ const Data = styled.div`
     width: 66px;
   }
   p.double {
-    line-height: 2;
+    line-height: 2.5;
   }
   p {
     text-overflow: ellipsis;
@@ -227,6 +227,10 @@ export default function Details(props: Props) {
           <IconContainer></IconContainer>
           <Text>Unredeemed tickets</Text>
         </IconAndText>
+        <IconAndText>
+          <IconContainer></IconContainer>
+          <Text>Redeemed tickets</Text>
+        </IconAndText>
       </TitleColumn>
       <DataColumn>
         <DataTitle>Node</DataTitle>
@@ -237,6 +241,7 @@ export default function Details(props: Props) {
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.outgoing?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.incoming?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(statistics?.unredeemed) || '-'}</p>
+          <p className="double">{truncateBalanceto5charsWhenNoDecimals(statistics?.redeemed) || '-'}</p>
         </Data>
       </DataColumn>
     </Web3Container>
