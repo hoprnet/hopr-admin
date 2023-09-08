@@ -47,13 +47,16 @@ const Content = styled.div`
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
+    width: 100%;
   }
 
-  #wxhopr-total-stake {
-    flex: 1;
+  .half-line {
+    display: flex;
+    flex-wrap: wrap;
+    width: calc(50% - 1rem);
   }
 
-  #xdai-in-safe {
+  #redeemed-tickets, #earned-rewards, #wxhopr-total-stake, #xdai-in-safe, #remaining-wxhopr-allowance {
     flex: 1;
   }
 
@@ -222,6 +225,8 @@ const StakingScreen = () => {
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as `0x${string}`;
   const moduleAddress = useAppSelector((store) => store.stakingHub.onboarding.moduleAddress) as `0x${string}`;
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
+  const wxHoprAllowance = useAppSelector((store) => store.stakingHub.safeInfo.data.allowance.wxHoprAllowance);
+
   const [openBuyModal, set_openBuyModal] = useState(false);
 
   return (
@@ -340,6 +345,21 @@ const StakingScreen = () => {
           //   label: '-%/24h',
           //   color: 'error',
           // }}
+          />
+        </div>
+        <div className='half-line'>
+          <GrayCard
+            id="remaining-wxhopr-allowance"
+            title="Remaining wxHOPR Allowance
+            to Channels"
+            value={wxHoprAllowance ?? '-'}
+            currency="wxHOPR"
+            buttons={[
+              {
+                text: 'Adjust',
+                link: '/staking/set-allowance',
+              },
+            ]}
           />
         </div>
         <BuyXHopr
