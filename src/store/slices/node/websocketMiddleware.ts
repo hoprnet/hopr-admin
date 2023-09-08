@@ -52,15 +52,28 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
             onClose: () => {
               dispatch(updateMessagesWebsocketStatus(null));
             },
+            decodeMessage: false,
             onMessage: (message) => {
-              dispatch(
-                messageReceived({
-                  id: nanoid(),
-                  body: message,
-                  createdAt: Date.now(),
-                  seen: false,
-                }),
-              );
+              try {
+                const messageJSON: { type: 'message' | 'message-ack'; tag?: number; body?: string; id?: string } =
+                  JSON.parse(message);
+                
+                // only show messages
+                if (messageJSON.type !== 'message') return;
+
+                if (messageJSON.body) {
+                  dispatch(
+                    messageReceived({
+                      id: nanoid(),
+                      body: messageJSON.body,
+                      createdAt: Date.now(),
+                      seen: false,
+                    }),
+                  );
+                }
+              } catch (e) {
+                console.error('could not parse incoming message');
+              }
             },
           });
         } catch (e) {

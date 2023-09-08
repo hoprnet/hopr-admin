@@ -377,7 +377,7 @@ function SafeSection() {
           }
         }}
       >
-        approve
+        set to max and approve
       </button>
       <h2>safe store</h2>
       <pre>{JSON.stringify(safe, null, 4)}</pre>

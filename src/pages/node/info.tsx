@@ -220,10 +220,32 @@ function InfoPage() {
                   title="The amount of xDAI stored on your node"
                   notWide
                 >
-                  <span>Native</span>
+                  <span>xDAI (Node)</span>
                 </Tooltip>
               </th>
-              <td>{balances.native?.formatted} xDai</td>
+              <td>{balances.native?.formatted} xDAI</td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The amount of xDAI stored on your node"
+                  notWide
+                >
+                  <span>xDAI (Safe)</span>
+                </Tooltip>
+              </th>
+              <td>{balances.safeNative?.formatted} xDAI</td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The amount of xDAI stored on your node"
+                  notWide
+                >
+                  <span>wxHOPR (Safe)</span>
+                </Tooltip>
+              </th>
+              <td>{balances.safeHopr?.formatted} wxHOPR</td>
             </tr>
           </tbody>
         </TableExtended>
@@ -247,13 +269,35 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="Your node's Ethereum address, this is where you send your node tokens/funds."
+                  title="Your node's Ethereum address."
                   notWide
                 >
                   <span>Node Address</span>
                 </Tooltip>
               </th>
               <td>{addresses?.native}</td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="Your safe's Ethereum address."
+                  notWide
+                >
+                  <span>Safe Address</span>
+                </Tooltip>
+              </th>
+              <td>{info?.nodeSafe}</td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="Your module's Ethereum address."
+                  notWide
+                >
+                  <span>Module Address</span>
+                </Tooltip>
+              </th>
+              <td>{info?.nodeManagementModule}</td>
             </tr>
             <tr>
               <th>
