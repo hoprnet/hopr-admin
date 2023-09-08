@@ -30,17 +30,18 @@ export const DASHBOARD = {
 } as { [key: string]: number};
 
 const getTabIndexFromUrl = () => {
-  const currentHash = window.location.hash.replace('#', '');
-  console.log(currentHash)
-  switch(currentHash){
+  let currentHash = window.location.hash.replace('#', '');
+  if (currentHash == "") currentHash = "staking";
+  switch (currentHash) {
     case 'node':
       return DASHBOARD.node;
     case 'safe':
       return DASHBOARD.safe;
     case 'transactions':
       return DASHBOARD.transactions;
-    default: 
-      return DASHBOARD.staking;  
+    default:
+      window.location.hash = `#${currentHash}`;
+      return DASHBOARD.staking;
   }
 };
 
