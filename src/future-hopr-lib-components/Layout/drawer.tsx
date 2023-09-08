@@ -5,19 +5,24 @@ import {
   Divider,
   List,
   ListItemButton,
+  ListItemButtonTypeMap,
   ListItemIcon,
   ListItemText,
   ListSubheader,
   Drawer as MuiDrawer,
   Tooltip,
-  useMediaQuery
 } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { ApplicationMapType } from '../../router';
+import { useMediaQuery } from '@mui/material';
 import Details from '../../components/InfoBar/details';
 
 const drawerWidth = 240;
 const minDrawerWidth = 56;
+
+interface SListItemButtonTypeMap extends ListItemButtonTypeMap {
+  rel?: string;
+}
 
 const StyledDrawer = styled(MuiDrawer)`
   .MuiDrawer-paper {
@@ -33,7 +38,7 @@ const StyledDrawer = styled(MuiDrawer)`
     width: ${(props) => (props.open ? `${drawerWidth}px` : `${minDrawerWidth}px`)};
 
     ${(props) =>
-    props.variant === 'temporary' &&
+      props.variant === 'temporary' &&
       css`
         width: ${drawerWidth}px;
       `}
@@ -107,7 +112,7 @@ const StyledListItemButton = styled(ListItemButton)`
       fill: #0000b4;
     }
   }
-` as typeof ListItemButton;
+`;
 
 const SListItemIcon = styled(ListItemIcon)`
   &.GroupIcon {
@@ -206,16 +211,13 @@ const Drawer = ({
                         placement="right"
                       >
                         <StyledListItemButton
-                          component={item.onClick ? 'button' : Link}
+                          component={item.onClick ? null : Link}
                           to={
-                            item.path.includes('http')
-                              ? item.path
-                              : item.overwritePath
-                                ? item.overwritePath
-                                : `${group.path}/${item.path}${searchParams ?? ''}`
+                            item.path.includes('http') ? item.path : `${group.path}/${item.path}${searchParams ?? ''}`
                           }
-                          target={item.path.includes('http') ? '_blank' : undefined}
-                          rel={item.path.includes('http') ? 'noopener noreferrer' : undefined}
+                          target={item.path.includes('http') ? '_blank' : null}
+                          //@ts-ignore
+                          rel={item.path.includes('http') ? 'noopener noreferrer' : null}
                           selected={location.pathname === `/${group.path}/${item.path}`}
                           disabled={
                             item.path.includes('http')
@@ -230,11 +232,11 @@ const Drawer = ({
                           <ListItemText className="ListItemText">{item.name}</ListItemText>
                         </StyledListItemButton>
                       </Tooltip>
-                    ),
+                    )
                 )}
               </List>
             </div>
-          ),
+          )
       )}
       {drawerVariant === 'temporary' && <Details style={{ margin: '0 auto 16px' }} />}
     </StyledDrawer>
