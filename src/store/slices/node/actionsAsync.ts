@@ -1008,6 +1008,14 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
           value: action.payload.hopr,
           formatted: formatEther(BigInt(action.payload.hopr)),
         },
+        safeHopr: {
+          value: action.payload.safeHopr,
+          formatted: formatEther(BigInt(action.payload.safeHopr)),
+        },
+        safeNative: {
+          value: action.payload.safeNative,
+          formatted: formatEther(BigInt(action.payload.safeNative)),
+        },
       };
       state.balances.isFetching = false;
     }

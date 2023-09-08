@@ -116,7 +116,15 @@ export const OpenOrFundChannelModal = ({
     <>
       <IconButton
         iconComponent={icon()}
+        disabled={type === 'fund'}
         tooltipText={
+          type === 'fund' ? 
+          <span>
+            FUND
+            <br />
+            function not avalible yet
+          </span>
+          :
           modalBtnText ? (
             modalBtnText
           ) : (
