@@ -64,14 +64,9 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
       set_numberOfHops('');
       break;
     case 'numberOfHops':
-    case 'directMessage':
       set_path('');
       break;
-    case 'none':
-      set_numberOfHops('');
-      set_path('');
-      break;
-    default: //'automaticPath'
+    default: //anything that is not a custom route
       set_numberOfHops('');
       set_path('');
     }
