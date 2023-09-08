@@ -68,14 +68,16 @@ export const IconButton = ({
       className={className}
       style={style}
     >
-      <SIconButton
-        disabled={disabled || pending}
-        className={`${reloading ? 'reloading' : ''}`}
-        onClick={onClick}
-      >
-        {iconComponent}
-        {pending && <SCircularProgress className={'pending'} />}
-      </SIconButton>
+      <span>
+        <SIconButton
+          disabled={disabled || pending}
+          className={`${reloading ? 'reloading' : ''}`}
+          onClick={onClick}
+        >
+          {iconComponent}
+          {pending && <SCircularProgress className={'pending'} />}
+        </SIconButton>
+      </span>
     </Tooltip>
   );
 };
