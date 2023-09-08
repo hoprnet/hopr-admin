@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import Button from '../../../../future-hopr-lib-components/Button';
 import { Address, parseUnits } from 'viem';
 import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
 import { StepContainer, ConfirmButton } from '../components';
@@ -12,6 +11,7 @@ import { MINIMUM_XDAI_TO_FUND_NODE } from '../../../../../config';
 import { useAppSelector, useAppDispatch } from '../../../../store';
 import { safeActionsAsync } from '../../../../store/slices/safe';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
+import { FeedbackTransaction } from '../../../../components/FeedbackTransaction';
 
 const StyledForm = styled.div`
   width: 100%;
@@ -60,17 +60,16 @@ export default function FundNode() {
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const nodeAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
   const safeXDaiBalance = useAppSelector((store) => store.safe.balance.data.xDai.formatted) as string;
-
+  const isExecutionLoading = useAppSelector((store) => store.safe.executeTransaction.isFetching);
   // local states
   const [xdaiValue, set_xdaiValue] = useState<string>('');
-  const [isExecutionLoading, set_isExecutionLoading] = useState<boolean>();
   const [error, set_error] = useState<boolean>(false);
+  const [transactionHash, set_transactionHash] = useState<Address>();
 
   const signer = useEthersSigner();
 
   const createAndExecuteTx = () => {
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
-    set_isExecutionLoading(true);
 
     dispatch(
       safeActionsAsync.createAndExecuteTransactionThunk({
@@ -84,12 +83,12 @@ export default function FundNode() {
       }),
     )
       .unwrap()
-      .then(() => {
+      .then((hash) => {
+        set_transactionHash(hash as Address)
         dispatch(stakingHubActions.setOnboardingStep(15));
-        set_isExecutionLoading(false);
       })
       .catch(() => {
-        set_isExecutionLoading(false);
+        set_error(true);
       });
   };
 
@@ -147,6 +146,7 @@ export default function FundNode() {
           </StyledInputGroup>
         </StyledForm>
         {isExecutionLoading && <p>Executing transaction...</p>}
+        <FeedbackTransaction  confirmations={1} transactionHash={transactionHash} feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}/>
       </div>
     </StepContainer>
   );

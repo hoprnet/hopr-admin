@@ -27,8 +27,8 @@ export const STAKING_V2_SUBGRAPH = 'https://stake.hoprnet.org/api/hub/subgraph-d
 export const VITE_WALLET_CONNECT_PROJECT_ID = 'efdce6b5c6b10913211ff1b40bc4d54d';
 
 // Minimum to be funded
-export const MINIMUM_WXHOPR_TO_FUND = 0.03;
+export const MINIMUM_WXHOPR_TO_FUND = 30_000;
 export const MINIMUM_WXHOPR_TO_FUND_NFT = 10_000;
-export const MINIMUM_XDAI_TO_FUND = 0.02;
-export const MINIMUM_XDAI_TO_FUND_NODE = 0.01;
+export const MINIMUM_XDAI_TO_FUND = 2;
+export const MINIMUM_XDAI_TO_FUND_NODE = 1;
 export const DEFAULT_ALLOWANCE = 1000;
