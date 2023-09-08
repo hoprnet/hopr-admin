@@ -1,6 +1,5 @@
 // UI
 import styled from '@emotion/styled';
-import { DEFAULT_ALLOWANCE, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../../../config';
 import Button from '../../../../future-hopr-lib-components/Button';
 import { useEthersSigner } from '../../../../hooks';
 import { ConfirmButton, StepContainer } from '../components';
@@ -8,6 +7,7 @@ import { Lowercase, StyledCoinLabel, StyledInputGroup, StyledTextField } from '.
 
 // Blockchain
 import { Address, parseUnits } from 'viem';
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, DEFAULT_ALLOWANCE, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../../../config';
 import { createApproveTransactionData } from '../../../../utils/blockchain';
 
 // Store
@@ -31,18 +31,17 @@ const StyledText = styled.h3`
 export default function SetAllowance() {
   const dispatch = useAppDispatch();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
-  const nodeAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
   const signer = useEthersSigner();
   const [wxHoprValue, set_wxHoprValue] = useState('');
   const [loading, set_loading] = useState(false);
   const [transactionHash, set_transactionHash] = useState<Address>();
 
   const setAllowance = async () => {
-    if (signer && selectedSafeAddress && nodeAddress) {
+    if (signer && selectedSafeAddress && HOPR_CHANNELS_SMART_CONTRACT_ADDRESS) {
       set_loading(true);
       await dispatch(
         safeActionsAsync.createAndExecuteContractTransactionThunk({
-          data: createApproveTransactionData(nodeAddress, parseUnits(wxHoprValue, 18)),
+          data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,parseUnits(wxHoprValue, 18)),
           signer,
           safeAddress: selectedSafeAddress,
           smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,

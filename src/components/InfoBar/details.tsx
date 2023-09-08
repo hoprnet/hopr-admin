@@ -42,12 +42,15 @@ const IconAndText = styled.div`
 
 const Icon = styled.img`
   display: block;
-  height: 100%;
-  width: 100%;
+  height: 1rem;
+  width: 1rem;
 `;
 
 const Text = styled.p`
   font-weight: 600;
+  &.noWrap {
+    white-space: nowrap;
+  }
 `;
 
 const DataColumn = styled.div<{ show?: boolean }>`
@@ -76,9 +79,10 @@ const Data = styled.div`
   flex-grow: 1;
   &.nodeOnly {
     width: 66px;
+    margin-top: 40px;
   }
   p.double {
-    line-height: 2;
+    line-height: 2.5;
   }
   p {
     text-overflow: ellipsis;
@@ -209,7 +213,25 @@ export default function Details(props: Props) {
               alt="xDai Icon"
             />
           </IconContainer>
-          <Text>xDAI</Text>
+          <Text>xDAI (Node)</Text>
+        </IconAndText>
+        <IconAndText>
+          <IconContainer>
+            <Icon
+              src="/assets/xDaiIcon.svg"
+              alt="xDai Icon"
+            />
+          </IconContainer>
+          <Text>xDAI (Safe)</Text>
+        </IconAndText>
+        <IconAndText>
+          <IconContainer>
+            <Icon
+              src="/assets/wxHoprIcon.svg"
+              alt="xDai Icon"
+            />
+          </IconContainer>
+          <Text className='noWrap'>wxHOPR (Safe)</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
@@ -227,16 +249,22 @@ export default function Details(props: Props) {
           <IconContainer></IconContainer>
           <Text>Unredeemed tickets</Text>
         </IconAndText>
+        <IconAndText>
+          <IconContainer></IconContainer>
+          <Text>Redeemed tickets</Text>
+        </IconAndText>
       </TitleColumn>
       <DataColumn>
-        <DataTitle>Node</DataTitle>
         <Data className="nodeOnly">
           <p>{info?.connectivityStatus}</p>
           <p>{balances.native?.formatted ?? '-'}</p>
+          <p>{balances.safeNative?.formatted ?? '-'}</p>
+          <p>{balances.safeHopr?.formatted ?? '-'}</p>
           <p>{truncateBalanceto5charsWhenNoDecimals(peers?.announced?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.outgoing?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.incoming?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(statistics?.unredeemed) || '-'}</p>
+          <p className="double">{truncateBalanceto5charsWhenNoDecimals(statistics?.redeemed) || '-'}</p>
         </Data>
       </DataColumn>
     </Web3Container>
