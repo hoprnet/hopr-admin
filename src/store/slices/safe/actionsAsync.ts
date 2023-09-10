@@ -1127,6 +1127,9 @@ const createSafeWithConfigThunk = createAsyncThunk<
         encodePacked(['bytes20', 'string'], [superWalletClient.account.address, Date.now().toString()]),
       );
 
+      // Sets ALLOW_ALL on all Channel and Token operations by default.
+      const defaultTarget = toBytes(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS + "113333333333");
+      
       const {
         result,
         request,
@@ -1139,7 +1142,7 @@ const createSafeWithConfigThunk = createAsyncThunk<
           HOPR_NODE_MANAGEMENT_MODULE,
           payload.config.owners,
           saltNonce,
-          toHex(new Uint8Array(toBytes(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS)), { size: 32 }),
+          toHex(new Uint8Array(defaultTarget), { size: 32 }),
         ],
       });
 
