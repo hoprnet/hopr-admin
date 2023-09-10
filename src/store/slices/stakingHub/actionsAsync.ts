@@ -192,7 +192,7 @@ const getSubgraphDataThunk = createAsyncThunk<
       const json = await resp.json();
       console.log('SubgraphOutput', json);
 
-      let output = JSON.parse(JSON.stringify(initialState.safeInfo));
+      let output = JSON.parse(JSON.stringify(initialState.safeInfo.data));
       if (json.safes.length > 0) output = json.safes[0];
       if (json.nodeManagementModules.length > 0) output.module = json.nodeManagementModules[0];
       if (json.balances.length > 0) output.overall_staking_v2_balances = json.balances[0];
@@ -223,6 +223,7 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
   }) => {
     try {
       const state = getState();
+      console.log( 'state', state );
 
       console.log(
         'BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance as string) > BigInt(0)',
@@ -314,6 +315,7 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
       // default case
       return 0;
     } catch (e) {
+      console.warn('Getting Onboarding Step failed', e)
       if (isPlain(e)) {
         return rejectWithValue(e);
       }
