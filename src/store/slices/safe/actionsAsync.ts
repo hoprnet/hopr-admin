@@ -1128,7 +1128,7 @@ const createSafeWithConfigThunk = createAsyncThunk<
       );
 
       // Sets ALLOW_ALL on all Channel and Token operations by default.
-      const defaultTarget = toBytes(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS + "113333333333");
+      const defaultTarget = toBytes(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS + "010103030303030303030303");
       
       const {
         result,
