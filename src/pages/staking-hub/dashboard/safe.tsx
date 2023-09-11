@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled'
 import { useEthersSigner } from '../../../hooks';
 import { useAppDispatch, useAppSelector } from '../../../store';
@@ -7,6 +7,7 @@ import { Address, encodeFunctionData, encodePacked } from 'viem';
 import multisendAbi from '../../../abi/multisendAbi.json'
 import { OperationType } from '@safe-global/safe-core-sdk-types';
 import { nodeManagementModuleAbi } from '../../../abi/nodeManagementModuleAbi'
+import { MULTISEND_CONTRACT_GNOSIS } from '../../../../config';
 
 // HOPR Components
 import Button from '../../../future-hopr-lib-components/Button';
@@ -110,7 +111,7 @@ function SafeDashboard() {
                 signer,
                 safeAddress: selectedSafeAddress,
                 operation: OperationType.DelegateCall,
-                smartContractAddress: '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526', //multisend contract
+                smartContractAddress: MULTISEND_CONTRACT_GNOSIS,
               }),
             )
               .unwrap()
