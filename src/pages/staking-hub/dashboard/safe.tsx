@@ -11,6 +11,7 @@ import { nodeManagementModuleAbi } from '../../../abi/nodeManagementModuleAbi'
 // HOPR Components
 import Button from '../../../future-hopr-lib-components/Button';
 import { GrayCard } from '../../../future-hopr-lib-components/Cards/GrayCard';
+import stakingHub, { stakingHubActions } from '../../../store/slices/stakingHub';
 
 
 const Container = styled.div`
@@ -60,16 +61,12 @@ function SafeDashboard() {
   const moduleAddress = useAppSelector((store) => store.stakingHub.onboarding.moduleAddress) as `0x${string}`;;
   const needsUpdate = useAppSelector((store) => store.stakingHub.config.needsUpdate.data);
   const updateStrategy = useAppSelector((store) => store.stakingHub.config.needsUpdate.strategy);
-  const [updating, set_updating] = useState(false)
-
+  const [updating, set_updating] = useState(false);
+  const [TxHashOfTheUpdate, set_TxHashOfTheUpdate] = useState<string | null>(null);
 
   const updateConfig = async () => {
-    
-
     if (signer) {
         set_updating(true);
-
-
         if(updateStrategy === 'configWillPointToCorrectContracts') {
             // GROUP 1 when target is false 1. addChannelsAndTokenTarget (0xa2450f89) in the module contract
             const newConfig =  `0x693bac5ce61c720ddc68533991ceb41199d8f8ae010103030303030303030303`
@@ -92,10 +89,12 @@ function SafeDashboard() {
             )
             .unwrap()
             .then((transactionResponse) => {
-        //     set_proposedTxHash(transactionResponse);
+              console.log(`transaction went through`, transactionResponse);
+              set_TxHashOfTheUpdate(transactionResponse);
+              dispatch(stakingHubActions.setConfigUpdated());
             })
             .finally(() => {
-                set_updating(false);
+              set_updating(false);
             });
 
         } else if (moduleAddress && updateStrategy === 'configWillLetOpenChannels') { 
@@ -116,17 +115,14 @@ function SafeDashboard() {
             )
               .unwrap()
               .then((transactionResponse) => {
-                console.log(`transaction went through`)
-                //     set_proposedTxHash(transactionResponse);
-              })
-              .finally(() => {
+                console.log(`transaction went through`, transactionResponse);
+                set_TxHashOfTheUpdate(transactionResponse);
+                dispatch(stakingHubActions.setConfigUpdated());
+              }).finally(() => {
                 set_updating(false);
               });
-
-
         }
     }
-
   }
 
 

@@ -101,6 +101,10 @@ const stakingHubSlice = createSlice({
       state.onboarding.nodeBalance.xDai.value = action.payload ? action.payload.value : null;
       state.onboarding.nodeBalance.xDai.formatted = action.payload ? action.payload.formatted : null;
     },
+    setConfigUpdated: (state) => {
+      state.config.needsUpdate.data = false;
+      state.config.needsUpdate.strategy = null;
+    },
   },
   extraReducers: (builder) => {
     createAsyncReducer(builder);
