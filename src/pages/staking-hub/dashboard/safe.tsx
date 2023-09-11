@@ -84,7 +84,7 @@ function SafeDashboard() {
                     data: addChannelsAndTokenTarget,
                     signer,
                     safeAddress: selectedSafeAddress,
-                    smartContractAddress: '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526', //multisend contract
+                    smartContractAddress: moduleAddress, //multisend contract
                 }),
             )
             .unwrap()
