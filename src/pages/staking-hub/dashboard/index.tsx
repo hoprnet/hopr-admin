@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
+import { useWalletClient } from 'wagmi';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../../store';

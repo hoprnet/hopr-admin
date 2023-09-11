@@ -6,9 +6,12 @@ import {
   HOPR_NETWORK_REGISTRY,
   MINIMUM_WXHOPR_TO_FUND,
   MINIMUM_XDAI_TO_FUND,
-  MINIMUM_XDAI_TO_FUND_NODE
+  MINIMUM_XDAI_TO_FUND_NODE,
+  HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,
+  wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS
 } from '../../../../config';
 import NetworkRegistryAbi from '../../../abi/network-registry-abi.json';
+import { nodeManagementModuleAbi }  from '../../../abi/nodeManagementModuleAbi';
 import { Address, PublicClient, WalletClient, publicActions } from 'viem';
 import { gql } from 'graphql-request';
 import { stakingHubActions } from '.';
@@ -215,6 +218,77 @@ const getSubgraphDataThunk = createAsyncThunk<
   } },
 );
 
+type ParsedTargets =   {
+  channels: false | string;
+  wxHOPR: false | string;
+}
+
+const getModuleTargetsThunk = createAsyncThunk<
+  ParsedTargets, 
+  { safeAddress: string; moduleAddress: string, walletClient: PublicClient; }, 
+  { state: RootState }
+>(
+  'stakingHub/getNodeConfiguration',
+  async ({ safeAddress, moduleAddress, walletClient }, {
+    rejectWithValue,
+  }) => {
+    console.log('stakingHub/getNodeConfiguration', safeAddress, moduleAddress);
+    try {
+      const superWalletClient = walletClient.extend(publicActions);
+  
+      const channelsTarget = await superWalletClient.readContract({
+        address: moduleAddress as `0x${string}`,
+        abi: nodeManagementModuleAbi,
+        functionName: 'tryGetTarget',
+        args: [HOPR_CHANNELS_SMART_CONTRACT_ADDRESS]
+      }) as [boolean, BigInt];
+
+      const wxHOPRTarget = await superWalletClient.readContract({
+        address: moduleAddress as `0x${string}`,
+        abi: nodeManagementModuleAbi,
+        functionName: 'tryGetTarget',
+        args: [wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS]
+      }) as [boolean, BigInt];
+
+      console.log('targets', wxHOPRTarget, channelsTarget)
+
+      const targets = {
+        channels: channelsTarget[0] === true ? channelsTarget[1].toString() : false,
+        wxHOPR: wxHOPRTarget[0] === true ? wxHOPRTarget[1].toString() : false,
+      } as ParsedTargets;
+
+      // TODO: Decode the targets
+      /**
+       * @dev it stores the following information in uint256 = (160 + 8 * 12)
+       * (address)              as uint160: targetAddress
+       * (Clearance)            as uint8: clearance
+       * (TargetType)           as uint8: targetType
+       * (TargetPermission)     as uint8: defaultTargetPermission                                       (for the target)
+       * (CapabilityPermission) as uint8: defaultRedeemTicketSafeFunctionPermisson                      (for Channels
+       * contract)
+       * (CapabilityPermission) as uint8: RESERVED FOR defaultBatchRedeemTicketsSafeFunctionPermisson   (for Channels
+       * contract)
+       * (CapabilityPermission) as uint8: defaultCloseIncomingChannelSafeFunctionPermisson              (for Channels
+       * contract)
+       * (CapabilityPermission) as uint8: defaultInitiateOutgoingChannelClosureSafeFunctionPermisson    (for Channels
+       * contract)
+       * (CapabilityPermission) as uint8: defaultFinalizeOutgoingChannelClosureSafeFunctionPermisson    (for Channels
+       * contract)
+       * (CapabilityPermission) as uint8: defaultFundChannelMultiFunctionPermisson                      (for Channels
+       * contract)
+       * (CapabilityPermission) as uint8: defaultSetCommitmentSafeFunctionPermisson                     (for Channels
+       * contract)
+       * (CapabilityPermission) as uint8: defaultApproveFunctionPermisson                               (for Token contract)
+       * (CapabilityPermission) as uint8: defaultSendFunctionPermisson                                  (for Token contract)
+       */
+      
+      return targets;
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+});
+
+
 const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: RootState }>(
   'stakingHub/goToStepWeShouldBeOn',
   async (_payload, {
@@ -341,6 +415,14 @@ const getOnboardingDataThunk = createAsyncThunk<
     return rejectWithValue('No module address found');
   }
 
+  dispatch(
+    getModuleTargetsThunk({
+      safeAddress: payload.safeAddress,
+      moduleAddress,
+      walletClient: payload.browserClient
+    }),
+  );
+
   const subgraphResponse = await dispatch(
     getSubgraphDataThunk({
       safeAddress: payload.safeAddress,
@@ -397,6 +479,27 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     }
     state.safeInfo.isFetching = false;
   });
+  builder.addCase(getModuleTargetsThunk.rejected, (state, action) => {
+    console.log('getModuleTargetsThunk.rejected');
+    state.config.needsUpdate.isFetching = false;
+  });
+  builder.addCase(getModuleTargetsThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      const correctConfig1 = '47598282682985165703087897390610028112494826122342268517157719752757376909312';
+      const correctConfig2 = '96338966875583709871840581638487531229018761285270926761304390858285246317315';
+
+      if(!action.payload.channels || !action.payload.wxHOPR){
+        console.log('Old safe config present, needs update. Targets:', action.payload);
+        state.config.needsUpdate.data = true;
+        state.config.needsUpdate.strategy =  'configWillPointToCorrectContracts';
+      } else if(action.payload.channels !== correctConfig1 || action.payload.wxHOPR !== correctConfig2){
+        console.log('Old safe config present, need update. Targets:', action.payload);
+        state.config.needsUpdate.data = true;
+        state.config.needsUpdate.strategy = 'configWillLetOpenChannels';
+      }
+      state.config.needsUpdate.isFetching = false;
+    }
+  });
   builder.addCase(goToStepWeShouldBeOnThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.onboarding.step = action.payload;
@@ -411,6 +514,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
 export const actionsAsync = {
   getHubSafesByOwnerThunk,
   registerNodeAndSafeToNRThunk,
+  getModuleTargetsThunk,
   getSubgraphDataThunk,
   goToStepWeShouldBeOnThunk,
   getOnboardingDataThunk,

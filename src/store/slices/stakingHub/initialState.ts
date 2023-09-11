@@ -29,6 +29,13 @@ type InitialState = {
     data: SubgraphParsedOutput;
     isFetching: boolean;
   };
+  config: {
+    needsUpdate: {
+      data: boolean;
+      strategy: string | null;
+      isFetching: boolean;
+    }
+  },
 };
 
 export type SubgraphParsedOutput = {
@@ -159,4 +166,11 @@ export const initialState: InitialState = {
     },
     isFetching: false,
   },
+  config: {
+    needsUpdate: {
+      data: false,
+      strategy: null,
+      isFetching: false,
+    }
+  }
 };

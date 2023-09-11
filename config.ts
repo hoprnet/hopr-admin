@@ -1,4 +1,4 @@
-export const environment: 'dev' | 'node' | 'web3' = 'web3';
+export const environment: 'dev' | 'node' | 'web3' = 'dev';
 
 // Smart Contracts
 export const mHOPR_TOKEN_SMART_CONTRACT_ADDRESS = '0x66225dE86Cac02b32f34992eb3410F59DE416698';
@@ -6,6 +6,7 @@ export const xHOPR_TOKEN_SMART_CONTRACT_ADDRESS = '0xD057604A14982FE8D88c5fC25Aa
 export const wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS = '0xD4fdec44DB9D44B8f2b6d529620f9C0C7066A2c1';
 export const wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS = '0x097707143e01318734535676cfe2e5cF8b656ae8';
 export const GNOSIS_CHAIN_HOPR_BOOST_NFT = '0x43d13d7b83607f14335cf2cb75e87da369d056c7';
+export const MULTISEND_CONTRACT_GNOSIS = '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526';
 
 // App
 export const HOPR_TOKEN_USED = 'wxHOPR';
