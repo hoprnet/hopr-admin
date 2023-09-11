@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import { useEthersSigner } from '../../../../hooks';
 import { safeActionsAsync } from '../../../../store/slices/safe';
+import { sendNotification } from '../../../../hooks/useWatcher/notifications';
 
 const ButtonContainer = styled.div`
   align-self: center;
@@ -43,7 +44,22 @@ const NodeAddress = () => {
             label: 'node',
           },
         }),
-      ).unwrap();
+      ).unwrap()
+        .catch(e => {
+          if (e.error == "Safe= does not exist or it's still not indexed") {
+            const errMsg = "Your safe wasn't indexed yet by HOPR Safe Infrastructure. Please try in 5min."
+            sendNotification({
+              notificationPayload: {
+                source: 'safe',
+                name: errMsg,
+                url: null,
+                timeout: null,
+              },
+              toastPayload: { message: errMsg, type: 'error' },
+              dispatch,
+            });
+          }
+        });
       set_isLoading(false);
     }
   };
