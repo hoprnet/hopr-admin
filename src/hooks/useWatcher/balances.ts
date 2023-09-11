@@ -27,7 +27,6 @@ export const handleBalanceNotification = ({
   newNodeBalances,
   prevNodeBalances,
   minimumNodeBalances,
-  // sendNewHoprBalanceNotification,
   sendNewNativeBalanceNotification,
   sendNativeBalanceTooLowNotification,
   sendNewNativeSafeBalanceNotification,
@@ -44,7 +43,6 @@ export const handleBalanceNotification = ({
   if (BigInt(newNodeBalances.native) < BigInt(minimumNodeBalances.native)) {
     return sendNativeBalanceTooLowNotification(BigInt(newNodeBalances.native));
   }
-  console.log(JSON.stringify(prevNodeBalances))
 
   if (!prevNodeBalances) return;
   const nativeBalanceIsLarger = balanceHasIncreased(prevNodeBalances.native, newNodeBalances.native);
@@ -141,7 +139,7 @@ export const observeNodeBalances = ({
           sendNotification({
             notificationPayload: {
               source: 'safe',
-              name: 'Safe received wxHop',
+              name: 'Safe received wxHopr',
               url: null,
               timeout: null,
             },
