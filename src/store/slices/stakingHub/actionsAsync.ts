@@ -6,7 +6,9 @@ import {
   HOPR_NETWORK_REGISTRY,
   MINIMUM_WXHOPR_TO_FUND,
   MINIMUM_XDAI_TO_FUND,
-  MINIMUM_XDAI_TO_FUND_NODE
+  MINIMUM_XDAI_TO_FUND_NODE,
+  HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,
+  wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS
 } from '../../../../config';
 import NetworkRegistryAbi from '../../../abi/network-registry-abi.json';
 import { nodeManagementModuleAbi }  from '../../../abi/nodeManagementModuleAbi';
@@ -216,8 +218,13 @@ const getSubgraphDataThunk = createAsyncThunk<
   } },
 );
 
-const getNodeConfigurationThunk = createAsyncThunk<
-  any, 
+type ParsedTargets =   {
+  channels: false | string;
+  wxHOPR: false | string;
+}
+
+const getModuleTargetsThunk = createAsyncThunk<
+  ParsedTargets, 
   { safeAddress: string; moduleAddress: string, walletClient: PublicClient; }, 
   { state: RootState }
 >(
@@ -229,14 +236,26 @@ const getNodeConfigurationThunk = createAsyncThunk<
     try {
       const superWalletClient = walletClient.extend(publicActions);
   
-      const targets = await superWalletClient.readContract({
+      const channelsTarget = await superWalletClient.readContract({
         address: moduleAddress as `0x${string}`,
         abi: nodeManagementModuleAbi,
-        functionName: 'getTargets',
-      }) as BigInt[];
+        functionName: 'tryGetTarget',
+        args: [HOPR_CHANNELS_SMART_CONTRACT_ADDRESS]
+      }) as [boolean, BigInt];
 
-      const parsed = targets.map(elem => elem.toString())
-    
+      const wxHOPRTarget = await superWalletClient.readContract({
+        address: moduleAddress as `0x${string}`,
+        abi: nodeManagementModuleAbi,
+        functionName: 'tryGetTarget',
+        args: [wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS]
+      }) as [boolean, BigInt];
+
+      console.log('targets', wxHOPRTarget, channelsTarget)
+
+      const targets = {
+        channels: channelsTarget[0] === true ? channelsTarget[1].toString() : false,
+        wxHOPR: wxHOPRTarget[0] === true ? wxHOPRTarget[1].toString() : false,
+      } as ParsedTargets;
 
       // TODO: Decode the targets
       /**
@@ -263,7 +282,7 @@ const getNodeConfigurationThunk = createAsyncThunk<
        * (CapabilityPermission) as uint8: defaultSendFunctionPermisson                                  (for Token contract)
        */
       
-      return parsed;
+      return targets;
     } catch (e) {
       return rejectWithValue(e);
     }
@@ -397,7 +416,7 @@ const getOnboardingDataThunk = createAsyncThunk<
   }
 
   dispatch(
-    getNodeConfigurationThunk({
+    getModuleTargetsThunk({
       safeAddress: payload.safeAddress,
       moduleAddress,
       walletClient: payload.browserClient
@@ -460,19 +479,25 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     }
     state.safeInfo.isFetching = false;
   });
-  builder.addCase(getNodeConfigurationThunk.rejected, (state, action) => {
-    console.log('getNodeConfigurationThunk.rejected');
+  builder.addCase(getModuleTargetsThunk.rejected, (state, action) => {
+    console.log('getModuleTargetsThunk.rejected');
     state.config.needsUpdate.isFetching = false;
   });
-  builder.addCase(getNodeConfigurationThunk.fulfilled, (state, action) => {
+  builder.addCase(getModuleTargetsThunk.fulfilled, (state, action) => {
     if (action.payload) {
       const correctConfig1 = '47598282682985165703087897390610028112494826122342268517157719752757376909312';
       const correctConfig2 = '96338966875583709871840581638487531229018761285270926761304390858285246317315';
-      if(!action.payload.includes(correctConfig1) || !action.payload.includes(correctConfig2)){
-        console.log('Old safe config, need update. Targets:', action.payload);
+
+      if(!action.payload.channels || !action.payload.wxHOPR){
+        console.log('Old safe config present, needs update. Targets:', action.payload);
         state.config.needsUpdate.data = true;
-        state.config.needsUpdate.isFetching = false;
+        state.config.needsUpdate.strategy =  'configWillPointToCorrectContracts';
+      } else if(action.payload.channels !== correctConfig1 || action.payload.wxHOPR !== correctConfig2){
+        console.log('Old safe config present, need update. Targets:', action.payload);
+        state.config.needsUpdate.data = true;
+        state.config.needsUpdate.strategy = 'configWillLetOpenChannels';
       }
+      state.config.needsUpdate.isFetching = false;
     }
   });
   builder.addCase(goToStepWeShouldBeOnThunk.fulfilled, (state, action) => {
@@ -489,7 +514,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
 export const actionsAsync = {
   getHubSafesByOwnerThunk,
   registerNodeAndSafeToNRThunk,
-  getNodeConfigurationThunk,
+  getModuleTargetsThunk,
   getSubgraphDataThunk,
   goToStepWeShouldBeOnThunk,
   getOnboardingDataThunk,

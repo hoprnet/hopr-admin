@@ -1,11 +1,14 @@
-import styled from '@emotion/styled';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import styled from '@emotion/styled'
 import { useEthersSigner } from '../../../hooks';
 import { useAppDispatch, useAppSelector } from '../../../store';
 import { safeActionsAsync } from '../../../store/slices/safe';
+import { Address, encodeFunctionData, encodePacked } from 'viem';
+import multisendAbi from '../../../abi/multisendAbi.json'
+import { OperationType } from '@safe-global/safe-core-sdk-types';
+import { nodeManagementModuleAbi } from '../../../abi/nodeManagementModuleAbi'
 
 // HOPR Components
-import { OperationType } from '@safe-global/safe-core-sdk-types';
 import Button from '../../../future-hopr-lib-components/Button';
 import { GrayCard } from '../../../future-hopr-lib-components/Cards/GrayCard';
 
@@ -54,36 +57,74 @@ function SafeDashboard() {
   const dispatch = useAppDispatch();
   const signer = useEthersSigner();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as `0x${string}`;
-  const moduleAddress = useAppSelector((store) => store.stakingHub.onboarding.moduleAddress)
+  const moduleAddress = useAppSelector((store) => store.stakingHub.onboarding.moduleAddress) as `0x${string}`;;
   const needsUpdate = useAppSelector((store) => store.stakingHub.config.needsUpdate.data);
+  const updateStrategy = useAppSelector((store) => store.stakingHub.config.needsUpdate.strategy);
   const [updating, set_updating] = useState(false)
 
 
   const updateConfig = async () => {
+    
 
-    if (signer && moduleAddress) {
-      set_updating(true);
-      const moduleAddressWithout0x = moduleAddress.slice(2).toLocaleLowerCase()
-      console.log({ moduleAddress, moduleAddressWithout0x })
-      const newConfig = `0x8d80ff0a0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000016b00${moduleAddressWithout0x}000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000243401cde8000000000000000000000000693bac5ce61c720ddc68533991ceb41199d8f8ae00${moduleAddressWithout0x}000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000243401cde8000000000000000000000000d4fdec44db9d44b8f2b6d529620f9c0c7066a2c100${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024a2450f89693bac5ce61c720ddc68533991ceb41199d8f8ae010103030303030303030303000000000000000000000000000000000000000000`;
+    if (signer) {
+        set_updating(true);
 
-      dispatch(
-        safeActionsAsync.createAndExecuteContractTransactionThunk({
-          data: newConfig,
-          signer,
-          safeAddress: selectedSafeAddress,
-          operation: OperationType.DelegateCall,
-          smartContractAddress: '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526', //multisend contract
-        }),
-      )
-        .unwrap()
-        .then((transactionResponse) => {
-          console.log(`transaction went through`)
-          //     set_proposedTxHash(transactionResponse);
-        })
-        .finally(() => {
-          set_updating(false);
-        });
+
+        if(updateStrategy === 'configWillPointToCorrectContracts') {
+            // GROUP 1 when target is false 1. addChannelsAndTokenTarget (0xa2450f89) in the module contract
+            const newConfig =  `0x693bac5ce61c720ddc68533991ceb41199d8f8ae010103030303030303030303`
+
+
+            const addChannelsAndTokenTarget  = encodeFunctionData({
+                abi: nodeManagementModuleAbi,
+                functionName: 'addChannelsAndTokenTarget',
+                args: [newConfig],
+            });
+            
+
+            dispatch(
+                safeActionsAsync.createAndExecuteContractTransactionThunk({
+                    data: addChannelsAndTokenTarget,
+                    signer,
+                    safeAddress: selectedSafeAddress,
+                    smartContractAddress: '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526', //multisend contract
+                }),
+            )
+            .unwrap()
+            .then((transactionResponse) => {
+        //     set_proposedTxHash(transactionResponse);
+            })
+            .finally(() => {
+                set_updating(false);
+            });
+
+        } else if (moduleAddress && updateStrategy === 'configWillLetOpenChannels') { 
+            // GROUP 2: Safes cloned with old wrong config, but correct SC addresses
+
+            const moduleAddressWithout0x = moduleAddress.slice(2).toLocaleLowerCase()
+            console.log({ moduleAddress, moduleAddressWithout0x })
+            const newConfig = `0x8d80ff0a0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000016b00${moduleAddressWithout0x}000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000243401cde8000000000000000000000000693bac5ce61c720ddc68533991ceb41199d8f8ae00${moduleAddressWithout0x}000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000243401cde8000000000000000000000000d4fdec44db9d44b8f2b6d529620f9c0c7066a2c100${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024a2450f89693bac5ce61c720ddc68533991ceb41199d8f8ae010103030303030303030303000000000000000000000000000000000000000000`;
+      
+            dispatch(
+              safeActionsAsync.createAndExecuteContractTransactionThunk({
+                data: newConfig,
+                signer,
+                safeAddress: selectedSafeAddress,
+                operation: OperationType.DelegateCall,
+                smartContractAddress: '0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526', //multisend contract
+              }),
+            )
+              .unwrap()
+              .then((transactionResponse) => {
+                console.log(`transaction went through`)
+                //     set_proposedTxHash(transactionResponse);
+              })
+              .finally(() => {
+                set_updating(false);
+              });
+
+
+        }
     }
 
   }
@@ -92,39 +133,39 @@ function SafeDashboard() {
   
   return (
     <Container
-      className='SafeDashboard'
+        className='SafeDashboard'
     >
-      <div className='half-line'>
-        <GrayCard
-          id="Update-Node-Configuration"
-          title="Safe Configuration"
-          currency={needsUpdate ? <span style={{ color: 'red' }}>Update needed</span> : <span>Current version</span>}
-          buttons={[
-            {
-              text: 'UPDATE',
-              onClick: updateConfig,
-              pending: updating,
-              disabled: !needsUpdate,
-            },
-          ]}
-        />
-      </div>
+        <div className='half-line'>
+          <GrayCard
+            id="Update-Node-Configuration"
+            title="Safe Configuration"
+            currency={needsUpdate ? <span style={{color: 'red'}}>Update needed</span> : <span>Current version</span>}
+            buttons={[
+              {
+                text: 'UPDATE',
+                onClick: updateConfig,
+                pending: updating,
+                disabled: !needsUpdate,
+              },
+            ]}
+          />
+        </div>
 
-      <p className='center'>In order to adjust the settings of your safe or transfer assets that are not supported by the HOPR Staking Hub use any of the below mentioned third party general purpose Safe user interfaces:</p>
-      <div className='center'>
-        <Button
+        <p className='center'>In order to adjust the settings of your safe or transfer assets that are not supported by the HOPR Staking Hub use any of the below mentioned third party general purpose Safe user interfaces:</p>
+        <div className='center'>
+            <Button
 
-          href={`https://app.safe.global/home?safe=gno:${selectedSafeAddress}`}
-        >
+                href={`https://app.safe.global/home?safe=gno:${selectedSafeAddress}`}
+            >
                 safe.global
-        </Button>
-        <Button
+            </Button>
+            <Button
 
-          href={`https://app.onchainden.com/safes/gnosis:${selectedSafeAddress}`}
-        >
+                href={`https://app.onchainden.com/safes/gnosis:${selectedSafeAddress}`}
+            >
                 OnChainDen.com
-        </Button>
-      </div>
+            </Button>
+        </div>
     
     </Container>
   );

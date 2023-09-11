@@ -32,6 +32,7 @@ type InitialState = {
   config: {
     needsUpdate: {
       data: boolean;
+      strategy: string | null;
       isFetching: boolean;
     }
   },
@@ -168,7 +169,8 @@ export const initialState: InitialState = {
   config: {
     needsUpdate: {
       data: false,
-      isFetching: false
+      strategy: null,
+      isFetching: false,
     }
   }
 };
