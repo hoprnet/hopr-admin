@@ -392,7 +392,8 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
             <div className={'error'}>
               {forceLogin ? 
                 <><div>
-                  <p>Warning</p>
+                  <p>WARNING</p>
+                  <p>Your did not start properly and might not be fully functioning. Some features might be offline and not working</p>
                 </div><ButtonGroupContainer>
                   <Button outlined onClick={() => set_forceLogin(false)}>BACK</Button>
                   <ForceLoginButton

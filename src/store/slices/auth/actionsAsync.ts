@@ -24,7 +24,7 @@ export const loginThunk = createAsyncThunk<
       apiToken: apiToken,
     });
 
-    if (!payload.force  ) {
+    if (!payload.force && !info.isEligible ) {
       throw new Error(
         'Not eligible on network registry. ' +
           'Join the waitlist and once approved, you can return to login.' +
