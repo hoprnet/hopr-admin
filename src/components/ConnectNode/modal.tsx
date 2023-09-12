@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { trackGoal } from 'fathom-client';
 
@@ -17,7 +16,6 @@ import Modal from '../../future-hopr-lib-components/Modal';
 import TextField from '../../future-hopr-lib-components/TextField';
 import Button from '../../future-hopr-lib-components/Button';
 import StyledGrayButton from '../../future-hopr-lib-components/Button/gray';
-
 
 // MUI
 import { Tooltip, IconButton } from '@mui/material';
@@ -99,6 +97,25 @@ const Overlay = styled.div`
   }
 `;
 
+const ButtonGroupContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  button {
+    margin-top: 16px;
+    padding-inline: 2rem;
+  }
+`;
+
+const ForceLoginButton = styled(Button)`
+  &.btn-hopr--v2:not(.Mui-disabled) {
+    background: #f67f2f;
+    color: #fff;
+  }
+
+  text-transform: uppercase;
+`;
+
 const CloseOverlayIconButton = styled(IconButton)`
   position: absolute;
   right: 16px;
@@ -112,7 +129,6 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   const navigate = useNavigate();
   const nodesSavedLocally = useAppSelector((store) => store.auth.nodes);
   const [nodesSavedLocallyParsed, set_nodesSavedLocallyParsed] = useState([] as ParsedNode[]);
-  const connecting = useAppSelector((store) => store.auth.status.connecting);
   const error = useAppSelector((store) => store.auth.status.error);
   const loginData = useAppSelector((store) => store.auth.loginData);
 
@@ -124,6 +140,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   const [saveApiToken, set_saveApiToken] = useState(false);
   const [areYouSureYouWannaDeleteAllSavedNodes, set_areYouSureYouWannaDeleteAllSavedNodes] = useState(false);
   const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] = useState('' as string);
+  const [forceLogin, set_forceLogin] = useState(false);
 
   useEffect(() => {
     const parsed = nodesSavedLocally.map((node, index) => {
@@ -193,7 +210,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     );
   };
 
-  const useNode = async () => {
+  const useNode = async ({ force }: { force?: boolean }) => {
     set_searchParams({
       apiToken,
       apiEndpoint,
@@ -207,6 +224,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         authActionsAsync.loginThunk({
           apiEndpoint,
           apiToken,
+          force,
         }),
       ).unwrap();
       if (loginInfo) {
@@ -231,13 +249,15 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         );
         dispatch(nodeActions.setInfo(loginInfo));
         dispatch(nodeActions.initializeMessagesWebsocket());
-        if (!error) navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
+        navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
         trackGoal('IZUWDE9K', 1);
         props.handleClose();
       }
     } catch (e) {
       // error is handled in redux
       trackGoal('WWH3JCEH', 1);
+    } finally {
+      set_forceLogin(false);
     }
   };
 
@@ -271,124 +291,171 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
 
   return (
     <>
-    <SModal
-      open={props.open}
-      onClose={handleClose}
-      title="CONNECT NODE"
-      maxWidth={'580px'}
-      disableScrollLock={true}
-    >
-      <LocalNodesContainer>
-        <Select
-          label={'Nodes saved in browser local storage'}
-          values={nodesSavedLocallyParsed}
-          disabled={nodesSavedLocally.length === 0}
-          value={nodesSavedLocallyChosenIndex}
-          onChange={handleSelectlocalNodes}
-          style={{ width: '100%' }}
-          removeValue={clearSingleLocal}
-          removeValueTooltip={'Remove node from local storage'}
-        />
-        <Tooltip title={'Clear all node credentials from the browser local storage'}>
-          <span>
-            <IconButton
-              aria-label="delete"
-              disabled={nodesSavedLocally.length === 0}
-              onClick={()=>{set_areYouSureYouWannaDeleteAllSavedNodes(true)}}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </span>
-        </Tooltip>
-      </LocalNodesContainer>
+      <SModal
+        open={props.open}
+        onClose={handleClose}
+        title="CONNECT NODE"
+        maxWidth={'580px'}
+        disableScrollLock={true}
+      >
+        <LocalNodesContainer>
+          <Select
+            label={'Nodes saved in browser local storage'}
+            values={nodesSavedLocallyParsed}
+            disabled={nodesSavedLocally.length === 0}
+            value={nodesSavedLocallyChosenIndex}
+            onChange={handleSelectlocalNodes}
+            style={{ width: '100%' }}
+            removeValue={clearSingleLocal}
+            removeValueTooltip={'Remove node from local storage'}
+          />
+          <Tooltip title={'Clear all node credentials from the browser local storage'}>
+            <span>
+              <IconButton
+                aria-label="delete"
+                disabled={nodesSavedLocally.length === 0}
+                onClick={() => {
+                  set_areYouSureYouWannaDeleteAllSavedNodes(true);
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
+        </LocalNodesContainer>
 
-      <p>
-        <strong>Node credentials:</strong>
-      </p>
-      <TextField
-        label={'Local name (optional)'}
-        value={localName}
-        onChange={(event) => {
-          set_localName(event.target.value);
-        }}
-        style={{ width: '100%' }}
-      />
-      <TextField
-        label={'API endpoint (required)'}
-        value={apiEndpoint}
-        onChange={(event) => {
-          set_apiEndpoint(event.target.value);
-        }}
-        style={{ width: '100%' }}
-      />
-      <TextField
-        label={'API token (required)'}
-        value={apiToken}
-        onChange={(event) => {
-          set_apiToken(event.target.value);
-        }}
-        style={{ width: '100%' }}
-      />
-      <SaveTokenContainer>
-        <Checkbox
-          label={'Save API token locally (unsafe)'}
-          value={saveApiToken}
+        <p>
+          <strong>Node credentials:</strong>
+        </p>
+        <TextField
+          label={'Local name (optional)'}
+          value={localName}
           onChange={(event) => {
-            set_saveApiToken(event.target.checked);
+            set_localName(event.target.value);
           }}
+          style={{ width: '100%' }}
         />
-        <Tooltip title={'Save node credentials in browser local storage'}>
+        <TextField
+          label={'API endpoint (required)'}
+          value={apiEndpoint}
+          onChange={(event) => {
+            set_apiEndpoint(event.target.value);
+          }}
+          style={{ width: '100%' }}
+        />
+        <TextField
+          label={'API token (required)'}
+          value={apiToken}
+          onChange={(event) => {
+            set_apiToken(event.target.value);
+          }}
+          style={{ width: '100%' }}
+        />
+        <SaveTokenContainer>
+          <Checkbox
+            label={'Save API token locally (unsafe)'}
+            value={saveApiToken}
+            onChange={(event) => {
+              set_saveApiToken(event.target.checked);
+            }}
+          />
+          <Tooltip title={'Save node credentials in browser local storage'}>
+            <Button
+              onClick={saveNode}
+              disabled={apiEndpoint.length === 0}
+            >
+              Save
+            </Button>
+          </Tooltip>
+        </SaveTokenContainer>
+
+        <ConnectContainer>
           <Button
-            onClick={saveNode}
-            disabled={apiEndpoint.length === 0}
+            onClick={() => useNode({})}
+            disabled={apiEndpoint.length === 0 || apiToken.length === 0}
           >
-            Save
+            Connect to the node
           </Button>
-        </Tooltip>
-      </SaveTokenContainer>
+        </ConnectContainer>
 
-      <ConnectContainer>
-        <Button
-          onClick={useNode}
-          disabled={apiEndpoint.length === 0 || apiToken.length === 0}
-        >
-          Connect to the node
-        </Button>
-      </ConnectContainer>
+        {error && forceLogin && (
+          <Overlay className={'overlay-has-error'}>
+            <CloseOverlayIconButton
+              color="primary"
+              aria-label="close modal"
+              onClick={() => {
+                dispatch(authActions.resetState());
+              }}
+            >
+              <CloseIcon />
+            </CloseOverlayIconButton>
+            <div className={'error'}>
+              <div>
+                <p>Warning</p>
+              </div>
+              <ButtonGroupContainer>
+                <Button outlined onClick={() => set_forceLogin(false)}>BACK</Button>
+                <ForceLoginButton
+                  onClick={() => {
+                    useNode({ force: true });
+                    set_forceLogin(false);
+                  }}
+                  disabled={apiEndpoint.length === 0 || apiToken.length === 0}
+                >
+                  Login anyways
+                </ForceLoginButton>
+              </ButtonGroupContainer>
+            </div>
+          </Overlay>
+        )}
+        
+        {error && !forceLogin && (
+          <Overlay className={'overlay-has-error'}>
+            <CloseOverlayIconButton
+              color="primary"
+              aria-label="close modal"
+              onClick={() => {
+                dispatch(authActions.resetState());
+              }}
+            >
+              <CloseIcon />
+            </CloseOverlayIconButton>
+            <div className={'error'}>
+              <div>
+                <p>ERROR</p>
+                {error}
+              </div>
+              <Tooltip title="Your did not start properly and might not be fully functioning. Some features might be offline and not working">
+                <ForceLoginButton
+                  onClick={() => set_forceLogin(true)}
+                  disabled={apiEndpoint.length === 0 || apiToken.length === 0}
+                >
+                  Login anyways
+                </ForceLoginButton>
+              </Tooltip>
+            </div>
+          </Overlay>
+        )}
+      </SModal>
 
-      {error && (
-        <Overlay className={'overlay-has-error'}>
-          <CloseOverlayIconButton
-            color="primary"
-            aria-label="close modal"
+      <Modal
+        open={areYouSureYouWannaDeleteAllSavedNodes}
+        onClose={() => {
+          set_areYouSureYouWannaDeleteAllSavedNodes(false);
+        }}
+        disableScrollLock={true}
+        title="Are you sure that you wanna remove all saved nodes?"
+      >
+        <br />
+        <ConnectContainer>
+          <StyledGrayButton
             onClick={() => {
-              dispatch(authActions.resetState());
+              set_areYouSureYouWannaDeleteAllSavedNodes(false);
             }}
           >
-            <CloseIcon />
-          </CloseOverlayIconButton>
-          <div className={'error'}>
-            <p>ERROR</p>
-            {error}
-          </div>
-        </Overlay>
-      )}
-    </SModal>
-
-    <Modal
-        open={areYouSureYouWannaDeleteAllSavedNodes}
-        onClose={()=>{set_areYouSureYouWannaDeleteAllSavedNodes(false)}}
-        disableScrollLock={true}
-        title='Are you sure that you wanna remove all saved nodes?'
-      >
-        <br/>
-        <ConnectContainer>
-          <StyledGrayButton onClick={()=>{set_areYouSureYouWannaDeleteAllSavedNodes(false)}}>No</StyledGrayButton>
-          <Button
-            onClick={clearLocalNodes}
-          >
-            Remove all
-          </Button>
+            No
+          </StyledGrayButton>
+          <Button onClick={clearLocalNodes}>Remove all</Button>
         </ConnectContainer>
       </Modal>
     </>

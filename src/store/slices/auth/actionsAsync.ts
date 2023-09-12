@@ -8,7 +8,7 @@ const { getInfo } = api;
 
 export const loginThunk = createAsyncThunk<
   GetInfoResponseType | undefined,
-  { apiToken: string; apiEndpoint: string },
+  { apiToken: string; apiEndpoint: string; force?: boolean },
   { state: RootState }
 >('auth/login', async (payload, {
   rejectWithValue,
@@ -24,7 +24,7 @@ export const loginThunk = createAsyncThunk<
       apiToken: apiToken,
     });
 
-    if (!info.isEligible) {
+    if (!payload.force && !info.isEligible) {
       throw new Error(
         'Not eligible on network registry. ' +
           'Join the waitlist and once approved, you can return to login.' +
