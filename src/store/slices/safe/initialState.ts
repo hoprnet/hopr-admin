@@ -64,11 +64,10 @@ type InitialState = {
   removeDelegate: { isFetching: boolean };
   tokenList: { data: TokenInfoListResponse | null; isFetching: boolean };
   token: { isFetching: boolean };
-  communityNftId: number | null;
-  boostNFTs: {
+  communityNftIds: {
     isFetching: boolean;
     data: { id: string }[];
-  }
+  };
   balance: {
     data: {
       xDai: {
@@ -124,11 +123,10 @@ export const initialState: InitialState = {
     isFetching: false,
   },
   token: { isFetching: false },
-  boostNFTs: {
-    isFetching: false,
+  communityNftIds: {
     data: [],
+    isFetching: false,
   },
-  communityNftId: null,
   balance: {
     data: {
       xDai: {

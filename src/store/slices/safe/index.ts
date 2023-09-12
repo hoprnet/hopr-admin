@@ -31,7 +31,7 @@ const safeSlice = createSlice({
       state.balance.data.wxHopr.formatted = action.payload ? action.payload.formatted : null;
     },
     setCommunityNftId(state, action: PayloadAction<number>) {
-      state.communityNftId = action.payload;
+      state.communityNftIds.data = [{ id: String(action.payload) }];
     },
   },
   extraReducers: (builder) => {

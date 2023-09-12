@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { useSearchParams } from 'react-router-dom';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
-import { parseUnits } from 'viem';
+import { Address, parseUnits } from 'viem';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActionsAsync } from '../../store/slices/safe';
-import { createSendTokensTransactionData } from '../../utils/blockchain';
+import { createSendNftTransactionData, createSendTokensTransactionData } from '../../utils/blockchain';
 import { useEthersSigner } from '../../hooks';
 import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, GNOSIS_CHAIN_HOPR_BOOST_NFT } from '../../../config'
 
@@ -126,7 +126,8 @@ function SafeWithdraw() {
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const safeInfo = useAppSelector((store) => store.safe.info.data);
   const address = useAppSelector((store) => store.web3.account);
-  const boostNfts = useAppSelector((store) => store.safe.boostNFTs.data);
+  const communityNftIds = useAppSelector((store) => store.safe.communityNftIds.data);
+  const safeBalances = useAppSelector((store) => store.safe.balance.data);
   const signer = useEthersSigner();
   // local state
   const [userCanSkipProposal, set_userCanSkipProposal] = useState(false);
@@ -157,12 +158,12 @@ function SafeWithdraw() {
   }, [safeInfo]);
 
   const proposeTx = () => {
-    if (signer && Number(ethValue) && selectedSafeAddress) {
+    if (signer && selectedSafeAddress) {
       set_isSigning(true);
 
       if (token === 'xdai') {
-        const parsedValue = parseUnits(ethValue as `${number}`, 18).toString();
-        dispatch(
+        const parsedValue = Number(ethValue) ? parseUnits(ethValue as `${number}`, 18).toString() : 0;
+        return dispatch(
           safeActionsAsync.createSafeTransactionThunk({
             signer,
             safeAddress: selectedSafeAddress,
@@ -180,10 +181,27 @@ function SafeWithdraw() {
           .finally(() => {
             set_isSigning(false);
           });
+      } if (token === 'nft') {
+        const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
+        return dispatch(
+          safeActionsAsync.createSafeContractTransaction({
+            data: createSendNftTransactionData(selectedSafeAddress as Address, receiver as  Address, Number(nftId)),
+            signer,
+            safeAddress: selectedSafeAddress,
+            smartContractAddress,
+          }),
+        )
+          .unwrap()
+          .then((transactionResponse) => {
+            set_proposedTxHash(transactionResponse);
+          })
+          .finally(() => {
+            set_isExecuting(false);
+          });
       } else {
         const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
-        const parsedValue = parseUnits(ethValue as `${number}`, 18).toString() as unknown;
-        dispatch(
+        const parsedValue = Number(ethValue) ? parseUnits(ethValue as `${number}`, 18).toString() : BigInt(0);
+        return dispatch(
           safeActionsAsync.createSafeContractTransaction({
             data: createSendTokensTransactionData(receiver as `0x${string}`, parsedValue as bigint),
             signer,
@@ -231,10 +249,10 @@ function SafeWithdraw() {
   };
 
   const createAndExecuteTx = () => {
-    if (signer && Number(ethValue) && selectedSafeAddress) {
+    if (signer && selectedSafeAddress) {
       set_isExecuting(true);
       if (token === 'xdai') {
-        const parsedValue = parseUnits(ethValue as `${number}`, 18).toString();
+        const parsedValue = Number(ethValue) ? parseUnits(ethValue as `${number}`, 18).toString() : 0;
         return dispatch(
           safeActionsAsync.createAndExecuteTransactionThunk({
             signer,
@@ -256,10 +274,9 @@ function SafeWithdraw() {
       }
       if (token === 'nft') {
         const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
-        const parsedValue = parseUnits(ethValue as `${number}`, 18).toString() as unknown;
         return dispatch(
           safeActionsAsync.createAndExecuteContractTransactionThunk({
-            data: createSendTokensTransactionData(receiver as `0x${string}`, parsedValue as bigint),
+            data: createSendNftTransactionData(selectedSafeAddress as Address, receiver as  Address, Number(nftId)),
             signer,
             safeAddress: selectedSafeAddress,
             smartContractAddress,
@@ -274,7 +291,7 @@ function SafeWithdraw() {
           });
       } else {
         const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
-        const parsedValue = parseUnits(ethValue as `${number}`, 18).toString() as unknown;
+        const parsedValue = Number(ethValue) ? parseUnits(ethValue as `${number}`, 18).toString() : BigInt(0);
         return dispatch(
           safeActionsAsync.createAndExecuteContractTransactionThunk({
             data: createSendTokensTransactionData(receiver as `0x${string}`, parsedValue as bigint),
@@ -311,7 +328,7 @@ function SafeWithdraw() {
 
     // only require xDai value if there
     // is no proposed tx
-    if (!ethValue && !proposedTx) {
+    if (!ethValue && !proposedTx && token !== 'nft') {
       errors.push('xDai value is required');
     }
 
@@ -348,6 +365,21 @@ function SafeWithdraw() {
       set_nftId(value);
     }
   };
+
+  const getTokenAvailable = (token: keyof typeof SUPPORTED_TOKENS): boolean => {
+    if (token === 'nft') {
+      return !!communityNftIds.length
+    } else if (token === 'xdai') {
+      return !!safeBalances.xDai.value &&  BigInt(safeBalances.xDai.value) > BigInt(0)
+    } else if (token === 'wxhopr') {
+      return !!safeBalances.wxHopr.value &&  BigInt(safeBalances.wxHopr.value) > BigInt(0)
+    } else if (token === 'xhopr') {
+      return !!safeBalances.xHopr.value &&  BigInt(safeBalances.xHopr.value) > BigInt(0)
+    } 
+
+
+    return false
+  }
 
   // multiple owners is out of scope for initial version
   // const handleApprove = () => {
@@ -388,6 +420,7 @@ function SafeWithdraw() {
                   values={Object.values(SUPPORTED_TOKENS).map((t) => ({
                     name: t.name,
                     value: t.value,
+                    disabled: !getTokenAvailable(t.value),
                   }))}
                   value={token}
                   onChange={handleChangeToken}
@@ -413,7 +446,7 @@ function SafeWithdraw() {
                 <InputWithLabel>
                   <Select
                     size="small"
-                    values={Object.values(boostNfts).map((nft) => ({
+                    values={Object.values(communityNftIds).map((nft) => ({
                       name: nft.id,
                       value: nft.id,
                     }))}

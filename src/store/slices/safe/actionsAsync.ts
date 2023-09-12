@@ -1229,7 +1229,7 @@ const getCommunityNftsOwnedBySafeThunk = createAsyncThunk(
             number
           }
         }
-        boosts(first: 1, where: {owner: "${account.toLocaleLowerCase()}", uri_ends_with: "Network_registry/community"}) {
+        boosts(first: 20, where: {owner: "${account.toLocaleLowerCase()}", uri_ends_with: "Network_registry/community"}) {
           id
         }
       }
@@ -1260,51 +1260,13 @@ const getCommunityNftsOwnedBySafeThunk = createAsyncThunk(
   },
 );
 
-const getBoostNFTsOwnedBySafeThunk = createAsyncThunk('safe/getBoostNFTsOwnedBySafe', async (account: string, { rejectWithValue }) => {
-  const GET_THEGRAPH_QUERY = gql`
-    query getSubGraphNFTsUserDataForSafe {
-      boosts(first: 100, where: {owner: "${account.toLocaleLowerCase()}"}) {
-        id
-      }
-    }
-  `;
-  try {
-    const response = await fetch(STAKE_SUBGRAPH, {
-      method: 'POST',
-      body: GET_THEGRAPH_QUERY,
-    });
-
-    if (response.status > 499) {
-      throw new Error('Failed to fetch from the graph')
-    }
-
-    const responseJson: {
-      boosts: { id: string }[] | null;
-    } = await response.json();
-
-    return responseJson;
-  } catch (e) {
-    if (e instanceof Error) {
-      return rejectWithValue(e.message);
-    }
-
-    // value is serializable
-    if (isPlain(e)) {
-      return rejectWithValue(e);
-    }
-
-    // error is not serializable
-    return rejectWithValue(JSON.stringify(e));
-  }
-})
-
 export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   // CreateSafeWithConfig
   builder.addCase(createSafeWithConfigThunk.fulfilled, (state, action) => {
     if (action.payload) {
       // reset other safe states
       state.allTransactions.data = null;
-      state.communityNftId = null;
+      state.communityNftIds.data = [];
       state.delegates.data = null;
       state.pendingTransactions.data = null;
       state.info.data = null;
@@ -1483,16 +1445,11 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(getCommunityNftsOwnedBySafeThunk.fulfilled, (state, action) => {
     if (action.payload) {
       if (action.payload.boosts && action.payload.boosts.length > 0 && action.payload.boosts[0].id) {
-        state.communityNftId = parseInt(action.payload?.boosts[0].id);
+        state.communityNftIds.data = action.payload?.boosts;
+        state.communityNftIds.isFetching = false
       }
     }
   });
-  builder.addCase(getBoostNFTsOwnedBySafeThunk.fulfilled, (state, action) => {
-    if (action.payload.boosts) {
-      state.boostNFTs.data = action.payload.boosts
-      state.boostNFTs.isFetching = false
-    }
-  })
 };
 
 export const actionsAsync = {
@@ -1518,5 +1475,4 @@ export const actionsAsync = {
   createAndExecuteContractTransactionThunk,
   createVanillaSafeWithConfigThunk,
   getCommunityNftsOwnedBySafeThunk,
-  getBoostNFTsOwnedBySafeThunk,
 };
