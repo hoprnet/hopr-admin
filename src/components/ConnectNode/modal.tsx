@@ -378,7 +378,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           </Button>
         </ConnectContainer>
 
-        {error && forceLogin && (
+        {error && (
           <Overlay className={'overlay-has-error'}>
             <CloseOverlayIconButton
               color="primary"
@@ -390,52 +390,37 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
               <CloseIcon />
             </CloseOverlayIconButton>
             <div className={'error'}>
-              <div>
-                <p>Warning</p>
-              </div>
-              <ButtonGroupContainer>
-                <Button outlined onClick={() => set_forceLogin(false)}>BACK</Button>
-                <ForceLoginButton
-                  onClick={() => {
-                    useNode({ force: true });
-                    set_forceLogin(false);
-                  }}
-                  disabled={apiEndpoint.length === 0 || apiToken.length === 0}
-                >
-                  Login anyways
-                </ForceLoginButton>
-              </ButtonGroupContainer>
+              {forceLogin ? 
+                <><div>
+                  <p>Warning</p>
+                </div><ButtonGroupContainer>
+                  <Button outlined onClick={() => set_forceLogin(false)}>BACK</Button>
+                  <ForceLoginButton
+                    onClick={() => {
+                      useNode({ force: true });
+                      set_forceLogin(false);
+                    } }
+                    disabled={apiEndpoint.length === 0 || apiToken.length === 0}
+                  >
+                      Login anyways
+                  </ForceLoginButton>
+                </ButtonGroupContainer></>
+                : <><div>
+                  <p>ERROR</p>
+                  {error}
+                </div><Tooltip title="Your did not start properly and might not be fully functioning. Some features might be offline and not working">
+                  <ForceLoginButton
+                    onClick={() => set_forceLogin(true)}
+                    disabled={apiEndpoint.length === 0 || apiToken.length === 0}
+                  >
+                      Login anyways
+                  </ForceLoginButton>
+                </Tooltip></>
+              }
             </div>
           </Overlay>
         )}
-        
-        {error && !forceLogin && (
-          <Overlay className={'overlay-has-error'}>
-            <CloseOverlayIconButton
-              color="primary"
-              aria-label="close modal"
-              onClick={() => {
-                dispatch(authActions.resetState());
-              }}
-            >
-              <CloseIcon />
-            </CloseOverlayIconButton>
-            <div className={'error'}>
-              <div>
-                <p>ERROR</p>
-                {error}
-              </div>
-              <Tooltip title="Your did not start properly and might not be fully functioning. Some features might be offline and not working">
-                <ForceLoginButton
-                  onClick={() => set_forceLogin(true)}
-                  disabled={apiEndpoint.length === 0 || apiToken.length === 0}
-                >
-                  Login anyways
-                </ForceLoginButton>
-              </Tooltip>
-            </div>
-          </Overlay>
-        )}
+
       </SModal>
 
       <Modal
