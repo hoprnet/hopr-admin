@@ -12,7 +12,7 @@ import {
 } from '../../../../config';
 import NetworkRegistryAbi from '../../../abi/network-registry-abi.json';
 import { nodeManagementModuleAbi }  from '../../../abi/nodeManagementModuleAbi';
-import { Address, PublicClient, WalletClient, publicActions } from 'viem';
+import { Address, PublicClient, WalletClient, parseEther, publicActions } from 'viem';
 import { gql } from 'graphql-request';
 import { stakingHubActions } from '.';
 import { safeActionsAsync } from '../safe';
@@ -297,16 +297,10 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
   }) => {
     try {
       const state = getState();
-      console.log( 'state', state );
 
-      console.log(
-        'BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance as string) > BigInt(0)',
-        state.stakingHub.safeInfo.data.allowance.wxHoprAllowance &&
-          BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance as string) > BigInt(0),
-      );
       if (
         state.stakingHub.safeInfo.data.allowance.wxHoprAllowance &&
-        BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance) > BigInt(0)
+        parseEther(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance) > BigInt(0)
       ) {
         return 16;
       }
@@ -314,7 +308,7 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
       console.log(
         'BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18)',
         state.stakingHub.onboarding.nodeXDaiBalance &&
-          BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18),
+          BigInt(state.stakingHub.onboarding.nodeXDaiBalance) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18),
       );
       if (
         state.stakingHub.onboarding.nodeXDaiBalance &&
