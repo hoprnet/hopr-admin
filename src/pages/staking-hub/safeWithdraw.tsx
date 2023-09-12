@@ -332,6 +332,10 @@ function SafeWithdraw() {
       errors.push('xDai value is required');
     }
 
+    if (token === 'nft' && !nftId) {
+      errors.push('NFT required');
+    }
+
     if (customValidator) {
       const customErrors = customValidator();
       errors.push(...customErrors.errors);

@@ -152,7 +152,7 @@ export default function optionalNftTtransfer() {
           onClick={() => {
             set_option(0);
           }}
-          style={communityNftIdInSafe === null ? {pointerEvents: 'none'} : {}}
+          style={communityNftIdInSafe === false ? {pointerEvents: 'none'} : {}}
         >
           <OptionText>
             <div className="left">

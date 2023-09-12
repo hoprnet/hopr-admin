@@ -17,9 +17,7 @@ import { stakingHubActions } from '../../../../store/slices/stakingHub';
 // HOPR Components
 import {
   Lowercase,
-  MaxButton,
   StyledCoinLabel,
-  StyledDescription,
   StyledForm,
   StyledGrayButton,
   StyledInputGroup,
@@ -51,7 +49,7 @@ const GreenText = styled.div`
 const FundsToSafe = () => {
   const dispatch = useAppDispatch();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
-  const communityNftIdInSafe = useAppSelector((store) => store.safe.communityNftId);
+  const communityNftIdInSafe = useAppSelector((store) => !!store.safe.communityNftIds.data.length);
   const walletBalance = useAppSelector((store) => store.web3.balance);
   const [xdaiValue, set_xdaiValue] = useState('');
   const [wxhoprValue, set_wxhoprValue] = useState('');

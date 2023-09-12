@@ -376,8 +376,8 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
         return 5;
       }
 
-      console.log('state.safe.communityNftId !== null', state.safe.communityNftId !== null);
-      if (state.safe.communityNftId !== null) {
+      console.log('state.safe.communityNftIds.data.length !== 0', state.safe.communityNftIds.data.length !== 0);
+      if (state.safe.communityNftIds.data.length !== 0) {
         return 4;
       }
 
