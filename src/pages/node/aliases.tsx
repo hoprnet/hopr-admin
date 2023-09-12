@@ -121,7 +121,7 @@ function AliasesPage() {
       key: key.toString(),
       alias,
       peerId,
-      peerAddress: getPeerAddressByPeerId(peerId),
+      peerAddress: getPeerAddressByPeerId(peerId) ?? '',
       actions: (
         <>
           <OpenOrFundChannelModal
