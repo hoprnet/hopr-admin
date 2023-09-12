@@ -118,22 +118,22 @@ export const OpenOrFundChannelModal = ({
         iconComponent={icon()}
         disabled={type === 'fund'}
         tooltipText={
-          type === 'fund' ? 
-          <span>
-            FUND
-            <br />
-            function not avalible yet
-          </span>
-          :
-          modalBtnText ? (
-            modalBtnText
-          ) : (
+          type === 'fund' ?
             <span>
-              OPEN
+              FUND
               <br />
-              outgoing channel
+              function not avalible yet
             </span>
-          )
+            :
+            modalBtnText ? (
+              modalBtnText
+            ) : (
+              <span>
+                OPEN
+                <br />
+                outgoing channel
+              </span>
+            )
         }
         onClick={handleOpenChannelDialog}
       />

@@ -26,6 +26,7 @@ function AliasesPage() {
   const dispatch = useAppDispatch();
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
+  const peers = useAppSelector((store) => store.node.peers.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [importSuccess, set_importSuccess] = useState(false);
   const [deleteSuccess, set_deleteSuccess] = useState(false);
@@ -102,6 +103,11 @@ function AliasesPage() {
     }
   };
 
+  const getPeerAddressFromPeerId = (peerId: string): string | undefined => {
+    const peerAddress = peers?.announced.find(peer => peer.peerId === peerId)?.peerAddress;
+    return peerAddress;
+  }
+
   const parsedTableData = Object.entries(aliases ?? {}).map(([alias, peerId], key) => {
     return {
       id: peerId,
@@ -110,12 +116,12 @@ function AliasesPage() {
       peerId,
       actions: (
         <>
+          <PingModal peerId={peerId} />
           <OpenOrFundChannelModal
-            // peerAddress={peerId} // FIXME: peerId should be peerAddress here
+            peerAddress={getPeerAddressFromPeerId(peerId)}
             type={'open'}
           />
           <SendMessageModal peerId={peerId} />
-          <PingModal peerId={peerId} />
           <DeleteAliasButton
             onSuccess={() => {
               set_deleteSuccess(true);
