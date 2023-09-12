@@ -1,5 +1,3 @@
-import { useAppSelector } from '../../store';
-
 // HOPR Components
 import LogLine from '../../components/LogLine';
 import Section from '../../future-hopr-lib-components/Section';
@@ -9,8 +7,6 @@ import { SubpageTitle } from '../../components/SubpageTitle';
 import { Paper } from '@mui/material';
 
 function SectionLogs() {
-  const { logs } = useAppSelector((store) => store.node);
-
   return (
     <Section
       className="Section--logs"
@@ -25,12 +21,12 @@ function SectionLogs() {
           width: 'calc( 100% - 48px )',
         }}
       >
-        {logs.map((log) => (
-          <LogLine
-            log={log}
-            key={log.id}
-          />
-        ))}
+        <LogLine
+          log={{
+            id: '', message: '', timestamp: 0,
+          }}
+          key={'test-log'}
+        />
       </Paper>
     </Section>
   );
