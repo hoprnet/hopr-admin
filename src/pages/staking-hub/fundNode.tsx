@@ -4,7 +4,7 @@ import Button from '../../future-hopr-lib-components/Button';
 import { Address, parseUnits } from 'viem';
 import { StepContainer, ConfirmButton } from './onboarding/components';
 import { useEthersSigner } from '../../hooks';
-import { StyledTextField } from './onboarding/safeOnboarding/styled';
+import { StyledTextField } from './onboarding/styled';
 import { MINIMUM_XDAI_TO_FUND_NODE } from '../../../config';
 import Section from '../../future-hopr-lib-components/Section';
 import { useNavigate } from 'react-router-dom';

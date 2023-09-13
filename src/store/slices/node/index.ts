@@ -33,28 +33,16 @@ const nodeSlice = createSlice({
         }
         return message;
       });
-    },
-    logsReceived(state, action: PayloadAction<(typeof initialState.logs)[0]>) {
-      state.logs.push(action.payload);
-    },
+    },  
     // handle ws state
     updateMessagesWebsocketStatus(state, action: PayloadAction<typeof initialState.messagesWebsocketStatus>) {
       state.messagesWebsocketStatus = action.payload;
-    },
-    updateLogsWebsocketStatus(state, action: PayloadAction<typeof initialState.messagesWebsocketStatus>) {
-      state.logsWebsocketStatus = action.payload;
     },
     // user actions to open and close ws
     initializeMessagesWebsocket() {
       // state changes in node middleware
     },
-    initializeLogsWebsocket() {
-      // state changes in node middleware
-    },
     closeMessagesWebsocket() {
-      // state changes in node middleware
-    },
-    closeLogsWebsocket() {
       // state changes in node middleware
     },
   },

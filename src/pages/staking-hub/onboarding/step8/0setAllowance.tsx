@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import Button from '../../../../future-hopr-lib-components/Button';
 import { useEthersSigner } from '../../../../hooks';
 import { StepContainer, ConfirmButton } from '../components';
-import { Lowercase, StyledCoinLabel, StyledInputGroup, StyledTextField } from '../safeOnboarding/styled';
+import { Lowercase, StyledCoinLabel, StyledInputGroup, StyledTextField } from '../styled';
 import { DEFAULT_ALLOWANCE } from '../../../../../config';
 
 // Blockchain

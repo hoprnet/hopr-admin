@@ -12,7 +12,7 @@ import {
 } from '../../../../config';
 import NetworkRegistryAbi from '../../../abi/network-registry-abi.json';
 import { nodeManagementModuleAbi }  from '../../../abi/nodeManagementModuleAbi';
-import { Address, PublicClient, WalletClient, publicActions } from 'viem';
+import { Address, PublicClient, WalletClient, parseEther, publicActions } from 'viem';
 import { gql } from 'graphql-request';
 import { stakingHubActions } from '.';
 import { safeActionsAsync } from '../safe';
@@ -297,91 +297,74 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
   }) => {
     try {
       const state = getState();
-      console.log( 'state', state );
 
-      console.log(
-        'BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance as string) > BigInt(0)',
-        state.stakingHub.safeInfo.data.allowance.wxHoprAllowance &&
-          BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance as string) > BigInt(0),
-      );
-      if (
-        state.stakingHub.safeInfo.data.allowance.wxHoprAllowance &&
-        BigInt(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance) > BigInt(0)
-      ) {
-        return 16;
-      }
-
-      console.log(
-        'BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18)',
-        state.stakingHub.onboarding.nodeXDaiBalance &&
-          BigInt(state.stakingHub.onboarding.nodeXDaiBalance as string) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18),
-      );
-      if (
-        state.stakingHub.onboarding.nodeXDaiBalance &&
-        BigInt(state.stakingHub.onboarding.nodeXDaiBalance) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18)
-      ) {
-        return 15;
-      }
-
-      console.log(
-        'state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
-        state.stakingHub.safeInfo.data.module.includedNodes,
-      );
-      console.log(
-        'state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
-        state.stakingHub.safeInfo.data.module.includedNodes &&
-          state.stakingHub.safeInfo.data.module.includedNodes.length > 0,
-      );
-      console.log(
-        'state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null',
-        state.stakingHub.safeInfo.data.module.includedNodes &&
-          state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
-          state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null,
-      );
-      if (
-        state.stakingHub.safeInfo.data.module.includedNodes &&
-        state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
-        state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null
-      ) {
-        return 14;
-      }
-
-      console.log('state.safe.delegates.data?.count', state.safe.delegates.data?.count);
-      if (state.safe.delegates.data?.count) {
-        return 13;
-      }
-
-      console.log('state.stakingHub.onboarding.nodeAddress', state.stakingHub.onboarding.nodeAddress);
+      // Part of the onboarding after COMM registers you
+      console.log('[Onboarding check] Node registered: ', state.stakingHub.onboarding.nodeAddress);
       if (state.stakingHub.onboarding.nodeAddress) {
+
+        console.log('[Onboarding check] Delegate count: ', state.safe.delegates.data?.count);
+        if (state.safe.delegates.data?.count) {
+
+          console.log(
+            '[Onboarding check] state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
+            state.stakingHub.safeInfo.data.module.includedNodes,
+          );
+          console.log(
+            '[Onboarding check] state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
+            state.stakingHub.safeInfo.data.module.includedNodes &&
+              state.stakingHub.safeInfo.data.module.includedNodes.length > 0,
+          );
+          console.log(
+            '[Onboarding check] Node configured (includeNode()): ',
+            state.stakingHub.safeInfo.data.module.includedNodes &&
+              state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
+              state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null,
+          );
+          if (
+            state.stakingHub.safeInfo.data.module.includedNodes &&
+            state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
+            state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null
+          ) {
+
+            const nodeXDaiBalanceCheck =  state.stakingHub.onboarding.nodeXDaiBalance && BigInt(state.stakingHub.onboarding.nodeXDaiBalance) >= BigInt(0);
+            console.log('[Onboarding check] Node balance (xDai): ', state.stakingHub.onboarding.nodeXDaiBalance, nodeXDaiBalanceCheck);
+            if (nodeXDaiBalanceCheck) {
+
+              const wxHoprAllowanceCheck = state.stakingHub.safeInfo.data.allowance.wxHoprAllowance && parseEther(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance) > BigInt(0);
+              console.log('[Onboarding check] Allowance set: ', state.stakingHub.safeInfo.data.allowance.wxHoprAllowance, wxHoprAllowanceCheck);
+              if (wxHoprAllowanceCheck) {
+                return 16;
+              }
+        
+              return 15;
+            }
+      
+            return 14;
+          }
+
+          return 13;
+          
+        }
+
         return 11;
       }
 
-      console.log(
-        'state.safe.balance.data.xDai.value && BigInt(state.safe.balance.data.xDai.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18)',
-        state.safe.balance.data.xDai.value &&
-          BigInt(state.safe.balance.data.xDai.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18),
-      );
-      console.log(
-        'state.safe.balance.data.wxHopr.value && BigInt(state.safe.balance.data.wxHopr.value) >= BigInt(MINIMUM_WXHOPR_TO_FUND*1e18)',
-        state.safe.balance.data.wxHopr.value &&
-          BigInt(state.safe.balance.data.wxHopr.value) >= BigInt(MINIMUM_WXHOPR_TO_FUND * 1e18),
-      );
 
-      if (
-        state.safe.balance.data.xDai.value &&
-        BigInt(state.safe.balance.data.xDai.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18) &&
-        state.safe.balance.data.wxHopr.value &&
-        BigInt(state.safe.balance.data.wxHopr.value) >= BigInt(MINIMUM_WXHOPR_TO_FUND * 1e18)
-      ) {
+      // Part of the onboarding before COMM registers you
+      const xDaiInSafeCheck = state.safe.balance.data.xDai.value && BigInt(state.safe.balance.data.xDai.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18);
+      const wxHoprInSafeCheck = state.safe.balance.data.wxHopr.value && BigInt(state.safe.balance.data.wxHopr.value) >= BigInt(MINIMUM_WXHOPR_TO_FUND * 1e18);
+      console.log('[Onboarding check] Safe balance (xDai):', state.safe.balance.data.xDai.value, xDaiInSafeCheck);
+      console.log('[Onboarding check] Safe balance (wxHopr):', state.safe.balance.data.wxHopr.value, wxHoprInSafeCheck);
+      if ( xDaiInSafeCheck && wxHoprInSafeCheck ) {
         return 5;
       }
 
-      console.log('state.safe.communityNftIds.data.length !== 0', state.safe.communityNftIds.data.length !== 0);
-      if (state.safe.communityNftIds.data.length !== 0) {
+      console.log('[Onboarding check] CommunityNftId in Safe', state.safe.communityNftId, state.safe.communityNftId !== null);
+      if (state.safe.communityNftId !== null) {
         return 4;
       }
 
-      console.log('state.safe.selectedSafeAddress.data', state.safe.selectedSafeAddress.data);
+      console.log('[Onboarding check] Safe created', state.safe.selectedSafeAddress.data);
       if (state.safe.selectedSafeAddress.data) {
         return 2;
       }

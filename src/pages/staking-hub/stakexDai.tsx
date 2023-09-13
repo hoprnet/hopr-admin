@@ -26,7 +26,7 @@ import {
   StyledInstructions,
   StyledTextField,
   Text
-} from './onboarding/safeOnboarding/styled';
+} from './onboarding/styled';
 import { StepContainer, ConfirmButton } from './onboarding/components';
 import styled from '@emotion/styled';
 import Section from '../../future-hopr-lib-components/Section';

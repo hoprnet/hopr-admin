@@ -14,6 +14,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { useAppSelector, useAppDispatch } from '../../../../store';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
 import { safeActionsAsync } from '../../../../store/slices/safe';
+import { sendNotification } from '../../../../hooks/useWatcher/notifications';
 
 const StyledGrayButton = styled(GrayButton)`
   border: 1px solid black;
@@ -23,7 +24,7 @@ const StyledGrayButton = styled(GrayButton)`
 export default function AddNode() {
   const dispatch = useAppDispatch();
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
-  
+
   //http://localhost:5173/staking/onboarding?HOPRdNodeAddressForOnboarding=helloMyfield
   const HOPRdNodeAddressForOnboarding = useAppSelector((store) => store.stakingHub.onboarding.nodeAddressProvidedByMagicLink);
   const nodesAddedToSafe = useAppSelector(
@@ -48,10 +49,28 @@ export default function AddNode() {
             label: 'node',
           },
         }),
-      ).unwrap();
-      dispatch(stakingHubActions.setOnboardingNodeAddress(address));
-      set_isLoading(false);
-      dispatch(stakingHubActions.setOnboardingStep(13));
+      ).unwrap()
+      .then(()=>{
+        dispatch(stakingHubActions.setOnboardingNodeAddress(address));
+        dispatch(stakingHubActions.setOnboardingStep(13));
+      })
+        .catch(e => {
+          console.log('ERROR when adding a delegate to Safe:', e)
+          if (e.includes("does not exist or it's still not indexed")) {
+            const errMsg = "Your safe wasn't indexed yet by HOPR Safe Infrastructure. Please try in 5min."
+            sendNotification({
+              notificationPayload: {
+                source: 'safe',
+                name: errMsg,
+                url: null,
+                timeout: null,
+              },
+              toastPayload: { message: errMsg, type: 'error' },
+              dispatch,
+            });
+          }
+        });
+        set_isLoading(false);
     }
   };
 
@@ -65,7 +84,7 @@ export default function AddNode() {
             href="https://docs.hoprnet.org/node/using-dappnode#2-link-your-node-to-your-safe"
             target="_blank"
             rel="noreferrer"
-            style={{ color: '#007bff', textDecoration: 'underline'}}
+            style={{ color: '#007bff', textDecoration: 'underline' }}
           >
             Dappnode
           </a>
@@ -74,7 +93,7 @@ export default function AddNode() {
             href="https://docs.hoprnet.org/node/using-docker#4-link-your-node-to-your-safe"
             target="_blank"
             rel="noreferrer"
-            style={{ color: '#007bff', textDecoration: 'underline'}}
+            style={{ color: '#007bff', textDecoration: 'underline' }}
           >
             Docker
           </a>
@@ -87,26 +106,26 @@ export default function AddNode() {
       }}
       buttons={
         <>
-        <StyledGrayButton
-          onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(11));
-          }}
-        >
-          Back
-        </StyledGrayButton>
-        <Tooltip title={address === '' ? 'Please enter and confirm your node address': !nodeInNetworkRegistry && 'This node is not on the whitelist'}>
-          <span>
-            <ConfirmButton
-              onClick={addDelegate}
-              disabled={!nodeInNetworkRegistry}
-              pending={isLoading}
-              style={{width: '250px'}}
-            >
-              CONTINUE
-            </ConfirmButton>
-          </span>
-        </Tooltip>
-      </>
+          <StyledGrayButton
+            onClick={() => {
+              dispatch(stakingHubActions.setOnboardingStep(11));
+            }}
+          >
+            Back
+          </StyledGrayButton>
+          <Tooltip title={address === '' ? 'Please enter and confirm your node address' : !nodeInNetworkRegistry && 'This node is not on the whitelist'}>
+            <span>
+              <ConfirmButton
+                onClick={addDelegate}
+                disabled={!nodeInNetworkRegistry}
+                pending={isLoading}
+                style={{ width: '250px' }}
+              >
+                CONTINUE
+              </ConfirmButton>
+            </span>
+          </Tooltip>
+        </>
       }
     >
       <TextField
@@ -116,7 +135,7 @@ export default function AddNode() {
         value={address}
         onChange={(e) => set_address(e.target.value)}
         fullWidth
-        style={{marginTop: '16px'}}
+        style={{ marginTop: '16px' }}
         helperText={'Address should start with 0x'}
       />
     </StepContainer>

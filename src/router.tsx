@@ -14,7 +14,6 @@ import { safeActions } from './store/slices/safe';
 // Sections
 import NodeLandingPage from './pages/node/landingPage';
 import StakingLandingPage from './pages/staking-hub/landingPage';
-import SectionLogs from './pages/node/logs';
 import SectionWeb3 from './pages/staking-hub/web3';
 import SectionSafe from './pages/staking-hub/safe';
 import AliasesPage from './pages/node/aliases';
@@ -52,7 +51,6 @@ import InfoIcon from '@mui/icons-material/Info';
 import LanIcon from '@mui/icons-material/Lan';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import SettingsIcon from '@mui/icons-material/Settings';
-import TerminalIcon from '@mui/icons-material/Terminal';
 import MailIcon from '@mui/icons-material/Mail';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LockIcon from '@mui/icons-material/Lock';
@@ -402,7 +400,6 @@ const LayoutEnhanced = () => {
             })
           );
           dispatch(nodeActions.initializeMessagesWebsocket());
-          dispatch(nodeActions.initializeLogsWebsocket());
         }
       } catch (e) {
         // error is handled on redux
@@ -411,7 +408,6 @@ const LayoutEnhanced = () => {
     useNode();
 
     return () => {
-      dispatch(nodeActions.closeLogsWebsocket());
       dispatch(nodeActions.closeMessagesWebsocket());
     };
   }, [apiEndpoint, apiToken]);
