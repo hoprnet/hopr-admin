@@ -141,7 +141,7 @@ function PeersPage() {
             peerId={peer.peerId}
           />
           <OpenOrFundChannelModal
-            // peerAddress={peer.peerAddress} // FIXME: peer doesnt have peerAddress property yet
+            peerAddress={peer.peerAddress}
             type={'open'}
           />
           <SendMessageModal peerId={peer.peerId} />

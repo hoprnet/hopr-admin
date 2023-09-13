@@ -27,16 +27,18 @@ export const handleBalanceNotification = ({
   newNodeBalances,
   prevNodeBalances,
   minimumNodeBalances,
-  sendNewHoprBalanceNotification,
   sendNewNativeBalanceNotification,
   sendNativeBalanceTooLowNotification,
+  sendNewNativeSafeBalanceNotification,
+  sendNewHoprSafeBalanceNotification
 }: {
   prevNodeBalances: GetBalancesResponseType | null;
   newNodeBalances: GetBalancesResponseType;
   minimumNodeBalances: GetBalancesResponseType;
   sendNewNativeBalanceNotification: (nativeBalanceDifference: bigint) => void;
-  sendNewHoprBalanceNotification: (hoprBalanceDifference: bigint) => void;
   sendNativeBalanceTooLowNotification: (newNativeBalance: bigint) => void;
+  sendNewNativeSafeBalanceNotification: (nativeSafeBalanceDifference: bigint) => void;
+  sendNewHoprSafeBalanceNotification: (hoprSafeBalanceDifference: bigint) => void;
 }) => {
   if (BigInt(newNodeBalances.native) < BigInt(minimumNodeBalances.native)) {
     return sendNativeBalanceTooLowNotification(BigInt(newNodeBalances.native));
@@ -48,12 +50,18 @@ export const handleBalanceNotification = ({
     const nativeBalanceDifference = BigInt(newNodeBalances.native) - BigInt(prevNodeBalances.native);
     sendNewNativeBalanceNotification(nativeBalanceDifference);
   }
-
-  const hoprBalanceIsMore = balanceHasIncreased(prevNodeBalances.hopr, newNodeBalances.hopr);
-  if (hoprBalanceIsMore) {
-    const hoprBalanceDifference = BigInt(newNodeBalances.hopr) - BigInt(prevNodeBalances.hopr);
-    sendNewHoprBalanceNotification(hoprBalanceDifference);
+  const nativeSafeBalanceIsLarger = balanceHasIncreased(prevNodeBalances.safeNative, newNodeBalances.safeNative);
+  if (nativeSafeBalanceIsLarger) {
+    const nativeSafeBalanceDifference = BigInt(newNodeBalances.safeNative) - BigInt(prevNodeBalances.safeNative);
+    sendNewNativeSafeBalanceNotification(nativeSafeBalanceDifference);
   }
+
+  const hoprSafeBalanceIsLarger = balanceHasIncreased(prevNodeBalances.safeHopr, newNodeBalances.safeHopr);
+  if (hoprSafeBalanceIsLarger) {
+    const hoprSafeBalanceDifference = BigInt(newNodeBalances.safeHopr) - BigInt(prevNodeBalances.safeHopr)
+    sendNewHoprSafeBalanceNotification(hoprSafeBalanceDifference);
+  }
+
 };
 
 /**
@@ -99,27 +107,15 @@ export const observeNodeBalances = ({
         newNodeBalances,
         prevNodeBalances: previousState,
         minimumNodeBalances,
-        sendNewHoprBalanceNotification: (hoprBalanceDifference) => {
-          sendNotification({
-            notificationPayload: {
-              source: 'node',
-              name: 'Node received hopr funds',
-              url: null,
-              timeout: null,
-            },
-            toastPayload: { message: `Node received ${formatEther(hoprBalanceDifference)} hopr funds` },
-            dispatch,
-          });
-        },
         sendNewNativeBalanceNotification: (nativeBalanceDifference) => {
           sendNotification({
             notificationPayload: {
               source: 'node',
-              name: 'Node received native funds',
+              name: 'Node received xDai',
               url: null,
               timeout: null,
             },
-            toastPayload: { message: `Node received ${formatEther(nativeBalanceDifference)} native funds` },
+            toastPayload: { message: `Node received ${formatEther(nativeBalanceDifference)} xDai` },
             dispatch,
           });
         },
@@ -131,12 +127,38 @@ export const observeNodeBalances = ({
               url: null,
               timeout: null,
             },
-            toastPayload: { message: `Node xDai level is low, node has ${formatEther(
-              BigInt(newNativeBalance),
-            )} and should have ${formatEther(BigInt(minimumNodeBalances.native))}` },
+            toastPayload: {
+              message: `Node xDai level is low, node has ${formatEther(
+                BigInt(newNativeBalance),
+              )} and should have ${formatEther(BigInt(minimumNodeBalances.native))}`
+            },
             dispatch,
           });
         },
+        sendNewHoprSafeBalanceNotification: (hoprSafeBalanceDifference) => {
+          sendNotification({
+            notificationPayload: {
+              source: 'safe',
+              name: 'Safe received wxHopr',
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: `Safe received ${formatEther(hoprSafeBalanceDifference)} wxHopr` },
+            dispatch,
+          });
+        },
+        sendNewNativeSafeBalanceNotification: (nativeSafeBalanceDifference) => {
+          sendNotification({
+            notificationPayload: {
+              source: 'safe',
+              name: 'Safe received xDai',
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: `Safe received ${formatEther(nativeSafeBalanceDifference)} xDai` },
+            dispatch,
+          });
+        }
       });
     },
     updatePreviousData,

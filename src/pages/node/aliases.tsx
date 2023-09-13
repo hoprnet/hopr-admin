@@ -25,6 +25,7 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 function AliasesPage() {
   const dispatch = useAppDispatch();
   const aliases = useAppSelector((store) => store.node.aliases.data);
+  const peers = useAppSelector(store => store.node.peers.data)
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [importSuccess, set_importSuccess] = useState(false);
@@ -57,6 +58,18 @@ function AliasesPage() {
       );
     }
   };
+
+
+  const getPeerAddressByPeerId = (peerId: string): string | undefined => {
+
+    const peer = peers?.announced.find(peer => peer.peerId === peerId);
+
+    if (!peer) {
+      return;
+    }
+    
+    return peer.peerAddress
+  }
 
   const handleExport = () => {
     if (aliases) {
@@ -102,20 +115,26 @@ function AliasesPage() {
     }
   };
 
+  const getPeerAddressFromPeerId = (peerId: string): string | undefined => {
+    const peerAddress = peers?.announced.find(peer => peer.peerId === peerId)?.peerAddress;
+    return peerAddress;
+  }
+
   const parsedTableData = Object.entries(aliases ?? {}).map(([alias, peerId], key) => {
     return {
       id: peerId,
       key: key.toString(),
       alias,
       peerId,
+      peerAddress: getPeerAddressByPeerId(peerId) ?? '',
       actions: (
         <>
+          <PingModal peerId={peerId} />
           <OpenOrFundChannelModal
-            // peerAddress={peerId} // FIXME: peerId should be peerAddress here
+            peerAddress={getPeerAddressByPeerId(peerId)}
             type={'open'}
           />
           <SendMessageModal peerId={peerId} />
-          <PingModal peerId={peerId} />
           <DeleteAliasButton
             onSuccess={() => {
               set_deleteSuccess(true);
@@ -182,6 +201,13 @@ function AliasesPage() {
           {
             key: 'peerId',
             name: 'Peer Id',
+            search: true,
+            tooltip: true,
+            maxWidth: '60px',
+          },
+          {
+            key: 'peerAddress',
+            name: 'Peer Address',
             search: true,
             tooltip: true,
             maxWidth: '60px',

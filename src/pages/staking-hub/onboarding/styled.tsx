@@ -1,8 +1,8 @@
 import { Button as MuiButton, TextField } from '@mui/material';
 
 import styled from '@emotion/styled';
-import Button from '../../../../future-hopr-lib-components/Button';
-import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
+import Button from '../../../future-hopr-lib-components/Button';
+import GrayButton from '../../../future-hopr-lib-components/Button/gray';
 
 export const Lowercase = styled.span`
   text-transform: lowercase;
