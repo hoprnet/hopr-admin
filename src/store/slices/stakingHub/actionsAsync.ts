@@ -326,7 +326,7 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
             state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null
           ) {
 
-            const nodeXDaiBalanceCheck =  state.stakingHub.onboarding.nodeXDaiBalance && BigInt(state.stakingHub.onboarding.nodeXDaiBalance) >= BigInt(MINIMUM_XDAI_TO_FUND_NODE * 1e18);
+            const nodeXDaiBalanceCheck =  state.stakingHub.onboarding.nodeXDaiBalance && BigInt(state.stakingHub.onboarding.nodeXDaiBalance) >= BigInt(0);
             console.log('[Onboarding check] Node balance (xDai): ', state.stakingHub.onboarding.nodeXDaiBalance, nodeXDaiBalanceCheck);
             if (nodeXDaiBalanceCheck) {
 
