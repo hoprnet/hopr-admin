@@ -13,7 +13,7 @@ export const HOPR_TOKEN_USED = 'wxHOPR';
 export const HOPR_TOKEN_USED_CONTRACT_ADDRESS = wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS;
 
 // Safe Contracts
-export const SAFE_SERVICE_URL = 'https://safe-transaction.stage.hoprtech.net';
+export const SAFE_SERVICE_URL = 'https://safe-transaction.prod.hoprtech.net';
 export const HOPR_NODE_STAKE_FACTORY = '0x098B275485c406573D042848D66eb9d63fca311C';
 export const HOPR_NODE_MANAGEMENT_MODULE = '0xB7397C218766eBe6A1A634df523A1a7e412e67eA';
 export const HOPR_NODE_SAFE_REGISTRY = '0xe15C24a0910311c83aC78B5930d771089E93077b';
