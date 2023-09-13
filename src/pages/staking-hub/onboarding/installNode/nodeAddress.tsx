@@ -46,7 +46,7 @@ const NodeAddress = () => {
         }),
       ).unwrap()
         .catch(e => {
-          if (e.error == "Safe= does not exist or it's still not indexed") {
+          if (e.error.includes("does not exist or it's still not indexed")) {
             const errMsg = "Your safe wasn't indexed yet by HOPR Safe Infrastructure. Please try in 5min."
             sendNotification({
               notificationPayload: {
