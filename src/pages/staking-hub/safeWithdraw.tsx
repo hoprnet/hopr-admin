@@ -1,25 +1,26 @@
-import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { useSearchParams } from 'react-router-dom';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Address, parseUnits } from 'viem';
+import { GNOSIS_CHAIN_HOPR_BOOST_NFT, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
+import { useEthersSigner } from '../../hooks';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActionsAsync } from '../../store/slices/safe';
 import { createSendNftTransactionData, createSendTokensTransactionData } from '../../utils/blockchain';
-import { useEthersSigner } from '../../hooks';
-import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, GNOSIS_CHAIN_HOPR_BOOST_NFT } from '../../../config'
 
 // components
-import Button from '../../future-hopr-lib-components/Button';
-import Section from '../../future-hopr-lib-components/Section';
 import Card from '../../components/Card';
 import NetworkOverlay from '../../components/NetworkOverlay';
+import Button from '../../future-hopr-lib-components/Button';
+import Section from '../../future-hopr-lib-components/Section';
 
 // Mui
+import { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import Select from '../../future-hopr-lib-components/Select';
-import { SelectChangeEvent } from '@mui/material/Select';
+import { browserClient } from '../../providers/wagmi';
 import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../../utils/safeTransactions';
 
 const StyledForm = styled.div`
@@ -181,11 +182,12 @@ function SafeWithdraw() {
           .finally(() => {
             set_isSigning(false);
           });
-      } if (token === 'nft') {
+      }
+      if (token === 'nft') {
         const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
         return dispatch(
           safeActionsAsync.createSafeContractTransaction({
-            data: createSendNftTransactionData(selectedSafeAddress as Address, receiver as  Address, Number(nftId)),
+            data: createSendNftTransactionData(selectedSafeAddress as Address, receiver as Address, Number(nftId)),
             signer,
             safeAddress: selectedSafeAddress,
             smartContractAddress,
@@ -249,7 +251,6 @@ function SafeWithdraw() {
   };
 
   const createAndExecuteTx = async () => {
-    let tx = null;
     if (signer && selectedSafeAddress) {
       set_isExecuting(true);
       if (token === 'xdai') {
@@ -267,7 +268,6 @@ function SafeWithdraw() {
         )
           .unwrap()
           .then((transactionResponse) => {
-            tx = transactionResponse;
             set_proposedTxHash(transactionResponse);
           })
           .finally(() => {
@@ -279,7 +279,7 @@ function SafeWithdraw() {
 
         await dispatch(
           safeActionsAsync.createAndExecuteContractTransactionThunk({
-            data: createSendNftTransactionData(selectedSafeAddress as Address, receiver as  Address, Number(nftId)),
+            data: createSendNftTransactionData(selectedSafeAddress as Address, receiver as Address, Number(nftId)),
             signer,
             safeAddress: selectedSafeAddress,
             smartContractAddress,
@@ -287,14 +287,16 @@ function SafeWithdraw() {
         )
           .unwrap()
           .then((transactionResponse) => {
-            tx = transactionResponse;
+            browserClient?.waitForTransactionReceipt({ hash: transactionResponse as Address })
+              .then(() => {
+                // tx should have gone through at this point
+                dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(selectedSafeAddress));
+              });
             set_proposedTxHash(transactionResponse);
           })
           .finally(() => {
             set_isExecuting(false);
           });
-
-        //TODO: Need to remove the withdrawed NFT from Redux Store here after the tx is succesful 
       } else {
         const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
         const parsedValue = Number(ethValue) ? parseUnits(ethValue as `${number}`, 18).toString() : BigInt(0);
@@ -308,7 +310,6 @@ function SafeWithdraw() {
         )
           .unwrap()
           .then((transactionResponse) => {
-            tx = transactionResponse;
             set_proposedTxHash(transactionResponse);
           })
           .finally(() => {
@@ -379,18 +380,17 @@ function SafeWithdraw() {
 
   const getTokenAvailable = (token: keyof typeof SUPPORTED_TOKENS): boolean => {
     if (token === 'nft') {
-      return !!communityNftIds.length
+      return !!communityNftIds.length;
     } else if (token === 'xdai') {
-      return !!safeBalances.xDai.value &&  BigInt(safeBalances.xDai.value) > BigInt(0)
+      return !!safeBalances.xDai.value && BigInt(safeBalances.xDai.value) > BigInt(0);
     } else if (token === 'wxhopr') {
-      return !!safeBalances.wxHopr.value &&  BigInt(safeBalances.wxHopr.value) > BigInt(0)
+      return !!safeBalances.wxHopr.value && BigInt(safeBalances.wxHopr.value) > BigInt(0);
     } else if (token === 'xhopr') {
-      return !!safeBalances.xHopr.value &&  BigInt(safeBalances.xHopr.value) > BigInt(0)
-    } 
+      return !!safeBalances.xHopr.value && BigInt(safeBalances.xHopr.value) > BigInt(0);
+    }
 
-
-    return false
-  }
+    return false;
+  };
 
   // multiple owners is out of scope for initial version
   // const handleApprove = () => {
