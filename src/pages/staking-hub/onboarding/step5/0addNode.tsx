@@ -50,8 +50,13 @@ export default function AddNode() {
           },
         }),
       ).unwrap()
+      .then(()=>{
+        dispatch(stakingHubActions.setOnboardingNodeAddress(address));
+        dispatch(stakingHubActions.setOnboardingStep(13));
+      })
         .catch(e => {
-          if (e.error.include("does not exist or it's still not indexed")) {
+          console.log('ERROR when adding a delegate to Safe:', e)
+          if (e.includes("does not exist or it's still not indexed")) {
             const errMsg = "Your safe wasn't indexed yet by HOPR Safe Infrastructure. Please try in 5min."
             sendNotification({
               notificationPayload: {
@@ -65,9 +70,7 @@ export default function AddNode() {
             });
           }
         });
-      dispatch(stakingHubActions.setOnboardingNodeAddress(address));
-      set_isLoading(false);
-      dispatch(stakingHubActions.setOnboardingStep(13));
+        set_isLoading(false);
     }
   };
 
