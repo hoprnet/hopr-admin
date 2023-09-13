@@ -27,7 +27,6 @@ function AliasesPage() {
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const peers = useAppSelector(store => store.node.peers.data)
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
-  const peers = useAppSelector((store) => store.node.peers.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [importSuccess, set_importSuccess] = useState(false);
   const [deleteSuccess, set_deleteSuccess] = useState(false);
