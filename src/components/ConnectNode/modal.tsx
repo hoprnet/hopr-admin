@@ -122,6 +122,7 @@ const CloseOverlayIconButton = styled(IconButton)`
   top: 16px;
 `;
 
+const loginAnywaysWarning = "Your node did not start properly and might not be fully functioning. Some features might be offline and not working";
 const defaultProps = { open: false };
 
 function ConnectNodeModal(props: ConnectNodeModalProps) {
@@ -378,7 +379,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           </Button>
         </ConnectContainer>
 
-        {error && (
+        {error && !forceLogin && (
           <Overlay className={'overlay-has-error'}>
             <CloseOverlayIconButton
               color="primary"
@@ -390,34 +391,21 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
               <CloseIcon />
             </CloseOverlayIconButton>
             <div className={'error'}>
-              {forceLogin ? 
-                <><div>
-                  <p>WARNING</p>
-                  <p>Your did not start properly and might not be fully functioning. Some features might be offline and not working</p>
-                </div><ButtonGroupContainer>
-                  <Button outlined onClick={() => set_forceLogin(false)}>BACK</Button>
-                  <ForceLoginButton
-                    onClick={() => {
-                      useNode({ force: true });
-                      set_forceLogin(false);
-                    } }
-                    disabled={apiEndpoint.length === 0 || apiToken.length === 0}
-                  >
-                      Login anyways
-                  </ForceLoginButton>
-                </ButtonGroupContainer></>
-                : <><div>
+                <div>
                   <p>ERROR</p>
                   {error}
-                </div><Tooltip title="Your did not start properly and might not be fully functioning. Some features might be offline and not working">
-                  <ForceLoginButton
-                    onClick={() => set_forceLogin(true)}
-                    disabled={apiEndpoint.length === 0 || apiToken.length === 0}
-                  >
-                      Login anyways
-                  </ForceLoginButton>
-                </Tooltip></>
-              }
+                </div>
+                
+                <div style={{ textAlign: 'center', marginTop: '32px'}}>
+                  <Tooltip title={loginAnywaysWarning}>
+                    <ForceLoginButton
+                      onClick={() => set_forceLogin(true)}
+                      disabled={apiEndpoint.length === 0 || apiToken.length === 0}
+                    >
+                        Login anyways
+                    </ForceLoginButton>
+                  </Tooltip>
+                </div>
             </div>
           </Overlay>
         )}
@@ -443,6 +431,29 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           </StyledGrayButton>
           <Button onClick={clearLocalNodes}>Remove all</Button>
         </ConnectContainer>
+      </Modal>
+
+      <Modal
+        open={forceLogin}
+        onClose={() => {
+          set_forceLogin(false);
+        }}
+        disableScrollLock={true}
+        title="WARNING"
+      >
+        <p>{loginAnywaysWarning}</p>
+        <ButtonGroupContainer>
+          <Button outlined onClick={() => set_forceLogin(false)}>BACK</Button>
+          <ForceLoginButton
+            onClick={() => {
+              useNode({ force: true });
+              set_forceLogin(false);
+            } }
+            disabled={apiEndpoint.length === 0 || apiToken.length === 0}
+          >
+              Login anyways
+          </ForceLoginButton>
+        </ButtonGroupContainer>
       </Modal>
     </>
   );
