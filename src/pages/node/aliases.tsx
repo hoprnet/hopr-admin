@@ -25,6 +25,7 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 function AliasesPage() {
   const dispatch = useAppDispatch();
   const aliases = useAppSelector((store) => store.node.aliases.data);
+  const peers = useAppSelector(store => store.node.peers.data)
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
   const peers = useAppSelector((store) => store.node.peers.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
@@ -58,6 +59,18 @@ function AliasesPage() {
       );
     }
   };
+
+
+  const getPeerAddressByPeerId = (peerId: string): string | undefined => {
+
+    const peer = peers?.announced.find(peer => peer.peerId === peerId);
+
+    if (!peer) {
+      return;
+    }
+    
+    return peer.peerAddress
+  }
 
   const handleExport = () => {
     if (aliases) {
@@ -114,11 +127,12 @@ function AliasesPage() {
       key: key.toString(),
       alias,
       peerId,
+      peerAddress: getPeerAddressByPeerId(peerId) ?? '',
       actions: (
         <>
           <PingModal peerId={peerId} />
           <OpenOrFundChannelModal
-            peerAddress={getPeerAddressFromPeerId(peerId)}
+            peerAddress={getPeerAddressByPeerId(peerId)}
             type={'open'}
           />
           <SendMessageModal peerId={peerId} />
@@ -188,6 +202,13 @@ function AliasesPage() {
           {
             key: 'peerId',
             name: 'Peer Id',
+            search: true,
+            tooltip: true,
+            maxWidth: '60px',
+          },
+          {
+            key: 'peerAddress',
+            name: 'Peer Address',
             search: true,
             tooltip: true,
             maxWidth: '60px',
