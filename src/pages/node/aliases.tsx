@@ -115,6 +115,11 @@ function AliasesPage() {
     }
   };
 
+  const getPeerAddressFromPeerId = (peerId: string): string | undefined => {
+    const peerAddress = peers?.announced.find(peer => peer.peerId === peerId)?.peerAddress;
+    return peerAddress;
+  }
+
   const parsedTableData = Object.entries(aliases ?? {}).map(([alias, peerId], key) => {
     return {
       id: peerId,
@@ -124,12 +129,12 @@ function AliasesPage() {
       peerAddress: getPeerAddressByPeerId(peerId) ?? '',
       actions: (
         <>
+          <PingModal peerId={peerId} />
           <OpenOrFundChannelModal
-            peerAddress={getPeerAddressByPeerId(peerId)} // FIXME: peerId should be peerAddress here
+            peerAddress={getPeerAddressByPeerId(peerId)}
             type={'open'}
           />
           <SendMessageModal peerId={peerId} />
-          <PingModal peerId={peerId} />
           <DeleteAliasButton
             onSuccess={() => {
               set_deleteSuccess(true);
