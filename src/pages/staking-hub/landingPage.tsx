@@ -68,6 +68,7 @@ const Description = styled.p`
 const StyledButton = styled(Button)`
   align-self: center;
   text-transform: uppercase;
+
 `;
 
 const FurtherReadingButton = styled(Button)`
@@ -209,10 +210,7 @@ const WhiteTitle = styled.h2`
   margin-top: 2rem;
 `;
 
-const BlueSectionButton = styled(Button)`
-  align-self: center;
-  text-transform: uppercase;
-`;
+
 
 const StyledCard = styled(Card)`
   display: flex;
@@ -769,6 +767,15 @@ const SafeSideToSideContainer = styled.div`
   }
 `;
 
+const BlueSectionButton = styled(Button)`
+  align-self: center;
+  text-transform: uppercase;
+
+  @media screen and (min-width: 200px) and (max-width: 320) {
+    min-height: 100px;
+  }
+`;
+
 
 const SafeCard = styled(Card)`
   display: flex;
@@ -784,7 +791,13 @@ const SafeCard = styled(Card)`
   /* border-radius: 60px; */
   gap: 0.5rem;
 
-  @media screen and (min-width: 200px) and (max-width: 1024px) {
+  @media screen and (min-width: 200px) and (max-width: 319px) {
+    margin: auto;
+    padding: 8px;
+    max-width: 200px;
+  }
+
+  @media screen and ((min-width: 320px) and (max-width: 1024px)){
     margin: auto;
   }
 `;
@@ -866,6 +879,7 @@ const MainTitle = styled.h2`
   padding-bottom: 3rem;
 
   @media screen and (max-width:320px) {
+    min-width: 100px;
     max-width: 320px;
     font-size: 30px;
   }
