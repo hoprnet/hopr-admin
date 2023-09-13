@@ -100,6 +100,7 @@ export default function ConnectSafe() {
     const fetchInitialStateForSigner = async () => {
       if (signer) {
         dispatch(safeActions.resetState());
+        dispatch(stakingHubActions.resetState())
         dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer }));
       }
     };
@@ -108,8 +109,10 @@ export default function ConnectSafe() {
   }, [signer]);
 
   useEffect(() => {
-    if (safes.length > 0 && !safeAddress) dispatch(safeActions.setSelectedSafe(safes[0].safeAddress));
-  }, [safes]);
+    if (safes.length > 0 && !safeAddress) {
+      dispatch(safeActions.setSelectedSafe(safes[0].safeAddress));
+    }
+  }, [safes, safeAddress]);
 
   useEffect(() => {
     if (safeAddress && browserClient && safes) {
@@ -217,9 +220,7 @@ export default function ConnectSafe() {
                 key={`${safe.safeAddress}_${index}`}
                 value={safe.safeAddress}
                 onClick={() => {
-                  dispatch(safeActions.resetState());
-                  dispatch(stakingHubActions.resetOnboardingState());
-                  dispatch(safeActions.setSelectedSafe(safe.safeAddress));
+                  useSelectedSafe(safe.safeAddress)
                 }}
               >
                 {safe.safeAddress &&
