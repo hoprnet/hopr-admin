@@ -212,9 +212,6 @@ const WhiteTitle = styled.h2`
 const BlueSectionButton = styled(Button)`
   align-self: center;
   text-transform: uppercase;
-  position: relative;
-  top: -11rem;
-  left: -18rem;
 `;
 
 const StyledCard = styled(Card)`
@@ -489,35 +486,7 @@ const StakingLandingPage = () => {
             </div>
             <img style={{ maxWidth: '100%' }} src="/assets/staking-hub-example.svg" />
           </SideToSideContainer>
-          {/* <Image src="/assets/create-you-hopr-safe-now.svg" /> */}
           <CreateSafeNow />
-          {/* {
-            !status.connected &&
-            <BlueSectionButton
-              onClick={() => set_openWeb3Modal(true)}
-              disabled={status.connected}
-            >
-              CONNECT WALLET
-            </BlueSectionButton>
-          }
-          {
-            status.connected && onboardingStep !== 16 &&
-            <BlueSectionButton
-              onClick={() => {navigate('/staking/onboarding');}}
-            >
-              GO TO ONBOARDING
-            </BlueSectionButton>
-          }
-          {
-            status.connected && onboardingStep === 16 &&
-            <BlueSectionButton
-              onClick={()=>{navigate('/staking/dashboard')}}
-              style={{maxWidth: '300px'}}
-            >
-              VIEW STAKING OVERVIEW
-            </BlueSectionButton>
-          } */}
-
         </StyledContainer>
       </Section>
       <Section
@@ -761,7 +730,7 @@ const SafeSideToSideContainer = styled.div`
   }
   .TextSide {
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column;
     flex: 3;
     max-width: 600px;
     h2 {
@@ -771,8 +740,8 @@ const SafeSideToSideContainer = styled.div`
       margin-block: 0rem;
       text-transform: uppercase;
       text-align: left;
-      text-align: center;
-    }
+      text-align: center; */
+    /* } */
   }
   .ImageSide {
     align-items: center;
@@ -934,8 +903,15 @@ const SafeContent = styled.div`
 `;
 
 const CreateSafeNow = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const status = useAppSelector((store) => store.web3.status);
+  const onboardingStep = useAppSelector((store) => store.stakingHub.onboarding.step);
+
+
   const [expandedId, set_expandedId] = useState<number | false>(0);
   const [imageSrc, set_imageSrc] = useState<string>("/assets/get-ready.svg")
+
 
   const handleAccordionClick = (id: number) => {
     set_expandedId(id);
@@ -1026,6 +1002,32 @@ const CreateSafeNow = () => {
               <SafeContent>Use your Safe to spin up a new HOPR node, and start earning $HOPR!</SafeContent>
             </SafeAccordionContent>
           </SafeAccordion>
+          {
+            !status.connected &&
+            <StyledButton
+              onClick={() => { dispatch(web3Actions.setModalOpen(true)); }}
+              disabled={status.connected}
+            >
+              CONNECT WALLET
+            </StyledButton>
+          }
+          {
+            status.connected && onboardingStep !== 16 &&
+            <BlueSectionButton
+              onClick={() => { navigate('/staking/onboarding'); }}
+            >
+              GO TO ONBOARDING
+            </BlueSectionButton>
+          }
+          {
+            status.connected && onboardingStep === 16 &&
+            <BlueSectionButton
+              onClick={() => { navigate('/staking/dashboard') }}
+              style={{ maxWidth: '300px' }}
+            >
+              VIEW STAKING OVERVIEW
+            </BlueSectionButton>
+          }
         </SafeCard>
         <div className='ImageSide'>
           <img src={imageSrc} />
