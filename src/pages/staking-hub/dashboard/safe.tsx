@@ -50,7 +50,7 @@ const Container = styled.div`
         justify-content: space-between;
     }
 
-    #redeemed-tickets, #earned-rewards, #wxhopr-total-stake, #xdai-in-safe, #Update-Node-Configuration {
+    #redeemed-tickets, #earned-rewards, #wxhopr-total-stake, #xdai-in-safe, #Update-Node-Configuration, #transfer-nft {
         flex: 1;
     }
 `
@@ -155,14 +155,14 @@ function SafeDashboard() {
     <Container
       className='SafeDashboard'
     >
-      <div className='half-line'>
+      <div className='line'>
         <GrayCard
           id="Update-Node-Configuration"
           title="Safe Configuration"
           currency={needsUpdate ? <span style={{ color: 'red' }}>Update needed</span> : <span>Current version</span>}
           buttons={[
             {
-              text: 'UPDATE',
+              text: 'Update',
               onClick: updateConfig,
               pending: updating,
               disabled: !needsUpdate,
@@ -171,21 +171,36 @@ function SafeDashboard() {
         />
         <GrayCard
           id="transfer-nft"
-          buttons={[{
-            disabled: communityNftIdInWallet === null || !!communityNftIdInSafe, pending: sendingNFT, text: 'Transfer NFT to Safe', onClick: () => {
-              if (!walletClient) return;
-              if (walletAddress && selectedSafeAddress && communityNftIdInWallet !== null) {
-                dispatch(
-                  web3ActionsAsync.sendNftToSafeThunk({
-                    walletAddress,
-                    safeAddress: selectedSafeAddress,
-                    walletClient,
-                    communityNftId: communityNftIdInWallet,
-                  }),
-                )
+          buttons={
+            communityNftIdInSafe ? 
+            [
+              {
+                text: 'Withdraw NFT from Safe', 
+                link: '/staking/withdraw?token=nft',
               }
-            }, 
-          }]}
+            ]
+            :
+            [
+              {
+                disabled: communityNftIdInWallet === null || !!communityNftIdInSafe, 
+                pending: sendingNFT, 
+                text: 'Transfer NFT to Safe', 
+                onClick: () => {
+                  if (!walletClient) return;
+                  if (walletAddress && selectedSafeAddress && communityNftIdInWallet !== null) {
+                    dispatch(
+                      web3ActionsAsync.sendNftToSafeThunk({
+                        walletAddress,
+                        safeAddress: selectedSafeAddress,
+                        walletClient,
+                        communityNftId: communityNftIdInWallet,
+                      }),
+                    )
+                  }
+                }, 
+              }
+            ]
+          }
         >
           <TransferNFT>
             <img src={whichNFTimage()} />

@@ -248,7 +248,8 @@ function SafeWithdraw() {
     }
   };
 
-  const createAndExecuteTx = () => {
+  const createAndExecuteTx = async () => {
+    let tx = null;
     if (signer && selectedSafeAddress) {
       set_isExecuting(true);
       if (token === 'xdai') {
@@ -266,6 +267,7 @@ function SafeWithdraw() {
         )
           .unwrap()
           .then((transactionResponse) => {
+            tx = transactionResponse;
             set_proposedTxHash(transactionResponse);
           })
           .finally(() => {
@@ -274,7 +276,8 @@ function SafeWithdraw() {
       }
       if (token === 'nft') {
         const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
-        return dispatch(
+
+        await dispatch(
           safeActionsAsync.createAndExecuteContractTransactionThunk({
             data: createSendNftTransactionData(selectedSafeAddress as Address, receiver as  Address, Number(nftId)),
             signer,
@@ -284,11 +287,14 @@ function SafeWithdraw() {
         )
           .unwrap()
           .then((transactionResponse) => {
+            tx = transactionResponse;
             set_proposedTxHash(transactionResponse);
           })
           .finally(() => {
             set_isExecuting(false);
           });
+
+        //TODO: Need to remove the withdrawed NFT from Redux Store here after the tx is succesful 
       } else {
         const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
         const parsedValue = Number(ethValue) ? parseUnits(ethValue as `${number}`, 18).toString() : BigInt(0);
@@ -302,6 +308,7 @@ function SafeWithdraw() {
         )
           .unwrap()
           .then((transactionResponse) => {
+            tx = transactionResponse;
             set_proposedTxHash(transactionResponse);
           })
           .finally(() => {
@@ -514,6 +521,7 @@ function SafeWithdraw() {
                 <span>
                   <StyledBlueButton
                     disabled={!!getErrorsForExecuteButton().length || isExecuting}
+                    pending={isExecuting}
                     // no need to propose tx with only 1 threshold
                     onClick={proposedTx ? executeTx : createAndExecuteTx}
                   >

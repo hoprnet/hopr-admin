@@ -87,19 +87,28 @@ export const GrayCard = ({
   }: GrayCardProps) => {
     return (
       <StyledGrayCard id={id}>
-        {(title || value) && (
+        {(title || value || children) && (
           <CardContent>
             {title && <CardTitle>{title}</CardTitle>}
-            <ValueAndCurrency>
-              {value && <CardValue>{value}</CardValue> }
-              {currency && <CardCurrency>{currency}</CardCurrency>}
-            </ValueAndCurrency>
+            {
+              (currency || value) &&
+              <ValueAndCurrency>
+                {value && <CardValue>{value}</CardValue> }
+                {currency && <CardCurrency>{currency}</CardCurrency>}
+              </ValueAndCurrency>
+            }
             {chip && (
               <StyledChip
                 label={chip.label}
                 color={chip.color}
               />
             )}
+            {
+              children &&
+              <div className="content">
+                {children}
+              </div>
+            }
           </CardContent>
         )}
         {buttons && (
@@ -116,7 +125,6 @@ export const GrayCard = ({
             ))}
           </ButtonGroup>
         )}
-        {children}
       </StyledGrayCard>
     );
   };
