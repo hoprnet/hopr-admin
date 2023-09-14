@@ -1,6 +1,7 @@
 import { Address, encodeFunctionData, encodePacked } from 'viem';
 import { erc20ABI } from 'wagmi';
 import { nodeManagementModuleAbi } from '../abi/nodeManagementModuleAbi';
+import { hoprBoostNFTAbi } from '../abi/hoprBoostNFTAbi';
 
 // Maximum possible value for uint256
 export const MAX_UINT256 = BigInt(2 ** 256) - BigInt(1);
@@ -30,6 +31,14 @@ export const createSendTokensTransactionData = (recipient: Address, amount: bigi
     abi: erc20ABI,
     functionName: 'transfer',
     args: [recipient, amount],
+  });
+  return transferData;
+};
+export const createSendNftTransactionData = (from: Address, to: Address, tokenId: number) => {
+  const transferData = encodeFunctionData({
+    abi: hoprBoostNFTAbi,
+    functionName: 'safeTransferFrom',
+    args: [from, to, tokenId],
   });
   return transferData;
 };

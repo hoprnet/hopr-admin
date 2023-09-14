@@ -34,6 +34,7 @@ interface Props extends SelectMuiProps {
   values?: {
     value: string | number;
     name: string | number | null;
+    disabled?: boolean 
   }[];
   native?: boolean;
 }
@@ -57,6 +58,7 @@ const Select: React.FC<Props> = (props) => {
           props.values.map((elem, index) => (
             <MenuItem
               value={elem.value}
+              disabled={elem.disabled}
               key={`${elem.value}_${elem.name}_${index}`}
               style={props.removeValue && { justifyContent: 'space-between' }}
             >

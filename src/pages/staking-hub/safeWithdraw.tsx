@@ -3,11 +3,11 @@ import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-type
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Address, parseUnits } from 'viem';
-import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
+import { GNOSIS_CHAIN_HOPR_BOOST_NFT, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
 import { useEthersSigner } from '../../hooks';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { safeActionsAsync } from '../../store/slices/safe';
-import { createSendTokensTransactionData } from '../../utils/blockchain';
+import { safeActions, safeActionsAsync } from '../../store/slices/safe';
+import { createSendNftTransactionData, createSendTokensTransactionData } from '../../utils/blockchain';
 
 // components
 import Card from '../../components/Card';
@@ -21,6 +21,7 @@ import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
 import { FeedbackTransaction } from '../../components/FeedbackTransaction';
 import Select from '../../future-hopr-lib-components/Select';
+import { browserClient } from '../../providers/wagmi';
 import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../../utils/safeTransactions';
 
 const StyledForm = styled.div`
@@ -96,26 +97,27 @@ const InputWithLabel = styled.div`
   gap: 16px;
 `;
 
-const supportedTokens = [
-  {
+const SUPPORTED_TOKENS = {
+  xdai: {
     value: 'xdai',
     name: 'xDai',
   },
-  {
-    value: 'wxhopr',
+  wxhopr: {
     name: 'wxHOPR',
+    value: 'wxhopr',
     smartContract: wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
   },
-  {
-    value: 'xhopr',
+  xhopr: {
     name: 'xHOPR',
+    value: 'xhopr',
     smartContract: xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
   },
-];
-
-const supportedTokensValues = supportedTokens.map((elem) => elem.value);
-type SupportedTokens = (typeof supportedTokensValues)[number];
-const isSupportedToken = (x: string | null): x is SupportedTokens => (x ? supportedTokensValues.includes(x) : false);
+  nft: {
+    name: 'NFT',
+    value: 'nft',
+    smartContract: GNOSIS_CHAIN_HOPR_BOOST_NFT,
+  },
+} as const;
 
 function SafeWithdraw() {
   const dispatch = useAppDispatch();
@@ -126,18 +128,22 @@ function SafeWithdraw() {
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const safeInfo = useAppSelector((store) => store.safe.info.data);
   const address = useAppSelector((store) => store.web3.account);
+  const communityNftIds = useAppSelector((store) => store.safe.communityNftIds.data);
+  const safeBalances = useAppSelector((store) => store.safe.balance.data);
+  const signer = useEthersSigner();
   // local state
   const [userCanSkipProposal, set_userCanSkipProposal] = useState(false);
   const [userAction, set_userAction] = useState<'EXECUTE' | 'SIGN' | null>(null);
   const [ethValue, set_ethValue] = useState<string>('');
+  const [nftId, set_nftId] = useState<string>('');
   const [receiver, set_receiver] = useState<string>('');
-  const [token, set_token] = useState<SupportedTokens>(isSupportedToken(tokenParam) ? tokenParam : 'xdai');
   const [isWalletLoading, set_isWalletLoading] = useState<boolean>();
   const [transactionHash, set_transactionHash] = useState<Address>();
+  const [token, set_token] = useState<keyof typeof SUPPORTED_TOKENS>(
+    tokenParam && tokenParam in SUPPORTED_TOKENS ? (tokenParam as keyof typeof SUPPORTED_TOKENS) : 'xdai',
+  );
   const [proposedTxHash, set_proposedTxHash] = useState<string>();
   const [proposedTx, set_proposedTx] = useState<SafeMultisigTransactionResponse>();
-
-  const signer = useEthersSigner();
 
   useEffect(() => {
     if (proposedTxHash) {
@@ -154,12 +160,12 @@ function SafeWithdraw() {
   }, [safeInfo]);
 
   const proposeTx = () => {
-    if (signer && Number(ethValue) && selectedSafeAddress) {
+    if (signer && selectedSafeAddress) {
       set_isWalletLoading(true);
 
       if (token === 'xdai') {
-        const parsedValue = parseUnits(ethValue as `${number}`, 18).toString();
-        dispatch(
+        const parsedValue = Number(ethValue) ? parseUnits(ethValue as `${number}`, 18).toString() : 0;
+        return dispatch(
           safeActionsAsync.createSafeTransactionThunk({
             signer,
             safeAddress: selectedSafeAddress,
@@ -177,10 +183,28 @@ function SafeWithdraw() {
           .finally(() => {
             set_isWalletLoading(false);
           });
+      }
+      if (token === 'nft') {
+        const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
+        return dispatch(
+          safeActionsAsync.createSafeContractTransaction({
+            data: createSendNftTransactionData(selectedSafeAddress as Address, receiver as Address, Number(nftId)),
+            signer,
+            safeAddress: selectedSafeAddress,
+            smartContractAddress,
+          }),
+        )
+          .unwrap()
+          .then((transactionResponse) => {
+            set_proposedTxHash(transactionResponse);
+          })
+          .finally(() => {
+            set_isWalletLoading(false);
+          });
       } else {
-        const smartContractAddress = supportedTokens.filter((elem) => elem.value === token)[0].smartContract as string;
-        const parsedValue = parseUnits(ethValue as `${number}`, 18).toString() as unknown;
-        dispatch(
+        const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
+        const parsedValue = Number(ethValue) ? parseUnits(ethValue as `${number}`, 18).toString() : BigInt(0);
+        return dispatch(
           safeActionsAsync.createSafeContractTransaction({
             data: createSendTokensTransactionData(receiver as `0x${string}`, parsedValue as bigint),
             signer,
@@ -227,12 +251,12 @@ function SafeWithdraw() {
     }
   };
 
-  const createAndExecuteTx = () => {
-    if (signer && Number(ethValue) && selectedSafeAddress) {
+  const createAndExecuteTx = async () => {
+    if (signer && selectedSafeAddress) {
       set_isWalletLoading(true);
       if (token === 'xdai') {
-        const parsedValue = parseUnits(ethValue as `${number}`, 18).toString();
-        dispatch(
+        const parsedValue = Number(ethValue) ? parseUnits(ethValue as `${number}`, 18).toString() : 0;
+        return dispatch(
           safeActionsAsync.createAndExecuteTransactionThunk({
             signer,
             safeAddress: selectedSafeAddress,
@@ -250,10 +274,33 @@ function SafeWithdraw() {
           .finally(() => {
             set_isWalletLoading(false);
           });
+      }
+      if (token === 'nft') {
+        const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
+
+        await dispatch(
+          safeActionsAsync.createAndExecuteContractTransactionThunk({
+            data: createSendNftTransactionData(selectedSafeAddress as Address, receiver as Address, Number(nftId)),
+            signer,
+            safeAddress: selectedSafeAddress,
+            smartContractAddress,
+          }),
+        )
+          .unwrap()
+          .then((transactionResponse) => {
+            browserClient?.waitForTransactionReceipt({ hash: transactionResponse as Address })
+              .then(() => {
+                dispatch(safeActions.removeCommunityNftsOwnedBySafe(nftId));
+              });
+            set_proposedTxHash(transactionResponse);
+          })
+          .finally(() => {
+            set_isWalletLoading(false);
+          });
       } else {
-        const smartContractAddress = supportedTokens.filter((elem) => elem.value === token)[0].smartContract as string;
-        const parsedValue = parseUnits(ethValue as `${number}`, 18).toString() as unknown;
-        dispatch(
+        const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
+        const parsedValue = Number(ethValue) ? parseUnits(ethValue as `${number}`, 18).toString() : BigInt(0);
+        return dispatch(
           safeActionsAsync.createAndExecuteContractTransactionThunk({
             data: createSendTokensTransactionData(receiver as `0x${string}`, parsedValue as bigint),
             signer,
@@ -289,8 +336,12 @@ function SafeWithdraw() {
 
     // only require xDai value if there
     // is no proposed tx
-    if (!ethValue && !proposedTx) {
+    if (!ethValue && !proposedTx && token !== 'nft') {
       errors.push('xDai value is required');
+    }
+
+    if (token === 'nft' && !nftId) {
+      errors.push('NFT required');
     }
 
     if (customValidator) {
@@ -314,10 +365,31 @@ function SafeWithdraw() {
 
   const handleChangeToken = (event: SelectChangeEvent<unknown>) => {
     const value = event.target.value as string;
-    if (isSupportedToken(value)) {
-      set_token(value);
+    if (value in SUPPORTED_TOKENS) {
+      set_token(value as keyof typeof SUPPORTED_TOKENS);
       setSearchParams(`token=${value}`);
     }
+  };
+
+  const handleChangeNftId = (event: SelectChangeEvent<unknown>) => {
+    const value = event.target.value as string;
+    if (value) {
+      set_nftId(value);
+    }
+  };
+
+  const getTokenAvailable = (token: keyof typeof SUPPORTED_TOKENS): boolean => {
+    if (token === 'nft') {
+      return !!communityNftIds.length;
+    } else if (token === 'xdai') {
+      return !!safeBalances.xDai.value && BigInt(safeBalances.xDai.value) > BigInt(0);
+    } else if (token === 'wxhopr') {
+      return !!safeBalances.wxHopr.value && BigInt(safeBalances.wxHopr.value) > BigInt(0);
+    } else if (token === 'xhopr') {
+      return !!safeBalances.xHopr.value && BigInt(safeBalances.xHopr.value) > BigInt(0);
+    }
+
+    return false;
   };
 
   // multiple owners is out of scope for initial version
@@ -356,7 +428,11 @@ function SafeWithdraw() {
               <InputWithLabel>
                 <Select
                   size="small"
-                  values={supportedTokens}
+                  values={Object.values(SUPPORTED_TOKENS).map((t) => ({
+                    name: t.name,
+                    value: t.value,
+                    disabled: !getTokenAvailable(t.value),
+                  }))}
                   value={token}
                   onChange={handleChangeToken}
                   style={{
@@ -377,21 +453,40 @@ function SafeWithdraw() {
                 />
                 <StyledCoinLabel>Receiver</StyledCoinLabel>
               </InputWithLabel>
-              <InputWithLabel>
-                <TextField
-                  variant="outlined"
-                  placeholder="-"
-                  size="small"
-                  value={ethValue}
-                  onChange={(e) => set_ethValue(e.target.value)}
-                  inputProps={{
-                    inputMode: 'numeric',
-                    pattern: '[0-9]*',
-                  }}
-                  InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
-                />
-                <StyledCoinLabel>{supportedTokens.filter((elem) => elem.value === token)[0].name}</StyledCoinLabel>
-              </InputWithLabel>
+              {token === 'nft' ? (
+                <InputWithLabel>
+                  <Select
+                    size="small"
+                    values={Object.values(communityNftIds).map((nft) => ({
+                      name: nft.id,
+                      value: nft.id,
+                    }))}
+                    value={nftId}
+                    onChange={handleChangeNftId}
+                    style={{
+                      width: '230px',
+                      margin: 0,
+                    }}
+                  />
+                  <StyledCoinLabel>NFT ID</StyledCoinLabel>
+                </InputWithLabel>
+              ) : (
+                <InputWithLabel>
+                  <TextField
+                    variant="outlined"
+                    placeholder="-"
+                    size="small"
+                    value={ethValue}
+                    onChange={(e) => set_ethValue(e.target.value)}
+                    inputProps={{
+                      inputMode: 'numeric',
+                      pattern: '[0-9]*',
+                    }}
+                    InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
+                  />
+                  <StyledCoinLabel>{SUPPORTED_TOKENS[token].name}</StyledCoinLabel>
+                </InputWithLabel>
+              )}
             </StyledInputGroup>
           </StyledForm>
           {!!proposedTx && (
@@ -426,6 +521,7 @@ function SafeWithdraw() {
                 <span>
                   <StyledBlueButton
                     disabled={!!getErrorsForExecuteButton().length || isWalletLoading}
+                    pending={isWalletLoading}
                     // no need to propose tx with only 1 threshold
                     onClick={proposedTx ? executeTx : createAndExecuteTx}
                   >

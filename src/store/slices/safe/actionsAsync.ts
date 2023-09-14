@@ -1229,7 +1229,7 @@ const getCommunityNftsOwnedBySafeThunk = createAsyncThunk(
             number
           }
         }
-        boosts(first: 1, where: {owner: "${account.toLocaleLowerCase()}", uri_ends_with: "Network_registry/community"}) {
+        boosts(first: 20, where: {owner: "${account.toLocaleLowerCase()}", uri_ends_with: "Network_registry/community"}) {
           id
         }
       }
@@ -1266,7 +1266,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     if (action.payload) {
       // reset other safe states
       state.allTransactions.data = null;
-      state.communityNftId = null;
+      state.communityNftIds.data = [];
       state.delegates.data = null;
       state.pendingTransactions.data = null;
       state.info.data = null;
@@ -1445,7 +1445,8 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(getCommunityNftsOwnedBySafeThunk.fulfilled, (state, action) => {
     if (action.payload) {
       if (action.payload.boosts && action.payload.boosts.length > 0 && action.payload.boosts[0].id) {
-        state.communityNftId = parseInt(action.payload?.boosts[0].id);
+        state.communityNftIds.data = action.payload?.boosts;
+        state.communityNftIds.isFetching = false
       }
     }
   });
