@@ -183,10 +183,27 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     if (error) navigate(`/?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
   }, [error]);
 
+  const parseAndFormatUrl = (url: string) => {
+
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'http://' + url;
+    }
+    const parts = url.split('/');
+    let hostAndPort = parts[2]; // Get the part that contains the host and port
+
+    if (hostAndPort.indexOf(':') === -1) {
+      hostAndPort += ':3001';
+    }
+
+    parts[2] = hostAndPort;
+    return parts.join('/');
+  };
+
   const saveNode = () => {
+    const formattedApiEndpoint = parseAndFormatUrl(apiEndpoint);
     dispatch(
       authActions.addNodeData({
-        apiEndpoint,
+        apiEndpoint: formattedApiEndpoint,
         apiToken: saveApiToken ? apiToken : '',
         localName: localName ? localName : '',
       }),
@@ -194,9 +211,10 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   };
 
   const useNode = async () => {
+    const formattedApiEndpoint = parseAndFormatUrl(apiEndpoint);
     set_searchParams({
       apiToken,
-      apiEndpoint,
+      formattedApiEndpoint,
     });
     dispatch(authActions.resetState());
     dispatch(nodeActions.resetState());
@@ -205,14 +223,14 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     try {
       const loginInfo = await dispatch(
         authActionsAsync.loginThunk({
-          apiEndpoint,
+          apiEndpoint: formattedApiEndpoint,
           apiToken,
         }),
       ).unwrap();
       if (loginInfo) {
         dispatch(
           authActions.useNodeData({
-            apiEndpoint,
+            apiEndpoint: formattedApiEndpoint,
             apiToken,
             localName,
           }),
@@ -220,18 +238,18 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         dispatch(
           nodeActionsAsync.getAddressesThunk({
             apiToken,
-            apiEndpoint,
+            apiEndpoint: formattedApiEndpoint,
           }),
         );
         dispatch(
           nodeActionsAsync.getAliasesThunk({
             apiToken,
-            apiEndpoint,
+            apiEndpoint: formattedApiEndpoint,
           }),
         );
         dispatch(nodeActions.setInfo(loginInfo));
         dispatch(nodeActions.initializeMessagesWebsocket());
-        if (!error) navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
+        if (!error) navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${formattedApiEndpoint}`);
         trackGoal('IZUWDE9K', 1);
         props.handleClose();
       }
@@ -271,119 +289,119 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
 
   return (
     <>
-    <SModal
-      open={props.open}
-      onClose={handleClose}
-      title="CONNECT NODE"
-      maxWidth={'580px'}
-      disableScrollLock={true}
-    >
-      <LocalNodesContainer>
-        <Select
-          label={'Nodes saved in browser local storage'}
-          values={nodesSavedLocallyParsed}
-          disabled={nodesSavedLocally.length === 0}
-          value={nodesSavedLocallyChosenIndex}
-          onChange={handleSelectlocalNodes}
-          style={{ width: '100%' }}
-          removeValue={clearSingleLocal}
-          removeValueTooltip={'Remove node from local storage'}
-        />
-        <Tooltip title={'Clear all node credentials from the browser local storage'}>
-          <span>
-            <IconButton
-              aria-label="delete"
-              disabled={nodesSavedLocally.length === 0}
-              onClick={()=>{set_areYouSureYouWannaDeleteAllSavedNodes(true)}}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </span>
-        </Tooltip>
-      </LocalNodesContainer>
+      <SModal
+        open={props.open}
+        onClose={handleClose}
+        title="CONNECT NODE"
+        maxWidth={'580px'}
+        disableScrollLock={true}
+      >
+        <LocalNodesContainer>
+          <Select
+            label={'Nodes saved in browser local storage'}
+            values={nodesSavedLocallyParsed}
+            disabled={nodesSavedLocally.length === 0}
+            value={nodesSavedLocallyChosenIndex}
+            onChange={handleSelectlocalNodes}
+            style={{ width: '100%' }}
+            removeValue={clearSingleLocal}
+            removeValueTooltip={'Remove node from local storage'}
+          />
+          <Tooltip title={'Clear all node credentials from the browser local storage'}>
+            <span>
+              <IconButton
+                aria-label="delete"
+                disabled={nodesSavedLocally.length === 0}
+                onClick={() => { set_areYouSureYouWannaDeleteAllSavedNodes(true) }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
+        </LocalNodesContainer>
 
-      <p>
-        <strong>Node credentials:</strong>
-      </p>
-      <TextField
-        label={'Local name (optional)'}
-        value={localName}
-        onChange={(event) => {
-          set_localName(event.target.value);
-        }}
-        style={{ width: '100%' }}
-      />
-      <TextField
-        label={'API endpoint (required)'}
-        value={apiEndpoint}
-        onChange={(event) => {
-          set_apiEndpoint(event.target.value);
-        }}
-        style={{ width: '100%' }}
-      />
-      <TextField
-        label={'API token (required)'}
-        value={apiToken}
-        onChange={(event) => {
-          set_apiToken(event.target.value);
-        }}
-        style={{ width: '100%' }}
-      />
-      <SaveTokenContainer>
-        <Checkbox
-          label={'Save API token locally (unsafe)'}
-          value={saveApiToken}
+        <p>
+          <strong>Node credentials:</strong>
+        </p>
+        <TextField
+          label={'Local name (optional)'}
+          value={localName}
           onChange={(event) => {
-            set_saveApiToken(event.target.checked);
+            set_localName(event.target.value);
           }}
+          style={{ width: '100%' }}
         />
-        <Tooltip title={'Save node credentials in browser local storage'}>
-          <Button
-            onClick={saveNode}
-            disabled={apiEndpoint.length === 0}
-          >
-            Save
-          </Button>
-        </Tooltip>
-      </SaveTokenContainer>
-
-      <ConnectContainer>
-        <Button
-          onClick={useNode}
-          disabled={apiEndpoint.length === 0 || apiToken.length === 0}
-        >
-          Connect to the node
-        </Button>
-      </ConnectContainer>
-
-      {error && (
-        <Overlay className={'overlay-has-error'}>
-          <CloseOverlayIconButton
-            color="primary"
-            aria-label="close modal"
-            onClick={() => {
-              dispatch(authActions.resetState());
+        <TextField
+          label={'API endpoint (required)'}
+          value={apiEndpoint}
+          onChange={(event) => {
+            set_apiEndpoint(event.target.value);
+          }}
+          style={{ width: '100%' }}
+        />
+        <TextField
+          label={'API token (required)'}
+          value={apiToken}
+          onChange={(event) => {
+            set_apiToken(event.target.value);
+          }}
+          style={{ width: '100%' }}
+        />
+        <SaveTokenContainer>
+          <Checkbox
+            label={'Save API token locally (unsafe)'}
+            value={saveApiToken}
+            onChange={(event) => {
+              set_saveApiToken(event.target.checked);
             }}
-          >
-            <CloseIcon />
-          </CloseOverlayIconButton>
-          <div className={'error'}>
-            <p>ERROR</p>
-            {error}
-          </div>
-        </Overlay>
-      )}
-    </SModal>
+          />
+          <Tooltip title={'Save node credentials in browser local storage'}>
+            <Button
+              onClick={saveNode}
+              disabled={apiEndpoint.length === 0}
+            >
+              Save
+            </Button>
+          </Tooltip>
+        </SaveTokenContainer>
 
-    <Modal
+        <ConnectContainer>
+          <Button
+            onClick={useNode}
+            disabled={apiEndpoint.length === 0 || apiToken.length === 0}
+          >
+            Connect to the node
+          </Button>
+        </ConnectContainer>
+
+        {error && (
+          <Overlay className={'overlay-has-error'}>
+            <CloseOverlayIconButton
+              color="primary"
+              aria-label="close modal"
+              onClick={() => {
+                dispatch(authActions.resetState());
+              }}
+            >
+              <CloseIcon />
+            </CloseOverlayIconButton>
+            <div className={'error'}>
+              <p>ERROR</p>
+              {error}
+            </div>
+          </Overlay>
+        )}
+      </SModal>
+
+      <Modal
         open={areYouSureYouWannaDeleteAllSavedNodes}
-        onClose={()=>{set_areYouSureYouWannaDeleteAllSavedNodes(false)}}
+        onClose={() => { set_areYouSureYouWannaDeleteAllSavedNodes(false) }}
         disableScrollLock={true}
         title='Are you sure that you wanna remove all saved nodes?'
       >
-        <br/>
+        <br />
         <ConnectContainer>
-          <StyledGrayButton onClick={()=>{set_areYouSureYouWannaDeleteAllSavedNodes(false)}}>No</StyledGrayButton>
+          <StyledGrayButton onClick={() => { set_areYouSureYouWannaDeleteAllSavedNodes(false) }}>No</StyledGrayButton>
           <Button
             onClick={clearLocalNodes}
           >
