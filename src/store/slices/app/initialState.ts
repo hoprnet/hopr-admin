@@ -12,6 +12,15 @@ type InitialState = {
     timeout: number;
     url: string | null;
   }[];
+  configuration: {
+    notifications: {
+      channels: boolean,
+      nodeInfo: boolean,
+      nodeBalances: boolean,
+      message: boolean,
+      pendingSafeTransaction: boolean
+    }
+  };
   previousStates: {
     prevChannels: GetChannelsResponseType | null;
     prevNodeInfo: GetInfoResponseType | null;
@@ -23,6 +32,13 @@ type InitialState = {
 
 export const initialState: InitialState = {
   notifications: [],
+  configuration: { notifications: {
+    channels: true,
+    message: true,
+    nodeBalances: true,
+    nodeInfo: true,
+    pendingSafeTransaction: true,
+  } },
   // previous states used to compare for notifications
   previousStates: {
     prevChannels: null,

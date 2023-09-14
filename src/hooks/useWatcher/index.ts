@@ -19,6 +19,12 @@ export const useWatcher = ({ intervalDuration = 15000 }: { intervalDuration?: nu
   const connected = useAppSelector((store) => store.auth.status.connected);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const signer = useEthersSigner();
+  // flags to activate notifications
+  const activeChannels = useAppSelector(store => store.app.configuration.notifications.channels)
+  const activeMessage = useAppSelector(store => store.app.configuration.notifications.message)
+  const activeNodeBalances = useAppSelector(store => store.app.configuration.notifications.nodeBalances)
+  const activeNodeInfo = useAppSelector(store => store.app.configuration.notifications.nodeInfo)
+  const activePendingSafeTransaction = useAppSelector(store => store.app.configuration.notifications.pendingSafeTransaction)
   // redux previous states, this can be updated from anywhere in the app
   const prevChannels = useAppSelector((store) => store.app.previousStates.prevChannels);
   const prevMessage = useAppSelector((store) => store.app.previousStates.prevMessage);
@@ -35,6 +41,7 @@ export const useWatcher = ({ intervalDuration = 15000 }: { intervalDuration?: nu
         apiEndpoint,
         apiToken,
         dispatch,
+        active: activeChannels,
         previousState: prevChannels,
         updatePreviousData: (newChannels) => {
           dispatch(appActions.setPrevChannels(newChannels));
@@ -47,6 +54,7 @@ export const useWatcher = ({ intervalDuration = 15000 }: { intervalDuration?: nu
         apiEndpoint,
         apiToken,
         dispatch,
+        active: activeNodeInfo,
         previousState: prevNodeInfo,
         updatePreviousData: (newNodeInfo) => {
           dispatch(appActions.setPrevNodeInfo(newNodeInfo));
@@ -58,6 +66,7 @@ export const useWatcher = ({ intervalDuration = 15000 }: { intervalDuration?: nu
       observeNodeBalances({
         apiEndpoint,
         apiToken,
+        active: activeNodeBalances,
         minimumNodeBalances: {
           hopr: '0',
           native: parseEther('0.003').toString(),
@@ -86,6 +95,7 @@ export const useWatcher = ({ intervalDuration = 15000 }: { intervalDuration?: nu
         dispatch,
         previousState: prevPendingSafeTransaction,
         selectedSafeAddress,
+        active: activePendingSafeTransaction,
         signer: signer,
         updatePreviousData: (newSafeTransactions) => {
           dispatch(appActions.setPrevPendingSafeTransaction(newSafeTransactions));
@@ -104,6 +114,7 @@ export const useWatcher = ({ intervalDuration = 15000 }: { intervalDuration?: nu
       dispatch,
       messages,
       previousState: prevMessage,
+      active: activeMessage,
       updatePreviousData: (newMessage) => {
         dispatch(appActions.setPrevMessage(newMessage));
       },

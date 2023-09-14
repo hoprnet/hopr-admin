@@ -65,16 +65,18 @@ const checkForNewMessage = (oldMessage: WatcherMessage, newMessage: NonNullable<
 export const observeMessages = ({
   previousState,
   messages,
+  active,
   updatePreviousData,
   dispatch,
 }: {
   previousState: WatcherMessage | null;
   messages: Message[];
+  active: boolean;
   updatePreviousData: (currentData: WatcherMessage) => void;
   dispatch: ReturnType<typeof useAppDispatch>;
 }) =>
   observeData<WatcherMessage>({
-    disabled: !getLatestMessage(messages),
+    active: active && !!getLatestMessage(messages),
     previousData: previousState,
     fetcher: async () => getLatestMessage(messages),
     isDataDifferent: (newData) => checkForNewMessage(previousState, newData),

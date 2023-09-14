@@ -10,9 +10,9 @@ type DataObserveFunction<T> = {
   fetcher: () => Promise<T | undefined | null>;
 
   /**
-   * If true, the data monitoring is disabled.
+   * If false, the data monitoring is disabled.
    */
-  disabled: boolean;
+  active: boolean;
 
   /**
    * The previous data that was fetched.
@@ -40,7 +40,7 @@ type DataObserveFunction<T> = {
  *
  * @template T The type of data being watched.
  * @param fetcher A function that fetches the data.
- * @param disabled If true, the data monitoring is disabled.
+ * @param active If false, the data monitoring is disabled.
  * @param isDataDifferent A function that compares the current data with the previous data to see if they're different.
  * @param notificationHandler A function that handles notifications when the data changes.
  * @param updatePreviousData Optional. A function that updates the previous data with the current data.
@@ -49,14 +49,14 @@ type DataObserveFunction<T> = {
  */
 export const observeData = <T>({
   fetcher,
-  disabled,
+  active,
   isDataDifferent,
   notificationHandler,
   updatePreviousData,
   previousData,
 }: DataObserveFunction<T>) => {
   const fetchAndCompareData = async () => {
-    if (disabled) return;
+    if (!active) return;
 
     try {
       const currentData = await fetcher();
