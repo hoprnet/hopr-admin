@@ -1,25 +1,18 @@
 import { useEffect, useState } from 'react';
-import { Address, formatEther, parseEther, parseUnits } from 'viem';
-import {
-  erc20ABI,
-  useBalance,
-  useContractWrite,
-  usePrepareContractWrite,
-  usePrepareSendTransaction,
-  useSendTransaction
-} from 'wagmi';
-import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, MINIMUM_XDAI_TO_FUND, MINIMUM_WXHOPR_TO_FUND } from '../../../config'
+import { Address, parseUnits } from 'viem';
+import { erc20ABI, useBalance, useContractWrite, usePrepareContractWrite } from 'wagmi';
+import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
 
 //Store
-import { useAppSelector, useAppDispatch } from '../../store';
-import { stakingHubActions } from '../../store/slices/stakingHub';
+import { useAppSelector } from '../../store';
 
 // HOPR Components
+import { FeedbackTransaction } from '../../components/FeedbackTransaction';
+import Section from '../../future-hopr-lib-components/Section';
+import { ConfirmButton, StepContainer } from './onboarding/components';
 import {
   Lowercase,
-  MaxButton,
   StyledCoinLabel,
-  StyledDescription,
   StyledForm,
   StyledGrayButton,
   StyledInputGroup,
@@ -27,30 +20,14 @@ import {
   StyledTextField,
   Text
 } from './onboarding/styled';
-import { StepContainer, ConfirmButton } from './onboarding/components';
-import styled from '@emotion/styled';
-import Section from '../../future-hopr-lib-components/Section';
 
 const StakewxHOPR = () => {
-  const dispatch = useAppDispatch();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const walletBalance = useAppSelector((store) => store.web3.balance);
-  const [xdaiValue, set_xdaiValue] = useState('');
   const [wxhoprValue, set_wxhoprValue] = useState('');
+  const [transactionHash, set_transactionHash] = useState<Address>();
 
-  const {
-    refetch: refetchXDaiSafeBalance,
-    data: xDaiSafeBalance,
-  } = useBalance({
-    address: selectedSafeAddress as `0x${string}`,
-    watch: true,
-    enabled: !!selectedSafeAddress,
-  });
-
-  const {
-    refetch: refetchWXHoprSafeBalance,
-    data: wxHoprSafeBalance,
-  } = useBalance({
+  const { refetch: refetchWXHoprSafeBalance } = useBalance({
     address: selectedSafeAddress as `0x${string}`,
     token: wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     watch: true,
@@ -60,20 +37,15 @@ const StakewxHOPR = () => {
   useEffect(() => {
     const fetchBalanceInterval = setInterval(() => {
       if (selectedSafeAddress) {
-        refetchWXHoprSafeBalance()
-        refetchWXHoprSafeBalance()
+        refetchWXHoprSafeBalance();
+        refetchWXHoprSafeBalance();
       }
-    }, 15_000)
+    }, 15_000);
 
     return () => {
-      clearInterval(fetchBalanceInterval)
-    }
-  }, [])
-
-  const { config: xDAI_to_safe_config } = usePrepareSendTransaction({
-    to: selectedSafeAddress ?? undefined,
-    value: parseEther(xdaiValue),
-  });
+      clearInterval(fetchBalanceInterval);
+    };
+  }, []);
 
   const { config: wxHOPR_to_safe_config } = usePrepareContractWrite({
     address: wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
@@ -81,12 +53,6 @@ const StakewxHOPR = () => {
     functionName: 'transfer',
     args: [selectedSafeAddress as Address, parseUnits(wxhoprValue, 18)],
   });
-
-  const setMax_xDAI = () => {
-    if (walletBalance.xDai.value) {
-      set_xdaiValue(formatEther(BigInt(walletBalance.xDai.value) - parseUnits(`${0.002}`, 18)));
-    }
-  };
 
   const setMax_wxHOPR = () => {
     if (walletBalance.wxHopr.formatted) {
@@ -99,7 +65,11 @@ const StakewxHOPR = () => {
     isLoading: is_wxHOPR_to_safe_loading,
     write: write_wxHOPR_to_safe,
   } = useContractWrite({
-    ...wxHOPR_to_safe_config, onSuccess: () => refetchWXHoprSafeBalance(),
+    ...wxHOPR_to_safe_config,
+    onSuccess: (res) => {
+      set_transactionHash(res.hash);
+      refetchWXHoprSafeBalance();
+    },
   });
 
   useEffect(() => {
@@ -107,24 +77,6 @@ const StakewxHOPR = () => {
       set_wxhoprValue('');
     }
   }, [is_wxHOPR_to_safe_loading]);
-
-  const {
-    isSuccess: is_xDAI_to_safe_success,
-    isLoading: is_xDAI_to_safe_loading,
-    sendTransaction: send_xDAI_to_safe,
-  } = useSendTransaction({
-    ...xDAI_to_safe_config, onSuccess: () => refetchXDaiSafeBalance(),
-  });
-
-  useEffect(() => {
-    if (is_xDAI_to_safe_success) {
-      set_xdaiValue('');
-    }
-  }, [is_xDAI_to_safe_loading]);
-
-  const handleFundxDai = () => {
-    send_xDAI_to_safe?.();
-  };
 
   const handleFundwxHopr = () => {
     write_wxHOPR_to_safe?.();
@@ -168,21 +120,21 @@ const StakewxHOPR = () => {
               size="small"
               value={wxhoprValue}
               onChange={(e) => set_wxhoprValue(e.target.value)}
-              InputProps={{
-                inputProps: {
-                  style: { textAlign: 'right' },
-                  min: 0,
-                  pattern: '[0-9]*',
-                }
-              }}
+              InputProps={{ inputProps: {
+                style: { textAlign: 'right' },
+                min: 0,
+                pattern: '[0-9]*',
+              } }}
             />
-            <StyledCoinLabel>
-              wxHOPR
-            </StyledCoinLabel>
+            <StyledCoinLabel>wxHOPR</StyledCoinLabel>
             <StyledGrayButton onClick={setMax_wxHOPR}>Max</StyledGrayButton>
           </StyledInputGroup>
         </StyledForm>
-        {(is_xDAI_to_safe_loading || is_wxHOPR_to_safe_loading) && <span>Check your Wallet...</span>}
+        <FeedbackTransaction
+          confirmations={1}
+          transactionHash={transactionHash}
+          feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
+        />
       </StepContainer>
     </Section>
   );

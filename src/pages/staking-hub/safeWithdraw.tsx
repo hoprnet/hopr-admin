@@ -1,25 +1,26 @@
-import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { useSearchParams } from 'react-router-dom';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
-import { parseUnits } from 'viem';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { Address, parseUnits } from 'viem';
+import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
+import { useEthersSigner } from '../../hooks';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActionsAsync } from '../../store/slices/safe';
 import { createSendTokensTransactionData } from '../../utils/blockchain';
-import { useEthersSigner } from '../../hooks';
-import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
 
 // components
-import Button from '../../future-hopr-lib-components/Button';
-import Section from '../../future-hopr-lib-components/Section';
 import Card from '../../components/Card';
 import NetworkOverlay from '../../components/NetworkOverlay';
+import Button from '../../future-hopr-lib-components/Button';
+import Section from '../../future-hopr-lib-components/Section';
 
 // Mui
+import { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Tooltip from '@mui/material/Tooltip';
+import { FeedbackTransaction } from '../../components/FeedbackTransaction';
 import Select from '../../future-hopr-lib-components/Select';
-import { SelectChangeEvent } from '@mui/material/Select';
 import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../../utils/safeTransactions';
 
 const StyledForm = styled.div`
@@ -133,6 +134,7 @@ function SafeWithdraw() {
   const [token, set_token] = useState<SupportedTokens>(isSupportedToken(tokenParam) ? tokenParam : 'xdai');
   const [isSigning, set_isSigning] = useState<boolean>();
   const [isExecuting, set_isExecuting] = useState<boolean>();
+  const [transactionHash, set_transactionHash] = useState<Address>();
   const [proposedTxHash, set_proposedTxHash] = useState<string>();
   const [proposedTx, set_proposedTx] = useState<SafeMultisigTransactionResponse>();
 
@@ -244,7 +246,7 @@ function SafeWithdraw() {
         )
           .unwrap()
           .then((transactionResponse) => {
-            set_proposedTxHash(transactionResponse);
+            set_transactionHash(transactionResponse as Address);
           })
           .finally(() => {
             set_isExecuting(false);
@@ -262,7 +264,7 @@ function SafeWithdraw() {
         )
           .unwrap()
           .then((transactionResponse) => {
-            set_proposedTxHash(transactionResponse);
+            set_transactionHash(transactionResponse as Address);
           })
           .finally(() => {
             set_isExecuting(false);
@@ -435,9 +437,14 @@ function SafeWithdraw() {
             )}
           </StyledButtonGroup>
           {isSigning && <p>Signing transaction with nonce...</p>}
+          <FeedbackTransaction
+            confirmations={1}
+            transactionHash={transactionHash}
+            feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
+          />
         </div>
       </Card>
-      <NetworkOverlay/>
+      <NetworkOverlay />
     </Section>
   );
 }

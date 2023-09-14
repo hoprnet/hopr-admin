@@ -1,18 +1,17 @@
-import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import Button from '../../future-hopr-lib-components/Button';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Address, parseUnits } from 'viem';
-import { StepContainer, ConfirmButton } from './onboarding/components';
-import { useEthersSigner } from '../../hooks';
-import { StyledTextField } from './onboarding/styled';
 import { MINIMUM_XDAI_TO_FUND_NODE } from '../../../config';
 import Section from '../../future-hopr-lib-components/Section';
-import { useNavigate } from 'react-router-dom';
+import { useEthersSigner } from '../../hooks';
+import { ConfirmButton, StepContainer } from './onboarding/components';
+import { StyledTextField } from './onboarding/styled';
 
 // Store
-import { useAppSelector, useAppDispatch } from '../../store';
+import { FeedbackTransaction } from '../../components/FeedbackTransaction';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActionsAsync } from '../../store/slices/safe';
-import { stakingHubActions } from '../../store/slices/stakingHub';
 
 const StyledForm = styled.div`
   width: 100%;
@@ -50,11 +49,6 @@ const StyledCoinLabel = styled.p`
   letter-spacing: 0.35px;
 `;
 
-const StyledBlueButton = styled(Button)`
-  text-transform: uppercase;
-  padding: 0.2rem 4rem;
-`;
-
 export default function FundNode() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -67,7 +61,7 @@ export default function FundNode() {
   const [xdaiValue, set_xdaiValue] = useState<string>('');
   const [isExecutionLoading, set_isExecutionLoading] = useState<boolean>();
   const [error, set_error] = useState<boolean>(false);
-
+  const [transactionHash, set_transactionHash] = useState<Address>()
   const signer = useEthersSigner();
 
   const createAndExecuteTx = async () => {
@@ -84,8 +78,12 @@ export default function FundNode() {
           data: '0x',
         },
       }),
-    ).unwrap();
-    navigate('/staking/dashboard#node');
+    ).unwrap().then(res => {
+      set_transactionHash(res as Address)
+      setTimeout(() => {
+        navigate('/staking/dashboard#node');
+      }, 3000)
+    });
     set_isExecutionLoading(false);
   };
 
@@ -147,6 +145,11 @@ export default function FundNode() {
             </StyledInputGroup>
           </StyledForm>
           {isExecutionLoading && <p>Executing transaction ...</p>}
+          <FeedbackTransaction
+            confirmations={1}
+            transactionHash={transactionHash}
+            feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
+          />
         </div>
       </StepContainer>
     </Section>
