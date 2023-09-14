@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
 import { Address, parseUnits } from 'viem';
-import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
-import { StepContainer, ConfirmButton } from '../components';
-import { useEthersSigner } from '../../../../hooks';
-import { StyledTextField } from '../styled';
 import { MINIMUM_XDAI_TO_FUND_NODE } from '../../../../../config';
+import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
+import { useEthersSigner } from '../../../../hooks';
+import { ConfirmButton, StepContainer } from '../components';
+import { StyledTextField } from '../styled';
 
 // Store
-import { useAppSelector, useAppDispatch } from '../../../../store';
+import { FeedbackTransaction } from '../../../../components/FeedbackTransaction';
+import { useAppDispatch, useAppSelector } from '../../../../store';
 import { safeActionsAsync } from '../../../../store/slices/safe';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
-import { FeedbackTransaction } from '../../../../components/FeedbackTransaction';
 
 const StyledForm = styled.div`
   width: 100%;
@@ -65,12 +65,12 @@ export default function FundNode() {
   const [xdaiValue, set_xdaiValue] = useState<string>('');
   const [error, set_error] = useState<boolean>(false);
   const [transactionHash, set_transactionHash] = useState<Address>();
-
+  const [isWalletLoading, set_isWalletLoading] = useState(false);
   const signer = useEthersSigner();
 
   const createAndExecuteTx = () => {
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
-
+    set_isWalletLoading(true);
     dispatch(
       safeActionsAsync.createAndExecuteTransactionThunk({
         signer,
@@ -84,21 +84,20 @@ export default function FundNode() {
     )
       .unwrap()
       .then((hash) => {
-        set_transactionHash(hash as Address)
+        set_transactionHash(hash as Address);
         dispatch(stakingHubActions.setOnboardingStep(15));
       })
       .catch(() => {
         set_error(true);
-      });
+      })
+      .finally(() => set_isWalletLoading(false));
   };
 
   useEffect(() => {
-    if(safeXDaiBalance !== null && 
-      parseUnits(xdaiValue, 18) > parseUnits(safeXDaiBalance, 18)
-    ) { 
-      set_error (true);
+    if (safeXDaiBalance !== null && parseUnits(xdaiValue, 18) > parseUnits(safeXDaiBalance, 18)) {
+      set_error(true);
     } else {
-      set_error (false);
+      set_error(false);
     }
   }, [xdaiValue]);
 
@@ -113,7 +112,13 @@ export default function FundNode() {
         <ConfirmButton
           onClick={createAndExecuteTx}
           pending={isExecutionLoading}
-          disabled={error || xdaiValue === '' || parseUnits(xdaiValue, 18) ===  parseUnits('0', 18) || xdaiValue.includes('-') || xdaiValue.includes('+')}
+          disabled={
+            error ||
+            xdaiValue === '' ||
+            parseUnits(xdaiValue, 18) === parseUnits('0', 18) ||
+            xdaiValue.includes('-') ||
+            xdaiValue.includes('+')
+          }
         >
           FUND
         </ConfirmButton>
@@ -129,7 +134,7 @@ export default function FundNode() {
               variant="outlined"
               placeholder="-"
               size="small"
-              style={{width: '300px'}}
+              style={{ width: '300px' }}
               value={xdaiValue}
               onChange={(e) => set_xdaiValue(e.target.value)}
               type="number"
@@ -145,8 +150,12 @@ export default function FundNode() {
             <StyledGrayButton onClick={() => set_xdaiValue('1')}>MIN</StyledGrayButton>
           </StyledInputGroup>
         </StyledForm>
-        {isExecutionLoading && <p>Executing transaction...</p>}
-        <FeedbackTransaction  confirmations={1} transactionHash={transactionHash} feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}/>
+        <FeedbackTransaction
+          isWalletLoading={isWalletLoading}
+          confirmations={1}
+          transactionHash={transactionHash}
+          feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
+        />
       </div>
     </StepContainer>
   );

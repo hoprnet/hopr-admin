@@ -59,14 +59,14 @@ export default function FundNode() {
 
   // local states
   const [xdaiValue, set_xdaiValue] = useState<string>('');
-  const [isExecutionLoading, set_isExecutionLoading] = useState<boolean>();
+  const [isWalletLoading, set_isWalletLoading] = useState<boolean>();
   const [error, set_error] = useState<boolean>(false);
   const [transactionHash, set_transactionHash] = useState<Address>()
   const signer = useEthersSigner();
 
   const createAndExecuteTx = async () => {
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
-    set_isExecutionLoading(true);
+    set_isWalletLoading(true);
 
     await dispatch(
       safeActionsAsync.createAndExecuteTransactionThunk({
@@ -84,7 +84,7 @@ export default function FundNode() {
         navigate('/staking/dashboard#node');
       }, 3000)
     });
-    set_isExecutionLoading(false);
+    set_isWalletLoading(false);
   };
 
   useEffect(() => {
@@ -112,7 +112,7 @@ export default function FundNode() {
         buttons={
           <ConfirmButton
             onClick={createAndExecuteTx}
-            pending={isExecutionLoading}
+            pending={isWalletLoading}
             disabled={error || xdaiValue === '' || parseUnits(xdaiValue, 18) === parseUnits('0', 18) || xdaiValue.includes('-') || xdaiValue.includes('+')}
           >
             FUND
@@ -144,9 +144,9 @@ export default function FundNode() {
               <StyledCoinLabel>xDAI</StyledCoinLabel>
             </StyledInputGroup>
           </StyledForm>
-          {isExecutionLoading && <p>Executing transaction ...</p>}
           <FeedbackTransaction
             confirmations={1}
+            isWalletLoading={isWalletLoading}
             transactionHash={transactionHash}
             feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
           />

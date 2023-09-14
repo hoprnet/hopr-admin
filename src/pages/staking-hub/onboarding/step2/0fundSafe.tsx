@@ -278,14 +278,15 @@ const FundsToSafe = () => {
         </StyledInputGroup>
       </StyledForm>
       <GreenText>{wxhoprEnoughBalance() && 'You transferred enough wxHOPR'}</GreenText>
-      {(is_xDAI_to_safe_loading || is_wxHOPR_to_safe_loading) && <span>Check your Wallet...</span>}
       <FeedbackTransaction
+        isWalletLoading={is_xDAI_to_safe_loading}
         transactionHash={transactionHashFundXDai}
         confirmations={1}
         feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
       />
       <FeedbackTransaction
         transactionHash={transactionHashFundWXHopr}
+        isWalletLoading={is_wxHOPR_to_safe_loading}
         confirmations={1}
         feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
       />

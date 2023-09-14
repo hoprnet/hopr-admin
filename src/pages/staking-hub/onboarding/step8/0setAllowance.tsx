@@ -33,12 +33,12 @@ export default function SetAllowance() {
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
   const signer = useEthersSigner();
   const [wxHoprValue, set_wxHoprValue] = useState('');
-  const [loading, set_loading] = useState(false);
+  const [isWalletLoading, set_isWalletLoading] = useState(false);
   const [transactionHash, set_transactionHash] = useState<Address>();
 
   const setAllowance = async () => {
     if (signer && selectedSafeAddress && HOPR_CHANNELS_SMART_CONTRACT_ADDRESS) {
-      set_loading(true);
+      set_isWalletLoading(true);
       await dispatch(
         safeActionsAsync.createAndExecuteContractTransactionThunk({
           data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,parseUnits(wxHoprValue, 18)),
@@ -53,7 +53,7 @@ export default function SetAllowance() {
           dispatch(stakingHubActions.setOnboardingStep(16));
         })
         .finally(() => {
-          set_loading(false);
+          set_isWalletLoading(false);
         });
     }
   };
@@ -66,7 +66,7 @@ export default function SetAllowance() {
         <ConfirmButton
           onClick={setAllowance}
           disabled={wxHoprValue === '' || wxHoprValue === '0' || wxHoprValue.includes('-') || wxHoprValue.includes('+')}
-          pending={loading}
+          pending={isWalletLoading}
         >
           EXECUTE
         </ConfirmButton>
@@ -95,6 +95,7 @@ export default function SetAllowance() {
       </StyledInputGroup>
       <FeedbackTransaction
         confirmations={1}
+        isWalletLoading={isWalletLoading}
         feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
         transactionHash={transactionHash}
       />

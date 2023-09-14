@@ -132,8 +132,7 @@ function SafeWithdraw() {
   const [ethValue, set_ethValue] = useState<string>('');
   const [receiver, set_receiver] = useState<string>('');
   const [token, set_token] = useState<SupportedTokens>(isSupportedToken(tokenParam) ? tokenParam : 'xdai');
-  const [isSigning, set_isSigning] = useState<boolean>();
-  const [isExecuting, set_isExecuting] = useState<boolean>();
+  const [isWalletLoading, set_isWalletLoading] = useState<boolean>();
   const [transactionHash, set_transactionHash] = useState<Address>();
   const [proposedTxHash, set_proposedTxHash] = useState<string>();
   const [proposedTx, set_proposedTx] = useState<SafeMultisigTransactionResponse>();
@@ -156,7 +155,7 @@ function SafeWithdraw() {
 
   const proposeTx = () => {
     if (signer && Number(ethValue) && selectedSafeAddress) {
-      set_isSigning(true);
+      set_isWalletLoading(true);
 
       if (token === 'xdai') {
         const parsedValue = parseUnits(ethValue as `${number}`, 18).toString();
@@ -176,7 +175,7 @@ function SafeWithdraw() {
             set_proposedTxHash(safeTxHash);
           })
           .finally(() => {
-            set_isSigning(false);
+            set_isWalletLoading(false);
           });
       } else {
         const smartContractAddress = supportedTokens.filter((elem) => elem.value === token)[0].smartContract as string;
@@ -194,14 +193,14 @@ function SafeWithdraw() {
             set_proposedTxHash(safeTxHash);
           })
           .finally(() => {
-            set_isSigning(false);
+            set_isWalletLoading(false);
           });
       }
     }
   };
 
   const executeTx = async () => {
-    set_isExecuting(true);
+    set_isWalletLoading(true);
     if (proposedTxHash && signer && selectedSafeAddress) {
       const safeTx = pendingTransactions?.results.find((tx) => {
         if (tx.safeTxHash === proposedTxHash) {
@@ -220,17 +219,17 @@ function SafeWithdraw() {
         )
           .unwrap()
           .finally(() => {
-            set_isExecuting(false);
+            set_isWalletLoading(false);
           });
       } else {
-        set_isExecuting(false);
+        set_isWalletLoading(false);
       }
     }
   };
 
   const createAndExecuteTx = () => {
     if (signer && Number(ethValue) && selectedSafeAddress) {
-      set_isExecuting(true);
+      set_isWalletLoading(true);
       if (token === 'xdai') {
         const parsedValue = parseUnits(ethValue as `${number}`, 18).toString();
         dispatch(
@@ -249,7 +248,7 @@ function SafeWithdraw() {
             set_transactionHash(transactionResponse as Address);
           })
           .finally(() => {
-            set_isExecuting(false);
+            set_isWalletLoading(false);
           });
       } else {
         const smartContractAddress = supportedTokens.filter((elem) => elem.value === token)[0].smartContract as string;
@@ -267,7 +266,7 @@ function SafeWithdraw() {
             set_transactionHash(transactionResponse as Address);
           })
           .finally(() => {
-            set_isExecuting(false);
+            set_isWalletLoading(false);
           });
       }
     }
@@ -412,10 +411,10 @@ function SafeWithdraw() {
           )}
           <StyledButtonGroup>
             {!userCanSkipProposal ? (
-              <Tooltip title={isSigning ? 'Signing transaction' : getErrorsForApproveButton().at(0)}>
+              <Tooltip title={isWalletLoading ? 'Signing transaction' : getErrorsForApproveButton().at(0)}>
                 <span>
                   <StyledBlueButton
-                    disabled={!!getErrorsForApproveButton().length || isSigning}
+                    disabled={!!getErrorsForApproveButton().length || isWalletLoading}
                     onClick={proposeTx}
                   >
                     Sign
@@ -423,10 +422,10 @@ function SafeWithdraw() {
                 </span>
               </Tooltip>
             ) : (
-              <Tooltip title={isExecuting ? 'Executing transaction' : getErrorsForExecuteButton().at(0)}>
+              <Tooltip title={isWalletLoading ? 'Executing transaction' : getErrorsForExecuteButton().at(0)}>
                 <span>
                   <StyledBlueButton
-                    disabled={!!getErrorsForExecuteButton().length || isExecuting}
+                    disabled={!!getErrorsForExecuteButton().length || isWalletLoading}
                     // no need to propose tx with only 1 threshold
                     onClick={proposedTx ? executeTx : createAndExecuteTx}
                   >
@@ -436,9 +435,9 @@ function SafeWithdraw() {
               </Tooltip>
             )}
           </StyledButtonGroup>
-          {isSigning && <p>Signing transaction with nonce...</p>}
           <FeedbackTransaction
             confirmations={1}
+            isWalletLoading={isWalletLoading}
             transactionHash={transactionHash}
             feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
           />

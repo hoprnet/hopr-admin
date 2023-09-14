@@ -15,10 +15,12 @@ const FeedbackContainer = styled.div`
 `;
 
 export const FeedbackTransaction = ({
+  isWalletLoading,
   transactionHash,
   confirmations,
   feedbackTexts,
 }: {
+  isWalletLoading?: boolean;
   transactionHash?: Address;
   confirmations: number;
   feedbackTexts: {
@@ -33,15 +35,30 @@ export const FeedbackTransaction = ({
     hash: transactionHash,
   });
 
+  if (isWalletLoading) {
+    return <WalletFeedback />
+  }
+
   return (
-    <FeedbackText
+    <TransactionFeedbackText
       status={status}
       feedbackTexts={feedbackTexts}
     />
   );
 };
 
-const FeedbackText = ({
+const WalletFeedback = () => {
+  return (
+    <FeedbackContainer>
+      <FeedbackLoading>
+        <Loading />
+      </FeedbackLoading>
+      <p>Check your Wallet...</p>
+    </FeedbackContainer>
+  );
+}
+
+const TransactionFeedbackText = ({
   status,
   feedbackTexts,
 }: {

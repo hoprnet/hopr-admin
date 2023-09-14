@@ -132,6 +132,7 @@ const StakewxHOPR = () => {
         </StyledForm>
         <FeedbackTransaction
           confirmations={1}
+          isWalletLoading={is_wxHOPR_to_safe_loading}
           transactionHash={transactionHash}
           feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
         />
