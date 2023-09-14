@@ -15,7 +15,13 @@ import SafeApiKit, {
   TokenInfoResponse
 } from '@safe-global/api-kit';
 import Safe, { EthersAdapter, SafeAccountConfig, SafeFactory } from '@safe-global/protocol-kit';
-import { SafeMultisigTransactionResponse, SafeTransaction, SafeTransactionData, SafeTransactionDataPartial } from '@safe-global/safe-core-sdk-types'
+import {
+  OperationType,
+  SafeMultisigTransactionResponse,
+  SafeTransaction,
+  SafeTransactionData,
+  SafeTransactionDataPartial
+} from '@safe-global/safe-core-sdk-types';
 import { ethers } from 'ethers';
 import {
   Address,
@@ -475,7 +481,13 @@ const createSafeTransactionThunk = createAsyncThunk<
 
 const createSafeContractTransaction = createAsyncThunk<
   string | undefined,
-  { signer: ethers.providers.JsonRpcSigner; safeAddress: string; smartContractAddress: string; data: string },
+  {
+    signer: ethers.providers.JsonRpcSigner;
+    safeAddress: string;
+    smartContractAddress: string;
+    data: string;
+    operation?: OperationType;
+  },
   { state: RootState }
 >(
   'safe/createContractTransaction',
@@ -494,6 +506,7 @@ const createSafeContractTransaction = createAsyncThunk<
       const safeTransactionData: SafeTransactionDataPartial = {
         to: smartContractAddress,
         data,
+        operation: payload.operation ?? OperationType.Call,
         value: '0',
       };
       const safeTxHash = await dispatch(
@@ -703,6 +716,7 @@ const createAndExecuteTransactionThunk = createAsyncThunk<
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       // create safe transaction
       const safeTransaction = await safeSDK.createTransaction({ safeTransactionData: payload.safeTransactionData });
+      console.log({ safeTransaction });
       const isValidTx = await safeSDK.isValidTransaction(safeTransaction);
       if (!isValidTx) {
         throw Error('Transaction is not valid');
@@ -718,6 +732,7 @@ const createAndExecuteTransactionThunk = createAsyncThunk<
       );
       return safeTxResponse.hash;
     } catch (e) {
+      console.log({ e })
       if (e instanceof Error) {
         return rejectWithValue(e.message);
       }
@@ -745,6 +760,7 @@ const createAndExecuteContractTransactionThunk = createAsyncThunk<
     signer: ethers.providers.JsonRpcSigner;
     safeAddress: string;
     smartContractAddress: string;
+    operation?: OperationType;
     data: string;
   },
   { state: RootState }
@@ -763,6 +779,7 @@ const createAndExecuteContractTransactionThunk = createAsyncThunk<
     const safeTransactionData: SafeTransactionDataPartial = {
       to: smartContractAddress,
       data,
+      operation: payload.operation ?? OperationType.Call,
       value: '0',
     };
 
@@ -1127,6 +1144,9 @@ const createSafeWithConfigThunk = createAsyncThunk<
         encodePacked(['bytes20', 'string'], [superWalletClient.account.address, Date.now().toString()]),
       );
 
+      // Sets ALLOW_ALL on all Channel and Token operations by default.
+      const defaultTarget = toBytes(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS + '010103030303030303030303');
+
       const {
         result,
         request,
@@ -1139,7 +1159,7 @@ const createSafeWithConfigThunk = createAsyncThunk<
           HOPR_NODE_MANAGEMENT_MODULE,
           payload.config.owners,
           saltNonce,
-          toHex(new Uint8Array(toBytes(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS)), { size: 32 }),
+          toHex(new Uint8Array(defaultTarget), { size: 32 }),
         ],
       });
 
@@ -1217,7 +1237,7 @@ const getCommunityNftsOwnedBySafeThunk = createAsyncThunk(
     try {
       const response = await fetch(STAKE_SUBGRAPH, {
         method: 'POST',
-        body: GET_THEGRAPH_QUERY
+        body: GET_THEGRAPH_QUERY,
       });
       const responseJson: {
         boosts: { id: string }[] | null;

@@ -4,7 +4,7 @@ import Section from '../../future-hopr-lib-components/Section';
 import Button from '../../future-hopr-lib-components/Button';
 import { useEthersSigner } from '../../hooks';
 import { StepContainer, ConfirmButton } from './onboarding/components';
-import { Lowercase, StyledCoinLabel, StyledInputGroup, StyledTextField } from './onboarding/safeOnboarding/styled';
+import { Lowercase, StyledCoinLabel, StyledInputGroup, StyledTextField } from './onboarding/styled';
 import { DEFAULT_ALLOWANCE, HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config';
 import { useNavigate } from 'react-router-dom';
 

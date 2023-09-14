@@ -28,7 +28,7 @@ import {
   StyledInstructions,
   StyledTextField,
   Text
-} from '../safeOnboarding/styled';
+} from '../styled';
 
 const GreenText = styled.div`
   color: #004e00;

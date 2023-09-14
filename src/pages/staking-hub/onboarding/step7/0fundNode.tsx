@@ -4,7 +4,7 @@ import { Address, parseUnits } from 'viem';
 import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
 import { StepContainer, ConfirmButton } from '../components';
 import { useEthersSigner } from '../../../../hooks';
-import { StyledTextField } from '../safeOnboarding/styled';
+import { StyledTextField } from '../styled';
 import { MINIMUM_XDAI_TO_FUND_NODE } from '../../../../../config';
 
 // Store

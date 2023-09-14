@@ -25,9 +25,11 @@ export const loginThunk = createAsyncThunk<
     });
 
     if (!info.isEligible) {
-      throw new Error(`Not eligible on network registry. 
-      Join the waitlist and once approved, you can return to login.
-      For now, keep an eye on the waitlist.`);
+      throw new Error(
+        'Not eligible on network registry. ' +
+          'Join the waitlist and once approved, you can return to login.' +
+          '\n\nFor now, keep an eye on the waitlist.',
+      );
     }
 
     return info;
@@ -59,7 +61,7 @@ export const loginThunk = createAsyncThunk<
       }
 
       if (e instanceof Error) {
-        return rejectWithValue('Unknown error: ' + JSON.stringify(e.message));
+        return rejectWithValue(e.message);
       }
 
       // stringify to make sure that

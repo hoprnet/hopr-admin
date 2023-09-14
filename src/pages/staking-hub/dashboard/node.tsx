@@ -29,7 +29,7 @@ const Content = styled.section`
     grid-row: 1/3;
   }
 
-  & #remaining-wxhopr-allowance {
+  & #node-balance {
     grid-column: 3/4;
   }
 
@@ -42,10 +42,6 @@ const Content = styled.section`
   }
 
   & #redeemed-tickets {
-    grid-column: 4/5;
-  }
-
-  & #xdai {
     grid-column: 3/4;
   }
 `;
@@ -95,7 +91,7 @@ const ButtonGroup = styled.div`
   gap: 0.5rem;
 `;
 
-const StyledChip = styled(Chip)<{ color: string }>`
+const StyledChip = styled(Chip) <{ color: string }>`
   align-self: flex-start;
   background-color: ${(props) => props.color === 'error' && '#ffcbcb'};
   background-color: ${(props) => props.color === 'success' && '#cbffd0'};
@@ -257,90 +253,84 @@ const NodeAdded = () => {
   const wxHoprAllowance = useAppSelector((store) => store.stakingHub.safeInfo.data.allowance.wxHoprAllowance);
 
   return (
-        <Content>
-          <GrayCard id="node-graphic">
-            <Graphic>
-              <NodeGraphic>
-                <img
-                  src="/assets/node-graphic.svg"
-                  alt="Node Graphic"
-                />
-              </NodeGraphic>
-              <NodeInfo>
-                <NodeInfoRow>
-                  <p>Node Address</p>
-                  {nodeHoprAddress ? (
-                    <>
-                      <p>{truncateHOPRPeerId(nodeHoprAddress)}</p>
-                      <SquaredIconButton
-                        onClick={() => nodeHoprAddress && navigator.clipboard.writeText(nodeHoprAddress)}
-                      >
-                        <CopyIcon />
-                      </SquaredIconButton>
-                      <Link to={`https://gnosisscan.io/address/${nodeNativeAddress}`}>
-                        <SquaredIconButton>
-                          <LaunchIcon />
-                        </SquaredIconButton>
-                      </Link>
-                    </>
-                  ) : (
-                    <p>-</p>
-                  )}
-                </NodeInfoRow>
-                <NodeInfoRow>
-                  <p>Last seen</p>
-                  <p>- mins</p>
-                </NodeInfoRow>
-                <NodeInfoRow>
-                  <p>Ping</p>
-                  <p>-</p>
-                </NodeInfoRow>
-                <NodeInfoRow>
-                  <p>24h Avail.</p>
-                  <p>-%</p>
-                </NodeInfoRow>
-                <NodeInfoRow>
-                  <p>Availability</p>
-                  <p>-%</p>
-                </NodeInfoRow>
-                <NodeInfoRow>
-                  <p id="actions">Actions</p>
-                  <StyledIconButton
-                    onClick={() => {} /*navigate(`/node/configuration?${queryParams}`)*/}
-                    disabled
+    <Content>
+      <GrayCard id="node-graphic">
+        <Graphic>
+          <NodeGraphic>
+            <img
+              src="/assets/node-graphic.svg"
+              alt="Node Graphic"
+            />
+          </NodeGraphic>
+          <NodeInfo>
+            <NodeInfoRow>
+              <p>Node Address</p>
+              {nodeHoprAddress ? (
+                <>
+                  <p>{truncateHOPRPeerId(nodeHoprAddress)}</p>
+                  <SquaredIconButton
+                    onClick={() => nodeHoprAddress && navigator.clipboard.writeText(nodeHoprAddress)}
                   >
-                    <SettingsIcon />
-                  </StyledIconButton>
-                  <StyledIconButton disabled>
-                    <CloseIcon />
-                  </StyledIconButton>
-                </NodeInfoRow>
-              </NodeInfo>
-            </Graphic>
-          </GrayCard>
-          <GrayCard
-            id="remaining-wxhopr-allowance"
-            title="Remaining wxHOPR Allowance"
-            value={wxHoprAllowance ?? '-'}
-            currency="wxHOPR"
-            buttons={[
-              {
-                text: 'Adjust',
-                link: '/staking/set-allowance',
-              },
-            ]}
-          ></GrayCard>
-          <GrayCard
-            id="earned-rewards"
-            title="Earned rewards"
-            value="-"
-            currency="wxHOPR"
-            // chip={{
-            //   label: '-%/24h',
-            //   color: 'error',
-            // }}
-          />
-          {/* <GrayCard
+                    <CopyIcon />
+                  </SquaredIconButton>
+                  <Link to={`https://gnosisscan.io/address/${nodeNativeAddress}`}>
+                    <SquaredIconButton>
+                      <LaunchIcon />
+                    </SquaredIconButton>
+                  </Link>
+                </>
+              ) : (
+                <p>-</p>
+              )}
+            </NodeInfoRow>
+            <NodeInfoRow>
+              <p>Last seen</p>
+              <p>- mins</p>
+            </NodeInfoRow>
+            <NodeInfoRow>
+              <p>Ping</p>
+              <p>-</p>
+            </NodeInfoRow>
+            <NodeInfoRow>
+              <p>24h Avail.</p>
+              <p>-%</p>
+            </NodeInfoRow>
+            <NodeInfoRow>
+              <p>Availability</p>
+              <p>-%</p>
+            </NodeInfoRow>
+            <NodeInfoRow>
+              <p id="actions">Actions</p>
+              <StyledIconButton
+                onClick={() => { } /*navigate(`/node/configuration?${queryParams}`)*/}
+                disabled
+              >
+                <SettingsIcon />
+              </StyledIconButton>
+              <StyledIconButton disabled>
+                <CloseIcon />
+              </StyledIconButton>
+            </NodeInfoRow>
+          </NodeInfo>
+        </Graphic>
+      </GrayCard>
+      <GrayCard
+        // id="xdai"
+        id="node-balance"
+        title="xDAI"
+        value={nodeBalance ?? '-'}
+      ></GrayCard>
+      <GrayCard
+        id="earned-rewards"
+        title="Earned rewards"
+        value="-"
+        currency="wxHOPR"
+      // chip={{
+      //   label: '-%/24h',
+      //   color: 'error',
+      // }}
+      />
+      {/* <GrayCard
             id="node-strategy"
             title="Node strategy"
             value={'-'}
@@ -351,23 +341,18 @@ const NodeAdded = () => {
               },
             ]}
           ></GrayCard> */}
-          <GrayCard
-            id="redeemed-tickets"
-            title="Redeemed Tickets"
-            value="-"
-            currency="Ticket/wxHOPR"
-            // chip={{
-            //   label: '+%/24h',
-            //   color: 'success',
-            // }}
-          ></GrayCard>
-          <GrayCard
-           // id="xdai"
-            id="node-balance"
-            title="xDAI"
-            value={nodeBalance ?? '-'}
-          ></GrayCard>
-        </Content>
+      <GrayCard
+        id="redeemed-tickets"
+        title="Redeemed Tickets"
+        value="-"
+        currency="Ticket/wxHOPR"
+      // chip={{
+      //   label: '+%/24h',
+      //   color: 'success',
+      // }}
+      ></GrayCard>
+
+    </Content>
   );
 };
 

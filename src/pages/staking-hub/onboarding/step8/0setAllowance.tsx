@@ -2,8 +2,8 @@
 import styled from '@emotion/styled';
 import Button from '../../../../future-hopr-lib-components/Button';
 import { useEthersSigner } from '../../../../hooks';
-import { ConfirmButton, StepContainer } from '../components';
-import { Lowercase, StyledCoinLabel, StyledInputGroup, StyledTextField } from '../safeOnboarding/styled';
+import { StepContainer, ConfirmButton } from '../components';
+import { Lowercase, StyledCoinLabel, StyledInputGroup, StyledTextField } from '../styled';
 
 // Blockchain
 import { Address, parseUnits } from 'viem';

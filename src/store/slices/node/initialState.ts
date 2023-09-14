@@ -64,11 +64,6 @@ type InitialState = {
   };
   messages: Message[];
   messagesSent: Message[];
-  logs: {
-    id: string;
-    message: string;
-    timestamp: number;
-  }[];
   signedMessages: { createdAt: number; body: string }[];
   peers: { data: GetPeersResponseType | null; isFetching: boolean };
   entryNodes: { data: GetEntryNodesResponseType | null; isFetching: boolean };
@@ -102,7 +97,6 @@ type InitialState = {
     isFetching: boolean;
   };
   messagesWebsocketStatus: WebsocketConnectionStatus;
-  logsWebsocketStatus: WebsocketConnectionStatus;
   closeChannel: { isFetching: boolean };
   redeemTickets: {
     isFetching: boolean;
@@ -158,7 +152,6 @@ export const initialState: InitialState = {
   messages: [],
   messagesSent: [],
   signedMessages: [],
-  logs: [],
   peers: {
     data: {
       connected: [],
@@ -210,7 +203,6 @@ export const initialState: InitialState = {
     isFetching: false,
   },
   messagesWebsocketStatus: null,
-  logsWebsocketStatus: null,
   closeChannel: { isFetching: false },
   redeemTickets: {
     isFetching: false,

@@ -202,7 +202,6 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     dispatch(nodeActions.resetState());
     dispatch(appActions.resetNodeState());
     dispatch(nodeActions.closeMessagesWebsocket());
-    dispatch(nodeActions.closeLogsWebsocket());
     try {
       const loginInfo = await dispatch(
         authActionsAsync.loginThunk({
@@ -232,7 +231,6 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         );
         dispatch(nodeActions.setInfo(loginInfo));
         dispatch(nodeActions.initializeMessagesWebsocket());
-        dispatch(nodeActions.initializeLogsWebsocket());
         if (!error) navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
         trackGoal('IZUWDE9K', 1);
         props.handleClose();
