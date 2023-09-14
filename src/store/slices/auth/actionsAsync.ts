@@ -91,11 +91,15 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(loginThunk.rejected, (state, meta) => {
     state.status.connecting = false;
     if (meta.payload) {
-      state.status.error = 'Unable to connect.\n\n' + meta.payload;
-    } else if (meta.error.message) {
-      state.status.error = 'Unable to connect.\n\n' + meta.error.message;
+      const receivedError = meta.payload as { data: string; type: "API_ERROR" | "NOT_ELIGIBLE_ERROR" | "FETCH_ERROR" } 
+      state.status.error = {
+        data: 'Unable to connect.\n\n' + receivedError.data, type: receivedError.type, 
+      };
     } else {
-      state.status.error = 'Unable to connect.\n\n' + 'Unknown error';
+      state.status.error = {
+        data: 'Unable to connect.\n\n' + meta.error.message,
+        type: 'FETCH_ERROR',
+      };
     }
   });
 };

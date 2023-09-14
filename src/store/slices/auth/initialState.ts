@@ -6,7 +6,10 @@ type InitialState = {
   status: {
     connecting: boolean;
     connected: boolean;
-    error: string | null;
+    error: {
+      data: string | null;
+      type: 'API_ERROR'  | 'NOT_ELIGIBLE_ERROR' | 'FETCH_ERROR'
+    } | null;
   };
   loginData: {
     apiEndpoint: string | null;

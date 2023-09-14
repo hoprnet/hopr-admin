@@ -130,7 +130,8 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   const navigate = useNavigate();
   const nodesSavedLocally = useAppSelector((store) => store.auth.nodes);
   const [nodesSavedLocallyParsed, set_nodesSavedLocallyParsed] = useState([] as ParsedNode[]);
-  const error = useAppSelector((store) => store.auth.status.error);
+  const errorMessage = useAppSelector((store) => store.auth.status.error?.data);
+  const errorType = useAppSelector((store) => store.auth.status.error?.type);
   const loginData = useAppSelector((store) => store.auth.loginData);
 
   const [searchParams, set_searchParams] = useSearchParams();
@@ -198,8 +199,8 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   }, [loginData]);
 
   useEffect(() => {
-    if (error) navigate(`/?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
-  }, [error]);
+    if (errorMessage) navigate(`/?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
+  }, [errorMessage]);
 
   const saveNode = () => {
     dispatch(
@@ -264,7 +265,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
 
   const handleClose = () => {
     props.handleClose();
-    if (error) {
+    if (errorMessage) {
       setTimeout(() => {
         dispatch(authActions.resetState());
       }, 200);
@@ -379,7 +380,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           </Button>
         </ConnectContainer>
 
-        {error && !forceLogin && (
+        {errorMessage && !forceLogin && (
           <Overlay className={'overlay-has-error'}>
             <CloseOverlayIconButton
               color="primary"
@@ -393,7 +394,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
             <div className={'error'}>
                 <div>
                   <p>ERROR</p>
-                  {error}
+                  {errorMessage}
                 </div>
                 
                 <div style={{ textAlign: 'center', marginTop: '32px'}}>
