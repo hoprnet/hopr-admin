@@ -33,6 +33,12 @@ const safeSlice = createSlice({
     setCommunityNftId(state, action: PayloadAction<number>) {
       state.communityNftIds.data = [{ id: String(action.payload) }];
     },
+    removeCommunityNftsOwnedBySafe(state, action: PayloadAction<string>) {
+      const NftId = action.payload;
+      let communityNftIds = state.communityNftIds.data;
+      communityNftIds = communityNftIds.filter(elem => { elem.id !== NftId});
+      state.communityNftIds.data = communityNftIds;
+    },
   },
   extraReducers: (builder) => {
     createAsyncReducer(builder), createFetchingReducer(builder);

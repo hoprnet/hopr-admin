@@ -6,7 +6,7 @@ import { Address, parseUnits } from 'viem';
 import { GNOSIS_CHAIN_HOPR_BOOST_NFT, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
 import { useEthersSigner } from '../../hooks';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { safeActionsAsync } from '../../store/slices/safe';
+import { safeActions, safeActionsAsync } from '../../store/slices/safe';
 import { createSendNftTransactionData, createSendTokensTransactionData } from '../../utils/blockchain';
 
 // components
@@ -289,8 +289,7 @@ function SafeWithdraw() {
           .then((transactionResponse) => {
             browserClient?.waitForTransactionReceipt({ hash: transactionResponse as Address })
               .then(() => {
-                // tx should have gone through at this point
-                dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(selectedSafeAddress));
+                dispatch(safeActions.removeCommunityNftsOwnedBySafe(nftId));
               });
             set_proposedTxHash(transactionResponse);
           })
@@ -468,7 +467,7 @@ function SafeWithdraw() {
                       margin: 0,
                     }}
                   />
-                  <StyledCoinLabel>{SUPPORTED_TOKENS[token].name}</StyledCoinLabel>
+                  <StyledCoinLabel>NFT ID</StyledCoinLabel>
                 </InputWithLabel>
               ) : (
                 <InputWithLabel>
