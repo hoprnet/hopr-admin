@@ -359,8 +359,9 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
         return 5;
       }
 
-      console.log('[Onboarding check] CommunityNftId in Safe', state.safe.communityNftId, state.safe.communityNftId !== null);
-      if (state.safe.communityNftId !== null) {
+
+      console.log('[Onboarding check] CommunityNftId in Safe', state.safe.communityNftIds.data.length, state.safe.communityNftIds.data.length !== 0);
+      if (state.safe.communityNftIds.data.length !== 0) {
         return 4;
       }
 

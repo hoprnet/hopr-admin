@@ -23,9 +23,11 @@ const StyledButton = styled(MuiButton)<StyledButtonProps>`
   font-size: 18px;
   border-radius: 20px;
   letter-spacing: 0.25px;
-  height: unset;
   line-height: 1.5;
-  height: 39px;
+  height: unset;
+  p {
+    margin: 0;
+  }
 
   &.btn-hopr--v2:not(.Mui-disabled) {
     background: linear-gradient(#000050, #0000b4);

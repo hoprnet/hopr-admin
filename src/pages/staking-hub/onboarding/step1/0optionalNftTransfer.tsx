@@ -84,7 +84,7 @@ export default function optionalNftTtransfer() {
   const dispatch = useAppDispatch();
   const [option, set_option] = useState<0 | 1 | null>(null);
   const communityNftIdInWallet = useAppSelector((store) => store.web3.communityNftId);
-  const communityNftIdInSafe = useAppSelector((store) => store.safe.communityNftId);
+  const communityNftIdInSafe = useAppSelector((store) => !!store.safe.communityNftIds.data.length);
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const walletAddress = useAppSelector((store) => store.web3.account);
   const { data: walletClient } = useWalletClient();
@@ -152,7 +152,7 @@ export default function optionalNftTtransfer() {
           onClick={() => {
             set_option(0);
           }}
-          style={communityNftIdInSafe === null ? {pointerEvents: 'none'} : {}}
+          style={communityNftIdInSafe === false ? {pointerEvents: 'none'} : {}}
         >
           <OptionText>
             <div className="left">
