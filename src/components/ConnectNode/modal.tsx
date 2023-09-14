@@ -131,12 +131,9 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   const nodesSavedLocally = useAppSelector((store) => store.auth.nodes);
   const [nodesSavedLocallyParsed, set_nodesSavedLocallyParsed] = useState([] as ParsedNode[]);
   const errorMessage = useAppSelector((store) => store.auth.status.error?.data);
-  const errorType = useAppSelector((store) => store.auth.status.error?.type);
   const loginData = useAppSelector((store) => store.auth.loginData);
-
   const [searchParams, set_searchParams] = useSearchParams();
   const [localName, set_localName] = useState(loginData.localName ? loginData.localName : '');
-
   const [apiEndpoint, set_apiEndpoint] = useState(loginData.apiEndpoint ? loginData.apiEndpoint : '');
   const [apiToken, set_apiToken] = useState(loginData.apiToken ? loginData.apiToken : '');
   const [saveApiToken, set_saveApiToken] = useState(false);
@@ -392,21 +389,24 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
               <CloseIcon />
             </CloseOverlayIconButton>
             <div className={'error'}>
-                <div>
-                  <p>ERROR</p>
-                  {errorMessage}
-                </div>
+              <div>
+                <p>ERROR</p>
+                {errorMessage}
+              </div>
                 
-                <div style={{ textAlign: 'center', marginTop: '32px'}}>
-                  <Tooltip title={loginAnywaysWarning}>
-                    <ForceLoginButton
-                      onClick={() => set_forceLogin(true)}
-                      disabled={apiEndpoint.length === 0 || apiToken.length === 0}
-                    >
+              {errorMessage !== 'UNAUTHORIZED' &&
+                <div style={{
+                textAlign: 'center', marginTop: '32px',
+              }}>
+                <Tooltip title={loginAnywaysWarning}>
+                  <ForceLoginButton
+                    onClick={() => set_forceLogin(true)}
+                    disabled={apiEndpoint.length === 0 || apiToken.length === 0}
+                  >
                         Login anyways
-                    </ForceLoginButton>
-                  </Tooltip>
-                </div>
+                  </ForceLoginButton>
+                </Tooltip>
+              </div>}
             </div>
           </Overlay>
         )}
@@ -447,8 +447,8 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           <Button outlined onClick={() => set_forceLogin(false)}>BACK</Button>
           <ForceLoginButton
             onClick={() => {
-              useNode({ force: true });
               set_forceLogin(false);
+              useNode({ force: true });
             } }
             disabled={apiEndpoint.length === 0 || apiToken.length === 0}
           >
