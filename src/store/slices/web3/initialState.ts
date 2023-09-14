@@ -5,6 +5,7 @@ export const initialState = {
   },
   account: null as string | null,
   wallet: null as string | null,
+  walletConnect: false as boolean,
   communityNftId: null as number | null,
   communityNftTransferring: false as boolean,
   chainId: null as string | null,
