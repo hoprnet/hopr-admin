@@ -27,6 +27,7 @@ function AliasesPage() {
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const peers = useAppSelector(store => store.node.peers.data)
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
+  const hoprAddresses = useAppSelector((store) => store.node.addresses.data.hopr)
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [importSuccess, set_importSuccess] = useState(false);
   const [deleteSuccess, set_deleteSuccess] = useState(false);
@@ -67,7 +68,7 @@ function AliasesPage() {
     if (!peer) {
       return;
     }
-    
+
     return peer.peerAddress
   }
 
@@ -121,6 +122,8 @@ function AliasesPage() {
   }
 
   const parsedTableData = Object.entries(aliases ?? {}).map(([alias, peerId], key) => {
+    console.log(`PEERID: ${peerId}`)
+    console.log(`HOPR ADDRESS: ${hoprAddresses}`)
     return {
       id: peerId,
       key: key.toString(),
@@ -129,12 +132,13 @@ function AliasesPage() {
       peerAddress: getPeerAddressByPeerId(peerId) ?? '',
       actions: (
         <>
-          <PingModal peerId={peerId} />
+          <PingModal peerId={peerId} disabled={peerId === hoprAddresses} />
           <OpenOrFundChannelModal
             peerAddress={getPeerAddressByPeerId(peerId)}
             type={'open'}
+            disabled={peerId === hoprAddresses}
           />
-          <SendMessageModal peerId={peerId} />
+          <SendMessageModal peerId={peerId} disabled={peerId === hoprAddresses} />
           <DeleteAliasButton
             onSuccess={() => {
               set_deleteSuccess(true);
