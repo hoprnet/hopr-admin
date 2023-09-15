@@ -54,17 +54,19 @@ export const observePendingSafeTransactions = ({
   selectedSafeAddress,
   previousState,
   signer,
+  active,
   updatePreviousData,
   dispatch,
 }: {
   selectedSafeAddress: string | null;
   previousState: SafeMultisigTransactionResponse | null;
   signer: ethers.providers.JsonRpcSigner | undefined;
+  active: boolean;
   updatePreviousData: (currentData: SafeMultisigTransactionResponse) => void;
   dispatch: ReturnType<typeof useAppDispatch>;
 }) =>
   observeData<SafeMultisigTransactionResponse | null | undefined>({
-    disabled: !selectedSafeAddress || !signer,
+    active: active && !!selectedSafeAddress && !!signer,
     previousData: previousState,
     fetcher: async () => {
       if (!signer || !selectedSafeAddress) return;
