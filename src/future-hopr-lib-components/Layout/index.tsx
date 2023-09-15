@@ -15,6 +15,7 @@ import Drawer from './drawer';
 // Types
 import { ApplicationMapType } from '../../router';
 import { useAppSelector } from '../../store';
+import { loadStateFromLocalStorage, saveStateToLocalStorage } from '../../utils/localStorage';
 
 const SLayout = styled.div`
   &.webapp {
@@ -70,7 +71,7 @@ const Layout: React.FC<{
   };
   drawerType?: 'blue' | 'white';
   drawerItems: ApplicationMapType;
-  drawerFunctionItems? : ApplicationMapType;
+  drawerFunctionItems?: ApplicationMapType;
   drawerRight?: React.ReactNode;
 }> = ({
   className = '',
@@ -85,56 +86,68 @@ const Layout: React.FC<{
   drawerType,
   drawerFunctionItems,
 }) => {
-  const isMobile = !useMediaQuery('(min-width: 500px)');
-  const isConnected = useAppSelector((store) => store.auth.status.connected);
+    const isMobile = !useMediaQuery('(min-width: 500px)');
+    const isConnected = useAppSelector((store) => store.auth.status.connected);
+    const initialDrawerState = loadStateFromLocalStorage('drawerState');
 
-  const [openedNavigationDrawerPC, set_openedNavigationDrawerPC] = useState(environment === 'web3' || environment === 'dev' ? true : false);
-  const [openedNavigationDrawerMobile, set_openedNavigationDrawerMobile] = useState(false);
+    // const [openedNavigationDrawerPC, set_openedNavigationDrawerPC] = useState(environment === 'web3' || environment === 'dev' ? true : false);
+    const [openedNavigationDrawerPC, set_openedNavigationDrawerPC] = useState(
+      initialDrawerState !== null
+        ? Boolean(initialDrawerState)
+        : environment === 'web3' || environment === 'dev'
+          ? true
+          : false
+    );
+    const [openedNavigationDrawerMobile, set_openedNavigationDrawerMobile] = useState(initialDrawerState !== null ? Boolean(initialDrawerState) : false);
 
-  const handleOpenedNavigationDrawer = (bool: boolean) => {
-    if (isMobile) set_openedNavigationDrawerMobile(bool);
-    else set_openedNavigationDrawerPC(bool);
-  };
+    const handleOpenedNavigationDrawer = (bool: boolean) => {
+      if (isMobile) set_openedNavigationDrawerMobile(bool);
+      else set_openedNavigationDrawerPC(bool);
+      saveStateToLocalStorage('drawerState', bool)
+    };
 
-  useEffect(() => {
-    if (isConnected) set_openedNavigationDrawerPC(true);
-  }, [isConnected]);
-  return (
-    <SLayout className={`Layout${webapp ? ' webapp' : ''} ${className} ${isMobile ? 'drawerHidden' : ''} ${(isMobile ? openedNavigationDrawerMobile : openedNavigationDrawerPC) ? 'drawerOpen' : 'drawerClosed'}`}>
-      <NavBar
-        mainLogo="/logo.svg"
-        mainLogoAlt="hopr logo"
-        itemsNavbarRight={itemsNavbarRight}
-        tallerNavBarOnMobile={tallerNavBarOnMobile}
-        webapp={webapp}
-        set_openedNavigationDrawer={handleOpenedNavigationDrawer}
-        openedNavigationDrawer={isMobile ? openedNavigationDrawerMobile : openedNavigationDrawerPC}
-      />
-      {drawer && (
-        <Drawer
-          drawerType={drawerType}
-          drawerItems={drawerItems}
-          drawerFunctionItems={drawerFunctionItems}
-          drawerLoginState={drawerLoginState}
+    useEffect(() => {
+      if (isConnected) {
+        set_openedNavigationDrawerPC(true);
+        saveStateToLocalStorage('drawerState', true)
+      }
+    }, [isConnected]);
+    return (
+      <SLayout className={`Layout${webapp ? ' webapp' : ''} ${className} ${isMobile ? 'drawerHidden' : ''} ${(isMobile ? openedNavigationDrawerMobile : openedNavigationDrawerPC) ? 'drawerOpen' : 'drawerClosed'}`}>
+        <NavBar
+          mainLogo="/logo.svg"
+          mainLogoAlt="hopr logo"
+          itemsNavbarRight={itemsNavbarRight}
+          tallerNavBarOnMobile={tallerNavBarOnMobile}
+          webapp={webapp}
           set_openedNavigationDrawer={handleOpenedNavigationDrawer}
           openedNavigationDrawer={isMobile ? openedNavigationDrawerMobile : openedNavigationDrawerPC}
         />
-      )}
-      <Content
-        className={`Content ${drawerRight ? 'drawerRight' : ''}`}
-        openedNavigationDrawer={isMobile ? openedNavigationDrawerMobile : openedNavigationDrawerPC}
-        drawerRight={!!drawerRight}
-      >
-        {' '}
-        <div>
-          <Outlet />
-        </div>
-        {/* {children} */}
-      </Content>
-      {drawerRight}
-      {/* <Footer /> */}
-    </SLayout>
-  );
-};
+        {drawer && (
+          <Drawer
+            drawerType={drawerType}
+            drawerItems={drawerItems}
+            drawerFunctionItems={drawerFunctionItems}
+            drawerLoginState={drawerLoginState}
+            set_openedNavigationDrawer={handleOpenedNavigationDrawer}
+            openedNavigationDrawer={isMobile ? openedNavigationDrawerMobile : openedNavigationDrawerPC}
+          />
+        )}
+        <Content
+          className={`Content ${drawerRight ? 'drawerRight' : ''}`}
+          openedNavigationDrawer={isMobile ? openedNavigationDrawerMobile : openedNavigationDrawerPC}
+          drawerRight={!!drawerRight}
+        >
+          {' '}
+          <div>
+            <Outlet />
+          </div>
+          {/* {children} */}
+        </Content>
+        {drawerRight}
+        {/* <Footer /> */}
+      </SLayout>
+    );
+  };
 
 export default Layout;

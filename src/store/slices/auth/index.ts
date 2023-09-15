@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { bubbleSortObject, getObjectFromLocalStorage } from '../../../utils/functions';
+import { bubbleSortObject } from '../../../utils/functions';
+import { loadStateFromLocalStorage } from "../../../utils/localStorage";
 import { actionsAsync, createAsyncReducer } from './actionsAsync';
 import { initialState } from './initialState';
 
@@ -9,7 +10,7 @@ const authSlice = createSlice({
   reducers: {
     resetState: () => {
       const state = JSON.parse(JSON.stringify(initialState));
-      const ADMIN_UI_NODE_LIST = getObjectFromLocalStorage('admin-ui-node-list');
+      const ADMIN_UI_NODE_LIST = loadStateFromLocalStorage('admin-ui-node-list');
       if (ADMIN_UI_NODE_LIST) state.nodes = ADMIN_UI_NODE_LIST;
       return state;
     },
@@ -74,9 +75,6 @@ const authSlice = createSlice({
       tmp = tmp.filter((elem) => elem !== undefined);
       state.nodes = tmp;
       localStorage.setItem('admin-ui-node-list', JSON.stringify(state.nodes));
-    },
-    setStatusError(state, action: PayloadAction<string>) {
-      state.status.error = action.payload;
     },
     setOpenLoginModalToNode(state, action: PayloadAction<boolean>) {
       state.helper.openLoginModalToNode = action.payload;

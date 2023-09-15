@@ -1,15 +1,16 @@
+import { GetInfoResponseType, api, utils } from '@hoprnet/hopr-sdk';
 import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
-import { initialState } from './initialState';
-import { GetInfoResponseType, api } from '@hoprnet/hopr-sdk';
-import { nodeActionsAsync } from '../node';
 import { parseEther } from 'viem';
 import { RootState } from '../..';
+import { nodeActionsAsync } from '../node';
+import { initialState } from './initialState';
+const { APIError } = utils
 const { getInfo } = api;
 
 export const loginThunk = createAsyncThunk<
-  GetInfoResponseType | undefined,
-  { apiToken: string; apiEndpoint: string },
-  { state: RootState }
+  GetInfoResponseType | {force: boolean} | undefined,
+  { apiToken: string; apiEndpoint: string; force?: boolean },
+  { state: RootState, rejectValue: { data: string; type:  'API_ERROR'  | 'NOT_ELIGIBLE_ERROR' | 'FETCH_ERROR'}}
 >('auth/login', async (payload, {
   rejectWithValue,
   dispatch,
@@ -24,16 +25,36 @@ export const loginThunk = createAsyncThunk<
       apiToken: apiToken,
     });
 
-    if (!info.isEligible) {
-      throw new Error(
-        'Not eligible on network registry. ' +
-          'Join the waitlist and once approved, you can return to login.' +
-          '\n\nFor now, keep an eye on the waitlist.',
-      );
+    if (!payload.force && !info.isEligible ) {
+      const e = new Error();
+      e.name = 'NOT_ELIGIBLE_ERROR';
+      e.message = 'Not eligible on network registry. ' +
+      'Join the waitlist and once approved, you can return to login.' +
+      '\n\nFor now, keep an eye on the waitlist.'
+      throw e;
     }
 
     return info;
   } catch (e) {
+    if (e instanceof APIError && e.status === 'UNAUTHORIZED') {
+      return rejectWithValue({ 
+        data: e.status ?? e.error,
+        type: 'API_ERROR',
+      });
+    }
+
+    if (payload.force) {
+      return { force: true };
+    }
+
+    // not eligible error thrown above
+    if (e instanceof Error && e.name === 'NOT_ELIGIBLE_ERROR') {
+      return rejectWithValue({ 
+        data: 'Unable to connect.\n\n' + e.message,
+        type: 'NOT_ELIGIBLE_ERROR',
+      });
+    }
+    
     // see if connecting error is due to low balance
     try {
       const nodeBalances = await dispatch(
@@ -55,22 +76,23 @@ export const loginThunk = createAsyncThunk<
       const minimumNodeBalance = parseEther('0.001');
 
       if (nodeBalances?.native !== undefined && BigInt(nodeBalances.native) < minimumNodeBalance) {
-        return rejectWithValue(
-          `Your xDai balance seems to low to operate the node.\nPlease top up your node.\nAddress: ${addresses?.native}`,
-        );
-      }
-
-      if (e instanceof Error) {
-        return rejectWithValue(e.message);
+        return rejectWithValue({
+          data: 'Unable to connect.\n\n' + `Your xDai balance seems to low to operate the node.\nPlease top up your node.\nAddress: ${addresses?.native}`,
+          type: 'NOT_ELIGIBLE_ERROR',
+        });
       }
 
       // stringify to make sure that
       // the error is serializable
-      return rejectWithValue('Unknown error: ' + JSON.stringify(e));
+      return rejectWithValue({
+        data: 'Unknown error: ' + JSON.stringify(e), type: 'FETCH_ERROR',
+      });
     } catch (unknownError) {
       // getting balance and addresses failed
       // no way to tell if the balance is low
-      return rejectWithValue('Error fetching: ' + JSON.stringify(unknownError));
+      return rejectWithValue({
+        data: 'Error fetching: ' + JSON.stringify(unknownError), type: 'FETCH_ERROR',
+      });
     }
   }
 });
@@ -91,11 +113,14 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(loginThunk.rejected, (state, meta) => {
     state.status.connecting = false;
     if (meta.payload) {
-      state.status.error = 'Unable to connect.\n\n' + meta.payload;
-    } else if (meta.error.message) {
-      state.status.error = 'Unable to connect.\n\n' + meta.error.message;
+      state.status.error = {
+        data: meta.payload.data, type: meta.payload.type, 
+      };
     } else {
-      state.status.error = 'Unable to connect.\n\n' + 'Unknown error';
+      state.status.error = {
+        data: 'Unable to connect.\n\n' + meta.error.message,
+        type: 'FETCH_ERROR',
+      };
     }
   });
 };
