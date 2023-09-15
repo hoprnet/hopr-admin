@@ -9,7 +9,8 @@ const {
   initializeMessagesWebsocket,
   closeMessagesWebsocket,
   updateMessagesWebsocketStatus,
-} = nodeActions;
+} =
+  nodeActions;
 
 const { WebsocketHelper } = utils;
 
@@ -57,7 +58,7 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
               try {
                 const messageJSON: { type: 'message' | 'message-ack'; tag?: number; body?: string; id?: string } =
                   JSON.parse(message);
-                
+
                 // only show messages
                 if (messageJSON.type !== 'message') return;
 

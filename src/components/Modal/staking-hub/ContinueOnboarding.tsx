@@ -15,7 +15,7 @@ const Content = styled(SDialogContent)`
     justify-content: center;
     gap: 16px;
     button {
-      margin-top: 16px;;
+      margin-top: 16px;
       padding-inline: 2rem;
     }
   }
@@ -63,20 +63,20 @@ const ContinueOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
         <Content>
           <p>It looks like you didn't finish your onboarding. Would you like to continue?</p>
           <div>
-          <Button
-            onClick={handleCloseModal}
-            outlined
-          >
-            NOT NOW
-          </Button>
-          <Button
-            onClick={() => {
-              navigate(`/staking/onboarding`);
-            }}
-            style={{width: '160px'}}
-          >
-            YES
-          </Button>
+            <Button
+              onClick={handleCloseModal}
+              outlined
+            >
+              NOT NOW
+            </Button>
+            <Button
+              onClick={() => {
+                navigate(`/staking/onboarding`);
+              }}
+              style={{ width: '160px' }}
+            >
+              YES
+            </Button>
           </div>
         </Content>
       </SDialog>

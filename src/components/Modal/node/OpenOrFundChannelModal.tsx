@@ -57,7 +57,7 @@ export const OpenOrFundChannelModal = ({
           amount: weiValue,
           peerAddress: peerAddress,
           timeout: 60e3,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -97,18 +97,18 @@ export const OpenOrFundChannelModal = ({
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
   };
 
   const icon = () => {
     switch (type) {
-      case 'open':
-        return <AddChannelIcon />;
-      case 'fund':
-        return <FundChannelIcon />;
-      default:
-        return <HubIcon />;
+    case 'open':
+      return <AddChannelIcon />;
+    case 'fund':
+      return <FundChannelIcon />;
+    default:
+      return <HubIcon />;
     }
   };
 
@@ -118,22 +118,21 @@ export const OpenOrFundChannelModal = ({
         iconComponent={icon()}
         disabled={type === 'fund'}
         tooltipText={
-          type === 'fund' ?
+          type === 'fund' ? (
             <span>
               FUND
               <br />
               function not avalible yet
             </span>
-            :
-            modalBtnText ? (
-              modalBtnText
-            ) : (
-              <span>
-                OPEN
-                <br />
-                outgoing channel
-              </span>
-            )
+          ) : modalBtnText ? (
+            modalBtnText
+          ) : (
+            <span>
+              OPEN
+              <br />
+              outgoing channel
+            </span>
+          )
         }
         onClick={handleOpenChannelDialog}
       />

@@ -26,7 +26,9 @@ export default function AddNode() {
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
 
   //http://localhost:5173/staking/onboarding?HOPRdNodeAddressForOnboarding=helloMyfield
-  const HOPRdNodeAddressForOnboarding = useAppSelector((store) => store.stakingHub.onboarding.nodeAddressProvidedByMagicLink);
+  const HOPRdNodeAddressForOnboarding = useAppSelector(
+    (store) => store.stakingHub.onboarding.nodeAddressProvidedByMagicLink,
+  );
   const nodesAddedToSafe = useAppSelector(
     (store) => store.stakingHub.safeInfo.data.registeredNodesInNetworkRegistryParsed,
   );
@@ -49,15 +51,16 @@ export default function AddNode() {
             label: 'node',
           },
         }),
-      ).unwrap()
-      .then(()=>{
-        dispatch(stakingHubActions.setOnboardingNodeAddress(address));
-        dispatch(stakingHubActions.setOnboardingStep(13));
-      })
-        .catch(e => {
-          console.log('ERROR when adding a delegate to Safe:', e)
+      )
+        .unwrap()
+        .then(() => {
+          dispatch(stakingHubActions.setOnboardingNodeAddress(address));
+          dispatch(stakingHubActions.setOnboardingStep(13));
+        })
+        .catch((e) => {
+          console.log('ERROR when adding a delegate to Safe:', e);
           if (e.includes("does not exist or it's still not indexed")) {
-            const errMsg = "Your safe wasn't indexed yet by HOPR Safe Infrastructure. Please try in 5min."
+            const errMsg = "Your safe wasn't indexed yet by HOPR Safe Infrastructure. Please try in 5min.";
             sendNotification({
               notificationPayload: {
                 source: 'safe',
@@ -65,12 +68,15 @@ export default function AddNode() {
                 url: null,
                 timeout: null,
               },
-              toastPayload: { message: errMsg, type: 'error' },
+              toastPayload: {
+                message: errMsg,
+                type: 'error',
+              },
               dispatch,
             });
           }
         });
-        set_isLoading(false);
+      set_isLoading(false);
     }
   };
 
@@ -79,21 +85,28 @@ export default function AddNode() {
       title="ADD NODE"
       description={
         <>
-          Please enter and confirm your node address. This will initiate a transaction which you will need to sign. If you do not have your node address follow the instructions here for{' '}
+          Please enter and confirm your node address. This will initiate a transaction which you will need to sign. If
+          you do not have your node address follow the instructions here for{' '}
           <a
             href="https://docs.hoprnet.org/node/using-dappnode#2-link-your-node-to-your-safe"
             target="_blank"
             rel="noreferrer"
-            style={{ color: '#007bff', textDecoration: 'underline' }}
+            style={{
+              color: '#007bff',
+              textDecoration: 'underline',
+            }}
           >
             Dappnode
-          </a>
-          {' '}or{' '}
+          </a>{' '}
+          or{' '}
           <a
             href="https://docs.hoprnet.org/node/using-docker#4-link-your-node-to-your-safe"
             target="_blank"
             rel="noreferrer"
-            style={{ color: '#007bff', textDecoration: 'underline' }}
+            style={{
+              color: '#007bff',
+              textDecoration: 'underline',
+            }}
           >
             Docker
           </a>
@@ -113,7 +126,13 @@ export default function AddNode() {
           >
             Back
           </StyledGrayButton>
-          <Tooltip title={address === '' ? 'Please enter and confirm your node address' : !nodeInNetworkRegistry && 'This node is not on the whitelist'}>
+          <Tooltip
+            title={
+              address === ''
+                ? 'Please enter and confirm your node address'
+                : !nodeInNetworkRegistry && 'This node is not on the whitelist'
+            }
+          >
             <span>
               <ConfirmButton
                 onClick={addDelegate}

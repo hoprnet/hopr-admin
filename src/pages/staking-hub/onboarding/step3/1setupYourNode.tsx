@@ -66,7 +66,7 @@ const CodeContainer = styled.div`
   text-align: start;
   // text-transform: uppercase;
   code {
-    font-size: 12px!important;
+    font-size: 12px !important;
     line-height: 16px;
   }
 `;
@@ -97,38 +97,51 @@ export default function SetupNodeStep() {
       description={'Follow the instructions below to set up your HOPR node.'}
       buttons={
         <>
-        <StyledGrayButton
-          onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(6));
-          }}
-        >
-          BACK
-        </StyledGrayButton>
-        <ConfirmButton
-          onClick={() => {
-            dispatch(stakingHubActions.setOnboardingStep(10));
-          }}
-        >
-          CONTINUE
-        </ConfirmButton>
-      </>
+          <StyledGrayButton
+            onClick={() => {
+              dispatch(stakingHubActions.setOnboardingStep(6));
+            }}
+          >
+            BACK
+          </StyledGrayButton>
+          <ConfirmButton
+            onClick={() => {
+              dispatch(stakingHubActions.setOnboardingStep(10));
+            }}
+          >
+            CONTINUE
+          </ConfirmButton>
+        </>
       }
     >
       <Content>
         <StepsContainer>
           <Instruction num={1}>
             <div>
-              <p>Copy the following command into your terminal and follow the instructions{' '}<StyledLink 
-                to={`https://docs.hoprnet.org/node/using-docker` }
-                target="_blank"
-                rel="noopener noreferrer"
-              >here</StyledLink>.</p>
+              <p>
+                Copy the following command into your terminal and follow the instructions{' '}
+                <StyledLink
+                  to={`https://docs.hoprnet.org/node/using-docker`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  here
+                </StyledLink>
+                .
+              </p>
               <Content>
                 <CodeContainer>
                   <span>INSTALL AND RUN HOPRd</span>
                   <CodeCopyBox
-                    code={<>{`docker run --pull always --restart on-failure -m 2g --platform linux/x86_64 --log-driver json-file --log-opt max-size=100M --log-opt max-file=5 -ti -v $HOME/.hoprd-db-dufour:/app/hoprd-db -p 9091:9091/tcp -p 9091:9091/udp -p 8080:8080 -p 3001:3001 -e DEBUG="hopr*" europe-west3-docker.pkg.dev/hoprassociation/docker-images/hoprd:latest --network dufour --init --api --identity /app/hoprd-db/.hopr-id-dufour --data /app/hoprd-db --password 'open-sesame-iTwnsPNg0hpagP+o6T0KOwiH9RQ0' --apiHost "0.0.0.0" --apiToken '`}
-                    <span style={{color: '#00fc00'}}>YOUR_SECURITY_TOKEN</span>{`' --healthCheck --healthCheckHost "0.0.0.0" --announce --safeAddress ${safeAddress} --moduleAddress ${moduleAddress} --host `}<span style={{color: '#00fc00'}}>{`YOUR_PUBLIC_IP`}</span>{`:9091`}</>}
+                    code={
+                      <>
+                        {`docker run --pull always --restart on-failure -m 2g --platform linux/x86_64 --log-driver json-file --log-opt max-size=100M --log-opt max-file=5 -ti -v $HOME/.hoprd-db-dufour:/app/hoprd-db -p 9091:9091/tcp -p 9091:9091/udp -p 8080:8080 -p 3001:3001 -e DEBUG="hopr*" europe-west3-docker.pkg.dev/hoprassociation/docker-images/hoprd:latest --network dufour --init --api --identity /app/hoprd-db/.hopr-id-dufour --data /app/hoprd-db --password 'open-sesame-iTwnsPNg0hpagP+o6T0KOwiH9RQ0' --apiHost "0.0.0.0" --apiToken '`}
+                        <span style={{ color: '#00fc00' }}>YOUR_SECURITY_TOKEN</span>
+                        {`' --healthCheck --healthCheckHost "0.0.0.0" --announce --safeAddress ${safeAddress} --moduleAddress ${moduleAddress} --host `}
+                        <span style={{ color: '#00fc00' }}>{`YOUR_PUBLIC_IP`}</span>
+                        {`:9091`}
+                      </>
+                    }
                     copy={`docker run --pull always --restart on-failure -m 2g --platform linux/x86_64 --log-driver json-file --log-opt max-size=100M --log-opt max-file=5 -ti -v $HOME/.hoprd-db-dufour:/app/hoprd-db -p 9091:9091/tcp -p 9091:9091/udp -p 8080:8080 -p 3001:3001 -e DEBUG="hopr*" europe-west3-docker.pkg.dev/hoprassociation/docker-images/hoprd:latest --network dufour --init --api --identity /app/hoprd-db/.hopr-id-dufour --data /app/hoprd-db --password 'open-sesame-iTwnsPNg0hpagP+o6T0KOwiH9RQ0' --apiHost "0.0.0.0" --apiToken 'YOUR_SECURITY_TOKEN' --healthCheck --healthCheckHost "0.0.0.0" --announce --safeAddress ${safeAddress} --moduleAddress ${moduleAddress} --host YOUR_PUBLIC_IP:9091`}
                   />
                 </CodeContainer>

@@ -23,7 +23,9 @@ function SectionLogs() {
       >
         <LogLine
           log={{
-            id: '', message: '', timestamp: 0,
+            id: '',
+            message: '',
+            timestamp: 0,
           }}
           key={'test-log'}
         />

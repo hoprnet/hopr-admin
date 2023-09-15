@@ -77,10 +77,10 @@ const StyledBlueButton = styled(Button)`
 
 const StyledButtonGroup = styled.div`
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
   align-items: baseline;
   gap: 0.5rem;
-  
+
   // allows the execute/sign button to grow
   & span:last-child {
     flex: 1 0 auto; /* grow, don't shrink, and auto basis */
@@ -257,7 +257,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           <Tooltip title={transactionAfterSafeNonce && `Earlier actions should be handled first`}>
             <span>
               <StyledBlueButton
-                className='positive-action'
+                className="positive-action"
                 disabled={transactionAfterSafeNonce}
                 onClick={() => executeTx(transaction)}
               >
@@ -288,7 +288,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           <Tooltip title={!userAction && 'You have already approved'}>
             <span>
               <StyledBlueButton
-                className='positive-action'
+                className="positive-action"
                 onClick={() => approveTx(transaction)}
                 disabled={!userAction}
               >
@@ -549,13 +549,11 @@ function EthereumTransactionRow(props: { transaction: CustomEthereumTxWithTransf
           <TruncatedEthereumAddressWithTooltip address={transaction.source} />
         </TableCell>
         <TableCell align="right">{transaction.request}</TableCell>
-        <TableCell
-          align="right"
-        >{`${
-            transaction.value && transaction.value.length > 18
-              ? transaction.value.slice(0, 18).concat('...')
-              : transaction.value
-          } ${transaction.currency}`}</TableCell>
+        <TableCell align="right">{`${
+          transaction.value && transaction.value.length > 18
+            ? transaction.value.slice(0, 18).concat('...')
+            : transaction.value
+        } ${transaction.currency}`}</TableCell>
       </StyledHistoryTableRow>
       <StyledHistoryTableRow>
         <StyledCollapsibleCell colSpan={6}>
@@ -638,13 +636,11 @@ function MultisigTransactionRow(props: { transaction: CustomSafeMultisigTransact
           <TruncatedEthereumAddressWithTooltip address={transaction.source} />
         </TableCell>
         <TableCell align="right">{transaction.request}</TableCell>
-        <TableCell
-          align="right"
-        >{`${
-            transaction.value && transaction.value.length > 10
-              ? transaction.value.slice(0, 10).concat('...')
-              : transaction.value
-          } ${transaction.currency}`}</TableCell>
+        <TableCell align="right">{`${
+          transaction.value && transaction.value.length > 10
+            ? transaction.value.slice(0, 10).concat('...')
+            : transaction.value
+        } ${transaction.currency}`}</TableCell>
       </StyledHistoryTableRow>
       <StyledHistoryTableRow className={!transaction.isExecuted ? 'rejected' : ''}>
         <StyledCollapsibleCell colSpan={6}>
@@ -920,7 +916,7 @@ const PendingTransactionsTable = () => {
                 key={key}
               />
             ))}
-          {pendingTransactions && !pendingTransactions?.count && <div style={{margin: '16px'}}>No entries</div>}
+          {pendingTransactions && !pendingTransactions?.count && <div style={{ margin: '16px' }}>No entries</div>}
         </TableBody>
       </Table>
     </TableContainer>
