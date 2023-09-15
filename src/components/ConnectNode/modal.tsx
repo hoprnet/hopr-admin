@@ -140,6 +140,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   const [areYouSureYouWannaDeleteAllSavedNodes, set_areYouSureYouWannaDeleteAllSavedNodes] = useState(false);
   const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] = useState('' as string);
   const [forceLogin, set_forceLogin] = useState(false);
+  const [apiEndpointError, set_apiEndpointError] = useState<string | null>(null);
 
   useEffect(() => {
     const parsed = nodesSavedLocally.map((node, index) => {
@@ -212,11 +213,21 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     }
 
     parts[2] = hostAndPort;
-    return parts.join('/');
+    try {
+      new URL(parts.join('/'));
+      set_apiEndpointError(null)
+      return parts.join('/');
+    } catch (e) {
+      set_apiEndpointError('API Endpoint was incorrectly formatted')
+      return null;
+    }
   };
 
   const saveNode = () => {
     const formattedApiEndpoint = parseAndFormatUrl(apiEndpoint);
+    if (!formattedApiEndpoint) {
+      return;
+    }
     dispatch(
       authActions.addNodeData({
         apiEndpoint: formattedApiEndpoint,
@@ -228,6 +239,9 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
 
   const useNode = async ({ force }: { force?: boolean }) => {
     const formattedApiEndpoint = parseAndFormatUrl(apiEndpoint);
+    if (!formattedApiEndpoint) {
+      return;
+    }
     set_searchParams({
       apiToken,
       formattedApiEndpoint,
@@ -358,6 +372,8 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           onChange={(event) => {
             set_apiEndpoint(event.target.value);
           }}
+          error={apiEndpointError !== null}
+          helperText={apiEndpointError}
           style={{ width: '100%' }}
         />
         <TextField
