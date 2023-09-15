@@ -11,8 +11,14 @@ import {
   wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS
 } from '../../../../config';
 import NetworkRegistryAbi from '../../../abi/network-registry-abi.json';
-import { nodeManagementModuleAbi }  from '../../../abi/nodeManagementModuleAbi';
-import { Address, PublicClient, WalletClient, parseEther, publicActions } from 'viem';
+import { nodeManagementModuleAbi } from '../../../abi/nodeManagementModuleAbi';
+import {
+  Address,
+  PublicClient,
+  WalletClient,
+  parseEther,
+  publicActions
+} from 'viem'
 import { gql } from 'graphql-request';
 import { stakingHubActions } from '.';
 import { safeActionsAsync } from '../safe';
@@ -183,9 +189,7 @@ const getSubgraphDataThunk = createAsyncThunk<
           timestamp
         }
       }
-    }`
-
-
+    }`;
 
     try {
       const resp = await fetch(STAKING_V2_SUBGRAPH, {
@@ -218,76 +222,75 @@ const getSubgraphDataThunk = createAsyncThunk<
   } },
 );
 
-type ParsedTargets =   {
+type ParsedTargets = {
   channels: false | string;
   wxHOPR: false | string;
-}
+};
 
 const getModuleTargetsThunk = createAsyncThunk<
-  ParsedTargets, 
-  { safeAddress: string; moduleAddress: string, walletClient: PublicClient; }, 
+  ParsedTargets,
+  { safeAddress: string; moduleAddress: string; walletClient: PublicClient },
   { state: RootState }
->(
-  'stakingHub/getNodeConfiguration',
-  async ({ safeAddress, moduleAddress, walletClient }, {
-    rejectWithValue,
-  }) => {
-    console.log('stakingHub/getNodeConfiguration', safeAddress, moduleAddress);
-    try {
-      const superWalletClient = walletClient.extend(publicActions);
-  
-      const channelsTarget = await superWalletClient.readContract({
-        address: moduleAddress as `0x${string}`,
-        abi: nodeManagementModuleAbi,
-        functionName: 'tryGetTarget',
-        args: [HOPR_CHANNELS_SMART_CONTRACT_ADDRESS]
-      }) as [boolean, BigInt];
+>('stakingHub/getNodeConfiguration', async ({
+  safeAddress,
+  moduleAddress,
+  walletClient,
+}, { rejectWithValue }) => {
+  console.log('stakingHub/getNodeConfiguration', safeAddress, moduleAddress);
+  try {
+    const superWalletClient = walletClient.extend(publicActions);
 
-      const wxHOPRTarget = await superWalletClient.readContract({
-        address: moduleAddress as `0x${string}`,
-        abi: nodeManagementModuleAbi,
-        functionName: 'tryGetTarget',
-        args: [wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS]
-      }) as [boolean, BigInt];
+    const channelsTarget = (await superWalletClient.readContract({
+      address: moduleAddress as `0x${string}`,
+      abi: nodeManagementModuleAbi,
+      functionName: 'tryGetTarget',
+      args: [HOPR_CHANNELS_SMART_CONTRACT_ADDRESS],
+    })) as [boolean, bigint];
 
-      console.log('targets', wxHOPRTarget, channelsTarget)
+    const wxHOPRTarget = (await superWalletClient.readContract({
+      address: moduleAddress as `0x${string}`,
+      abi: nodeManagementModuleAbi,
+      functionName: 'tryGetTarget',
+      args: [wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS],
+    })) as [boolean, bigint];
 
-      const targets = {
-        channels: channelsTarget[0] === true ? channelsTarget[1].toString() : false,
-        wxHOPR: wxHOPRTarget[0] === true ? wxHOPRTarget[1].toString() : false,
-      } as ParsedTargets;
+    console.log('targets', wxHOPRTarget, channelsTarget);
 
-      // TODO: Decode the targets
-      /**
-       * @dev it stores the following information in uint256 = (160 + 8 * 12)
-       * (address)              as uint160: targetAddress
-       * (Clearance)            as uint8: clearance
-       * (TargetType)           as uint8: targetType
-       * (TargetPermission)     as uint8: defaultTargetPermission                                       (for the target)
-       * (CapabilityPermission) as uint8: defaultRedeemTicketSafeFunctionPermisson                      (for Channels
-       * contract)
-       * (CapabilityPermission) as uint8: RESERVED FOR defaultBatchRedeemTicketsSafeFunctionPermisson   (for Channels
-       * contract)
-       * (CapabilityPermission) as uint8: defaultCloseIncomingChannelSafeFunctionPermisson              (for Channels
-       * contract)
-       * (CapabilityPermission) as uint8: defaultInitiateOutgoingChannelClosureSafeFunctionPermisson    (for Channels
-       * contract)
-       * (CapabilityPermission) as uint8: defaultFinalizeOutgoingChannelClosureSafeFunctionPermisson    (for Channels
-       * contract)
-       * (CapabilityPermission) as uint8: defaultFundChannelMultiFunctionPermisson                      (for Channels
-       * contract)
-       * (CapabilityPermission) as uint8: defaultSetCommitmentSafeFunctionPermisson                     (for Channels
-       * contract)
-       * (CapabilityPermission) as uint8: defaultApproveFunctionPermisson                               (for Token contract)
-       * (CapabilityPermission) as uint8: defaultSendFunctionPermisson                                  (for Token contract)
-       */
-      
-      return targets;
-    } catch (e) {
-      return rejectWithValue(e);
-    }
+    const targets = {
+      channels: channelsTarget[0] === true ? channelsTarget[1].toString() : false,
+      wxHOPR: wxHOPRTarget[0] === true ? wxHOPRTarget[1].toString() : false,
+    } as ParsedTargets;
+
+    // TODO: Decode the targets
+    /**
+     * @dev it stores the following information in uint256 = (160 + 8 * 12)
+     * (address)              as uint160: targetAddress
+     * (Clearance)            as uint8: clearance
+     * (TargetType)           as uint8: targetType
+     * (TargetPermission)     as uint8: defaultTargetPermission                                       (for the target)
+     * (CapabilityPermission) as uint8: defaultRedeemTicketSafeFunctionPermisson                      (for Channels
+     * contract)
+     * (CapabilityPermission) as uint8: RESERVED FOR defaultBatchRedeemTicketsSafeFunctionPermisson   (for Channels
+     * contract)
+     * (CapabilityPermission) as uint8: defaultCloseIncomingChannelSafeFunctionPermisson              (for Channels
+     * contract)
+     * (CapabilityPermission) as uint8: defaultInitiateOutgoingChannelClosureSafeFunctionPermisson    (for Channels
+     * contract)
+     * (CapabilityPermission) as uint8: defaultFinalizeOutgoingChannelClosureSafeFunctionPermisson    (for Channels
+     * contract)
+     * (CapabilityPermission) as uint8: defaultFundChannelMultiFunctionPermisson                      (for Channels
+     * contract)
+     * (CapabilityPermission) as uint8: defaultSetCommitmentSafeFunctionPermisson                     (for Channels
+     * contract)
+     * (CapabilityPermission) as uint8: defaultApproveFunctionPermisson                               (for Token contract)
+     * (CapabilityPermission) as uint8: defaultSendFunctionPermisson                                  (for Token contract)
+     */
+
+    return targets;
+  } catch (e) {
+    return rejectWithValue(e);
+  }
 });
-
 
 const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: RootState }>(
   'stakingHub/goToStepWeShouldBeOn',
@@ -301,10 +304,8 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
       // Part of the onboarding after COMM registers you
       console.log('[Onboarding check] Node registered: ', state.stakingHub.onboarding.nodeAddress);
       if (state.stakingHub.onboarding.nodeAddress) {
-
         console.log('[Onboarding check] Delegate count: ', state.safe.delegates.data?.count);
         if (state.safe.delegates.data?.count) {
-
           console.log(
             '[Onboarding check] state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
             state.stakingHub.safeInfo.data.module.includedNodes,
@@ -325,42 +326,57 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
             state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
             state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null
           ) {
-
-            const nodeXDaiBalanceCheck =  state.stakingHub.onboarding.nodeXDaiBalance && BigInt(state.stakingHub.onboarding.nodeXDaiBalance) >= BigInt(0);
-            console.log('[Onboarding check] Node balance (xDai): ', state.stakingHub.onboarding.nodeXDaiBalance, nodeXDaiBalanceCheck);
+            const nodeXDaiBalanceCheck =
+              state.stakingHub.onboarding.nodeXDaiBalance &&
+              BigInt(state.stakingHub.onboarding.nodeXDaiBalance) >= BigInt(0);
+            console.log(
+              '[Onboarding check] Node balance (xDai): ',
+              state.stakingHub.onboarding.nodeXDaiBalance,
+              nodeXDaiBalanceCheck,
+            );
             if (nodeXDaiBalanceCheck) {
-
-              const wxHoprAllowanceCheck = state.stakingHub.safeInfo.data.allowance.wxHoprAllowance && parseEther(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance) > BigInt(0);
-              console.log('[Onboarding check] Allowance set: ', state.stakingHub.safeInfo.data.allowance.wxHoprAllowance, wxHoprAllowanceCheck);
+              const wxHoprAllowanceCheck =
+                state.stakingHub.safeInfo.data.allowance.wxHoprAllowance &&
+                parseEther(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance) > BigInt(0);
+              console.log(
+                '[Onboarding check] Allowance set: ',
+                state.stakingHub.safeInfo.data.allowance.wxHoprAllowance,
+                wxHoprAllowanceCheck,
+              );
               if (wxHoprAllowanceCheck) {
                 return 16;
               }
-        
+
               return 15;
             }
-      
+
             return 14;
           }
 
           return 13;
-          
         }
 
         return 11;
       }
 
-
       // Part of the onboarding before COMM registers you
-      const xDaiInSafeCheck = state.safe.balance.data.xDai.value && BigInt(state.safe.balance.data.xDai.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18);
-      const wxHoprInSafeCheck = state.safe.balance.data.wxHopr.value && BigInt(state.safe.balance.data.wxHopr.value) >= BigInt(MINIMUM_WXHOPR_TO_FUND * 1e18);
+      const xDaiInSafeCheck =
+        state.safe.balance.data.xDai.value &&
+        BigInt(state.safe.balance.data.xDai.value) >= BigInt(MINIMUM_XDAI_TO_FUND * 1e18);
+      const wxHoprInSafeCheck =
+        state.safe.balance.data.wxHopr.value &&
+        BigInt(state.safe.balance.data.wxHopr.value) >= BigInt(MINIMUM_WXHOPR_TO_FUND * 1e18);
       console.log('[Onboarding check] Safe balance (xDai):', state.safe.balance.data.xDai.value, xDaiInSafeCheck);
       console.log('[Onboarding check] Safe balance (wxHopr):', state.safe.balance.data.wxHopr.value, wxHoprInSafeCheck);
-      if ( xDaiInSafeCheck && wxHoprInSafeCheck ) {
+      if (xDaiInSafeCheck && wxHoprInSafeCheck) {
         return 5;
       }
 
-
-      console.log('[Onboarding check] CommunityNftId in Safe', state.safe.communityNftIds.data.length, state.safe.communityNftIds.data.length !== 0);
+      console.log(
+        '[Onboarding check] CommunityNftId in Safe',
+        state.safe.communityNftIds.data.length,
+        state.safe.communityNftIds.data.length !== 0,
+      );
       if (state.safe.communityNftIds.data.length !== 0) {
         return 4;
       }
@@ -373,7 +389,7 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
       // default case
       return 0;
     } catch (e) {
-      console.warn('Getting Onboarding Step failed', e)
+      console.warn('Getting Onboarding Step failed', e);
       if (isPlain(e)) {
         return rejectWithValue(e);
       }
@@ -403,7 +419,7 @@ const getOnboardingDataThunk = createAsyncThunk<
     getModuleTargetsThunk({
       safeAddress: payload.safeAddress,
       moduleAddress,
-      walletClient: payload.browserClient
+      walletClient: payload.browserClient,
     }),
   );
 
@@ -472,11 +488,11 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       const correctConfig1 = '47598282682985165703087897390610028112494826122342268517157719752757376909312';
       const correctConfig2 = '96338966875583709871840581638487531229018761285270926761304390858285246317315';
 
-      if(!action.payload.channels || !action.payload.wxHOPR){
+      if (!action.payload.channels || !action.payload.wxHOPR) {
         console.log('Old safe config present, needs update. Targets:', action.payload);
         state.config.needsUpdate.data = true;
-        state.config.needsUpdate.strategy =  'configWillPointToCorrectContracts';
-      } else if(action.payload.channels !== correctConfig1 || action.payload.wxHOPR !== correctConfig2){
+        state.config.needsUpdate.strategy = 'configWillPointToCorrectContracts';
+      } else if (action.payload.channels !== correctConfig1 || action.payload.wxHOPR !== correctConfig2) {
         console.log('Old safe config present, need update. Targets:', action.payload);
         state.config.needsUpdate.data = true;
         state.config.needsUpdate.strategy = 'configWillLetOpenChannels';

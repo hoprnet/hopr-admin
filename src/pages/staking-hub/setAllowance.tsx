@@ -5,7 +5,7 @@ import Button from '../../future-hopr-lib-components/Button';
 import { useEthersSigner } from '../../hooks';
 import { StepContainer, ConfirmButton } from './onboarding/components';
 import { Lowercase, StyledCoinLabel, StyledInputGroup, StyledTextField } from './onboarding/styled';
-import { DEFAULT_ALLOWANCE, HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config';
+import { DEFAULT_ALLOWANCE, HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config'
 import { useNavigate } from 'react-router-dom';
 
 // Blockchain
@@ -18,7 +18,6 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActionsAsync } from '../../store/slices/safe';
 import { stakingHubActions } from '../../store/slices/stakingHub';
 
-
 const StyledText = styled.h3`
   color: var(--414141, #414141);
   font-size: 20px;
@@ -29,7 +28,6 @@ const StyledText = styled.h3`
   margin: 0;
   margin-top: 5px;
 `;
-
 
 export default function SetAllowance() {
   const dispatch = useAppDispatch();
@@ -44,7 +42,7 @@ export default function SetAllowance() {
       set_loading(true);
       await dispatch(
         safeActionsAsync.createAndExecuteContractTransactionThunk({
-          data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,parseUnits(wxHoprValue, 18)),
+          data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, parseUnits(wxHoprValue, 18)),
           signer,
           safeAddress: selectedSafeAddress,
           smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
@@ -67,18 +65,17 @@ export default function SetAllowance() {
         buttons={
           <ConfirmButton
             onClick={setAllowance}
-            disabled={wxHoprValue === '' || wxHoprValue === '0' || wxHoprValue.includes('-') || wxHoprValue.includes('+')}
+            disabled={
+              wxHoprValue === '' || wxHoprValue === '0' || wxHoprValue.includes('-') || wxHoprValue.includes('+')
+            }
             pending={loading}
           >
             EXECUTE
           </ConfirmButton>
         }
       >
-        <StyledInputGroup
-          style={{alignItems: 'flex-start'}}
-        >
-          <StyledText
-          >NODE ALLOWANCE</StyledText>
+        <StyledInputGroup style={{ alignItems: 'flex-start' }}>
+          <StyledText>NODE ALLOWANCE</StyledText>
           <StyledTextField
             type="number"
             variant="outlined"
@@ -93,9 +90,7 @@ export default function SetAllowance() {
             } }}
             helperText={`Suggested value is ${DEFAULT_ALLOWANCE} wxHopr`}
           />
-          <StyledCoinLabel
-            style={{lineHeight: '40px'}}
-          >
+          <StyledCoinLabel style={{ lineHeight: '40px' }}>
             <Lowercase>wx</Lowercase>HOPR
           </StyledCoinLabel>
           <Button onClick={() => set_wxHoprValue(DEFAULT_ALLOWANCE.toString())}>DEFAULT</Button>

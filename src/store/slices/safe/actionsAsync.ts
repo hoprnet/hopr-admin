@@ -732,7 +732,7 @@ const createAndExecuteTransactionThunk = createAsyncThunk<
       );
       return safeTxResponse.hash;
     } catch (e) {
-      console.log({ e })
+      console.log({ e });
       if (e instanceof Error) {
         return rejectWithValue(e.message);
       }
@@ -1446,7 +1446,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     if (action.payload) {
       if (action.payload.boosts && action.payload.boosts.length > 0 && action.payload.boosts[0].id) {
         state.communityNftIds.data = action.payload?.boosts;
-        state.communityNftIds.isFetching = false
+        state.communityNftIds.isFetching = false;
       }
     }
   });

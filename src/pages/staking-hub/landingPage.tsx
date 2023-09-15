@@ -91,7 +91,7 @@ const SideToSideContainer = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 32px;
-  &.evenSplit{
+  &.evenSplit {
     .TextSide {
       flex: 1;
     }
@@ -118,9 +118,7 @@ const SideToSideContainer = styled.div`
   }
 `;
 
-const SideTitle = styled.h2`
-
-`;
+const SideTitle = styled.h2``;
 
 const SideDescription = styled.p`
   color: #414141;
@@ -135,7 +133,7 @@ const SideDescription = styled.p`
 `;
 
 const WhiteSideTitle = styled.h2`
-  color: #ffffff!important;
+  color: #ffffff !important;
   font-size: 50px;
   font-weight: 400;
   margin-block: 0rem;
@@ -342,32 +340,35 @@ const StakingLandingPage = () => {
             Earn $HOPR while providing web3 users with the data privacy and autonomy Web 2.0 never did. Create your HOPR
             safe and start running a node now!
           </Description>
-          {
-            !status.connected && 
+          {!status.connected && (
             <StyledButton
-              onClick={() => {dispatch(web3Actions.setModalOpen(true));}}
+              onClick={() => {
+                dispatch(web3Actions.setModalOpen(true));
+              }}
               disabled={status.connected}
             >
               CONNECT WALLET
             </StyledButton>
-          }
-          {
-            status.connected && onboardingStep !== 16 &&
+          )}
+          {status.connected && onboardingStep !== 16 && (
             <StyledButton
-              onClick={() => {navigate('/staking/onboarding');}}
+              onClick={() => {
+                navigate('/staking/onboarding');
+              }}
             >
               GO TO ONBOARDING
             </StyledButton>
-          }
-          {
-            status.connected && onboardingStep === 16 &&
+          )}
+          {status.connected && onboardingStep === 16 && (
             <StyledButton
-              onClick={()=>{navigate('/staking/dashboard')}}
-              style={{maxWidth: '300px'}}
+              onClick={() => {
+                navigate('/staking/dashboard');
+              }}
+              style={{ maxWidth: '300px' }}
             >
               VIEW STAKING OVERVIEW
             </StyledButton>
-          }
+          )}
 
           <BrandsSection>
             <Brand>
@@ -433,9 +434,7 @@ const StakingLandingPage = () => {
               </SideDescription>
             </div>
           </SideToSideContainer>
-          <SideToSideContainer
-            className='reverse'
-          >
+          <SideToSideContainer className="reverse">
             <div className="ImageSide">
               <img src="/assets/hopr_tokens.svg" />
             </div>
@@ -475,7 +474,7 @@ const StakingLandingPage = () => {
           <br />
           <WhiteTitle>Complete control over your funds & node</WhiteTitle>
           <SideToSideContainer>
-          <div className="TextSide">
+            <div className="TextSide">
               <WhiteMediumText>
                 Use our interactive HOPR node admin interface to control, customize and track your node with ease.
               </WhiteMediumText>
@@ -487,7 +486,10 @@ const StakingLandingPage = () => {
                 <li>Easily manage requests and transactions</li>
               </WhiteSideDescription>
             </div>
-            <img style={{  maxWidth: '100%' }}src="/assets/staking-hub-example.svg" />
+            <img
+              style={{ maxWidth: '100%' }}
+              src="/assets/staking-hub-example.svg"
+            />
           </SideToSideContainer>
           <Image src="/assets/create-you-hopr-safe-now.svg" />
           {/* {
@@ -516,7 +518,6 @@ const StakingLandingPage = () => {
               VIEW STAKING OVERVIEW
             </BlueSectionButton>
           } */}
-          
         </StyledContainer>
       </Section>
       <Section
@@ -528,14 +529,14 @@ const StakingLandingPage = () => {
           <Title>How it works</Title>
           <Brick
             noShadow
-            title='Hopr Node'
+            title="Hopr Node"
             image="/assets/hopr-node.svg"
             text="Your HOPR node gives you complete access to the HOPR network's functionality and the ability to earn $HOPR from your staked tokens. Your node can request funds from your HOPR Safe to complete certain tasks and interact with other nodes on the network."
           />
           <Brick
             reverse
             noShadow
-            title='Hopr safe'
+            title="Hopr safe"
             image="/assets/safe-with-shadow.svg"
             text={
               <>
@@ -550,19 +551,21 @@ const StakingLandingPage = () => {
                 Assets deposited into your HOPR Safe are secured by a customizable multisig, limiting exposure even when
                 your HOPR node's private key gets compromised.
                 <br />
-                { <a
-                  href="https://docs.hoprnet.org/staking/what-is-safestaking"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Read more
-                </a> }
+                {
+                  <a
+                    href="https://docs.hoprnet.org/staking/what-is-safestaking"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Read more
+                  </a>
+                }
               </>
             }
           />
           <Brick
             noShadow
-            title='Payment Channels'
+            title="Payment Channels"
             image="/assets/payment-channels.svg"
             text={
               <>
@@ -668,7 +671,6 @@ const StakingLandingPage = () => {
   );
 };
 
-
 const faq: FaqData = [
   {
     id: 1,
@@ -739,6 +741,5 @@ const faq: FaqData = [
     ),
   },
 ];
-
 
 export default StakingLandingPage;

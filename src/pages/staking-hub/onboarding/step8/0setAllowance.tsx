@@ -17,7 +17,6 @@ import { useAppDispatch, useAppSelector } from '../../../../store';
 import { safeActionsAsync } from '../../../../store/slices/safe';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
-
 const StyledText = styled.h3`
   color: var(--414141, #414141);
   font-size: 20px;
@@ -28,7 +27,6 @@ const StyledText = styled.h3`
   margin: 0;
   margin-top: 5px;
 `;
-
 
 export default function SetAllowance() {
   const dispatch = useAppDispatch();
@@ -42,7 +40,7 @@ export default function SetAllowance() {
       set_loading(true);
       await dispatch(
         safeActionsAsync.createAndExecuteContractTransactionThunk({
-          data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,parseUnits(wxHoprValue, 18)),
+          data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, parseUnits(wxHoprValue, 18)),
           signer,
           safeAddress: selectedSafeAddress,
           smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
@@ -72,11 +70,8 @@ export default function SetAllowance() {
         </ConfirmButton>
       }
     >
-      <StyledInputGroup
-        style={{alignItems: 'flex-start'}}
-      >
-        <StyledText
-        >NODE ALLOWANCE</StyledText>
+      <StyledInputGroup style={{ alignItems: 'flex-start' }}>
+        <StyledText>NODE ALLOWANCE</StyledText>
         <StyledTextField
           type="number"
           variant="outlined"
@@ -91,9 +86,7 @@ export default function SetAllowance() {
           } }}
           helperText={`Suggested value is ${DEFAULT_ALLOWANCE} wxHopr`}
         />
-        <StyledCoinLabel
-          style={{lineHeight: '40px'}}
-        >
+        <StyledCoinLabel style={{ lineHeight: '40px' }}>
           <Lowercase>wx</Lowercase>HOPR
         </StyledCoinLabel>
         <Button onClick={() => set_wxHoprValue(DEFAULT_ALLOWANCE.toString())}>DEFAULT</Button>

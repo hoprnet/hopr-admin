@@ -35,13 +35,13 @@ function PeersPage() {
       actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
   };
 
@@ -67,7 +67,7 @@ function PeersPage() {
           backoff: peer.backoff,
           isNew: peer.isNew,
         })),
-        'peers.csv'
+        'peers.csv',
       );
     }
   };

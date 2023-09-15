@@ -1271,7 +1271,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         // using challenge as an id between tickets
         const uniqueIdentifier = updatedTicket.index;
         const existingIndex = state.tickets.data?.findIndex((ticket) => ticket.index === uniqueIdentifier);
-  
+
         if (existingIndex && existingIndex !== -1 && state.tickets.data) {
           // Update the existing ticket with the new values
           state.tickets.data[existingIndex] = {

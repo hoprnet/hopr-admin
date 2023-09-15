@@ -90,9 +90,7 @@ export default function FundNode() {
   };
 
   useEffect(() => {
-    if (safeXDaiBalance !== null &&
-      parseUnits(xdaiValue, 18) > parseUnits(safeXDaiBalance, 18)
-    ) {
+    if (safeXDaiBalance !== null && parseUnits(xdaiValue, 18) > parseUnits(safeXDaiBalance, 18)) {
       set_error(true);
     } else {
       set_error(false);
@@ -115,7 +113,13 @@ export default function FundNode() {
           <ConfirmButton
             onClick={createAndExecuteTx}
             pending={isExecutionLoading}
-            disabled={error || xdaiValue === '' || parseUnits(xdaiValue, 18) === parseUnits('0', 18) || xdaiValue.includes('-') || xdaiValue.includes('+')}
+            disabled={
+              error ||
+              xdaiValue === '' ||
+              parseUnits(xdaiValue, 18) === parseUnits('0', 18) ||
+              xdaiValue.includes('-') ||
+              xdaiValue.includes('+')
+            }
           >
             FUND
           </ConfirmButton>

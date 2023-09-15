@@ -18,7 +18,6 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import { Address } from 'viem';
 import { browserClient } from '../../../providers/wagmi';
 
-
 const Content = styled.section`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -91,7 +90,7 @@ const ButtonGroup = styled.div`
   gap: 0.5rem;
 `;
 
-const StyledChip = styled(Chip) <{ color: string }>`
+const StyledChip = styled(Chip)<{ color: string }>`
   align-self: flex-start;
   background-color: ${(props) => props.color === 'error' && '#ffcbcb'};
   background-color: ${(props) => props.color === 'success' && '#cbffd0'};
@@ -268,9 +267,7 @@ const NodeAdded = () => {
               {nodeHoprAddress ? (
                 <>
                   <p>{truncateHOPRPeerId(nodeHoprAddress)}</p>
-                  <SquaredIconButton
-                    onClick={() => nodeHoprAddress && navigator.clipboard.writeText(nodeHoprAddress)}
-                  >
+                  <SquaredIconButton onClick={() => nodeHoprAddress && navigator.clipboard.writeText(nodeHoprAddress)}>
                     <CopyIcon />
                   </SquaredIconButton>
                   <Link to={`https://gnosisscan.io/address/${nodeNativeAddress}`}>
@@ -302,7 +299,7 @@ const NodeAdded = () => {
             <NodeInfoRow>
               <p id="actions">Actions</p>
               <StyledIconButton
-                onClick={() => { } /*navigate(`/node/configuration?${queryParams}`)*/}
+                onClick={() => {} /*navigate(`/node/configuration?${queryParams}`)*/}
                 disabled
               >
                 <SettingsIcon />
@@ -325,10 +322,10 @@ const NodeAdded = () => {
         title="Earned rewards"
         value="-"
         currency="wxHOPR"
-      // chip={{
-      //   label: '-%/24h',
-      //   color: 'error',
-      // }}
+        // chip={{
+        //   label: '-%/24h',
+        //   color: 'error',
+        // }}
       />
       {/* <GrayCard
             id="node-strategy"
@@ -346,12 +343,11 @@ const NodeAdded = () => {
         title="Redeemed Tickets"
         value="-"
         currency="Ticket/wxHOPR"
-      // chip={{
-      //   label: '+%/24h',
-      //   color: 'success',
-      // }}
+        // chip={{
+        //   label: '+%/24h',
+        //   color: 'success',
+        // }}
       ></GrayCard>
-
     </Content>
   );
 };

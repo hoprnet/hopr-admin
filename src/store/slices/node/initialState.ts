@@ -50,11 +50,11 @@ type InitialState = {
       safeHopr: {
         value: string | null;
         formatted: string | null;
-      },
+      };
       safeNative: {
         value: string | null;
         formatted: string | null;
-      },
+      };
     };
     isFetching: boolean;
   };

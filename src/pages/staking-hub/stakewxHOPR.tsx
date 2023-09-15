@@ -8,7 +8,7 @@ import {
   usePrepareSendTransaction,
   useSendTransaction
 } from 'wagmi';
-import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, MINIMUM_XDAI_TO_FUND, MINIMUM_WXHOPR_TO_FUND } from '../../../config'
+import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, MINIMUM_XDAI_TO_FUND, MINIMUM_WXHOPR_TO_FUND } from '../../../config';
 
 //Store
 import { useAppSelector, useAppDispatch } from '../../store';
@@ -60,15 +60,15 @@ const StakewxHOPR = () => {
   useEffect(() => {
     const fetchBalanceInterval = setInterval(() => {
       if (selectedSafeAddress) {
-        refetchWXHoprSafeBalance()
-        refetchWXHoprSafeBalance()
+        refetchWXHoprSafeBalance();
+        refetchWXHoprSafeBalance();
       }
-    }, 15_000)
+    }, 15_000);
 
     return () => {
-      clearInterval(fetchBalanceInterval)
-    }
-  }, [])
+      clearInterval(fetchBalanceInterval);
+    };
+  }, []);
 
   const { config: xDAI_to_safe_config } = usePrepareSendTransaction({
     to: selectedSafeAddress ?? undefined,
@@ -99,7 +99,8 @@ const StakewxHOPR = () => {
     isLoading: is_wxHOPR_to_safe_loading,
     write: write_wxHOPR_to_safe,
   } = useContractWrite({
-    ...wxHOPR_to_safe_config, onSuccess: () => refetchWXHoprSafeBalance(),
+    ...wxHOPR_to_safe_config,
+    onSuccess: () => refetchWXHoprSafeBalance(),
   });
 
   useEffect(() => {
@@ -113,7 +114,8 @@ const StakewxHOPR = () => {
     isLoading: is_xDAI_to_safe_loading,
     sendTransaction: send_xDAI_to_safe,
   } = useSendTransaction({
-    ...xDAI_to_safe_config, onSuccess: () => refetchXDaiSafeBalance(),
+    ...xDAI_to_safe_config,
+    onSuccess: () => refetchXDaiSafeBalance(),
   });
 
   useEffect(() => {
@@ -168,17 +170,13 @@ const StakewxHOPR = () => {
               size="small"
               value={wxhoprValue}
               onChange={(e) => set_wxhoprValue(e.target.value)}
-              InputProps={{
-                inputProps: {
-                  style: { textAlign: 'right' },
-                  min: 0,
-                  pattern: '[0-9]*',
-                }
-              }}
+              InputProps={{ inputProps: {
+                style: { textAlign: 'right' },
+                min: 0,
+                pattern: '[0-9]*',
+              } }}
             />
-            <StyledCoinLabel>
-              wxHOPR
-            </StyledCoinLabel>
+            <StyledCoinLabel>wxHOPR</StyledCoinLabel>
             <StyledGrayButton onClick={setMax_wxHOPR}>Max</StyledGrayButton>
           </StyledInputGroup>
         </StyledForm>

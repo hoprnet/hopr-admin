@@ -231,7 +231,7 @@ export default function Details(props: Props) {
               alt="xDai Icon"
             />
           </IconContainer>
-          <Text className='noWrap'>wxHOPR (Safe)</Text>
+          <Text className="noWrap">wxHOPR (Safe)</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
