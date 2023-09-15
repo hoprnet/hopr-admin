@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import _debounce from 'lodash/debounce';
 
@@ -131,6 +131,7 @@ interface Props {
     width?: string,
     wrap?: boolean,
     maxWidth?: string,
+    copy?: boolean,
   }[];
   search?: boolean;
   loading?: boolean;
@@ -239,24 +240,7 @@ export default function CustomPaginationActionsTable(props: Props) {
             ? filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : filteredData
           ).map((row) => (
-            <TableRow key={row.id}>
-              {props.header.map((headElem) => (
-                <STableCell
-                  key={headElem.key}
-                  className={`TableCell ${headElem.key} ${headElem.wrap ? 'wrap' : ''} ${
-                    headElem.maxWidth ? 'wrap' : ''
-                  }`}
-                  width={headElem.width}
-                  style={{ maxWidth: headElem.maxWidth }}
-                >
-                  {headElem.tooltip ? (
-                    <Tooltip title={row[headElem.key]}><span>{row[headElem.key]}</span></Tooltip>
-                  ) : (
-                    row[headElem.key]
-                  )}
-                </STableCell>
-              ))}
-            </TableRow>
+            <CustomTableRow row={row} header={props.header} key={row.id}/>
           ))}
           {!props.data ||
             (props.data.length === 0 && (
@@ -278,4 +262,47 @@ export default function CustomPaginationActionsTable(props: Props) {
       </STable>
     </TableContainer>
   );
+}
+
+
+const CustomTableRow = ({
+  row, 
+  header,
+}: {row: Props['data'][0], header: Props['header']}) => {
+  const [tooltip, set_tooltip] = useState<string>()
+
+
+  const onDoubleClick = (event: React.MouseEvent<HTMLTableCellElement, MouseEvent>, value: string) => {
+    // if row is clicked twice
+    if (event.detail === 2) {
+      navigator.clipboard.writeText(value);
+      set_tooltip('C  opied')
+      setTimeout(() => {
+        set_tooltip(undefined)
+      }, 3000);
+    }
+  }
+
+
+  return (
+    <TableRow key={row.id}>
+      {header.map((headElem) => (
+        <STableCell
+          key={headElem.key}
+          className={`TableCell ${headElem.key} ${headElem.wrap ? 'wrap' : ''} ${
+            headElem.maxWidth ? 'wrap' : ''
+          }`}
+          width={headElem.width}
+          style={{ maxWidth: headElem.maxWidth }}
+          onClick={(event) => headElem.copy && typeof row[headElem.key] === 'string' ? onDoubleClick(event, row[headElem.key] as string) : undefined}
+        >
+          {headElem.tooltip ? (
+            <Tooltip title={tooltip ?? row[headElem.key]}><span>{row[headElem.key]}</span></Tooltip>
+          ) : (
+            row[headElem.key]
+          )}
+        </STableCell>
+      ))}
+    </TableRow>
+  )
 }
