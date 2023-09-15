@@ -75,9 +75,6 @@ const authSlice = createSlice({
       state.nodes = tmp;
       localStorage.setItem('admin-ui-node-list', JSON.stringify(state.nodes));
     },
-    setStatusError(state, action: PayloadAction<string>) {
-      state.status.error = action.payload;
-    },
     setOpenLoginModalToNode(state, action: PayloadAction<boolean>) {
       state.helper.openLoginModalToNode = action.payload;
     },
