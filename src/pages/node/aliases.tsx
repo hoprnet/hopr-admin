@@ -234,10 +234,12 @@ function DeleteAliasButton({
   alias,
   onError,
   onSuccess,
+  disabled,
 }: {
   alias: string;
   onError: (e: typeof APIError.prototype) => void;
   onSuccess: () => void;
+  disabled?: boolean;
 }) {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((store) => store.auth.loginData);
@@ -269,6 +271,7 @@ function DeleteAliasButton({
             .catch((e) => onError(e));
         }
       }}
+      disabled={disabled}
     />
   );
 }
