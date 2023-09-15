@@ -209,6 +209,7 @@ function ChannelsPage() {
       name: 'Peer Address',
       search: true,
       tooltip: true,
+      copy: true,
       maxWidth: '168px',
     },
     {

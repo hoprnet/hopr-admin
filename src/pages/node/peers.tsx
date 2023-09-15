@@ -88,6 +88,7 @@ function PeersPage() {
       name: 'Peer Id',
       search: true,
       tooltip: true,
+      copy: true,
       maxWidth: '160px',
     },
     {

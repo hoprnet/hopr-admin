@@ -276,7 +276,7 @@ const CustomTableRow = ({
     // if row is clicked twice
     if (event.detail === 2) {
       navigator.clipboard.writeText(value);
-      set_tooltip('C  opied')
+      set_tooltip('Copied')
       setTimeout(() => {
         set_tooltip(undefined)
       }, 3000);
