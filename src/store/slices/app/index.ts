@@ -26,6 +26,11 @@ const appSlice = createSlice({
         prevPendingSafeTransaction: null,
       },
     }),
+    setNotificationSettings: (state, action: PayloadAction<typeof initialState.configuration.notifications>) => {
+      if (action.payload) {
+        state.configuration.notifications = action.payload
+      }
+    },
     addNotification: (
       state,
       action: PayloadAction<{

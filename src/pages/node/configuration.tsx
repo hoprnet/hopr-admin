@@ -11,12 +11,23 @@ import Button from '../../future-hopr-lib-components/Button';
 
 // Mui
 import { Paper, Switch, SelectChangeEvent } from '@mui/material';
+import styled from '@emotion/styled';
+import { appActions } from '../../store/slices/app';
+
+
+const NotificationsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`
 
 function SettingsPage() {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((store) => store.auth.loginData);
   const settings = useAppSelector((store) => store.node.settings.data);
   const settingsFetching = useAppSelector((store) => store.node.settings.isFetching);
+  const prevNotificationSettings = useAppSelector(store => store.app.configuration.notifications)
+  const [localNotificationSettings, set_localNotificationSettings] = useState<typeof prevNotificationSettings>()
   const [localSettings, set_localSettings] = useState<{
     includeRecipient?: boolean;
     strategy?: string;
@@ -45,6 +56,12 @@ function SettingsPage() {
       set_localSettings({ ...settings });
     }
   }, [settings]);
+
+  useEffect(() => {
+    if (prevNotificationSettings) {
+      set_localNotificationSettings(prevNotificationSettings)
+    }
+  }, [prevNotificationSettings]);
 
   const handleIncludeRecipientChange = () => {
     set_localSettings((prevState) => ({
@@ -110,6 +127,10 @@ function SettingsPage() {
           console.log(e.error);
         });
     }
+
+    if (localNotificationSettings) {
+      dispatch(appActions.setNotificationSettings(localNotificationSettings))
+    }  
   };
 
   return (
@@ -164,6 +185,83 @@ function SettingsPage() {
                     return getValueLabel(localSettings.strategy!);
                   }}
                 />
+              </td>
+            </tr>
+            <tr>
+              <th>Notifications</th>
+              <td>
+                <NotificationsContainer>
+                  <div>
+                  Channels: False
+                    <Switch
+                      checked={localNotificationSettings?.channels}
+                      onChange={() => {
+                        if (localNotificationSettings) {
+                          set_localNotificationSettings({
+                            ...localNotificationSettings, channels: !localNotificationSettings.channels,
+                          })
+                        }
+                      }}
+                      color="primary"
+                    />{' '}True
+                  </div>  
+                  <div>
+                  Message: False
+                    <Switch
+                      checked={localNotificationSettings?.message}
+                      onChange={() => {
+                        if (localNotificationSettings) {
+                          set_localNotificationSettings({
+                            ...localNotificationSettings, message: !localNotificationSettings.message,
+                          })
+                        }
+                      }}
+                      color="primary"
+                    />{' '}True
+                  </div>  
+                  <div>
+                  Node Balance: False
+                    <Switch
+                      checked={localNotificationSettings?.nodeBalances}
+                      onChange={() => {
+                        if (localNotificationSettings) {
+                          set_localNotificationSettings({
+                            ...localNotificationSettings, nodeBalances: !localNotificationSettings.nodeBalances,
+                          })
+                        }
+                      }}
+                      color="primary"
+                    />{' '}True
+                  </div>  
+                  <div>
+                  Node Info: False
+                    <Switch
+                      checked={localNotificationSettings?.nodeInfo}
+                      onChange={() => {
+                        if (localNotificationSettings) {
+                          set_localNotificationSettings({
+                            ...localNotificationSettings, nodeInfo: !localNotificationSettings.nodeInfo,
+                          })
+                        }
+                      }}
+                      color="primary"
+                    />{' '}True
+                  </div>  
+                  <div>
+                  Safe Transactions: False
+                    <Switch
+                      checked={localNotificationSettings?.pendingSafeTransaction}
+                      onChange={() => {
+                        if (localNotificationSettings) {
+                          set_localNotificationSettings({
+                            ...localNotificationSettings, pendingSafeTransaction: !localNotificationSettings.pendingSafeTransaction,
+                          })
+                        }
+                      }}
+                      color="primary"
+                    />{' '}True
+                  </div>  
+                </NotificationsContainer>
               </td>
             </tr>
           </tbody>
