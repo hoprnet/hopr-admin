@@ -1,6 +1,7 @@
-import { getObjectFromLocalStorage } from '../../../utils/functions';
+import { loadStateFromLocalStorage } from "../../../utils/localStorage";
 
-const ADMIN_UI_NODE_LIST = getObjectFromLocalStorage('admin-ui-node-list');
+const ADMIN_UI_NODE_LIST = loadStateFromLocalStorage("admin-ui-node-list") as {apiEndpoint: string|null, apiToken:string|null, localName:string|null}[] | null;
+
 
 type InitialState = {
   status: {
