@@ -1,5 +1,11 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouteObject, useSearchParams, Navigate, useLocation } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  RouteObject,
+  useSearchParams,
+  Navigate,
+  useLocation
+} from 'react-router-dom'
 import { environment } from '../config';
 import { useDisconnect } from 'wagmi';
 
@@ -363,7 +369,7 @@ const LayoutEnhanced = () => {
       authActions.useNodeData({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     if (!apiToken) return;
     const useNode = async () => {
@@ -372,32 +378,32 @@ const LayoutEnhanced = () => {
           authActionsAsync.loginThunk({
             apiEndpoint,
             apiToken,
-          })
+          }),
         ).unwrap();
         if (loginInfo) {
           dispatch(
             nodeActionsAsync.getInfoThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getAddressesThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getAliasesThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getPeersThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(nodeActions.initializeMessagesWebsocket());
         }

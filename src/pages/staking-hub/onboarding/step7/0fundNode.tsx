@@ -94,12 +94,10 @@ export default function FundNode() {
   };
 
   useEffect(() => {
-    if(safeXDaiBalance !== null && 
-      parseUnits(xdaiValue, 18) > parseUnits(safeXDaiBalance, 18)
-    ) { 
-      set_error (true);
+    if (safeXDaiBalance !== null && parseUnits(xdaiValue, 18) > parseUnits(safeXDaiBalance, 18)) {
+      set_error(true);
     } else {
-      set_error (false);
+      set_error(false);
     }
   }, [xdaiValue]);
 
@@ -114,7 +112,13 @@ export default function FundNode() {
         <ConfirmButton
           onClick={createAndExecuteTx}
           pending={isExecutionLoading}
-          disabled={error || xdaiValue === '' || parseUnits(xdaiValue, 18) ===  parseUnits('0', 18) || xdaiValue.includes('-') || xdaiValue.includes('+')}
+          disabled={
+            error ||
+            xdaiValue === '' ||
+            parseUnits(xdaiValue, 18) === parseUnits('0', 18) ||
+            xdaiValue.includes('-') ||
+            xdaiValue.includes('+')
+          }
         >
           FUND
         </ConfirmButton>
@@ -130,7 +134,7 @@ export default function FundNode() {
               variant="outlined"
               placeholder="-"
               size="small"
-              style={{width: '300px'}}
+              style={{ width: '300px' }}
               value={xdaiValue}
               onChange={(e) => set_xdaiValue(e.target.value)}
               type="number"

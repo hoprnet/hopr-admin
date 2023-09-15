@@ -33,7 +33,7 @@ const nodeSlice = createSlice({
         }
         return message;
       });
-    },  
+    },
     // handle ws state
     updateMessagesWebsocketStatus(state, action: PayloadAction<typeof initialState.messagesWebsocketStatus>) {
       state.messagesWebsocketStatus = action.payload;

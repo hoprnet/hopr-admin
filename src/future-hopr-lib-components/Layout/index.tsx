@@ -70,7 +70,7 @@ const Layout: React.FC<{
   };
   drawerType?: 'blue' | 'white';
   drawerItems: ApplicationMapType;
-  drawerFunctionItems? : ApplicationMapType;
+  drawerFunctionItems?: ApplicationMapType;
   drawerRight?: React.ReactNode;
 }> = ({
   className = '',
@@ -88,7 +88,9 @@ const Layout: React.FC<{
   const isMobile = !useMediaQuery('(min-width: 500px)');
   const isConnected = useAppSelector((store) => store.auth.status.connected);
 
-  const [openedNavigationDrawerPC, set_openedNavigationDrawerPC] = useState(environment === 'web3' || environment === 'dev' ? true : false);
+  const [openedNavigationDrawerPC, set_openedNavigationDrawerPC] = useState(
+    environment === 'web3' || environment === 'dev' ? true : false,
+  );
   const [openedNavigationDrawerMobile, set_openedNavigationDrawerMobile] = useState(false);
 
   const handleOpenedNavigationDrawer = (bool: boolean) => {
@@ -100,7 +102,11 @@ const Layout: React.FC<{
     if (isConnected) set_openedNavigationDrawerPC(true);
   }, [isConnected]);
   return (
-    <SLayout className={`Layout${webapp ? ' webapp' : ''} ${className} ${isMobile ? 'drawerHidden' : ''} ${(isMobile ? openedNavigationDrawerMobile : openedNavigationDrawerPC) ? 'drawerOpen' : 'drawerClosed'}`}>
+    <SLayout
+      className={`Layout${webapp ? ' webapp' : ''} ${className} ${isMobile ? 'drawerHidden' : ''} ${
+        (isMobile ? openedNavigationDrawerMobile : openedNavigationDrawerPC) ? 'drawerOpen' : 'drawerClosed'
+      }`}
+    >
       <NavBar
         mainLogo="/logo.svg"
         mainLogoAlt="hopr logo"

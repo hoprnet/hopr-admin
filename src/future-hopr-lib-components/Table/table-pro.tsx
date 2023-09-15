@@ -122,15 +122,15 @@ const STextField = styled(TextField)`
 `;
 
 interface Props {
-  data: {id: string, actions: JSX.Element, [key: string]: string | JSX.Element;  }[];
+  data: { id: string; actions: JSX.Element; [key: string]: string | JSX.Element }[];
   header: {
-    key: string,
-    name: string,
-    search?: boolean,
-    tooltip?: boolean,
-    width?: string,
-    wrap?: boolean,
-    maxWidth?: string,
+    key: string;
+    name: string;
+    search?: boolean;
+    tooltip?: boolean;
+    width?: string;
+    wrap?: boolean;
+    maxWidth?: string;
   }[];
   search?: boolean;
   loading?: boolean;
@@ -170,7 +170,7 @@ export default function CustomPaginationActionsTable(props: Props) {
     set_Page(0);
 
     const data = props.data;
-    const filterBy = props.header.filter((elem) => elem.search === true).map(header => header.key);
+    const filterBy = props.header.filter((elem) => elem.search === true).map((header) => header.key);
 
     // SearchPhrase filter
     if (!searchPhrase || searchPhrase === '') {
@@ -179,7 +179,11 @@ export default function CustomPaginationActionsTable(props: Props) {
     }
     const filtered = data.filter((elem) => {
       for (let i = 0; i < filterBy.length; i++) {
-        if (typeof elem[filterBy[i]] === 'string' && (elem[filterBy[i]] as string).toLowerCase().includes(searchPhrase.toLowerCase())) return true;
+        if (
+          typeof elem[filterBy[i]] === 'string' &&
+          (elem[filterBy[i]] as string).toLowerCase().includes(searchPhrase.toLowerCase())
+        )
+          return true;
       }
     });
     set_filteredData(filtered);
@@ -250,7 +254,9 @@ export default function CustomPaginationActionsTable(props: Props) {
                   style={{ maxWidth: headElem.maxWidth }}
                 >
                   {headElem.tooltip ? (
-                    <Tooltip title={row[headElem.key]}><span>{row[headElem.key]}</span></Tooltip>
+                    <Tooltip title={row[headElem.key]}>
+                      <span>{row[headElem.key]}</span>
+                    </Tooltip>
                   ) : (
                     row[headElem.key]
                   )}

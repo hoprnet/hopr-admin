@@ -30,7 +30,7 @@ export const OpenMultipleChannelsModal = () => {
         actionsAsync.getChannelsThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        })
+        }),
       );
     }
   };
@@ -49,7 +49,7 @@ export const OpenMultipleChannelsModal = () => {
         amount: weiValue,
         peerAddress: peerId,
         timeout: 60e3,
-      })
+      }),
     )
       .unwrap()
       .then(() => {

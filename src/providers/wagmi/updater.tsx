@@ -141,7 +141,6 @@ export default function WagmiUpdater() {
       );
   }, [safe_xHopr_balance]);
 
-
   useEffect(() => {
     if (nodeLinkedToSafe_xDai_balance)
       dispatch(

@@ -45,7 +45,9 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
   const [loader, set_loader] = useState<boolean>(false);
   const [status, set_status] = useState<string>('');
   const [numberOfHops, set_numberOfHops] = useState<number | ''>('');
-  const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops' | 'directMessage' | 'none'>('directMessage');
+  const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops' | 'directMessage' | 'none'>(
+    'directMessage',
+  );
   const [message, set_message] = useState<string>('');
   const [receiver, set_receiver] = useState<string>(peerId ? peerId : '');
   const [openModal, set_openModal] = useState<boolean>(false);
@@ -196,8 +198,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
             <CloseIcon />
           </SIconButton>
         </TopBar>
-        <SDialogContent
-        >
+        <SDialogContent>
           <TextField
             label="Receiver (Peer Id)"
             placeholder="16Uiu2..."
@@ -279,7 +280,9 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
           <Button
             onClick={handleSendMessage}
             disabled={
-              sendMode !== 'directMessage' && (sendMode !== 'automaticPath' && numberOfHops === '' && path === '') || message.length === 0 || receiver.length === 0
+              (sendMode !== 'directMessage' && sendMode !== 'automaticPath' && numberOfHops === '' && path === '') ||
+              message.length === 0 ||
+              receiver.length === 0
             }
             style={{
               width: '100%',

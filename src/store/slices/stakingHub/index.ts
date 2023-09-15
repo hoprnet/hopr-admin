@@ -21,32 +21,28 @@ const stakingHubSlice = createSlice({
         isFetching: false,
         notStarted: null,
         modalToSartOnboardingDismissed: false,
-        nodeBalance: {
-          xDai: {
-            value: null,
-            formatted: null,
-          },
-        }
+        nodeBalance: { xDai: {
+          value: null,
+          formatted: null,
+        } },
       };
     },
     resetStateWithoutMagicLinkForOnboarding: (state) => {
       state.safes.data = [];
       state.safes.isFetching = false;
-      state.onboarding.step= 0;
-      state.onboarding.nodeAddress= null;
-      state.onboarding.safeAddress=null;
-      state.onboarding.moduleAddress= null;
-      state.onboarding.notFinished= false;
-      state.onboarding.userIsInOnboarding= false;
-      state.onboarding.nodeXDaiBalance= null;
-      state.onboarding.isFetching= false;
-      state.onboarding.notStarted= null;
-      state.onboarding.nodeBalance= {
-        xDai: {
-          value: null,
-          formatted: null,
-        },
-      }
+      state.onboarding.step = 0;
+      state.onboarding.nodeAddress = null;
+      state.onboarding.safeAddress = null;
+      state.onboarding.moduleAddress = null;
+      state.onboarding.notFinished = false;
+      state.onboarding.userIsInOnboarding = false;
+      state.onboarding.nodeXDaiBalance = null;
+      state.onboarding.isFetching = false;
+      state.onboarding.notStarted = null;
+      state.onboarding.nodeBalance = { xDai: {
+        value: null,
+        formatted: null,
+      } };
     },
     resetOnboardingState: (state) => {
       state.onboarding = {
@@ -61,12 +57,10 @@ const stakingHubSlice = createSlice({
         isFetching: false,
         notStarted: null,
         modalToSartOnboardingDismissed: false,
-        nodeBalance: {
-          xDai: {
-            value: null,
-            formatted: null,
-          },
-        }
+        nodeBalance: { xDai: {
+          value: null,
+          formatted: null,
+        } },
       };
     },
     dismissModalToSartOnboarding: (state) => {
