@@ -333,7 +333,7 @@ function WrapperPage() {
           )}
         </WrapperContainer>
       </StyledPaper>
-      <NetworkOverlay/>
+      <NetworkOverlay />
     </Section>
   );
 }

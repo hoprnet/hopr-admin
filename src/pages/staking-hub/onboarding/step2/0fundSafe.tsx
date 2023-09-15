@@ -31,17 +31,17 @@ import Button from '../../../../future-hopr-lib-components/Button';
 
 const GreenText = styled.div`
   color: #004e00;
-  font-weight: 700; 
+  font-weight: 700;
   font-size: 18px;
   font-style: normal;
   line-height: 1.5;
   min-height: 30px;
   width: 100%;
   text-align: center;
-  &.underline{
+  &.underline {
     border-bottom: 1px solid #414141;
   }
-  &.mb16{
+  &.mb16 {
     margin-bottom: 16px;
   }
 `;
@@ -73,26 +73,25 @@ const FundsToSafe = () => {
     watch: true,
     enabled: !!selectedSafeAddress,
   });
-  
+
   useEffect(() => {
     const fetchBalanceInterval = setInterval(() => {
       if (selectedSafeAddress) {
-        refetchWXHoprSafeBalance()
-        refetchWXHoprSafeBalance()
+        refetchWXHoprSafeBalance();
+        refetchWXHoprSafeBalance();
       }
-    }, 15_000)
+    }, 15_000);
 
     return () => {
-      clearInterval(fetchBalanceInterval)
-    }
-  }, [])
+      clearInterval(fetchBalanceInterval);
+    };
+  }, []);
 
   useEffect(() => {
     if (communityNftIdInSafe) {
-      set_wxhoprValueMin(MINIMUM_WXHOPR_TO_FUND_NFT)
+      set_wxhoprValueMin(MINIMUM_WXHOPR_TO_FUND_NFT);
     }
-  }, [communityNftIdInSafe])
-
+  }, [communityNftIdInSafe]);
 
   const { config: xDAI_to_safe_config } = usePrepareSendTransaction({
     to: selectedSafeAddress ?? undefined,
@@ -108,7 +107,7 @@ const FundsToSafe = () => {
 
   const setMin_xDAI = () => {
     if (walletBalance.xDai.value) {
-      if(BigInt(walletBalance.xDai.value) > parseUnits('2', 18)){
+      if (BigInt(walletBalance.xDai.value) > parseUnits('2', 18)) {
         set_xdaiValue('2');
       } else {
         set_xdaiValue(formatEther(BigInt(walletBalance.xDai.value) - parseUnits(`${0.002}`, 18)));
@@ -127,7 +126,8 @@ const FundsToSafe = () => {
     isLoading: is_wxHOPR_to_safe_loading,
     write: write_wxHOPR_to_safe,
   } = useContractWrite({
-    ...wxHOPR_to_safe_config, onSuccess: () => refetchWXHoprSafeBalance(), 
+    ...wxHOPR_to_safe_config,
+    onSuccess: () => refetchWXHoprSafeBalance(),
   });
 
   useEffect(() => {
@@ -141,7 +141,8 @@ const FundsToSafe = () => {
     isLoading: is_xDAI_to_safe_loading,
     sendTransaction: send_xDAI_to_safe,
   } = useSendTransaction({
-    ...xDAI_to_safe_config, onSuccess: () => refetchXDaiSafeBalance(), 
+    ...xDAI_to_safe_config,
+    onSuccess: () => refetchXDaiSafeBalance(),
   });
 
   useEffect(() => {
@@ -222,9 +223,7 @@ const FundsToSafe = () => {
             } }}
             helperText={`min. ${MINIMUM_XDAI_TO_FUND}`}
           />
-          <StyledCoinLabel>
-            xDAI
-          </StyledCoinLabel>
+          <StyledCoinLabel>xDAI</StyledCoinLabel>
           <StyledGrayButton onClick={setMin_xDAI}>Min</StyledGrayButton>
           <Button
             onClick={handleFundxDai}
@@ -235,17 +234,13 @@ const FundsToSafe = () => {
           </Button>
         </StyledInputGroup>
       </StyledForm>
-      <GreenText className='underline mb16'>
-        {xdaiEnoughBalance() && 'You transfered enough xDai'}
-      </GreenText>
+      <GreenText className="underline mb16">{xdaiEnoughBalance() && 'You transfered enough xDai'}</GreenText>
       <StyledForm>
         <StyledInstructions>
           <Text>
             Move <Lowercase>wx</Lowercase>HOPR into safe
           </Text>
-          <GreenText>
-            
-          </GreenText>
+          <GreenText></GreenText>
         </StyledInstructions>
         <StyledInputGroup>
           <StyledTextField
@@ -262,9 +257,7 @@ const FundsToSafe = () => {
             } }}
             helperText={`min. ${wxhoprValueMin}`}
           />
-          <StyledCoinLabel>
-           wxHOPR
-          </StyledCoinLabel>
+          <StyledCoinLabel>wxHOPR</StyledCoinLabel>
           <StyledGrayButton onClick={setMax_wxHOPR}>Max</StyledGrayButton>
           <Button
             onClick={handleFundwxHopr}
@@ -275,9 +268,7 @@ const FundsToSafe = () => {
           </Button>
         </StyledInputGroup>
       </StyledForm>
-      <GreenText>
-      {wxhoprEnoughBalance() && 'You transferred enough wxHOPR'}
-      </GreenText>
+      <GreenText>{wxhoprEnoughBalance() && 'You transferred enough wxHOPR'}</GreenText>
       {(is_xDAI_to_safe_loading || is_wxHOPR_to_safe_loading) && <span>Check your Wallet...</span>}
     </StepContainer>
   );

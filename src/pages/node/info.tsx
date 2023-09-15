@@ -14,7 +14,10 @@ import WithdrawModal from '../../components/Modal/node/WithdrawModal';
 
 function InfoPage() {
   const dispatch = useAppDispatch();
-  const { apiEndpoint, apiToken } = useAppSelector((store) => store.auth.loginData);
+  const {
+    apiEndpoint,
+    apiToken,
+  } = useAppSelector((store) => store.auth.loginData);
   const balances = useAppSelector((store) => store.node.balances.data);
   const balancesFetching = useAppSelector((store) => store.node.balances.isFetching);
   const addresses = useAppSelector((store) => store.node.addresses.data);
@@ -42,49 +45,49 @@ function InfoPage() {
         actionsAsync.getBalancesThunk({
           apiEndpoint,
           apiToken,
-        })
+        }),
       );
       dispatch(
         actionsAsync.getChannelsThunk({
           apiEndpoint,
           apiToken,
-        })
+        }),
       );
       dispatch(
         actionsAsync.getAddressesThunk({
           apiEndpoint,
           apiToken,
-        })
+        }),
       );
       dispatch(
         actionsAsync.getVersionThunk({
           apiEndpoint,
           apiToken,
-        })
+        }),
       );
       dispatch(
         actionsAsync.getInfoThunk({
           apiEndpoint,
           apiToken,
-        })
+        }),
       );
       dispatch(
         actionsAsync.getPeersThunk({
           apiEndpoint,
           apiToken,
-        })
+        }),
       );
       dispatch(
         actionsAsync.getAliasesThunk({
           apiEndpoint,
           apiToken,
-        })
+        }),
       );
       dispatch(
         actionsAsync.getStatisticsThunk({
           apiEndpoint,
           apiToken,
-        })
+        }),
       );
     }
   };

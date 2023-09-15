@@ -34,13 +34,13 @@ function TicketsPage() {
       actionsAsync.getStatisticsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
     dispatch(
       actionsAsync.getTicketsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
   };
 
@@ -49,7 +49,7 @@ function TicketsPage() {
       actionsAsync.redeemTicketsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     )
       .unwrap()
       .then(() => {

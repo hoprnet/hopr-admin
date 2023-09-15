@@ -83,12 +83,12 @@ const Logo = styled.div`
     justify-content: center;
     align-items: center;
     overflow: hidden; */
-    img {
-      height: 50px;
-      width: auto;
-      margin-left: 10px;
-    }
-//  }
+  img {
+    height: 50px;
+    width: auto;
+    margin-left: 10px;
+  }
+  //  }
 `;
 
 const NavBar: React.FC<{

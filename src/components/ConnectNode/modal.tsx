@@ -18,7 +18,6 @@ import TextField from '../../future-hopr-lib-components/TextField';
 import Button from '../../future-hopr-lib-components/Button';
 import StyledGrayButton from '../../future-hopr-lib-components/Button/gray';
 
-
 // MUI
 import { Tooltip, IconButton } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
@@ -271,124 +270,130 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
 
   return (
     <>
-    <SModal
-      open={props.open}
-      onClose={handleClose}
-      title="CONNECT NODE"
-      maxWidth={'580px'}
-      disableScrollLock={true}
-    >
-      <LocalNodesContainer>
-        <Select
-          label={'Nodes saved in browser local storage'}
-          values={nodesSavedLocallyParsed}
-          disabled={nodesSavedLocally.length === 0}
-          value={nodesSavedLocallyChosenIndex}
-          onChange={handleSelectlocalNodes}
-          style={{ width: '100%' }}
-          removeValue={clearSingleLocal}
-          removeValueTooltip={'Remove node from local storage'}
-        />
-        <Tooltip title={'Clear all node credentials from the browser local storage'}>
-          <span>
-            <IconButton
-              aria-label="delete"
-              disabled={nodesSavedLocally.length === 0}
-              onClick={()=>{set_areYouSureYouWannaDeleteAllSavedNodes(true)}}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </span>
-        </Tooltip>
-      </LocalNodesContainer>
+      <SModal
+        open={props.open}
+        onClose={handleClose}
+        title="CONNECT NODE"
+        maxWidth={'580px'}
+        disableScrollLock={true}
+      >
+        <LocalNodesContainer>
+          <Select
+            label={'Nodes saved in browser local storage'}
+            values={nodesSavedLocallyParsed}
+            disabled={nodesSavedLocally.length === 0}
+            value={nodesSavedLocallyChosenIndex}
+            onChange={handleSelectlocalNodes}
+            style={{ width: '100%' }}
+            removeValue={clearSingleLocal}
+            removeValueTooltip={'Remove node from local storage'}
+          />
+          <Tooltip title={'Clear all node credentials from the browser local storage'}>
+            <span>
+              <IconButton
+                aria-label="delete"
+                disabled={nodesSavedLocally.length === 0}
+                onClick={() => {
+                  set_areYouSureYouWannaDeleteAllSavedNodes(true);
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
+        </LocalNodesContainer>
 
-      <p>
-        <strong>Node credentials:</strong>
-      </p>
-      <TextField
-        label={'Local name (optional)'}
-        value={localName}
-        onChange={(event) => {
-          set_localName(event.target.value);
-        }}
-        style={{ width: '100%' }}
-      />
-      <TextField
-        label={'API endpoint (required)'}
-        value={apiEndpoint}
-        onChange={(event) => {
-          set_apiEndpoint(event.target.value);
-        }}
-        style={{ width: '100%' }}
-      />
-      <TextField
-        label={'API token (required)'}
-        value={apiToken}
-        onChange={(event) => {
-          set_apiToken(event.target.value);
-        }}
-        style={{ width: '100%' }}
-      />
-      <SaveTokenContainer>
-        <Checkbox
-          label={'Save API token locally (unsafe)'}
-          value={saveApiToken}
+        <p>
+          <strong>Node credentials:</strong>
+        </p>
+        <TextField
+          label={'Local name (optional)'}
+          value={localName}
           onChange={(event) => {
-            set_saveApiToken(event.target.checked);
+            set_localName(event.target.value);
           }}
+          style={{ width: '100%' }}
         />
-        <Tooltip title={'Save node credentials in browser local storage'}>
+        <TextField
+          label={'API endpoint (required)'}
+          value={apiEndpoint}
+          onChange={(event) => {
+            set_apiEndpoint(event.target.value);
+          }}
+          style={{ width: '100%' }}
+        />
+        <TextField
+          label={'API token (required)'}
+          value={apiToken}
+          onChange={(event) => {
+            set_apiToken(event.target.value);
+          }}
+          style={{ width: '100%' }}
+        />
+        <SaveTokenContainer>
+          <Checkbox
+            label={'Save API token locally (unsafe)'}
+            value={saveApiToken}
+            onChange={(event) => {
+              set_saveApiToken(event.target.checked);
+            }}
+          />
+          <Tooltip title={'Save node credentials in browser local storage'}>
+            <Button
+              onClick={saveNode}
+              disabled={apiEndpoint.length === 0}
+            >
+              Save
+            </Button>
+          </Tooltip>
+        </SaveTokenContainer>
+
+        <ConnectContainer>
           <Button
-            onClick={saveNode}
-            disabled={apiEndpoint.length === 0}
+            onClick={useNode}
+            disabled={apiEndpoint.length === 0 || apiToken.length === 0}
           >
-            Save
+            Connect to the node
           </Button>
-        </Tooltip>
-      </SaveTokenContainer>
+        </ConnectContainer>
 
-      <ConnectContainer>
-        <Button
-          onClick={useNode}
-          disabled={apiEndpoint.length === 0 || apiToken.length === 0}
-        >
-          Connect to the node
-        </Button>
-      </ConnectContainer>
+        {error && (
+          <Overlay className={'overlay-has-error'}>
+            <CloseOverlayIconButton
+              color="primary"
+              aria-label="close modal"
+              onClick={() => {
+                dispatch(authActions.resetState());
+              }}
+            >
+              <CloseIcon />
+            </CloseOverlayIconButton>
+            <div className={'error'}>
+              <p>ERROR</p>
+              {error}
+            </div>
+          </Overlay>
+        )}
+      </SModal>
 
-      {error && (
-        <Overlay className={'overlay-has-error'}>
-          <CloseOverlayIconButton
-            color="primary"
-            aria-label="close modal"
+      <Modal
+        open={areYouSureYouWannaDeleteAllSavedNodes}
+        onClose={() => {
+          set_areYouSureYouWannaDeleteAllSavedNodes(false);
+        }}
+        disableScrollLock={true}
+        title="Are you sure that you wanna remove all saved nodes?"
+      >
+        <br />
+        <ConnectContainer>
+          <StyledGrayButton
             onClick={() => {
-              dispatch(authActions.resetState());
+              set_areYouSureYouWannaDeleteAllSavedNodes(false);
             }}
           >
-            <CloseIcon />
-          </CloseOverlayIconButton>
-          <div className={'error'}>
-            <p>ERROR</p>
-            {error}
-          </div>
-        </Overlay>
-      )}
-    </SModal>
-
-    <Modal
-        open={areYouSureYouWannaDeleteAllSavedNodes}
-        onClose={()=>{set_areYouSureYouWannaDeleteAllSavedNodes(false)}}
-        disableScrollLock={true}
-        title='Are you sure that you wanna remove all saved nodes?'
-      >
-        <br/>
-        <ConnectContainer>
-          <StyledGrayButton onClick={()=>{set_areYouSureYouWannaDeleteAllSavedNodes(false)}}>No</StyledGrayButton>
-          <Button
-            onClick={clearLocalNodes}
-          >
-            Remove all
-          </Button>
+            No
+          </StyledGrayButton>
+          <Button onClick={clearLocalNodes}>Remove all</Button>
         </ConnectContainer>
       </Modal>
     </>

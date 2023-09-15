@@ -100,7 +100,7 @@ export default function ConnectSafe() {
     const fetchInitialStateForSigner = async () => {
       if (signer) {
         dispatch(safeActions.resetState());
-        dispatch(stakingHubActions.resetState())
+        dispatch(stakingHubActions.resetState());
         dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer }));
       }
     };
@@ -220,7 +220,7 @@ export default function ConnectSafe() {
                 key={`${safe.safeAddress}_${index}`}
                 value={safe.safeAddress}
                 onClick={() => {
-                  useSelectedSafe(safe.safeAddress)
+                  useSelectedSafe(safe.safeAddress);
                 }}
               >
                 {safe.safeAddress &&

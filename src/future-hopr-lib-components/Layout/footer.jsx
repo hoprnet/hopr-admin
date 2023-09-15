@@ -52,7 +52,7 @@ const SFooter = styled.footer`
 `;
 
 const Content = styled.div`
-  width: calc( 100% - 32px );
+  width: calc(100% - 32px);
   max-width: 1098px;
   margin: auto;
   display: flex;
@@ -62,7 +62,7 @@ const Content = styled.div`
 `;
 
 const Newsletter = styled.div`
-  width: calc( 100% - 32px );
+  width: calc(100% - 32px);
   max-width: 1098px;
   margin: auto;
   display: flex;
@@ -164,16 +164,18 @@ const Footer = (props) => {
         <Newsletter>
           <div
             className="substack-section"
-            style={{
-              backgroundColor: 'white',
-            }}
+            style={{ backgroundColor: 'white' }}
           >
             <h3 className="title">HOPR Newsletter</h3>
             <iframe
               title="substack"
               src="https://hopr.substack.com/embed"
               width={'100%'}
-              style={{ border: 'none', marginTop: 0, paddingTop: 0 }}
+              style={{
+                border: 'none',
+                marginTop: 0,
+                paddingTop: 0,
+              }}
               loading="lazy"
             ></iframe>
           </div>
