@@ -3,6 +3,7 @@ import { initialState } from './initialState';
 import { GetBalancesResponseType, GetChannelsResponseType, GetInfoResponseType } from '@hoprnet/hopr-sdk';
 import { WatcherMessage } from '../../../hooks/useWatcher/messages';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
+import { saveStateToLocalStorage } from '../../../utils/localStorage';
 
 const appSlice = createSlice({
   name: 'app',
@@ -29,6 +30,7 @@ const appSlice = createSlice({
     setNotificationSettings: (state, action: PayloadAction<typeof initialState.configuration.notifications>) => {
       if (action.payload) {
         state.configuration.notifications = action.payload
+        saveStateToLocalStorage('app/configuration/notifications', action.payload)
       }
     },
     addNotification: (
