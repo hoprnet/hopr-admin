@@ -140,6 +140,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   const [areYouSureYouWannaDeleteAllSavedNodes, set_areYouSureYouWannaDeleteAllSavedNodes] = useState(false);
   const [nodesSavedLocallyChosenIndex, set_nodesSavedLocallyChosenIndex] = useState('' as string);
   const [forceLogin, set_forceLogin] = useState(false);
+  const [apiEndpointError, set_apiEndpointError] = useState<string | null>(null);
 
   useEffect(() => {
     const parsed = nodesSavedLocally.map((node, index) => {
@@ -199,10 +200,37 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     if (errorMessage) navigate(`/?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
   }, [errorMessage]);
 
+  const parseAndFormatUrl = (url: string) => {
+
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'http://' + url;
+    }
+    const parts = url.split('/');
+    let hostAndPort = parts[2]; // Get the part that contains the host and port
+
+    if (hostAndPort.indexOf(':') === -1) {
+      hostAndPort += ':3001';
+    }
+
+    parts[2] = hostAndPort;
+    try {
+      new URL(parts.join('/'));
+      set_apiEndpointError(null)
+      return parts.join('/');
+    } catch (e) {
+      set_apiEndpointError('API Endpoint was incorrectly formatted')
+      return null;
+    }
+  };
+
   const saveNode = () => {
+    const formattedApiEndpoint = parseAndFormatUrl(apiEndpoint);
+    if (!formattedApiEndpoint) {
+      return;
+    }
     dispatch(
       authActions.addNodeData({
-        apiEndpoint,
+        apiEndpoint: formattedApiEndpoint,
         apiToken: saveApiToken ? apiToken : '',
         localName: localName ? localName : '',
       }),
@@ -210,9 +238,13 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   };
 
   const useNode = async ({ force }: { force?: boolean }) => {
+    const formattedApiEndpoint = parseAndFormatUrl(apiEndpoint);
+    if (!formattedApiEndpoint) {
+      return;
+    }
     set_searchParams({
       apiToken,
-      apiEndpoint,
+      formattedApiEndpoint,
     });
     dispatch(authActions.resetState());
     dispatch(nodeActions.resetState());
@@ -221,7 +253,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     try {
       const loginInfo = await dispatch(
         authActionsAsync.loginThunk({
-          apiEndpoint,
+          apiEndpoint: formattedApiEndpoint,
           apiToken,
           force,
         }),
@@ -229,7 +261,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
       if (loginInfo) {
         dispatch(
           authActions.useNodeData({
-            apiEndpoint,
+            apiEndpoint: formattedApiEndpoint,
             apiToken,
             localName,
           }),
@@ -237,18 +269,18 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         dispatch(
           nodeActionsAsync.getAddressesThunk({
             apiToken,
-            apiEndpoint,
+            apiEndpoint: formattedApiEndpoint,
           }),
         );
         dispatch(
           nodeActionsAsync.getAliasesThunk({
             apiToken,
-            apiEndpoint,
+            apiEndpoint: formattedApiEndpoint,
           }),
         );
         dispatch(nodeActions.setInfo(loginInfo));
         dispatch(nodeActions.initializeMessagesWebsocket());
-        navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
+        navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${formattedApiEndpoint}`);
         trackGoal('IZUWDE9K', 1);
         props.handleClose();
       }
@@ -340,6 +372,8 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           onChange={(event) => {
             set_apiEndpoint(event.target.value);
           }}
+          error={apiEndpointError !== null}
+          helperText={apiEndpointError}
           style={{ width: '100%' }}
         />
         <TextField
@@ -393,20 +427,20 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
                 <p>ERROR</p>
                 {errorMessage}
               </div>
-                
+
               {errorMessage !== 'UNAUTHORIZED' &&
                 <div style={{
-                textAlign: 'center', marginTop: '32px',
-              }}>
-                <Tooltip title={loginAnywaysWarning}>
-                  <ForceLoginButton
-                    onClick={() => set_forceLogin(true)}
-                    disabled={apiEndpoint.length === 0 || apiToken.length === 0}
-                  >
-                        Login anyways
-                  </ForceLoginButton>
-                </Tooltip>
-              </div>}
+                  textAlign: 'center', marginTop: '32px',
+                }}>
+                  <Tooltip title={loginAnywaysWarning}>
+                    <ForceLoginButton
+                      onClick={() => set_forceLogin(true)}
+                      disabled={apiEndpoint.length === 0 || apiToken.length === 0}
+                    >
+                      Login anyways
+                    </ForceLoginButton>
+                  </Tooltip>
+                </div>}
             </div>
           </Overlay>
         )}
@@ -449,10 +483,10 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
             onClick={() => {
               set_forceLogin(false);
               useNode({ force: true });
-            } }
+            }}
             disabled={apiEndpoint.length === 0 || apiToken.length === 0}
           >
-              Login anyways
+            Login anyways
           </ForceLoginButton>
         </ButtonGroupContainer>
       </Modal>
