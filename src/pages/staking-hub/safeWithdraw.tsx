@@ -504,6 +504,12 @@ function SafeWithdraw() {
               )} */}
             </StyledPendingSafeTransactions>
           )}
+          <FeedbackTransaction
+            confirmations={1}
+            isWalletLoading={isWalletLoading}
+            transactionHash={transactionHash}
+            feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
+          />
           <StyledButtonGroup>
             {!userCanSkipProposal ? (
               <Tooltip title={isWalletLoading ? 'Signing transaction' : getErrorsForApproveButton().at(0)}>
@@ -531,12 +537,6 @@ function SafeWithdraw() {
               </Tooltip>
             )}
           </StyledButtonGroup>
-          <FeedbackTransaction
-            confirmations={1}
-            isWalletLoading={isWalletLoading}
-            transactionHash={transactionHash}
-            feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
-          />
         </div>
       </Card>
       <NetworkOverlay />

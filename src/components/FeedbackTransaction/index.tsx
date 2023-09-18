@@ -3,12 +3,13 @@ import { Loading } from './loading';
 import styled from '@emotion/styled';
 
 const FeedbackLoading = styled.div`
-  height: 40px;
-  width: 40px;
+  height: 30px;
+  width: 30px;
 `;
 
 const FeedbackContainer = styled.div`
   display: flex;
+  min-height: 60px;
   align-items: center;
   color: #000050;
   gap: 1rem;
@@ -89,5 +90,5 @@ const TransactionFeedbackText = ({
     </FeedbackContainer>;
   }
 
-  return <></>;
+  return <FeedbackContainer></FeedbackContainer>;
 };
