@@ -207,7 +207,7 @@ function AliasesPage() {
           },
           {
             key: 'peerAddress',
-            name: 'Peer Address',
+            name: 'Node Address',
             search: true,
             tooltip: true,
             maxWidth: '60px',
