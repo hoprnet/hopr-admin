@@ -122,8 +122,6 @@ function AliasesPage() {
   }
 
   const parsedTableData = Object.entries(aliases ?? {}).map(([alias, peerId], key) => {
-    console.log(`PEERID: ${peerId}`)
-    console.log(`HOPR ADDRESS: ${hoprAddresses}`)
     return {
       id: peerId,
       key: key.toString(),
