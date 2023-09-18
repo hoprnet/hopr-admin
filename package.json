@@ -1,6 +1,6 @@
 {
   "name": "hopr-admin",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.0",
