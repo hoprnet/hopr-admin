@@ -23,6 +23,7 @@ type OpenOrFundChannelModalProps = {
   actionBtnText?: string;
   title?: string;
   type?: 'open' | 'fund';
+  disabled?: boolean;
 };
 
 export const OpenOrFundChannelModal = ({
@@ -116,7 +117,7 @@ export const OpenOrFundChannelModal = ({
     <>
       <IconButton
         iconComponent={icon()}
-        disabled={type === 'fund'}
+        disabled={type === 'fund' || props.disabled}
         tooltipText={
           type === 'fund' ?
             <span>

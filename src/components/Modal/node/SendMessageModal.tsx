@@ -37,9 +37,10 @@ const StatusContainer = styled.div`
 
 type SendMessageModalProps = {
   peerId?: string;
+  disabled?: boolean;
 };
 
-export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
+export const SendMessageModal = (props: SendMessageModalProps) => {
   const dispatch = useAppDispatch();
   const [path, set_path] = useState<string>('');
   const [loader, set_loader] = useState<boolean>(false);
@@ -47,7 +48,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
   const [numberOfHops, set_numberOfHops] = useState<number | ''>('');
   const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops' | 'directMessage' | 'none'>('directMessage');
   const [message, set_message] = useState<string>('');
-  const [receiver, set_receiver] = useState<string>(peerId ? peerId : '');
+  const [receiver, set_receiver] = useState<string>(props.peerId ? props.peerId : '');
   const [openModal, set_openModal] = useState<boolean>(false);
 
   const maxLength = 500;
@@ -60,15 +61,15 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
 
   useEffect(() => {
     switch (sendMode) {
-    case 'path':
-      set_numberOfHops('');
-      break;
-    case 'numberOfHops':
-      set_path('');
-      break;
-    default: //anything that is not a custom route
-      set_numberOfHops('');
-      set_path('');
+      case 'path':
+        set_numberOfHops('');
+        break;
+      case 'numberOfHops':
+        set_path('');
+        break;
+      default: //anything that is not a custom route
+        set_numberOfHops('');
+        set_path('');
     }
   }, [sendMode, path, numberOfHops]);
 
@@ -148,7 +149,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
     set_sendMode('directMessage');
     set_numberOfHops('');
     set_message('');
-    set_receiver(peerId ? peerId : '');
+    set_receiver(props.peerId ? props.peerId : '');
     set_path('');
     set_openModal(false);
     set_status('');
@@ -179,6 +180,7 @@ export const SendMessageModal = ({ peerId }: SendMessageModalProps) => {
           </span>
         }
         onClick={handleOpenModal}
+        disabled={props.disabled}
       />
 
       <SDialog

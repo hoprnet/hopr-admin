@@ -15,6 +15,7 @@ import Button from '../../../future-hopr-lib-components/Button';
 type CreateAliasModalProps = {
   handleRefresh: () => void;
   peerId?: string;
+  disabled?: boolean;
 };
 
 export const CreateAliasModal = (props: CreateAliasModalProps) => {
@@ -109,6 +110,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
           </span>
         }
         onClick={handleOpenModal}
+        disabled={props.disabled}
       />
       <SDialog
         open={openModal}
