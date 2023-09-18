@@ -124,6 +124,7 @@ function ChannelsPage() {
       key: 'peerAddress',
       name: 'Node Address',
       search: true,
+      copy: true,
       maxWidth: '568px',
       tooltip: true,
     },

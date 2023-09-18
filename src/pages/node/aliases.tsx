@@ -205,6 +205,7 @@ function AliasesPage() {
             name: 'Peer Id',
             search: true,
             tooltip: true,
+            copy: true,
             maxWidth: '60px',
           },
           {
@@ -212,6 +213,7 @@ function AliasesPage() {
             name: 'Node Address',
             search: true,
             tooltip: true,
+            copy: true,
             maxWidth: '60px',
           },
           {
