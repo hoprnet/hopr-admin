@@ -246,21 +246,7 @@ function SettingsPage() {
                       }}
                       color="primary"
                     />{' '}True
-                  </div>  
-                  <div>
-                  Safe Transactions: False
-                    <Switch
-                      checked={localNotificationSettings?.pendingSafeTransaction}
-                      onChange={() => {
-                        if (localNotificationSettings) {
-                          set_localNotificationSettings({
-                            ...localNotificationSettings, pendingSafeTransaction: !localNotificationSettings.pendingSafeTransaction,
-                          })
-                        }
-                      }}
-                      color="primary"
-                    />{' '}True
-                  </div>  
+                  </div>                
                 </NotificationsContainer>
               </td>
             </tr>
