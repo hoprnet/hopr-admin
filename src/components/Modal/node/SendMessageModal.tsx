@@ -35,19 +35,19 @@ const PathOrHops = styled.div`
   align-items: center;
   width: 100%;
 
-  .directMessageSelected{
+  .numerOfHopsSelected{
     justify-content: center;
   }
 
-  .pathSelected {
+  .noNumberOfHopsSelected{
     justify-content: flex-start;
   }
 
-  .directMessage {
+  .numerOfHops {
     flex: 1;
   }
 
-  .path {
+  .noNumberOfHops {
     flex: 0.5;
   }
 `;
@@ -67,9 +67,9 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const [path, set_path] = useState<string>('');
   const [loader, set_loader] = useState<boolean>(false);
   const [status, set_status] = useState<string>('');
-  const [numberOfHops, set_numberOfHops] = useState<number | ''>('');
-  // const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops' | 'directMessage' | 'none'>('directMessage');
-  const [sendMode, set_sendMode] = useState('directMessage');
+  const [numberOfHops, set_numberOfHops] = useState<number>(0);
+  const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops' | 'directMessage'>('directMessage');
+  // const [sendMode, set_sendMode] = useState('directMessage');
   const [message, set_message] = useState<string>('');
   const [receiver, set_receiver] = useState<string>(props.peerId ? props.peerId : '');
   const [openModal, set_openModal] = useState<boolean>(false);
@@ -85,13 +85,13 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   useEffect(() => {
     switch (sendMode) {
       case 'path':
-        set_numberOfHops('');
+        set_numberOfHops(0);
         break;
       case 'numberOfHops':
         set_path('');
         break;
       default: //anything that is not a custom route
-        set_numberOfHops('');
+        set_numberOfHops(0);
         set_path('');
     }
   }, [sendMode, path, numberOfHops]);
@@ -112,9 +112,11 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
 
     if (sendMode === 'directMessage') {
       messagePayload.path = [];
-    } else if (numberOfHops !== '') {
+    }
+    if (sendMode === 'numberOfHops') {
       messagePayload.hops = numberOfHops;
-    } else if (path !== '') {
+    }
+    if (sendMode == 'path') {
       const pathElements = path.replace(/(\r\n|\n|\r| )/gm, '').split(',');
       const validatedPath = pathElements.map((element) => validatePeerId(element));
       messagePayload.path = validatedPath;
@@ -137,24 +139,8 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   };
 
   const handleSendModeChange = (event: SelectChangeEvent) => {
-    set_sendMode(event.target.value as string);
+    set_sendMode(event.target.value as "path" | "numberOfHops" | "automaticPath" | "directMessage");
   }
-
-  const handleDirectMessage = () => {
-    if (sendMode === 'directMessage') {
-      return set_sendMode('none');
-    }
-
-    set_sendMode('directMessage');
-  };
-
-  const handleAutomaticPath = () => {
-    if (sendMode === 'automaticPath') {
-      return set_sendMode('none');
-    }
-
-    set_sendMode('automaticPath');
-  };
 
   const handlePath = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_sendMode('path');
@@ -163,7 +149,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
 
   const handleNumberOfHops = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_numberOfHops(
-      parseInt(event.target.value) || parseInt(event.target.value) === 0 ? parseInt(event.target.value) : '',
+      parseInt(event.target.value) || parseInt(event.target.value) === 0 ? parseInt(event.target.value) : 0,
     );
   };
 
@@ -173,7 +159,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
 
   const handleCloseModal = () => {
     set_sendMode('directMessage');
-    set_numberOfHops('');
+    set_numberOfHops(0);
     set_message('');
     set_receiver(props.peerId ? props.peerId : '');
     set_path('');
@@ -255,17 +241,19 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
             fullWidth
           />
           <span style={{ margin: '0px 0px -6px' }}>Send mode:</span>
-          <PathOrHops className={sendMode === "path" ? "pathSelected" : "directMessageSelected"}>
+          <PathOrHops className={sendMode === "numberOfHops" ? "numerOfHopsSelected" : "noNumberOfHopsSelected"}>
             <Select
               value={sendMode}
               label="Send Mode"
               onChange={handleSendModeChange}
-              className={sendMode === "directMessage" ? "directMessage" : "path"}
+              className={sendMode === "numberOfHops" ? "numerOfHops" : "noNumberOfHops"}
             >
               <MenuItem value="directMessage">Direct Message</MenuItem>
               <MenuItem value="path">Path</MenuItem>
+              <MenuItem value='automaticPath'>Automatic Path</MenuItem>
+              <MenuItem value='numberOfHops'>Number of Hops</MenuItem>
             </Select>
-            {sendMode === 'directMessage' && (
+            {sendMode === 'numberOfHops' && (
               <TextField
                 type="number"
                 label="Number of Hops"
@@ -294,67 +282,12 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
               fullWidth
             />
           )}
-          {/* <PathOrHops>
-            <Checkbox
-              label="Direct message"
-              value={sendMode === 'directMessage'}
-              onChange={handleDirectMessage}
-            />
-            or
-            <Checkbox
-              label="Automatic path"
-              value={sendMode === 'automaticPath'}
-              onChange={handleAutomaticPath}
-            />
-            or
-            <Tooltip
-              title={nonAutomaticPathTooltip}
-              disableHoverListener={!(sendMode === 'automaticPath' || sendMode === 'directMessage')}
-              disableFocusListener={!(sendMode === 'automaticPath' || sendMode === 'directMessage')}
-              disableTouchListener={!(sendMode === 'automaticPath' || sendMode === 'directMessage')}
-              disableInteractive={!(sendMode === 'automaticPath' || sendMode === 'directMessage')}
-            >
-              <TextField
-                style={{ width: '180px' }}
-                type="number"
-                label="Number of Hops"
-                placeholder="1"
-                value={numberOfHops}
-                onChange={handleNumberOfHops}
-                inputProps={{
-                  min: 0,
-                  max: 10,
-                  step: 1,
-                }}
-                disabled={sendMode === 'automaticPath' || sendMode === 'directMessage'}
-              />
-            </Tooltip>
-            or
-            <Tooltip
-              title={nonAutomaticPathTooltip}
-              disableHoverListener={!(sendMode === 'automaticPath' || sendMode === 'directMessage')}
-              disableFocusListener={!(sendMode === 'automaticPath' || sendMode === 'directMessage')}
-              disableTouchListener={!(sendMode === 'automaticPath' || sendMode === 'directMessage')}
-              disableInteractive={!(sendMode === 'automaticPath' || sendMode === 'directMessage')}
-            >
-              <TextField
-                label="Path"
-                placeholder="16Uiu2...9cTYntS3, 16Uiu2...9cDFSAa"
-                value={path}
-                onChange={handlePath}
-                disabled={sendMode === 'automaticPath' || sendMode === 'directMessage'}
-                fullWidth
-                sx={{ maxWidth: '240px' }}
-              />
-            </Tooltip>
-          </PathOrHops> */}
-
         </SDialogContent>
         <DialogActions>
           <Button
             onClick={handleSendMessage}
             disabled={
-              sendMode !== 'directMessage' && (sendMode !== 'automaticPath' && numberOfHops === '' && path === '') || message.length === 0 || receiver.length === 0
+              sendMode !== 'directMessage' && (sendMode !== 'automaticPath' && numberOfHops === 0 && path === '') || message.length === 0 || receiver.length === 0
             }
             style={{
               width: '100%',
@@ -371,135 +304,4 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       </SDialog>
     </>
   );
-
-  // return (
-  //   <>
-  //     <IconButton
-  //       iconComponent={<ForwardToInboxIcon />}
-  //       tooltipText={
-  //         <span>
-  //           SEND
-  //           <br />
-  //           message
-  //         </span>
-  //       }
-  //       onClick={handleOpenModal}
-  //       disabled={props.disabled}
-  //     />
-
-  //     <SDialog
-  //       open={openModal}
-  //       onClose={handleCloseModal}
-  //       disableScrollLock={true}
-  //       maxWidth={'800px'}
-  //     >
-  //       <TopBar>
-  //         <DialogTitle>Send Message</DialogTitle>
-  //         <SIconButton
-  //           aria-label="close modal"
-  //           onClick={handleCloseModal}
-  //         >
-  //           <CloseIcon />
-  //         </SIconButton>
-  //       </TopBar>
-  //       <SDialogContent
-  //       >
-  //         <TextField
-  //           label="Receiver (Peer Id)"
-  //           placeholder="16Uiu2..."
-  //           value={receiver}
-  //           onChange={(e) => set_receiver(e.target.value)}
-  //           required
-  //           fullWidth
-  //         />
-  //         <TextField
-  //           label="Message"
-  //           placeholder="Hello Node..."
-  //           multiline
-  //           maxRows={4}
-  //           rows={4}
-  //           value={message}
-  //           onChange={(e) => set_message(e.target.value)}
-  //           inputProps={{ maxLength: maxLength }}
-  //           helperText={`${remainingChars} characters remaining`}
-  //           required
-  //           fullWidth
-  //         />
-  //         <span style={{ margin: '0px 0px -6px' }}>Send mode:</span>
-  //         <PathOrHops>
-  //           <Checkbox
-  //             label="Direct message"
-  //             value={sendMode === 'directMessage'}
-  //             onChange={handleDirectMessage}
-  //           />
-  //           or
-  //           <Checkbox
-  //             label="Automatic path"
-  //             value={sendMode === 'automaticPath'}
-  //             onChange={handleAutomaticPath}
-  //           />
-  //           or
-  //           <Tooltip
-  //             title={nonAutomaticPathTooltip}
-  //             disableHoverListener={!(sendMode === 'automaticPath' || sendMode === 'directMessage')}
-  //             disableFocusListener={!(sendMode === 'automaticPath' || sendMode === 'directMessage')}
-  //             disableTouchListener={!(sendMode === 'automaticPath' || sendMode === 'directMessage')}
-  //             disableInteractive={!(sendMode === 'automaticPath' || sendMode === 'directMessage')}
-  //           >
-  //             <TextField
-  //               style={{ width: '180px' }}
-  //               type="number"
-  //               label="Number of Hops"
-  //               placeholder="1"
-  //               value={numberOfHops}
-  //               onChange={handleNumberOfHops}
-  //               inputProps={{
-  //                 min: 0,
-  //                 max: 10,
-  //                 step: 1,
-  //               }}
-  //               disabled={sendMode === 'automaticPath' || sendMode === 'directMessage'}
-  //             />
-  //           </Tooltip>
-  //           or
-  //           <Tooltip
-  //             title={nonAutomaticPathTooltip}
-  //             disableHoverListener={!(sendMode === 'automaticPath' || sendMode === 'directMessage')}
-  //             disableFocusListener={!(sendMode === 'automaticPath' || sendMode === 'directMessage')}
-  //             disableTouchListener={!(sendMode === 'automaticPath' || sendMode === 'directMessage')}
-  //             disableInteractive={!(sendMode === 'automaticPath' || sendMode === 'directMessage')}
-  //           >
-  //             <TextField
-  //               label="Path"
-  //               placeholder="16Uiu2...9cTYntS3, 16Uiu2...9cDFSAa"
-  //               value={path}
-  //               onChange={handlePath}
-  //               disabled={sendMode === 'automaticPath' || sendMode === 'directMessage'}
-  //               fullWidth
-  //               sx={{ maxWidth: '240px' }}
-  //             />
-  //           </Tooltip>
-  //         </PathOrHops>
-  //       </SDialogContent>
-  //       <DialogActions>
-  //         <Button
-  //           onClick={handleSendMessage}
-  //           disabled={
-  //             sendMode !== 'directMessage' && (sendMode !== 'automaticPath' && numberOfHops === '' && path === '') || message.length === 0 || receiver.length === 0
-  //           }
-  //           style={{
-  //             width: '100%',
-  //             marginTop: '8px',
-  //           }}
-  //         >
-  //           Send
-  //         </Button>
-  //       </DialogActions>
-  //       <StatusContainer>
-  //         {loader && <CircularProgress />}
-  //         {status}
-  //       </StatusContainer>
-  //     </SDialog>
-  //   </>
-  // );
 };
