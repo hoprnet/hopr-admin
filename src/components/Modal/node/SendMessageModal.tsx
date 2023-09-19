@@ -3,10 +3,8 @@ import styled from '@emotion/styled';
 
 // HOPR Components
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../../future-hopr-lib-components/Modal/styled';
-import Checkbox from '../../../future-hopr-lib-components/Toggles/Checkbox';
 import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
 import Button from '../../../future-hopr-lib-components/Button';
-// import Select from '../../../future-hopr-lib-components/Select';
 
 // Mui
 import {
@@ -69,7 +67,6 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const [status, set_status] = useState<string>('');
   const [numberOfHops, set_numberOfHops] = useState<number>(0);
   const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops' | 'directMessage'>('directMessage');
-  // const [sendMode, set_sendMode] = useState('directMessage');
   const [message, set_message] = useState<string>('');
   const [receiver, set_receiver] = useState<string>(props.peerId ? props.peerId : '');
   const [openModal, set_openModal] = useState<boolean>(false);
@@ -77,7 +74,6 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const maxLength = 500;
   const remainingChars = maxLength - message.length;
 
-  const nonAutomaticPathTooltip = 'Disable `direct message` and `automatic path` to enable this field';
 
   const loginData = useAppSelector((store) => store.auth.loginData);
   const aliases = useAppSelector((store) => store.node.aliases.data);
