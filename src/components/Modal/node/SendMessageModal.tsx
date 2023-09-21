@@ -12,10 +12,9 @@ import {
   DialogActions,
   CircularProgress,
   TextField,
-  Tooltip,
   SelectChangeEvent,
   Select,
-  MenuItem
+  MenuItem,
 } from '@mui/material'
 
 import { SendMessagePayloadType } from '@hoprnet/hopr-sdk';
@@ -48,6 +47,7 @@ const PathOrHops = styled.div`
   .noNumberOfHops {
     flex: 0.5;
   }
+
 `;
 
 
@@ -110,6 +110,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       messagePayload.path = [];
     }
     if (sendMode === 'numberOfHops') {
+      if (numberOfHops === 0) messagePayload.path = [];
       messagePayload.hops = numberOfHops;
     }
     if (sendMode == 'path') {
@@ -166,7 +167,15 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const handlePathKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === ' ' || e.key === 'Spacebar') {
       e.preventDefault(); // Prevent space key from inserting a space
-      set_path((prevPath) => prevPath + '\n'); // Insert a new line character
+      const input = e.target as HTMLInputElement;
+      // These are always a number... never null
+      const start = input.selectionStart!;
+      const end = input.selectionEnd!;
+      set_path((prevPath) => prevPath.substring(0, start) + '\n' + prevPath.substring(end));
+      // Set a timeout to ensure that the focus and blur events have a chance to complete
+      setTimeout(() => {
+        input.setSelectionRange(start, start);
+      }, 0);
     }
   };
 
@@ -227,7 +236,6 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
             label="Message"
             placeholder="Hello Node..."
             multiline
-            maxRows={4}
             rows={4}
             value={message}
             onChange={(e) => set_message(e.target.value)}
@@ -236,18 +244,17 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
             required
             fullWidth
           />
-          <span style={{ margin: '0px 0px -6px' }}>Send mode:</span>
+          <span style={{ margin: '0px 0px -2px' }}>Send mode:</span>
           <PathOrHops className={sendMode === "numberOfHops" ? "numerOfHopsSelected" : "noNumberOfHopsSelected"}>
             <Select
               value={sendMode}
-              label="Send Mode"
               onChange={handleSendModeChange}
               className={sendMode === "numberOfHops" ? "numerOfHops" : "noNumberOfHops"}
             >
               <MenuItem value="directMessage">Direct Message</MenuItem>
-              <MenuItem value="path">Path</MenuItem>
               <MenuItem value='automaticPath'>Automatic Path</MenuItem>
               <MenuItem value='numberOfHops'>Number of Hops</MenuItem>
+              <MenuItem value="path">Path</MenuItem>
             </Select>
             {sendMode === 'numberOfHops' && (
               <TextField
@@ -269,7 +276,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
           {sendMode === 'path' && (
             <TextField
               label="Path"
-              placeholder="16Uiu2...9cTYntS3, 16Uiu2...9cDFSAa"
+              placeholder={"12D3Ko...Z3rz5F,\n12D3Ko...wxd4zv,\n12D3Ko...zF8c7u"}
               value={path}
               onChange={handlePath}
               onKeyDown={handlePathKeyDown}
@@ -283,7 +290,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
           <Button
             onClick={handleSendMessage}
             disabled={
-              sendMode !== 'directMessage' && (sendMode !== 'automaticPath' && numberOfHops === 0 && path === '') || message.length === 0 || receiver.length === 0
+              sendMode !== 'directMessage' && (sendMode !== 'automaticPath' && numberOfHops < 0 && path === '') || message.length === 0 || receiver.length === 0
             }
             style={{
               width: '100%',
@@ -297,7 +304,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
           {loader && <CircularProgress />}
           {status}
         </StatusContainer>
-      </SDialog>
+      </SDialog >
     </>
   );
 };
