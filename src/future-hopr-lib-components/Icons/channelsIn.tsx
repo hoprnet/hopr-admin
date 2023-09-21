@@ -1,8 +1,4 @@
 export default function ChannelsIn() {
-    const css = `
-        .st0{fill:#FFFFFF;}
-    `;
-
     return (
         <svg
             className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
@@ -16,9 +12,18 @@ export default function ChannelsIn() {
             version="1.1"
             viewBox="0 0 130 121"
         >
-            <style>{css}</style>
-            <path d="M93.4,64.1h28.4L65,121L8.1,64.1h28.4V7.2h56.9V64.1z" />
-            <circle className="st0" cx="95.5" cy="86.5" r="34.5" />
+            <defs>
+                <mask id="ChannelsInMask">
+                    <circle
+                        r="200"
+                        cx="0"
+                        cy="0"
+                        fill="white"
+                    />
+                    <circle cx="95.5" cy="86.5" r="34.5" fill="black" />
+                </mask>
+            </defs>
+            <path d="M93.4,64.1h28.4L65,121L8.1,64.1h28.4V7.2h56.9V64.1z" mask="url(#ChannelsInMask)" />
             <path d="M117.6,73.3c-4.1,0-7.3,3.3-7.3,7.3v0.5l-5,1.7c-1.6-3-4.4-5.1-7.9-5.7v-5.3c3.2-0.8,5.5-3.7,5.5-7.1c0-4.1-3.3-7.3-7.3-7.3
 	                c-4.1,0-7.3,3.3-7.3,7.3c0,3.4,2.3,6.3,5.5,7.1v5.3c-3.4,0.6-6.3,2.7-7.9,5.7l-5-1.7c0-0.2,0-0.3,0-0.5c0-4.1-3.3-7.3-7.3-7.3
 	                c-4.1,0-7.3,3.3-7.3,7.3c0,4.1,3.3,7.3,7.3,7.3c2.6,0,4.8-1.3,6.2-3.4l5,1.7c-0.5,3.2,0.4,6.5,2.7,9L84,99.6C83,99.2,82,99,81,99
