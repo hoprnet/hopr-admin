@@ -4,19 +4,18 @@ import Button from '../../../../future-hopr-lib-components/Button';
 import { useEthersSigner } from '../../../../hooks';
 import { StepContainer, ConfirmButton } from '../components';
 import { Lowercase, StyledCoinLabel, StyledInputGroup, StyledTextField } from '../styled';
-import { DEFAULT_ALLOWANCE } from '../../../../../config';
 
 // Blockchain
-import { Address, formatEther, parseEther, parseUnits } from 'viem';
-import { HOPR_TOKEN_USED_CONTRACT_ADDRESS, HOPR_CHANNELS_SMART_CONTRACT_ADDRESS } from '../../../../../config';
-import { MAX_UINT256, createApproveTransactionData } from '../../../../utils/blockchain';
+import { Address, parseUnits } from 'viem';
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, DEFAULT_ALLOWANCE, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../../../config';
+import { createApproveTransactionData } from '../../../../utils/blockchain';
 
 // Store
 import { useState } from 'react';
+import { FeedbackTransaction } from '../../../../components/FeedbackTransaction';
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import { safeActionsAsync } from '../../../../store/slices/safe';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
-
 
 const StyledText = styled.h3`
   color: var(--414141, #414141);
@@ -29,17 +28,17 @@ const StyledText = styled.h3`
   margin-top: 5px;
 `;
 
-
 export default function SetAllowance() {
   const dispatch = useAppDispatch();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
   const signer = useEthersSigner();
   const [wxHoprValue, set_wxHoprValue] = useState('');
-  const [loading, set_loading] = useState(false);
+  const [isWalletLoading, set_isWalletLoading] = useState(false);
+  const [transactionHash, set_transactionHash] = useState<Address>();
 
   const setAllowance = async () => {
     if (signer && selectedSafeAddress && HOPR_CHANNELS_SMART_CONTRACT_ADDRESS) {
-      set_loading(true);
+      set_isWalletLoading(true);
       await dispatch(
         safeActionsAsync.createAndExecuteContractTransactionThunk({
           data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,parseUnits(wxHoprValue, 18)),
@@ -49,11 +48,12 @@ export default function SetAllowance() {
         }),
       )
         .unwrap()
-        .then(() => {
+        .then((hash) => {
+          set_transactionHash(hash as Address);
           dispatch(stakingHubActions.setOnboardingStep(16));
         })
         .finally(() => {
-          set_loading(false);
+          set_isWalletLoading(false);
         });
     }
   };
@@ -66,17 +66,14 @@ export default function SetAllowance() {
         <ConfirmButton
           onClick={setAllowance}
           disabled={wxHoprValue === '' || wxHoprValue === '0' || wxHoprValue.includes('-') || wxHoprValue.includes('+')}
-          pending={loading}
+          pending={isWalletLoading}
         >
           EXECUTE
         </ConfirmButton>
       }
     >
-      <StyledInputGroup
-        style={{alignItems: 'flex-start'}}
-      >
-        <StyledText
-        >NODE ALLOWANCE</StyledText>
+      <StyledInputGroup style={{ alignItems: 'flex-start' }}>
+        <StyledText>NODE ALLOWANCE</StyledText>
         <StyledTextField
           type="number"
           variant="outlined"
@@ -91,13 +88,17 @@ export default function SetAllowance() {
           } }}
           helperText={`Suggested value is ${DEFAULT_ALLOWANCE} wxHopr`}
         />
-        <StyledCoinLabel
-          style={{lineHeight: '40px'}}
-        >
+        <StyledCoinLabel style={{ lineHeight: '40px' }}>
           <Lowercase>wx</Lowercase>HOPR
         </StyledCoinLabel>
         <Button onClick={() => set_wxHoprValue(DEFAULT_ALLOWANCE.toString())}>DEFAULT</Button>
       </StyledInputGroup>
+      <FeedbackTransaction
+        confirmations={1}
+        isWalletLoading={isWalletLoading}
+        feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
+        transactionHash={transactionHash}
+      />
     </StepContainer>
   );
 }
