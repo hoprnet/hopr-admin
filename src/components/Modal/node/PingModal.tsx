@@ -13,6 +13,7 @@ import Button from '../../../future-hopr-lib-components/Button';
 
 type PingModalProps = {
   peerId?: string;
+  disabled?: boolean;
 };
 
 export const PingModal = (props: PingModalProps) => {
@@ -99,6 +100,7 @@ export const PingModal = (props: PingModalProps) => {
           </span>
         }
         onClick={handleOpenModal}
+        disabled={props.disabled}
       />
       <SDialog
         open={openModal}

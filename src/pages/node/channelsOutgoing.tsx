@@ -121,7 +121,7 @@ function ChannelsPage() {
       exportToCsv(
         Object.entries(channelsData).map(([, channel]) => ({
           channelId: channel.id,
-          peerAddress: channel.peerAddress,
+          nodeAddress: channel.peerAddress,
           status: channel.status,
           dedicatedFunds: channel.balance,
         })),
@@ -206,9 +206,10 @@ function ChannelsPage() {
     },
     {
       key: 'peerAddress',
-      name: 'Peer Address',
+      name: 'Node Address',
       search: true,
       tooltip: true,
+      copy: true,
       maxWidth: '168px',
     },
     {

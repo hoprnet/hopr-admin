@@ -1,13 +1,3 @@
-export function getObjectFromLocalStorage(key: string) {
-  try {
-    const string = localStorage.getItem(key) as string;
-    const object = JSON.parse(string);
-    return object;
-  } catch (e) {
-    return null;
-  }
-}
-
 export function bubbleSortObject(arr: any[], key: string | number) {
   for (let i = 0; i < arr.length; i++) {
     // Last i elements are already in place

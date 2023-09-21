@@ -27,6 +27,7 @@ function AliasesPage() {
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const peers = useAppSelector(store => store.node.peers.data)
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
+  const hoprAddresses = useAppSelector((store) => store.node.addresses.data.hopr)
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [importSuccess, set_importSuccess] = useState(false);
   const [deleteSuccess, set_deleteSuccess] = useState(false);
@@ -67,7 +68,7 @@ function AliasesPage() {
     if (!peer) {
       return;
     }
-    
+
     return peer.peerAddress
   }
 
@@ -129,12 +130,13 @@ function AliasesPage() {
       peerAddress: getPeerAddressByPeerId(peerId) ?? '',
       actions: (
         <>
-          <PingModal peerId={peerId} />
+          <PingModal peerId={peerId} disabled={peerId === hoprAddresses} />
           <OpenOrFundChannelModal
             peerAddress={getPeerAddressByPeerId(peerId)}
             type={'open'}
+            disabled={peerId === hoprAddresses}
           />
-          <SendMessageModal peerId={peerId} />
+          <SendMessageModal peerId={peerId} disabled={peerId === hoprAddresses} />
           <DeleteAliasButton
             onSuccess={() => {
               set_deleteSuccess(true);
@@ -203,13 +205,15 @@ function AliasesPage() {
             name: 'Peer Id',
             search: true,
             tooltip: true,
+            copy: true,
             maxWidth: '60px',
           },
           {
             key: 'peerAddress',
-            name: 'Peer Address',
+            name: 'Node Address',
             search: true,
             tooltip: true,
+            copy: true,
             maxWidth: '60px',
           },
           {
@@ -230,10 +234,12 @@ function DeleteAliasButton({
   alias,
   onError,
   onSuccess,
+  disabled,
 }: {
   alias: string;
   onError: (e: typeof APIError.prototype) => void;
   onSuccess: () => void;
+  disabled?: boolean;
 }) {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((store) => store.auth.loginData);
@@ -265,6 +271,7 @@ function DeleteAliasButton({
             .catch((e) => onError(e));
         }
       }}
+      disabled={disabled}
     />
   );
 }

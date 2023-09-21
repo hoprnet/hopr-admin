@@ -106,7 +106,7 @@ export const OpenMultipleChannelsModal = () => {
     reader.onload = (e: ProgressEvent<FileReader>) => {
       const contents = e.target?.result;
       if (typeof contents === 'string') {
-        const parsedData = parseCSV(contents);
+        const parsedData = parseUploadedCSV(contents);
         if (parsedData.length > 0) {
           set_peerIds(parsedData);
           set_openMultipleChannelsModal(true);
@@ -131,7 +131,7 @@ export const OpenMultipleChannelsModal = () => {
     }
   };
 
-  const parseCSV = (csvContent: string) => {
+  const parseUploadedCSV = (csvContent: string) => {
     const lines = csvContent.split('\n');
     const parsedData: string[] = [];
     let startAtLine = 1;
@@ -140,11 +140,11 @@ export const OpenMultipleChannelsModal = () => {
     const header = lines[0].split(',');
     const expectedObjectKeys = header.map((key) => key.trim());
 
-    // find the index of the "peerId" header
-    let peerIdIndex = expectedObjectKeys.findIndex((key) => key === 'peerId' || key === 'peerid' || key === 'peer');
+    // find the index of the "nodeAddress" header
+    let peerIdIndex = expectedObjectKeys.findIndex((key) => key === 'node' || key === 'peer' || key === 'nodeAddress' || key === 'peerAddress' );
 
     if (peerIdIndex === -1) {
-      peerIdIndex = expectedObjectKeys.findIndex((key) => key.length === 53 && key.substr(0, 6) === '16Uiu2');
+      peerIdIndex = expectedObjectKeys.findIndex((key) => key.length === 53 && key.substr(0, 2) === '0x');
       startAtLine = 0;
     }
 
