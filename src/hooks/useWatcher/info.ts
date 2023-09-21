@@ -17,17 +17,19 @@ export const observeNodeInfo = ({
   previousState,
   apiEndpoint,
   apiToken,
+  active,
   updatePreviousData,
   dispatch,
 }: {
   previousState: GetInfoResponseType | null;
   apiToken: string | null;
   apiEndpoint: string | null;
+  active: boolean;
   updatePreviousData: (currentData: GetInfoResponseType) => void;
   dispatch: ReturnType<typeof useAppDispatch>;
 }) =>
   observeData<GetInfoResponseType | null>({
-    disabled: !apiEndpoint || !apiToken,
+    active: active && !!apiEndpoint && !!apiToken,
     fetcher: async () => {
       if (!apiEndpoint || !apiToken) return;
       return dispatch(

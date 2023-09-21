@@ -30,7 +30,7 @@ export const handleBalanceNotification = ({
   sendNewNativeBalanceNotification,
   sendNativeBalanceTooLowNotification,
   sendNewNativeSafeBalanceNotification,
-  sendNewHoprSafeBalanceNotification
+  sendNewHoprSafeBalanceNotification,
 }: {
   prevNodeBalances: GetBalancesResponseType | null;
   newNodeBalances: GetBalancesResponseType;
@@ -77,6 +77,7 @@ export const observeNodeBalances = ({
   previousState,
   apiEndpoint,
   apiToken,
+  active,
   minimumNodeBalances,
   updatePreviousData,
   dispatch,
@@ -84,12 +85,13 @@ export const observeNodeBalances = ({
   previousState: GetBalancesResponseType | null;
   apiToken: string | null;
   apiEndpoint: string | null;
+  active: boolean;
   minimumNodeBalances: GetBalancesResponseType;
   updatePreviousData: (currentData: GetBalancesResponseType) => void;
   dispatch: ReturnType<typeof useAppDispatch>;
 }) =>
   observeData<GetBalancesResponseType | null>({
-    disabled: !apiToken || !apiEndpoint,
+    active: active && !!apiToken && !!apiEndpoint,
     previousData: previousState,
     fetcher: async () => {
       if (!apiToken || !apiEndpoint) return;
@@ -127,11 +129,9 @@ export const observeNodeBalances = ({
               url: null,
               timeout: null,
             },
-            toastPayload: {
-              message: `Node xDai level is low, node has ${formatEther(
-                BigInt(newNativeBalance),
-              )} and should have ${formatEther(BigInt(minimumNodeBalances.native))}`
-            },
+            toastPayload: { message: `Node xDai level is low, node has ${formatEther(
+              BigInt(newNativeBalance),
+            )} and should have ${formatEther(BigInt(minimumNodeBalances.native))}` },
             dispatch,
           });
         },
@@ -158,7 +158,7 @@ export const observeNodeBalances = ({
             toastPayload: { message: `Safe received ${formatEther(nativeSafeBalanceDifference)} xDai` },
             dispatch,
           });
-        }
+        },
       });
     },
     updatePreviousData,

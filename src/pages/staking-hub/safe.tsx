@@ -36,6 +36,9 @@ function SafeSection() {
   const [includeNodeResponse, set_includeNodeResponse] = useState('');
   const [safeAddressForRegistry, set_safeAddressForRegistry] = useState('');
   const [nodeAddressForRegistry, set_nodeAddressForRegistry] = useState('');
+  const activePendingSafeTransaction = useAppSelector(
+    (store) => store.app.configuration.notifications.pendingSafeTransaction,
+  );
 
   const { data: allowanceData } = useContractRead({
     address: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
@@ -107,6 +110,7 @@ function SafeSection() {
               dispatch(appActions.resetState());
               observePendingSafeTransactions({
                 dispatch,
+                active: activePendingSafeTransaction,
                 previousState: prevPendingSafeTransaction,
                 selectedSafeAddress: safeAddress,
                 signer,
