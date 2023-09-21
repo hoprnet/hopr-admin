@@ -100,7 +100,7 @@ export default function ConnectSafe() {
     const fetchInitialStateForSigner = async () => {
       if (signer) {
         dispatch(safeActions.resetState());
-        dispatch(stakingHubActions.resetState())
+        dispatch(stakingHubActions.resetStateWithoutMagicLinkForOnboarding());
         dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer }));
       }
     };
@@ -182,9 +182,8 @@ export default function ConnectSafe() {
       onClick={handleSafeButtonClick}
       ref={menuRef}
       disabled={!isConnected}
-      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${
-        environment === 'dev' ? 'display' : 'display-none'
-      }`}
+      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${environment === 'dev' ? 'display' : 'display-none'
+        }`}
     >
       <div className="image-container">
         <img
