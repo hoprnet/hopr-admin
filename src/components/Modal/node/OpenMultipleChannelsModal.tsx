@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../../store';
 import { actionsAsync } from '../../../store/slices/node/actionsAsync';
 import { utils } from 'ethers';
 import { sendNotification } from '../../../hooks/useWatcher/notifications';
+import { HOPR_TOKEN_USED } from '../../../../config';
 
 //Mui
 import CloseIcon from '@mui/icons-material/Close';
@@ -223,7 +224,7 @@ export const OpenMultipleChannelsModal = () => {
             placeholder="Amount"
             value={amount}
             onChange={(e) => set_amount(e.target.value)}
-            InputProps={{ endAdornment: <InputAdornment position="end">mHOPR</InputAdornment> }}
+            InputProps={{ endAdornment: <InputAdornment position="end">{HOPR_TOKEN_USED}</InputAdornment> }}
             sx={{ mt: '6px' }}
           />
         </SDialogContent>
