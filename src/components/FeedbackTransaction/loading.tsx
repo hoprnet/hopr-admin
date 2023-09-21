@@ -13,8 +13,8 @@ const ldsDefaultAnimation = keyframes`
 const Loader = styled.div`
   display: inline-block;
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: 30px;
+  height: 30px;
 `;
 
 const Ball = styled.div`
