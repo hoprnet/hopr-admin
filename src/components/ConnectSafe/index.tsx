@@ -76,6 +76,9 @@ export default function ConnectSafe() {
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
+  const activePendingSafeTransaction = useAppSelector(
+    (store) => store.app.configuration.notifications.pendingSafeTransaction
+  );
 
   const menuRef = useRef<HTMLButtonElement>(null);
 
@@ -122,7 +125,7 @@ export default function ConnectSafe() {
           browserClient,
           safeAddress,
           safes,
-        }),
+        })
       );
     }
   }, [safeAddress]);
@@ -133,6 +136,7 @@ export default function ConnectSafe() {
       dispatch(safeActions.setSelectedSafe(safeAddress));
       observePendingSafeTransactions({
         dispatch,
+        active: activePendingSafeTransaction,
         previousState: prevPendingSafeTransaction,
         selectedSafeAddress: safeAddress,
         signer,
@@ -144,19 +148,19 @@ export default function ConnectSafe() {
         safeActionsAsync.getSafeInfoThunk({
           signer: signer,
           safeAddress,
-        }),
+        })
       );
       dispatch(
         safeActionsAsync.getAllSafeTransactionsThunk({
           signer,
           safeAddress,
-        }),
+        })
       );
       dispatch(
         safeActionsAsync.getSafeDelegatesThunk({
           signer,
           options: { safeAddress },
-        }),
+        })
       );
     }
   };
@@ -219,13 +223,13 @@ export default function ConnectSafe() {
                 key={`${safe.safeAddress}_${index}`}
                 value={safe.safeAddress}
                 onClick={() => {
-                  useSelectedSafe(safe.safeAddress)
+                  useSelectedSafe(safe.safeAddress);
                 }}
               >
                 {safe.safeAddress &&
                   `${safe.safeAddress.substring(0, 6)}...${safe.safeAddress.substring(
                     safe.safeAddress.length - 8,
-                    safe.safeAddress.length,
+                    safe.safeAddress.length
                   )}`}
               </MenuItem>
             ))}
