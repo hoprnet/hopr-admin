@@ -35,5 +35,5 @@ Builds the Node Admin docker image with the name `node-admin`.
 
 ### `docker run -p 8080:80 node-admin`
 
-Runs the Node Admin doker image exposing the 8080 port.
+Runs the Node Admin container exposing the 8080 port.
 To access the Node Admin you should go to `http://localhost:8080/`
