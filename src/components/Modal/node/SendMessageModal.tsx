@@ -110,8 +110,11 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       messagePayload.path = [];
     }
     if (sendMode === 'numberOfHops') {
-      if (numberOfHops === 0) messagePayload.path = [];
-      messagePayload.hops = numberOfHops;
+      if (numberOfHops === 0) {
+        messagePayload.path = [];
+      } else {
+        messagePayload.hops = numberOfHops;
+      }
     }
     if (sendMode == 'path') {
       const pathElements = path.replace(/(\r\n|\n|\r| )/gm, '').split(',');
