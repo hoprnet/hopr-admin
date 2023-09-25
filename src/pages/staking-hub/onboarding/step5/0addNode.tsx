@@ -77,7 +77,8 @@ export default function AddNode() {
 
 
   const addressIsOwnerAddress = () => {
-   return ownerAddress?.toLocaleLowerCase() === address?.toLocaleLowerCase()
+    return ownerAddress?.toLocaleLowerCase() === address?.toLocaleLowerCase()
+  }
 
   return (
     <StepContainer
