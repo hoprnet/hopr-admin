@@ -145,7 +145,7 @@ export default function AddNode() {
         fullWidth
         style={{ marginTop: '16px' }}
         error={addressIsOwnerAddress()}
-        helperText={addressIsOwnerAddress() ? "Your node address can't be the owner address" : "Address should start with 0x"}
+        helperText={addressIsOwnerAddress() ? "You entered your wallet address and you should enter your Node Address" : "Address should start with 0x"}
       />
     </StepContainer>
   );
