@@ -144,7 +144,7 @@ export default function FundNode() {
           <StyledInstructions>
             <StyledText>SEND xDAI TO NODE {' '}
               <BlueTooltip title="Enter the amount of xDAI you would like to transfer from your Safe to your node." >
-                <img src='/assets/question-icon.svg' style={{ width: "14px" }} />
+                <img src='/assets/question-icon.svg' style={{ height: "100%" }} />
               </BlueTooltip></StyledText>
           </StyledInstructions>
           <StyledInputGroup>

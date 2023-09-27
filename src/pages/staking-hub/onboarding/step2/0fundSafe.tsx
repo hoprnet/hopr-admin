@@ -29,6 +29,8 @@ import {
   StyledTextField,
   Text
 } from '../styled';
+
+// MUI
 import { Tooltip, TooltipProps, tooltipClasses } from '@mui/material';
 
 const GreenText = styled.div`
@@ -228,7 +230,7 @@ const FundsToSafe = () => {
           <Text>
             Move <Lowercase>x</Lowercase>DAI to safe {' '}
             <BlueTooltip title="Enter the amount of xDAI you would like to deposit to your Safe. In a later step this will be used to fund your node." >
-              <img src='/assets/question-icon.svg' style={{ width: "14px" }} />
+              <img src='/assets/question-icon.svg' style={{ height: "100%" }} />
             </BlueTooltip>
           </Text>
         </StyledInstructions>
@@ -266,7 +268,7 @@ const FundsToSafe = () => {
           <Text>
             Move <Lowercase>wx</Lowercase>HOPR into safe {' '}
             <BlueTooltip title="Enter the amount of wxHOPR you would like to deposit to your Safe. We recommend moving all of your wxHOPR." >
-              <img src='/assets/question-icon.svg' style={{ width: "14px" }} />
+              <img src='/assets/question-icon.svg' style={{ height: "100%" }} />
             </BlueTooltip>
           </Text>
           <GreenText></GreenText>
