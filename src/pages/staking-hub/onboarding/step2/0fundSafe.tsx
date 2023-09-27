@@ -29,6 +29,7 @@ import {
   StyledTextField,
   Text
 } from '../styled';
+import { Tooltip, TooltipProps, tooltipClasses } from '@mui/material';
 
 const GreenText = styled.div`
   color: #004e00;
@@ -46,6 +47,17 @@ const GreenText = styled.div`
     margin-bottom: 16px;
   }
 `;
+
+const BlueTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: "#DAF8FF",
+    color: '#414141',
+    borderRadius: "10px",
+    fontSize: "12px"
+  },
+}));
 
 const FundsToSafe = () => {
   const dispatch = useAppDispatch();
@@ -214,7 +226,10 @@ const FundsToSafe = () => {
       <StyledForm>
         <StyledInstructions>
           <Text>
-            Move <Lowercase>x</Lowercase>DAI to safe
+            Move <Lowercase>x</Lowercase>DAI to safe {' '}
+            <BlueTooltip title="Enter the amount of xDAI you would like to deposit to your Safe. In a later step this will be used to fund your node." >
+              <img src='/assets/question-icon.svg' style={{ width: "14px" }} />
+            </BlueTooltip>
           </Text>
         </StyledInstructions>
         <StyledInputGroup>
@@ -225,11 +240,13 @@ const FundsToSafe = () => {
             size="small"
             value={xdaiValue}
             onChange={(e) => set_xdaiValue(e.target.value)}
-            InputProps={{ inputProps: {
-              style: { textAlign: 'right' },
-              min: 0,
-              pattern: '[0-9]*',
-            } }}
+            InputProps={{
+              inputProps: {
+                style: { textAlign: 'right' },
+                min: 0,
+                pattern: '[0-9]*',
+              }
+            }}
             helperText={`min. ${MINIMUM_XDAI_TO_FUND}`}
           />
           <StyledCoinLabel>xDAI</StyledCoinLabel>
@@ -247,7 +264,10 @@ const FundsToSafe = () => {
       <StyledForm>
         <StyledInstructions>
           <Text>
-            Move <Lowercase>wx</Lowercase>HOPR into safe
+            Move <Lowercase>wx</Lowercase>HOPR into safe {' '}
+            <BlueTooltip title="Enter the amount of wxHOPR you would like to deposit to your Safe. We recommend moving all of your wxHOPR." >
+              <img src='/assets/question-icon.svg' style={{ width: "14px" }} />
+            </BlueTooltip>
           </Text>
           <GreenText></GreenText>
         </StyledInstructions>
@@ -259,11 +279,13 @@ const FundsToSafe = () => {
             size="small"
             value={wxhoprValue}
             onChange={(e) => set_wxhoprValue(e.target.value)}
-            InputProps={{ inputProps: {
-              style: { textAlign: 'right' },
-              min: 0,
-              pattern: '[0-9]*',
-            } }}
+            InputProps={{
+              inputProps: {
+                style: { textAlign: 'right' },
+                min: 0,
+                pattern: '[0-9]*',
+              }
+            }}
             helperText={`min. ${wxhoprValueMin}`}
           />
           <StyledCoinLabel>wxHOPR</StyledCoinLabel>
