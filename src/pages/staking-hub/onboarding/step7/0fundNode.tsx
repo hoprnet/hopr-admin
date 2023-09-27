@@ -23,7 +23,8 @@ const BlueTooltip = styled(({ className, ...props }: TooltipProps) => (
     backgroundColor: "#DAF8FF",
     color: '#414141',
     borderRadius: "10px",
-    fontSize: "12px"
+    fontSize: "12px",
+    boxShadow: "0px 4px 4px #00000040"
   },
 }));
 
