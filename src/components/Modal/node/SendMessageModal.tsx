@@ -175,9 +175,18 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       const start = input.selectionStart!;
       const end = input.selectionEnd!;
       set_path((prevPath) => prevPath.substring(0, start) + '\n' + prevPath.substring(end));
-      // Set a timeout to ensure that the focus and blur events have a chance to complete
       setTimeout(() => {
         input.setSelectionRange(start + 1, start + 1);
+      }, 0);
+    }
+    else if (e.key === ',') {
+      e.preventDefault(); // Prevent space key from inserting a space
+      const input = e.target as HTMLInputElement;
+      const start = input.selectionStart!;
+      const end = input.selectionEnd!;
+      set_path((prevPath) => prevPath.substring(0, start) + ',\n' + prevPath.substring(end));
+      setTimeout(() => {
+        input.setSelectionRange(start + 2, start + 2);
       }, 0);
     }
   };
