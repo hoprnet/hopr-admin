@@ -30,6 +30,7 @@ export default function AddNode() {
   const nodesAddedToSafe = useAppSelector(
     (store) => store.stakingHub.safeInfo.data.registeredNodesInNetworkRegistryParsed,
   );
+  const ownerAddress = useAppSelector((store) => store.stakingHub.safeInfo.data.owners[0].owner.id)
   const account = useAppSelector((store) => store.web3.account);
   const signer = useEthersSigner();
   const [isLoading, set_isLoading] = useState(false);
@@ -50,10 +51,10 @@ export default function AddNode() {
           },
         }),
       ).unwrap()
-      .then(()=>{
-        dispatch(stakingHubActions.setOnboardingNodeAddress(address));
-        dispatch(stakingHubActions.setOnboardingStep(13));
-      })
+        .then(() => {
+          dispatch(stakingHubActions.setOnboardingNodeAddress(address));
+          dispatch(stakingHubActions.setOnboardingStep(13));
+        })
         .catch(e => {
           console.log('ERROR when adding a delegate to Safe:', e)
           if (e.includes("does not exist or it's still not indexed")) {
@@ -70,9 +71,14 @@ export default function AddNode() {
             });
           }
         });
-        set_isLoading(false);
+      set_isLoading(false);
     }
   };
+
+
+  const addressIsOwnerAddress = () => {
+    return ownerAddress?.toLocaleLowerCase() === address?.toLocaleLowerCase()
+  }
 
   return (
     <StepContainer
@@ -117,7 +123,7 @@ export default function AddNode() {
             <span>
               <ConfirmButton
                 onClick={addDelegate}
-                disabled={!nodeInNetworkRegistry}
+                disabled={!nodeInNetworkRegistry || addressIsOwnerAddress()}
                 pending={isLoading}
                 style={{ width: '250px' }}
               >
@@ -133,10 +139,13 @@ export default function AddNode() {
         label="Node Address"
         placeholder="Your address..."
         value={address}
-        onChange={(e) => set_address(e.target.value)}
+        onChange={(e) =>
+          set_address(e.target.value)
+        }
         fullWidth
         style={{ marginTop: '16px' }}
-        helperText={'Address should start with 0x'}
+        error={addressIsOwnerAddress()}
+        helperText={addressIsOwnerAddress() ? "You entered your wallet address and you should enter your Node Address" : "Address should start with 0x"}
       />
     </StepContainer>
   );
