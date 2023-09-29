@@ -117,25 +117,35 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       }
     }
     if (sendMode == 'path') {
-      const pathElements = path.replace(/(\r\n|\n|\r| )/gm, '').split(',');
+      const pathElements = path
+        .split('\n')
+        .map((line) =>
+          line
+            .split(',')
+            .map((element) => element.trim())
+            .filter((element) => element !== '')
+        )
+        .flat();
+
       const validatedPath = pathElements.map((element) => validatePeerId(element));
       messagePayload.path = validatedPath;
     }
 
-    dispatch(actionsAsync.sendMessageThunk(messagePayload))
-      .unwrap()
-      .then((res) => {
-        console.log('@message: ', res?.challenge);
-        set_status('Message sent');
-        handleCloseModal();
-      })
-      .catch((e) => {
-        console.log('@message err:', e);
-        set_status(e.error);
-      })
-      .finally(() => {
-        set_loader(false);
-      });
+    console.log(messagePayload)
+    // dispatch(actionsAsync.sendMessageThunk(messagePayload))
+    //   .unwrap()
+    //   .then((res) => {
+    //     console.log('@message: ', res?.challenge);
+    //     set_status('Message sent');
+    //     handleCloseModal();
+    //   })
+    //   .catch((e) => {
+    //     console.log('@message err:', e);
+    //     set_status(e.error);
+    //   })
+    //   .finally(() => {
+    //     set_loader(false);
+    //   });
   };
 
   const handleSendModeChange = (event: SelectChangeEvent) => {
