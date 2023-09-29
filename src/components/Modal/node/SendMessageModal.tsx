@@ -131,21 +131,20 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       messagePayload.path = validatedPath;
     }
 
-    console.log(messagePayload)
-    // dispatch(actionsAsync.sendMessageThunk(messagePayload))
-    //   .unwrap()
-    //   .then((res) => {
-    //     console.log('@message: ', res?.challenge);
-    //     set_status('Message sent');
-    //     handleCloseModal();
-    //   })
-    //   .catch((e) => {
-    //     console.log('@message err:', e);
-    //     set_status(e.error);
-    //   })
-    //   .finally(() => {
-    //     set_loader(false);
-    //   });
+    dispatch(actionsAsync.sendMessageThunk(messagePayload))
+      .unwrap()
+      .then((res) => {
+        console.log('@message: ', res?.challenge);
+        set_status('Message sent');
+        handleCloseModal();
+      })
+      .catch((e) => {
+        console.log('@message err:', e);
+        set_status(e.error);
+      })
+      .finally(() => {
+        set_loader(false);
+      });
   };
 
   const handleSendModeChange = (event: SelectChangeEvent) => {
