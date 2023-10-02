@@ -50,6 +50,17 @@ const PathOrHops = styled.div`
 
 `;
 
+const StyledSelect = styled(Select)`
+
+.alternatingMenuItemGrey {
+  background-color: grey;
+}
+
+.alternatingMenuItemBlue {
+  background-color: blue;
+}
+`;
+
 
 const StatusContainer = styled.div`
   height: 32px;
@@ -77,6 +88,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
 
   const loginData = useAppSelector((store) => store.auth.loginData);
   const aliases = useAppSelector((store) => store.node.aliases.data);
+  const peers = useAppSelector((store) => store.node.peers.data?.connected)
 
   useEffect(() => {
     switch (sendMode) {
@@ -90,6 +102,13 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
         set_numberOfHops(0);
         set_path('');
     }
+    if (!(loginData.apiEndpoint && loginData.apiToken)) return;
+    dispatch(actionsAsync.getPeersThunk({
+      apiToken: loginData.apiToken,
+      apiEndpoint: loginData.apiEndpoint
+    }))
+    console.log(peers)
+    console.log(aliases)
   }, [sendMode, path, numberOfHops]);
 
   const handleSendMessage = () => {
@@ -167,6 +186,11 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
     set_status('');
   };
 
+  const handleChangeReceiver = (event: SelectChangeEvent<unknown>) => {
+    const selectedValue = event.target.value as string;
+    set_receiver(selectedValue)
+  }
+
   const handlePathKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === ' ' || e.key === 'Spacebar') {
       e.preventDefault(); // Prevent space key from inserting a space
@@ -204,6 +228,24 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
     return receiver;
   };
 
+  const hasAlias = (peerId: string) => {
+    if (aliases) {
+      return Object.values(aliases).includes(peerId)
+    }
+  }
+
+  const findAlias = (peerId: string) => {
+    if (aliases) {
+      for (const alias in aliases) {
+        if (aliases[alias] === peerId) {
+          return alias;
+        }
+      }
+    }
+    return null;
+  };
+
+
   return (
     <>
       <IconButton
@@ -236,14 +278,23 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
         </TopBar>
         <SDialogContent
         >
-          <TextField
+          {/* <TextField
             label="Receiver (Peer Id)"
             placeholder="16Uiu2..."
             value={receiver}
             onChange={(e) => set_receiver(e.target.value)}
             required
             fullWidth
-          />
+          /> */}
+          <StyledSelect
+            value={receiver}
+            onChange={handleChangeReceiver}
+            label="Receiver (Peer Id)">
+            {peers!.map((peer, index) =>
+              <MenuItem className={index % 2 === 0 ? 'alternatingMenuItemGrey' : 'alternatingMenuItemBlue'} value={peer.peerId}>{hasAlias(peer.peerId) ? `${findAlias(peer.peerId)} (${peer.peerId})` : peer.peerId}</MenuItem>
+            )}
+          </StyledSelect>
+
           <TextField
             label="Message"
             placeholder="Hello Node..."
