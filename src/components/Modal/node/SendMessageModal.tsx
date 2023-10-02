@@ -50,18 +50,6 @@ const PathOrHops = styled.div`
 
 `;
 
-const StyledSelect = styled(Select)`
-
-.alternatingMenuItemGrey {
-  background-color: grey;
-}
-
-.alternatingMenuItemBlue {
-  background-color: blue;
-}
-`;
-
-
 const StatusContainer = styled.div`
   height: 32px;
 `;
@@ -278,22 +266,14 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
         </TopBar>
         <SDialogContent
         >
-          {/* <TextField
-            label="Receiver (Peer Id)"
-            placeholder="16Uiu2..."
-            value={receiver}
-            onChange={(e) => set_receiver(e.target.value)}
-            required
-            fullWidth
-          /> */}
-          <StyledSelect
+          <Select
             value={receiver}
             onChange={handleChangeReceiver}
             label="Receiver (Peer Id)">
             {peers!.map((peer, index) =>
-              <MenuItem className={index % 2 === 0 ? 'alternatingMenuItemGrey' : 'alternatingMenuItemBlue'} value={peer.peerId}>{hasAlias(peer.peerId) ? `${findAlias(peer.peerId)} (${peer.peerId})` : peer.peerId}</MenuItem>
+              <MenuItem value={peer.peerId}>{hasAlias(peer.peerId) ? `${findAlias(peer.peerId)} (${peer.peerId})` : peer.peerId}</MenuItem>
             )}
-          </StyledSelect>
+          </Select>
 
           <TextField
             label="Message"
