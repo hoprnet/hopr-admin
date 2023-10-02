@@ -90,13 +90,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
         set_numberOfHops(0);
         set_path('');
     }
-    if (!(loginData.apiEndpoint && loginData.apiToken)) return;
-    dispatch(actionsAsync.getPeersThunk({
-      apiToken: loginData.apiToken,
-      apiEndpoint: loginData.apiEndpoint
-    }))
-    console.log(peers)
-    console.log(aliases)
+
   }, [sendMode, path, numberOfHops]);
 
   const handleSendMessage = () => {
