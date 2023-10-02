@@ -260,11 +260,11 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
         </TopBar>
         <SDialogContent
         >
+          <span style={{ margin: '0px 0px -2px' }}>Receiver:</span>
           <Select
             value={receiver}
-            onChange={handleChangeReceiver}
-            label="Receiver (Peer Id)">
-            {peers!.map((peer, index) =>
+            onChange={handleChangeReceiver}>
+            {peers!.map((peer) =>
               <MenuItem value={peer.peerId}>{hasAlias(peer.peerId) ? `${findAlias(peer.peerId)} (${peer.peerId})` : peer.peerId}</MenuItem>
             )}
           </Select>
