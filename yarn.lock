@@ -892,10 +892,10 @@
   resolved "https://registry.yarnpkg.com/@graphql-typed-document-node/core/-/core-3.2.0.tgz#5f3d96ec6b2354ad6d8a28bf216a1d97b5426861"
   integrity sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==
 
-"@hoprnet/hopr-sdk@^2.0.0-beta.9":
-  version "2.0.0-beta.9"
-  resolved "https://registry.yarnpkg.com/@hoprnet/hopr-sdk/-/hopr-sdk-2.0.0-beta.9.tgz#e93d631da2d0d8bfd1f2516aa883b0da201b7eca"
-  integrity sha512-tiWTpRG1IFQ2XbmtjJ6hiP6Ivu8nlDMBvUUZF/riSuyu0PPfky3pxyeVL6a4epc+7DMQ2M79hMKFpNk0wBAgiQ==
+"@hoprnet/hopr-sdk@^2.0.0-beta.10":
+  version "2.0.0-beta.10"
+  resolved "https://registry.yarnpkg.com/@hoprnet/hopr-sdk/-/hopr-sdk-2.0.0-beta.10.tgz#fe1a9eb56d0d23cbf2360bc6a5a3a275d77b0474"
+  integrity sha512-T1H3STeRdcz51UK197ig/ZbmH/NqCWXJRkh9OieVz+KHojx/dqnLlio+kKKuNkq8d4m0Dmg9+/Ex5KnH82KBHA==
   dependencies:
     cross-fetch "^3.1.5"
     debug "^4.3.4"

@@ -6,8 +6,8 @@ import { Address, formatEther } from 'viem';
 import { appActions } from '../../store/slices/app';
 import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config'
 import { erc20ABI, useContractRead, useWalletClient } from 'wagmi';
+import { web3 } from '@hoprnet/hopr-sdk';
 import { nodeManagementModuleAbi } from '../../abi/nodeManagementModuleAbi';
-import { nodeSafeRegistryAbi } from '../../abi/nodeSafeRegistryAbi';
 import { MAX_UINT256, createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../utils/blockchain'
 
 //Stores
@@ -59,7 +59,7 @@ function SafeSection() {
 
   const { data: isNodeSafeRegistered } = useContractRead({
     address: HOPR_NODE_SAFE_REGISTRY,
-    abi: nodeSafeRegistryAbi,
+    abi: web3.hoprNodeSafeRegistryABI,
     functionName: 'isNodeSafeRegistered',
     args: [
       {

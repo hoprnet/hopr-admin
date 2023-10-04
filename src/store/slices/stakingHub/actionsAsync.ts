@@ -10,8 +10,7 @@ import {
   HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,
   wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS
 } from '../../../../config';
-import NetworkRegistryAbi from '../../../abi/network-registry-abi.json';
-import { nodeManagementModuleAbi }  from '../../../abi/nodeManagementModuleAbi';
+import { web3 } from '@hoprnet/hopr-sdk';
 import { Address, PublicClient, WalletClient, parseEther, publicActions } from 'viem';
 import { gql } from 'graphql-request';
 import { stakingHubActions } from '.';
@@ -78,7 +77,7 @@ const registerNodeAndSafeToNRThunk = createAsyncThunk<
     const { request } = await superWalletClient.simulateContract({
       account: payload.walletClient.account,
       address: HOPR_NETWORK_REGISTRY,
-      abi: NetworkRegistryAbi,
+      abi: web3.hoprNetworkRegistryABI,
       functionName: 'managerRegister',
       args: [[payload.safeAddress], [payload.nodeAddress]],
     });
@@ -224,8 +223,8 @@ type ParsedTargets =   {
 }
 
 const getModuleTargetsThunk = createAsyncThunk<
-  ParsedTargets, 
-  { safeAddress: string; moduleAddress: string, walletClient: PublicClient; }, 
+  ParsedTargets,
+  { safeAddress: string; moduleAddress: string, walletClient: PublicClient; },
   { state: RootState }
 >(
   'stakingHub/getNodeConfiguration',
@@ -235,17 +234,17 @@ const getModuleTargetsThunk = createAsyncThunk<
     console.log('stakingHub/getNodeConfiguration', safeAddress, moduleAddress);
     try {
       const superWalletClient = walletClient.extend(publicActions);
-  
+
       const channelsTarget = await superWalletClient.readContract({
         address: moduleAddress as `0x${string}`,
-        abi: nodeManagementModuleAbi,
+        abi: web3.hoprNodModuleABI,
         functionName: 'tryGetTarget',
         args: [HOPR_CHANNELS_SMART_CONTRACT_ADDRESS]
       }) as [boolean, BigInt];
 
       const wxHOPRTarget = await superWalletClient.readContract({
         address: moduleAddress as `0x${string}`,
-        abi: nodeManagementModuleAbi,
+        abi: web3.hoprNodModuleABI,
         functionName: 'tryGetTarget',
         args: [wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS]
       }) as [boolean, BigInt];
@@ -281,7 +280,7 @@ const getModuleTargetsThunk = createAsyncThunk<
        * (CapabilityPermission) as uint8: defaultApproveFunctionPermisson                               (for Token contract)
        * (CapabilityPermission) as uint8: defaultSendFunctionPermisson                                  (for Token contract)
        */
-      
+
       return targets;
     } catch (e) {
       return rejectWithValue(e);
@@ -335,15 +334,15 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
               if (wxHoprAllowanceCheck) {
                 return 16;
               }
-        
+
               return 15;
             }
-      
+
             return 14;
           }
 
           return 13;
-          
+
         }
 
         return 11;
