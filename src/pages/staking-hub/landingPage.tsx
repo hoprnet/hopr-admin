@@ -195,7 +195,6 @@ const BrandsSection = styled.div`
   flex-wrap: wrap;
   margin: 45px 0 65px 0 ;
   @media screen and (max-height: 1080px) {
-
   margin: 20px 0 65px 0 ;
   }
 `;
@@ -336,11 +335,6 @@ const StakingLandingPage = () => {
           <ImageContainer>
             <Image
               className='staking-landing'
-              // style={{
-              //   position: 'absolute',
-              //   height: '80%',
-              //   top: '40px',
-              // }}
               src="/assets/staking-landing.svg"
             />
             <Image src="/assets/yellow-ellipse.svg" />
