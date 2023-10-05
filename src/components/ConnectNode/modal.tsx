@@ -163,6 +163,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     const existingItem = nodesSavedLocally[existingItemIndex] as ParsedNode;
     if (existingItem && existingItem.apiToken.length > 0 && loginData.apiToken === existingItem.apiToken)
       set_saveApiToken(true);
+    console.log("HERE TOO")
   }, [loginData]);
 
   useEffect(() => {
@@ -181,7 +182,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     if (loginData.apiToken) {
       set_apiToken(loginData.apiToken);
     }
-
+    console.log("HERE USE EFFECT")
     // If have have saved the node with the same apiToken, we check the saveApiToken checkbox
     const existingItemIndex = nodesSavedLocally.findIndex(
       (item) => item.apiEndpoint === loginData.apiEndpoint && item.apiToken === loginData.apiToken,
