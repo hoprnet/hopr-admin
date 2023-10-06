@@ -181,7 +181,6 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     if (loginData.apiToken) {
       set_apiToken(loginData.apiToken);
     }
-
     // If have have saved the node with the same apiToken, we check the saveApiToken checkbox
     const existingItemIndex = nodesSavedLocally.findIndex(
       (item) => item.apiEndpoint === loginData.apiEndpoint && item.apiToken === loginData.apiToken,
