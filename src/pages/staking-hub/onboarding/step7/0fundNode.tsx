@@ -13,6 +13,22 @@ import { useAppDispatch, useAppSelector } from '../../../../store';
 import { safeActionsAsync } from '../../../../store/slices/safe';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
+// MUI
+import { Tooltip, TooltipProps, tooltipClasses } from '@mui/material';
+
+const BlueTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: "#DAF8FF",
+    color: '#414141',
+    borderRadius: "10px",
+    fontSize: "12px",
+    boxShadow: "0px 4px 4px #00000040"
+  },
+}));
+
+
 const StyledForm = styled.div`
   width: 100%;
   display: flex;
@@ -127,7 +143,10 @@ export default function FundNode() {
       <div>
         <StyledForm>
           <StyledInstructions>
-            <StyledText>SEND xDAI TO NODE</StyledText>
+            <StyledText>SEND xDAI TO NODE {' '}
+              <BlueTooltip title="Enter the amount of xDAI you would like to transfer from your Safe to your node." >
+                <img src='/assets/question-icon.svg' style={{ height: "100%" }} />
+              </BlueTooltip></StyledText>
           </StyledInstructions>
           <StyledInputGroup>
             <StyledTextField
