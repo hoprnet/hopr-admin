@@ -5,29 +5,26 @@ import { RootState, useAppSelector } from '../..';
 import { nodeActionsAsync } from '../node';
 import { initialState } from './initialState';
 const { APIError } = utils
-const { getInfo } = api;
+const { getInfo, getAddresses } = api;
 
 export const loginThunk = createAsyncThunk<
   GetInfoResponseType | {force: boolean} | undefined,
   { apiToken: string; apiEndpoint: string; force?: boolean },
-  { state: RootState, rejectValue: { data: string; type:  'API_ERROR'  | 'NOT_ELIGIBLE_ERROR' | 'FETCH_ERROR'}, getState: typeof initialState}
+  { state: RootState, rejectValue: { data: string; type:  'API_ERROR'  | 'NOT_ELIGIBLE_ERROR' | 'FETCH_ERROR'}}
 >('auth/login', async (payload, {
   rejectWithValue,
   dispatch,
-  getState
 }) => {
   const {
     apiEndpoint,
     apiToken,
   } = payload;
-  const nodeAddress = getState().node.addresses.data.native;
   try {
     const info = await getInfo({
       apiEndpoint: apiEndpoint,
       apiToken: apiToken,
     });
     console.log(info)
-    // throw new APIError({status:"UNKOWN_FAILURE", error: "Cannot read properties of undefined (reading 'get_peer_multiaddresses')"})
     if (!payload.force && !info.isEligible ) {
       const e = new Error();
       e.name = 'NOT_ELIGIBLE_ERROR';
@@ -46,14 +43,6 @@ export const loginThunk = createAsyncThunk<
       });
     }
 
-    if(e instanceof APIError && e.error?.includes("get_peer_multiaddresses")){
-      const nodeAddressIsAvailable = nodeAddress ? `\n\n Node Address: ${nodeAddress}` : "";
-      return rejectWithValue({
-        data: "You Node seems to be starting, wait a couple of minutes before accessing it." + nodeAddressIsAvailable,
-        type: 'API_ERROR',
-      });
-    }
-
     if (payload.force) {
       return { force: true };
     }
@@ -68,18 +57,26 @@ export const loginThunk = createAsyncThunk<
 
     // see if connecting error is due to low balance
     try {
-      const nodeBalances = await dispatch(
-        nodeActionsAsync.getBalancesThunk({
-          apiEndpoint,
-          apiToken,
-          force: true,
-        }),
-      ).unwrap();
-
       const addresses = await dispatch(
         nodeActionsAsync.getAddressesThunk({
           apiToken,
           apiEndpoint,
+          force: true,
+        }),
+        ).unwrap();
+
+      if(e instanceof APIError && e.error?.includes("get_peer_multiaddresses")){
+        const nodeAddressIsAvailable = addresses?.native ? `\n\n Node Address: ${addresses.native}` : "";
+        return rejectWithValue({
+          data: "You Node seems to be starting, wait a couple of minutes before accessing it." + nodeAddressIsAvailable,
+          type: 'API_ERROR',
+        });
+      }
+
+      const nodeBalances = await dispatch(
+        nodeActionsAsync.getBalancesThunk({
+          apiEndpoint,
+          apiToken,
           force: true,
         }),
       ).unwrap();
