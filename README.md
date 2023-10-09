@@ -29,9 +29,11 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 
 
-### `docker build -f ./scripts/NodeAdmin.Dockerfile .`
+### `docker build -t node-admin -f ./scripts/NodeAdmin.Dockerfile .`
 
-Builds the Node Admin docker image.
+Builds the Node Admin docker image with the name `node-admin`.
 
+### `docker run -p 8080:80 node-admin`
 
-
+Runs the Node Admin container exposing the 8080 port.
+To access the Node Admin you should go to `http://localhost:8080/`

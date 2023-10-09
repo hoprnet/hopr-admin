@@ -27,7 +27,7 @@ COPY . .
 
 RUN yarn run build-node
 
-FROM nginx:1.25.2@sha256:48a84a0728cab8ac558f48796f901f6d31d287101bc8b317683678125e0d2d35 AS runtime
+FROM nginx:stable@sha256:5be2b646dfda41632549b19795721e3e676903c7d94567838fb1aa0e39ae1bfc AS runtime
 
 WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*

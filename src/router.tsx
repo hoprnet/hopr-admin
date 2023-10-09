@@ -74,6 +74,7 @@ import { stakingHubActions } from './store/slices/stakingHub';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyNotice from './pages/PrivacyNotice';
 import MetaMaskFox from './future-hopr-lib-components/Icons/MetaMaskFox';
+import { trackGoal } from 'fathom-client';
 
 export type ApplicationMapType = {
   groupName: string;
@@ -375,6 +376,8 @@ const LayoutEnhanced = () => {
           })
         ).unwrap();
         if (loginInfo) {
+          // We do this after the loginInfo to make sure the login from url was successful
+          trackGoal('Y641EPNA', 1) // LOGIN_TO_NODE_BY_URL
           dispatch(
             nodeActionsAsync.getInfoThunk({
               apiToken,
@@ -402,6 +405,7 @@ const LayoutEnhanced = () => {
           dispatch(nodeActions.initializeMessagesWebsocket());
         }
       } catch (e) {
+        trackGoal('ZUIBL4M8', 1) // FAILED_CONNECT_TO_NODE_BY_URL
         // error is handled on redux
       }
     };
