@@ -117,15 +117,14 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       }
     }
     if (sendMode == 'path') {
-      const pathElements = path
-        .split('\n')
-        .map((line) =>
-          line
-            .split(',')
-            .map((element) => element.trim())
-            .filter((element) => element !== '')
-        )
-        .flat();
+      const pathElements: string[] = [];
+      const lines = path.split('\n')
+      console.log(lines)
+      for (const line of lines) {
+        const elements = line.split(',').map((element) => element.trim()).filter((element) => element !== '');
+        pathElements.push(...elements);
+      }
+
 
       const validatedPath = pathElements.map((element) => validatePeerId(element));
       messagePayload.path = validatedPath;
