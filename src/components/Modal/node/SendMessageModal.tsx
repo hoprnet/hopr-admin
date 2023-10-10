@@ -68,7 +68,6 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const [numberOfHops, set_numberOfHops] = useState<number>(0);
   const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops' | 'directMessage'>('directMessage');
   const [message, set_message] = useState<string>('');
-  const [receiver, set_receiver] = useState<string>(props.peerId ? props.peerId : '');
   const [openModal, set_openModal] = useState<boolean>(false);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const aliases = useAppSelector((store) => store.node.aliases.data);
@@ -146,22 +145,21 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       const validatedPath = pathElements.map((element) => validatePeerId(element));
       messagePayload.path = validatedPath;
     }
-    console.log(messagePayload)
 
-    // dispatch(actionsAsync.sendMessageThunk(messagePayload))
-    //   .unwrap()
-    //   .then((res) => {
-    //     console.log('@message: ', res?.challenge);
-    //     set_status('Message sent');
-    //     handleCloseModal();
-    //   })
-    //   .catch((e) => {
-    //     console.log('@message err:', e);
-    //     set_status(e.error);
-    //   })
-    //   .finally(() => {
-    //     set_loader(false);
-    //   });
+    dispatch(actionsAsync.sendMessageThunk(messagePayload))
+      .unwrap()
+      .then((res) => {
+        console.log('@message: ', res?.challenge);
+        set_status('Message sent');
+        handleCloseModal();
+      })
+      .catch((e) => {
+        console.log('@message err:', e);
+        set_status(e.error);
+      })
+      .finally(() => {
+        set_loader(false);
+      });
   };
 
   const handleSendModeChange = (event: SelectChangeEvent) => {
