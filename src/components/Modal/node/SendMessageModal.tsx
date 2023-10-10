@@ -15,6 +15,7 @@ import {
   SelectChangeEvent,
   Select,
   MenuItem,
+  Autocomplete,
 } from '@mui/material'
 
 import { SendMessagePayloadType } from '@hoprnet/hopr-sdk';
@@ -69,14 +70,37 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const [message, set_message] = useState<string>('');
   const [receiver, set_receiver] = useState<string>(props.peerId ? props.peerId : '');
   const [openModal, set_openModal] = useState<boolean>(false);
-
-  const maxLength = 500;
-  const remainingChars = maxLength - message.length;
-
-
   const loginData = useAppSelector((store) => store.auth.loginData);
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const peers = useAppSelector((store) => store.node.peers.data?.connected)
+
+  const findReceiver = (peerId: string) => {
+    if (peers) {
+      for (const peer of peers) {
+        if (peer.peerId === peerId)
+          return peer;
+      }
+    }
+    return null;
+  }
+
+  const [selectedReceiver, set_selectedReceiver] = useState<{
+    peerId: string;
+    peerAddress: string;
+    quality: number;
+    multiAddr: string;
+    heartbeats: {
+      sent: number;
+      success: number;
+    };
+    lastSeen: number;
+    backoff: number;
+    isNew: boolean;
+    reportedVersion: string;
+  } | null>(props.peerId ? findReceiver(props.peerId) : null);
+
+  const maxLength = 500;
+  const remainingChars = maxLength - message.length;
 
   useEffect(() => {
     switch (sendMode) {
@@ -97,7 +121,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
     if (!(loginData.apiEndpoint && loginData.apiToken)) return;
     set_status('');
     set_loader(true);
-    const validatedReceiver = validatePeerId(receiver);
+    const validatedReceiver = validatePeerId(selectedReceiver!.peerId);
 
     const messagePayload: SendMessagePayloadType = {
       apiToken: loginData.apiToken,
@@ -122,21 +146,22 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       const validatedPath = pathElements.map((element) => validatePeerId(element));
       messagePayload.path = validatedPath;
     }
+    console.log(messagePayload)
 
-    dispatch(actionsAsync.sendMessageThunk(messagePayload))
-      .unwrap()
-      .then((res) => {
-        console.log('@message: ', res?.challenge);
-        set_status('Message sent');
-        handleCloseModal();
-      })
-      .catch((e) => {
-        console.log('@message err:', e);
-        set_status(e.error);
-      })
-      .finally(() => {
-        set_loader(false);
-      });
+    // dispatch(actionsAsync.sendMessageThunk(messagePayload))
+    //   .unwrap()
+    //   .then((res) => {
+    //     console.log('@message: ', res?.challenge);
+    //     set_status('Message sent');
+    //     handleCloseModal();
+    //   })
+    //   .catch((e) => {
+    //     console.log('@message err:', e);
+    //     set_status(e.error);
+    //   })
+    //   .finally(() => {
+    //     set_loader(false);
+    //   });
   };
 
   const handleSendModeChange = (event: SelectChangeEvent) => {
@@ -162,16 +187,11 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
     set_sendMode('directMessage');
     set_numberOfHops(0);
     set_message('');
-    set_receiver(props.peerId ? props.peerId : '');
+    set_selectedReceiver(null);
     set_path('');
     set_openModal(false);
     set_status('');
   };
-
-  const handleChangeReceiver = (event: SelectChangeEvent<unknown>) => {
-    const selectedValue = event.target.value as string;
-    set_receiver(selectedValue)
-  }
 
   const handlePathKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === ' ' || e.key === 'Spacebar') {
@@ -261,13 +281,26 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
         <SDialogContent
         >
           <span style={{ margin: '0px 0px -2px' }}>Receiver:</span>
-          <Select
-            value={receiver}
-            onChange={handleChangeReceiver}>
-            {peers!.map((peer) =>
-              <MenuItem value={peer.peerId}>{hasAlias(peer.peerId) ? `${findAlias(peer.peerId)} (${peer.peerId})` : peer.peerId}</MenuItem>
+          <Autocomplete
+            value={selectedReceiver}
+            onChange={(event, newValue) => {
+              set_selectedReceiver(newValue);
+            }}
+            options={peers || []}
+            getOptionLabel={(peer) =>
+              hasAlias(peer.peerId)
+                ? `${findAlias(peer.peerId)} (${peer.peerId})`
+                : peer.peerId
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Receiver"
+                placeholder="Select Receiver"
+                fullWidth
+              />
             )}
-          </Select>
+          />
 
           <TextField
             label="Message"
@@ -327,7 +360,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
           <Button
             onClick={handleSendMessage}
             disabled={
-              sendMode !== 'directMessage' && (sendMode !== 'automaticPath' && numberOfHops < 0 && path === '') || message.length === 0 || receiver.length === 0
+              selectedReceiver === null || sendMode !== 'directMessage' && (sendMode !== 'automaticPath' && numberOfHops < 0 && path === '') || message.length === 0
             }
             style={{
               width: '100%',
