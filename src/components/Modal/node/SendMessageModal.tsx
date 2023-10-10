@@ -119,7 +119,6 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
     if (sendMode == 'path') {
       const pathElements: string[] = [];
       const lines = path.split('\n')
-      console.log(lines)
       for (const line of lines) {
         const elements = line.split(',').map((element) => element.trim()).filter((element) => element !== '');
         pathElements.push(...elements);
