@@ -24,7 +24,6 @@ export const loginThunk = createAsyncThunk<
       apiEndpoint: apiEndpoint,
       apiToken: apiToken,
     });
-    console.log(info)
     if (!payload.force && !info.isEligible ) {
       const e = new Error();
       e.name = 'NOT_ELIGIBLE_ERROR';
@@ -66,7 +65,7 @@ export const loginThunk = createAsyncThunk<
         ).unwrap();
 
       if(e instanceof APIError && e.error?.includes("get_peer_multiaddresses")){
-        const nodeAddressIsAvailable = addresses?.native ? `\n\n Node Address: ${addresses.native}` : "";
+        const nodeAddressIsAvailable = addresses?.native ? `\n\nNode Address: ${addresses.native}` : "";
         return rejectWithValue({
           data: "You Node seems to be starting, wait a couple of minutes before accessing it." + nodeAddressIsAvailable,
           type: 'API_ERROR',
