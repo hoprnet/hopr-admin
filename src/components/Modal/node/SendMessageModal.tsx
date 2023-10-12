@@ -73,16 +73,6 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const peers = useAppSelector((store) => store.node.peers.data?.connected)
 
-  const findReceiver = (peerId: string) => {
-    if (peers) {
-      for (const peer of peers) {
-        if (peer.peerId === peerId)
-          return peer;
-      }
-    }
-    return null;
-  }
-
   const [selectedReceiver, set_selectedReceiver] = useState<{
     peerId: string;
     peerAddress: string;
@@ -96,7 +86,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
     backoff: number;
     isNew: boolean;
     reportedVersion: string;
-  } | null>(props.peerId ? findReceiver(props.peerId) : null);
+  } | null>(props.peerId ? peers!.find(elem => elem.peerId === props.peerId) || null : null);
 
   const maxLength = 500;
   const remainingChars = maxLength - message.length;
@@ -278,7 +268,6 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
         </TopBar>
         <SDialogContent
         >
-          <span style={{ margin: '0px 0px -2px' }}>Receiver:</span>
           <Autocomplete
             value={selectedReceiver}
             onChange={(event, newValue) => {
