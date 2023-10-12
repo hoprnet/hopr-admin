@@ -1,11 +1,11 @@
 import { GetInfoResponseType, api, utils } from '@hoprnet/hopr-sdk';
 import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 import { parseEther } from 'viem';
-import { RootState } from '../..';
+import { RootState, useAppSelector } from '../..';
 import { nodeActionsAsync } from '../node';
 import { initialState } from './initialState';
 const { APIError } = utils
-const { getInfo } = api;
+const { getInfo, getAddresses } = api;
 
 export const loginThunk = createAsyncThunk<
   GetInfoResponseType | {force: boolean} | undefined,
@@ -24,7 +24,6 @@ export const loginThunk = createAsyncThunk<
       apiEndpoint: apiEndpoint,
       apiToken: apiToken,
     });
-
     if (!payload.force && !info.isEligible ) {
       const e = new Error();
       e.name = 'NOT_ELIGIBLE_ERROR';
@@ -37,7 +36,7 @@ export const loginThunk = createAsyncThunk<
     return info;
   } catch (e) {
     if (e instanceof APIError && e.status === 'UNAUTHORIZED') {
-      return rejectWithValue({ 
+      return rejectWithValue({
         data: e.status ?? e.error,
         type: 'API_ERROR',
       });
@@ -49,26 +48,34 @@ export const loginThunk = createAsyncThunk<
 
     // not eligible error thrown above
     if (e instanceof Error && e.name === 'NOT_ELIGIBLE_ERROR') {
-      return rejectWithValue({ 
+      return rejectWithValue({
         data: 'Unable to connect.\n\n' + e.message,
         type: 'NOT_ELIGIBLE_ERROR',
       });
     }
-    
+
     // see if connecting error is due to low balance
     try {
-      const nodeBalances = await dispatch(
-        nodeActionsAsync.getBalancesThunk({
-          apiEndpoint,
-          apiToken,
-          force: true,
-        }),
-      ).unwrap();
-
       const addresses = await dispatch(
         nodeActionsAsync.getAddressesThunk({
           apiToken,
           apiEndpoint,
+          force: true,
+        }),
+        ).unwrap();
+
+      if(e instanceof APIError && e.error?.includes("get_peer_multiaddresses")){
+        const nodeAddressIsAvailable = addresses?.native ? `\n\nNode Address: ${addresses.native}` : "";
+        return rejectWithValue({
+          data: "You Node seems to be starting, wait a couple of minutes before accessing it." + nodeAddressIsAvailable,
+          type: 'API_ERROR',
+        });
+      }
+
+      const nodeBalances = await dispatch(
+        nodeActionsAsync.getBalancesThunk({
+          apiEndpoint,
+          apiToken,
           force: true,
         }),
       ).unwrap();
@@ -114,7 +121,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     state.status.connecting = false;
     if (meta.payload) {
       state.status.error = {
-        data: meta.payload.data, type: meta.payload.type, 
+        data: meta.payload.data, type: meta.payload.type,
       };
     } else {
       state.status.error = {
