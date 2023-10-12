@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { parseUnits } from 'viem';
-import wrapperAbi from '../../abi/wrapperAbi.json';
 import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS } from '../../../config'
 
 // Redux
@@ -16,6 +15,7 @@ import NetworkOverlay from '../../components/NetworkOverlay';
 // Mui
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import LaunchIcon from '@mui/icons-material/Launch';
+import { web3 } from '@hoprnet/hopr-sdk';
 import {
   IconButton,
   Paper,
@@ -152,14 +152,14 @@ function WrapperPage() {
   // Prepare contract write configurations
   const { config: xHOPR_to_wxHOPR_config } = usePrepareContractWrite({
     address: xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
-    abi: wrapperAbi,
+    abi: web3.wrapperABI,
     functionName: 'transferAndCall',
     args: [wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS, parseUnits(xhoprValue as NumberLiteral, 18), '0x'],
   });
 
   const { config: wxHOPR_to_xHOPR_config } = usePrepareContractWrite({
     address: wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
-    abi: wrapperAbi,
+    abi: web3.wrapperABI,
     functionName: 'transfer',
     args: [wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS, parseUnits(wxhoprValue as NumberLiteral, 18)],
   });
@@ -333,7 +333,7 @@ function WrapperPage() {
           )}
         </WrapperContainer>
       </StyledPaper>
-      <NetworkOverlay/>
+      <NetworkOverlay />
     </Section>
   );
 }

@@ -237,14 +237,14 @@ const getModuleTargetsThunk = createAsyncThunk<
 
       const channelsTarget = await superWalletClient.readContract({
         address: moduleAddress as `0x${string}`,
-        abi: web3.hoprNodModuleABI,
+        abi: web3.hoprNodeManagementModuleABI,
         functionName: 'tryGetTarget',
         args: [HOPR_CHANNELS_SMART_CONTRACT_ADDRESS]
       }) as [boolean, BigInt];
 
       const wxHOPRTarget = await superWalletClient.readContract({
         address: moduleAddress as `0x${string}`,
-        abi: web3.hoprNodModuleABI,
+        abi: web3.hoprNodeManagementModuleABI,
         functionName: 'tryGetTarget',
         args: [wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS]
       }) as [boolean, BigInt];

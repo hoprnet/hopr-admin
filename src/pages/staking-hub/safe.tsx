@@ -7,8 +7,8 @@ import { appActions } from '../../store/slices/app';
 import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config'
 import { erc20ABI, useContractRead, useWalletClient } from 'wagmi';
 import { web3 } from '@hoprnet/hopr-sdk';
-import { nodeManagementModuleAbi } from '../../abi/nodeManagementModuleAbi';
 import { MAX_UINT256, createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../utils/blockchain'
+
 
 //Stores
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -50,7 +50,7 @@ function SafeSection() {
 
   const { data: isNodeResponse } = useContractRead({
     address: safeModules ? (safeModules.at(0) as Address) : '0x',
-    abi: nodeManagementModuleAbi,
+    abi: web3.hoprNodeManagementModuleABI,
     functionName: 'isNode',
     args: [nodeAddress],
     enabled: !!safeModules?.at(0) && !!nodeAddress && !!includeNodeResponse,
