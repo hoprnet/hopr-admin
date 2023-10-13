@@ -36,18 +36,6 @@ const ImageContainer = styled.div`
   justify-content: center;
   display: flex;
   top: -35px;
-  .staking-landing {
-    position: absolute;
-    height: 80%;
-    top: 40px;
-  }
-
-  @media screen and (max-height: 1080px) {
-    max-height: 315px;
-    .staking-landing {
-      top: 20px;
-  }
-  }
 `;
 
 const Image = styled.img`
@@ -193,16 +181,11 @@ const BrandsSection = styled.div`
   width: 100%;
   justify-content: space-evenly;
   flex-wrap: wrap;
-  margin: 45px 0 65px 0 ;
-  @media screen and (max-height: 1080px) {
-  margin: 20px 0 65px 0 ;
-  }
 `;
 
 const Brand = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 200px;
 `;
 
 const BrandText = styled.p`
@@ -334,7 +317,11 @@ const StakingLandingPage = () => {
         <StyledContainer>
           <ImageContainer>
             <Image
-              className='staking-landing'
+              style={{
+                position: 'absolute',
+                height: '80%',
+                top: '40px',
+              }}
               src="/assets/staking-landing.svg"
             />
             <Image src="/assets/yellow-ellipse.svg" />
