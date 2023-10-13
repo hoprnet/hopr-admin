@@ -36,7 +36,21 @@ type InitialState = {
       isFetching: boolean;
     }
   },
+  nodes: NodePayload[]
 };
+
+export type NodePayload = {
+  nodeAddress: string,
+  peerId?: string,
+  lastSeen?: number,
+  latencyAverage?: number,
+  count?: number,
+  since1667080800count?: number,
+  availability?: number,
+  availability24h?: number,
+  version?: string
+  isFetching: boolean;
+}
 
 export type SubgraphParsedOutput = {
   balance: {
@@ -172,5 +186,6 @@ export const initialState: InitialState = {
       strategy: null,
       isFetching: false,
     }
-  }
+  },
+  nodes: [],
 };
