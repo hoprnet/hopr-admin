@@ -42,12 +42,23 @@ const ImageContainer = styled.div`
     top: 40px;
   }
 
-  @media screen and (max-height: 1080px) {
+  @media screen and (max-height: 1079px) {
     max-height: 315px;
+    margin-bottom: -20px;
     .staking-landing {
       top: 20px;
+    }
+    .yellow-ellipse {
+      height: inherit;
+    }
   }
+
+  @media screen and (min-height: 1080px) {
+    .staking-landing {
+      top: 20px;
+    }
   }
+
 `;
 
 const Image = styled.img`
@@ -194,8 +205,13 @@ const BrandsSection = styled.div`
   justify-content: space-evenly;
   flex-wrap: wrap;
   margin: 45px 0 65px 0 ;
-  @media screen and (max-height: 1080px) {
-  margin: 20px 0 65px 0 ;
+
+  @media screen and (max-height: 768px) {
+    margin: -20px 0 -40px 0 ;
+  }
+
+  @media screen and (min-height: 769px) and (max-height: 1080px) {
+  margin: 20px 0 65px 0;
   }
 `;
 
@@ -337,7 +353,7 @@ const StakingLandingPage = () => {
               className='staking-landing'
               src="/assets/staking-landing.svg"
             />
-            <Image src="/assets/yellow-ellipse.svg" />
+            <Image className="yellow-ellipse" src="/assets/yellow-ellipse.svg" />
           </ImageContainer>
           <Title>HOPR STAKING HUB</Title>
           <Description>
