@@ -4,3 +4,6 @@ build/
 public/
 *.min.js
 src/index.tsx
+
+# ignore hopr lib components not properly typed
+future-hopr-lib-components/
