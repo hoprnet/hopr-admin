@@ -7,7 +7,7 @@ import {
   formatTimeToUserTimezone
 } from '../../utils/date';
 
-type TimeAgoProps = { pastEpoch?: number; twoRows: boolean };
+type TimeAgoProps = { pastEpoch?: number; twoRows?: boolean };
 export default function TimeAgo({
   twoRows = false,
   pastEpoch,
