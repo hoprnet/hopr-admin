@@ -15,6 +15,7 @@ import { Address, PublicClient, WalletClient, parseEther, publicActions } from '
 import { gql } from 'graphql-request';
 import { stakingHubActions } from '.';
 import { safeActionsAsync } from '../safe';
+import { NodePayload } from './initialState';
 
 const getHubSafesByOwnerThunk = createAsyncThunk<
   {
@@ -198,6 +199,11 @@ const getSubgraphDataThunk = createAsyncThunk<
       if (json.safes.length > 0) output = json.safes[0];
       if (json.nodeManagementModules.length > 0) output.module = json.nodeManagementModules[0];
       if (json.balances.length > 0) output.overall_staking_v2_balances = json.balances[0];
+
+      if (output.registeredNodesInNetworkRegistry?.length > 0) {
+        let nodeAddress = output.registeredNodesInNetworkRegistry[0].node.id;
+        dispatch(getNodeDataThunk(nodeAddress));
+      }
 
       console.log('SubgraphParsedOutput', output);
       return output;
@@ -434,9 +440,37 @@ const getOnboardingDataThunk = createAsyncThunk<
   dispatch(stakingHubActions.onboardingIsFetching(false));
 });
 
+const getNodeDataThunk = createAsyncThunk<
+  NodePayload[], 
+  string, 
+  { state: RootState }
+>(
+  'stakingHub/getNodeData',
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    console.log('getNodeData', payload);
+    dispatch(setNodeDataFetching(true));
+    const rez = await fetch(`https://network.hoprnet.org/api/getNode?env=37&nodeAddress=${payload}`);
+    const json = await rez.json();
+    return json;
+  },
+  { condition: (_payload, { getState }) => {
+    if(getState().stakingHub.nodes.length > 0) {
+      const isFetching = getState().stakingHub.nodes[0].isFetching;
+      if (isFetching) {
+        return false;
+      }
+    }
+    return true;
+  } },
+);
+
 // Helper actions to update the isFetching state
 const setHubSafesByOwnerFetching = createAction<boolean>('stakingHub/setHubSafesByOwnerFetching');
 const setSubgraphDataFetching = createAction<boolean>('stakingHub/setSubgraphDataFetching');
+const setNodeDataFetching = createAction<boolean>('stakingHub/setNodeDataFetching');
 
 export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   builder.addCase(getHubSafesByOwnerThunk.fulfilled, (state, action) => {
@@ -491,6 +525,15 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         state.onboarding.notStarted = false;
       }
     }
+  });
+  builder.addCase(getNodeDataThunk.fulfilled, (state, action) => {
+    if(action.payload.length > 0) {
+      state.nodes.push(action.payload[0]);
+    }
+    state.nodes[0].isFetching = false;
+  });
+  builder.addCase(getNodeDataThunk.rejected, (state, action) => {
+    state.nodes[0].isFetching = false;
   });
 };
 
