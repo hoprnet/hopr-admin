@@ -41,7 +41,7 @@ const Option = styled(MuiButton)`
   text-transform: none;
   &.chosen {
     color: #414141;
-    border: 2px solid #000050;
+    border: 2px solid #0000b4;
   }
 `;
 
@@ -93,8 +93,8 @@ export default function optionalNftTtransfer() {
 
   useEffect(() => {
     if (startedNftTransfer && !communityNftIdInSafe && safeAddress) {
-      interval = setInterval(()=>{dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));}, 10_000);
-    } else if (startedNftTransfer && communityNftIdInSafe ) {
+      interval = setInterval(() => { dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress)); }, 10_000);
+    } else if (startedNftTransfer && communityNftIdInSafe) {
       clearInterval(interval);
       set_startedNftTransfer(false);
     }
@@ -109,9 +109,9 @@ export default function optionalNftTtransfer() {
     if (communityNftIdInWallet !== null) return '/assets/nft-detected-in-wallet.png';
   }
 
-  function tooltipText(){
-    if(option === 0 && !communityNftIdInSafe) return "You need to transfer Community NFT to the Safe in order to use that option";
-    if(option === null) return "You need to choose an option";
+  function tooltipText() {
+    if (option === 0 && !communityNftIdInSafe) return "You need to transfer Community NFT to the Safe in order to use that option";
+    if (option === null) return "You need to choose an option";
     return null
   }
 
@@ -123,13 +123,13 @@ export default function optionalNftTtransfer() {
           href="https://docs.hoprnet.org/node/waitlist-FAQ"
           target="_blank"
           rel="noreferrer"
-          style={{ color: '#007bff', textDecoration: 'underline'}}
+          style={{ color: '#007bff', textDecoration: 'underline' }}
         >
           here
         </a>.
       </>}
       buttons={
-        <Tooltip 
+        <Tooltip
           title={tooltipText()}
         >
           <span style={{ textAlign: 'center' }}>
@@ -138,7 +138,7 @@ export default function optionalNftTtransfer() {
                 dispatch(stakingHubActions.setOnboardingStep(4));
               }}
               disabled={option === null || (option === 0 && !communityNftIdInSafe)}
-              style={{width: '250px'}}
+              style={{ width: '250px' }}
             >
               CONTINUE
             </ConfirmButton>
@@ -152,7 +152,7 @@ export default function optionalNftTtransfer() {
           onClick={() => {
             set_option(0);
           }}
-          style={communityNftIdInSafe === false ? {pointerEvents: 'none'} : {}}
+          style={communityNftIdInSafe === false ? { pointerEvents: 'none' } : {}}
         >
           <OptionText>
             <div className="left">
@@ -181,7 +181,7 @@ export default function optionalNftTtransfer() {
                       communityNftId: communityNftIdInWallet,
                     }),
                   ).unwrap().finally(
-                    ()=>{
+                    () => {
                       set_sendingNFT(false)
                     }
                   );
@@ -189,7 +189,7 @@ export default function optionalNftTtransfer() {
               }}
               disabled={communityNftIdInWallet === null || !!communityNftIdInSafe}
               pending={sendingNFT}
-              style={{pointerEvents: 'all'}}
+              style={{ pointerEvents: 'all' }}
             >
               Transfer NFT to Safe
             </Button>

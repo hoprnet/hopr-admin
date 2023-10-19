@@ -186,6 +186,7 @@ const BrandsSection = styled.div`
 const Brand = styled.div`
   display: flex;
   flex-direction: column;
+  min-width: 200px;
 `;
 
 const BrandText = styled.p`
