@@ -7,6 +7,7 @@ import { DialogTitle } from '@mui/material';
 import Button from '../../../future-hopr-lib-components/Button';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../../future-hopr-lib-components/Modal/styled';
 import CloseIcon from '@mui/icons-material/Close';
+import { loadStateFromLocalStorage } from '../../../utils/localStorage';
 
 const Content = styled(SDialogContent)`
   gap: 1rem;
@@ -30,6 +31,7 @@ const ContinueOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
   const navigate = useNavigate();
   const notFinished = useAppSelector((state) => state.stakingHub.onboarding.notFinished);
   const [openModal, set_openModal] = useState(false);
+  const drawerOpen = loadStateFromLocalStorage('drawerState');
 
   useEffect(() => {
     if (notFinished) handleOpenModal();
@@ -50,6 +52,7 @@ const ContinueOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
         open={openModal}
         onClose={handleCloseModal}
         disableScrollLock={true}
+        drawerState={drawerOpen}
       >
         <TopBar>
           <DialogTitle>CONTINUE YOUR ON-BOARDING</DialogTitle>
@@ -63,20 +66,20 @@ const ContinueOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
         <Content>
           <p>It looks like you didn't finish your onboarding. Would you like to continue?</p>
           <div>
-          <Button
-            onClick={handleCloseModal}
-            outlined
-          >
-            NOT NOW
-          </Button>
-          <Button
-            onClick={() => {
-              navigate(`/staking/onboarding`);
-            }}
-            style={{width: '160px'}}
-          >
-            YES
-          </Button>
+            <Button
+              onClick={handleCloseModal}
+              outlined
+            >
+              NOT NOW
+            </Button>
+            <Button
+              onClick={() => {
+                navigate(`/staking/onboarding`);
+              }}
+              style={{ width: '160px' }}
+            >
+              YES
+            </Button>
           </div>
         </Content>
       </SDialog>
