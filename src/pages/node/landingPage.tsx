@@ -19,6 +19,10 @@ const ImageContainer = styled.div`
   min-height: 256px;
   min-width: 512px;
   padding: 1rem;
+  @media screen and (max-height: 1025px){
+    height: 128px;
+    width: 256;
+  }
 `;
 
 const Image = styled.img`
@@ -73,7 +77,7 @@ function LandingPage() {
     >
       <StyledContainer>
         <ImageContainer>
-          <Image src="/assets/Bonus_Incentive.svg" />
+          <Image src="/assets/blue_HOPR_Node.svg" />
         </ImageContainer>
         <Title>Node Admin</Title>
         <Description>
