@@ -35,7 +35,7 @@ const Title = styled.h2`
   color: #414141;
   font-size: 80px;
   font-weight: 400;
-  margin-block: 3rem;
+  margin-block: 1rem;
   text-transform: uppercase;
 `;
 
