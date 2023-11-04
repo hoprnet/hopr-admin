@@ -261,7 +261,7 @@ export default function ConnectWeb3({
         title={localError ? 'ERROR' : 'CONNECT A WALLET'}
         disableScrollLock={true}
         style={{ height: '270px' }}
-      >
+       >
         {!localError && (
           <ConnectWalletContent>
             {connectors.map((connector) => (

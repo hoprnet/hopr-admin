@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import Updater from './updater';
 
 // Store
-import { useAppDispatch } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { web3Actions } from '../../store/slices/web3';
 
 // wagmi
@@ -15,7 +15,7 @@ import { createWalletClient, custom, publicActions } from 'viem';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
-import { VITE_WALLET_CONNECT_PROJECT_ID } from '../../../config';
+import { VITE_WALLET_CONNECT_PROJECT_ID, environment } from '../../../config';
 
 // No way to tell what the ethereum request can be so has to be any
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,39 +45,77 @@ export const browserClient = walletIsInBrowser
   }).extend(publicActions)
   : null;
 
-const config = createConfig({
-  autoConnect: true,
-  connectors: [
-    new MetaMaskConnector({ chains }),
-    new WalletConnectConnector({
-      chains,
-      options: { projectId: VITE_WALLET_CONNECT_PROJECT_ID },
-    }),
-    // add localhost only to injected connector
-    // because wallet connect fails with it
-    new InjectedConnector({ chains: [localhost, ...chains] }),
-  ],
-
-  publicClient: (chain) => {
-    // this means even if connected through wallet connect
-    // the requests will go through the wallet client
-    if (walletIsInBrowser) {
-      // enforce this type because
-      // it is checked before
-      return browserClient!;
-    }
-
-    // no ethereum found in window
-    return publicClient(chain);
-  },
-});
-
 export default function WagmiProvider(props: React.PropsWithChildren) {
   const dispatch = useAppDispatch();
+  const walletConnect = useAppSelector((store)=>store.web3.walletConnect);
 
   useEffect(() => {
     dispatch(web3Actions.setWalletPresent(walletIsInBrowser));
   }, [walletIsInBrowser]);
+  
+  const createConnectors = (walletConnect: boolean) => {
+    // TODO: name this function work off the walletConnect redux function
+    // There will be a need to change ConnectWeb3 to change walletConnect variable to true on click
+    // and then use the new  connect({ connector });
+    if(environment !== 'node'){
+    // if(walletConnect){
+      return [
+        new MetaMaskConnector({ chains }),
+        new WalletConnectConnector({
+          chains,
+          options: { projectId: VITE_WALLET_CONNECT_PROJECT_ID },
+        }),
+        // add localhost only to injected connector
+        // because wallet connect fails with it
+        new InjectedConnector({ chains: [localhost, ...chains] }),
+      ];
+    } else {
+      return [
+        // TODO: 
+        // new MetaMaskConnector({ chains }),
+        // new WalletConnectConnector({
+        //   chains,
+        //   options: { projectId: VITE_WALLET_CONNECT_PROJECT_ID },
+        // }),
+        // {
+        //   chains, 
+        //   id: 'walletConnect', 
+        //   name: "WalletConnect",
+        //   setStorage: ()=>{},
+        //   onAccountsChanged: ()=>{},
+        //   onChainChanged: ()=>{},
+        //   onConnect: ()=>{},
+        //   onDisconnect: ()=>{},
+        //   onDisplayUri: ()=>{},
+        //   options: {isNewChainsStale: true, projectId: ""},
+        //   ready: true,
+        //   storage: undefined,
+        //   _events: {},
+        //   _eventsCount: 0,
+        // },
+        // new InjectedConnector({ chains: [localhost, ...chains] }),
+      ];
+    }
+  }
+
+  let config = createConfig({
+    autoConnect: true,
+    //@ts-ignore
+    connectors: createConnectors(walletConnect),
+  
+    publicClient: (chain) => {
+      // this means even if connected through wallet connect
+      // the requests will go through the wallet client
+      if (walletIsInBrowser) {
+        // enforce this type because
+        // it is checked before
+        return browserClient!;
+      }
+  
+      // no ethereum found in window
+      return publicClient(chain);
+    },
+  });
 
   return (
     <WagmiConfig config={config}>

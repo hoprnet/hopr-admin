@@ -92,7 +92,7 @@ function PeersPage() {
       maxWidth: '160px',
     },
     {
-      key: 'peerAddress',
+      key: 'nodeAddress',
       name: 'Node Address',
       search: true,
       tooltip: true,

@@ -50,6 +50,9 @@ const web3Slice = createSlice({
       state.balance.wxHopr.value = action.payload ? action.payload.value : null;
       state.balance.wxHopr.formatted = action.payload ? action.payload.formatted : null;
     },
+    setWalletConnect(state, action) {
+      state.walletConnect = action.payload ? action.payload : false;
+    },
   },
   extraReducers: (builder) => createAsyncReducer(builder),
 });
