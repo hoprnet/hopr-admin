@@ -199,7 +199,6 @@ const addOwnerToSafeThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(safeActionsFetching.setInfoFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       const safeApi = await createSafeApiService(payload.signer);
@@ -242,12 +241,6 @@ const addOwnerToSafeThunk = createAsyncThunk<
       return rejectWithValue(JSON.stringify(e));
     }
   },
-  { condition: (_payload, { getState }) => {
-    const isFetching = getState().safe.info.isFetching;
-    if (isFetching) {
-      return false;
-    }
-  } },
 );
 
 const removeOwnerFromSafeThunk = createAsyncThunk<
@@ -315,7 +308,7 @@ const removeOwnerFromSafeThunk = createAsyncThunk<
   } },
 );
 
-const updateSafeThresholdThunk = createAsyncThunk<
+const setSafeThresholdThunk = createAsyncThunk<
   SafeTransactionData | undefined,
   {
     signer: ethers.providers.JsonRpcSigner;
@@ -1296,28 +1289,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   builder.addCase(getSafesByOwnerThunk.rejected, (state) => {
     state.safesByOwner.isFetching = false;
-  });
-  // AddOwnerToSafe
-  builder.addCase(addOwnerToSafeThunk.fulfilled, (state) => {
-    state.info.isFetching = false;
-  });
-  builder.addCase(addOwnerToSafeThunk.rejected, (state) => {
-    state.info.isFetching = false;
-  });
-  // RemoveOwnerFromSafe
-  builder.addCase(removeOwnerFromSafeThunk.fulfilled, (state) => {
-    state.info.isFetching = false;
-  });
-  builder.addCase(removeOwnerFromSafeThunk.rejected, (state) => {
-    state.info.isFetching = false;
-  });
-  // UpdateSafeThreshold
-  builder.addCase(updateSafeThresholdThunk.fulfilled, (state) => {
-    state.info.isFetching = false;
-  });
-  builder.addCase(updateSafeThresholdThunk.rejected, (state) => {
-    state.info.isFetching = false;
-  });
+  });  
   // GetSafeInfo
   builder.addCase(getSafeInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {
@@ -1469,7 +1441,7 @@ export const actionsAsync = {
   getSafeDelegatesThunk,
   getToken,
   getTokenList,
-  updateSafeThresholdThunk,
+  setSafeThresholdThunk,
   createSafeContractTransaction,
   createAndExecuteTransactionThunk,
   createAndExecuteContractTransactionThunk,

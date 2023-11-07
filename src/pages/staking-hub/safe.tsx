@@ -1,22 +1,31 @@
-import { useEffect, useState } from 'react';
 import { utils } from 'ethers';
-import { useEthersSigner } from '../../hooks';
-import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
+import { useEffect, useState } from 'react';
 import { Address, formatEther } from 'viem';
-import { appActions } from '../../store/slices/app';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config'
 import { erc20ABI, useContractRead, useWalletClient } from 'wagmi';
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config'
 import { nodeManagementModuleAbi } from '../../abi/nodeManagementModuleAbi';
 import { nodeSafeRegistryAbi } from '../../abi/nodeSafeRegistryAbi';
+import { useEthersSigner } from '../../hooks';
+import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
+import { appActions } from '../../store/slices/app';
 import { MAX_UINT256, createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../utils/blockchain'
+import { Container, FlexContainer, Text } from './onboarding/styled';
 
 //Stores
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActionsAsync } from '../../store/slices/safe';
 
 // HOPR Components
+import styled from '@emotion/styled';
 import Section from '../../future-hopr-lib-components/Section';
 import { stakingHubActionsAsync } from '../../store/slices/stakingHub';
+import { MenuItem, Select, TextField } from '@mui/material';
+
+const RemoveOwnerDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+`;
 
 function SafeSection() {
   const dispatch = useAppDispatch();
@@ -36,6 +45,9 @@ function SafeSection() {
   const [includeNodeResponse, set_includeNodeResponse] = useState('');
   const [safeAddressForRegistry, set_safeAddressForRegistry] = useState('');
   const [nodeAddressForRegistry, set_nodeAddressForRegistry] = useState('');
+  const [newThreshold, set_newThreshold] = useState(safe?.info.data?.threshold || 0);
+  const [newOwner, set_newOwner] = useState('');
+
   const activePendingSafeTransaction = useAppSelector(
     (store) => store.app.configuration.notifications.pendingSafeTransaction,
   );
@@ -79,6 +91,47 @@ function SafeSection() {
     if (signer) {
       dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer }));
     }
+  };
+
+  const updateSafeThreshold = (safeAddress: string) => {
+    if (signer && safeAddress) {
+      dispatch(
+        safeActionsAsync.setSafeThresholdThunk({
+          signer: signer,
+          newThreshold: threshold,
+          safeAddress: safeAddress,
+        }),
+      );
+    }
+  };
+
+  const handleNewOwnerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const owner = event.target.value;
+    set_newOwner(owner);
+  };
+
+  const removeOwner = (address: string, safeAddress: string, threshold?: number) => {
+    if (signer && safeAddress)
+      dispatch(
+        safeActionsAsync.removeOwnerFromSafeThunk({
+          ownerAddress: address,
+          safeAddress: safeAddress,
+          signer,
+          threshold: threshold,
+        }),
+      );
+  };
+
+  const addOwner = (safeAddress: string, threshold?: number) => {
+    if (signer && safeAddress)
+      dispatch(
+        safeActionsAsync.addOwnerToSafeThunk({
+          ownerAddress: newOwner,
+          safeAddress: safeAddress,
+          signer: signer,
+          threshold: threshold,
+        }),
+      );
   };
 
   if (!account) {
@@ -320,7 +373,61 @@ function SafeSection() {
         }}
       />
       <span>is safe registered: {JSON.stringify(isNodeSafeRegistered)}</span>
-
+      <h1>Safe Settings</h1>
+      <h2>Threshold</h2>
+      <Container column>
+        <Text>Any transaction requires the confirmation of:</Text>
+        <Text>Currently: {safe?.info.data?.threshold}</Text>
+        <FlexContainer>
+          <Text>New threshold:</Text>
+          <Select
+            value={newThreshold}
+            onChange={(e) => set_newThreshold(Number(e.target.value))}
+          >
+            {safe?.info.data?.owners?.map((_, index) => (
+              <MenuItem
+                key={index + 1}
+                value={`${index + 1}`}
+              >
+                {index + 1}
+              </MenuItem>
+            ))}
+          </Select>
+          <Text>Out of {safe?.info.data?.owners.length} owner(s).</Text>
+        </FlexContainer>
+        <button
+          disabled={newThreshold === safe?.info.data?.threshold || newThreshold === 0}
+          onClick={() => void updateSafeThreshold(selectedSafeAddress)}
+        >
+          Update
+        </button>
+      </Container>
+      <h2>Add Owner</h2>
+      <Container column>
+        <TextField
+          type="text"
+          name="newOwner"
+          label="address"
+          placeholder="New owner address here..."
+          onChange={handleNewOwnerChange}
+          value={newOwner}
+        />
+        <button
+          onClick={() => addOwner(selectedSafeAddress)}
+          disabled={newOwner === '' || safe === null || safe?.info.data?.owners.includes(newOwner)}
+        >
+          Add owner
+        </button>
+      </Container>
+      <h2>Remove Owner</h2>
+      <Container column>
+        {safe?.info.data?.owners.map((address, id) => (
+          <RemoveOwnerDiv key={`remove-owner_${id}`}>
+            <p>{address}</p>
+            <button onClick={() => removeOwner(address, selectedSafeAddress)}>Remove</button>
+          </RemoveOwnerDiv>
+        ))}
+      </Container>
       <h2>transactions actions</h2>
       {allTransactions?.results.map((transaction, key) => (
         <div key={key}>
