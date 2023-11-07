@@ -12,17 +12,16 @@ import { createSendNftTransactionData, createSendTokensTransactionData } from '.
 // components
 import Card from '../../components/Card';
 import NetworkOverlay from '../../components/NetworkOverlay';
-import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';
 
 // Mui
 import { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
-import Tooltip from '@mui/material/Tooltip';
 import { FeedbackTransaction } from '../../components/FeedbackTransaction';
+import SafeTransactionButton from '../../components/SafeTransactionButton';
 import Select from '../../future-hopr-lib-components/Select';
 import { browserClient } from '../../providers/wagmi';
-import { getUserActionForPendingTransaction, getUserCanSkipProposal } from '../../utils/safeTransactions';
+import { getUserActionForPendingTransaction } from '../../utils/safeTransactions';
 
 const StyledForm = styled.div`
   width: 100%;
@@ -80,11 +79,6 @@ const StyledButtonGroup = styled.div`
   gap: 1rem;
 `;
 
-const StyledBlueButton = styled(Button)`
-  text-transform: uppercase;
-  padding: 0.2rem 4rem;
-`;
-
 const StyledPendingSafeTransactions = styled.div`
   display: flex;
   flex-direction: column;
@@ -132,7 +126,6 @@ function SafeWithdraw() {
   const safeBalances = useAppSelector((store) => store.safe.balance.data);
   const signer = useEthersSigner();
   // local state
-  const [userCanSkipProposal, set_userCanSkipProposal] = useState(false);
   const [userAction, set_userAction] = useState<'EXECUTE' | 'SIGN' | null>(null);
   const [ethValue, set_ethValue] = useState<string>('');
   const [nftId, set_nftId] = useState<string>('');
@@ -154,10 +147,6 @@ function SafeWithdraw() {
       }
     }
   }, [pendingTransactions, proposedTxHash, address]);
-
-  useEffect(() => {
-    set_userCanSkipProposal(getUserCanSkipProposal(safeInfo));
-  }, [safeInfo]);
 
   const proposeTx = () => {
     if (signer && selectedSafeAddress) {
@@ -219,34 +208,6 @@ function SafeWithdraw() {
           .finally(() => {
             set_isWalletLoading(false);
           });
-      }
-    }
-  };
-
-  const executeTx = async () => {
-    set_isWalletLoading(true);
-    if (proposedTxHash && signer && selectedSafeAddress) {
-      const safeTx = pendingTransactions?.results.find((tx) => {
-        if (tx.safeTxHash === proposedTxHash) {
-          return true;
-        }
-        return false;
-      });
-
-      if (safeTx) {
-        await dispatch(
-          safeActionsAsync.executePendingTransactionThunk({
-            safeAddress: selectedSafeAddress,
-            signer,
-            safeTransaction: safeTx,
-          }),
-        )
-          .unwrap()
-          .finally(() => {
-            set_isWalletLoading(false);
-          });
-      } else {
-        set_isWalletLoading(false);
       }
     }
   };
@@ -392,19 +353,6 @@ function SafeWithdraw() {
     return false;
   };
 
-  // multiple owners is out of scope for initial version
-  // const handleApprove = () => {
-  //   if (signer && proposedTx) {
-  //     dispatch(
-  //       safeActionsAsync.confirmTransactionThunk({
-  //         signer,
-  //         safeAddress: proposedTx.safe,
-  //         safeTransactionHash: proposedTx.safeTxHash,
-  //       }),
-  //     );
-  //   }
-  // };
-
   return (
     <Section
       lightBlue
@@ -511,31 +459,21 @@ function SafeWithdraw() {
             feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
           />
           <StyledButtonGroup>
-            {!userCanSkipProposal ? (
-              <Tooltip title={isWalletLoading ? 'Signing transaction' : getErrorsForApproveButton().at(0)}>
-                <span>
-                  <StyledBlueButton
-                    disabled={!!getErrorsForApproveButton().length || isWalletLoading}
-                    onClick={proposeTx}
-                  >
-                    Sign
-                  </StyledBlueButton>
-                </span>
-              </Tooltip>
-            ) : (
-              <Tooltip title={isWalletLoading ? 'Executing transaction' : getErrorsForExecuteButton().at(0)}>
-                <span>
-                  <StyledBlueButton
-                    disabled={!!getErrorsForExecuteButton().length || isWalletLoading}
-                    pending={isWalletLoading}
-                    // no need to propose tx with only 1 threshold
-                    onClick={proposedTx ? executeTx : createAndExecuteTx}
-                  >
-                    Execute
-                  </StyledBlueButton>
-                </span>
-              </Tooltip>
-            )}
+            <SafeTransactionButton 
+              safeInfo={safeInfo}
+              signOptions={{
+                onClick: proposeTx,
+                disabled: !!getErrorsForApproveButton().length || isWalletLoading,
+                pending: isWalletLoading,
+                tooltipText: isWalletLoading ? 'Signing transaction' : getErrorsForApproveButton().at(0),
+              }}
+              executeOptions={{
+                onClick: createAndExecuteTx,
+                pending: isWalletLoading,
+                disabled: !!getErrorsForExecuteButton().length || isWalletLoading,
+                tooltipText: isWalletLoading ? 'Executing transaction' : getErrorsForExecuteButton().at(0),
+              }}
+            />
           </StyledButtonGroup>
         </div>
       </Card>

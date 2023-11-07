@@ -1,22 +1,22 @@
 // UI
 import styled from '@emotion/styled';
-import Section from '../../future-hopr-lib-components/Section';
-import Button from '../../future-hopr-lib-components/Button';
-import { useEthersSigner } from '../../hooks';
-import { StepContainer, ConfirmButton } from './onboarding/components';
-import { Lowercase, StyledCoinLabel, StyledInputGroup, StyledTextField } from './onboarding/styled';
-import { DEFAULT_ALLOWANCE, HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config';
 import { useNavigate } from 'react-router-dom';
+import { DEFAULT_ALLOWANCE, HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config';
+import Button from '../../future-hopr-lib-components/Button';
+import Section from '../../future-hopr-lib-components/Section';
+import { useEthersSigner } from '../../hooks';
+import { StepContainer } from './onboarding/components';
+import { Lowercase, StyledCoinLabel, StyledInputGroup, StyledTextField } from './onboarding/styled';
 
 // Blockchain
-import { Address, formatEther, parseEther, parseUnits } from 'viem';
-import { MAX_UINT256, createApproveTransactionData } from '../../utils/blockchain';
+import { Address, parseUnits } from 'viem';
+import { createApproveTransactionData } from '../../utils/blockchain';
 
 // Store
 import { useState } from 'react';
+import SafeTransactionButton from '../../components/SafeTransactionButton';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActionsAsync } from '../../store/slices/safe';
-import { stakingHubActions } from '../../store/slices/stakingHub';
 
 
 const StyledText = styled.h3`
@@ -31,19 +31,43 @@ const StyledText = styled.h3`
 `;
 
 
+
+export const ConfirmButton = styled(SafeTransactionButton)`
+  max-width: 250px;
+  width: 100%;
+  align-self: center;
+`;
+
 export default function SetAllowance() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const safeInfo = useAppSelector((store) => store.safe.info.data);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
   const signer = useEthersSigner();
   const [wxHoprValue, set_wxHoprValue] = useState('');
   const [loading, set_loading] = useState(false);
 
-  const setAllowance = async () => {
+  const executeAllowance = async () => {
     if (signer && selectedSafeAddress && HOPR_CHANNELS_SMART_CONTRACT_ADDRESS) {
       set_loading(true);
       await dispatch(
         safeActionsAsync.createAndExecuteContractTransactionThunk({
+          data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,parseUnits(wxHoprValue, 18)),
+          signer,
+          safeAddress: selectedSafeAddress,
+          smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
+        }),
+      ).unwrap();
+      navigate('/staking/dashboard#node');
+      set_loading(false);
+    }
+  };
+
+  const signAllowance = async () => {
+    if (signer && selectedSafeAddress && HOPR_CHANNELS_SMART_CONTRACT_ADDRESS) {
+      set_loading(true);
+      await dispatch(
+        safeActionsAsync.createSafeContractTransaction({
           data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,parseUnits(wxHoprValue, 18)),
           signer,
           safeAddress: selectedSafeAddress,
@@ -66,16 +90,22 @@ export default function SetAllowance() {
         description={`Your node will need to access wxHOPR from your safe to fund payment channels on the HOPR network. You can set a maximum allowance to reduce your funds at risk in case your node is ever compromised.`}
         buttons={
           <ConfirmButton
-            onClick={setAllowance}
-            disabled={wxHoprValue === '' || wxHoprValue === '0' || wxHoprValue.includes('-') || wxHoprValue.includes('+')}
-            pending={loading}
-          >
-            EXECUTE
-          </ConfirmButton>
+            executeOptions={{
+              onClick: executeAllowance,
+              disabled: wxHoprValue === '' || wxHoprValue === '0' || wxHoprValue.includes('-') || wxHoprValue.includes('+'),
+              pending: loading,
+            }}
+            signOptions={{
+              onClick: signAllowance,
+              disabled: wxHoprValue === '' || wxHoprValue === '0' || wxHoprValue.includes('-') || wxHoprValue.includes('+'),
+              pending: loading,
+            }}
+            safeInfo={safeInfo}
+          />
         }
       >
         <StyledInputGroup
-          style={{alignItems: 'flex-start'}}
+          style={{ alignItems: 'flex-start' }}
         >
           <StyledText
           >NODE ALLOWANCE</StyledText>
@@ -94,7 +124,7 @@ export default function SetAllowance() {
             helperText={`Suggested value is ${DEFAULT_ALLOWANCE} wxHopr`}
           />
           <StyledCoinLabel
-            style={{lineHeight: '40px'}}
+            style={{ lineHeight: '40px' }}
           >
             <Lowercase>wx</Lowercase>HOPR
           </StyledCoinLabel>
