@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
-import Button from '../../../../future-hopr-lib-components/Button';
 import { Address, getAddress } from 'viem';
-import { StepContainer, ConfirmButton } from '../components';
+import { StepContainer } from '../components';
 import { useEthersSigner } from '../../../../hooks';
 
 // Web3
@@ -11,14 +10,18 @@ import { createIncludeNodeTransactionData, encodeDefaultPermissions } from '../.
 import { useAppSelector, useAppDispatch } from '../../../../store';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
 import { safeActionsAsync } from '../../../../store/slices/safe';
+import SafeTransactionButton from '../../../../components/SafeTransactionButton';
 
-const ButtonContainer = styled.div`
-  display: flex;
-  gap: 1rem;
+
+export const ConfirmButton = styled(SafeTransactionButton)`
+  max-width: 250px;
+  width: 100%;
+  align-self: center;
 `;
 
 export default function ConfigureNode() {
   const dispatch = useAppDispatch();
+  const safeInfo = useAppSelector((store) => store.safe.info.data);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
   const nodeAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
   const moduleAddress = useAppSelector((state) => state.stakingHub.onboarding.moduleAddress) as Address;
@@ -45,7 +48,7 @@ export default function ConfigureNode() {
   const signIncludeNode = async () => {
     if (signer && selectedSafeAddress && moduleAddress && nodeAddress) {
       dispatch(
-        safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
+        safeActionsAsync.createSafeContractTransactionThunk({
           smartContractAddress: moduleAddress,
           data: createIncludeNodeTransactionData(encodeDefaultPermissions(getAddress(nodeAddress))),
           safeAddress: selectedSafeAddress,
@@ -53,9 +56,6 @@ export default function ConfigureNode() {
         }),
       )
         .unwrap()
-        .then(() => {
-          dispatch(stakingHubActions.setOnboardingStep(14));
-        });
     }
   };
 
@@ -69,11 +69,18 @@ export default function ConfigureNode() {
       }}
       buttons={
         <ConfirmButton
-          onClick={executeIncludeNode}
-          pending={isLoading}
-        >
-          SIGN
-        </ConfirmButton>
+          executeOptions={{
+            onClick: executeIncludeNode,
+            pending: isLoading,
+            buttonText: 'EXECUTE',
+          }}
+          signOptions={{
+            onClick: signIncludeNode,
+            pending: isLoading,
+            buttonText: 'SIGN',
+          }}
+          safeInfo={safeInfo}
+        />
       }
     />
   );

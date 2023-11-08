@@ -445,10 +445,6 @@ function SafeWithdraw() {
                     (proposedTx?.confirmationsRequired ?? 0) - (proposedTx?.confirmations?.length ?? 0)
                   } approvals`}
               </StyledDescription>
-              {/* Multiple owners are out of scope, leaving the code here for the future */}
-              {/* {!transactionHasEnoughApprovals() && (
-                <StyledApproveButton onClick={handleApprove}>approve/sign</StyledApproveButton>
-              )} */}
             </StyledPendingSafeTransactions>
           )}
           <FeedbackTransaction

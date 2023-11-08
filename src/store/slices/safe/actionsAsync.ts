@@ -578,6 +578,9 @@ const confirmTransactionThunk = createAsyncThunk<
   } },
 );
 
+/**
+ * Executes an already approved transaction
+ */
 const executePendingTransactionThunk = createAsyncThunk<
   boolean | undefined,
   {
