@@ -7,12 +7,13 @@ import { Tooltip } from '@mui/material';
 
 type SafeButtonProps = {
   // connected safe info that contains threshold
-  safeInfo?: SafeInfoResponse | null;
+  safeInfo: SafeInfoResponse | null;
   // specific props for sign button
   signOptions: {
     pending?: boolean;
     disabled?: boolean;
     tooltipText?: string;
+    buttonText?: string;
     onClick: () => void;
   };
   // specific props for execute button
@@ -20,6 +21,7 @@ type SafeButtonProps = {
     pending?: boolean;
     disabled?: boolean;
     tooltipText?: string;
+    buttonText?: string;
     onClick: () => void;
   };
 };
@@ -55,7 +57,7 @@ export default function SafeTransactionButton(props: SafeButtonProps) {
             disabled={!!props.executeOptions?.disabled ?? false}
             onClick={props.executeOptions.onClick}
           >
-            Execute
+            {props.executeOptions.buttonText ?? 'Execute'}
           </StyledBlueButton>
         </span>
       </Tooltip>
@@ -69,7 +71,7 @@ export default function SafeTransactionButton(props: SafeButtonProps) {
             disabled={!!props.signOptions?.disabled ?? false}
             onClick={props.signOptions.onClick}
           >
-            Sign
+            {props.signOptions.buttonText ?? 'Sign'}
           </StyledBlueButton>
         </span>
       </Tooltip>

@@ -39,7 +39,7 @@ function SafeSection() {
   const { account } = useAppSelector((store) => store.web3);
   const signer = useEthersSigner();
   const { data: walletClient } = useWalletClient();
-  const [threshold, set_threshold] = useState(1);
+  const [createSafeThreshold, set_createSafeThreshold] = useState(1);
   const [owners, set_owners] = useState('');
   const [nodeAddress, set_nodeAddress] = useState('');
   const [includeNodeResponse, set_includeNodeResponse] = useState('');
@@ -93,15 +93,23 @@ function SafeSection() {
     }
   };
 
-  const updateSafeThreshold = (safeAddress: string) => {
+  const updateSafeThreshold = async (safeAddress: string) => {
     if (signer && safeAddress) {
-      dispatch(
-        safeActionsAsync.setSafeThresholdThunk({
-          signer: signer,
-          newThreshold: threshold,
-          safeAddress: safeAddress,
-        }),
-      );
+      const removeTransactionData = await dispatch(safeActionsAsync.createSetThresholdToSafeTransactionDataThunk({
+        signer: signer,
+        newThreshold: newThreshold,
+        safeAddress: safeAddress,
+      })).unwrap()
+      
+      if (removeTransactionData) {
+        await dispatch(
+          safeActionsAsync.createSafeTransactionThunk({
+            signer: signer,
+            safeAddress: safeAddress,
+            safeTransactionData: removeTransactionData,
+          }),
+        );
+      }
     }
   };
 
@@ -110,28 +118,56 @@ function SafeSection() {
     set_newOwner(owner);
   };
 
-  const removeOwner = (address: string, safeAddress: string, threshold?: number) => {
-    if (signer && safeAddress)
-      dispatch(
-        safeActionsAsync.removeOwnerFromSafeThunk({
-          ownerAddress: address,
-          safeAddress: safeAddress,
-          signer,
-          threshold: threshold,
-        }),
-      );
+  const removeOwner = async (address: string, safeAddress: string, threshold?: number) => {
+    if (signer && safeAddress) {
+      const transactionData = await dispatch(safeActionsAsync.createRemoveOwnerFromSafeTransactionDataThunk({
+        ownerAddress: address,
+        safeAddress: safeAddress,
+        signer,
+        threshold: threshold,
+      })).unwrap()
+
+      if (!transactionData) return;
+      
+      const transactionHash = await dispatch(safeActionsAsync.createAndExecuteSafeTransactionThunk({
+        safeAddress: safeAddress,
+        signer,
+        safeTransactionData: transactionData,
+      })).unwrap()
+
+      return transactionHash
+    }
   };
 
-  const addOwner = (safeAddress: string, threshold?: number) => {
-    if (signer && safeAddress)
-      dispatch(
-        safeActionsAsync.addOwnerToSafeThunk({
+  const addOwner = async (safeAddress: string) => {
+    if (signer && safeAddress) {
+      const transactionData = await dispatch(
+        safeActionsAsync.createAddOwnerToSafeTransactionDataThunk({
           ownerAddress: newOwner,
           safeAddress: safeAddress,
           signer: signer,
-          threshold: threshold,
         }),
-      );
+      ).unwrap()
+
+      if (transactionData) {
+        const transactionHash = await dispatch(safeActionsAsync.createAndExecuteSafeTransactionThunk({
+          safeAddress: safeAddress,
+          signer,
+          safeTransactionData: transactionData,
+        })).unwrap()
+  
+        await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            transactionHash: transactionHash,
+            safeAddress,
+            moduleAddress: safeModules?.[0] ?? '',
+            ownerAddress: newOwner,
+          }),
+        });
+      }
+    }
   };
 
   if (!account) {
@@ -199,10 +235,10 @@ function SafeSection() {
       <label htmlFor="threshold">threshold</label>
       <input
         id="threshold"
-        value={threshold}
+        value={createSafeThreshold}
         type="number"
         onChange={(event) => {
-          set_threshold(Number(event.target.value));
+          set_createSafeThreshold(Number(event.target.value));
         }}
       />
       <label htmlFor="owners">owners</label>
@@ -222,7 +258,7 @@ function SafeSection() {
               safeActionsAsync.createVanillaSafeWithConfigThunk({
                 config: {
                   owners: owners.split(','),
-                  threshold,
+                  threshold: createSafeThreshold,
                 },
                 signer,
               }),
@@ -239,7 +275,7 @@ function SafeSection() {
               safeActionsAsync.createSafeWithConfigThunk({
                 config: {
                   owners: owners.split(','),
-                  threshold,
+                  threshold: createSafeThreshold,
                 },
                 walletClient,
               }),
@@ -279,7 +315,7 @@ function SafeSection() {
         onClick={() => {
           if (signer && selectedSafeAddress && safeModules && safeModules.at(0) && nodeAddress) {
             dispatch(
-              safeActionsAsync.createAndExecuteContractTransactionThunk({
+              safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
                 smartContractAddress: safeModules.at(0) as Address,
                 data: createIncludeNodeTransactionData(encodeDefaultPermissions(nodeAddress)),
                 safeAddress: selectedSafeAddress,
@@ -478,7 +514,7 @@ function SafeSection() {
         onClick={() => {
           if (signer && selectedSafeAddress) {
             dispatch(
-              safeActionsAsync.createSafeContractTransaction({
+              safeActionsAsync.createSafeContractTransactionThunk({
                 data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, MAX_UINT256),
                 signer,
                 safeAddress: selectedSafeAddress,

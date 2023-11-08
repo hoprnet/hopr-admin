@@ -531,9 +531,11 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     if(action.payload.length > 0) {
       state.nodes.push(action.payload[0]);
     }
-    state.nodes[0].isFetching = false;
+    if (state.nodes[0]) {
+      state.nodes[0].isFetching = false;
+    }
   });
-  builder.addCase(getNodeDataThunk.rejected, (state, action) => {
+  builder.addCase(getNodeDataThunk.rejected, (state) => {
     state.nodes[0].isFetching = false;
   });
 };

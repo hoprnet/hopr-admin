@@ -1,7 +1,7 @@
 // UI
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
-import { DEFAULT_ALLOWANCE, HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config';
+import { DEFAULT_ALLOWANCE, HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config'
 import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';
 import { useEthersSigner } from '../../hooks';
@@ -18,7 +18,6 @@ import SafeTransactionButton from '../../components/SafeTransactionButton';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActionsAsync } from '../../store/slices/safe';
 
-
 const StyledText = styled.h3`
   color: var(--414141, #414141);
   font-size: 20px;
@@ -29,8 +28,6 @@ const StyledText = styled.h3`
   margin: 0;
   margin-top: 5px;
 `;
-
-
 
 export const ConfirmButton = styled(SafeTransactionButton)`
   max-width: 250px;
@@ -51,8 +48,8 @@ export default function SetAllowance() {
     if (signer && selectedSafeAddress && HOPR_CHANNELS_SMART_CONTRACT_ADDRESS) {
       set_loading(true);
       await dispatch(
-        safeActionsAsync.createAndExecuteContractTransactionThunk({
-          data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,parseUnits(wxHoprValue, 18)),
+        safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
+          data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, parseUnits(wxHoprValue, 18)),
           signer,
           safeAddress: selectedSafeAddress,
           smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
@@ -67,8 +64,8 @@ export default function SetAllowance() {
     if (signer && selectedSafeAddress && HOPR_CHANNELS_SMART_CONTRACT_ADDRESS) {
       set_loading(true);
       await dispatch(
-        safeActionsAsync.createSafeContractTransaction({
-          data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,parseUnits(wxHoprValue, 18)),
+        safeActionsAsync.createSafeContractTransactionThunk({
+          data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, parseUnits(wxHoprValue, 18)),
           signer,
           safeAddress: selectedSafeAddress,
           smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
@@ -92,23 +89,22 @@ export default function SetAllowance() {
           <ConfirmButton
             executeOptions={{
               onClick: executeAllowance,
-              disabled: wxHoprValue === '' || wxHoprValue === '0' || wxHoprValue.includes('-') || wxHoprValue.includes('+'),
+              disabled:
+                wxHoprValue === '' || wxHoprValue === '0' || wxHoprValue.includes('-') || wxHoprValue.includes('+'),
               pending: loading,
             }}
             signOptions={{
               onClick: signAllowance,
-              disabled: wxHoprValue === '' || wxHoprValue === '0' || wxHoprValue.includes('-') || wxHoprValue.includes('+'),
+              disabled:
+                wxHoprValue === '' || wxHoprValue === '0' || wxHoprValue.includes('-') || wxHoprValue.includes('+'),
               pending: loading,
             }}
             safeInfo={safeInfo}
           />
         }
       >
-        <StyledInputGroup
-          style={{ alignItems: 'flex-start' }}
-        >
-          <StyledText
-          >NODE ALLOWANCE</StyledText>
+        <StyledInputGroup style={{ alignItems: 'flex-start' }}>
+          <StyledText>NODE ALLOWANCE</StyledText>
           <StyledTextField
             type="number"
             variant="outlined"
@@ -123,9 +119,7 @@ export default function SetAllowance() {
             } }}
             helperText={`Suggested value is ${DEFAULT_ALLOWANCE} wxHopr`}
           />
-          <StyledCoinLabel
-            style={{ lineHeight: '40px' }}
-          >
+          <StyledCoinLabel style={{ lineHeight: '40px' }}>
             <Lowercase>wx</Lowercase>HOPR
           </StyledCoinLabel>
           <Button onClick={() => set_wxHoprValue(DEFAULT_ALLOWANCE.toString())}>DEFAULT</Button>

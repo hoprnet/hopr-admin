@@ -7,7 +7,11 @@ import { Lowercase, StyledCoinLabel, StyledInputGroup, StyledTextField } from '.
 
 // Blockchain
 import { Address, parseUnits } from 'viem';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, DEFAULT_ALLOWANCE, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../../../config';
+import {
+  HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,
+  DEFAULT_ALLOWANCE,
+  HOPR_TOKEN_USED_CONTRACT_ADDRESS,
+} from '../../../../../config';
 import { createApproveTransactionData } from '../../../../utils/blockchain';
 
 // Store
@@ -40,12 +44,12 @@ export default function SetAllowance() {
     if (signer && selectedSafeAddress && HOPR_CHANNELS_SMART_CONTRACT_ADDRESS) {
       set_isWalletLoading(true);
       await dispatch(
-        safeActionsAsync.createAndExecuteContractTransactionThunk({
-          data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,parseUnits(wxHoprValue, 18)),
+        safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
+          data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, parseUnits(wxHoprValue, 18)),
           signer,
           safeAddress: selectedSafeAddress,
           smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
-        }),
+        })
       )
         .unwrap()
         .then((hash) => {
@@ -81,11 +85,13 @@ export default function SetAllowance() {
           size="small"
           value={wxHoprValue}
           onChange={(e) => set_wxHoprValue(e.target.value)}
-          InputProps={{ inputProps: {
-            style: { textAlign: 'right' },
-            min: 0,
-            pattern: '[0-9]*',
-          } }}
+          InputProps={{
+            inputProps: {
+              style: { textAlign: 'right' },
+              min: 0,
+              pattern: '[0-9]*',
+            },
+          }}
           helperText={`Suggested value is ${DEFAULT_ALLOWANCE} wxHopr`}
         />
         <StyledCoinLabel style={{ lineHeight: '40px' }}>

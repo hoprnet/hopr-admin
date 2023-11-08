@@ -4,7 +4,7 @@ import { Address, parseUnits } from 'viem';
 import { MINIMUM_XDAI_TO_FUND_NODE } from '../../../../../config';
 import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
 import { useEthersSigner } from '../../../../hooks';
-import { ConfirmButton, StepContainer } from '../components';
+import { StepContainer } from '../components';
 import { StyledTextField } from '../styled';
 
 // Store
@@ -15,18 +15,20 @@ import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
 // MUI
 import { Tooltip, TooltipProps, tooltipClasses } from '@mui/material';
+import SafeTransactionButton from '../../../../components/SafeTransactionButton';
 
-const BlueTooltip = styled(({ className, ...props }: TooltipProps) => (
+const BlueTooltip = styled(({
+  className,
+  ...props
+}: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: "#DAF8FF",
-    color: '#414141',
-    borderRadius: "10px",
-    fontSize: "12px",
-    boxShadow: "0px 4px 4px #00000040"
-  },
-}));
+))(() => ({ [`& .${tooltipClasses.tooltip}`]: {
+  backgroundColor: "#DAF8FF",
+  color: '#414141',
+  borderRadius: "10px",
+  fontSize: "12px",
+  boxShadow: "0px 4px 4px #00000040",
+} }));
 
 
 const StyledForm = styled.div`
@@ -70,10 +72,17 @@ export const StyledGrayButton = styled(GrayButton)`
   height: 39px;
 `;
 
+export const ConfirmButton = styled(SafeTransactionButton)`
+  max-width: 250px;
+  width: 100%;
+  align-self: center;
+`;
+
 export default function FundNode() {
   const dispatch = useAppDispatch();
   // injected states
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const safeInfo = useAppSelector((store) => store.safe.info.data);
   const nodeAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
   const safeXDaiBalance = useAppSelector((store) => store.safe.balance.data.xDai.formatted) as string;
   const isExecutionLoading = useAppSelector((store) => store.safe.executeTransaction.isFetching);
@@ -88,7 +97,32 @@ export default function FundNode() {
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
     set_isWalletLoading(true);
     dispatch(
-      safeActionsAsync.createAndExecuteTransactionThunk({
+      safeActionsAsync.createAndExecuteSafeTransactionThunk({
+        signer,
+        safeAddress: selectedSafeAddress,
+        safeTransactionData: {
+          to: nodeAddress,
+          value: parseUnits(xdaiValue as `${number}`, 18).toString(),
+          data: '0x',
+        },
+      }),
+    )
+      .unwrap()
+      .then((hash) => {
+        set_transactionHash(hash as Address);
+        dispatch(stakingHubActions.setOnboardingStep(15));
+      })
+      .catch(() => {
+        set_error(true);
+      })
+      .finally(() => set_isWalletLoading(false));
+  };
+
+  const signTx = () => {
+    if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
+    set_isWalletLoading(true);
+    dispatch(
+      safeActionsAsync.createSafeTransactionThunk({
         signer,
         safeAddress: selectedSafeAddress,
         safeTransactionData: {
@@ -126,18 +160,30 @@ export default function FundNode() {
       }}
       buttons={
         <ConfirmButton
-          onClick={createAndExecuteTx}
-          pending={isExecutionLoading}
-          disabled={
-            error ||
-            xdaiValue === '' ||
-            parseUnits(xdaiValue, 18) === parseUnits('0', 18) ||
-            xdaiValue.includes('-') ||
-            xdaiValue.includes('+')
-          }
-        >
-          FUND
-        </ConfirmButton>
+          safeInfo={safeInfo}
+          executeOptions={{
+            onClick: createAndExecuteTx,
+            pending: isExecutionLoading || isWalletLoading,
+            disabled: 
+              error ||
+              xdaiValue === '' ||
+              parseUnits(xdaiValue, 18) === parseUnits('0', 18) ||
+              xdaiValue.includes('-') ||
+              xdaiValue.includes('+'),
+            buttonText: 'FUND',
+          }}         
+          signOptions={{
+            onClick: signTx,
+            pending: isWalletLoading,
+            disabled: 
+              error ||
+              xdaiValue === '' ||
+              parseUnits(xdaiValue, 18) === parseUnits('0', 18) ||
+              xdaiValue.includes('-') ||
+              xdaiValue.includes('+'),
+            buttonText: 'SIGN FUND',
+          }}
+        />
       }
     >
       <div>

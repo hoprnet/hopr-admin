@@ -25,10 +25,27 @@ export default function ConfigureNode() {
   const isLoading = useAppSelector((store) => store.safe.executeTransaction.isFetching);
   const signer = useEthersSigner();
 
-  const includeNode = async () => {
+  const executeIncludeNode = async () => {
     if (signer && selectedSafeAddress && moduleAddress && nodeAddress) {
       dispatch(
-        safeActionsAsync.createAndExecuteContractTransactionThunk({
+        safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
+          smartContractAddress: moduleAddress,
+          data: createIncludeNodeTransactionData(encodeDefaultPermissions(getAddress(nodeAddress))),
+          safeAddress: selectedSafeAddress,
+          signer,
+        }),
+      )
+        .unwrap()
+        .then(() => {
+          dispatch(stakingHubActions.setOnboardingStep(14));
+        });
+    }
+  };
+
+  const signIncludeNode = async () => {
+    if (signer && selectedSafeAddress && moduleAddress && nodeAddress) {
+      dispatch(
+        safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
           smartContractAddress: moduleAddress,
           data: createIncludeNodeTransactionData(encodeDefaultPermissions(getAddress(nodeAddress))),
           safeAddress: selectedSafeAddress,
@@ -44,7 +61,7 @@ export default function ConfigureNode() {
 
   return (
     <StepContainer
-      title='CONFIGURE NODE'
+      title="CONFIGURE NODE"
       description={'You need to sign a transaction to connect your node to your existing HOPR safe.'}
       image={{
         src: '/assets/safe-and-node-chain.svg',
@@ -52,7 +69,7 @@ export default function ConfigureNode() {
       }}
       buttons={
         <ConfirmButton
-          onClick={includeNode}
+          onClick={executeIncludeNode}
           pending={isLoading}
         >
           SIGN

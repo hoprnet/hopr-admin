@@ -3,7 +3,7 @@ import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-type
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Address, parseUnits } from 'viem';
-import { GNOSIS_CHAIN_HOPR_BOOST_NFT, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
+import { GNOSIS_CHAIN_HOPR_BOOST_NFT, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config'
 import { useEthersSigner } from '../../hooks';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActions, safeActionsAsync } from '../../store/slices/safe';
@@ -176,7 +176,7 @@ function SafeWithdraw() {
       if (token === 'nft') {
         const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
         return dispatch(
-          safeActionsAsync.createSafeContractTransaction({
+          safeActionsAsync.createSafeContractTransactionThunk({
             data: createSendNftTransactionData(selectedSafeAddress as Address, receiver as Address, Number(nftId)),
             signer,
             safeAddress: selectedSafeAddress,
@@ -194,7 +194,7 @@ function SafeWithdraw() {
         const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
         const parsedValue = Number(ethValue) ? parseUnits(ethValue as `${number}`, 18).toString() : BigInt(0);
         return dispatch(
-          safeActionsAsync.createSafeContractTransaction({
+          safeActionsAsync.createSafeContractTransactionThunk({
             data: createSendTokensTransactionData(receiver as `0x${string}`, parsedValue as bigint),
             signer,
             safeAddress: selectedSafeAddress,
@@ -218,7 +218,7 @@ function SafeWithdraw() {
       if (token === 'xdai') {
         const parsedValue = Number(ethValue) ? parseUnits(ethValue as `${number}`, 18).toString() : 0;
         return dispatch(
-          safeActionsAsync.createAndExecuteTransactionThunk({
+          safeActionsAsync.createAndExecuteSafeTransactionThunk({
             signer,
             safeAddress: selectedSafeAddress,
             safeTransactionData: {
@@ -240,7 +240,7 @@ function SafeWithdraw() {
         const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
 
         await dispatch(
-          safeActionsAsync.createAndExecuteContractTransactionThunk({
+          safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
             data: createSendNftTransactionData(selectedSafeAddress as Address, receiver as Address, Number(nftId)),
             signer,
             safeAddress: selectedSafeAddress,
@@ -249,10 +249,9 @@ function SafeWithdraw() {
         )
           .unwrap()
           .then((transactionResponse) => {
-            browserClient?.waitForTransactionReceipt({ hash: transactionResponse as Address })
-              .then(() => {
-                dispatch(safeActions.removeCommunityNftsOwnedBySafe(nftId));
-              });
+            browserClient?.waitForTransactionReceipt({ hash: transactionResponse as Address }).then(() => {
+              dispatch(safeActions.removeCommunityNftsOwnedBySafe(nftId));
+            });
             set_proposedTxHash(transactionResponse);
           })
           .finally(() => {
@@ -262,7 +261,7 @@ function SafeWithdraw() {
         const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
         const parsedValue = Number(ethValue) ? parseUnits(ethValue as `${number}`, 18).toString() : BigInt(0);
         return dispatch(
-          safeActionsAsync.createAndExecuteContractTransactionThunk({
+          safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
             data: createSendTokensTransactionData(receiver as `0x${string}`, parsedValue as bigint),
             signer,
             safeAddress: selectedSafeAddress,
@@ -459,7 +458,7 @@ function SafeWithdraw() {
             feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
           />
           <StyledButtonGroup>
-            <SafeTransactionButton 
+            <SafeTransactionButton
               safeInfo={safeInfo}
               signOptions={{
                 onClick: proposeTx,

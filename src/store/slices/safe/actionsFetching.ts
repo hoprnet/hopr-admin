@@ -63,7 +63,7 @@ export const createFetchingReducer = (builder: ActionReducerMapBuilder<typeof in
     state.rejectTransaction.isFetching = action.payload;
   }),
   builder.addCase(setExecuteTransactionFetching, (state, action) => {
-    state.rejectTransaction.isFetching = action.payload;
+    state.executeTransaction.isFetching = action.payload;
   }),
   builder.addCase(setAddDelegateFetching, (state, action) => {
     state.addDelegate.isFetching = action.payload;
