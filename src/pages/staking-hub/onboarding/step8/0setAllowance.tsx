@@ -103,9 +103,7 @@ export default function SetAllowance() {
             pending: isWalletLoading,
             buttonText: 'SIGN',
           }}
-        >
-          
-        </ConfirmButton>
+        />          
       }
     >
       <StyledInputGroup style={{ alignItems: 'flex-start' }}>
