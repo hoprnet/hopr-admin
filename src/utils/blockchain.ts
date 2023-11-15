@@ -1,7 +1,6 @@
 import { Address, encodeFunctionData, encodePacked } from 'viem';
 import { erc20ABI } from 'wagmi';
-import { nodeManagementModuleAbi } from '../abi/nodeManagementModuleAbi';
-import { hoprBoostNFTAbi } from '../abi/hoprBoostNFTAbi';
+import { web3 } from '@hoprnet/hopr-sdk';
 
 // Maximum possible value for uint256
 export const MAX_UINT256 = BigInt(2 ** 256) - BigInt(1);
@@ -36,7 +35,7 @@ export const createSendTokensTransactionData = (recipient: Address, amount: bigi
 };
 export const createSendNftTransactionData = (from: Address, to: Address, tokenId: number) => {
   const transferData = encodeFunctionData({
-    abi: hoprBoostNFTAbi,
+    abi: web3.hoprBoostNFTABI,
     functionName: 'safeTransferFrom',
     args: [from, to, tokenId],
   });
@@ -45,7 +44,7 @@ export const createSendNftTransactionData = (from: Address, to: Address, tokenId
 
 export const createIncludeNodeTransactionData = (encodedPermissions: unknown) => {
   const includeNodeData = encodeFunctionData({
-    abi: nodeManagementModuleAbi,
+    abi: web3.hoprNodeManagementModuleABI,
     functionName: 'includeNode',
     args: [encodedPermissions as bigint],
   });

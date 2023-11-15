@@ -24,10 +24,10 @@ const AppBarContainer = styled(Button)`
   justify-content: center;
   width: 285px;
   border-radius: 0;
-  & .image-container {
+  .image-container {
     height: 50px;
     width: 50px;
-    & img {
+    img {
       width: 100%;
       height: 100%;
     }

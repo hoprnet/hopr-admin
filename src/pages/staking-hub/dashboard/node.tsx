@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../store';
 import { safeActionsAsync } from '../../../store/slices/safe';
 import { useEthersSigner } from '../../../hooks';
 
-import Button from '../../../future-hopr-lib-components/Button';
+
 import { Card, Chip, IconButton } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -13,6 +13,12 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import CloseIcon from '@mui/icons-material/Close';
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
+
+// HOPR components
+import Button from '../../../future-hopr-lib-components/Button';
+import { Table } from '../../../future-hopr-lib-components/Table/columed-data'
+import ProgressBar from '../../../future-hopr-lib-components/Progressbar'
+import { formatDate } from '../../../utils/date';
 
 //web3
 import { Address } from 'viem';
@@ -120,11 +126,11 @@ const NodeGraphic = styled.div`
     display: block;
     height: 100%;
     width: 100%;
+    object-fit: contain;
   }
 `;
 
 const NodeInfo = styled.div`
-  align-self: flex-end;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -250,7 +256,7 @@ const NodeAdded = () => {
   const nodeNativeAddress = useAppSelector((store) => store.node.addresses.data.native);
   const nodeHoprAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress);
   const nodeBalance = useAppSelector((store) => store.stakingHub.onboarding.nodeBalance.xDai.formatted);
-  const wxHoprAllowance = useAppSelector((store) => store.stakingHub.safeInfo.data.allowance.wxHoprAllowance);
+  const nodes = useAppSelector((store) => store.stakingHub.nodes);
 
   return (
     <Content>
@@ -262,56 +268,86 @@ const NodeAdded = () => {
               alt="Node Graphic"
             />
           </NodeGraphic>
-          <NodeInfo>
-            <NodeInfoRow>
-              <p>Node Address</p>
-              {nodeHoprAddress ? (
-                <>
-                  <p>{truncateHOPRPeerId(nodeHoprAddress)}</p>
-                  <SquaredIconButton
-                    onClick={() => nodeHoprAddress && navigator.clipboard.writeText(nodeHoprAddress)}
-                  >
-                    <CopyIcon />
-                  </SquaredIconButton>
-                  <Link to={`https://gnosisscan.io/address/${nodeNativeAddress}`}>
-                    <SquaredIconButton>
-                      <LaunchIcon />
+          <Table>
+            <tbody>
+              <tr>
+                <th>Node Address
+                  <div>
+                    <SquaredIconButton
+                      onClick={() => nodeHoprAddress && navigator.clipboard.writeText(nodeHoprAddress)}
+                    >
+                      <CopyIcon />
                     </SquaredIconButton>
-                  </Link>
-                </>
-              ) : (
-                <p>-</p>
-              )}
-            </NodeInfoRow>
-            <NodeInfoRow>
-              <p>Last seen</p>
-              <p>- mins</p>
-            </NodeInfoRow>
-            <NodeInfoRow>
-              <p>Ping</p>
-              <p>-</p>
-            </NodeInfoRow>
-            <NodeInfoRow>
-              <p>24h Avail.</p>
-              <p>-%</p>
-            </NodeInfoRow>
-            <NodeInfoRow>
-              <p>Availability</p>
-              <p>-%</p>
-            </NodeInfoRow>
-            <NodeInfoRow>
-              <p id="actions">Actions</p>
-              <StyledIconButton
-                onClick={() => { } /*navigate(`/node/configuration?${queryParams}`)*/}
-                disabled
-              >
-                <SettingsIcon />
-              </StyledIconButton>
-              <StyledIconButton disabled>
-                <CloseIcon />
-              </StyledIconButton>
-            </NodeInfoRow>
-          </NodeInfo>
+                    <Link to={`https://gnosisscan.io/address/${nodeNativeAddress}`}>
+                      <SquaredIconButton>
+                        <LaunchIcon />
+                      </SquaredIconButton>
+                    </Link>
+                  </div>
+                </th>
+                <td>
+                  <p
+                    style={{
+                      maxHeight: '72px',
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                      margin: '0',
+                    }}
+                  >
+                    {nodeHoprAddress}
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <th>Last seen</th>
+                <td>
+                  <p
+                    style={{
+                      maxHeight: '72px',
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                      margin: '0',
+                    }}
+                  >{nodes[0]?.lastSeen ? formatDate(nodes[0]?.lastSeen) : '-'}
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <th>Ping count</th>
+                <td>{nodes[0]?.count || '-'}</td>
+              </tr>
+              <tr>
+                <th>24h Availability</th>
+                <td>
+                  {
+                    nodes[0]?.availability24h ?
+                      <ProgressBar
+                        value={nodes[0].availability24h}
+                      />
+                      :
+                      '-'
+                  }
+                </td>
+              </tr>
+              <tr>
+                <th>Availability</th>
+                <td>
+                  {
+                    nodes[0]?.availability ?
+                      <ProgressBar
+                        value={nodes[0].availability}
+                      />
+                      :
+                      '-'
+                  }
+                </td>
+              </tr>
+              <tr>
+                <th>Last seen version</th>
+                <td>{nodes[0]?.version || '-'}</td>
+              </tr>
+            </tbody>
+          </Table>
         </Graphic>
       </GrayCard>
       <GrayCard

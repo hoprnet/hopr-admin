@@ -10,12 +10,12 @@ import {
   HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,
   wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS
 } from '../../../../config';
-import NetworkRegistryAbi from '../../../abi/network-registry-abi.json';
-import { nodeManagementModuleAbi }  from '../../../abi/nodeManagementModuleAbi';
+import { web3 } from '@hoprnet/hopr-sdk';
 import { Address, PublicClient, WalletClient, parseEther, publicActions } from 'viem';
 import { gql } from 'graphql-request';
 import { stakingHubActions } from '.';
 import { safeActionsAsync } from '../safe';
+import { NodePayload } from './initialState';
 
 const getHubSafesByOwnerThunk = createAsyncThunk<
   {
@@ -78,7 +78,7 @@ const registerNodeAndSafeToNRThunk = createAsyncThunk<
     const { request } = await superWalletClient.simulateContract({
       account: payload.walletClient.account,
       address: HOPR_NETWORK_REGISTRY,
-      abi: NetworkRegistryAbi,
+      abi: web3.hoprNetworkRegistryABI,
       functionName: 'managerRegister',
       args: [[payload.safeAddress], [payload.nodeAddress]],
     });
@@ -200,6 +200,11 @@ const getSubgraphDataThunk = createAsyncThunk<
       if (json.nodeManagementModules.length > 0) output.module = json.nodeManagementModules[0];
       if (json.balances.length > 0) output.overall_staking_v2_balances = json.balances[0];
 
+      if (output.registeredNodesInNetworkRegistry?.length > 0) {
+        let nodeAddress = output.registeredNodesInNetworkRegistry[0].node.id;
+        dispatch(getNodeDataThunk(nodeAddress));
+      }
+
       console.log('SubgraphParsedOutput', output);
       return output;
     } catch (e) {
@@ -224,8 +229,8 @@ type ParsedTargets =   {
 }
 
 const getModuleTargetsThunk = createAsyncThunk<
-  ParsedTargets, 
-  { safeAddress: string; moduleAddress: string, walletClient: PublicClient; }, 
+  ParsedTargets,
+  { safeAddress: string; moduleAddress: string, walletClient: PublicClient; },
   { state: RootState }
 >(
   'stakingHub/getNodeConfiguration',
@@ -235,17 +240,17 @@ const getModuleTargetsThunk = createAsyncThunk<
     console.log('stakingHub/getNodeConfiguration', safeAddress, moduleAddress);
     try {
       const superWalletClient = walletClient.extend(publicActions);
-  
+
       const channelsTarget = await superWalletClient.readContract({
         address: moduleAddress as `0x${string}`,
-        abi: nodeManagementModuleAbi,
+        abi: web3.hoprNodeManagementModuleABI,
         functionName: 'tryGetTarget',
         args: [HOPR_CHANNELS_SMART_CONTRACT_ADDRESS]
       }) as [boolean, BigInt];
 
       const wxHOPRTarget = await superWalletClient.readContract({
         address: moduleAddress as `0x${string}`,
-        abi: nodeManagementModuleAbi,
+        abi: web3.hoprNodeManagementModuleABI,
         functionName: 'tryGetTarget',
         args: [wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS]
       }) as [boolean, BigInt];
@@ -281,7 +286,7 @@ const getModuleTargetsThunk = createAsyncThunk<
        * (CapabilityPermission) as uint8: defaultApproveFunctionPermisson                               (for Token contract)
        * (CapabilityPermission) as uint8: defaultSendFunctionPermisson                                  (for Token contract)
        */
-      
+
       return targets;
     } catch (e) {
       return rejectWithValue(e);
@@ -335,15 +340,15 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
               if (wxHoprAllowanceCheck) {
                 return 16;
               }
-        
+
               return 15;
             }
-      
+
             return 14;
           }
 
           return 13;
-          
+
         }
 
         return 11;
@@ -435,9 +440,37 @@ const getOnboardingDataThunk = createAsyncThunk<
   dispatch(stakingHubActions.onboardingIsFetching(false));
 });
 
+const getNodeDataThunk = createAsyncThunk<
+  NodePayload[], 
+  string, 
+  { state: RootState }
+>(
+  'stakingHub/getNodeData',
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    console.log('getNodeData', payload);
+    dispatch(setNodeDataFetching(true));
+    const rez = await fetch(`https://network.hoprnet.org/api/getNode?env=37&nodeAddress=${payload}`);
+    const json = await rez.json();
+    return json;
+  },
+  { condition: (_payload, { getState }) => {
+    if(getState().stakingHub.nodes.length > 0) {
+      const isFetching = getState().stakingHub.nodes[0].isFetching;
+      if (isFetching) {
+        return false;
+      }
+    }
+    return true;
+  } },
+);
+
 // Helper actions to update the isFetching state
 const setHubSafesByOwnerFetching = createAction<boolean>('stakingHub/setHubSafesByOwnerFetching');
 const setSubgraphDataFetching = createAction<boolean>('stakingHub/setSubgraphDataFetching');
+const setNodeDataFetching = createAction<boolean>('stakingHub/setNodeDataFetching');
 
 export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   builder.addCase(getHubSafesByOwnerThunk.fulfilled, (state, action) => {
@@ -492,6 +525,15 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         state.onboarding.notStarted = false;
       }
     }
+  });
+  builder.addCase(getNodeDataThunk.fulfilled, (state, action) => {
+    if(action.payload.length > 0) {
+      state.nodes.push(action.payload[0]);
+    }
+    state.nodes[0].isFetching = false;
+  });
+  builder.addCase(getNodeDataThunk.rejected, (state, action) => {
+    state.nodes[0].isFetching = false;
   });
 };
 
