@@ -1,5 +1,8 @@
 import { useEffect } from 'react';
+import styled from '@emotion/styled';
 import { useAppDispatch, useAppSelector } from '../../store';
+import { Link } from 'react-router-dom';
+
 
 // Mui
 import { Paper } from '@mui/material';
@@ -11,6 +14,17 @@ import { TableExtended } from '../../future-hopr-lib-components/Table/columed-da
 import { SubpageTitle } from '../../components/SubpageTitle';
 import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
 import WithdrawModal from '../../components/Modal/node/WithdrawModal';
+import SmallActionButton from '../../future-hopr-lib-components/Button/SmallActionButton';
+
+//Icons
+import CopyIcon from '@mui/icons-material/ContentCopy';
+import LaunchIcon from '@mui/icons-material/Launch';
+
+const TdActionIcons = styled.td`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
 
 function InfoPage() {
   const dispatch = useAppDispatch();
@@ -275,7 +289,27 @@ function InfoPage() {
                   <span>Node Address</span>
                 </Tooltip>
               </th>
-              <td>{addresses?.native}</td>
+              <TdActionIcons>
+                {addresses?.native}
+                {
+                  addresses?.native &&
+                  <>
+                    <SmallActionButton
+                      onClick={() => navigator.clipboard.writeText(addresses?.native ? addresses.native : '')}
+                      tooltip={'Copy'}
+                    >
+                      <CopyIcon />
+                    </SmallActionButton>
+                    <SmallActionButton
+                      tooltip={'Open in gnosisscan.io'}
+                    >
+                      <Link to={`https://gnosisscan.io/address/${addresses?.native}`} target='_blank'>
+                        <LaunchIcon />
+                      </Link>
+                    </SmallActionButton>
+                  </>
+                }
+              </TdActionIcons>
             </tr>
             <tr>
               <th>
@@ -286,7 +320,27 @@ function InfoPage() {
                   <span>Safe Address</span>
                 </Tooltip>
               </th>
-              <td>{info?.nodeSafe}</td>
+              <TdActionIcons>
+                {info?.nodeSafe}
+                {
+                  info?.nodeSafe &&
+                  <>
+                    <SmallActionButton
+                      onClick={() => navigator.clipboard.writeText(info?.nodeSafe as string)}
+                      tooltip={'Copy'}
+                    >
+                      <CopyIcon />
+                    </SmallActionButton>
+                    <SmallActionButton
+                      tooltip={'Open in gnosisscan.io'}
+                    >
+                      <Link to={`https://gnosisscan.io/address/${info?.nodeSafe}`} target='_blank'>
+                        <LaunchIcon />
+                      </Link>
+                    </SmallActionButton>
+                  </>
+                }
+              </TdActionIcons>
             </tr>
             <tr>
               <th>
@@ -297,7 +351,27 @@ function InfoPage() {
                   <span>Module Address</span>
                 </Tooltip>
               </th>
-              <td>{info?.nodeManagementModule}</td>
+              <TdActionIcons>
+                {info?.nodeManagementModule}
+                {
+                  info?.nodeManagementModule &&
+                  <>
+                    <SmallActionButton
+                      onClick={() => navigator.clipboard.writeText(info?.nodeManagementModule as string)}
+                      tooltip={'Copy'}
+                    >
+                      <CopyIcon />
+                    </SmallActionButton>
+                    <SmallActionButton
+                      tooltip={'Open on gnosisscan.io'}
+                    >
+                      <Link to={`https://gnosisscan.io/address/${info?.nodeManagementModule}`} target='_blank'>
+                        <LaunchIcon />
+                      </Link>
+                    </SmallActionButton>
+                  </>
+                }
+              </TdActionIcons>
             </tr>
             <tr>
               <th>
@@ -308,7 +382,27 @@ function InfoPage() {
                   <span>Hopr Token Address</span>
                 </Tooltip>
               </th>
-              <td>{info?.hoprToken}</td>
+              <TdActionIcons>
+                {info?.hoprToken}
+                {
+                  info?.hoprToken &&
+                  <>
+                    <SmallActionButton
+                      onClick={() => navigator.clipboard.writeText(info?.hoprToken as string)}
+                      tooltip={'Copy'}
+                    >
+                      <CopyIcon />
+                    </SmallActionButton>
+                    <SmallActionButton
+                      tooltip={'Open in gnosisscan.io'}
+                    >
+                      <Link to={`https://gnosisscan.io/address/${info?.hoprToken}`} target='_blank'>
+                        <LaunchIcon />
+                      </Link>
+                    </SmallActionButton>
+                  </>
+                }
+              </TdActionIcons>
             </tr>
             <tr>
               <th>
@@ -319,7 +413,27 @@ function InfoPage() {
                   <span>Hopr Channels Address</span>
                 </Tooltip>
               </th>
-              <td>{info?.hoprChannels}</td>
+              <TdActionIcons>
+                {info?.hoprChannels}
+                {
+                  info?.hoprChannels &&
+                  <>
+                    <SmallActionButton
+                      onClick={() => navigator.clipboard.writeText(info?.hoprChannels as string)}
+                      tooltip={'Copy'}
+                    >
+                      <CopyIcon />
+                    </SmallActionButton>
+                    <SmallActionButton
+                      tooltip={'Open in gnosisscan.io'}
+                    >
+                      <Link to={`https://gnosisscan.io/address/${info?.hoprChannels}`} target='_blank'>
+                        <LaunchIcon />
+                      </Link>
+                    </SmallActionButton>
+                  </>
+                }
+              </TdActionIcons>
             </tr>
           </tbody>
         </TableExtended>
