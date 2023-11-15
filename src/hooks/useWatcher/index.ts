@@ -9,7 +9,7 @@ import { observeNodeInfo } from './info';
 import { observeMessages } from './messages';
 import { observePendingSafeTransactions } from './safeTransactions';
 
-export const useWatcher = ({ intervalDuration = 15000 }: { intervalDuration?: number }) => {
+export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: number }) => {
   const dispatch = useAppDispatch();
   const {
     apiEndpoint,
