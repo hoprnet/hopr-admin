@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { exportToFile } from '../../utils/helpers';
+import { formatEther } from 'viem';
 
 // HOPR Components
 import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
@@ -129,7 +130,7 @@ function TicketsPage() {
                   <span>Unredeemed value</span>
                 </Tooltip>
               </th>
-              <td>{statistics?.unredeemedValue}</td>
+              <td>{formatEther(BigInt(statistics?.unredeemedValue as string))} wxHOPR</td>
             </tr>
             <tr>
               <th>
@@ -151,7 +152,7 @@ function TicketsPage() {
                   <span>Redeemed value</span>
                 </Tooltip>
               </th>
-              <td>{statistics?.redeemedValue}</td>
+              <td>{formatEther(BigInt(statistics?.redeemedValue as string))} wxHOPR</td>
             </tr>
             <tr>
               <th>
@@ -206,7 +207,7 @@ function TicketsPage() {
                   <span>Rejected value</span>
                 </Tooltip>
               </th>
-              <td>{statistics?.rejectedValue}</td>
+              <td>{formatEther(BigInt(statistics?.rejectedValue as string))} wxHOPR</td>
             </tr>
           </tbody>
         </TableExtended>
