@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from '../../../store';
 import { safeActionsAsync } from '../../../store/slices/safe';
 import { encodeFunctionData } from 'viem';
 import { OperationType } from '@safe-global/safe-core-sdk-types';
-import { nodeManagementModuleAbi } from '../../../abi/nodeManagementModuleAbi'
 import { MULTISEND_CONTRACT_GNOSIS } from '../../../../config';
 
 // HOPR Components
@@ -14,6 +13,7 @@ import { GrayCard } from '../../../future-hopr-lib-components/Cards/GrayCard';
 import { stakingHubActions } from '../../../store/slices/stakingHub';
 import { web3ActionsAsync } from '../../../store/slices/web3';
 import { useWalletClient } from 'wagmi';
+import { web3 } from '@hoprnet/hopr-sdk';
 
 
 const Container = styled.div`
@@ -93,7 +93,7 @@ function SafeDashboard() {
 
 
         const addChannelsAndTokenTarget  = encodeFunctionData({
-          abi: nodeManagementModuleAbi,
+          abi: web3.hoprNodeManagementModuleABI,
           functionName: 'addChannelsAndTokenTarget',
           args: [newConfig],
         });
