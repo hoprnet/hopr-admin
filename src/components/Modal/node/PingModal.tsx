@@ -30,7 +30,7 @@ export const PingModal = (props: PingModalProps) => {
   const setPropPeerId = () => {
     if (props.peerId) set_peerId(props.peerId);
   };
-  useEffect(setPropPeerId, []);
+  useEffect(setPropPeerId, [props.peerId]);
 
   const handleOpenModal = () => {
     set_OpenModal(true);
