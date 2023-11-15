@@ -70,7 +70,7 @@ function TicketsPage() {
         reloading={ticketsFetching || statisticsFetching}
         actions={
           <>
-            <IconButton
+            {/* <IconButton
               iconComponent={<ExitToAppIcon />}
               tooltipText={
                 <span>
@@ -81,7 +81,7 @@ function TicketsPage() {
               }
               reloading={redeemTicketsFetching}
               onClick={handleRedeemAllTickets}
-            />
+            /> */}
             <IconButton
               iconComponent={<GetAppIcon />}
               tooltipText={
@@ -109,17 +109,6 @@ function TicketsPage() {
           style={{ marginBottom: '32px' }}
         >
           <tbody>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The number of tickets earned by another node in a channel connected to you which have yet to be redeemed. These must be redeemed by another node."
-                  notWide
-                >
-                  <span>Pending</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.pending}</td>
-            </tr>
             <tr>
               <th>
                 <Tooltip
