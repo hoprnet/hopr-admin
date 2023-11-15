@@ -305,7 +305,7 @@ function InfoPage() {
                   title="The contract address of the HOPR token."
                   notWide
                 >
-                  <span>hoprToken</span>
+                  <span>Hopr Token Address</span>
                 </Tooltip>
               </th>
               <td>{info?.hoprToken}</td>
@@ -316,7 +316,7 @@ function InfoPage() {
                   title="The contract address of the hoprChannels smart contract."
                   notWide
                 >
-                  <span>hoprChannels</span>
+                  <span>Hopr Channels Address</span>
                 </Tooltip>
               </th>
               <td>{info?.hoprChannels}</td>

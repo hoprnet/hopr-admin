@@ -99,7 +99,6 @@ function ChannelsPage() {
 
     if (aliases) {
       for (const [alias, id] of Object.entries(aliases)) {
-        console.log(`ID: ${id}: ${alias}`)
         if (id === peerId) {
           return alias;
         }

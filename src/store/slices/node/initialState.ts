@@ -55,6 +55,10 @@ type InitialState = {
         value: string | null;
         formatted: string | null;
       },
+      safeHoprAllowance: {
+        value: string | null;
+        formatted: string | null;
+      },
     };
     isFetching: boolean;
   };
@@ -139,6 +143,10 @@ export const initialState: InitialState = {
         formatted: null,
       },
       safeNative: {
+        value: null,
+        formatted: null,
+      },
+      safeHoprAllowance: {
         value: null,
         formatted: null,
       },

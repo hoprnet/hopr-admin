@@ -1,12 +1,12 @@
 {
   "name": "hopr-admin",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.0",
-    "@hoprnet/hopr-sdk": "^2.0.0-beta.11",
+    "@hoprnet/hopr-sdk": "2.0.1",
     "@metamask/jazzicon": "^2.0.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.0",

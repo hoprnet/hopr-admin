@@ -69,34 +69,7 @@ function SettingsPage() {
       includeRecipient: !prevState.includeRecipient,
     }));
   };
-
-  const handleStrategyChange = (event: SelectChangeEvent<unknown>) => {
-    set_localSettings((prevState) => ({
-      ...prevState,
-      strategy: event.target.value as string,
-    }));
-  };
-
-  const getValueLabel = (value: string) => {
-    const selectedValue = strategies.find((item) => item.value === value);
-    return selectedValue ? selectedValue.name : '';
-  };
-
-  const strategies = [
-    {
-      value: 'passive',
-      name: 'Passive',
-    },
-    {
-      value: 'promiscuous',
-      name: 'Promiscuous',
-    },
-    {
-      value: 'random',
-      name: 'Random',
-    },
-  ];
-
+  
   const handleSaveSettings = async () => {
     if (settings?.includeRecipient != localSettings.includeRecipient) {
       await dispatch(
@@ -105,21 +78,6 @@ function SettingsPage() {
           apiToken: loginData.apiToken!,
           setting: 'includeRecipient',
           settingValue: localSettings.includeRecipient,
-        }),
-      )
-        .unwrap()
-        .catch((e) => {
-          console.log(e.error);
-        });
-    }
-
-    if (settings?.strategy != localSettings.strategy) {
-      await dispatch(
-        nodeActionsAsync.setSettingThunk({
-          apiEndpoint: loginData.apiEndpoint!,
-          apiToken: loginData.apiToken!,
-          setting: 'strategy',
-          settingValue: localSettings.strategy,
         }),
       )
         .unwrap()
@@ -166,25 +124,6 @@ function SettingsPage() {
                   color="primary"
                 />{' '}
                 True
-              </td>
-            </tr>
-            <tr>
-              <th>Strategy</th>
-              <td>
-                <Select
-                  size="small"
-                  values={strategies}
-                  disabled={!localSettings}
-                  value={localSettings.strategy}
-                  onChange={handleStrategyChange}
-                  style={{
-                    width: '200px',
-                    margin: 0,
-                  }}
-                  renderValue={() => {
-                    return getValueLabel(localSettings.strategy!);
-                  }}
-                />
               </td>
             </tr>
             <tr>

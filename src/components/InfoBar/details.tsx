@@ -234,6 +234,15 @@ export default function Details(props: Props) {
           <Text className='noWrap'>wxHOPR (Safe)</Text>
         </IconAndText>
         <IconAndText>
+          <IconContainer>
+            <Icon
+              src="/assets/wxHoprIcon.svg"
+              alt="xDai Icon"
+            />
+          </IconContainer>
+          <Text>wxHOPR Allowance</Text>
+        </IconAndText>
+        <IconAndText>
           <IconContainer></IconContainer>
           <Text>Peers</Text>
         </IconAndText>
@@ -260,6 +269,7 @@ export default function Details(props: Props) {
           <p>{balances.native?.formatted ?? '-'}</p>
           <p>{balances.safeNative?.formatted ?? '-'}</p>
           <p>{balances.safeHopr?.formatted ?? '-'}</p>
+          <p className="double">{balances.safeHoprAllowance?.formatted ?? '-'}</p>
           <p>{truncateBalanceto5charsWhenNoDecimals(peers?.announced?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.outgoing?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.incoming?.length) || '-'}</p>
