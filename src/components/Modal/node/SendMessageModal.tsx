@@ -91,6 +91,12 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const maxLength = 500;
   const remainingChars = maxLength - message.length;
 
+  const setPropPeerId = () => {
+    const reveiver = props.peerId ? peers!.find(elem => elem.peerId === props.peerId) || null : null;
+    if (props.peerId) set_selectedReceiver(reveiver);
+  };
+  useEffect(setPropPeerId, [props.peerId]);
+
   useEffect(() => {
     switch (sendMode) {
       case 'path':
