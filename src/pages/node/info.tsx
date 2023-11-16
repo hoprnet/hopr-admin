@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { Link } from 'react-router-dom';
-
+import { copyStringToClipboard } from '../../utils/functions';
 
 // Mui
 import { Paper } from '@mui/material';
@@ -295,7 +295,7 @@ function InfoPage() {
                   addresses?.native &&
                   <>
                     <SmallActionButton
-                      onClick={() => navigator.clipboard.writeText(addresses?.native ? addresses.native : '')}
+                      onClick={() => navigator.clipboard.writeText(addresses?.native as string)}
                       tooltip={'Copy'}
                     >
                       <CopyIcon />

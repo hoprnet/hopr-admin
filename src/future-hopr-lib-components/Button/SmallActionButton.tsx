@@ -22,7 +22,9 @@ function SmallActionButton(props: SmallActionButtonProps) {
         <Tooltip
             title={props.tooltip}
         >
-            <SIconButton>
+            <SIconButton
+                {...props}
+            >
                 {props.children}
             </SIconButton>
         </Tooltip>
