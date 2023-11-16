@@ -130,7 +130,7 @@ function TicketsPage() {
                   <span>Unredeemed value</span>
                 </Tooltip>
               </th>
-              <td>{formatEther(BigInt(statistics?.unredeemedValue as string))} wxHOPR</td>
+              <td>{statistics?.unredeemedValue ? formatEther(BigInt(statistics?.unredeemedValue as string)) : '-'} wxHOPR</td>
             </tr>
             <tr>
               <th>
@@ -152,7 +152,7 @@ function TicketsPage() {
                   <span>Redeemed value</span>
                 </Tooltip>
               </th>
-              <td>{formatEther(BigInt(statistics?.redeemedValue as string))} wxHOPR</td>
+              <td>{statistics?.redeemedValue ? formatEther(BigInt(statistics?.redeemedValue as string)) : '-'} wxHOPR</td>
             </tr>
             <tr>
               <th>
@@ -207,7 +207,7 @@ function TicketsPage() {
                   <span>Rejected value</span>
                 </Tooltip>
               </th>
-              <td>{formatEther(BigInt(statistics?.rejectedValue as string))} wxHOPR</td>
+              <td>{statistics?.rejectedValue ? formatEther(BigInt(statistics?.rejectedValue as string)) : '-'} wxHOPR</td>
             </tr>
           </tbody>
         </TableExtended>
