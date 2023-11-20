@@ -74,7 +74,13 @@ function ChannelsPage() {
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
       })
-    )
+    );
+    dispatch(
+      actionsAsync.getTicketsThunk({
+        apiEndpoint: loginData.apiEndpoint!,
+        apiToken: loginData.apiToken!,
+      })
+    );
   };
 
   const getAliasByPeerAddress = (peerAddress: string): string => {

@@ -11,6 +11,7 @@ import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundCh
 import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
+import ProgressBar from '../../future-hopr-lib-components/Progressbar';
 
 //  Modals
 import { PingModal } from '../../components/Modal/node/PingModal';
@@ -126,7 +127,9 @@ function PeersPage() {
       alias: aliases ? getAliasByPeerId(peer.peerId) : '',
       peerId: peer.peerId,
       peerAddress: peer.peerAddress,
-      quality: peer.quality.toFixed(2),
+      quality: <ProgressBar
+        value={peer.quality}
+      />,
       lastSeen: new Date(peer.lastSeen).toLocaleString('en-US', {
         year: 'numeric',
         month: '2-digit',

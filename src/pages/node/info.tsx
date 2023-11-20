@@ -15,6 +15,7 @@ import { SubpageTitle } from '../../components/SubpageTitle';
 import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
 import WithdrawModal from '../../components/Modal/node/WithdrawModal';
 import SmallActionButton from '../../future-hopr-lib-components/Button/SmallActionButton';
+import { ColorStatus } from '../../components/InfoBar/details';
 
 //Icons
 import CopyIcon from '@mui/icons-material/ContentCopy';
@@ -25,6 +26,7 @@ const TdActionIcons = styled.td`
   gap: 8px;
   align-items: center;
 `;
+
 
 function InfoPage() {
   const dispatch = useAppDispatch();
@@ -196,7 +198,7 @@ function InfoPage() {
                   <span>Connectivity status</span>
                 </Tooltip>
               </th>
-              <td>{info?.connectivityStatus}</td>
+              <td><ColorStatus className={`status-${info?.connectivityStatus}`}>{info?.connectivityStatus}</ColorStatus></td>
             </tr>
             <tr>
               <th>

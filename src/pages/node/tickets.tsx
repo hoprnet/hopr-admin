@@ -92,6 +92,7 @@ function TicketsPage() {
                   all tickets as JSON
                 </span>
               }
+              pending={ticketsFetching}
               onClick={() => {
                 exportToFile(JSON.stringify(tickets), 'tickets.json', 'text/json');
               }}
