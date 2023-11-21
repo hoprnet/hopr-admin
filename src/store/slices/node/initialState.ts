@@ -19,6 +19,7 @@ export type Message = {
   status?: 'sending' | 'sent' | 'error';
   error?: string;
   challenge?: string;
+  reveiver?: string;
 };
 
 type WebsocketConnectionStatus = 'connecting' | 'connected' | 'error' | null;
