@@ -41,6 +41,11 @@ const STableCell = styled(TableCell)`
   &.actions {
     overflow: unset;
   }
+  &.wrap {
+    overflow-wrap: anywhere;
+    text-overflow: unset;
+    white-space: unset;
+  }
 `;
 
 function TablePaginationActions(props: TablePaginationActionsProps) {
