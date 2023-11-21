@@ -90,7 +90,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
               url: null,
               timeout: null,
             },
-            toastPayload: { message: `Alias ${alias} failed to add.` },
+            toastPayload: { message: `Alias ${alias} failed to add.`, type: 'error' },
             dispatch,
           });
         })
@@ -151,7 +151,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
         </SDialogContent>
         <DialogActions>
           <Button
-            disabled={alias.length === 0 || peerId.length === 0 || duplicateAlias}
+           // disabled={alias.length === 0 || peerId.length === 0 || duplicateAlias}
             onClick={handleAddAlias}
             style={{
               marginRight: '16px',
