@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { Link } from 'react-router-dom';
 import { copyStringToClipboard } from '../../utils/functions';
+import { formatEther } from 'viem';
 
 // Mui
 import { Paper } from '@mui/material';
@@ -236,7 +237,7 @@ function InfoPage() {
                   title="The amount of xDAI stored on your node"
                   notWide
                 >
-                  <span>xDAI (Node)</span>
+                  <span>xDAI: Node</span>
                 </Tooltip>
               </th>
               <td>{balances.native?.formatted} xDAI</td>
@@ -247,7 +248,7 @@ function InfoPage() {
                   title="The amount of xDAI stored on your node"
                   notWide
                 >
-                  <span>xDAI (Safe)</span>
+                  <span>xDAI: Safe</span>
                 </Tooltip>
               </th>
               <td>{balances.safeNative?.formatted} xDAI</td>
@@ -258,10 +259,49 @@ function InfoPage() {
                   title="The amount of xDAI stored on your node"
                   notWide
                 >
-                  <span>wxHOPR (Safe)</span>
+                  <span>wxHOPR: Safe</span>
                 </Tooltip>
               </th>
               <td>{balances.safeHopr?.formatted} wxHOPR</td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The amount of xDAI stored on your node"
+                  notWide
+                >
+                  <span>wxHOPR: Channels OUT</span>
+                </Tooltip>
+              </th>
+              <td>{balances.channels?.formatted} wxHOPR</td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The amount of wxHOPR set as allowance for Node to use"
+                  notWide
+                >
+                  <span>wxHOPR: Allowance</span>
+                </Tooltip>
+              </th>
+              <td>{balances.safeHoprAllowance?.formatted} wxHOPR</td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The total amount of wxHOPR staked in Safe and outgoing Channels"
+                  notWide
+                >
+                  <span>wxHOPR: Total Staked</span>
+                </Tooltip>
+              </th>
+              <td>
+                { 
+                  balances.channels?.value && 
+                  balances.safeHopr?.value ? 
+                  formatEther(BigInt(balances.channels?.value) + BigInt(balances.safeHopr?.value)) : '-'
+                } wxHOPR
+              </td>
             </tr>
           </tbody>
         </TableExtended>
