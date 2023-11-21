@@ -1227,6 +1227,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         body: action.meta.arg.body,
         createdAt: Date.now(),
         status: 'sending',
+        receiver: action.meta.arg.peerId,
       });
     }
   });
