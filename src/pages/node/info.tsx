@@ -28,7 +28,6 @@ const TdActionIcons = styled.td`
   align-items: center;
 `;
 
-
 function InfoPage() {
   const dispatch = useAppDispatch();
   const { apiEndpoint, apiToken } = useAppSelector((store) => store.auth.loginData);
