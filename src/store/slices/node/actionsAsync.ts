@@ -989,6 +989,10 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
           value: action.payload.safeHoprAllowance,
           formatted: formatEther(BigInt(action.payload.safeHoprAllowance)),
         },
+        channels: {
+          value: state.balances.data.channels.value,
+          formatted: state.balances.data.channels.formatted,
+        },
       };
       state.balances.isFetching = false;
     }
@@ -1000,6 +1004,18 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(getChannelsThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.channels.data = action.payload;
+      
+      if (action.payload.outgoing.length > 0) {
+        let balance = BigInt(0);
+        action.payload.outgoing.forEach(
+          channel => balance += BigInt(channel.balance)
+        );
+        state.balances.data.channels = {
+          value: balance.toString(),
+          formatted: formatEther(balance),
+        }
+      }
+
     }
     state.channels.isFetching = false;
   });

@@ -59,6 +59,10 @@ type InitialState = {
         value: string | null;
         formatted: string | null;
       },
+      channels: {
+        value: string | null;
+        formatted: string | null;
+      },
     };
     isFetching: boolean;
   };
@@ -147,6 +151,10 @@ export const initialState: InitialState = {
         formatted: null,
       },
       safeHoprAllowance: {
+        value: null,
+        formatted: null,
+      },
+      channels: {
         value: null,
         formatted: null,
       },

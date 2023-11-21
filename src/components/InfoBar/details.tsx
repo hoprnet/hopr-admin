@@ -234,7 +234,7 @@ export default function Details(props: Props) {
               alt="xDai Icon"
             />
           </IconContainer>
-          <Text>xDAI (Node)</Text>
+          <Text>xDAI: Node</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer>
@@ -243,7 +243,7 @@ export default function Details(props: Props) {
               alt="xDai Icon"
             />
           </IconContainer>
-          <Text>xDAI (Safe)</Text>
+          <Text>xDAI: Safe</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer>
@@ -252,7 +252,7 @@ export default function Details(props: Props) {
               alt="xDai Icon"
             />
           </IconContainer>
-          <Text className='noWrap'>wxHOPR (Safe)</Text>
+          <Text className='noWrap'>wxHOPR: Safe</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer>
@@ -261,7 +261,16 @@ export default function Details(props: Props) {
               alt="xDai Icon"
             />
           </IconContainer>
-          <Text>wxHOPR Allowance</Text>
+          <Text >wxHOPR: Channels OUT</Text>
+        </IconAndText>
+        <IconAndText>
+          <IconContainer>
+            <Icon
+              src="/assets/wxHoprIcon.svg"
+              alt="xDai Icon"
+            />
+          </IconContainer>
+          <Text>wxHOPR: Allowance</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
@@ -300,6 +309,7 @@ export default function Details(props: Props) {
           </p>
           <p>{balances.safeNative?.formatted ?? '-'}</p>
           <p>{balances.safeHopr?.formatted ?? '-'}</p>
+          <p className="double">{balances.channels?.formatted ?? '-'}</p>
           <p className="double">{balances.safeHoprAllowance?.formatted ?? '-'}</p>
           <p>{truncateBalanceto5charsWhenNoDecimals(peers?.announced?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.outgoing?.length) || '-'}</p>
