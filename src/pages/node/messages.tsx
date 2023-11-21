@@ -41,6 +41,7 @@ const messages = () => {
     {
       key: 'body',
       name: 'Message',
+      wrap: true,
     },
     {
       key: 'actions',
