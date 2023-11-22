@@ -1,5 +1,9 @@
 import { useEffect } from 'react';
+import styled from '@emotion/styled';
 import { useAppDispatch, useAppSelector } from '../../store';
+import { Link } from 'react-router-dom';
+import { copyStringToClipboard } from '../../utils/functions';
+import { formatEther } from 'viem';
 
 // Mui
 import { Paper } from '@mui/material';
@@ -11,6 +15,18 @@ import { TableExtended } from '../../future-hopr-lib-components/Table/columed-da
 import { SubpageTitle } from '../../components/SubpageTitle';
 import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
 import WithdrawModal from '../../components/Modal/node/WithdrawModal';
+import SmallActionButton from '../../future-hopr-lib-components/Button/SmallActionButton';
+import { ColorStatus } from '../../components/InfoBar/details';
+
+//Icons
+import CopyIcon from '@mui/icons-material/ContentCopy';
+import LaunchIcon from '@mui/icons-material/Launch';
+
+const TdActionIcons = styled.td`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
 
 function InfoPage() {
   const dispatch = useAppDispatch();
@@ -182,7 +198,7 @@ function InfoPage() {
                   <span>Connectivity status</span>
                 </Tooltip>
               </th>
-              <td>{info?.connectivityStatus}</td>
+              <td><ColorStatus className={`status-${info?.connectivityStatus}`}>{info?.connectivityStatus}</ColorStatus></td>
             </tr>
             <tr>
               <th>
@@ -217,10 +233,10 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The amount of xDAI stored on your node"
+                  title="The amount of xDAI stored on your Node"
                   notWide
                 >
-                  <span>xDAI (Node)</span>
+                  <span>xDAI: Node</span>
                 </Tooltip>
               </th>
               <td>{balances.native?.formatted} xDAI</td>
@@ -228,10 +244,10 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The amount of xDAI stored on your node"
+                  title="The amount of xDAI stored on your Safe"
                   notWide
                 >
-                  <span>xDAI (Safe)</span>
+                  <span>xDAI: Safe</span>
                 </Tooltip>
               </th>
               <td>{balances.safeNative?.formatted} xDAI</td>
@@ -239,13 +255,52 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The amount of xDAI stored on your node"
+                  title="The amount of wxHOPR stored on your Safe"
                   notWide
                 >
-                  <span>wxHOPR (Safe)</span>
+                  <span>wxHOPR: Safe</span>
                 </Tooltip>
               </th>
               <td>{balances.safeHopr?.formatted} wxHOPR</td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The amount of wxHOPR tokens staked in the channels your Node has opened with counterparties"
+                  notWide
+                >
+                  <span>wxHOPR: Channels OUT</span>
+                </Tooltip>
+              </th>
+              <td>{balances.channels?.formatted} wxHOPR</td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The amount of wxHOPR set as allowance for Node to use"
+                  notWide
+                >
+                  <span>wxHOPR: Allowance</span>
+                </Tooltip>
+              </th>
+              <td>{balances.safeHoprAllowance?.formatted} wxHOPR</td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The total amount of wxHOPR staked in Safe and outgoing Channels"
+                  notWide
+                >
+                  <span>wxHOPR: Total Staked</span>
+                </Tooltip>
+              </th>
+              <td>
+                { 
+                  balances.channels?.value && 
+                  balances.safeHopr?.value ? 
+                  formatEther(BigInt(balances.channels?.value) + BigInt(balances.safeHopr?.value)) : '-'
+                } wxHOPR
+              </td>
             </tr>
           </tbody>
         </TableExtended>
@@ -275,7 +330,27 @@ function InfoPage() {
                   <span>Node Address</span>
                 </Tooltip>
               </th>
-              <td>{addresses?.native}</td>
+              <TdActionIcons>
+                {addresses?.native}
+                {
+                  addresses?.native &&
+                  <>
+                    <SmallActionButton
+                      onClick={() => navigator.clipboard.writeText(addresses?.native as string)}
+                      tooltip={'Copy'}
+                    >
+                      <CopyIcon />
+                    </SmallActionButton>
+                    <SmallActionButton
+                      tooltip={'Open in gnosisscan.io'}
+                    >
+                      <Link to={`https://gnosisscan.io/address/${addresses?.native}`} target='_blank'>
+                        <LaunchIcon />
+                      </Link>
+                    </SmallActionButton>
+                  </>
+                }
+              </TdActionIcons>
             </tr>
             <tr>
               <th>
@@ -286,7 +361,27 @@ function InfoPage() {
                   <span>Safe Address</span>
                 </Tooltip>
               </th>
-              <td>{info?.nodeSafe}</td>
+              <TdActionIcons>
+                {info?.nodeSafe}
+                {
+                  info?.nodeSafe &&
+                  <>
+                    <SmallActionButton
+                      onClick={() => navigator.clipboard.writeText(info?.nodeSafe as string)}
+                      tooltip={'Copy'}
+                    >
+                      <CopyIcon />
+                    </SmallActionButton>
+                    <SmallActionButton
+                      tooltip={'Open in gnosisscan.io'}
+                    >
+                      <Link to={`https://gnosisscan.io/address/${info?.nodeSafe}`} target='_blank'>
+                        <LaunchIcon />
+                      </Link>
+                    </SmallActionButton>
+                  </>
+                }
+              </TdActionIcons>
             </tr>
             <tr>
               <th>
@@ -297,7 +392,27 @@ function InfoPage() {
                   <span>Module Address</span>
                 </Tooltip>
               </th>
-              <td>{info?.nodeManagementModule}</td>
+              <TdActionIcons>
+                {info?.nodeManagementModule}
+                {
+                  info?.nodeManagementModule &&
+                  <>
+                    <SmallActionButton
+                      onClick={() => navigator.clipboard.writeText(info?.nodeManagementModule as string)}
+                      tooltip={'Copy'}
+                    >
+                      <CopyIcon />
+                    </SmallActionButton>
+                    <SmallActionButton
+                      tooltip={'Open on gnosisscan.io'}
+                    >
+                      <Link to={`https://gnosisscan.io/address/${info?.nodeManagementModule}`} target='_blank'>
+                        <LaunchIcon />
+                      </Link>
+                    </SmallActionButton>
+                  </>
+                }
+              </TdActionIcons>
             </tr>
             <tr>
               <th>
@@ -305,10 +420,30 @@ function InfoPage() {
                   title="The contract address of the HOPR token."
                   notWide
                 >
-                  <span>hoprToken</span>
+                  <span>Hopr Token Address</span>
                 </Tooltip>
               </th>
-              <td>{info?.hoprToken}</td>
+              <TdActionIcons>
+                {info?.hoprToken}
+                {
+                  info?.hoprToken &&
+                  <>
+                    <SmallActionButton
+                      onClick={() => navigator.clipboard.writeText(info?.hoprToken as string)}
+                      tooltip={'Copy'}
+                    >
+                      <CopyIcon />
+                    </SmallActionButton>
+                    <SmallActionButton
+                      tooltip={'Open in gnosisscan.io'}
+                    >
+                      <Link to={`https://gnosisscan.io/address/${info?.hoprToken}`} target='_blank'>
+                        <LaunchIcon />
+                      </Link>
+                    </SmallActionButton>
+                  </>
+                }
+              </TdActionIcons>
             </tr>
             <tr>
               <th>
@@ -316,10 +451,30 @@ function InfoPage() {
                   title="The contract address of the hoprChannels smart contract."
                   notWide
                 >
-                  <span>hoprChannels</span>
+                  <span>Hopr Channels Address</span>
                 </Tooltip>
               </th>
-              <td>{info?.hoprChannels}</td>
+              <TdActionIcons>
+                {info?.hoprChannels}
+                {
+                  info?.hoprChannels &&
+                  <>
+                    <SmallActionButton
+                      onClick={() => navigator.clipboard.writeText(info?.hoprChannels as string)}
+                      tooltip={'Copy'}
+                    >
+                      <CopyIcon />
+                    </SmallActionButton>
+                    <SmallActionButton
+                      tooltip={'Open in gnosisscan.io'}
+                    >
+                      <Link to={`https://gnosisscan.io/address/${info?.hoprChannels}`} target='_blank'>
+                        <LaunchIcon />
+                      </Link>
+                    </SmallActionButton>
+                  </>
+                }
+              </TdActionIcons>
             </tr>
           </tbody>
         </TableExtended>

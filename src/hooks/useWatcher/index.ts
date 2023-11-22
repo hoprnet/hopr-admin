@@ -9,7 +9,7 @@ import { observeNodeInfo } from './info';
 import { observeMessages } from './messages';
 import { observePendingSafeTransactions } from './safeTransactions';
 
-export const useWatcher = ({ intervalDuration = 15000 }: { intervalDuration?: number }) => {
+export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: number }) => {
   const dispatch = useAppDispatch();
   const {
     apiEndpoint,
@@ -72,6 +72,7 @@ export const useWatcher = ({ intervalDuration = 15000 }: { intervalDuration?: nu
           native: parseEther('0.003').toString(),
           safeHopr: '0',
           safeNative: '0',
+          safeHoprAllowance: '0',
         },
         previousState: prevNodeBalances,
         updatePreviousData: (newNodeBalances) => {

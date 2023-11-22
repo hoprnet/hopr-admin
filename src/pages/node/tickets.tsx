@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { exportToFile } from '../../utils/helpers';
+import { formatEther } from 'viem';
 
 // HOPR Components
 import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
@@ -70,7 +71,7 @@ function TicketsPage() {
         reloading={ticketsFetching || statisticsFetching}
         actions={
           <>
-            <IconButton
+            {/* <IconButton
               iconComponent={<ExitToAppIcon />}
               tooltipText={
                 <span>
@@ -81,7 +82,7 @@ function TicketsPage() {
               }
               reloading={redeemTicketsFetching}
               onClick={handleRedeemAllTickets}
-            />
+            /> */}
             <IconButton
               iconComponent={<GetAppIcon />}
               tooltipText={
@@ -91,6 +92,7 @@ function TicketsPage() {
                   all tickets as JSON
                 </span>
               }
+              pending={ticketsFetching}
               onClick={() => {
                 exportToFile(JSON.stringify(tickets), 'tickets.json', 'text/json');
               }}
@@ -112,17 +114,6 @@ function TicketsPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The number of tickets earned by another node in a channel connected to you which have yet to be redeemed. These must be redeemed by another node."
-                  notWide
-                >
-                  <span>Pending</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.pending}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
                   title="The number of tickets earned by your node that have yet to be redeemed."
                   notWide
                 >
@@ -140,7 +131,7 @@ function TicketsPage() {
                   <span>Unredeemed value</span>
                 </Tooltip>
               </th>
-              <td>{statistics?.unredeemedValue}</td>
+              <td>{statistics?.unredeemedValue ? formatEther(BigInt(statistics?.unredeemedValue as string)) : '-'} wxHOPR</td>
             </tr>
             <tr>
               <th>
@@ -162,7 +153,7 @@ function TicketsPage() {
                   <span>Redeemed value</span>
                 </Tooltip>
               </th>
-              <td>{statistics?.redeemedValue}</td>
+              <td>{statistics?.redeemedValue ? formatEther(BigInt(statistics?.redeemedValue as string)) : '-'} wxHOPR</td>
             </tr>
             <tr>
               <th>
@@ -217,7 +208,7 @@ function TicketsPage() {
                   <span>Rejected value</span>
                 </Tooltip>
               </th>
-              <td>{statistics?.rejectedValue}</td>
+              <td>{statistics?.rejectedValue ? formatEther(BigInt(statistics?.rejectedValue as string)) : '-'} wxHOPR</td>
             </tr>
           </tbody>
         </TableExtended>

@@ -29,11 +29,11 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 
 
-### `docker build -t node-admin -f ./scripts/NodeAdmin.Dockerfile .`
+### `docker build --platform linux/amd64 -t europe-west3-docker.pkg.dev/hoprassociation/docker-images/hopr-admin -f ./scripts/NodeAdmin.Dockerfile .`
 
 Builds the Node Admin docker image with the name `node-admin`.
 
-### `docker run -p 8080:80 node-admin`
+### `docker run -d -p 8080:80 --name hopr-admin --platform linux/amd64 europe-west3-docker.pkg.dev/hoprassociation/docker-images/hopr-admin`
 
 Runs the Node Admin container exposing the 8080 port.
 To access the Node Admin you should go to `http://localhost:8080/`

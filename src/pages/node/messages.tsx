@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { formatDate } from '../../utils/date';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -32,8 +33,15 @@ const messages = () => {
 
   const header = [
     {
+      key: 'timestamp',
+      name: 'Timestamp',
+      width: '120px',
+      maxWidth: '120px',
+    },
+    {
       key: 'body',
       name: 'Message',
+      wrap: true,
     },
     {
       key: 'actions',
@@ -48,6 +56,7 @@ const messages = () => {
     return {
       id: message.id,
       body: message.body,
+      timestamp: formatDate(message.createdAt),
       actions: (
         <>
           <button onClick={() => dispatch(nodeActions.toggleMessageSeen(message))}>

@@ -618,37 +618,6 @@ const closeChannelThunk = createAsyncThunk<
   } },
 );
 
-const getChannelThunk = createAsyncThunk<
-  GetChannelResponseType | undefined,
-  GetChannelPayloadType,
-  { state: RootState }
->(
-  'node/getChannel',
-  async (payload, {
-    rejectWithValue,
-    dispatch,
-  }) => {
-    dispatch(nodeActionsFetching.setChannelsFetching(true));
-    try {
-      const res = await getChannel(payload);
-      return res;
-    } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
-      }
-    }
-  },
-  { condition: (_payload, { getState }) => {
-    const isFetching = getState().node.channels.isFetching;
-    if (isFetching) {
-      return false;
-    }
-  } },
-);
-
 const getChannelTicketsThunk = createAsyncThunk<
   GetChannelTicketsResponseType | undefined,
   GetChannelTicketsPayloadType,
@@ -1016,6 +985,14 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
           value: action.payload.safeNative,
           formatted: formatEther(BigInt(action.payload.safeNative)),
         },
+        safeHoprAllowance: {
+          value: action.payload.safeHoprAllowance,
+          formatted: formatEther(BigInt(action.payload.safeHoprAllowance)),
+        },
+        channels: {
+          value: state.balances.data.channels.value,
+          formatted: state.balances.data.channels.formatted,
+        },
       };
       state.balances.isFetching = false;
     }
@@ -1027,6 +1004,18 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(getChannelsThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.channels.data = action.payload;
+      
+      if (action.payload.outgoing.length > 0) {
+        let balance = BigInt(0);
+        action.payload.outgoing.forEach(
+          channel => balance += BigInt(channel.balance)
+        );
+        state.balances.data.channels = {
+          value: balance.toString(),
+          formatted: formatEther(balance),
+        }
+      }
+
     }
     state.channels.isFetching = false;
   });
@@ -1202,68 +1191,6 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(withdrawThunk.rejected, (state) => {
     state.transactions.isFetching = false;
   });
-  // getChannels
-  builder.addCase(getChannelThunk.fulfilled, (state, action) => {
-    if (action.payload) {
-      const {
-        balance,
-        channelId,
-        destinationAddress,
-        status,
-        sourcePeerId,
-      } = action.payload[0];
-
-      const personalPeerId = state.addresses.data.hopr;
-
-      // Check if it's incoming or outgoing depending on the local peer id and the source peer id of the channel
-      const type = personalPeerId === sourcePeerId ? 'outgoing' : 'incoming';
-
-      // find channel if it already exists
-      const channelIndex = state.channels.data?.[type].findIndex((channel) => channel.id === channelId);
-
-      if (state.channels.data) {
-        if (channelIndex) {
-          // update channel
-          state.channels.data[type][channelIndex] = {
-            balance,
-            id: channelId,
-            peerAddress: destinationAddress,
-            status,
-            type,
-          };
-        } else {
-          // add new channel
-          state.channels.data[type].push({
-            balance,
-            id: channelId,
-            peerAddress: destinationAddress,
-            status,
-            type,
-          });
-        }
-      } else {
-        state.channels.data = {
-          incoming: [],
-          outgoing: [],
-          all: [],
-          // overwrite actual type
-          [type]: [
-            {
-              balance,
-              id: channelId,
-              peerId: destinationAddress,
-              status,
-              type,
-            },
-          ],
-        };
-      }
-    }
-    state.channels.isFetching = false;
-  });
-  builder.addCase(getChannelThunk.rejected, (state) => {
-    state.channels.isFetching = false;
-  });
   // getChannelTickets
   builder.addCase(getChannelTicketsThunk.fulfilled, (state, action) => {
     if (action.payload) {
@@ -1300,6 +1227,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         body: action.meta.arg.body,
         createdAt: Date.now(),
         status: 'sending',
+        receiver: action.meta.arg.peerId,
       });
     }
   });
@@ -1403,7 +1331,6 @@ export const actionsAsync = {
   removeAliasThunk,
   withdrawThunk,
   closeChannelThunk,
-  getChannelThunk,
   getChannelTicketsThunk,
   openChannelThunk,
   openMultipleChannelsThunk,

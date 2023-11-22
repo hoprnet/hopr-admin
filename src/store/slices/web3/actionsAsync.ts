@@ -2,11 +2,11 @@ import { ActionReducerMapBuilder, createAsyncThunk } from '@reduxjs/toolkit';
 import { WalletClient, publicActions } from 'viem';
 import { RootState } from '../..';
 import { GNOSIS_CHAIN_HOPR_BOOST_NFT, STAKE_SUBGRAPH } from '../../../../config';
-import erc721ABI from '../../../abi/erc721-abi.json';
 import { initialState } from './initialState';
 import { web3Actions } from '.';
 import { safeActions } from '../safe';
 import { gql } from 'graphql-request';
+import { web3 } from '@hoprnet/hopr-sdk';
 
 const getCommunityNftsOwnedByWallet = createAsyncThunk(
   'web3/getCommunityNftsOwnedByWallet',
@@ -70,7 +70,7 @@ const sendNftToSafeThunk = createAsyncThunk<
       const { request } = await superWalletClient.simulateContract({
         account: payload.walletClient.account,
         address: GNOSIS_CHAIN_HOPR_BOOST_NFT,
-        abi: erc721ABI,
+        abi: web3.erc721ABI,
         functionName: 'safeTransferFrom',
         args: [payload.walletAddress, payload.safeAddress, payload.communityNftId],
       });

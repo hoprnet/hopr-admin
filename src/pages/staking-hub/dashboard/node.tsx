@@ -278,7 +278,7 @@ const NodeAdded = () => {
                     >
                       <CopyIcon />
                     </SquaredIconButton>
-                    <Link to={`https://gnosisscan.io/address/${nodeNativeAddress}`}>
+                    <Link to={`https://gnosisscan.io/address/${nodeNativeAddress}`}  target='_blank'>
                       <SquaredIconButton>
                         <LaunchIcon />
                       </SquaredIconButton>

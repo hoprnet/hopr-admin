@@ -95,6 +95,21 @@ const Data = styled.div`
   }
 `;
 
+export const ColorStatus = styled.span`
+  &.status-Green {
+    color: #218520;
+    font-weight: 700;
+  }
+  &.status-Orange {
+    color: #ff8f00;
+    font-weight: 700;
+  }
+  &.status-Red {
+    color: #ff0000;
+    font-weight: 700;
+  }
+`;
+
 // TODO: make batter to work with balances
 const truncateBalanceto5charsWhenNoDecimals = (value: string | number | undefined | null) => {
   try {
@@ -145,6 +160,12 @@ export default function Details(props: Props) {
   const loginData = useAppSelector((store) => store.auth.loginData);
   const statistics = useAppSelector((store) => store.node.statistics.data);
 
+  const isXdaiEnough = () => {
+    if(balances.native.value && (BigInt(balances.native.value) < BigInt('50000000000000000'))) return 'Orange'
+    else if(balances.native.value && (BigInt(balances.native.value) < BigInt('1000000000000000'))) return 'Red'
+    return ''
+  }
+  
   const web3Drawer = (
     <Web3Container style={props.style}>
       <TitleColumn className="web3">
@@ -213,7 +234,7 @@ export default function Details(props: Props) {
               alt="xDai Icon"
             />
           </IconContainer>
-          <Text>xDAI (Node)</Text>
+          <Text>xDAI: Node</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer>
@@ -222,7 +243,7 @@ export default function Details(props: Props) {
               alt="xDai Icon"
             />
           </IconContainer>
-          <Text>xDAI (Safe)</Text>
+          <Text>xDAI: Safe</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer>
@@ -231,7 +252,25 @@ export default function Details(props: Props) {
               alt="xDai Icon"
             />
           </IconContainer>
-          <Text className='noWrap'>wxHOPR (Safe)</Text>
+          <Text className='noWrap'>wxHOPR: Safe</Text>
+        </IconAndText>
+        <IconAndText>
+          <IconContainer>
+            <Icon
+              src="/assets/wxHoprIcon.svg"
+              alt="xDai Icon"
+            />
+          </IconContainer>
+          <Text >wxHOPR: Channels OUT</Text>
+        </IconAndText>
+        <IconAndText>
+          <IconContainer>
+            <Icon
+              src="/assets/wxHoprIcon.svg"
+              alt="xDai Icon"
+            />
+          </IconContainer>
+          <Text>wxHOPR: Allowance</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
@@ -256,10 +295,22 @@ export default function Details(props: Props) {
       </TitleColumn>
       <DataColumn>
         <Data className="nodeOnly">
-          <p>{info?.connectivityStatus}</p>
-          <p>{balances.native?.formatted ?? '-'}</p>
+          <p>
+            <ColorStatus className={`status-${info?.connectivityStatus}`}>
+              {info?.connectivityStatus}
+            </ColorStatus>
+          </p>
+          <p>
+            <ColorStatus 
+              className={`status-${isXdaiEnough()}`}
+            >
+              {balances.native?.formatted ?? '-'}
+            </ColorStatus>
+          </p>
           <p>{balances.safeNative?.formatted ?? '-'}</p>
           <p>{balances.safeHopr?.formatted ?? '-'}</p>
+          <p className="double">{balances.channels?.formatted ?? '-'}</p>
+          <p className="double">{balances.safeHoprAllowance?.formatted ?? '-'}</p>
           <p>{truncateBalanceto5charsWhenNoDecimals(peers?.announced?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.outgoing?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.incoming?.length) || '-'}</p>

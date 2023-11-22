@@ -5,8 +5,8 @@ import { useAppDispatch, useAppSelector } from '../../../store';
 import { safeActionsAsync } from '../../../store/slices/safe';
 import { encodeFunctionData } from 'viem';
 import { OperationType } from '@safe-global/safe-core-sdk-types';
-import { nodeManagementModuleAbi } from '../../../abi/nodeManagementModuleAbi';
 import { MULTISEND_CONTRACT_GNOSIS } from '../../../../config';
+import { web3 } from '@hoprnet/hopr-sdk';
 
 // HOPR Components
 import Button from '../../../future-hopr-lib-components/Button';
@@ -15,6 +15,7 @@ import { stakingHubActions } from '../../../store/slices/stakingHub';
 import { web3ActionsAsync } from '../../../store/slices/web3';
 import { useWalletClient } from 'wagmi';
 import SafeTransactionButton from '../../../components/SafeTransactionButton';
+
 
 const Container = styled.div`
   display: flex;
@@ -95,8 +96,8 @@ function SafeDashboard() {
         // GROUP 1 when target is false 1. addChannelsAndTokenTarget (0xa2450f89) in the module contract
         const newConfig = `0x693bac5ce61c720ddc68533991ceb41199d8f8ae010103030303030303030303`;
 
-        const addChannelsAndTokenTarget = encodeFunctionData({
-          abi: nodeManagementModuleAbi,
+        const addChannelsAndTokenTarget  = encodeFunctionData({
+          abi: web3.hoprNodeManagementModuleABI,
           functionName: 'addChannelsAndTokenTarget',
           args: [newConfig],
         });

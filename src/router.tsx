@@ -402,6 +402,24 @@ const LayoutEnhanced = () => {
               apiEndpoint,
             })
           );
+          dispatch(
+            nodeActionsAsync.getBalancesThunk({
+              apiToken,
+              apiEndpoint,
+            })
+          );
+          dispatch(
+            nodeActionsAsync.getChannelsThunk({
+              apiToken,
+              apiEndpoint,
+            })
+          );
+          dispatch(
+            nodeActionsAsync.getStatisticsThunk({
+              apiToken,
+              apiEndpoint,
+            })
+          );
           dispatch(nodeActions.initializeMessagesWebsocket());
         }
       } catch (e) {

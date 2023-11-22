@@ -41,7 +41,7 @@ import {
   STAKE_SUBGRAPH
 } from '../../../../config';
 import { gql } from 'graphql-request';
-import hoprNodeStakeFactoryAbi from '../../../abi/nodeStakeFactoryAbi.json';
+import { web3 } from '@hoprnet/hopr-sdk';
 import {
   getCurrencyFromHistoryTransaction,
   getRequestFromHistoryTransaction,
@@ -1091,7 +1091,7 @@ const createSafeWithConfigThunk = createAsyncThunk<
       } = await superWalletClient.simulateContract({
         account: payload.walletClient.account,
         address: HOPR_NODE_STAKE_FACTORY,
-        abi: hoprNodeStakeFactoryAbi,
+        abi: web3.hoprNodeStakeFactoryABI,
         functionName: 'clone',
         args: [
           HOPR_NODE_MANAGEMENT_MODULE,

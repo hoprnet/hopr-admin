@@ -19,6 +19,7 @@ export type Message = {
   status?: 'sending' | 'sent' | 'error';
   error?: string;
   challenge?: string;
+  receiver?: string;
 };
 
 type WebsocketConnectionStatus = 'connecting' | 'connected' | 'error' | null;
@@ -52,6 +53,14 @@ type InitialState = {
         formatted: string | null;
       },
       safeNative: {
+        value: string | null;
+        formatted: string | null;
+      },
+      safeHoprAllowance: {
+        value: string | null;
+        formatted: string | null;
+      },
+      channels: {
         value: string | null;
         formatted: string | null;
       },
@@ -139,6 +148,14 @@ export const initialState: InitialState = {
         formatted: null,
       },
       safeNative: {
+        value: null,
+        formatted: null,
+      },
+      safeHoprAllowance: {
+        value: null,
+        formatted: null,
+      },
+      channels: {
         value: null,
         formatted: null,
       },

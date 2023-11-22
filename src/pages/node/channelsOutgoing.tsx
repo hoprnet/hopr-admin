@@ -15,12 +15,14 @@ import CloseChannelIcon from '../../future-hopr-lib-components/Icons/CloseChanne
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 // Modals
-import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
 import { OpenMultipleChannelsModal } from '../../components/Modal/node/OpenMultipleChannelsModal';
+import { PingModal } from '../../components/Modal/node/PingModal';
+import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
+import { CreateAliasModal } from '../../components/Modal/node//AddAliasModal';
+import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 
 // Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
-import { PingModal } from '../../components/Modal/node/PingModal';
 
 function ChannelsPage() {
   const dispatch = useAppDispatch();
@@ -99,7 +101,6 @@ function ChannelsPage() {
 
     if (aliases) {
       for (const [alias, id] of Object.entries(aliases)) {
-        console.log(`ID: ${id}: ${alias}`)
         if (id === peerId) {
           return alias;
         }
@@ -229,8 +230,8 @@ function ChannelsPage() {
       key: 'actions',
       name: 'Actions',
       search: false,
-      width: '168px',
-      maxWidth: '168px',
+      width: '188px',
+      maxWidth: '188px',
     },
   ];
 
@@ -243,7 +244,15 @@ function ChannelsPage() {
       funds: `${utils.formatEther(channel.balance)} ${HOPR_TOKEN_USED}`,
       actions: (
         <>
-          <PingModal peerId={getPeerIdFromPeerAddress(channel.peerAddress)} />
+          <PingModal 
+            peerId={getPeerIdFromPeerAddress(channel.peerAddress)} 
+            disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
+          />
+          <CreateAliasModal
+            handleRefresh={handleRefresh}
+            peerId={getPeerIdFromPeerAddress(channel.peerAddress)}
+            disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
+          />
           <OpenOrFundChannelModal
             peerAddress={channel.peerAddress}
             title="Fund outgoing channel"
@@ -268,6 +277,10 @@ function ChannelsPage() {
               </span>
             }
             onClick={() => handleCloseChannels(channel.id)}
+          />
+          <SendMessageModal 
+            peerId={getPeerIdFromPeerAddress(channel.peerAddress)}
+            disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
           />
         </>
       ),

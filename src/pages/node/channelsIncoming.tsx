@@ -13,11 +13,14 @@ import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 // Modals
+import { PingModal } from '../../components/Modal/node/PingModal';
 import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
+import { CreateAliasModal } from '../../components/Modal/node//AddAliasModal';
+import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 
 // Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
-import { PingModal } from '../../components/Modal/node/PingModal';
+
 
 function ChannelsPage() {
   const dispatch = useAppDispatch();
@@ -71,7 +74,13 @@ function ChannelsPage() {
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
       })
-    )
+    );
+    dispatch(
+      actionsAsync.getTicketsThunk({
+        apiEndpoint: loginData.apiEndpoint!,
+        apiToken: loginData.apiToken!,
+      })
+    );
   };
 
   const getAliasByPeerAddress = (peerAddress: string): string => {
@@ -96,8 +105,6 @@ function ChannelsPage() {
 
   const getPeerIdFromPeerAddress = (peerAddress: string): string | undefined => {
     const peerId = peers?.announced.find(peer => peer.peerAddress === peerAddress)?.peerId;
-    // console.log(`peeraddress ${peerAddress} | peerId ${peerId}`)
-
     return peerId;
   }
 
@@ -158,11 +165,23 @@ function ChannelsPage() {
       funds: `${utils.formatEther(channel.balance)} ${HOPR_TOKEN_USED}`,
       actions: (
         <>
-          <PingModal peerId={getPeerIdFromPeerAddress(channel.peerAddress)} />
+          <PingModal 
+            peerId={getPeerIdFromPeerAddress(channel.peerAddress)} 
+            disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
+          />
+          <CreateAliasModal
+            handleRefresh={handleRefresh}
+            peerId={getPeerIdFromPeerAddress(channel.peerAddress)}
+            disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
+          />
           <OpenOrFundChannelModal
             peerAddress={channel.peerAddress}
             title="Open outgoing channel"
             type={'open'}
+          />
+          <SendMessageModal 
+            peerId={getPeerIdFromPeerAddress(channel.peerAddress)}
+            disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
           />
         </>
       ),

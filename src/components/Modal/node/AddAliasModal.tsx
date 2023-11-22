@@ -22,20 +22,28 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((store) => store.auth.loginData);
   const aliases = useAppSelector((store) => store.node.aliases.data);
-  const [modal, set_modal] = useState<{ peerId: string; alias: string }>({
-    alias: '',
-    peerId: props.peerId ? props.peerId : '',
-  });
+  const [alias, set_alias] = useState<string>('');
+  const [peerId, set_peerId] = useState<string>(props.peerId ? props.peerId : '');
   const [duplicateAlias, set_duplicateAlias] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    duplicateAlias && set_duplicateAlias(false);
-    set_modal({
-      ...modal,
-      [name]: value,
-    });
+
+  const setPropPeerId = () => {
+    if (props.peerId) set_peerId(props.peerId);
+  };
+  useEffect(setPropPeerId, [props.peerId]);
+
+  const handleChangePeerId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    set_peerId(event.target.value);
+  };
+
+  const handleChangeAlias = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (aliases && Object.keys(aliases).includes(event.target.value)) {
+      set_duplicateAlias(true);
+    } else {
+      set_duplicateAlias(false);
+    }
+    set_alias(event.target.value);
   };
 
   const handleOpenModal = () => {
@@ -45,22 +53,16 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
   const handleCloseModal = () => {
     set_duplicateAlias(false);
     setOpenModal(false);
-    set_modal({
-      peerId: props.peerId ? props.peerId : '',
-      alias: '',
-    });
+    set_peerId(props.peerId ? props.peerId : '');
+    set_alias('');
   };
 
   const handleAddAlias = () => {
-    if (aliases && Object.keys(aliases).includes(modal.alias)) {
-      set_duplicateAlias(true);
-      return;
-    }
     if (loginData.apiEndpoint && loginData.apiToken) {
       dispatch(
         actionsAsync.setAliasThunk({
-          alias: modal.alias,
-          peerId: modal.peerId,
+          alias: alias,
+          peerId: peerId,
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
         })
@@ -71,24 +73,24 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
           sendNotification({
             notificationPayload: {
               source: 'node',
-              name: `Alias ${modal.alias} added to ${modal.peerId}`,
+              name: `Alias ${alias} added to ${peerId}`,
               url: null,
               timeout: null,
             },
-            toastPayload: { message: `Alias ${modal.alias} added to ${modal.peerId}` },
+            toastPayload: { message: `Alias ${alias} added to ${peerId}` },
             dispatch,
           });
         })
         .catch((e) => {
-          console.log(`Alias ${modal.alias} failed to add.`, e.error);
+          console.log(`Alias ${alias} failed to add.`, e.error);
           sendNotification({
             notificationPayload: {
               source: 'node',
-              name: `Alias ${modal.alias} failed to add.`,
+              name: `Alias ${alias} failed to add.`,
               url: null,
               timeout: null,
             },
-            toastPayload: { message: `Alias ${modal.alias} failed to add.` },
+            toastPayload: { message: `Alias ${alias} failed to add.`, type: 'error' },
             dispatch,
           });
         })
@@ -132,16 +134,16 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
             name="peerId"
             label="Peer ID"
             placeholder="16Uiu2HA..."
-            onChange={handleChange}
-            value={modal.peerId}
+            onChange={handleChangePeerId}
+            value={peerId}
           />
           <TextField
             type="text"
             name="alias"
             label="Alias"
             placeholder="Alias"
-            onChange={handleChange}
-            value={modal.alias}
+            onChange={handleChangeAlias}
+            value={alias}
             error={duplicateAlias}
             helperText={duplicateAlias ? 'This is a duplicate alias!' : ''}
             style={{ minHeight: '79px' }}
@@ -149,7 +151,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
         </SDialogContent>
         <DialogActions>
           <Button
-            disabled={modal.alias.length === 0 || modal.peerId.length === 0}
+            disabled={alias.length === 0 || peerId.length === 0 || duplicateAlias}
             onClick={handleAddAlias}
             style={{
               marginRight: '16px',

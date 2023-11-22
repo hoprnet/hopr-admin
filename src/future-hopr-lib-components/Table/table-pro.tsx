@@ -41,6 +41,11 @@ const STableCell = styled(TableCell)`
   &.actions {
     overflow: unset;
   }
+  &.wrap {
+    overflow-wrap: anywhere;
+    text-overflow: unset;
+    white-space: unset;
+  }
 `;
 
 function TablePaginationActions(props: TablePaginationActionsProps) {
@@ -289,9 +294,7 @@ const CustomTableRow = ({
       {header.map((headElem) => (
         <STableCell
           key={headElem.key}
-          className={`TableCell ${headElem.key} ${headElem.wrap ? 'wrap' : ''} ${
-            headElem.maxWidth ? 'wrap' : ''
-          }`}
+          className={`TableCell ${headElem.key} ${headElem.wrap ? 'wrap' : ''}`}
           width={headElem.width}
           style={{ maxWidth: headElem.maxWidth }}
           onClick={(event) => headElem.copy && typeof row[headElem.key] === 'string' ? onDoubleClick(event, row[headElem.key] as string) : undefined}

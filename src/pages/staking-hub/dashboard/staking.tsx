@@ -130,7 +130,7 @@ const StakingScreen = () => {
                 <CopyIcon />
               </StyledIconButton>
               <StyledIconButton size="small">
-                <Link to={`https://gnosisscan.io/address/${selectedSafeAddress}`}>
+                <Link to={`https://gnosisscan.io/address/${selectedSafeAddress}`}  target='_blank'>
                   <LaunchIcon />
                 </Link>
               </StyledIconButton>
@@ -148,7 +148,7 @@ const StakingScreen = () => {
                 <CopyIcon />
               </StyledIconButton>
               <StyledIconButton size="small">
-                <Link to={`https://gnosisscan.io/address/${moduleAddress}`}>
+                <Link to={`https://gnosisscan.io/address/${moduleAddress}`}  target='_blank'>
                   <LaunchIcon />
                 </Link>
               </StyledIconButton>
