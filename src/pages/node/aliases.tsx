@@ -25,9 +25,9 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 function AliasesPage() {
   const dispatch = useAppDispatch();
   const aliases = useAppSelector((store) => store.node.aliases.data);
-  const peers = useAppSelector(store => store.node.peers.data)
+  const peers = useAppSelector((store) => store.node.peers.data);
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
-  const hoprAddresses = useAppSelector((store) => store.node.addresses.data.hopr)
+  const hoprAddresses = useAppSelector((store) => store.node.addresses.data.hopr);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [importSuccess, set_importSuccess] = useState(false);
   const [deleteSuccess, set_deleteSuccess] = useState(false);
@@ -44,7 +44,7 @@ function AliasesPage() {
         actionsAsync.getAliasesThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        })
+        }),
       );
     }
   }, [loginData]);
@@ -55,22 +55,20 @@ function AliasesPage() {
         actionsAsync.getAliasesThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        })
+        }),
       );
     }
   };
 
-
   const getPeerAddressByPeerId = (peerId: string): string | undefined => {
-
-    const peer = peers?.announced.find(peer => peer.peerId === peerId);
+    const peer = peers?.announced.find((peer) => peer.peerId === peerId);
 
     if (!peer) {
       return;
     }
 
-    return peer.peerAddress
-  }
+    return peer.peerAddress;
+  };
 
   const handleExport = () => {
     if (aliases) {
@@ -79,7 +77,7 @@ function AliasesPage() {
           alias: alias,
           peerId: aliases[alias],
         })),
-        'aliases.csv'
+        'aliases.csv',
       );
     }
   };
@@ -94,7 +92,7 @@ function AliasesPage() {
             peerId: String(data.peerId),
             apiEndpoint: loginData.apiEndpoint,
             apiToken: loginData.apiToken,
-          })
+          }),
         )
           .unwrap()
           .then(() => {
@@ -117,9 +115,9 @@ function AliasesPage() {
   };
 
   const getPeerAddressFromPeerId = (peerId: string): string | undefined => {
-    const peerAddress = peers?.announced.find(peer => peer.peerId === peerId)?.peerAddress;
+    const peerAddress = peers?.announced.find((peer) => peer.peerId === peerId)?.peerAddress;
     return peerAddress;
-  }
+  };
 
   const parsedTableData = Object.entries(aliases ?? {}).map(([alias, peerId], key) => {
     return {
@@ -130,13 +128,19 @@ function AliasesPage() {
       peerAddress: getPeerAddressByPeerId(peerId) ?? '',
       actions: (
         <>
-          <PingModal peerId={peerId} disabled={peerId === hoprAddresses} />
+          <PingModal
+            peerId={peerId}
+            disabled={peerId === hoprAddresses}
+          />
           <OpenOrFundChannelModal
             peerAddress={getPeerAddressByPeerId(peerId)}
             type={'open'}
             disabled={peerId === hoprAddresses}
           />
-          <SendMessageModal peerId={peerId} disabled={peerId === hoprAddresses} />
+          <SendMessageModal
+            peerId={peerId}
+            disabled={peerId === hoprAddresses}
+          />
           <DeleteAliasButton
             onSuccess={() => {
               set_deleteSuccess(true);
@@ -262,7 +266,7 @@ function DeleteAliasButton({
               alias,
               apiEndpoint: loginData.apiEndpoint,
               apiToken: loginData.apiToken,
-            })
+            }),
           )
             .unwrap()
             .then(() => {
@@ -290,7 +294,10 @@ function CreateAliasForm() {
   });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
+    const {
+      name,
+      value,
+    } = event.target;
     set_form({
       ...form,
       [name]: value,
@@ -323,7 +330,7 @@ function CreateAliasForm() {
                 peerId: form.peerId,
                 apiEndpoint: loginData.apiEndpoint,
                 apiToken: loginData.apiToken,
-              })
+              }),
             )
               .unwrap()
               .then(() => {

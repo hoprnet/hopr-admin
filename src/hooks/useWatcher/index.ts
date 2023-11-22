@@ -20,11 +20,13 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const signer = useEthersSigner();
   // flags to activate notifications
-  const activeChannels = useAppSelector(store => store.app.configuration.notifications.channels)
-  const activeMessage = useAppSelector(store => store.app.configuration.notifications.message)
-  const activeNodeBalances = useAppSelector(store => store.app.configuration.notifications.nodeBalances)
-  const activeNodeInfo = useAppSelector(store => store.app.configuration.notifications.nodeInfo)
-  const activePendingSafeTransaction = useAppSelector(store => store.app.configuration.notifications.pendingSafeTransaction)
+  const activeChannels = useAppSelector((store) => store.app.configuration.notifications.channels);
+  const activeMessage = useAppSelector((store) => store.app.configuration.notifications.message);
+  const activeNodeBalances = useAppSelector((store) => store.app.configuration.notifications.nodeBalances);
+  const activeNodeInfo = useAppSelector((store) => store.app.configuration.notifications.nodeInfo);
+  const activePendingSafeTransaction = useAppSelector(
+    (store) => store.app.configuration.notifications.pendingSafeTransaction,
+  );
   // redux previous states, this can be updated from anywhere in the app
   const prevChannels = useAppSelector((store) => store.app.previousStates.prevChannels);
   const prevMessage = useAppSelector((store) => store.app.previousStates.prevMessage);

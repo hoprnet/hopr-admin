@@ -21,13 +21,12 @@ import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 // Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
 
-
 function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((store) => store.node.channels.data);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
-  const aliases = useAppSelector((store) => store.node.aliases.data)
-  const peers = useAppSelector((store) => store.node.peers.data)
+  const aliases = useAppSelector((store) => store.node.aliases.data);
+  const peers = useAppSelector((store) => store.node.peers.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
 
   const tabLabel = 'incoming';
@@ -61,31 +60,30 @@ function ChannelsPage() {
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
     dispatch(
       actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
     dispatch(
       actionsAsync.getTicketsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
   };
 
   const getAliasByPeerAddress = (peerAddress: string): string => {
-
-    const peerId = peers?.announced.find(peer => peer.peerAddress === peerAddress)?.peerId;
+    const peerId = peers?.announced.find((peer) => peer.peerAddress === peerAddress)?.peerId;
 
     if (!peerId) {
       return peerAddress;
@@ -99,14 +97,13 @@ function ChannelsPage() {
       }
     }
 
-    return peerAddress
-  }
-
+    return peerAddress;
+  };
 
   const getPeerIdFromPeerAddress = (peerAddress: string): string | undefined => {
-    const peerId = peers?.announced.find(peer => peer.peerAddress === peerAddress)?.peerId;
+    const peerId = peers?.announced.find((peer) => peer.peerAddress === peerAddress)?.peerId;
     return peerId;
-  }
+  };
 
   const handleExport = () => {
     if (channelsData) {
@@ -165,8 +162,8 @@ function ChannelsPage() {
       funds: `${utils.formatEther(channel.balance)} ${HOPR_TOKEN_USED}`,
       actions: (
         <>
-          <PingModal 
-            peerId={getPeerIdFromPeerAddress(channel.peerAddress)} 
+          <PingModal
+            peerId={getPeerIdFromPeerAddress(channel.peerAddress)}
             disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
           />
           <CreateAliasModal
@@ -179,7 +176,7 @@ function ChannelsPage() {
             title="Open outgoing channel"
             type={'open'}
           />
-          <SendMessageModal 
+          <SendMessageModal
             peerId={getPeerIdFromPeerAddress(channel.peerAddress)}
             disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
           />

@@ -17,13 +17,14 @@ export function bubbleSortObject(arr: any[], key: string | number) {
   return arr;
 }
 
-
 export function copyStringToClipboard(input: string) {
-  let el = document.createElement('textarea');
+  const el = document.createElement('textarea');
   el.value = input;
   el.setAttribute('readonly', '');
   //@ts-ignore
-  el.style = {position: 'absolute', left: '-9999px'};
+  el.style = {
+    position: 'absolute', left: '-9999px', 
+  };
   document.body.appendChild(el);
   el.select();
   document.execCommand('copy');

@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from '../../../store';
 import { safeActionsAsync } from '../../../store/slices/safe';
 import { useEthersSigner } from '../../../hooks';
 
-
 import { Card, Chip, IconButton } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -16,14 +15,13 @@ import LaunchIcon from '@mui/icons-material/Launch';
 
 // HOPR components
 import Button from '../../../future-hopr-lib-components/Button';
-import { Table } from '../../../future-hopr-lib-components/Table/columed-data'
-import ProgressBar from '../../../future-hopr-lib-components/Progressbar'
+import { Table } from '../../../future-hopr-lib-components/Table/columed-data';
+import ProgressBar from '../../../future-hopr-lib-components/Progressbar';
 import { formatDate } from '../../../utils/date';
 
 //web3
 import { Address } from 'viem';
 import { browserClient } from '../../../providers/wagmi';
-
 
 const Content = styled.section`
   display: grid;
@@ -97,7 +95,7 @@ const ButtonGroup = styled.div`
   gap: 0.5rem;
 `;
 
-const StyledChip = styled(Chip) <{ color: string }>`
+const StyledChip = styled(Chip)<{ color: string }>`
   align-self: flex-start;
   background-color: ${(props) => props.color === 'error' && '#ffcbcb'};
   background-color: ${(props) => props.color === 'success' && '#cbffd0'};
@@ -271,14 +269,18 @@ const NodeAdded = () => {
           <Table>
             <tbody>
               <tr>
-                <th>Node Address
+                <th>
+                  Node Address
                   <div>
                     <SquaredIconButton
                       onClick={() => nodeHoprAddress && navigator.clipboard.writeText(nodeHoprAddress)}
                     >
                       <CopyIcon />
                     </SquaredIconButton>
-                    <Link to={`https://gnosisscan.io/address/${nodeNativeAddress}`}  target='_blank'>
+                    <Link
+                      to={`https://gnosisscan.io/address/${nodeNativeAddress}`}
+                      target="_blank"
+                    >
                       <SquaredIconButton>
                         <LaunchIcon />
                       </SquaredIconButton>
@@ -308,7 +310,8 @@ const NodeAdded = () => {
                       overflow: 'hidden',
                       margin: '0',
                     }}
-                  >{nodes[0]?.lastSeen ? formatDate(nodes[0]?.lastSeen) : '-'}
+                  >
+                    {nodes[0]?.lastSeen ? formatDate(nodes[0]?.lastSeen) : '-'}
                   </p>
                 </td>
               </tr>
@@ -318,29 +321,11 @@ const NodeAdded = () => {
               </tr>
               <tr>
                 <th>24h Availability</th>
-                <td>
-                  {
-                    nodes[0]?.availability24h ?
-                      <ProgressBar
-                        value={nodes[0].availability24h}
-                      />
-                      :
-                      '-'
-                  }
-                </td>
+                <td>{nodes[0]?.availability24h ? <ProgressBar value={nodes[0].availability24h} /> : '-'}</td>
               </tr>
               <tr>
                 <th>Availability</th>
-                <td>
-                  {
-                    nodes[0]?.availability ?
-                      <ProgressBar
-                        value={nodes[0].availability}
-                      />
-                      :
-                      '-'
-                  }
-                </td>
+                <td>{nodes[0]?.availability ? <ProgressBar value={nodes[0].availability} /> : '-'}</td>
               </tr>
               <tr>
                 <th>Last seen version</th>
@@ -361,10 +346,10 @@ const NodeAdded = () => {
         title="Earned rewards"
         value="-"
         currency="wxHOPR"
-      // chip={{
-      //   label: '-%/24h',
-      //   color: 'error',
-      // }}
+        // chip={{
+        //   label: '-%/24h',
+        //   color: 'error',
+        // }}
       />
       {/* <GrayCard
             id="node-strategy"
@@ -382,12 +367,11 @@ const NodeAdded = () => {
         title="Redeemed Tickets"
         value="-"
         currency="Ticket/wxHOPR"
-      // chip={{
-      //   label: '+%/24h',
-      //   color: 'success',
-      // }}
+        // chip={{
+        //   label: '+%/24h',
+        //   color: 'success',
+        // }}
       ></GrayCard>
-
     </Content>
   );
 };

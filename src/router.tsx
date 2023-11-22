@@ -1,5 +1,11 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouteObject, useSearchParams, Navigate, useLocation } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  RouteObject,
+  useSearchParams,
+  Navigate,
+  useLocation
+} from 'react-router-dom'
 import { environment } from '../config';
 import { useDisconnect } from 'wagmi';
 
@@ -364,7 +370,7 @@ const LayoutEnhanced = () => {
       authActions.useNodeData({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     if (!apiToken) return;
     const useNode = async () => {
@@ -373,57 +379,57 @@ const LayoutEnhanced = () => {
           authActionsAsync.loginThunk({
             apiEndpoint,
             apiToken,
-          })
+          }),
         ).unwrap();
         if (loginInfo) {
           // We do this after the loginInfo to make sure the login from url was successful
-          trackGoal('Y641EPNA', 1) // LOGIN_TO_NODE_BY_URL
+          trackGoal('Y641EPNA', 1); // LOGIN_TO_NODE_BY_URL
           dispatch(
             nodeActionsAsync.getInfoThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getAddressesThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getAliasesThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getPeersThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getBalancesThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getChannelsThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getStatisticsThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(nodeActions.initializeMessagesWebsocket());
         }
       } catch (e) {
-        trackGoal('ZUIBL4M8', 1) // FAILED_CONNECT_TO_NODE_BY_URL
+        trackGoal('ZUIBL4M8', 1); // FAILED_CONNECT_TO_NODE_BY_URL
         // error is handled on redux
       }
     };

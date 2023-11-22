@@ -15,14 +15,14 @@ type InitialState = {
         value: string | null;
         formatted: string | null;
       };
-    }
+    };
     safeAddress: string | null;
     notStarted: boolean | null;
     modalToSartOnboardingDismissed: boolean;
     moduleAddress: string | null;
     userIsInOnboarding: boolean;
     nodeXDaiBalance: string | null;
-    nodeAddressProvidedByMagicLink:  string | null;
+    nodeAddressProvidedByMagicLink: string | null;
     isFetching: boolean;
   };
   safeInfo: {
@@ -34,23 +34,23 @@ type InitialState = {
       data: boolean;
       strategy: string | null;
       isFetching: boolean;
-    }
-  },
-  nodes: NodePayload[]
+    };
+  };
+  nodes: NodePayload[];
 };
 
 export type NodePayload = {
-  nodeAddress: string,
-  peerId?: string,
-  lastSeen?: number,
-  latencyAverage?: number,
-  count?: number,
-  since1667080800count?: number,
-  availability?: number,
-  availability24h?: number,
-  version?: string
+  nodeAddress: string;
+  peerId?: string;
+  lastSeen?: number;
+  latencyAverage?: number;
+  count?: number;
+  since1667080800count?: number;
+  availability?: number;
+  availability24h?: number;
+  version?: string;
   isFetching: boolean;
-}
+};
 
 export type SubgraphParsedOutput = {
   balance: {
@@ -136,12 +136,10 @@ export const initialState: InitialState = {
     notStarted: null,
     modalToSartOnboardingDismissed: false,
     nodeAddressProvidedByMagicLink: null,
-    nodeBalance: {
-      xDai: {
-        value: null,
-        formatted: null,
-      },
-    }
+    nodeBalance: { xDai: {
+      value: null,
+      formatted: null,
+    } },
   },
   safeInfo: {
     data: {
@@ -180,12 +178,10 @@ export const initialState: InitialState = {
     },
     isFetching: false,
   },
-  config: {
-    needsUpdate: {
-      data: false,
-      strategy: null,
-      isFetching: false,
-    }
-  },
+  config: { needsUpdate: {
+    data: false,
+    strategy: null,
+    isFetching: false,
+  } },
   nodes: [],
 };

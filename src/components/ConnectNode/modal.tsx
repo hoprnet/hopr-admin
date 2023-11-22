@@ -122,7 +122,8 @@ const CloseOverlayIconButton = styled(IconButton)`
   top: 16px;
 `;
 
-const loginAnywaysWarning = "Your node did not start properly and might not be fully functioning. Some features might be offline and not working";
+const loginAnywaysWarning =
+  'Your node did not start properly and might not be fully functioning. Some features might be offline and not working';
 const defaultProps = { open: false };
 
 function ConnectNodeModal(props: ConnectNodeModalProps) {
@@ -200,7 +201,6 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   }, [errorMessage]);
 
   const parseAndFormatUrl = (url: string) => {
-
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       url = 'http://' + url;
     }
@@ -214,10 +214,10 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     parts[2] = hostAndPort;
     try {
       new URL(parts.join('/'));
-      set_apiEndpointError(null)
+      set_apiEndpointError(null);
       return parts.join('/');
     } catch (e) {
-      set_apiEndpointError('API Endpoint was incorrectly formatted')
+      set_apiEndpointError('API Endpoint was incorrectly formatted');
       return null;
     }
   };
@@ -427,10 +427,13 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
                 {errorMessage}
               </div>
 
-              {errorMessage !== 'UNAUTHORIZED' &&
-                <div style={{
-                  textAlign: 'center', marginTop: '32px',
-                }}>
+              {errorMessage !== 'UNAUTHORIZED' && (
+                <div
+                  style={{
+                    textAlign: 'center',
+                    marginTop: '32px',
+                  }}
+                >
                   <Tooltip title={loginAnywaysWarning}>
                     <ForceLoginButton
                       onClick={() => set_forceLogin(true)}
@@ -439,11 +442,11 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
                       Login anyways
                     </ForceLoginButton>
                   </Tooltip>
-                </div>}
+                </div>
+              )}
             </div>
           </Overlay>
         )}
-
       </SModal>
 
       <Modal
@@ -477,7 +480,12 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
       >
         <p>{loginAnywaysWarning}</p>
         <ButtonGroupContainer>
-          <Button outlined onClick={() => set_forceLogin(false)}>BACK</Button>
+          <Button
+            outlined
+            onClick={() => set_forceLogin(false)}
+          >
+            BACK
+          </Button>
           <ForceLoginButton
             onClick={() => {
               set_forceLogin(false);

@@ -77,7 +77,7 @@ export default function ConnectSafe() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
   const activePendingSafeTransaction = useAppSelector(
-    (store) => store.app.configuration.notifications.pendingSafeTransaction
+    (store) => store.app.configuration.notifications.pendingSafeTransaction,
   );
 
   const menuRef = useRef<HTMLButtonElement>(null);
@@ -125,7 +125,7 @@ export default function ConnectSafe() {
           browserClient,
           safeAddress,
           safes,
-        })
+        }),
       );
     }
   }, [safeAddress]);
@@ -148,19 +148,19 @@ export default function ConnectSafe() {
         safeActionsAsync.getSafeInfoThunk({
           signer: signer,
           safeAddress,
-        })
+        }),
       );
       dispatch(
         safeActionsAsync.getAllSafeTransactionsThunk({
           signer,
           safeAddress,
-        })
+        }),
       );
       dispatch(
         safeActionsAsync.getSafeDelegatesThunk({
           signer,
           options: { safeAddress },
-        })
+        }),
       );
     }
   };
@@ -186,8 +186,9 @@ export default function ConnectSafe() {
       onClick={handleSafeButtonClick}
       ref={menuRef}
       disabled={!isConnected}
-      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${environment === 'dev' ? 'display' : 'display-none'
-        }`}
+      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${
+        environment === 'dev' ? 'display' : 'display-none'
+      }`}
     >
       <div className="image-container">
         <img
@@ -229,7 +230,7 @@ export default function ConnectSafe() {
                 {safe.safeAddress &&
                   `${safe.safeAddress.substring(0, 6)}...${safe.safeAddress.substring(
                     safe.safeAddress.length - 8,
-                    safe.safeAddress.length
+                    safe.safeAddress.length,
                   )}`}
               </MenuItem>
             ))}

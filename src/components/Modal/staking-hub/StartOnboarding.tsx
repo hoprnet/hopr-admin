@@ -16,7 +16,7 @@ const Content = styled(SDialogContent)`
     justify-content: center;
     gap: 16px;
     button {
-      margin-top: 16px;;
+      margin-top: 16px;
       padding-inline: 2rem;
     }
   }
@@ -31,7 +31,9 @@ const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
   const navigate = useNavigate();
   const notFinished = useAppSelector((state) => state.stakingHub.onboarding.notFinished);
   const notStarted = useAppSelector((state) => state.stakingHub.onboarding.notStarted);
-  const modalToSartOnboardingDismissed = useAppSelector((state) => state.stakingHub.onboarding.modalToSartOnboardingDismissed);
+  const modalToSartOnboardingDismissed = useAppSelector(
+    (state) => state.stakingHub.onboarding.modalToSartOnboardingDismissed,
+  );
   const web3connected = useAppSelector((state) => state.web3.status.connected);
   const [openModal, set_openModal] = useState(false);
 
@@ -59,7 +61,9 @@ const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
           <DialogTitle>SET UP YOUR HOPR SAFE</DialogTitle>
           <SIconButton
             aria-label="close modal"
-            onClick={()=>{handleCloseModal()}}
+            onClick={() => {
+              handleCloseModal();
+            }}
           >
             <CloseIcon />
           </SIconButton>
@@ -68,7 +72,9 @@ const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
           <p>Are you ready to create your HOPR Safe?</p>
           <div>
             <Button
-              onClick={()=>{handleCloseModal()}}
+              onClick={() => {
+                handleCloseModal();
+              }}
               outlined
             >
               NOT NOW

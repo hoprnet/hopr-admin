@@ -50,7 +50,7 @@ export const PingModal = (props: PingModalProps) => {
           peerId,
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        })
+        }),
       )
         .unwrap()
         .then((resp: any) => {

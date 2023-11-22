@@ -26,11 +26,13 @@ export default function AddNode() {
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
 
   //http://localhost:5173/staking/onboarding?HOPRdNodeAddressForOnboarding=helloMyfield
-  const HOPRdNodeAddressForOnboarding = useAppSelector((store) => store.stakingHub.onboarding.nodeAddressProvidedByMagicLink);
+  const HOPRdNodeAddressForOnboarding = useAppSelector(
+    (store) => store.stakingHub.onboarding.nodeAddressProvidedByMagicLink,
+  );
   const nodesAddedToSafe = useAppSelector(
     (store) => store.stakingHub.safeInfo.data.registeredNodesInNetworkRegistryParsed,
   );
-  const ownerAddress = useAppSelector((store) => store.stakingHub.safeInfo.data.owners[0].owner.id)
+  const ownerAddress = useAppSelector((store) => store.stakingHub.safeInfo.data.owners[0].owner.id);
   const account = useAppSelector((store) => store.web3.account);
   const signer = useEthersSigner();
   const [isLoading, set_isLoading] = useState(false);
@@ -50,15 +52,16 @@ export default function AddNode() {
             label: 'node',
           },
         }),
-      ).unwrap()
+      )
+        .unwrap()
         .then(() => {
           dispatch(stakingHubActions.setOnboardingNodeAddress(address));
           dispatch(stakingHubActions.setOnboardingStep(13));
         })
-        .catch(e => {
-          console.log('ERROR when adding a delegate to Safe:', e)
+        .catch((e) => {
+          console.log('ERROR when adding a delegate to Safe:', e);
           if (e.includes("does not exist or it's still not indexed")) {
-            const errMsg = "Your safe wasn't indexed yet by HOPR Safe Infrastructure. Please try in 5min."
+            const errMsg = "Your safe wasn't indexed yet by HOPR Safe Infrastructure. Please try in 5min.";
             sendNotification({
               notificationPayload: {
                 source: 'safe',
@@ -66,7 +69,9 @@ export default function AddNode() {
                 url: null,
                 timeout: null,
               },
-              toastPayload: { message: errMsg, type: 'error' },
+              toastPayload: {
+                message: errMsg, type: 'error', 
+              },
               dispatch,
             });
           }
@@ -75,31 +80,35 @@ export default function AddNode() {
     }
   };
 
-
   const addressIsOwnerAddress = () => {
-    return ownerAddress?.toLocaleLowerCase() === address?.toLocaleLowerCase()
-  }
+    return ownerAddress?.toLocaleLowerCase() === address?.toLocaleLowerCase();
+  };
 
   return (
     <StepContainer
       title="ADD NODE"
       description={
         <>
-          Please enter and confirm your node address. This will initiate a transaction which you will need to sign. If you do not have your node address follow the instructions here for{' '}
+          Please enter and confirm your node address. This will initiate a transaction which you will need to sign. If
+          you do not have your node address follow the instructions here for{' '}
           <a
             href="https://docs.hoprnet.org/node/using-dappnode#2-link-your-node-to-your-safe"
             target="_blank"
             rel="noreferrer"
-            style={{ color: '#007bff', textDecoration: 'underline' }}
+            style={{
+              color: '#007bff', textDecoration: 'underline', 
+            }}
           >
             Dappnode
-          </a>
-          {' '}or{' '}
+          </a>{' '}
+          or{' '}
           <a
             href="https://docs.hoprnet.org/node/using-docker#4-link-your-node-to-your-safe"
             target="_blank"
             rel="noreferrer"
-            style={{ color: '#007bff', textDecoration: 'underline' }}
+            style={{
+              color: '#007bff', textDecoration: 'underline', 
+            }}
           >
             Docker
           </a>
@@ -119,7 +128,13 @@ export default function AddNode() {
           >
             Back
           </StyledGrayButton>
-          <Tooltip title={address === '' ? 'Please enter and confirm your node address' : !nodeInNetworkRegistry && 'This node is not on the whitelist'}>
+          <Tooltip
+            title={
+              address === ''
+                ? 'Please enter and confirm your node address'
+                : !nodeInNetworkRegistry && 'This node is not on the whitelist'
+            }
+          >
             <span>
               <ConfirmButton
                 onClick={addDelegate}
@@ -139,13 +154,15 @@ export default function AddNode() {
         label="Node Address"
         placeholder="Your address..."
         value={address}
-        onChange={(e) =>
-          set_address(e.target.value)
-        }
+        onChange={(e) => set_address(e.target.value)}
         fullWidth
         style={{ marginTop: '16px' }}
         error={addressIsOwnerAddress()}
-        helperText={addressIsOwnerAddress() ? "You entered your wallet address and you should enter your Node Address" : "Address should start with 0x"}
+        helperText={
+          addressIsOwnerAddress()
+            ? 'You entered your wallet address and you should enter your Node Address'
+            : 'Address should start with 0x'
+        }
       />
     </StepContainer>
   );

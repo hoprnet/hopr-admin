@@ -110,7 +110,7 @@ export default function SelectNodeType() {
   const [option, set_option] = useState<0 | 1 | null>(null);
 
   return (
-    <StepContainer 
+    <StepContainer
       title="SELECT NODE TYPE"
       buttons={
         <ConfirmButton

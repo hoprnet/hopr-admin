@@ -3,7 +3,7 @@ import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-type
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Address, parseUnits } from 'viem';
-import { GNOSIS_CHAIN_HOPR_BOOST_NFT, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
+import { GNOSIS_CHAIN_HOPR_BOOST_NFT, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config'
 import { useEthersSigner } from '../../hooks';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActions, safeActionsAsync } from '../../store/slices/safe';
@@ -288,10 +288,9 @@ function SafeWithdraw() {
         )
           .unwrap()
           .then((transactionResponse) => {
-            browserClient?.waitForTransactionReceipt({ hash: transactionResponse as Address })
-              .then(() => {
-                dispatch(safeActions.removeCommunityNftsOwnedBySafe(nftId));
-              });
+            browserClient?.waitForTransactionReceipt({ hash: transactionResponse as Address }).then(() => {
+              dispatch(safeActions.removeCommunityNftsOwnedBySafe(nftId));
+            });
             set_proposedTxHash(transactionResponse);
           })
           .finally(() => {

@@ -36,7 +36,9 @@ const safeSlice = createSlice({
     removeCommunityNftsOwnedBySafe(state, action: PayloadAction<string>) {
       const NftId = action.payload;
       let communityNftIds = state.communityNftIds.data;
-      communityNftIds = communityNftIds.filter(elem => { elem.id !== NftId});
+      communityNftIds = communityNftIds.filter((elem) => {
+        elem.id !== NftId;
+      });
       state.communityNftIds.data = communityNftIds;
     },
   },

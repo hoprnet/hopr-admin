@@ -2,7 +2,6 @@ import { ReactNode, useState } from 'react';
 import { useAppSelector } from '../../../store';
 import styled from '@emotion/styled';
 
-
 import Chart from 'react-apexcharts';
 import { Card, Chip, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -58,7 +57,11 @@ const Content = styled.div`
     width: calc(50% - 1rem);
   }
 
-  #redeemed-tickets, #earned-rewards, #wxhopr-total-stake, #xdai-in-safe, #remaining-wxhopr-allowance {
+  #redeemed-tickets,
+  #earned-rewards,
+  #wxhopr-total-stake,
+  #xdai-in-safe,
+  #remaining-wxhopr-allowance {
     flex: 1;
   }
 
@@ -78,7 +81,6 @@ const Content = styled.div`
     grid-column: 1/7;
   }
 `;
-
 
 const ChartContainer = styled.div`
   width: 100%;
@@ -130,15 +132,16 @@ const StakingScreen = () => {
                 <CopyIcon />
               </StyledIconButton>
               <StyledIconButton size="small">
-                <Link to={`https://gnosisscan.io/address/${selectedSafeAddress}`}  target='_blank'>
+                <Link
+                  to={`https://gnosisscan.io/address/${selectedSafeAddress}`}
+                  target="_blank"
+                >
                   <LaunchIcon />
                 </Link>
               </StyledIconButton>
             </div>
           </FlexContainer>
-          <FlexContainer
-            style={{}}
-          >
+          <FlexContainer style={{}}>
             <SafeAddress>Module address: {moduleAddress}</SafeAddress>
             <div>
               <StyledIconButton
@@ -148,7 +151,10 @@ const StakingScreen = () => {
                 <CopyIcon />
               </StyledIconButton>
               <StyledIconButton size="small">
-                <Link to={`https://gnosisscan.io/address/${moduleAddress}`}  target='_blank'>
+                <Link
+                  to={`https://gnosisscan.io/address/${moduleAddress}`}
+                  target="_blank"
+                >
                   <LaunchIcon />
                 </Link>
               </StyledIconButton>
@@ -218,23 +224,23 @@ const StakingScreen = () => {
             id="redeemed-tickets"
             title="Redeemed Tickets"
             value="-"
-          // chip={{
-          //   label: '+%/24h',
-          //   color: 'success',
-          // }}
+            // chip={{
+            //   label: '+%/24h',
+            //   color: 'success',
+            // }}
           />
           <GrayCard
             id="earned-rewards"
             title="Earned rewards"
             value="-"
             currency="wxHOPR"
-          // chip={{
-          //   label: '-%/24h',
-          //   color: 'error',
-          // }}
+            // chip={{
+            //   label: '-%/24h',
+            //   color: 'error',
+            // }}
           />
         </div>
-        <div className='half-line'>
+        <div className="half-line">
           <GrayCard
             id="remaining-wxhopr-allowance"
             title="Remaining wxHOPR Allowance

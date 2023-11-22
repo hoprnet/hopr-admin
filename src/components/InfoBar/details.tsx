@@ -161,11 +161,11 @@ export default function Details(props: Props) {
   const statistics = useAppSelector((store) => store.node.statistics.data);
 
   const isXdaiEnough = () => {
-    if(balances.native.value && (BigInt(balances.native.value) < BigInt('50000000000000000'))) return 'Orange'
-    else if(balances.native.value && (BigInt(balances.native.value) < BigInt('1000000000000000'))) return 'Red'
-    return ''
-  }
-  
+    if (balances.native.value && BigInt(balances.native.value) < BigInt('50000000000000000')) return 'Orange';
+    else if (balances.native.value && BigInt(balances.native.value) < BigInt('1000000000000000')) return 'Red';
+    return '';
+  };
+
   const web3Drawer = (
     <Web3Container style={props.style}>
       <TitleColumn className="web3">
@@ -252,7 +252,7 @@ export default function Details(props: Props) {
               alt="xDai Icon"
             />
           </IconContainer>
-          <Text className='noWrap'>wxHOPR: Safe</Text>
+          <Text className="noWrap">wxHOPR: Safe</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer>
@@ -261,7 +261,7 @@ export default function Details(props: Props) {
               alt="xDai Icon"
             />
           </IconContainer>
-          <Text >wxHOPR: Channels OUT</Text>
+          <Text>wxHOPR: Channels OUT</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer>
@@ -296,16 +296,10 @@ export default function Details(props: Props) {
       <DataColumn>
         <Data className="nodeOnly">
           <p>
-            <ColorStatus className={`status-${info?.connectivityStatus}`}>
-              {info?.connectivityStatus}
-            </ColorStatus>
+            <ColorStatus className={`status-${info?.connectivityStatus}`}>{info?.connectivityStatus}</ColorStatus>
           </p>
           <p>
-            <ColorStatus 
-              className={`status-${isXdaiEnough()}`}
-            >
-              {balances.native?.formatted ?? '-'}
-            </ColorStatus>
+            <ColorStatus className={`status-${isXdaiEnough()}`}>{balances.native?.formatted ?? '-'}</ColorStatus>
           </p>
           <p>{balances.safeNative?.formatted ?? '-'}</p>
           <p>{balances.safeHopr?.formatted ?? '-'}</p>

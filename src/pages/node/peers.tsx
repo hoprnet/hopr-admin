@@ -36,13 +36,13 @@ function PeersPage() {
       actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
   };
 
@@ -68,7 +68,7 @@ function PeersPage() {
           backoff: peer.backoff,
           isNew: peer.isNew,
         })),
-        'peers.csv'
+        'peers.csv',
       );
     }
   };
@@ -127,9 +127,7 @@ function PeersPage() {
       alias: aliases ? getAliasByPeerId(peer.peerId) : '',
       peerId: peer.peerId,
       peerAddress: peer.peerAddress,
-      quality: <ProgressBar
-        value={peer.quality}
-      />,
+      quality: <ProgressBar value={peer.quality} />,
       lastSeen: new Date(peer.lastSeen).toLocaleString('en-US', {
         year: 'numeric',
         month: '2-digit',

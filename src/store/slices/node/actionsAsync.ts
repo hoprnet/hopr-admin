@@ -1004,18 +1004,15 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(getChannelsThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.channels.data = action.payload;
-      
+
       if (action.payload.outgoing.length > 0) {
         let balance = BigInt(0);
-        action.payload.outgoing.forEach(
-          channel => balance += BigInt(channel.balance)
-        );
+        action.payload.outgoing.forEach((channel) => (balance += BigInt(channel.balance)));
         state.balances.data.channels = {
           value: balance.toString(),
           formatted: formatEther(balance),
-        }
+        };
       }
-
     }
     state.channels.isFetching = false;
   });
@@ -1198,7 +1195,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         // using challenge as an id between tickets
         const uniqueIdentifier = updatedTicket.index;
         const existingIndex = state.tickets.data?.findIndex((ticket) => ticket.index === uniqueIdentifier);
-  
+
         if (existingIndex && existingIndex !== -1 && state.tickets.data) {
           // Update the existing ticket with the new values
           state.tickets.data[existingIndex] = {

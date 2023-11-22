@@ -9,7 +9,6 @@ import { erc20ABI, useContractRead, useWalletClient } from 'wagmi';
 import { web3 } from '@hoprnet/hopr-sdk';
 import { MAX_UINT256, createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../utils/blockchain'
 
-
 //Stores
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActionsAsync } from '../../store/slices/safe';

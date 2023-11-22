@@ -50,17 +50,21 @@ const GreenText = styled.div`
   }
 `;
 
-const BlueTooltip = styled(({ className, ...props }: TooltipProps) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: "#DAF8FF",
-    color: '#414141',
-    borderRadius: "10px",
-    fontSize: "12px",
-    boxShadow: "0px 4px 4px #00000040"
-  },
-}));
+const BlueTooltip = styled(({
+  className,
+  ...props
+}: TooltipProps) => (
+  <Tooltip
+    {...props}
+    classes={{ popper: className }}
+  />
+))(({ theme }) => ({ [`& .${tooltipClasses.tooltip}`]: {
+  backgroundColor: '#DAF8FF',
+  color: '#414141',
+  borderRadius: '10px',
+  fontSize: '12px',
+  boxShadow: '0px 4px 4px #00000040',
+} }));
 
 const FundsToSafe = () => {
   const dispatch = useAppDispatch();
@@ -229,9 +233,12 @@ const FundsToSafe = () => {
       <StyledForm>
         <StyledInstructions>
           <Text>
-            Move <Lowercase>x</Lowercase>DAI to safe {' '}
-            <BlueTooltip title="Enter the amount of xDAI you would like to deposit to your Safe. In a later step this will be used to fund your node." >
-              <img src='/assets/question-icon.svg' style={{ height: "100%" }} />
+            Move <Lowercase>x</Lowercase>DAI to safe{' '}
+            <BlueTooltip title="Enter the amount of xDAI you would like to deposit to your Safe. In a later step this will be used to fund your node.">
+              <img
+                src="/assets/question-icon.svg"
+                style={{ height: '100%' }}
+              />
             </BlueTooltip>
           </Text>
         </StyledInstructions>
@@ -243,13 +250,11 @@ const FundsToSafe = () => {
             size="small"
             value={xdaiValue}
             onChange={(e) => set_xdaiValue(e.target.value)}
-            InputProps={{
-              inputProps: {
-                style: { textAlign: 'right' },
-                min: 0,
-                pattern: '[0-9]*',
-              }
-            }}
+            InputProps={{ inputProps: {
+              style: { textAlign: 'right' },
+              min: 0,
+              pattern: '[0-9]*',
+            } }}
             helperText={`min. ${MINIMUM_XDAI_TO_FUND}`}
           />
           <StyledCoinLabel>xDAI</StyledCoinLabel>
@@ -267,9 +272,12 @@ const FundsToSafe = () => {
       <StyledForm>
         <StyledInstructions>
           <Text>
-            Move <Lowercase>wx</Lowercase>HOPR into safe {' '}
-            <BlueTooltip title="Enter the amount of wxHOPR you would like to deposit to your Safe. We recommend moving all of your wxHOPR." >
-              <img src='/assets/question-icon.svg' style={{ height: "100%" }} />
+            Move <Lowercase>wx</Lowercase>HOPR into safe{' '}
+            <BlueTooltip title="Enter the amount of wxHOPR you would like to deposit to your Safe. We recommend moving all of your wxHOPR.">
+              <img
+                src="/assets/question-icon.svg"
+                style={{ height: '100%' }}
+              />
             </BlueTooltip>
           </Text>
           <GreenText></GreenText>
@@ -282,13 +290,11 @@ const FundsToSafe = () => {
             size="small"
             value={wxhoprValue}
             onChange={(e) => set_wxhoprValue(e.target.value)}
-            InputProps={{
-              inputProps: {
-                style: { textAlign: 'right' },
-                min: 0,
-                pattern: '[0-9]*',
-              }
-            }}
+            InputProps={{ inputProps: {
+              style: { textAlign: 'right' },
+              min: 0,
+              pattern: '[0-9]*',
+            } }}
             helperText={`min. ${wxhoprValueMin}`}
           />
           <StyledCoinLabel>wxHOPR</StyledCoinLabel>

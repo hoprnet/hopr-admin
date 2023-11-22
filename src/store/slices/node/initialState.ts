@@ -51,19 +51,19 @@ type InitialState = {
       safeHopr: {
         value: string | null;
         formatted: string | null;
-      },
+      };
       safeNative: {
         value: string | null;
         formatted: string | null;
-      },
+      };
       safeHoprAllowance: {
         value: string | null;
         formatted: string | null;
-      },
+      };
       channels: {
         value: string | null;
         formatted: string | null;
-      },
+      };
     };
     isFetching: boolean;
   };

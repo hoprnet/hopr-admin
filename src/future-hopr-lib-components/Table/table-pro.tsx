@@ -127,16 +127,16 @@ const STextField = styled(TextField)`
 `;
 
 interface Props {
-  data: {id: string, actions: JSX.Element, [key: string]: string | JSX.Element;  }[];
+  data: { id: string; actions: JSX.Element; [key: string]: string | JSX.Element }[];
   header: {
-    key: string,
-    name: string,
-    search?: boolean,
-    tooltip?: boolean,
-    width?: string,
-    wrap?: boolean,
-    maxWidth?: string,
-    copy?: boolean,
+    key: string;
+    name: string;
+    search?: boolean;
+    tooltip?: boolean;
+    width?: string;
+    wrap?: boolean;
+    maxWidth?: string;
+    copy?: boolean;
   }[];
   search?: boolean;
   loading?: boolean;
@@ -176,7 +176,7 @@ export default function CustomPaginationActionsTable(props: Props) {
     set_Page(0);
 
     const data = props.data;
-    const filterBy = props.header.filter((elem) => elem.search === true).map(header => header.key);
+    const filterBy = props.header.filter((elem) => elem.search === true).map((header) => header.key);
 
     // SearchPhrase filter
     if (!searchPhrase || searchPhrase === '') {
@@ -185,7 +185,11 @@ export default function CustomPaginationActionsTable(props: Props) {
     }
     const filtered = data.filter((elem) => {
       for (let i = 0; i < filterBy.length; i++) {
-        if (typeof elem[filterBy[i]] === 'string' && (elem[filterBy[i]] as string).toLowerCase().includes(searchPhrase.toLowerCase())) return true;
+        if (
+          typeof elem[filterBy[i]] === 'string' &&
+          (elem[filterBy[i]] as string).toLowerCase().includes(searchPhrase.toLowerCase())
+        )
+          return true;
       }
     });
     set_filteredData(filtered);
@@ -245,7 +249,11 @@ export default function CustomPaginationActionsTable(props: Props) {
             ? filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : filteredData
           ).map((row) => (
-            <CustomTableRow row={row} header={props.header} key={row.id}/>
+            <CustomTableRow
+              row={row}
+              header={props.header}
+              key={row.id}
+            />
           ))}
           {!props.data ||
             (props.data.length === 0 && (
@@ -269,25 +277,22 @@ export default function CustomPaginationActionsTable(props: Props) {
   );
 }
 
-
 const CustomTableRow = ({
-  row, 
+  row,
   header,
-}: {row: Props['data'][0], header: Props['header']}) => {
-  const [tooltip, set_tooltip] = useState<string>()
-
+}: { row: Props['data'][0]; header: Props['header'] }) => {
+  const [tooltip, set_tooltip] = useState<string>();
 
   const onDoubleClick = (event: React.MouseEvent<HTMLTableCellElement, MouseEvent>, value: string) => {
     // if row is clicked twice
     if (event.detail === 2) {
       navigator.clipboard.writeText(value);
-      set_tooltip('Copied')
+      set_tooltip('Copied');
       setTimeout(() => {
-        set_tooltip(undefined)
+        set_tooltip(undefined);
       }, 3000);
     }
-  }
-
+  };
 
   return (
     <TableRow key={row.id}>
@@ -297,15 +302,21 @@ const CustomTableRow = ({
           className={`TableCell ${headElem.key} ${headElem.wrap ? 'wrap' : ''}`}
           width={headElem.width}
           style={{ maxWidth: headElem.maxWidth }}
-          onClick={(event) => headElem.copy && typeof row[headElem.key] === 'string' ? onDoubleClick(event, row[headElem.key] as string) : undefined}
+          onClick={(event) =>
+            headElem.copy && typeof row[headElem.key] === 'string'
+              ? onDoubleClick(event, row[headElem.key] as string)
+              : undefined
+          }
         >
           {headElem.tooltip ? (
-            <Tooltip title={tooltip ?? row[headElem.key]}><span>{row[headElem.key]}</span></Tooltip>
+            <Tooltip title={tooltip ?? row[headElem.key]}>
+              <span>{row[headElem.key]}</span>
+            </Tooltip>
           ) : (
             row[headElem.key]
           )}
         </STableCell>
       ))}
     </TableRow>
-  )
-}
+  );
+};

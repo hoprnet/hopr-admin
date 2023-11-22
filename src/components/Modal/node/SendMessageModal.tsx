@@ -15,8 +15,8 @@ import {
   SelectChangeEvent,
   Select,
   MenuItem,
-  Autocomplete,
-} from '@mui/material'
+  Autocomplete
+} from '@mui/material';
 
 import { SendMessagePayloadType } from '@hoprnet/hopr-sdk';
 import CloseIcon from '@mui/icons-material/Close';
@@ -33,11 +33,11 @@ const PathOrHops = styled.div`
   align-items: center;
   width: 100%;
 
-  .numerOfHopsSelected{
+  .numerOfHopsSelected {
     justify-content: center;
   }
 
-  .noNumberOfHopsSelected{
+  .noNumberOfHopsSelected {
     justify-content: flex-start;
   }
 
@@ -48,7 +48,6 @@ const PathOrHops = styled.div`
   .noNumberOfHops {
     flex: 0.5;
   }
-
 `;
 
 const StatusContainer = styled.div`
@@ -66,12 +65,14 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const [loader, set_loader] = useState<boolean>(false);
   const [status, set_status] = useState<string>('');
   const [numberOfHops, set_numberOfHops] = useState<number>(0);
-  const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops' | 'directMessage'>('directMessage');
+  const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops' | 'directMessage'>(
+    'directMessage',
+  );
   const [message, set_message] = useState<string>('');
   const [openModal, set_openModal] = useState<boolean>(false);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const aliases = useAppSelector((store) => store.node.aliases.data);
-  const peers = useAppSelector((store) => store.node.peers.data?.connected)
+  const peers = useAppSelector((store) => store.node.peers.data?.connected);
 
   const [selectedReceiver, set_selectedReceiver] = useState<{
     peerId: string;
@@ -86,30 +87,29 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
     backoff: number;
     isNew: boolean;
     reportedVersion: string;
-  } | null>(props.peerId ? peers!.find(elem => elem.peerId === props.peerId) || null : null);
+  } | null>(props.peerId ? peers!.find((elem) => elem.peerId === props.peerId) || null : null);
 
   const maxLength = 500;
   const remainingChars = maxLength - message.length;
 
   const setPropPeerId = () => {
-    const reveiver = props.peerId ? peers!.find(elem => elem.peerId === props.peerId) || null : null;
+    const reveiver = props.peerId ? peers!.find((elem) => elem.peerId === props.peerId) || null : null;
     if (props.peerId) set_selectedReceiver(reveiver);
   };
   useEffect(setPropPeerId, [props.peerId]);
 
   useEffect(() => {
     switch (sendMode) {
-      case 'path':
-        set_numberOfHops(0);
-        break;
-      case 'numberOfHops':
-        set_path('');
-        break;
-      default: //anything that is not a custom route
-        set_numberOfHops(0);
-        set_path('');
+    case 'path':
+      set_numberOfHops(0);
+      break;
+    case 'numberOfHops':
+      set_path('');
+      break;
+    default: //anything that is not a custom route
+      set_numberOfHops(0);
+      set_path('');
     }
-
   }, [sendMode, path, numberOfHops]);
 
   const handleSendMessage = () => {
@@ -138,12 +138,14 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
     }
     if (sendMode == 'path') {
       const pathElements: string[] = [];
-      const lines = path.split('\n')
+      const lines = path.split('\n');
       for (const line of lines) {
-        const elements = line.split(',').map((element) => element.trim()).filter((element) => element !== '');
+        const elements = line
+          .split(',')
+          .map((element) => element.trim())
+          .filter((element) => element !== '');
         pathElements.push(...elements);
       }
-
 
       const validatedPath = pathElements.map((element) => validatePeerId(element));
       messagePayload.path = validatedPath;
@@ -166,8 +168,8 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   };
 
   const handleSendModeChange = (event: SelectChangeEvent) => {
-    set_sendMode(event.target.value as "path" | "numberOfHops" | "automaticPath" | "directMessage");
-  }
+    set_sendMode(event.target.value as 'path' | 'numberOfHops' | 'automaticPath' | 'directMessage');
+  };
 
   const handlePath = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_sendMode('path');
@@ -205,8 +207,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       setTimeout(() => {
         input.setSelectionRange(start + 1, start + 1);
       }, 0);
-    }
-    else if (e.key === ',') {
+    } else if (e.key === ',') {
       e.preventDefault(); // Prevent space key from inserting a space
       const input = e.target as HTMLInputElement;
       const start = input.selectionStart!;
@@ -233,9 +234,9 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
 
   const hasAlias = (peerId: string) => {
     if (aliases) {
-      return Object.values(aliases).includes(peerId)
+      return Object.values(aliases).includes(peerId);
     }
-  }
+  };
 
   const findAlias = (peerId: string) => {
     if (aliases) {
@@ -247,7 +248,6 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
     }
     return null;
   };
-
 
   return (
     <>
@@ -279,8 +279,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
             <CloseIcon />
           </SIconButton>
         </TopBar>
-        <SDialogContent
-        >
+        <SDialogContent>
           <Autocomplete
             value={selectedReceiver}
             onChange={(event, newValue) => {
@@ -288,9 +287,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
             }}
             options={peers || []}
             getOptionLabel={(peer) =>
-              hasAlias(peer.peerId)
-                ? `${findAlias(peer.peerId)} (${peer.peerId})`
-                : peer.peerId
+              hasAlias(peer.peerId) ? `${findAlias(peer.peerId)} (${peer.peerId})` : peer.peerId
             }
             renderInput={(params) => (
               <TextField
@@ -315,15 +312,15 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
             fullWidth
           />
           <span style={{ margin: '0px 0px -2px' }}>Send mode:</span>
-          <PathOrHops className={sendMode === "numberOfHops" ? "numerOfHopsSelected" : "noNumberOfHopsSelected"}>
+          <PathOrHops className={sendMode === 'numberOfHops' ? 'numerOfHopsSelected' : 'noNumberOfHopsSelected'}>
             <Select
               value={sendMode}
               onChange={handleSendModeChange}
-              className={sendMode === "numberOfHops" ? "numerOfHops" : "noNumberOfHops"}
+              className={sendMode === 'numberOfHops' ? 'numerOfHops' : 'noNumberOfHops'}
             >
               <MenuItem value="directMessage">Direct Message</MenuItem>
-              <MenuItem value='automaticPath'>Automatic Path</MenuItem>
-              <MenuItem value='numberOfHops'>Number of Hops</MenuItem>
+              <MenuItem value="automaticPath">Automatic Path</MenuItem>
+              <MenuItem value="numberOfHops">Number of Hops</MenuItem>
               <MenuItem value="path">Path</MenuItem>
             </Select>
             {sendMode === 'numberOfHops' && (
@@ -346,7 +343,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
           {sendMode === 'path' && (
             <TextField
               label="Path"
-              placeholder={"12D3Ko...Z3rz5F,\n12D3Ko...wxd4zv,\n12D3Ko...zF8c7u"}
+              placeholder={'12D3Ko...Z3rz5F,\n12D3Ko...wxd4zv,\n12D3Ko...zF8c7u'}
               value={path}
               onChange={handlePath}
               onKeyDown={handlePathKeyDown}
@@ -360,7 +357,9 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
           <Button
             onClick={handleSendMessage}
             disabled={
-              selectedReceiver === null || sendMode !== 'directMessage' && (sendMode !== 'automaticPath' && numberOfHops < 0 && path === '') || message.length === 0
+              selectedReceiver === null ||
+              (sendMode !== 'directMessage' && sendMode !== 'automaticPath' && numberOfHops < 0 && path === '') ||
+              message.length === 0
             }
             style={{
               width: '100%',
@@ -374,7 +373,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
           {loader && <CircularProgress />}
           {status}
         </StatusContainer>
-      </SDialog >
+      </SDialog>
     </>
   );
 };

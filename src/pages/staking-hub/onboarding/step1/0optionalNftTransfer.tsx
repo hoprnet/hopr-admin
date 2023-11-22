@@ -93,8 +93,10 @@ export default function optionalNftTtransfer() {
 
   useEffect(() => {
     if (startedNftTransfer && !communityNftIdInSafe && safeAddress) {
-      interval = setInterval(()=>{dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));}, 10_000);
-    } else if (startedNftTransfer && communityNftIdInSafe ) {
+      interval = setInterval(() => {
+        dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));
+      }, 10_000);
+    } else if (startedNftTransfer && communityNftIdInSafe) {
       clearInterval(interval);
       set_startedNftTransfer(false);
     }
@@ -109,36 +111,42 @@ export default function optionalNftTtransfer() {
     if (communityNftIdInWallet !== null) return '/assets/nft-detected-in-wallet.png';
   }
 
-  function tooltipText(){
-    if(option === 0 && !communityNftIdInSafe) return "You need to transfer Community NFT to the Safe in order to use that option";
-    if(option === null) return "You need to choose an option";
-    return null
+  function tooltipText() {
+    if (option === 0 && !communityNftIdInSafe)
+      return 'You need to transfer Community NFT to the Safe in order to use that option';
+    if (option === null) return 'You need to choose an option';
+    return null;
   }
 
   return (
     <StepContainer
       title="NFT TRANSFER (OPTIONAL)"
-      description={<>Transfer your NR (Network Registry) NFT to join the network with only 10,000 wxHOPR. If you do not have one Please select the 30k option and continue. Read more about NR NFTs{' '}
-        <a
-          href="https://docs.hoprnet.org/node/waitlist-FAQ"
-          target="_blank"
-          rel="noreferrer"
-          style={{ color: '#007bff', textDecoration: 'underline'}}
-        >
-          here
-        </a>.
-      </>}
+      description={
+        <>
+          Transfer your NR (Network Registry) NFT to join the network with only 10,000 wxHOPR. If you do not have one
+          Please select the 30k option and continue. Read more about NR NFTs{' '}
+          <a
+            href="https://docs.hoprnet.org/node/waitlist-FAQ"
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              color: '#007bff', textDecoration: 'underline', 
+            }}
+          >
+            here
+          </a>
+          .
+        </>
+      }
       buttons={
-        <Tooltip 
-          title={tooltipText()}
-        >
+        <Tooltip title={tooltipText()}>
           <span style={{ textAlign: 'center' }}>
             <ConfirmButton
               onClick={() => {
                 dispatch(stakingHubActions.setOnboardingStep(4));
               }}
               disabled={option === null || (option === 0 && !communityNftIdInSafe)}
-              style={{width: '250px'}}
+              style={{ width: '250px' }}
             >
               CONTINUE
             </ConfirmButton>
@@ -152,7 +160,7 @@ export default function optionalNftTtransfer() {
           onClick={() => {
             set_option(0);
           }}
-          style={communityNftIdInSafe === false ? {pointerEvents: 'none'} : {}}
+          style={communityNftIdInSafe === false ? { pointerEvents: 'none' } : {}}
         >
           <OptionText>
             <div className="left">
@@ -180,16 +188,16 @@ export default function optionalNftTtransfer() {
                       walletClient,
                       communityNftId: communityNftIdInWallet,
                     }),
-                  ).unwrap().finally(
-                    ()=>{
-                      set_sendingNFT(false)
-                    }
-                  );
+                  )
+                    .unwrap()
+                    .finally(() => {
+                      set_sendingNFT(false);
+                    });
                 }
               }}
               disabled={communityNftIdInWallet === null || !!communityNftIdInSafe}
               pending={sendingNFT}
-              style={{pointerEvents: 'all'}}
+              style={{ pointerEvents: 'all' }}
             >
               Transfer NFT to Safe
             </Button>

@@ -131,7 +131,7 @@ export const observeChannels = ({
   dispatch: ReturnType<typeof useAppDispatch>;
 }) =>
   observeData<GetChannelsResponseType>({
-    active: !!apiEndpoint && !!apiToken && active, 
+    active: !!apiEndpoint && !!apiToken && active,
     previousData: previousState,
     fetcher: async () => {
       if (!apiEndpoint || !apiToken) return;
