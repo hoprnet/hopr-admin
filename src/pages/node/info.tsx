@@ -233,7 +233,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The amount of xDAI stored on your node"
+                  title="The amount of xDAI stored on your Node"
                   notWide
                 >
                   <span>xDAI: Node</span>
@@ -244,7 +244,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The amount of xDAI stored on your safe"
+                  title="The amount of xDAI stored on your Safe"
                   notWide
                 >
                   <span>xDAI: Safe</span>
@@ -266,7 +266,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The amount of wxHOPR tokens staked in the channels your node has opened with counterparties"
+                  title="The amount of wxHOPR tokens staked in the channels your Node has opened with counterparties"
                   notWide
                 >
                   <span>wxHOPR: Channels OUT</span>
