@@ -71,7 +71,23 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const [openModal, set_openModal] = useState<boolean>(false);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const aliases = useAppSelector((store) => store.node.aliases.data);
-  const peers = useAppSelector((store) => store.node.peers.data?.connected)
+  const peers = useAppSelector((store) => store.node.peers.data?.connected);
+  const addresses = useAppSelector((store) => store.node.addresses.data);
+
+  const peersAndOwnNode = peers && addresses.hopr && addresses.native ? [...peers, {
+    peerId: addresses.hopr,
+    peerAddress: addresses.native,
+    multiAddr:"",
+    lastSeen: 0,
+    quality:0,
+    backoff:0,
+    isNew: false,
+    reportedVersion:"",
+    heartbeats: {
+      sent: 0,
+      success: 0,
+    }
+  }] : [];
 
   const [selectedReceiver, set_selectedReceiver] = useState<{
     peerId: string;
@@ -286,7 +302,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
             onChange={(event, newValue) => {
               set_selectedReceiver(newValue);
             }}
-            options={peers || []}
+            options={peersAndOwnNode}
             getOptionLabel={(peer) =>
               hasAlias(peer.peerId)
                 ? `${findAlias(peer.peerId)} (${peer.peerId})`

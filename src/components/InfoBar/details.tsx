@@ -1,5 +1,6 @@
 import { useAppSelector } from '../../store';
 import styled from '@emotion/styled';
+import { formatEther } from 'viem';
 
 interface Props {
   style?: object;
@@ -160,6 +161,8 @@ export default function Details(props: Props) {
   const loginData = useAppSelector((store) => store.auth.loginData);
   const statistics = useAppSelector((store) => store.node.statistics.data);
 
+  const totalwxHOPR = balances.channels?.value && balances.safeHopr?.value ? formatEther(BigInt(balances.channels?.value) + BigInt(balances.safeHopr?.value)) : '-'
+
   const isXdaiEnough = () => {
     if(balances.native.value && (BigInt(balances.native.value) < BigInt('50000000000000000'))) return 'Orange'
     else if(balances.native.value && (BigInt(balances.native.value) < BigInt('1000000000000000'))) return 'Red'
@@ -270,7 +273,7 @@ export default function Details(props: Props) {
               alt="xDai Icon"
             />
           </IconContainer>
-          <Text>wxHOPR: Allowance</Text>
+          <Text>wxHOPR: Total</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
@@ -310,7 +313,7 @@ export default function Details(props: Props) {
           <p>{balances.safeNative?.formatted ?? '-'}</p>
           <p>{balances.safeHopr?.formatted ?? '-'}</p>
           <p className="double">{balances.channels?.formatted ?? '-'}</p>
-          <p className="double">{balances.safeHoprAllowance?.formatted ?? '-'}</p>
+          <p className="double">{totalwxHOPR}</p>
           <p>{truncateBalanceto5charsWhenNoDecimals(peers?.announced?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.outgoing?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.incoming?.length) || '-'}</p>
