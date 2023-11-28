@@ -457,13 +457,14 @@ const getNodeDataThunk = createAsyncThunk<
     return json;
   },
   { condition: (_payload, { getState }) => {
-    if(getState().stakingHub.nodes.length > 0) {
-      const isFetching = getState().stakingHub.nodes[0].isFetching;
-      if (isFetching) {
-        return false;
-      }
-    }
-    return true;
+    // if(getState().stakingHub.nodes.length > 0) {
+    //   const isFetching = getState().stakingHub.nodes[0].isFetching;
+    //   if (isFetching) {
+    //     return false;
+    //   }
+    // }
+    // return true;
+    return false;
   } },
 );
 
@@ -491,6 +492,12 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         let tmp = [];
         tmp = action.payload.registeredNodesInNetworkRegistry.map((elem) => elem.node.id as string);
         state.safeInfo.data.registeredNodesInNetworkRegistryParsed = tmp;
+        state.onboarding.nodeAddress = tmp[tmp.length - 1];
+      }
+      if (action.payload?.registeredNodesInSafeRegistry?.length > 0) {
+        let tmp = [];
+        tmp = action.payload.registeredNodesInSafeRegistry.map((elem) => elem.node.id as string);
+        state.safeInfo.data.registeredNodesInSafeRegistryParsed = tmp;
         state.onboarding.nodeAddress = tmp[tmp.length - 1];
       }
     }
@@ -527,13 +534,17 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     }
   });
   builder.addCase(getNodeDataThunk.fulfilled, (state, action) => {
-    if(action.payload.length > 0) {
-      state.nodes.push(action.payload[0]);
-    }
-    state.nodes[0].isFetching = false;
+    console.log('action', action)
+    // if(action.payload.length > 0) {
+    //   state.nodes[]
+      
+      
+    // }
+    // state.nodes[0].isFetching = false;
   });
   builder.addCase(getNodeDataThunk.rejected, (state, action) => {
-    state.nodes[0].isFetching = false;
+    console.log('action', action)
+   // state.nodes[0].isFetching = false;
   });
 };
 

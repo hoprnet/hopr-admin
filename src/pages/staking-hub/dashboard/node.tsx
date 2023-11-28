@@ -19,17 +19,22 @@ import Button from '../../../future-hopr-lib-components/Button';
 import { Table } from '../../../future-hopr-lib-components/Table/columed-data'
 import ProgressBar from '../../../future-hopr-lib-components/Progressbar'
 import { formatDate } from '../../../utils/date';
+import TablePro from '../../../future-hopr-lib-components/Table/table-pro';
 
 //web3
 import { Address } from 'viem';
 import { browserClient } from '../../../providers/wagmi';
 
 
-const Content = styled.section`
+const Container = styled.section`
+    padding: 1rem;
+`;
+
+const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
-  padding: 2rem;
+
   #node-graphic {
     grid-column: 1/3;
     grid-row: 1/3;
@@ -130,50 +135,6 @@ const NodeGraphic = styled.div`
   }
 `;
 
-const NodeInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  overflow: hidden;
-`;
-
-const NodeInfoRow = styled.div`
-  display: flex;
-
-  & p {
-    align-self: flex-end;
-    margin: 0;
-    font-size: 12px;
-  }
-
-  & p:first-of-type {
-    width: 112px;
-    font-weight: 600;
-  }
-
-  & #actions {
-    align-self: flex-start;
-  }
-`;
-
-const StyledIconButton = styled(IconButton)`
-  background-color: #000050;
-  color: #fff;
-  height: 1rem;
-  padding: 1rem;
-  width: 1rem;
-  margin-right: 0.5rem;
-
-  &:hover {
-    background-color: #2b2b66;
-  }
-
-  & svg {
-    height: 1rem;
-    width: 1rem;
-  }
-`;
-
 const SquaredIconButton = styled(IconButton)`
   color: #414141;
   height: 0.75rem;
@@ -250,145 +211,184 @@ const GrayCard = ({
   );
 };
 
+const header = [
+  {
+    key: 'peerId',
+    name: 'Peer Id',
+    search: true,
+  },
+  {
+    key: 'inNetworkRegistry',
+    name: 'In Network Registry',
+    search: true,
+    maxWidth: '160px',
+  },
+  {
+    key: 'actions',
+    name: 'Actions',
+    search: false,
+    width: '168px',
+    maxWidth: '168px',
+  },
+];
+
 const NodeAdded = () => {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const nodeNativeAddress = useAppSelector((store) => store.node.addresses.data.native);
   const nodeHoprAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress);
   const nodeBalance = useAppSelector((store) => store.stakingHub.onboarding.nodeBalance.xDai.formatted);
   const nodes = useAppSelector((store) => store.stakingHub.nodes);
+  const registeredNodesInSafeRegistryParsed = useAppSelector((store) => store.stakingHub.safeInfo.data.registeredNodesInSafeRegistryParsed);
+  const registeredNodesInNetworkRegistryParsed = useAppSelector((store) => store.stakingHub.safeInfo.data.registeredNodesInNetworkRegistryParsed);
+  const [chosenNode, set_chosenNode] = useState< string | null>(null);
+
+  useEffect(()=>{
+    set_chosenNode((prev) => {
+      if(!prev) return nodeHoprAddress
+      else return prev
+    })
+  }, [nodeHoprAddress])
+
+  const multipleNodes = registeredNodesInSafeRegistryParsed.length > 1;
+  const parsedTableData = registeredNodesInSafeRegistryParsed.map((node, index) => {
+    return {
+      peerId: <>
+                {node}
+                <SquaredIconButton
+                  onClick={() => nodeHoprAddress && navigator.clipboard.writeText(node)}
+                >
+                  <CopyIcon />
+                </SquaredIconButton>
+                <Link to={`https://gnosisscan.io/address/${node}`} target='_blank'>
+                  <SquaredIconButton>
+                    <LaunchIcon />
+                  </SquaredIconButton>
+                </Link>
+              </>,
+      inNetworkRegistry: registeredNodesInNetworkRegistryParsed.includes(node) ? 'Yes' : 'No'
+    }
+  });
+  const chosenNodeData = chosenNode && nodes[chosenNode] ? nodes[chosenNode] : null;
 
   return (
-    <Content>
-      <GrayCard id="node-graphic">
-        <Graphic>
-          <NodeGraphic>
-            <img
-              src="/assets/node-graphic.svg"
-              alt="Node Graphic"
-            />
-          </NodeGraphic>
-          <Table>
-            <tbody>
-              <tr>
-                <th>Node Address
-                  <div>
-                    <SquaredIconButton
-                      onClick={() => nodeHoprAddress && navigator.clipboard.writeText(nodeHoprAddress)}
-                    >
-                      <CopyIcon />
-                    </SquaredIconButton>
-                    <Link to={`https://gnosisscan.io/address/${nodeNativeAddress}`}  target='_blank'>
-                      <SquaredIconButton>
-                        <LaunchIcon />
+    <Container>
+      <Grid>
+        <GrayCard id="node-graphic">
+          <Graphic>
+            <NodeGraphic>
+              <img
+                src="/assets/node-graphic.svg"
+                alt="Node Graphic"
+              />
+            </NodeGraphic>
+            <Table>
+              <tbody>
+                <tr>
+                  <th>Node Address
+                    <div>
+                      <SquaredIconButton
+                        onClick={() => nodeHoprAddress && navigator.clipboard.writeText(nodeHoprAddress)}
+                      >
+                        <CopyIcon />
                       </SquaredIconButton>
-                    </Link>
-                  </div>
-                </th>
-                <td>
-                  <p
-                    style={{
-                      maxHeight: '72px',
-                      textOverflow: 'ellipsis',
-                      overflow: 'hidden',
-                      margin: '0',
-                    }}
-                  >
-                    {nodeHoprAddress}
-                  </p>
-                </td>
-              </tr>
-              <tr>
-                <th>Last seen</th>
-                <td>
-                  <p
-                    style={{
-                      maxHeight: '72px',
-                      textOverflow: 'ellipsis',
-                      overflow: 'hidden',
-                      margin: '0',
-                    }}
-                  >{nodes[0]?.lastSeen ? formatDate(nodes[0]?.lastSeen) : '-'}
-                  </p>
-                </td>
-              </tr>
-              <tr>
-                <th>Ping count</th>
-                <td>{nodes[0]?.count || '-'}</td>
-              </tr>
-              <tr>
-                <th>24h Availability</th>
-                <td>
-                  {
-                    nodes[0]?.availability24h ?
-                      <ProgressBar
-                        value={nodes[0].availability24h}
-                      />
-                      :
-                      '-'
-                  }
-                </td>
-              </tr>
-              <tr>
-                <th>Availability</th>
-                <td>
-                  {
-                    nodes[0]?.availability ?
-                      <ProgressBar
-                        value={nodes[0].availability}
-                      />
-                      :
-                      '-'
-                  }
-                </td>
-              </tr>
-              <tr>
-                <th>Last seen version</th>
-                <td>{nodes[0]?.version || '-'}</td>
-              </tr>
-            </tbody>
-          </Table>
-        </Graphic>
-      </GrayCard>
-      <GrayCard
-        // id="xdai"
-        id="node-balance"
-        title="xDAI"
-        value={nodeBalance ?? '-'}
-      ></GrayCard>
-      <GrayCard
-        id="earned-rewards"
-        title="Earned rewards"
-        value="-"
-        currency="wxHOPR"
-      // chip={{
-      //   label: '-%/24h',
-      //   color: 'error',
-      // }}
-      />
-      {/* <GrayCard
-            id="node-strategy"
-            title="Node strategy"
-            value={'-'}
-            buttons={[
-              {
-                text: 'Adjust in node admin',
-                link: '#', //`/node/configuration?${queryParams}`,
-              },
-            ]}
-          ></GrayCard> */}
-      <GrayCard
-        id="redeemed-tickets"
-        title="Redeemed Tickets"
-        value="-"
-        currency="Ticket/wxHOPR"
-      // chip={{
-      //   label: '+%/24h',
-      //   color: 'success',
-      // }}
-      ></GrayCard>
-
-    </Content>
+                      <Link to={`https://gnosisscan.io/address/${nodeNativeAddress}`} target='_blank'>
+                        <SquaredIconButton>
+                          <LaunchIcon />
+                        </SquaredIconButton>
+                      </Link>
+                    </div>
+                  </th>
+                  <td>
+                    <p
+                      style={{
+                        maxHeight: '72px',
+                        textOverflow: 'ellipsis',
+                        overflow: 'hidden',
+                        margin: '0',
+                      }}
+                    >
+                      {nodeHoprAddress}
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Last seen</th>
+                  <td>
+                    <p
+                      style={{
+                        maxHeight: '72px',
+                        textOverflow: 'ellipsis',
+                        overflow: 'hidden',
+                        margin: '0',
+                      }}
+                    >{chosenNodeData?.lastSeen ? formatDate(chosenNodeData.lastSeen) : '-'}
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Ping count</th>
+                  <td>{chosenNode && nodes[chosenNode]?.count || '-'}</td>
+                </tr>
+                <tr>
+                  <th>24h Availability</th>
+                  <td>
+                    {
+                      chosenNodeData?.availability24h ?
+                        <ProgressBar
+                          value={chosenNodeData.availability24h}
+                        />
+                        :
+                        '-'
+                    }
+                  </td>
+                </tr>
+                <tr>
+                  <th>Availability</th>
+                  <td>
+                    {
+                      chosenNodeData?.availability ?
+                        <ProgressBar
+                          value={chosenNodeData.availability}
+                        />
+                        :
+                        '-'
+                    }
+                  </td>
+                </tr>
+                <tr>
+                  <th>Last seen version</th>
+                  <td>{chosenNodeData?.version || '-'}</td>
+                </tr>
+              </tbody>
+            </Table>
+          </Graphic>
+        </GrayCard>
+        <GrayCard
+          id="node-balance"
+          title="xDAI"
+          value={nodeBalance ?? '-'}
+        />
+        <GrayCard
+          id="earned-rewards"
+          title="Earned rewards"
+          value="-"
+          currency="wxHOPR"
+        />
+        <GrayCard
+          id="redeemed-tickets"
+          title="Redeemed Tickets"
+          value="-"
+          currency="Ticket/wxHOPR"
+        />
+      </Grid>
+      {
+        multipleNodes &&
+        <TablePro
+          data={parsedTableData}
+          search={true}
+          header={header}
+        />
+      }
+    </Container>
   );
 };
 
