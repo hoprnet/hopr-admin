@@ -200,8 +200,10 @@ const getSubgraphDataThunk = createAsyncThunk<
       if (json.nodeManagementModules.length > 0) output.module = json.nodeManagementModules[0];
       if (json.balances.length > 0) output.overall_staking_v2_balances = json.balances[0];
 
+      console.log('output.registeredNodesInNetworkRegistry', output.registeredNodesInNetworkRegistry)
       if (output.registeredNodesInNetworkRegistry?.length > 0) {
         let nodeAddress = output.registeredNodesInNetworkRegistry[0].node.id;
+        console.log('nodeAddress', nodeAddress)
         dispatch(getNodeDataThunk(nodeAddress));
       }
 
@@ -441,8 +443,8 @@ const getOnboardingDataThunk = createAsyncThunk<
 });
 
 const getNodeDataThunk = createAsyncThunk<
-  NodePayload[], 
-  string, 
+  NodePayload[],
+  string,
   { state: RootState }
 >(
   'stakingHub/getNodeData',
@@ -450,19 +452,11 @@ const getNodeDataThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    console.log('getNodeData', payload);
-    dispatch(setNodeDataFetching(true));
     const rez = await fetch(`https://network.hoprnet.org/api/getNode?env=37&nodeAddress=${payload}`);
     const json = await rez.json();
     return json;
   },
   { condition: (_payload, { getState }) => {
-    if(getState().stakingHub.nodes.length > 0) {
-      const isFetching = getState().stakingHub.nodes[0].isFetching;
-      if (isFetching) {
-        return false;
-      }
-    }
     return true;
   } },
 );
@@ -491,6 +485,12 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         let tmp = [];
         tmp = action.payload.registeredNodesInNetworkRegistry.map((elem) => elem.node.id as string);
         state.safeInfo.data.registeredNodesInNetworkRegistryParsed = tmp;
+        state.onboarding.nodeAddress = tmp[tmp.length - 1];
+      }
+      if (action.payload?.registeredNodesInSafeRegistry?.length > 0) {
+        let tmp = [];
+        tmp = action.payload.registeredNodesInSafeRegistry.map((elem) => elem.node.id as string);
+        state.safeInfo.data.registeredNodesInSafeRegistryParsed = tmp;
         state.onboarding.nodeAddress = tmp[tmp.length - 1];
       }
     }
@@ -528,12 +528,9 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   builder.addCase(getNodeDataThunk.fulfilled, (state, action) => {
     if(action.payload.length > 0) {
-      state.nodes.push(action.payload[0]);
+      const nodeData = action.payload[0];
+      state.nodes[nodeData.nodeAddress] = nodeData;
     }
-    state.nodes[0].isFetching = false;
-  });
-  builder.addCase(getNodeDataThunk.rejected, (state, action) => {
-    state.nodes[0].isFetching = false;
   });
 };
 
