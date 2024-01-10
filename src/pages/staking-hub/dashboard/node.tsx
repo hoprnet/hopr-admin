@@ -292,7 +292,7 @@ const NodeAdded = () => {
       inNetworkRegistry: registeredNodesInNetworkRegistryParsed.includes(node) ? 'Yes' : 'No',
       isDelegate: delegatesArray.includes(node) ? 'Yes' : 'No',
       id: node,
-      balance: `${nodes[node]?.balanceFormatted} xDai` || '-',
+      balance: nodes[node]?.balanceFormatted ? `${nodes[node].balanceFormatted} xDai` : '-',
       search: node,
       actions: <>
         <Tooltip
