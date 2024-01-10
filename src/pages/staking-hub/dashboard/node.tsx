@@ -224,6 +224,12 @@ const header = [
     maxWidth: '160px',
   },
   {
+    key: 'search',
+    name: '',
+    search: true,
+    hidden: true
+  },
+  {
     key: 'actions',
     name: 'Actions',
     search: false,
@@ -264,7 +270,10 @@ const NodeAdded = () => {
                   </SquaredIconButton>
                 </Link>
               </>,
-      inNetworkRegistry: registeredNodesInNetworkRegistryParsed.includes(node) ? 'Yes' : 'No'
+      inNetworkRegistry: registeredNodesInNetworkRegistryParsed.includes(node) ? 'Yes' : 'No',
+      id: node,
+      search: node,
+      actions: <></>
     }
   });
   const chosenNodeData = chosenNode && nodes[chosenNode] ? nodes[chosenNode] : null;
