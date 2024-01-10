@@ -173,7 +173,6 @@ const Drawer = ({
       open={openedNavigationDrawer}
       onClose={() => set_openedNavigationDrawer(false)}
       className={drawerType === 'blue' ? 'type-blue' : 'type-white'}
-      disableScrollLock={true}
     >
       {allItems.map(
         (group) =>

@@ -127,7 +127,11 @@ const STextField = styled(TextField)`
 `;
 
 interface Props {
-  data: {id: string, actions: JSX.Element, [key: string]: string | JSX.Element;  }[];
+  data: {
+    [key: string]: string | JSX.Element,
+    id: string,
+    actions: JSX.Element
+  }[];
   header: {
     key: string,
     name: string,
@@ -137,6 +141,7 @@ interface Props {
     wrap?: boolean,
     maxWidth?: string,
     copy?: boolean,
+    hidden?: boolean,
   }[];
   search?: boolean;
   loading?: boolean;
@@ -230,13 +235,14 @@ export default function CustomPaginationActionsTable(props: Props) {
         <thead>
           <TableRow>
             {props.header.map((headElem, idx) => (
-              <STableCell
-                key={idx}
-                className={`TableCell TableCellHeader`}
-                width={headElem?.width ?? ''}
-              >
-                {headElem.name}
-              </STableCell>
+                !headElem.hidden &&
+                  <STableCell
+                  key={idx}
+                  className={`TableCell TableCellHeader`}
+                  width={headElem?.width ?? ''}
+                >
+                  {headElem.name}
+                </STableCell>
             ))}
           </TableRow>
         </thead>
@@ -271,7 +277,7 @@ export default function CustomPaginationActionsTable(props: Props) {
 
 
 const CustomTableRow = ({
-  row, 
+  row,
   header,
 }: {row: Props['data'][0], header: Props['header']}) => {
   const [tooltip, set_tooltip] = useState<string>()
@@ -292,6 +298,7 @@ const CustomTableRow = ({
   return (
     <TableRow key={row.id}>
       {header.map((headElem) => (
+        !headElem.hidden &&
         <STableCell
           key={headElem.key}
           className={`TableCell ${headElem.key} ${headElem.wrap ? 'wrap' : ''}`}
