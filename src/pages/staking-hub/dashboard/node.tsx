@@ -214,12 +214,18 @@ const GrayCard = ({
 const header = [
   {
     key: 'peerId',
-    name: 'Peer Id',
+    name: 'Node Address registered in Safe',
     search: true,
   },
   {
     key: 'inNetworkRegistry',
     name: 'In Network Registry',
+    search: true,
+    maxWidth: '160px',
+  },
+  {
+    key: 'isDelegate',
+    name: 'Is Delegate',
     search: true,
     maxWidth: '160px',
   },
@@ -245,6 +251,7 @@ const NodeAdded = () => {
   const nodes = useAppSelector((store) => store.stakingHub.nodes);
   const registeredNodesInSafeRegistryParsed = useAppSelector((store) => store.stakingHub.safeInfo.data.registeredNodesInSafeRegistryParsed);
   const registeredNodesInNetworkRegistryParsed = useAppSelector((store) => store.stakingHub.safeInfo.data.registeredNodesInNetworkRegistryParsed);
+  const delegates = useAppSelector((store) => store.safe.delegates.data);
   const [chosenNode, set_chosenNode] = useState< string | null>(null);
 
   useEffect(()=>{
@@ -254,7 +261,7 @@ const NodeAdded = () => {
     })
   }, [nodeHoprAddress])
 
-  const multipleNodes = registeredNodesInSafeRegistryParsed.length > 1;
+  const delegatesArray = delegates?.results.map(elem => elem.delegate.toLocaleLowerCase()) || [];
   const parsedTableData = registeredNodesInSafeRegistryParsed.map((node, index) => {
     return {
       peerId: <>
@@ -271,6 +278,7 @@ const NodeAdded = () => {
                 </Link>
               </>,
       inNetworkRegistry: registeredNodesInNetworkRegistryParsed.includes(node) ? 'Yes' : 'No',
+      isDelegate: delegatesArray.includes(node) ? 'Yes' : 'No',
       id: node,
       search: node,
       actions: <></>
@@ -389,14 +397,12 @@ const NodeAdded = () => {
           currency="Ticket/wxHOPR"
         />
       </Grid>
-      {
-        multipleNodes &&
-        <TablePro
-          data={parsedTableData}
-          search={true}
-          header={header}
-        />
-      }
+      <br/>
+      <TablePro
+        data={parsedTableData}
+        search={true}
+        header={header}
+      />
     </Container>
   );
 };

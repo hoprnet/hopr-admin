@@ -87,9 +87,7 @@ function Dashboard() {
   const [tabIndex, set_tabIndex] = useState(getTabIndexFromUrl());
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as string;
   const moduleAddress =  useAppSelector((store) => store.stakingHub.onboarding.moduleAddress);
-  const registeredNodesInNetworkRegistry =  useAppSelector((store) => store.stakingHub.safeInfo.data.registeredNodesInNetworkRegistry);
-  const multipleNodes = !(registeredNodesInNetworkRegistry?.length <= 1);
-  
+
   useEffect(()=>{
     if(safeAddress && moduleAddress) {
       dispatch(
@@ -125,7 +123,7 @@ function Dashboard() {
       <SPaper>
         <Tabs value={tabIndex} onChange={handleTabChange} aria-label="basic tabs example">
           <Tab label="STAKING" {...a11yProps(0)} />
-          <Tab label={multipleNodes ? "NODE" : "NODES"} {...a11yProps(1)} />
+          <Tab label="NODES" {...a11yProps(1)} />
           <Tab label="SAFE" {...a11yProps(2)} />
           <Tab label="TRANSACTIONS" {...a11yProps(3)} />
         </Tabs>
