@@ -319,7 +319,18 @@ function InfoPage() {
                   <span>Node PeerID</span>
                 </Tooltip>
               </th>
-              <td>{addresses?.hopr}</td>
+              <TdActionIcons>
+                {addresses?.hopr}
+                {
+                  addresses?.hopr &&
+                  <SmallActionButton
+                    onClick={() => navigator.clipboard.writeText(addresses?.hopr as string)}
+                    tooltip={'Copy'}
+                  >
+                    <CopyIcon />
+                  </SmallActionButton>
+                }
+              </TdActionIcons>
             </tr>
             <tr>
               <th>

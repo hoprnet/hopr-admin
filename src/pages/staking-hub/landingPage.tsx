@@ -563,7 +563,7 @@ const StakingLandingPage = () => {
             image="/assets/payment-channels.svg"
             text={
               <>
-                HORP payment channels are a scalable and privacy respecting way of incentivizing HOPR nodes for their
+                HOPR payment channels are a scalable and privacy respecting way of incentivizing HOPR nodes for their
                 service. Your node will automatically request tokens from your Safe to fund these channels. Run a
                 well-connected node to maximize your earnings.
                 <br />

@@ -483,7 +483,7 @@ const LayoutEnhanced = () => {
       drawer
       webapp
       drawerItems={applicationMap}
-      drawerFunctionItems={drawerFunctionItems}
+      drawerFunctionItems={environment === 'web3' ? drawerFunctionItems : undefined}
       drawerLoginState={{
         node: nodeConnected,
         web3: web3Connected,
