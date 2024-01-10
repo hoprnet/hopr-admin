@@ -13,6 +13,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import CloseIcon from '@mui/icons-material/Close';
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 // HOPR components
 import Button from '../../../future-hopr-lib-components/Button';
@@ -20,6 +21,7 @@ import { Table } from '../../../future-hopr-lib-components/Table/columed-data'
 import ProgressBar from '../../../future-hopr-lib-components/Progressbar'
 import { formatDate } from '../../../utils/date';
 import TablePro from '../../../future-hopr-lib-components/Table/table-pro';
+import Tooltip from '../../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
 
 //web3
 import { Address } from 'viem';
@@ -292,7 +294,18 @@ const NodeAdded = () => {
       id: node,
       balance: nodes[node]?.balanceFormatted || '-',
       search: node,
-      actions: <></>
+      actions: <>
+        <Tooltip
+          title='See details'
+        >
+          <SquaredIconButton
+            onClick={()=>{set_chosenNode(node);}}
+
+          >
+            <VisibilityIcon />
+          </SquaredIconButton>
+        </Tooltip>
+      </>
     }
   }) || [];
   const chosenNodeData = chosenNode && nodes[chosenNode] ? nodes[chosenNode] : null;
@@ -318,7 +331,7 @@ const NodeAdded = () => {
                       >
                         <CopyIcon />
                       </SquaredIconButton>
-                      <Link to={`https://gnosisscan.io/address/${nodeNativeAddress}`} target='_blank'>
+                      <Link to={`https://gnosisscan.io/address/${chosenNode}`} target='_blank'>
                         <SquaredIconButton>
                           <LaunchIcon />
                         </SquaredIconButton>
@@ -334,7 +347,7 @@ const NodeAdded = () => {
                         margin: '0',
                       }}
                     >
-                      {nodeHoprAddress}
+                      {chosenNode}
                     </p>
                   </td>
                 </tr>
