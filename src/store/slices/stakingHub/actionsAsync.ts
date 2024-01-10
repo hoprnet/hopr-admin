@@ -200,8 +200,10 @@ const getSubgraphDataThunk = createAsyncThunk<
       if (json.nodeManagementModules.length > 0) output.module = json.nodeManagementModules[0];
       if (json.balances.length > 0) output.overall_staking_v2_balances = json.balances[0];
 
+      console.log('output.registeredNodesInNetworkRegistry', output.registeredNodesInNetworkRegistry)
       if (output.registeredNodesInNetworkRegistry?.length > 0) {
         let nodeAddress = output.registeredNodesInNetworkRegistry[0].node.id;
+        console.log('nodeAddress', nodeAddress)
         dispatch(getNodeDataThunk(nodeAddress));
       }
 
@@ -441,8 +443,8 @@ const getOnboardingDataThunk = createAsyncThunk<
 });
 
 const getNodeDataThunk = createAsyncThunk<
-  NodePayload[], 
-  string, 
+  NodePayload[],
+  string,
   { state: RootState }
 >(
   'stakingHub/getNodeData',
@@ -450,21 +452,12 @@ const getNodeDataThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    console.log('getNodeData', payload);
-    dispatch(setNodeDataFetching(true));
     const rez = await fetch(`https://network.hoprnet.org/api/getNode?env=37&nodeAddress=${payload}`);
     const json = await rez.json();
     return json;
   },
   { condition: (_payload, { getState }) => {
-    // if(getState().stakingHub.nodes.length > 0) {
-    //   const isFetching = getState().stakingHub.nodes[0].isFetching;
-    //   if (isFetching) {
-    //     return false;
-    //   }
-    // }
-    // return true;
-    return false;
+    return true;
   } },
 );
 
@@ -534,17 +527,10 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     }
   });
   builder.addCase(getNodeDataThunk.fulfilled, (state, action) => {
-    console.log('action', action)
-    // if(action.payload.length > 0) {
-    //   state.nodes[]
-      
-      
-    // }
-    // state.nodes[0].isFetching = false;
-  });
-  builder.addCase(getNodeDataThunk.rejected, (state, action) => {
-    console.log('action', action)
-   // state.nodes[0].isFetching = false;
+    if(action.payload.length > 0) {
+      const nodeData = action.payload[0];
+      state.nodes[nodeData.nodeAddress] = nodeData;
+    }
   });
 };
 

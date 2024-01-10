@@ -252,14 +252,18 @@ const NodeAdded = () => {
   const registeredNodesInSafeRegistryParsed = useAppSelector((store) => store.stakingHub.safeInfo.data.registeredNodesInSafeRegistryParsed);
   const registeredNodesInNetworkRegistryParsed = useAppSelector((store) => store.stakingHub.safeInfo.data.registeredNodesInNetworkRegistryParsed);
   const delegates = useAppSelector((store) => store.safe.delegates.data);
-  const [chosenNode, set_chosenNode] = useState< string | null>(null);
+  const [chosenNode, set_chosenNode] = useState< string | null>(nodeHoprAddress);
 
   useEffect(()=>{
     set_chosenNode((prev) => {
       if(!prev) return nodeHoprAddress
       else return prev
     })
-  }, [nodeHoprAddress])
+  }, [nodeHoprAddress]);
+
+  useEffect(()=>{
+    console.log('chosenNode', chosenNode)
+  }, [chosenNode]);
 
   const delegatesArray = delegates?.results.map(elem => elem.delegate.toLocaleLowerCase()) || [];
   const parsedTableData = registeredNodesInSafeRegistryParsed.map((node, index) => {
