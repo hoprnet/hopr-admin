@@ -16,6 +16,7 @@ import { gql } from 'graphql-request';
 import { stakingHubActions } from '.';
 import { safeActionsAsync } from '../safe';
 import { NodePayload } from './initialState';
+import { formatEther } from 'viem';
 
 const getHubSafesByOwnerThunk = createAsyncThunk<
   {
@@ -97,13 +98,14 @@ const registerNodeAndSafeToNRThunk = createAsyncThunk<
 
 const getSubgraphDataThunk = createAsyncThunk<
   SubgraphParsedOutput,
-  { safeAddress: string; moduleAddress: string },
+  { safeAddress: string; moduleAddress: string, browserClient: PublicClient },
   { state: RootState }
 >(
   'stakingHub/getSubgraphData',
   async ({
     safeAddress,
     moduleAddress,
+    browserClient
   }, {
     rejectWithValue,
     dispatch,
@@ -185,8 +187,6 @@ const getSubgraphDataThunk = createAsyncThunk<
       }
     }`
 
-
-
     try {
       const resp = await fetch(STAKING_V2_SUBGRAPH, {
         method: 'POST',
@@ -201,10 +201,11 @@ const getSubgraphDataThunk = createAsyncThunk<
       if (json.balances.length > 0) output.overall_staking_v2_balances = json.balances[0];
 
       console.log('output.registeredNodesInNetworkRegistry', output.registeredNodesInNetworkRegistry)
-      if (output.registeredNodesInNetworkRegistry?.length > 0) {
-        let nodeAddress = output.registeredNodesInNetworkRegistry[0].node.id;
-        console.log('nodeAddress', nodeAddress)
-        dispatch(getNodeDataThunk(nodeAddress));
+      if (output.registeredNodesInSafeRegistry?.length > 0) {
+        for(let i = 0; i < output.registeredNodesInSafeRegistry.length; i++) {
+          let nodeAddress = output.registeredNodesInSafeRegistry[i].node.id;
+          dispatch(getNodeDataThunk({nodeAddress, browserClient}));
+        }
       }
 
       console.log('SubgraphParsedOutput', output);
@@ -418,6 +419,7 @@ const getOnboardingDataThunk = createAsyncThunk<
     getSubgraphDataThunk({
       safeAddress: payload.safeAddress,
       moduleAddress,
+      browserClient: payload.browserClient
     }),
   ).unwrap();
 
@@ -443,8 +445,8 @@ const getOnboardingDataThunk = createAsyncThunk<
 });
 
 const getNodeDataThunk = createAsyncThunk<
-  NodePayload[],
-  string,
+  NodePayload,
+  { nodeAddress: string, browserClient: PublicClient, },
   { state: RootState }
 >(
   'stakingHub/getNodeData',
@@ -452,9 +454,24 @@ const getNodeDataThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    const rez = await fetch(`https://network.hoprnet.org/api/getNode?env=37&nodeAddress=${payload}`);
+    const rez = await fetch(`https://network.hoprnet.org/api/getNode?env=37&nodeAddress=${payload.nodeAddress}`);
     const json = await rez.json();
-    return json;
+    const nodeBalanceInBigInt = await payload.browserClient?.getBalance({ address: payload.nodeAddress as Address });
+    const nodeXDaiBalance = nodeBalanceInBigInt?.toString() ?? '0';
+    const nodeXDaiBalanceFormatted = formatEther(nodeBalanceInBigInt);
+    let nodeData = {
+      nodeAddress: payload.nodeAddress,
+      isFetching: false,
+      balance: nodeXDaiBalance,
+      balanceFormatted: nodeXDaiBalanceFormatted
+    };
+    if(json.length > 0) {
+      nodeData = {
+        ...json[0],
+        ...nodeData
+      }
+    }
+    return nodeData;
   },
   { condition: (_payload, { getState }) => {
     return true;
@@ -527,10 +544,8 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     }
   });
   builder.addCase(getNodeDataThunk.fulfilled, (state, action) => {
-    if(action.payload.length > 0) {
-      const nodeData = action.payload[0];
-      state.nodes[nodeData.nodeAddress] = nodeData;
-    }
+    const nodeData = action.payload;
+    state.nodes[nodeData.nodeAddress] = nodeData;
   });
 };
 

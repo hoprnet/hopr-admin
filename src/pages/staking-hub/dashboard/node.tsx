@@ -230,6 +230,12 @@ const header = [
     maxWidth: '160px',
   },
   {
+    key: 'balance',
+    name: 'Balance',
+    search: true,
+    maxWidth: '160px',
+  },
+  {
     key: 'search',
     name: '',
     search: true,
@@ -265,8 +271,8 @@ const NodeAdded = () => {
     console.log('chosenNode', chosenNode)
   }, [chosenNode]);
 
-  const delegatesArray = delegates?.results.map(elem => elem.delegate.toLocaleLowerCase()) || [];
-  const parsedTableData = registeredNodesInSafeRegistryParsed.map((node, index) => {
+  const delegatesArray = delegates?.results?.map(elem => elem.delegate.toLocaleLowerCase()) || [];
+  const parsedTableData = registeredNodesInSafeRegistryParsed?.map((node, index) => {
     return {
       peerId: <>
                 {node}
@@ -284,10 +290,11 @@ const NodeAdded = () => {
       inNetworkRegistry: registeredNodesInNetworkRegistryParsed.includes(node) ? 'Yes' : 'No',
       isDelegate: delegatesArray.includes(node) ? 'Yes' : 'No',
       id: node,
+      balance: nodes[node]?.balanceFormatted || '-',
       search: node,
       actions: <></>
     }
-  });
+  }) || [];
   const chosenNodeData = chosenNode && nodes[chosenNode] ? nodes[chosenNode] : null;
 
   return (
