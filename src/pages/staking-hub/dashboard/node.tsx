@@ -22,10 +22,12 @@ import ProgressBar from '../../../future-hopr-lib-components/Progressbar'
 import { formatDate } from '../../../utils/date';
 import TablePro from '../../../future-hopr-lib-components/Table/table-pro';
 import Tooltip from '../../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
+import { DockerRunCommandModal } from '../../../components/Modal/staking-hub/DockerRunCommandModal';
 
 //web3
 import { Address } from 'viem';
 import { browserClient } from '../../../providers/wagmi';
+import { Dock } from '@mui/icons-material';
 
 
 const Container = styled.section`
@@ -253,7 +255,6 @@ const header = [
 ];
 
 const NodeAdded = () => {
-  const nodeNativeAddress = useAppSelector((store) => store.node.addresses.data.native);
   const nodeHoprAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress);
   const nodeBalance = useAppSelector((store) => store.stakingHub.onboarding.nodeBalance.xDai.formatted);
   const nodes = useAppSelector((store) => store.stakingHub.nodes);
@@ -327,7 +328,7 @@ const NodeAdded = () => {
                   <th>Node Address
                     <div>
                       <SquaredIconButton
-                        onClick={() => nodeHoprAddress && navigator.clipboard.writeText(nodeHoprAddress)}
+                        onClick={() => chosenNode && navigator.clipboard.writeText(chosenNode)}
                       >
                         <CopyIcon />
                       </SquaredIconButton>
@@ -420,6 +421,14 @@ const NodeAdded = () => {
           value="-"
           currency="Ticket/wxHOPR"
         />
+        <GrayCard
+          id="docker-command"
+          title="Docker Run Command"
+        >
+          <DockerRunCommandModal
+            normalButton
+          />
+        </GrayCard>
       </Grid>
       <br/>
       <TablePro
