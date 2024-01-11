@@ -20,10 +20,12 @@ import { Table } from '../../../future-hopr-lib-components/Table/columed-data'
 import ProgressBar from '../../../future-hopr-lib-components/Progressbar'
 import { formatDate } from '../../../utils/date';
 import TablePro from '../../../future-hopr-lib-components/Table/table-pro';
+import { DockerRunCommandModal } from '../../../components/Modal/staking-hub/DockerRunCommandModal';
 
 //web3
 import { Address } from 'viem';
 import { browserClient } from '../../../providers/wagmi';
+import { Dock } from '@mui/icons-material';
 
 
 const Container = styled.section`
@@ -245,7 +247,6 @@ const header = [
 ];
 
 const NodeAdded = () => {
-  const nodeNativeAddress = useAppSelector((store) => store.node.addresses.data.native);
   const nodeHoprAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress);
   const nodeBalance = useAppSelector((store) => store.stakingHub.onboarding.nodeBalance.xDai.formatted);
   const nodes = useAppSelector((store) => store.stakingHub.nodes);
@@ -311,7 +312,7 @@ const NodeAdded = () => {
                       >
                         <CopyIcon />
                       </SquaredIconButton>
-                      <Link to={`https://gnosisscan.io/address/${nodeNativeAddress}`} target='_blank'>
+                      <Link to={`https://gnosisscan.io/address/${nodeHoprAddress}`} target='_blank'>
                         <SquaredIconButton>
                           <LaunchIcon />
                         </SquaredIconButton>
@@ -400,6 +401,14 @@ const NodeAdded = () => {
           value="-"
           currency="Ticket/wxHOPR"
         />
+        <GrayCard
+          id="docker-command"
+          title="Docker Run Command"
+        >
+          <DockerRunCommandModal
+            normalButton
+          />
+        </GrayCard>
       </Grid>
       <br/>
       <TablePro
