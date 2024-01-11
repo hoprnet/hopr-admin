@@ -287,7 +287,7 @@ const NodeAdded = () => {
       isDelegate: delegatesArray.includes(node) ? 'Yes' : 'No',
       id: node,
       search: node,
-      actions:  <></>
+      actions: <></>
     }
   });
   const chosenNodeData = chosenNode && nodes[chosenNode] ? nodes[chosenNode] : null;
