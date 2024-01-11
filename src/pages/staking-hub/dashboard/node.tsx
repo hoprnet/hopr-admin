@@ -247,7 +247,6 @@ const header = [
 ];
 
 const NodeAdded = () => {
-  const nodeNativeAddress = useAppSelector((store) => store.node.addresses.data.native);
   const nodeHoprAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress);
   const nodeBalance = useAppSelector((store) => store.stakingHub.onboarding.nodeBalance.xDai.formatted);
   const nodes = useAppSelector((store) => store.stakingHub.nodes);
@@ -313,7 +312,7 @@ const NodeAdded = () => {
                       >
                         <CopyIcon />
                       </SquaredIconButton>
-                      <Link to={`https://gnosisscan.io/address/${nodeNativeAddress}`} target='_blank'>
+                      <Link to={`https://gnosisscan.io/address/${nodeHoprAddress}`} target='_blank'>
                         <SquaredIconButton>
                           <LaunchIcon />
                         </SquaredIconButton>
