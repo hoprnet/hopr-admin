@@ -23,6 +23,8 @@ import SafeDashboard from './safe';
 import NoNodeAdded from './noNodeAdded';
 import NodeAdded from './node'
 
+import { browserClient } from '../../../providers/wagmi';
+
 export const DASHBOARD = {
   staking: 0,
   node: 1,
@@ -89,11 +91,12 @@ function Dashboard() {
   const moduleAddress =  useAppSelector((store) => store.stakingHub.onboarding.moduleAddress);
 
   useEffect(()=>{
-    if(safeAddress && moduleAddress) {
+    if(safeAddress && moduleAddress && browserClient) {
       dispatch(
         stakingHubActionsAsync.getSubgraphDataThunk({
           safeAddress,
           moduleAddress,
+          browserClient
         }),
       );
     }

@@ -4,6 +4,7 @@ import { truncateHOPRPeerId } from '../../../utils/helpers';
 import { useAppDispatch, useAppSelector } from '../../../store';
 import { safeActionsAsync } from '../../../store/slices/safe';
 import { useEthersSigner } from '../../../hooks';
+import { rounder } from '../../../utils/functions';
 
 
 import { Card, Chip, IconButton } from '@mui/material';
@@ -13,6 +14,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import CloseIcon from '@mui/icons-material/Close';
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 // HOPR components
 import Button from '../../../future-hopr-lib-components/Button';
@@ -20,6 +22,7 @@ import { Table } from '../../../future-hopr-lib-components/Table/columed-data'
 import ProgressBar from '../../../future-hopr-lib-components/Progressbar'
 import { formatDate } from '../../../utils/date';
 import TablePro from '../../../future-hopr-lib-components/Table/table-pro';
+import Tooltip from '../../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
 import { DockerRunCommandModal } from '../../../components/Modal/staking-hub/DockerRunCommandModal';
 
 //web3
@@ -37,26 +40,85 @@ const Grid = styled.div`
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
 
-  #node-graphic {
+  #node-details {
     grid-column: 1/3;
     grid-row: 1/3;
   }
 
-  & #node-balance {
+  #node-balance {
     grid-column: 3/4;
   }
 
-  & #earned-rewards {
+  #earned-rewards {
     grid-column: 4/5;
   }
 
-  & #node-strategy {
+  #node-strategy {
     grid-column: 3/4;
   }
 
-  & #redeemed-tickets {
+  #redeemed-tickets {
     grid-column: 3/4;
   }
+
+  #docker-command {
+    grid-column: 4/4;
+  }
+
+  @media screen and (max-width: 1660px) {
+    grid-template-columns: repeat(3, 1fr);
+    #node-details {
+      grid-column: 1/3;
+    }
+
+    #node-balance {
+      grid-column: 3/3;
+    }
+
+    #earned-rewards {
+      grid-column: 3/3;
+    }
+
+    #node-strategy {
+      grid-column: 1/2;
+    }
+
+    #redeemed-tickets {
+      grid-column: 1/2;
+    }
+
+    #docker-command {
+      grid-column: 3/3;
+    }
+  }
+
+  @media screen and (max-width: 1350px) {
+    grid-template-columns: repeat(1, 1fr);
+    #node-details {
+      grid-column: 1;
+    }
+
+    #node-balance {
+      grid-column: 1;
+    }
+
+    #earned-rewards {
+      grid-column: 1;
+    }
+
+    #node-strategy {
+      grid-column: 1;
+    }
+
+    #redeemed-tickets {
+      grid-column: 1;
+    }
+
+    #docker-command {
+      grid-column: 1;
+    }
+  }
+
 `;
 
 const StyledGrayCard = styled(Card)`
@@ -118,6 +180,9 @@ const Graphic = styled.div`
   grid-template-columns: 200px 1fr;
   grid-template-rows: 1fr;
   gap: 1rem;
+  @media screen and (max-width: 1350px) {
+    grid-template-columns: 100px 1fr;
+  }
 `;
 
 const NodeGraphic = styled.div`
@@ -134,6 +199,10 @@ const NodeGraphic = styled.div`
     height: 100%;
     width: 100%;
     object-fit: contain;
+  }
+
+  @media screen and (max-width: 1350px) {
+    max-width: 100px;
   }
 `;
 
@@ -232,6 +301,12 @@ const header = [
     maxWidth: '160px',
   },
   {
+    key: 'balance',
+    name: 'Balance',
+    search: true,
+    maxWidth: '160px',
+  },
+  {
     key: 'search',
     name: '',
     search: true,
@@ -266,8 +341,8 @@ const NodeAdded = () => {
     console.log('chosenNode', chosenNode)
   }, [chosenNode]);
 
-  const delegatesArray = delegates?.results.map(elem => elem.delegate.toLocaleLowerCase()) || [];
-  const parsedTableData = registeredNodesInSafeRegistryParsed.map((node, index) => {
+  const delegatesArray = delegates?.results?.map(elem => elem.delegate.toLocaleLowerCase()) || [];
+  const parsedTableData = registeredNodesInSafeRegistryParsed?.map((node, index) => {
     return {
       peerId: <>
                 {node}
@@ -285,16 +360,35 @@ const NodeAdded = () => {
       inNetworkRegistry: registeredNodesInNetworkRegistryParsed.includes(node) ? 'Yes' : 'No',
       isDelegate: delegatesArray.includes(node) ? 'Yes' : 'No',
       id: node,
+      balance: nodes[node]?.balanceFormatted ? `${rounder(nodes[node].balanceFormatted)} xDai` : '-',
       search: node,
-      actions: <></>
+      actions: <>
+        <Tooltip
+          title='See details'
+        >
+          <SquaredIconButton
+            onClick={()=>{
+              window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: "smooth",
+              });
+              set_chosenNode(node);
+            }}
+
+          >
+            <VisibilityIcon />
+          </SquaredIconButton>
+        </Tooltip>
+      </>
     }
-  });
+  }) || [];
   const chosenNodeData = chosenNode && nodes[chosenNode] ? nodes[chosenNode] : null;
 
   return (
     <Container>
       <Grid>
-        <GrayCard id="node-graphic">
+        <GrayCard id="node-details">
           <Graphic>
             <NodeGraphic>
               <img
@@ -308,11 +402,11 @@ const NodeAdded = () => {
                   <th>Node Address
                     <div>
                       <SquaredIconButton
-                        onClick={() => nodeHoprAddress && navigator.clipboard.writeText(nodeHoprAddress)}
+                        onClick={() => chosenNode && navigator.clipboard.writeText(chosenNode)}
                       >
                         <CopyIcon />
                       </SquaredIconButton>
-                      <Link to={`https://gnosisscan.io/address/${nodeHoprAddress}`} target='_blank'>
+                      <Link to={`https://gnosisscan.io/address/${chosenNode}`} target='_blank'>
                         <SquaredIconButton>
                           <LaunchIcon />
                         </SquaredIconButton>
@@ -328,7 +422,7 @@ const NodeAdded = () => {
                         margin: '0',
                       }}
                     >
-                      {nodeHoprAddress}
+                      {chosenNode}
                     </p>
                   </td>
                 </tr>
@@ -387,7 +481,7 @@ const NodeAdded = () => {
         <GrayCard
           id="node-balance"
           title="xDAI"
-          value={nodeBalance ?? '-'}
+          value={nodeBalance ? rounder(nodeBalance, 5) : '-'}
         />
         <GrayCard
           id="earned-rewards"
