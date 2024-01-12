@@ -52,6 +52,8 @@ export type NodePayload = {
   availability24h?: number,
   version?: string
   isFetching: boolean;
+  balance?: string;
+  balanceFormatted?: string;
 }
 
 export type SubgraphParsedOutput = {
