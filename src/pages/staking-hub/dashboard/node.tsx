@@ -367,7 +367,14 @@ const NodeAdded = () => {
           title='See details'
         >
           <SquaredIconButton
-            onClick={()=>{set_chosenNode(node);}}
+            onClick={()=>{
+              window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: "smooth",
+              });
+              set_chosenNode(node);
+            }}
 
           >
             <VisibilityIcon />
