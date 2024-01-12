@@ -32,6 +32,7 @@ import NodeAdded from './pages/staking-hub/dashboard/node';
 import SafeActions from './pages/staking-hub/dashboard/transactions';
 import NoNodeAdded from './pages/staking-hub/dashboard/noNodeAdded';
 import Onboarding from './pages/staking-hub/onboarding';
+import OnboardingNextNode from './pages/staking-hub/onboarding/nextNode';
 import Dashboard from './pages/staking-hub/dashboard';
 import StakewxHOPR from './pages/staking-hub/stakewxHOPR';
 import StakexDAI from './pages/staking-hub/stakexDai';
@@ -222,6 +223,14 @@ export const applicationMapStakingHub: ApplicationMapType = [
         icon: <TrainIcon />,
         element: <Onboarding />,
         loginNeeded: 'web3',
+      },
+      {
+        name: 'Onboarding',
+        path: 'onboarding/nextNode',
+        icon: <TrainIcon />,
+        element: <OnboardingNextNode />,
+        loginNeeded: 'web3',
+        inDrawer: false,
       },
       {
         name: 'Dashboard',

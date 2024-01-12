@@ -5,7 +5,7 @@ import { StepContainer, ConfirmButton } from '../components';
 import { useEthersSigner } from '../../../../hooks';
 
 // Web3
-import { createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../../../utils/blockchain';
+import { createIncludeNodeTransactionData } from '../../../../utils/blockchain';
 
 // Store
 import { useAppSelector, useAppDispatch } from '../../../../store';
@@ -30,7 +30,7 @@ export default function ConfigureNode() {
       dispatch(
         safeActionsAsync.createAndExecuteContractTransactionThunk({
           smartContractAddress: moduleAddress,
-          data: createIncludeNodeTransactionData(encodeDefaultPermissions(getAddress(nodeAddress))),
+          data: createIncludeNodeTransactionData(nodeAddress),
           safeAddress: selectedSafeAddress,
           signer,
         }),

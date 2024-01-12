@@ -6,7 +6,7 @@ import { safeActionsAsync } from '../../../store/slices/safe';
 import { useEthersSigner } from '../../../hooks';
 
 
-import { Card, Chip, IconButton } from '@mui/material';
+import { Card, Chip, IconButton as MuiIconButton } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -21,6 +21,8 @@ import ProgressBar from '../../../future-hopr-lib-components/Progressbar'
 import { formatDate } from '../../../utils/date';
 import TablePro from '../../../future-hopr-lib-components/Table/table-pro';
 import { DockerRunCommandModal } from '../../../components/Modal/staking-hub/DockerRunCommandModal';
+import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
+import TrainIcon from '../../../future-hopr-lib-components/Icons/TrainIcon';
 
 //web3
 import { Address } from 'viem';
@@ -30,6 +32,16 @@ import { Dock } from '@mui/icons-material';
 
 const Container = styled.section`
     padding: 1rem;
+
+    h4.title {
+      font-weight: 700;
+      margin: 0;
+    }
+
+    h5.subtitle {
+      font-weight: 600;
+      margin: 0;
+    }
 `;
 
 const Grid = styled.div`
@@ -42,21 +54,6 @@ const Grid = styled.div`
     grid-row: 1/3;
   }
 
-  & #node-balance {
-    grid-column: 3/4;
-  }
-
-  & #earned-rewards {
-    grid-column: 4/5;
-  }
-
-  & #node-strategy {
-    grid-column: 3/4;
-  }
-
-  & #redeemed-tickets {
-    grid-column: 3/4;
-  }
 `;
 
 const StyledGrayCard = styled(Card)`
@@ -73,11 +70,6 @@ const CardContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-`;
-
-const CardTitle = styled.h4`
-  font-weight: 700;
-  margin: 0;
 `;
 
 const CardValue = styled.h5`
@@ -137,7 +129,7 @@ const NodeGraphic = styled.div`
   }
 `;
 
-const SquaredIconButton = styled(IconButton)`
+const SquaredIconButton = styled(MuiIconButton)`
   color: #414141;
   height: 0.75rem;
   padding: 0.75rem;
@@ -153,6 +145,7 @@ const SquaredIconButton = styled(IconButton)`
 type GrayCardProps = {
   id: string;
   title?: string;
+  subtitle?: string;
   value?: string;
   currency?: 'xDAI' | 'xHOPR' | 'wxHOPR' | string;
   chip?: {
@@ -170,6 +163,7 @@ type GrayCardProps = {
 const GrayCard = ({
   id,
   title,
+  subtitle,
   value,
   currency,
   chip,
@@ -180,7 +174,8 @@ const GrayCard = ({
     <StyledGrayCard id={id}>
       {(title || value) && (
         <CardContent>
-          {title && <CardTitle>{title}</CardTitle>}
+          {title && <h4 className='title'>{title}</h4>}
+          {subtitle && <h5 className='subtitle'>{subtitle}</h5>}
           {value && (
             <ValueAndCurrency>
               <CardValue>{value}</CardValue>
@@ -247,6 +242,7 @@ const header = [
 ];
 
 const NodeAdded = () => {
+  const navigate = useNavigate();
   const nodeHoprAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress);
   const nodeBalance = useAppSelector((store) => store.stakingHub.onboarding.nodeBalance.xDai.formatted);
   const nodes = useAppSelector((store) => store.stakingHub.nodes);
@@ -286,7 +282,20 @@ const NodeAdded = () => {
       isDelegate: delegatesArray.includes(node) ? 'Yes' : 'No',
       id: node,
       search: node,
-      actions: <></>
+      actions: <>
+        <IconButton
+          iconComponent={<TrainIcon />}
+          tooltipText={
+            <span>
+              Finish ONBOARDING for this node
+            </span>
+          }
+          onClick={()=>{
+            navigate(`/staking/onboarding/nextNode?nodeAddress=${node}`);
+          }}
+          disabled={registeredNodesInNetworkRegistryParsed.includes(node) && delegatesArray.includes(node)}
+        />
+      </>
     }
   });
   const chosenNodeData = chosenNode && nodes[chosenNode] ? nodes[chosenNode] : null;
@@ -396,18 +405,23 @@ const NodeAdded = () => {
           currency="wxHOPR"
         />
         <GrayCard
-          id="redeemed-tickets"
-          title="Redeemed Tickets"
-          value="-"
-          currency="Ticket/wxHOPR"
-        />
-        <GrayCard
           id="docker-command"
           title="Docker Run Command"
         >
           <DockerRunCommandModal
             normalButton
           />
+        </GrayCard>
+        <GrayCard
+          id="add-new-node"
+          title="Add new Node"
+          subtitle="Node will be added to the waitlist and once its is accepted, it will show up below"
+        >
+          <Button
+            title='add'
+          >
+            Add new Node
+          </Button>
         </GrayCard>
       </Grid>
       <br/>
