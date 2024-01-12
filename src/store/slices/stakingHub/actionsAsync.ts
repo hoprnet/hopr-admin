@@ -201,12 +201,11 @@ const getSubgraphDataThunk = createAsyncThunk<
       if (json.balances.length > 0) output.overall_staking_v2_balances = json.balances[0];
 
       console.log('output.registeredNodesInNetworkRegistry', output.registeredNodesInNetworkRegistry)
-      if (output.registeredNodesInSafeRegistry?.length > 0) {
-        for(let i = 0; i < output.registeredNodesInSafeRegistry.length; i++) {
-          let nodeAddress = output.registeredNodesInSafeRegistry[i].node.id;
-          dispatch(getNodeDataThunk({nodeAddress, browserClient}));
-        }
-      }
+
+      output.registeredNodesInSafeRegistry?.forEach((safeRegNode: {node: { id: string}}) => {
+        let nodeAddress = safeRegNode.node.id;
+        dispatch(getNodeDataThunk({nodeAddress, browserClient}));
+      })
 
       console.log('SubgraphParsedOutput', output);
       return output;

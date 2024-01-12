@@ -4,6 +4,7 @@ import { truncateHOPRPeerId } from '../../../utils/helpers';
 import { useAppDispatch, useAppSelector } from '../../../store';
 import { safeActionsAsync } from '../../../store/slices/safe';
 import { useEthersSigner } from '../../../hooks';
+import { rounder } from '../../../utils/functions';
 
 
 import { Card, Chip, IconButton } from '@mui/material';
@@ -39,26 +40,85 @@ const Grid = styled.div`
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
 
-  #node-graphic {
+  #node-details {
     grid-column: 1/3;
     grid-row: 1/3;
   }
 
-  & #node-balance {
+  #node-balance {
     grid-column: 3/4;
   }
 
-  & #earned-rewards {
+  #earned-rewards {
     grid-column: 4/5;
   }
 
-  & #node-strategy {
+  #node-strategy {
     grid-column: 3/4;
   }
 
-  & #redeemed-tickets {
+  #redeemed-tickets {
     grid-column: 3/4;
   }
+
+  #docker-command {
+    grid-column: 4/4;
+  }
+
+  @media screen and (max-width: 1660px) {
+    grid-template-columns: repeat(3, 1fr);
+    #node-details {
+      grid-column: 1/3;
+    }
+
+    #node-balance {
+      grid-column: 3/3;
+    }
+
+    #earned-rewards {
+      grid-column: 3/3;
+    }
+
+    #node-strategy {
+      grid-column: 1/2;
+    }
+
+    #redeemed-tickets {
+      grid-column: 1/2;
+    }
+
+    #docker-command {
+      grid-column: 3/3;
+    }
+  }
+
+  @media screen and (max-width: 1350px) {
+    grid-template-columns: repeat(1, 1fr);
+    #node-details {
+      grid-column: 1;
+    }
+
+    #node-balance {
+      grid-column: 1;
+    }
+
+    #earned-rewards {
+      grid-column: 1;
+    }
+
+    #node-strategy {
+      grid-column: 1;
+    }
+
+    #redeemed-tickets {
+      grid-column: 1;
+    }
+
+    #docker-command {
+      grid-column: 1;
+    }
+  }
+
 `;
 
 const StyledGrayCard = styled(Card)`
@@ -120,6 +180,9 @@ const Graphic = styled.div`
   grid-template-columns: 200px 1fr;
   grid-template-rows: 1fr;
   gap: 1rem;
+  @media screen and (max-width: 1350px) {
+    grid-template-columns: 100px 1fr;
+  }
 `;
 
 const NodeGraphic = styled.div`
@@ -136,6 +199,10 @@ const NodeGraphic = styled.div`
     height: 100%;
     width: 100%;
     object-fit: contain;
+  }
+
+  @media screen and (max-width: 1350px) {
+    max-width: 100px;
   }
 `;
 
@@ -293,7 +360,7 @@ const NodeAdded = () => {
       inNetworkRegistry: registeredNodesInNetworkRegistryParsed.includes(node) ? 'Yes' : 'No',
       isDelegate: delegatesArray.includes(node) ? 'Yes' : 'No',
       id: node,
-      balance: nodes[node]?.balanceFormatted ? `${nodes[node].balanceFormatted} xDai` : '-',
+      balance: nodes[node]?.balanceFormatted ? `${rounder(nodes[node].balanceFormatted)} xDai` : '-',
       search: node,
       actions: <>
         <Tooltip
@@ -314,7 +381,7 @@ const NodeAdded = () => {
   return (
     <Container>
       <Grid>
-        <GrayCard id="node-graphic">
+        <GrayCard id="node-details">
           <Graphic>
             <NodeGraphic>
               <img
@@ -407,7 +474,7 @@ const NodeAdded = () => {
         <GrayCard
           id="node-balance"
           title="xDAI"
-          value={nodeBalance ?? '-'}
+          value={nodeBalance ? rounder(nodeBalance, 5) : '-'}
         />
         <GrayCard
           id="earned-rewards"
