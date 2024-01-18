@@ -453,16 +453,12 @@ const getNodeDataThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
+    dispatch(getNodeBalanceThunk(payload));
     const rez = await fetch(`https://network.hoprnet.org/api/getNode?env=37&nodeAddress=${payload.nodeAddress}`);
     const json = await rez.json();
-    const nodeBalanceInBigInt = await payload.browserClient?.getBalance({ address: payload.nodeAddress as Address });
-    const nodeXDaiBalance = nodeBalanceInBigInt?.toString() ?? '0';
-    const nodeXDaiBalanceFormatted = formatEther(nodeBalanceInBigInt);
     let nodeData = {
       nodeAddress: payload.nodeAddress,
       isFetching: false,
-      balance: nodeXDaiBalance,
-      balanceFormatted: nodeXDaiBalanceFormatted
     };
     if(json.length > 0) {
       nodeData = {
@@ -471,6 +467,32 @@ const getNodeDataThunk = createAsyncThunk<
       }
     }
     return nodeData;
+  },
+  { condition: (_payload, { getState }) => {
+    return true;
+  } },
+);
+
+const getNodeBalanceThunk = createAsyncThunk<
+  NodePayload,
+  { nodeAddress: string, browserClient: PublicClient, },
+  { state: RootState }
+>(
+  'stakingHub/getNodeBalance',
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    const nodeBalanceInBigInt = await payload.browserClient?.getBalance({ address: payload.nodeAddress as Address });
+    const nodeXDaiBalance = nodeBalanceInBigInt?.toString() ?? '0';
+    const nodeXDaiBalanceFormatted = formatEther(nodeBalanceInBigInt);
+    let nodeBalance = {
+      nodeAddress: payload.nodeAddress,
+      balance: nodeXDaiBalance,
+      balanceFormatted: nodeXDaiBalanceFormatted,
+      isFetching: false,
+    };
+    return nodeBalance;
   },
   { condition: (_payload, { getState }) => {
     return true;
@@ -564,7 +586,29 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   builder.addCase(getNodeDataThunk.fulfilled, (state, action) => {
     const nodeData = action.payload;
-    state.nodes[nodeData.nodeAddress] = nodeData;
+    if(nodeData.nodeAddress){
+      if(state.nodes[nodeData.nodeAddress]) {
+        state.nodes[nodeData.nodeAddress] = {
+          ...state.nodes[nodeData.nodeAddress],
+          ...nodeData
+        }
+      } else {
+        state.nodes[nodeData.nodeAddress] = nodeData;
+      }
+    }
+  });
+  builder.addCase(getNodeBalanceThunk.fulfilled, (state, action) => {
+    const nodeData = action.payload;
+    if(nodeData.nodeAddress){
+      if(state.nodes[nodeData.nodeAddress]) {
+        state.nodes[nodeData.nodeAddress] = {
+          ...state.nodes[nodeData.nodeAddress],
+          ...nodeData
+        }
+      } else {
+        state.nodes[nodeData.nodeAddress] = nodeData;
+      }
+    }
   });
 };
 
