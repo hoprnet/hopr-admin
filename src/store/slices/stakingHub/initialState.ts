@@ -42,7 +42,7 @@ type InitialState = {
 };
 
 export type NodePayload = {
-  nodeAddress: string,
+  nodeAddress?: string,
   peerId?: string,
   lastSeen?: number,
   latencyAverage?: number,
@@ -54,6 +54,8 @@ export type NodePayload = {
   isFetching: boolean;
   balance?: string;
   balanceFormatted?: string;
+  registeredNodesInNetworkRegistry?: boolean;
+  registeredNodesInSafeRegistry?: boolean;
 }
 
 export type SubgraphParsedOutput = {

@@ -499,13 +499,33 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       state.safeInfo.data = action.payload;
       if (action.payload?.registeredNodesInNetworkRegistry?.length > 0) {
         let tmp = [];
-        tmp = action.payload.registeredNodesInNetworkRegistry.map((elem) => elem.node.id as string);
+        tmp = action.payload.registeredNodesInNetworkRegistry.map((elem: { node: { id: string | null}}) => {
+          if(elem.node.id) {
+            if(state.nodes[elem.node.id]) state.nodes[elem.node.id].registeredNodesInNetworkRegistry = true;
+            else state.nodes[elem.node.id] = {
+              nodeAddress: elem.node.id,
+              registeredNodesInNetworkRegistry:true,
+              isFetching: false,
+            }
+          }
+          return elem.node.id as string
+        });
         state.safeInfo.data.registeredNodesInNetworkRegistryParsed = tmp;
         state.onboarding.nodeAddress = tmp[tmp.length - 1];
       }
       if (action.payload?.registeredNodesInSafeRegistry?.length > 0) {
         let tmp = [];
-        tmp = action.payload.registeredNodesInSafeRegistry.map((elem) => elem.node.id as string);
+        tmp = action.payload.registeredNodesInSafeRegistry.map((elem: { node: { id: string | null}}) => {
+          if(elem.node.id) {
+            if(state.nodes[elem.node.id]) state.nodes[elem.node.id].registeredNodesInSafeRegistry = true;
+            else state.nodes[elem.node.id] = {
+              nodeAddress: elem.node.id,
+              registeredNodesInSafeRegistry:true,
+              isFetching: false,
+            }
+          }
+          return elem.node.id as string
+        });
         state.safeInfo.data.registeredNodesInSafeRegistryParsed = tmp;
         state.onboarding.nodeAddress = tmp[tmp.length - 1];
       }

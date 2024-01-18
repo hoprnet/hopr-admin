@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -43,10 +43,18 @@ function Onboarding() {
   const nodeAddress = searchParams.get('nodeAddress');
   const onboardingStep = useAppSelector((store) => store.stakingHub.onboarding.step);
   const onboardingIsFetching = useAppSelector((store) => store.stakingHub.onboarding.isFetching);
+  const nodesData = useAppSelector((store) => store.stakingHub.nodes);
 
   useEffect(() => {
     navigate(`#${onboardingStep}`, { replace: true });
   }, [onboardingStep]);
+
+  useEffect(() => {
+    if(nodeAddress) {
+      const nodeData = nodesData[nodeAddress];
+      console.log('nodeData', nodeData)
+    }
+  }, [nodeAddress]);
 
   function whatIsCompletedStep(page: number) {
     switch (page) {
