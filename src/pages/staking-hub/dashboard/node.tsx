@@ -15,6 +15,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import WalletIcon from '@mui/icons-material/Wallet';
 
 // HOPR components
 import Button from '../../../future-hopr-lib-components/Button';
@@ -232,7 +233,7 @@ const GrayCard = ({
 const header = [
   {
     key: 'peerId',
-    name: 'Node Address registered in Safe',
+    name: 'Node Address',
     search: true,
   },
   {
@@ -240,6 +241,11 @@ const header = [
     name: 'In Network Registry',
     search: true,
     maxWidth: '160px',
+  },
+  {
+    key: 'inSafeRegistry',
+    name: 'In Safe Registry',
+    search: true,
   },
   {
     key: 'isDelegate',
@@ -273,8 +279,6 @@ const NodeAdded = () => {
   const nodeHoprAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress);
   const nodeBalance = useAppSelector((store) => store.stakingHub.onboarding.nodeBalance.xDai.formatted);
   const nodes = useAppSelector((store) => store.stakingHub.nodes);
-  const registeredNodesInSafeRegistryParsed = useAppSelector((store) => store.stakingHub.safeInfo.data.registeredNodesInSafeRegistryParsed);
-  const registeredNodesInNetworkRegistryParsed = useAppSelector((store) => store.stakingHub.safeInfo.data.registeredNodesInNetworkRegistryParsed);
   const delegates = useAppSelector((store) => store.safe.delegates.data);
   const [chosenNode, set_chosenNode] = useState< string | null>(nodeHoprAddress);
 
@@ -290,7 +294,8 @@ const NodeAdded = () => {
   }, [chosenNode]);
 
   const delegatesArray = delegates?.results?.map(elem => elem.delegate.toLocaleLowerCase()) || [];
-  const parsedTableData = registeredNodesInSafeRegistryParsed?.map((node, index) => {
+  const nodesPeerIdArr = Object.keys(nodes);
+  const parsedTableData = nodesPeerIdArr.map((node, index) => {
     return {
       peerId: <>
                 {node}
@@ -305,7 +310,8 @@ const NodeAdded = () => {
                   </SquaredIconButton>
                 </Link>
               </>,
-      inNetworkRegistry: registeredNodesInNetworkRegistryParsed.includes(node) ? 'Yes' : 'No',
+      inNetworkRegistry: nodes[node].registeredNodesInNetworkRegistry? 'Yes' : 'No',
+      inSafeRegistry: nodes[node].registeredNodesInSafeRegistry ? 'Yes' : 'No',
       isDelegate: delegatesArray.includes(node) ? 'Yes' : 'No',
       id: node,
       balance: nodes[node]?.balanceFormatted ? `${rounder(nodes[node].balanceFormatted)} xDai` : '-',
@@ -314,14 +320,24 @@ const NodeAdded = () => {
         <IconButton
           iconComponent={<TrainIcon />}
           tooltipText={
+            nodes[node].registeredNodesInNetworkRegistry ?
+              delegatesArray.includes(node) ?
+              <span>
+                Onboarding is DONE for this node
+              </span>
+              :
+              <span>
+                Finish ONBOARDING for this node
+              </span>
+            :
             <span>
-              Finish ONBOARDING for this node
+              Node not registered on the network
             </span>
           }
           onClick={()=>{
             navigate(`/staking/onboarding/nextNode?nodeAddress=${node}`);
           }}
-          disabled={registeredNodesInNetworkRegistryParsed.includes(node) && delegatesArray.includes(node)}
+          disabled={!nodes[node].registeredNodesInNetworkRegistry || (nodes[node].registeredNodesInNetworkRegistry && delegatesArray.includes(node))}
         />
         <IconButton
           iconComponent={<VisibilityIcon />}
@@ -338,7 +354,17 @@ const NodeAdded = () => {
             });
             set_chosenNode(node);
           }}
-          disabled={registeredNodesInNetworkRegistryParsed.includes(node) && delegatesArray.includes(node)}
+        />
+        <IconButton
+          iconComponent={<WalletIcon />}
+          tooltipText={
+            <span>
+              FUND node
+            </span>
+          }
+          onClick={()=>{
+            navigate(`/staking/fund-node?nodeAddress=${node}`);
+          }}
         />
       </>
     }
@@ -465,6 +491,9 @@ const NodeAdded = () => {
         >
           <Button
             title='add'
+            href={`https://cryptpad.fr/form/#/2/form/view/K3KSF-UAM-mLjUCs4w3Cruu4wZeOdwQFLNG1aYqrjbg/`}
+            target="_blank"
+            rel="noopener noreferrer"
           >
             Add new Node
           </Button>

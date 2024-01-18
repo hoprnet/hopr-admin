@@ -31,58 +31,79 @@ const OnboardingContainer = styled.div`
 `;
 
 export const ONBOARDING_PAGES = {
-  ADD_NODE: 12,
-  CONFIGURE_NODE: 13,
-  FUND_NODE: 14,
-  NODE_IS_READY: 16,
+  ADD_NODE: 1,
+  CONFIGURE_NODE: 2,
+  FUND_NODE: 3,
+  NODE_IS_READY: 4,
 } as const;
 
 function Onboarding() {
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const nodeAddress = searchParams.get('nodeAddress');
-  const onboardingStep = useAppSelector((store) => store.stakingHub.onboarding.step);
-  const onboardingIsFetching = useAppSelector((store) => store.stakingHub.onboarding.isFetching);
+  const [onboardingStep, set_onboardingStep] = useState(0);
+  const [onboardingIsFetching, set_onboardingIsFetching] = useState(true);
   const nodesData = useAppSelector((store) => store.stakingHub.nodes);
+  const delegates = useAppSelector((store) => store.safe.delegates.data);
+  const delegatesArray = delegates?.results?.map(elem => elem.delegate.toLocaleLowerCase()) || [];
+
+  // useEffect(() => {
+  //   navigate(`#${onboardingStep}`, { replace: true });
+  // }, [onboardingStep]);
 
   useEffect(() => {
-    navigate(`#${onboardingStep}`, { replace: true });
-  }, [onboardingStep]);
-
-  useEffect(() => {
+    console.log('[Next Onboarding] nodeAddress', nodeAddress);
     if(nodeAddress) {
       const nodeData = nodesData[nodeAddress];
-      console.log('nodeData', nodeData)
+      const isDelegate = delegatesArray.includes(nodeAddress);
+      const isFunded = nodeData?.balanceFormatted ? parseFloat(nodeData.balanceFormatted) > 0.5 : false;
+      const inNetworkRegistry = nodeData?.registeredNodesInNetworkRegistry ? true : false;
+      console.log('[Next Onboarding] Object', {
+        nodeData,
+        nodeAddress,
+        isDelegate,
+        isFunded,
+        inNetworkRegistry
+      })
+      let step = 1;
+      if(isDelegate) {
+        step = 2;
+        if(inNetworkRegistry) {
+          step = 3;
+          if(isFunded) {
+            step = 4;
+          }
+        }
+      }
+      set_onboardingStep(step);
+      set_onboardingIsFetching(false);
     }
-  }, [nodeAddress]);
+  }, [nodeAddress, nodesData]);
 
   function whatIsCompletedStep(page: number) {
     switch (page) {
-      case ONBOARDING_PAGES.ADD_NODE:
-        return 1;
       case ONBOARDING_PAGES.CONFIGURE_NODE:
-        return 2;
+        return 1;
       case ONBOARDING_PAGES.FUND_NODE:
-        return 3;
+        return 2;
       case ONBOARDING_PAGES.NODE_IS_READY:
-        return 4;
-    default:
-      return -1;
-    }
+        return 3;
+      default:
+        return -1;
+      }
   }
 
   function whatIsCurrentStep(page: number) {
     switch (page) {
-    case ONBOARDING_PAGES.ADD_NODE:
-      return 1;
-    case ONBOARDING_PAGES.CONFIGURE_NODE:
-      return 2;
-    case ONBOARDING_PAGES.FUND_NODE:
-      return 3;
-    case ONBOARDING_PAGES.NODE_IS_READY:
-      return 4;
-    default:
-      return 0;
+      case ONBOARDING_PAGES.ADD_NODE:
+        return 0;
+      case ONBOARDING_PAGES.CONFIGURE_NODE:
+        return 1;
+      case ONBOARDING_PAGES.FUND_NODE:
+        return 2;
+      case ONBOARDING_PAGES.NODE_IS_READY:
+        return 3;
+      default:
+        return 0;
     }
   }
 
@@ -93,7 +114,7 @@ function Onboarding() {
         currentStep={whatIsCurrentStep(onboardingStep)}
         style={{ flex: '1 1 10%' }}
         steps={[
-          { name: 'ADD NODE' },
+          { name: 'ADD NODE AS A DELEGATE' },
           { name: 'CONFIGURE NODE' },
           { name: 'FUND NODE' },
         ]}

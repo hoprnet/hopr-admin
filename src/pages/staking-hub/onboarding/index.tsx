@@ -88,11 +88,11 @@ function Onboarding() {
       case ONBOARDING_PAGES.ADD_NODE:
         return 4;
       case ONBOARDING_PAGES.CONFIGURE_NODE:
-        return 5;  
+        return 5;
       case ONBOARDING_PAGES.FUND_NODE:
-        return 6;  
+        return 6;
       case ONBOARDING_PAGES.SET_ALLOWANCE:
-        return 7;  
+        return 7;
       case ONBOARDING_PAGES.NODE_IS_READY:
         return 8;
 
@@ -142,16 +142,16 @@ function Onboarding() {
           { name: 'FUND SAFE' },
           { name: 'CHOOSE YOUR NODE SETUP' },
           { name: 'WAITLIST' },
-          { name: 'ADD NODE' },
+          { name: 'ADD NODE AS A DELEGATE' },
           { name: 'CONFIGURE NODE' },
           { name: 'FUND NODE' },
-          { name: 'SET wxHOPR ALLOWANCES' },
+          { name: 'SET wxHOPR ALLOWANCE' },
         ]}
       />
-      
-      { 
-        onboardingIsFetching && onboardingStep === 0 ? 
-          <OnboardingIsFetching /> 
+
+      {
+        onboardingIsFetching && onboardingStep === 0 ?
+          <OnboardingIsFetching />
           :
           <>
             {onboardingStep === ONBOARDING_PAGES.WHAT_YOU_WILL_NEED && <WhatYouWillNeedPage />}

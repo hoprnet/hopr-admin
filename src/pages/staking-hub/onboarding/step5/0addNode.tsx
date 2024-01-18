@@ -82,7 +82,7 @@ export default function AddNode() {
 
   return (
     <StepContainer
-      title="ADD NODE"
+      title="ADD NODE AS A DELEGATE"
       description={
         <>
           Please enter and confirm your node address. This will initiate a transaction which you will need to sign. If you do not have your node address follow the instructions here for{' '}
