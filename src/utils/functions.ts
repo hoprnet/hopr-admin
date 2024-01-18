@@ -32,9 +32,24 @@ export function copyStringToClipboard(input: string) {
 
 export function rounder(value: number | string | null | undefined, charLength: number = 5) {
   if(!value) return '-'
-  if(typeof(value) === 'string') value = parseFloat(value);
+  let splited = ['',''];
+  if(typeof(value) === 'string'){
+    if(value.includes('.')){
+      splited = value.split('.');
+    } else if(value.includes(',')) {
+      splited = value.split(',');
+    } else {
+      splited = [`${value}`, '0']
+    }
+    value = parseFloat(value);
+  } else {
+    splited = [`${value}`, '0']
+  }
   let rez: string | null = null;
-  if (value >= 1000) {
+  if (value >= 99999999999999) {
+    let numLength = splited[0].length;
+    rez = `${splited[0][0]}.${splited[0][1]}${splited[0][2]}x10e${numLength-1}`;
+  } else if (value >= 1000) {
     let suffixes = ["", "k", "m", "b","t"];
     let suffixNum = Math.floor( (""+value).length/3 );
     let shortValue: number | null | string = NaN;

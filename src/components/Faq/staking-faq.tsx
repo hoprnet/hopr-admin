@@ -527,6 +527,26 @@ const stakingFaq: FaqData = {
         </span>
       ),
     },
+    {
+      id: 7,
+      title: 'What is a delegate',
+      content: (
+        <span>
+          It is calculated using the network's heartbeat mechanism.
+          <br />
+          <br />
+          You can read what differentiates each category{' '}
+          <a
+            href="https://docs.hoprnet.org/node/hoprd-commands#info"
+            target="_blank"
+            rel="noreferrer"
+          >
+            here
+          </a>
+          .
+        </span>
+      ),
+    },
   ],
 };
 
