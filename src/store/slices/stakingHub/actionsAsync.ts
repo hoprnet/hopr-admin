@@ -200,9 +200,16 @@ const getSubgraphDataThunk = createAsyncThunk<
       if (json.nodeManagementModules.length > 0) output.module = json.nodeManagementModules[0];
       if (json.balances.length > 0) output.overall_staking_v2_balances = json.balances[0];
 
-      console.log('output.registeredNodesInNetworkRegistry', output.registeredNodesInNetworkRegistry)
+      console.log('output.registeredNodesInNetworkRegistry', output.registeredNodesInNetworkRegistry);
+      console.log('output.registeredNodesInSafeRegistry', output.registeredNodesInSafeRegistry);
 
-      output.registeredNodesInSafeRegistry?.forEach((safeRegNode: {node: { id: string}}) => {
+      let allNodes = [...output.registeredNodesInNetworkRegistry, ...output.registeredNodesInSafeRegistry];
+      allNodes = allNodes.filter(function(item, pos) {
+        return allNodes.indexOf(item) == pos;
+      })
+
+      console.log('allNodes found', allNodes);
+      allNodes.forEach((safeRegNode: {node: { id: string}}) => {
         let nodeAddress = safeRegNode.node.id;
         dispatch(getNodeDataThunk({nodeAddress, browserClient}));
       })
@@ -484,6 +491,7 @@ const getNodeBalanceThunk = createAsyncThunk<
     dispatch,
   }) => {
     const nodeBalanceInBigInt = await payload.browserClient?.getBalance({ address: payload.nodeAddress as Address });
+    console.log('nodeBalanceInBigInt', payload.nodeAddress, nodeBalanceInBigInt)
     const nodeXDaiBalance = nodeBalanceInBigInt?.toString() ?? '0';
     const nodeXDaiBalanceFormatted = formatEther(nodeBalanceInBigInt);
     let nodeBalance = {
@@ -523,9 +531,10 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         let tmp = [];
         tmp = action.payload.registeredNodesInNetworkRegistry.map((elem: { node: { id: string | null}}) => {
           if(elem.node.id) {
-            if(state.nodes[elem.node.id]) state.nodes[elem.node.id].registeredNodesInNetworkRegistry = true;
-            else state.nodes[elem.node.id] = {
-              nodeAddress: elem.node.id,
+            const nodeAddress = elem.node.id.toLocaleLowerCase();
+            if(state.nodes[nodeAddress]) state.nodes[nodeAddress].registeredNodesInNetworkRegistry = true;
+            else state.nodes[nodeAddress] = {
+              nodeAddress: nodeAddress,
               registeredNodesInNetworkRegistry:true,
               isFetching: false,
             }
@@ -539,9 +548,10 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         let tmp = [];
         tmp = action.payload.registeredNodesInSafeRegistry.map((elem: { node: { id: string | null}}) => {
           if(elem.node.id) {
-            if(state.nodes[elem.node.id]) state.nodes[elem.node.id].registeredNodesInSafeRegistry = true;
-            else state.nodes[elem.node.id] = {
-              nodeAddress: elem.node.id,
+            const nodeAddress = elem.node.id.toLocaleLowerCase();
+            if(state.nodes[nodeAddress]) state.nodes[nodeAddress].registeredNodesInSafeRegistry = true;
+            else state.nodes[nodeAddress] = {
+              nodeAddress: nodeAddress,
               registeredNodesInSafeRegistry:true,
               isFetching: false,
             }
@@ -554,9 +564,10 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       if (action.payload?.module?.includedNodes?.length > 0) {
         action.payload.module.includedNodes.map((elem: { node: { id: string | null}}) => {
           if(elem.node.id) {
-            if(state.nodes[elem.node.id]) state.nodes[elem.node.id].includedInModule = true;
-            else state.nodes[elem.node.id] = {
-              nodeAddress: elem.node.id,
+            const nodeAddress = elem.node.id.toLocaleLowerCase();
+            if(state.nodes[nodeAddress]) state.nodes[nodeAddress].includedInModule = true;
+            else state.nodes[nodeAddress] = {
+              nodeAddress: nodeAddress,
               includedInModule: true,
               isFetching: false,
             }
@@ -599,26 +610,28 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(getNodeDataThunk.fulfilled, (state, action) => {
     const nodeData = action.payload;
     if(nodeData.nodeAddress){
-      if(state.nodes[nodeData.nodeAddress]) {
-        state.nodes[nodeData.nodeAddress] = {
-          ...state.nodes[nodeData.nodeAddress],
+      const nodeAddress = nodeData.nodeAddress.toLocaleLowerCase();
+      if(state.nodes[nodeAddress]) {
+        state.nodes[nodeAddress] = {
+          ...state.nodes[nodeAddress],
           ...nodeData
         }
       } else {
-        state.nodes[nodeData.nodeAddress] = nodeData;
+        state.nodes[nodeAddress] = nodeData;
       }
     }
   });
   builder.addCase(getNodeBalanceThunk.fulfilled, (state, action) => {
     const nodeData = action.payload;
     if(nodeData.nodeAddress){
-      if(state.nodes[nodeData.nodeAddress]) {
-        state.nodes[nodeData.nodeAddress] = {
-          ...state.nodes[nodeData.nodeAddress],
+      const nodeAddress = nodeData.nodeAddress.toLocaleLowerCase();
+      if(state.nodes[nodeAddress]) {
+        state.nodes[nodeAddress] = {
+          ...state.nodes[nodeAddress],
           ...nodeData
         }
       } else {
-        state.nodes[nodeData.nodeAddress] = nodeData;
+        state.nodes[nodeAddress] = nodeData;
       }
     }
   });
