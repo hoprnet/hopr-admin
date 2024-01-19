@@ -241,12 +241,17 @@ export default function CustomPaginationActionsTable(props: Props) {
           <TableRow>
             {props.header.map((headElem, idx) => (
                 !headElem.hidden &&
-                  <STableCell
+                <STableCell
                   key={idx}
                   className={`TableCell TableCellHeader`}
                   width={headElem?.width ?? ''}
                 >
-                  {headElem.name}
+                  <Tooltip
+                    title={headElem.tooltip}
+                    notWide
+                  >
+                    <span>{headElem.name}</span>
+                  </Tooltip>
                 </STableCell>
             ))}
           </TableRow>

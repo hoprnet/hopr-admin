@@ -56,6 +56,7 @@ export type NodePayload = {
   balanceFormatted?: string;
   registeredNodesInNetworkRegistry?: boolean;
   registeredNodesInSafeRegistry?: boolean;
+  includedInModule?: boolean;
 }
 
 export type SubgraphParsedOutput = {

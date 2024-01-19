@@ -21,7 +21,7 @@ const StyledGrayButton = styled(GrayButton)`
   height: 39px;
 `;
 
-export default function AddNode() {
+export default function AddNode(props?: { onDone?: Function}) {
   const dispatch = useAppDispatch();
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
 
@@ -52,8 +52,12 @@ export default function AddNode() {
         }),
       ).unwrap()
         .then(() => {
-          dispatch(stakingHubActions.setOnboardingNodeAddress(address));
-          dispatch(stakingHubActions.setOnboardingStep(13));
+          if (props?.onDone){
+            props.onDone();
+          } else {
+            dispatch(stakingHubActions.setOnboardingNodeAddress(address));
+            dispatch(stakingHubActions.setOnboardingStep(13));
+          }
         })
         .catch(e => {
           console.log('ERROR when adding a delegate to Safe:', e)

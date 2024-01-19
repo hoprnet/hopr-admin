@@ -31,8 +31,8 @@ export function copyStringToClipboard(input: string) {
 }
 
 export function rounder(value: number | string | null | undefined, charLength: number = 5) {
-  if(!value) return '-'
-  if(value == 0 ) return '0'
+  if(!value) return '-';
+  if(value == 0 ) return '0';
   let splited = ['',''];
   if(typeof(value) === 'string'){
     if(value.includes('.')){

@@ -82,11 +82,11 @@ function Onboarding() {
   function whatIsCompletedStep(page: number) {
     switch (page) {
       case ONBOARDING_PAGES.CONFIGURE_NODE:
-        return 1;
+        return 0;
       case ONBOARDING_PAGES.FUND_NODE:
-        return 2;
+        return 1;
       case ONBOARDING_PAGES.NODE_IS_READY:
-        return 3;
+        return 2;
       default:
         return -1;
       }
@@ -125,7 +125,10 @@ function Onboarding() {
           <OnboardingIsFetching />
           :
           <>
-            {onboardingStep === ONBOARDING_PAGES.ADD_NODE && <AddNode />}
+            {onboardingStep === ONBOARDING_PAGES.ADD_NODE && <AddNode
+                                                                onDone={()=>{set_onboardingStep(1)}}
+                                                              />
+            }
             {onboardingStep === ONBOARDING_PAGES.CONFIGURE_NODE && <ConfigureNode />}
             {onboardingStep === ONBOARDING_PAGES.FUND_NODE && <FundNode />}
             {onboardingStep === ONBOARDING_PAGES.NODE_IS_READY && <NodeIsReady />}

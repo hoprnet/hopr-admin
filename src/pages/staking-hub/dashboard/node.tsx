@@ -241,10 +241,12 @@ const header = [
     name: 'In Network Registry',
     search: true,
     maxWidth: '160px',
+    tooltip: 'Node registered by HOPR to the Network Registry',
   },
   {
     key: 'inSafeRegistry',
     name: 'In Safe Registry',
+    tooltip: 'Node started and registered itself in the Safe Registry',
     search: true,
   },
   {
@@ -252,6 +254,14 @@ const header = [
     name: 'Is Delegate',
     search: true,
     maxWidth: '160px',
+    tooltip: 'Node added as a safe delegate, so it can propose transactions to the safe owner'
+  },
+  {
+    key: 'includedInModule',
+    name: 'Configured',
+    search: true,
+    maxWidth: '160px',
+    tooltip: 'Node included in the Safe Module and configured'
   },
   {
     key: 'balance',
@@ -277,6 +287,7 @@ const header = [
 const NodeAdded = () => {
   const navigate = useNavigate();
   const nodeHoprAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress);
+  const onboardingNotFinished = useAppSelector((store) => store.stakingHub.onboarding.notFinished);
   const nodeBalance = useAppSelector((store) => store.stakingHub.onboarding.nodeBalance.xDai.formatted);
   const nodes = useAppSelector((store) => store.stakingHub.nodes);
   const delegates = useAppSelector((store) => store.safe.delegates.data);
@@ -313,6 +324,7 @@ const NodeAdded = () => {
       inNetworkRegistry: nodes[node].registeredNodesInNetworkRegistry? 'Yes' : 'No',
       inSafeRegistry: nodes[node].registeredNodesInSafeRegistry ? 'Yes' : 'No',
       isDelegate: delegatesArray.includes(node) ? 'Yes' : 'No',
+      includedInModule: nodes[node].includedInModule ? 'Yes' : 'No',
       id: node,
       balance: nodes[node]?.balanceFormatted ? `${rounder(nodes[node].balanceFormatted)} xDai` : '-',
       search: node,
@@ -320,24 +332,30 @@ const NodeAdded = () => {
         <IconButton
           iconComponent={<TrainIcon />}
           tooltipText={
-            nodes[node].registeredNodesInNetworkRegistry ?
-              delegatesArray.includes(node) ?
+            onboardingNotFinished ?
               <span>
-                Onboarding is DONE for this node
+                Please finish the main<br/> ONBOARDING first
               </span>
               :
+              //Main nboarding is finished
+              nodes[node].registeredNodesInNetworkRegistry ?
+                delegatesArray.includes(node) ?
+                <span>
+                  Onboarding is DONE for this node
+                </span>
+                :
+                <span>
+                  Finish ONBOARDING for this node
+                </span>
+              :
               <span>
-                Finish ONBOARDING for this node
+                Node not registered on the network
               </span>
-            :
-            <span>
-              Node not registered on the network
-            </span>
           }
           onClick={()=>{
             navigate(`/staking/onboarding/nextNode?nodeAddress=${node}`);
           }}
-          disabled={!nodes[node].registeredNodesInNetworkRegistry || (nodes[node].registeredNodesInNetworkRegistry && delegatesArray.includes(node))}
+          disabled={onboardingNotFinished || !nodes[node].registeredNodesInNetworkRegistry || (nodes[node].registeredNodesInNetworkRegistry && delegatesArray.includes(node))}
         />
         <IconButton
           iconComponent={<VisibilityIcon />}
@@ -354,6 +372,7 @@ const NodeAdded = () => {
             });
             set_chosenNode(node);
           }}
+          disabled={onboardingNotFinished}
         />
         <IconButton
           iconComponent={<WalletIcon />}
@@ -365,6 +384,7 @@ const NodeAdded = () => {
           onClick={()=>{
             navigate(`/staking/fund-node?nodeAddress=${node}`);
           }}
+          disabled={onboardingNotFinished}
         />
       </>
     }

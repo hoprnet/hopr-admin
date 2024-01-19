@@ -551,6 +551,18 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         state.safeInfo.data.registeredNodesInSafeRegistryParsed = tmp;
         state.onboarding.nodeAddress = tmp[tmp.length - 1];
       }
+      if (action.payload?.module?.includedNodes?.length > 0) {
+        action.payload.module.includedNodes.map((elem: { node: { id: string | null}}) => {
+          if(elem.node.id) {
+            if(state.nodes[elem.node.id]) state.nodes[elem.node.id].includedInModule = true;
+            else state.nodes[elem.node.id] = {
+              nodeAddress: elem.node.id,
+              includedInModule: true,
+              isFetching: false,
+            }
+          }
+        })
+      }
     }
     state.safeInfo.isFetching = false;
   });

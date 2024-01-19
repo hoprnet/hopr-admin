@@ -532,18 +532,9 @@ const stakingFaq: FaqData = {
       title: 'What is a delegate',
       content: (
         <span>
-          It is calculated using the network's heartbeat mechanism.
-          <br />
-          <br />
-          You can read what differentiates each category{' '}
-          <a
-            href="https://docs.hoprnet.org/node/hoprd-commands#info"
-            target="_blank"
-            rel="noreferrer"
-          >
-            here
-          </a>
-          .
+          When a node is a delegate, it is be able to submit transations to the safe, which later have to be signed by the safe owner/s.
+          <br/><br/>
+          If the safe owner will not sign a transaction, nothing will be done on-chain.
         </span>
       ),
     },
