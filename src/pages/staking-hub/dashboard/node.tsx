@@ -507,7 +507,7 @@ const NodeAdded = () => {
         <GrayCard
           id="node-balance"
           title="xDAI"
-          value={nodeBalance ? rounder(nodeBalance, 5) : '-'}
+          value={chosenNodeData?.balanceFormatted ? rounder(chosenNodeData?.balanceFormatted, 5) : '-'}
         />
         <GrayCard
           id="earned-rewards"
