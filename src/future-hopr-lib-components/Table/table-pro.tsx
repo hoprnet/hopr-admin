@@ -146,6 +146,7 @@ interface Props {
     maxWidth?: string,
     copy?: boolean,
     hidden?: boolean,
+    tooltipHeader?: string | JSX.Element,
   }[];
   search?: boolean;
   loading?: boolean;
