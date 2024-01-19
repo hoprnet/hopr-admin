@@ -356,7 +356,7 @@ const LayoutEnhanced = () => {
   const location = useLocation();
   const apiEndpoint = searchParams.get('apiEndpoint');
   const apiToken = searchParams.get('apiToken');
-  const HOPRdNodeAddressForOnboarding = searchParams.get('HOPRdNodeAddressForOnboarding');
+  const HOPRdNodeAddressForOnboarding = searchParams.get('HOPRdNodeAddressForOnboarding'); //Address given in HOPRd: https://hub.hoprnet.org/staking/onboarding?HOPRdNodeAddressForOnboarding={my_address}
 
   useEffect(() => {
     if (environment === 'web3') {

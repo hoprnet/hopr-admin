@@ -238,27 +238,27 @@ const header = [
   },
   {
     key: 'inNetworkRegistry',
-    name: 'In Network Registry',
+    name: 'NR',
     search: true,
     maxWidth: '160px',
     tooltipHeader: 'Node registered by HOPR to the Network Registry',
   },
   {
     key: 'inSafeRegistry',
-    name: 'In Safe Registry',
+    name: 'SR',
     search: true,
     tooltipHeader: 'Node started and registered itself in the Safe Registry',
   },
   {
     key: 'isDelegate',
-    name: 'Is Delegate',
+    name: 'Delegate',
     search: true,
     maxWidth: '160px',
     tooltipHeader: 'Node added as a safe delegate, so it can propose transactions to the safe owner'
   },
   {
     key: 'includedInModule',
-    name: 'Configured',
+    name: 'Config',
     search: true,
     maxWidth: '160px',
     tooltipHeader: 'Node included in the Safe Module and configured'
@@ -363,7 +363,7 @@ const NodeAdded = () => {
       isDelegate: isDelegate ? 'Yes' : 'No',
       includedInModule: includedInModule ? 'Yes' : 'No',
       id: node,
-      balance: nodes[node]?.balanceFormatted ? `${rounder(nodes[node].balanceFormatted)} xDai` : '-',
+      balance: nodes[node]?.balanceFormatted ? `${rounder(nodes[node].balanceFormatted)} xDAI` : '-',
       search: node,
       actions: <>
         <IconButton

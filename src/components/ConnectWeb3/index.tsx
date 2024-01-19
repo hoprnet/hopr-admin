@@ -146,17 +146,17 @@ export default function ConnectWeb3({
   }, [open]);
 
   useEffect(() => {
-    if (error) { 
+    if (error) {
       if (error instanceof UserRejectedRequestError) {
-        let parsedError = error.shortMessage; 
+        let parsedError = error.shortMessage;
         if(error.details && error.details !== error.shortMessage && error.details.length > 10) {
           parsedError = parsedError + '\n\n' + error.details;
         }
-        set_localError(parsedError); 
+        set_localError(parsedError);
       } else {
         set_localError( JSON.stringify(error))
       }
-      // wallet connect modal can 
+      // wallet connect modal can
       // cause errors if it is closed without connecting
       if (pendingConnector?.id === 'walletConnect') {
         reset()
