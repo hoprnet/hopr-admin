@@ -919,7 +919,7 @@ const addSafeDelegateThunk = createAsyncThunk<
       dispatch(
         getSafeDelegatesThunk({
           signer: payload.signer,
-          options: { ...payload.options },
+          options: { safeAddress: payload.options.safeAddress },
         }),
       );
 
