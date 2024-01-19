@@ -394,7 +394,6 @@ const NodeAdded = () => {
             });
             set_chosenNode(node);
           }}
-          disabled={onboardingNotFinished}
         />
         <IconButton
           iconComponent={<WalletIcon />}
@@ -406,7 +405,6 @@ const NodeAdded = () => {
           onClick={()=>{
             navigate(`/staking/fund-node?nodeAddress=${node}`);
           }}
-          disabled={onboardingNotFinished}
         />
       </>
     }
