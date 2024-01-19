@@ -74,9 +74,10 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
   const dispatch = useAppDispatch();
   // injected states
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
-  const nodeAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
+  const nodeAddressFromStore = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
   const safeXDaiBalance = useAppSelector((store) => store.safe.balance.data.xDai.formatted) as string;
   const isExecutionLoading = useAppSelector((store) => store.safe.executeTransaction.isFetching);
+
   // local states
   const [xdaiValue, set_xdaiValue] = useState<string>('');
   const [error, set_error] = useState<boolean>(false);
@@ -84,6 +85,8 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
   const [transactionHash, set_transactionHash] = useState<Address>();
   const [isWalletLoading, set_isWalletLoading] = useState(false);
   const signer = useEthersSigner();
+
+  const nodeAddress:string = props?.nodeAddress ? props.nodeAddress : nodeAddressFromStore;
 
   const createAndExecuteTx = () => {
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
@@ -151,6 +154,22 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
       }
     >
       <div>
+        <StyledForm>
+          <StyledInstructions>
+            <StyledText>NODE ADDRESS</StyledText>
+          </StyledInstructions>
+          <StyledInputGroup>
+            <StyledTextField
+              variant="outlined"
+              placeholder="-"
+              size="small"
+              style={{ width: '435px' }}
+              value={nodeAddress}
+              disabled
+              InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
+            />
+          </StyledInputGroup>
+        </StyledForm>
         <StyledForm>
           <StyledInstructions>
             <StyledText>SEND xDAI TO NODE {' '}
