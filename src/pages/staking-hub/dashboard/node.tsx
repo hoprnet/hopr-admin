@@ -284,6 +284,39 @@ const header = [
   },
 ];
 
+const getOnboardingTooltip = (
+  onboardingNotFinished?: boolean,
+  inNetworkRegistry?: boolean,
+  isDelegate?: boolean,
+  includedInModule?: boolean,
+) => {
+  if(onboardingNotFinished) {
+    return (
+      <span>
+        Please finish the main<br/> ONBOARDING first
+      </span>
+    )
+  } else if (!inNetworkRegistry) {
+    return (
+      <span>
+        Node not registered on the network
+      </span>
+    )
+  }else if (!includedInModule || !isDelegate) {
+    return (
+      <span>
+        Finish ONBOARDING for this node
+      </span>
+    )
+  } else {
+    return (
+      <span>
+        Onboarding is DONE for this node
+      </span>
+    )
+  }
+}
+
 const NodeAdded = () => {
   const navigate = useNavigate();
   const nodeHoprAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress);
@@ -307,6 +340,10 @@ const NodeAdded = () => {
   const delegatesArray = delegates?.results?.map(elem => elem.delegate.toLocaleLowerCase()) || [];
   const nodesPeerIdArr = Object.keys(nodes);
   const parsedTableData = nodesPeerIdArr.map((node, index) => {
+    const inNetworkRegistry = nodes[node].registeredNodesInNetworkRegistry;
+    const inSafeRegistry = nodes[node].registeredNodesInSafeRegistry
+    const isDelegate = delegatesArray.includes(node);
+    const includedInModule = nodes[node].includedInModule;
     return {
       peerId: <>
                 {node}
@@ -321,41 +358,26 @@ const NodeAdded = () => {
                   </SquaredIconButton>
                 </Link>
               </>,
-      inNetworkRegistry: nodes[node].registeredNodesInNetworkRegistry? 'Yes' : 'No',
-      inSafeRegistry: nodes[node].registeredNodesInSafeRegistry ? 'Yes' : 'No',
-      isDelegate: delegatesArray.includes(node) ? 'Yes' : 'No',
-      includedInModule: nodes[node].includedInModule ? 'Yes' : 'No',
+      inNetworkRegistry: inNetworkRegistry ? 'Yes' : 'No',
+      inSafeRegistry: inSafeRegistry ? 'Yes' : 'No',
+      isDelegate: isDelegate ? 'Yes' : 'No',
+      includedInModule: includedInModule ? 'Yes' : 'No',
       id: node,
       balance: nodes[node]?.balanceFormatted ? `${rounder(nodes[node].balanceFormatted)} xDai` : '-',
       search: node,
       actions: <>
         <IconButton
           iconComponent={<TrainIcon />}
-          tooltipText={
-            onboardingNotFinished ?
-              <span>
-                Please finish the main<br/> ONBOARDING first
-              </span>
-              :
-              //Main nboarding is finished
-              nodes[node].registeredNodesInNetworkRegistry ?
-                delegatesArray.includes(node) ?
-                <span>
-                  Onboarding is DONE for this node
-                </span>
-                :
-                <span>
-                  Finish ONBOARDING for this node
-                </span>
-              :
-              <span>
-                Node not registered on the network
-              </span>
-          }
+          tooltipText={getOnboardingTooltip(
+            onboardingNotFinished,
+            inNetworkRegistry,
+            isDelegate,
+            includedInModule,
+          )}
           onClick={()=>{
             navigate(`/staking/onboarding/nextNode?nodeAddress=${node}`);
           }}
-          disabled={onboardingNotFinished || !nodes[node].registeredNodesInNetworkRegistry || (nodes[node].registeredNodesInNetworkRegistry && delegatesArray.includes(node))}
+          disabled={onboardingNotFinished || (includedInModule && isDelegate)}
         />
         <IconButton
           iconComponent={<VisibilityIcon />}

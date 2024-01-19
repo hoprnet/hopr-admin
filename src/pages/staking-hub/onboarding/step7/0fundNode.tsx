@@ -70,7 +70,7 @@ export const StyledGrayButton = styled(GrayButton)`
   height: 39px;
 `;
 
-export default function FundNode() {
+export default function FundNode(props?: { onDone?: Function, nodeAddress?: string | null}) {
   const dispatch = useAppDispatch();
   // injected states
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
@@ -80,6 +80,7 @@ export default function FundNode() {
   // local states
   const [xdaiValue, set_xdaiValue] = useState<string>('');
   const [error, set_error] = useState<boolean>(false);
+  const [errorMessage, set_errorMessage] = useState<string | null>(null);
   const [transactionHash, set_transactionHash] = useState<Address>();
   const [isWalletLoading, set_isWalletLoading] = useState(false);
   const signer = useEthersSigner();
@@ -101,9 +102,17 @@ export default function FundNode() {
       .unwrap()
       .then((hash) => {
         set_transactionHash(hash as Address);
-        dispatch(stakingHubActions.setOnboardingStep(15));
+        if (props?.onDone){
+          props.onDone();
+        } else {
+          dispatch(stakingHubActions.setOnboardingStep(15));
+        }
       })
-      .catch(() => {
+      .catch((error) => {
+        console.warn(error);
+        if(JSON.stringify(error).includes('user rejected transaction')){
+          set_errorMessage('User rejected transaction');
+        }
         set_error(true);
       })
       .finally(() => set_isWalletLoading(false));
@@ -112,6 +121,7 @@ export default function FundNode() {
   useEffect(() => {
     if (safeXDaiBalance !== null && parseUnits(xdaiValue, 18) > parseUnits(safeXDaiBalance, 18)) {
       set_error(true);
+      set_errorMessage('You do not have enough xDai in Safe');
     } else {
       set_error(false);
     }
@@ -162,7 +172,7 @@ export default function FundNode() {
                 pattern: '[0-9]*',
               }}
               InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
-              helperText={error ? 'You do not have enough xDai in Safe.' : `min. ${MINIMUM_XDAI_TO_FUND_NODE}`}
+              helperText={error ? errorMessage : `min. ${MINIMUM_XDAI_TO_FUND_NODE}`}
               error={!!xdaiValue && error}
             />
             <StyledCoinLabel>xDAI</StyledCoinLabel>

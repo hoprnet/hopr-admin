@@ -38,6 +38,7 @@ export const ONBOARDING_PAGES = {
 } as const;
 
 function Onboarding() {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const nodeAddress = searchParams.get('nodeAddress');
   const [onboardingStep, set_onboardingStep] = useState(0);
@@ -46,28 +47,24 @@ function Onboarding() {
   const delegates = useAppSelector((store) => store.safe.delegates.data);
   const delegatesArray = delegates?.results?.map(elem => elem.delegate.toLocaleLowerCase()) || [];
 
-  // useEffect(() => {
-  //   navigate(`#${onboardingStep}`, { replace: true });
-  // }, [onboardingStep]);
-
   useEffect(() => {
     console.log('[Next Onboarding] nodeAddress', nodeAddress);
     if(nodeAddress) {
       const nodeData = nodesData[nodeAddress];
       const isDelegate = delegatesArray.includes(nodeAddress);
       const isFunded = nodeData?.balanceFormatted ? parseFloat(nodeData.balanceFormatted) > 0.5 : false;
-      const inNetworkRegistry = nodeData?.registeredNodesInNetworkRegistry ? true : false;
+      const includedInModule = nodeData?.includedInModule ? true : false;
       console.log('[Next Onboarding] Object', {
         nodeData,
         nodeAddress,
         isDelegate,
         isFunded,
-        inNetworkRegistry
+        includedInModule
       })
       let step = 1;
       if(isDelegate) {
         step = 2;
-        if(inNetworkRegistry) {
+        if(includedInModule) {
           step = 3;
           if(isFunded) {
             step = 4;
@@ -125,12 +122,24 @@ function Onboarding() {
           <OnboardingIsFetching />
           :
           <>
-            {onboardingStep === ONBOARDING_PAGES.ADD_NODE && <AddNode
-                                                                onDone={()=>{set_onboardingStep(1)}}
-                                                              />
+            {onboardingStep === ONBOARDING_PAGES.ADD_NODE &&
+              <AddNode
+                onDone={()=>{set_onboardingStep(2)}}
+                onBack={()=>{navigate('/staking/dashboard#node');}}
+              />
             }
-            {onboardingStep === ONBOARDING_PAGES.CONFIGURE_NODE && <ConfigureNode />}
-            {onboardingStep === ONBOARDING_PAGES.FUND_NODE && <FundNode />}
+            {onboardingStep === ONBOARDING_PAGES.CONFIGURE_NODE &&
+              <ConfigureNode
+                onDone={()=>{set_onboardingStep(3)}}
+                nodeAddress={nodeAddress}
+              />
+            }
+            {onboardingStep === ONBOARDING_PAGES.FUND_NODE &&
+              <FundNode
+                onDone={()=>{set_onboardingStep(4)}}
+                nodeAddress={nodeAddress}
+              />
+            }
             {onboardingStep === ONBOARDING_PAGES.NODE_IS_READY && <NodeIsReady />}
           </>
       }

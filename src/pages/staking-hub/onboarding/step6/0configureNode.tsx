@@ -17,13 +17,14 @@ const ButtonContainer = styled.div`
   gap: 1rem;
 `;
 
-export default function ConfigureNode() {
+export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?: string | null}) {
   const dispatch = useAppDispatch();
+  const signer = useEthersSigner();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
-  const nodeAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
   const moduleAddress = useAppSelector((state) => state.stakingHub.onboarding.moduleAddress) as Address;
   const isLoading = useAppSelector((store) => store.safe.executeTransaction.isFetching);
-  const signer = useEthersSigner();
+  const nodeAddressFromOnboarding = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
+  const nodeAddress = props?.nodeAddress ? props.nodeAddress : nodeAddressFromOnboarding;
 
   const includeNode = async () => {
     if (signer && selectedSafeAddress && moduleAddress && nodeAddress) {
@@ -37,7 +38,16 @@ export default function ConfigureNode() {
       )
         .unwrap()
         .then(() => {
-          dispatch(stakingHubActions.setOnboardingStep(14));
+          if (props?.onDone){
+            props.onDone();
+            dispatch(stakingHubActions.setNextOnboarding({
+              key: 'includedInModule',
+              nodeAddress: nodeAddress,
+              value: true,
+            }));
+          } else {
+            dispatch(stakingHubActions.setOnboardingStep(14));
+          }
         });
     }
   };

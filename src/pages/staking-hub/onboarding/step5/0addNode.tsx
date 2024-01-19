@@ -21,7 +21,7 @@ const StyledGrayButton = styled(GrayButton)`
   height: 39px;
 `;
 
-export default function AddNode(props?: { onDone?: Function}) {
+export default function AddNode(props?: { onDone?: Function, onBack?: Function }) {
   const dispatch = useAppDispatch();
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
 
@@ -118,7 +118,11 @@ export default function AddNode(props?: { onDone?: Function}) {
         <>
           <StyledGrayButton
             onClick={() => {
-              dispatch(stakingHubActions.setOnboardingStep(11));
+              if(props?.onBack) {
+                props.onBack();
+              } else {
+                dispatch(stakingHubActions.setOnboardingStep(11));
+              }
             }}
           >
             Back

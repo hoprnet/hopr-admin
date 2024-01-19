@@ -105,6 +105,21 @@ const stakingHubSlice = createSlice({
       state.config.needsUpdate.data = false;
       state.config.needsUpdate.strategy = null;
     },
+    setNextOnboarding: (state, action: {
+      payload: {
+        nodeAddress: string,
+        key: 'includedInModule' | 'registeredNodesInNetworkRegistry',
+        value: boolean
+    }}) => {
+      if( typeof(action?.payload?.nodeAddress) === 'string' &&
+          typeof(action?.payload?.value) === 'boolean'
+        ) {
+          const nodeAddress = action.payload.nodeAddress.toLocaleLowerCase();
+          if(state.nodes[nodeAddress]) {
+            state.nodes[nodeAddress][action.payload.key] = action.payload.value;
+          }
+      }
+    },
   },
   extraReducers: (builder) => {
     createAsyncReducer(builder);
