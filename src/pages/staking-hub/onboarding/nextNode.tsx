@@ -126,6 +126,7 @@ function Onboarding() {
               <AddNode
                 onDone={()=>{set_onboardingStep(2)}}
                 onBack={()=>{navigate('/staking/dashboard#node');}}
+                nodeAddress={nodeAddress}
               />
             }
             {onboardingStep === ONBOARDING_PAGES.CONFIGURE_NODE &&

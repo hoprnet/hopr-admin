@@ -21,7 +21,7 @@ const StyledGrayButton = styled(GrayButton)`
   height: 39px;
 `;
 
-export default function AddNode(props?: { onDone?: Function, onBack?: Function }) {
+export default function AddNode(props?: { onDone?: Function, onBack?: Function, nodeAddress?: string | null }) {
   const dispatch = useAppDispatch();
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
 
@@ -34,7 +34,7 @@ export default function AddNode(props?: { onDone?: Function, onBack?: Function }
   const account = useAppSelector((store) => store.web3.account);
   const signer = useEthersSigner();
   const [isLoading, set_isLoading] = useState(false);
-  const [address, set_address] = useState(HOPRdNodeAddressForOnboarding ? HOPRdNodeAddressForOnboarding : '');
+  const [address, set_address] = useState(HOPRdNodeAddressForOnboarding ? HOPRdNodeAddressForOnboarding : props?.nodeAddress ? props.nodeAddress : '');
   const nodeInNetworkRegistry = nodesAddedToSafe.includes(address.toLocaleLowerCase());
 
   const addDelegate = async () => {
