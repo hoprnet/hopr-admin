@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Address, parseUnits } from 'viem';
 import { MINIMUM_XDAI_TO_FUND_NODE } from '../../../config';
 import Section from '../../future-hopr-lib-components/Section';
@@ -52,9 +52,13 @@ const StyledCoinLabel = styled.p`
 export default function FundNode() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const nodeAddressFromParams = searchParams.get('nodeAddress');
+
   // injected states
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
-  const nodeAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
+  const nodeAddressFromTheStore = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
   const safeXDaiBalance = useAppSelector((store) => store.safe.balance.data.xDai.formatted) as string;
 
   // local states
@@ -63,6 +67,8 @@ export default function FundNode() {
   const [error, set_error] = useState<boolean>(false);
   const [transactionHash, set_transactionHash] = useState<Address>()
   const signer = useEthersSigner();
+
+  const nodeAddress = nodeAddressFromParams ? nodeAddressFromParams : nodeAddressFromTheStore;
 
   const createAndExecuteTx = async () => {
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
@@ -120,6 +126,22 @@ export default function FundNode() {
         }
       >
         <div>
+          <StyledForm>
+            <StyledInstructions>
+              <StyledText>NODE ADDRESS</StyledText>
+            </StyledInstructions>
+            <StyledInputGroup>
+              <StyledTextField
+                variant="outlined"
+                placeholder="-"
+                size="small"
+                style={{ width: '435px' }}
+                value={nodeAddress}
+                disabled
+                InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
+              />
+            </StyledInputGroup>
+          </StyledForm>
           <StyledForm>
             <StyledInstructions>
               <StyledText>SEND xDAI TO NODE</StyledText>

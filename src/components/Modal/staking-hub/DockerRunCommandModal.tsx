@@ -70,6 +70,11 @@ export const DockerRunCommandModal = (props: DockerRunCommandModalProps) => {
           </SIconButton>
         </TopBar>
         <SDialogContent>
+        <span style={{fontSize: '15px'}}>
+          <span style={{fontWeight: 500}}>YOUR_SECURITY_TOKEN:</span> Fill in a password that you will be using when connecting to your node<br/><br/>
+          <span style={{fontWeight: 500}}>YOUR_PUBLIC_IP:</span> Fill in the public IP of the machine on which the node will be reachable
+        </span>
+        <br/>
           <CodeContainer
             moduleAddress={moduleAddress}
             safeAddress={safeAddress}

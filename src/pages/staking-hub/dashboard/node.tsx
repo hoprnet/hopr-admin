@@ -7,7 +7,7 @@ import { useEthersSigner } from '../../../hooks';
 import { rounder } from '../../../utils/functions';
 
 
-import { Card, Chip, IconButton } from '@mui/material';
+import { Card, Chip, IconButton as MuiIconButton } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -15,6 +15,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import WalletIcon from '@mui/icons-material/Wallet';
 
 // HOPR components
 import Button from '../../../future-hopr-lib-components/Button';
@@ -24,6 +25,8 @@ import { formatDate } from '../../../utils/date';
 import TablePro from '../../../future-hopr-lib-components/Table/table-pro';
 import Tooltip from '../../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
 import { DockerRunCommandModal } from '../../../components/Modal/staking-hub/DockerRunCommandModal';
+import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
+import TrainIcon from '../../../future-hopr-lib-components/Icons/TrainIcon';
 
 //web3
 import { Address } from 'viem';
@@ -33,6 +36,16 @@ import { Dock } from '@mui/icons-material';
 
 const Container = styled.section`
     padding: 1rem;
+
+    h4.title {
+      font-weight: 700;
+      margin: 0;
+    }
+
+    h5.subtitle {
+      font-weight: 600;
+      margin: 0;
+    }
 `;
 
 const Grid = styled.div`
@@ -45,76 +58,13 @@ const Grid = styled.div`
     grid-row: 1/3;
   }
 
-  #node-balance {
-    grid-column: 3/4;
-  }
-
-  #earned-rewards {
-    grid-column: 4/5;
-  }
-
-  #node-strategy {
-    grid-column: 3/4;
-  }
-
-  #redeemed-tickets {
-    grid-column: 3/4;
-  }
-
-  #docker-command {
-    grid-column: 4/4;
-  }
-
   @media screen and (max-width: 1660px) {
     grid-template-columns: repeat(3, 1fr);
-    #node-details {
-      grid-column: 1/3;
-    }
-
-    #node-balance {
-      grid-column: 3/3;
-    }
-
-    #earned-rewards {
-      grid-column: 3/3;
-    }
-
-    #node-strategy {
-      grid-column: 1/2;
-    }
-
-    #redeemed-tickets {
-      grid-column: 1/2;
-    }
-
-    #docker-command {
-      grid-column: 3/3;
-    }
   }
 
   @media screen and (max-width: 1350px) {
     grid-template-columns: repeat(1, 1fr);
     #node-details {
-      grid-column: 1;
-    }
-
-    #node-balance {
-      grid-column: 1;
-    }
-
-    #earned-rewards {
-      grid-column: 1;
-    }
-
-    #node-strategy {
-      grid-column: 1;
-    }
-
-    #redeemed-tickets {
-      grid-column: 1;
-    }
-
-    #docker-command {
       grid-column: 1;
     }
   }
@@ -135,11 +85,6 @@ const CardContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-`;
-
-const CardTitle = styled.h4`
-  font-weight: 700;
-  margin: 0;
 `;
 
 const CardValue = styled.h5`
@@ -206,7 +151,7 @@ const NodeGraphic = styled.div`
   }
 `;
 
-const SquaredIconButton = styled(IconButton)`
+const SquaredIconButton = styled(MuiIconButton)`
   color: #414141;
   height: 0.75rem;
   padding: 0.75rem;
@@ -222,6 +167,7 @@ const SquaredIconButton = styled(IconButton)`
 type GrayCardProps = {
   id: string;
   title?: string;
+  subtitle?: string;
   value?: string;
   currency?: 'xDAI' | 'xHOPR' | 'wxHOPR' | string;
   chip?: {
@@ -239,6 +185,7 @@ type GrayCardProps = {
 const GrayCard = ({
   id,
   title,
+  subtitle,
   value,
   currency,
   chip,
@@ -249,7 +196,8 @@ const GrayCard = ({
     <StyledGrayCard id={id}>
       {(title || value) && (
         <CardContent>
-          {title && <CardTitle>{title}</CardTitle>}
+          {title && <h4 className='title'>{title}</h4>}
+          {subtitle && <h5 className='subtitle'>{subtitle}</h5>}
           {value && (
             <ValueAndCurrency>
               <CardValue>{value}</CardValue>
@@ -285,20 +233,35 @@ const GrayCard = ({
 const header = [
   {
     key: 'peerId',
-    name: 'Node Address registered in Safe',
+    name: 'Node Address',
     search: true,
   },
   {
     key: 'inNetworkRegistry',
-    name: 'In Network Registry',
+    name: 'NR',
     search: true,
     maxWidth: '160px',
+    tooltipHeader: 'Node registered by HOPR to the Network Registry',
+  },
+  {
+    key: 'inSafeRegistry',
+    name: 'SR',
+    search: true,
+    tooltipHeader: 'Node started and registered itself in the Safe Registry',
   },
   {
     key: 'isDelegate',
-    name: 'Is Delegate',
+    name: 'Delegate',
     search: true,
     maxWidth: '160px',
+    tooltipHeader: 'Node added as a safe delegate, so it can propose transactions to the safe owner'
+  },
+  {
+    key: 'includedInModule',
+    name: 'Config',
+    search: true,
+    maxWidth: '160px',
+    tooltipHeader: 'Node included in the Safe Module and configured'
   },
   {
     key: 'balance',
@@ -321,12 +284,45 @@ const header = [
   },
 ];
 
+const getOnboardingTooltip = (
+  onboardingNotFinished?: boolean,
+  inNetworkRegistry?: boolean,
+  isDelegate?: boolean,
+  includedInModule?: boolean,
+) => {
+  if(onboardingNotFinished) {
+    return (
+      <span>
+        Please finish the main<br/> ONBOARDING first
+      </span>
+    )
+  } else if (!inNetworkRegistry) {
+    return (
+      <span>
+        Node not registered on the network
+      </span>
+    )
+  }else if (!includedInModule || !isDelegate) {
+    return (
+      <span>
+        Finish ONBOARDING for this node
+      </span>
+    )
+  } else {
+    return (
+      <span>
+        Onboarding is DONE for this node
+      </span>
+    )
+  }
+}
+
 const NodeAdded = () => {
+  const navigate = useNavigate();
   const nodeHoprAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress);
+  const onboardingNotFinished = useAppSelector((store) => store.stakingHub.onboarding.notFinished);
   const nodeBalance = useAppSelector((store) => store.stakingHub.onboarding.nodeBalance.xDai.formatted);
   const nodes = useAppSelector((store) => store.stakingHub.nodes);
-  const registeredNodesInSafeRegistryParsed = useAppSelector((store) => store.stakingHub.safeInfo.data.registeredNodesInSafeRegistryParsed);
-  const registeredNodesInNetworkRegistryParsed = useAppSelector((store) => store.stakingHub.safeInfo.data.registeredNodesInNetworkRegistryParsed);
   const delegates = useAppSelector((store) => store.safe.delegates.data);
   const [chosenNode, set_chosenNode] = useState< string | null>(nodeHoprAddress);
 
@@ -342,7 +338,12 @@ const NodeAdded = () => {
   }, [chosenNode]);
 
   const delegatesArray = delegates?.results?.map(elem => elem.delegate.toLocaleLowerCase()) || [];
-  const parsedTableData = registeredNodesInSafeRegistryParsed?.map((node, index) => {
+  const nodesPeerIdArr = Object.keys(nodes);
+  const parsedTableData = nodesPeerIdArr.map((node, index) => {
+    const inNetworkRegistry = nodes[node].registeredNodesInNetworkRegistry;
+    const inSafeRegistry = nodes[node].registeredNodesInSafeRegistry
+    const isDelegate = delegatesArray.includes(node);
+    const includedInModule = nodes[node].includedInModule;
     return {
       peerId: <>
                 {node}
@@ -357,29 +358,54 @@ const NodeAdded = () => {
                   </SquaredIconButton>
                 </Link>
               </>,
-      inNetworkRegistry: registeredNodesInNetworkRegistryParsed.includes(node) ? 'Yes' : 'No',
-      isDelegate: delegatesArray.includes(node) ? 'Yes' : 'No',
+      inNetworkRegistry: inNetworkRegistry ? 'Yes' : 'No',
+      inSafeRegistry: inSafeRegistry ? 'Yes' : 'No',
+      isDelegate: isDelegate ? 'Yes' : 'No',
+      includedInModule: includedInModule ? 'Yes' : 'No',
       id: node,
-      balance: nodes[node]?.balanceFormatted ? `${rounder(nodes[node].balanceFormatted)} xDai` : '-',
+      balance: nodes[node]?.balanceFormatted ? `${rounder(nodes[node].balanceFormatted)} xDAI` : '-',
       search: node,
       actions: <>
-        <Tooltip
-          title='See details'
-        >
-          <SquaredIconButton
-            onClick={()=>{
-              window.scrollTo({
-                top: 0,
-                left: 0,
-                behavior: "smooth",
-              });
-              set_chosenNode(node);
-            }}
-
-          >
-            <VisibilityIcon />
-          </SquaredIconButton>
-        </Tooltip>
+        <IconButton
+          iconComponent={<TrainIcon />}
+          tooltipText={getOnboardingTooltip(
+            onboardingNotFinished,
+            inNetworkRegistry,
+            isDelegate,
+            includedInModule,
+          )}
+          onClick={()=>{
+            navigate(`/staking/onboarding/nextNode?nodeAddress=${node}`);
+          }}
+          disabled={onboardingNotFinished || (includedInModule && isDelegate)}
+        />
+        <IconButton
+          iconComponent={<VisibilityIcon />}
+          tooltipText={
+            <span>
+              Display node DETAILS at the top of page
+            </span>
+          }
+          onClick={()=>{
+            window.scrollTo({
+              top: 0,
+              left: 0,
+              behavior: "smooth",
+            });
+            set_chosenNode(node);
+          }}
+        />
+        <IconButton
+          iconComponent={<WalletIcon />}
+          tooltipText={
+            <span>
+              FUND node
+            </span>
+          }
+          onClick={()=>{
+            navigate(`/staking/fund-node?nodeAddress=${node}`);
+          }}
+        />
       </>
     }
   }) || [];
@@ -481,7 +507,7 @@ const NodeAdded = () => {
         <GrayCard
           id="node-balance"
           title="xDAI"
-          value={nodeBalance ? rounder(nodeBalance, 5) : '-'}
+          value={chosenNodeData?.balanceFormatted ? rounder(chosenNodeData?.balanceFormatted, 5) : '-'}
         />
         <GrayCard
           id="earned-rewards"
@@ -490,18 +516,27 @@ const NodeAdded = () => {
           currency="wxHOPR"
         />
         <GrayCard
-          id="redeemed-tickets"
-          title="Redeemed Tickets"
-          value="-"
-          currency="Ticket/wxHOPR"
-        />
-        <GrayCard
           id="docker-command"
-          title="Docker Run Command"
+          title="Docker run command"
+          subtitle="The command needed to start a Node on your machine of choice such as PC or VPS"
         >
           <DockerRunCommandModal
             normalButton
           />
+        </GrayCard>
+        <GrayCard
+          id="add-new-node"
+          title="Add new Node"
+          subtitle="Node will be added to the waitlist and once its is accepted, it will show up below"
+        >
+          <Button
+            title='add'
+            href={`https://cryptpad.fr/form/#/2/form/view/K3KSF-UAM-mLjUCs4w3Cruu4wZeOdwQFLNG1aYqrjbg/`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Add new Node
+          </Button>
         </GrayCard>
       </Grid>
       <br/>

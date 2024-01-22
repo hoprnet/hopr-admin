@@ -1,7 +1,7 @@
 import { ReactNode, useState } from 'react';
 import { useAppSelector } from '../../../store';
 import styled from '@emotion/styled';
-
+import { rounder } from '../../../utils/functions';
 
 import Chart from 'react-apexcharts';
 import { Card, Chip, IconButton } from '@mui/material';
@@ -161,7 +161,7 @@ const StakingScreen = () => {
           <GrayCard
             id="wxhopr-total-stake"
             title="wxHOPR Total Stake"
-            value={safeBalance.wxHopr.formatted ?? '-'}
+            value={rounder(safeBalance.wxHopr.formatted, 6) ?? '-'}
             // chip={{
             //   label: '+%/24h',
             //   color: 'success',
@@ -190,17 +190,13 @@ const StakingScreen = () => {
           <GrayCard
             id="xdai-in-safe"
             title="xDAI in Safe"
-            value={safeBalance.xDai.formatted ?? '-'}
+            value={rounder(safeBalance.xDai.formatted, 6) ?? '-'}
             buttons={[
               {
                 text: 'Buy xDAI',
                 onClick: () => {
                   set_openBuyModal(true);
                 },
-              },
-              {
-                text: 'Send to Node',
-                link: '/staking/fund-node',
               },
               {
                 text: 'Deposit',
@@ -239,7 +235,7 @@ const StakingScreen = () => {
             id="remaining-wxhopr-allowance"
             title="Remaining wxHOPR Allowance
             to Channels"
-            value={wxHoprAllowance ?? '-'}
+            value={wxHoprAllowance ? rounder(wxHoprAllowance) : '-'}
             currency="wxHOPR"
             buttons={[
               {

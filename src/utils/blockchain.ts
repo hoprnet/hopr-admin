@@ -1,4 +1,4 @@
-import { Address, encodeFunctionData, encodePacked } from 'viem';
+import { Address, encodeFunctionData, encodePacked, getAddress } from 'viem';
 import { erc20ABI } from 'wagmi';
 import { web3 } from '@hoprnet/hopr-sdk';
 
@@ -42,7 +42,8 @@ export const createSendNftTransactionData = (from: Address, to: Address, tokenId
   return transferData;
 };
 
-export const createIncludeNodeTransactionData = (encodedPermissions: unknown) => {
+export const createIncludeNodeTransactionData = (nodeAddress: string) => {
+  const encodedPermissions: unknown = encodeDefaultPermissions(getAddress(nodeAddress));
   const includeNodeData = encodeFunctionData({
     abi: web3.hoprNodeManagementModuleABI,
     functionName: 'includeNode',

@@ -32,6 +32,7 @@ import NodeAdded from './pages/staking-hub/dashboard/node';
 import SafeActions from './pages/staking-hub/dashboard/transactions';
 import NoNodeAdded from './pages/staking-hub/dashboard/noNodeAdded';
 import Onboarding from './pages/staking-hub/onboarding';
+import OnboardingNextNode from './pages/staking-hub/onboarding/nextNode';
 import Dashboard from './pages/staking-hub/dashboard';
 import StakewxHOPR from './pages/staking-hub/stakewxHOPR';
 import StakexDAI from './pages/staking-hub/stakexDai';
@@ -224,6 +225,14 @@ export const applicationMapStakingHub: ApplicationMapType = [
         loginNeeded: 'web3',
       },
       {
+        name: 'Onboarding',
+        path: 'onboarding/nextNode',
+        icon: <TrainIcon />,
+        element: <OnboardingNextNode />,
+        loginNeeded: 'web3',
+        inDrawer: false,
+      },
+      {
         name: 'Dashboard',
         path: 'dashboard',
         icon: <SpaceDashboardIcon />,
@@ -347,7 +356,7 @@ const LayoutEnhanced = () => {
   const location = useLocation();
   const apiEndpoint = searchParams.get('apiEndpoint');
   const apiToken = searchParams.get('apiToken');
-  const HOPRdNodeAddressForOnboarding = searchParams.get('HOPRdNodeAddressForOnboarding');
+  const HOPRdNodeAddressForOnboarding = searchParams.get('HOPRdNodeAddressForOnboarding'); //Address given in HOPRd: https://hub.hoprnet.org/staking/onboarding?HOPRdNodeAddressForOnboarding={my_address}
 
   useEffect(() => {
     if (environment === 'web3') {

@@ -97,7 +97,7 @@ function SafeDashboard() {
           functionName: 'addChannelsAndTokenTarget',
           args: [newConfig],
         });
-            
+
 
         dispatch(
           safeActionsAsync.createAndExecuteContractTransactionThunk({
@@ -116,13 +116,13 @@ function SafeDashboard() {
             set_updating(false);
           });
 
-      } else if (moduleAddress && updateStrategy === 'configWillLetOpenChannels') { 
+      } else if (moduleAddress && updateStrategy === 'configWillLetOpenChannels') {
         // GROUP 2: Safes cloned with old wrong config, but correct SC addresses
 
         const moduleAddressWithout0x = moduleAddress.slice(2).toLocaleLowerCase()
 
         const newConfig = `0x8d80ff0a0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000016b00${moduleAddressWithout0x}000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000243401cde8000000000000000000000000693bac5ce61c720ddc68533991ceb41199d8f8ae00${moduleAddressWithout0x}000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000243401cde8000000000000000000000000d4fdec44db9d44b8f2b6d529620f9c0c7066a2c100${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024a2450f89693bac5ce61c720ddc68533991ceb41199d8f8ae010103030303030303030303000000000000000000000000000000000000000000`;
-      
+
         dispatch(
           safeActionsAsync.createAndExecuteContractTransactionThunk({
             data: newConfig,
@@ -159,7 +159,7 @@ function SafeDashboard() {
         <GrayCard
           id="Update-Node-Configuration"
           title="Safe Configuration"
-          currency={needsUpdate ? <span style={{ color: 'red' }}>Update needed</span> : <span>Current version</span>}
+          currency={needsUpdate ? <span style={{ color: 'red' }}>Update needed</span> : <span style={{ color: 'darkGreen' }}>Current version</span>}
           buttons={[
             {
               text: 'Update',
@@ -172,19 +172,19 @@ function SafeDashboard() {
         <GrayCard
           id="transfer-nft"
           buttons={
-            communityNftIdInSafe ? 
+            communityNftIdInSafe ?
             [
               {
-                text: 'Withdraw NFT from Safe', 
+                text: 'Withdraw NFT from Safe',
                 link: '/staking/withdraw?token=nft',
               }
             ]
             :
             [
               {
-                disabled: communityNftIdInWallet === null || !!communityNftIdInSafe, 
-                pending: sendingNFT, 
-                text: 'Transfer NFT to Safe', 
+                disabled: communityNftIdInWallet === null || !!communityNftIdInSafe,
+                pending: sendingNFT,
+                text: 'Transfer NFT to Safe',
                 onClick: () => {
                   if (!walletClient) return;
                   if (walletAddress && selectedSafeAddress && communityNftIdInWallet !== null) {
@@ -197,7 +197,7 @@ function SafeDashboard() {
                       }),
                     )
                   }
-                }, 
+                },
               }
             ]
           }
@@ -207,7 +207,7 @@ function SafeDashboard() {
           </TransferNFT>
         </GrayCard>
       </div>
-        
+
 
       <p className='center'>In order to adjust the settings of your safe or transfer assets that are not supported by the HOPR Staking Hub use any of the below mentioned third party general purpose Safe user interfaces:</p>
       <div className='center'>
@@ -224,7 +224,7 @@ function SafeDashboard() {
                 OnChainDen.com
         </Button>
       </div>
-    
+
     </Container>
   );
 }

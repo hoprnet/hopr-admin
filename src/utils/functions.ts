@@ -31,10 +31,26 @@ export function copyStringToClipboard(input: string) {
 }
 
 export function rounder(value: number | string | null | undefined, charLength: number = 5) {
-  if(!value) return '-'
-  if(typeof(value) === 'string') value = parseFloat(value);
+  if(!value) return '-';
+  if(value == 0 ) return '0';
+  let splitted = ['',''];
+  if(typeof(value) === 'string'){
+    if(value.includes('.')){
+      splitted = value.split('.');
+    } else if(value.includes(',')) {
+      splitted = value.split(',');
+    } else {
+      splitted = [`${value}`, '0']
+    }
+    value = parseFloat(value);
+  } else {
+    splitted = [`${value}`, '0']
+  }
   let rez: string | null = null;
-  if (value >= 1000) {
+  if (value >= 99999999999999) {
+    let numLength = splitted[0].length;
+    rez = `${splitted[0][0]}.${splitted[0][1]}${splitted[0][2]}x10e${numLength-1}`;
+  } else if (value >= 1000) {
     let suffixes = ["", "k", "m", "b","t"];
     let suffixNum = Math.floor( (""+value).length/3 );
     let shortValue: number | null | string = NaN;
