@@ -1,16 +1,15 @@
 export const initialState = {
   status: {
     connected: false as boolean,
-    loading: false as boolean,
+    loading: true as boolean,
+    walletPresent: false as boolean,
   },
   account: null as string | null,
-  wallet: null as string | null,
   communityNftId: null as number | null,
   communityNftTransferring: false as boolean,
   chainId: null as string | null,
   chain: null as string | null,
   blockNumber: '',
-  walletPresent: false as boolean,
   modalOpen: false as boolean,
   balance: {
     xDai: {

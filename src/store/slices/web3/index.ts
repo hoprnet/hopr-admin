@@ -23,14 +23,12 @@ const web3Slice = createSlice({
     setChain(state, action) {
       state.chain = action.payload ? action.payload : null;
     },
-    setWallet(state, action) {
-      state.wallet = action.payload ? action.payload : null;
-    },
     setModalOpen(state, action) {
       state.modalOpen = action.payload ? action.payload : false;
     },
     setWalletPresent(state, action) {
-      state.walletPresent = action.payload;
+      state.status.walletPresent = action.payload;
+      state.status.loading = false;
     },
     setHasCommunityNftId(state, action) {
       state.communityNftId = action.payload;

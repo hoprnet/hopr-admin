@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
 
 // wagmi
@@ -7,12 +8,15 @@ import { useAccount, useBalance, useNetwork } from 'wagmi';
 // Redux
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActions } from '../../store/slices/safe';
+import { appActions } from '../../store/slices/app';
 import { web3Actions, web3ActionsAsync } from '../../store/slices/web3';
 import { stakingHubActions, stakingHubActionsAsync } from '../../store/slices/stakingHub';
 
 export default function WagmiUpdater() {
+ // const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const nodeHoprAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress); // Staking Hub
+  const addressInStore = useAppSelector((store) => store.web3.account);
 
   // Wallet Account
   const {
@@ -22,21 +26,35 @@ export default function WagmiUpdater() {
 
   const { chain } = useNetwork();
 
+  // Account change in Wallet
   useEffect(() => {
-    dispatch(web3Actions.setConnected(isConnected));
-  }, [isConnected]);
+    console.log('_',{
+      isConnected, addressInStore, address, same: addressInStore === address
+    })
+    if(addressInStore === address) return;
 
-  useEffect(() => {
-    dispatch(web3Actions.setAccount(address));
-    if (address) {
-      dispatch(web3ActionsAsync.getCommunityNftsOwnedByWallet({ account: address }));
+    if (isConnected && address) {
+      //reset whole app
+      dispatch(appActions.resetState());
+      dispatch(web3Actions.resetState());
+      dispatch(safeActions.resetState());
       dispatch(stakingHubActions.resetStateWithoutMagicLinkForOnboarding());
+
+      //fill the store
+      dispatch(web3Actions.setAccount(address));
+      dispatch(web3Actions.setConnected(isConnected));
+      dispatch(web3ActionsAsync.getCommunityNftsOwnedByWallet({ account: address }));
       dispatch(stakingHubActionsAsync.getHubSafesByOwnerThunk(address));
+
+      if(chain){
+        dispatch(web3Actions.setChain(chain.name));
+        dispatch(web3Actions.setChainId(chain.id));
+      }
     }
   }, [isConnected, address]);
 
   useEffect(() => {
-    if (chain) {
+    if (isConnected && chain) {
       dispatch(web3Actions.setChain(chain.name));
       dispatch(web3Actions.setChainId(chain.id));
     }
