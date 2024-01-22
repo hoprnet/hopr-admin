@@ -28,9 +28,6 @@ export default function WagmiUpdater() {
 
   // Account change in Wallet
   useEffect(() => {
-    console.log('_',{
-      isConnected, addressInStore, address, same: addressInStore === address
-    })
     if(addressInStore === address) return;
 
     if (isConnected && address) {
