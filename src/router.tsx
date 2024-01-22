@@ -460,7 +460,7 @@ const LayoutEnhanced = () => {
 
   const handleDisconnectMM = () => {
     disconnect();
-    dispatch(appActions.resetSafeState());
+    dispatch(appActions.resetState());
     dispatch(web3Actions.resetState());
     dispatch(safeActions.resetState());
     dispatch(stakingHubActions.resetState());
