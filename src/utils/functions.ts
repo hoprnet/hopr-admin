@@ -30,7 +30,7 @@ export function copyStringToClipboard(input: string) {
   document.body.removeChild(el);
 }
 
-export function rounder(value: number | string | null | undefined, charLength: number = 5) {
+export function rounder(value: number | string | null | undefined, charLength: number = 6) {
   if(!value) return '-';
   if(value == 0 ) return '0';
   let splitted = ['',''];
@@ -52,12 +52,12 @@ export function rounder(value: number | string | null | undefined, charLength: n
     rez = `${splitted[0][0]}.${splitted[0][1]}${splitted[0][2]}x10e${numLength-1}`;
   } else if (value >= 1000) {
     let suffixes = ["", "k", "m", "b","t"];
-    let suffixNum = Math.floor( (""+value).length/3 );
+    let suffixNum = Math.floor( (""+splitted[0]).length/3 );
     let shortValue: number | null | string = NaN;
-      for (var precision = 2; precision >= 1; precision--) {
-          shortValue = parseFloat( (suffixNum != 0 ? (value / Math.pow(1000,suffixNum) ) : value).toPrecision(precision));
-          var dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g,'');
-          if (dotLessShortValue.length <= 2) { break; }
+      for (let precision = 2; precision >= 1; precision--) {
+        shortValue = parseFloat( (suffixNum != 0 ? (value / Math.pow(1000,suffixNum) ) : value).toPrecision(precision));
+        let dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g,'');
+        if (dotLessShortValue.length <= 2) { break; }
       }
       if (shortValue && shortValue % 1 != 0) shortValue = shortValue.toFixed(1);
       rez = shortValue+suffixes[suffixNum];

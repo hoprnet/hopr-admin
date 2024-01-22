@@ -161,7 +161,7 @@ const StakingScreen = () => {
           <GrayCard
             id="wxhopr-total-stake"
             title="wxHOPR Total Stake"
-            value={rounder(safeBalance.wxHopr.formatted, 6) ?? '-'}
+            value={rounder('42711.34887333818539', 6) ?? '-'}
             // chip={{
             //   label: '+%/24h',
             //   color: 'success',
