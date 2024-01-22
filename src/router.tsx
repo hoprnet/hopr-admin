@@ -449,12 +449,6 @@ const LayoutEnhanced = () => {
     dispatch(stakingHubActions.setNodeAddressProvidedByMagicLink(HOPRdNodeAddressForOnboarding));
   }, [HOPRdNodeAddressForOnboarding]);
 
-  useEffect(() => {
-    if(environment === 'web3' && !(location.pathname === '/' || location.pathname === '/privacy-notice' || location.pathname === '/tos')){
-      console.log('location', location)
-    }
-  }, [environment, location]);
-
   const showInfoBar = () => {
     if (
       environment === 'web3' &&

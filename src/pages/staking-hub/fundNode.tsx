@@ -13,6 +13,9 @@ import { FeedbackTransaction } from '../../components/FeedbackTransaction';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActionsAsync } from '../../store/slices/safe';
 
+// HOPR Components
+import StartOnboarding from '../../components/Modal/staking-hub/StartOnboarding';
+
 const StyledForm = styled.div`
   width: 100%;
   display: flex;
@@ -109,6 +112,7 @@ export default function FundNode() {
       fullHeightMin
       lightBlue
     >
+      <StartOnboarding />
       <StepContainer
         title="FUND YOUR NODE WITH xDAI"
         image={{
