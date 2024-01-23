@@ -107,43 +107,50 @@ export default function NetworkOverlay() {
     }
   }
 
-  return (
-    <>
-      {loading && (
-        <Overlay
-          className={'OverlayWrongNetwork'}
+
+  if(loading) {
+    return (
+      <Overlay
+        className={'OverlayWrongNetwork'}
+      >
+        <style>{css}</style>
+        <CircularProgress/>
+      </Overlay>
+    )
+  }
+
+  if(!isConnected){
+    return (
+      <Overlay
+        className={'OverlayWrongNetwork'}
+      >
+        <style>{css}</style>
+        <div>You do not have your wallet connected</div>
+        <Button
+          onClick={()=>{dispatch(web3Actions.setModalOpen(true))}}
         >
-          <style>{css}</style>
-          <CircularProgress/>
-        </Overlay>
-      )}
-      {!loading && !isConnected && (
-        <Overlay
-          className={'OverlayWrongNetwork'}
+          CONNECT WALLET
+        </Button>
+      </Overlay>
+    )
+  }
+
+  if(chainId && chainId?.toString() !== '100'){
+    return(
+      <Overlay
+        className={'OverlayWrongNetwork'}
+      >
+        <style>{css}</style>
+        {chain && <div>You are connected to {getNetworkName(chainId)}</div>}
+        <div>Staking Hub is designed to work on <span className='bold'>GNOSIS Chain</span></div>
+        <Button
+          onClick={switchChain}
         >
-          <style>{css}</style>
-          <div>You do not have your wallet connected</div>
-          <Button
-            onClick={()=>{dispatch(web3Actions.setModalOpen(true))}}
-          >
-            CONNECT WALLET
-          </Button>
-        </Overlay>
-      )}
-      {isConnected && chainId && chainId?.toString() !== '100' && (
-        <Overlay
-          className={'OverlayWrongNetwork'}
-        >
-          <style>{css}</style>
-          {chain && <div>You are connected to {getNetworkName(chainId)}</div>}
-          <div>Staking Hub is designed to work on <span className='bold'>GNOSIS Chain</span></div>
-          <Button
-            onClick={switchChain}
-          >
-            Switch network to GNOSIS
-          </Button>
-        </Overlay>
-      )}
-    </>
-  );
+          Switch network to GNOSIS
+        </Button>
+      </Overlay>
+    )
+  }
+
+  return <></>
 }
