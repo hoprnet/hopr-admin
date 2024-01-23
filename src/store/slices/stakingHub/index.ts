@@ -6,47 +6,12 @@ const stakingHubSlice = createSlice({
   name: 'stakingHub',
   initialState,
   reducers: {
-    resetState: (state) => {
-      state.safes.data = [];
-      state.safes.isFetching = false;
-      state.onboarding = {
-        step: 0,
-        nodeAddress: null,
-        nodeAddressProvidedByMagicLink: null,
-        safeAddress: null,
-        moduleAddress: null,
-        notFinished: false,
-        userIsInOnboarding: false,
-        nodeXDaiBalance: null,
-        isFetching: false,
-        notStarted: null,
-        modalToSartOnboardingDismissed: false,
-        nodeBalance: {
-          xDai: {
-            value: null,
-            formatted: null,
-          },
-        }
-      };
-    },
+    resetState: () => initialState,
     resetStateWithoutMagicLinkForOnboarding: (state) => {
-      state.safes.data = [];
-      state.safes.isFetching = false;
-      state.onboarding.step= 0;
-      state.onboarding.nodeAddress= null;
-      state.onboarding.safeAddress=null;
-      state.onboarding.moduleAddress= null;
-      state.onboarding.notFinished= false;
-      state.onboarding.userIsInOnboarding= false;
-      state.onboarding.nodeXDaiBalance= null;
-      state.onboarding.isFetching= false;
-      state.onboarding.notStarted= null;
-      state.onboarding.nodeBalance= {
-        xDai: {
-          value: null,
-          formatted: null,
-        },
-      }
+      const nodeAddressProvidedByMagicLink = state.onboarding.nodeAddressProvidedByMagicLink;
+      const initialStateCopy = JSON.parse(JSON.stringify(initialState));
+      if (nodeAddressProvidedByMagicLink) state.onboarding.nodeAddressProvidedByMagicLink = nodeAddressProvidedByMagicLink;
+      return initialStateCopy;
     },
     resetOnboardingState: (state) => {
       state.onboarding = {

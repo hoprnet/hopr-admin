@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouteObject, useSearchParams, Navigate, useLocation } from 'react-router-dom';
+import { createBrowserRouter, RouteObject, useSearchParams, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { environment } from '../config';
 import { useDisconnect } from 'wagmi';
 
@@ -345,7 +345,9 @@ function createApplicationMap() {
 export const applicationMap: ApplicationMapType = createApplicationMap();
 
 const LayoutEnhanced = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const location = useLocation();
   const { disconnect } = useDisconnect();
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const web3Connected = useAppSelector((store) => store.web3.status.connected);
@@ -353,7 +355,6 @@ const LayoutEnhanced = () => {
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [searchParams] = useSearchParams();
-  const location = useLocation();
   const apiEndpoint = searchParams.get('apiEndpoint');
   const apiToken = searchParams.get('apiToken');
   const HOPRdNodeAddressForOnboarding = searchParams.get('HOPRdNodeAddressForOnboarding'); //Address given in HOPRd: https://hub.hoprnet.org/staking/onboarding?HOPRdNodeAddressForOnboarding={my_address}
@@ -460,10 +461,11 @@ const LayoutEnhanced = () => {
 
   const handleDisconnectMM = () => {
     disconnect();
-    dispatch(appActions.resetSafeState());
+    dispatch(appActions.resetState());
     dispatch(web3Actions.resetState());
     dispatch(safeActions.resetState());
     dispatch(stakingHubActions.resetState());
+    navigate('/');
   };
 
   const drawerFunctionItems: ApplicationMapType = [
@@ -496,7 +498,7 @@ const LayoutEnhanced = () => {
       drawerLoginState={{
         node: nodeConnected,
         web3: web3Connected,
-        safe: !!safeAddress,
+        safe: !!safeAddress && web3Connected,
       }}
       className={environment}
       drawerType={environment === 'web3' ? 'blue' : undefined}

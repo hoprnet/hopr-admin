@@ -10,6 +10,7 @@ import { stakingHubActions, stakingHubActionsAsync } from '../../../store/slices
 
 // HOPR Components
 import NetworkOverlay from '../../../components/NetworkOverlay';
+import StartOnboarding from '../../../components/Modal/staking-hub/StartOnboarding';
 
 // Mui
 import Paper from '@mui/material/Paper/Paper';
@@ -123,6 +124,7 @@ function Dashboard() {
 
   return (
     <DashboardContainer className="DashboardContainer">
+      <StartOnboarding />
       <SPaper>
         <Tabs value={tabIndex} onChange={handleTabChange} aria-label="basic tabs example">
           <Tab label="STAKING" {...a11yProps(0)} />

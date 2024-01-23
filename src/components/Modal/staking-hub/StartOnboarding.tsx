@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../store';
 import { DialogTitle } from '@mui/material';
 import Button from '../../../future-hopr-lib-components/Button';
@@ -29,6 +29,7 @@ type WithdrawModalProps = {
 const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const notFinished = useAppSelector((state) => state.stakingHub.onboarding.notFinished);
   const notStarted = useAppSelector((state) => state.stakingHub.onboarding.notStarted);
   const modalToSartOnboardingDismissed = useAppSelector((state) => state.stakingHub.onboarding.modalToSartOnboardingDismissed);
@@ -47,6 +48,7 @@ const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
   const handleCloseModal = () => {
     set_openModal(false);
     dispatch(stakingHubActions.dismissModalToSartOnboarding());
+    if(location.pathname !== '/') navigate('/');
   };
 
   return (

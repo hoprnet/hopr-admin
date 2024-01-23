@@ -5,10 +5,14 @@ import 'wagmi/window';
 import { getNetworkName } from '../../utils/getNetworkName';
 
 // Store
-import { useAppSelector } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { web3Actions } from '../../store/slices/web3';
 
 // HOPR Components
 import Button from '../../future-hopr-lib-components/Button';
+
+// MUI
+import { CircularProgress } from '@mui/material';
 
 const Overlay = styled.div`
   transition: margin-left 0.4s ease-out;
@@ -53,7 +57,7 @@ const css = `
       margin-left: 240px;
       width: calc( 100% - 240px - 32px);
     }
-  
+
     .drawerClosed .OverlayWrongNetwork {
       margin-left: 56px;
       width: calc( 100% - 56px - 32px);
@@ -63,8 +67,10 @@ const css = `
 `
 
 export default function NetworkOverlay() {
+  const dispatch = useAppDispatch();
   const chainId = useAppSelector((store) => store.web3.chainId);
   const isConnected = useAppSelector((store) => store.web3.status.connected);
+  const loading = useAppSelector((store) => store.web3.status.loading);
 
   const { chain } = useNetwork()
 
@@ -101,22 +107,50 @@ export default function NetworkOverlay() {
     }
   }
 
-  return (
-    <>
-      {isConnected && chainId?.toString() !== '100' && (
-        <Overlay
-          className={'OverlayWrongNetwork'}
+
+  if(loading) {
+    return (
+      <Overlay
+        className={'OverlayWrongNetwork'}
+      >
+        <style>{css}</style>
+        <CircularProgress/>
+      </Overlay>
+    )
+  }
+
+  if(!isConnected){
+    return (
+      <Overlay
+        className={'OverlayWrongNetwork'}
+      >
+        <style>{css}</style>
+        <div>You do not have your wallet connected</div>
+        <Button
+          onClick={()=>{dispatch(web3Actions.setModalOpen(true))}}
         >
-          <style>{css}</style>
-          {chain && <div>You are connected to {getNetworkName(chainId)}</div>}
-          <div>Staking Hub is designed to work on <span className='bold'>GNOSIS Chain</span></div>
-          <Button
-            onClick={switchChain}
-          >
-            Switch network to GNOSIS
-          </Button>
-        </Overlay>
-      )}
-    </>
-  );
+          CONNECT WALLET
+        </Button>
+      </Overlay>
+    )
+  }
+
+  if(chainId && parseInt(chainId) !== 100){
+    return(
+      <Overlay
+        className={'OverlayWrongNetwork'}
+      >
+        <style>{css}</style>
+        {chain && <div>You are connected to {getNetworkName(chainId)}</div>}
+        <div>Staking Hub is designed to work on <span className='bold'>GNOSIS Chain</span></div>
+        <Button
+          onClick={switchChain}
+        >
+          Switch network to GNOSIS
+        </Button>
+      </Overlay>
+    )
+  }
+
+  return <></>
 }

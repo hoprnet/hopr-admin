@@ -207,11 +207,14 @@ const Drawer = ({
                         <StyledListItemButton
                           component={item.onClick ? 'button' : Link}
                           to={
-                            item.path.includes('http')
+                            item.path !== 'function'?
+                              item.path.includes('http')
                               ? item.path
                               : item.overwritePath
                                 ? item.overwritePath
                                 : `${group.path}/${item.path}${searchParams ?? ''}`
+                              :
+                              undefined
                           }
                           target={item.path.includes('http') ? '_blank' : undefined}
                           rel={item.path.includes('http') ? 'noopener noreferrer' : undefined}

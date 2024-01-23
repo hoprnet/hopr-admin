@@ -19,6 +19,7 @@ const store = configureStore({
     app: appSlice,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(websocketMiddleware),
+  devTools: process.env.NODE_ENV === 'production' ? false : { maxAge: 5000 },
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
