@@ -135,7 +135,7 @@ export default function NetworkOverlay() {
     )
   }
 
-  if(chainId && chainId?.toString() !== '100'){
+  if(chainId && parseInt(chainId, 10) !== 100){
     return(
       <Overlay
         className={'OverlayWrongNetwork'}
