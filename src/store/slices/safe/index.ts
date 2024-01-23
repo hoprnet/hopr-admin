@@ -7,14 +7,7 @@ const safeSlice = createSlice({
   name: 'safe',
   initialState,
   reducers: {
-    resetState: (state) => {
-      state.selectedSafeAddress.data = null;
-      state.allTransactions.data = null;
-      state.pendingTransactions.data = null;
-      state.safesByOwner.data = [];
-      state.info.data = null;
-      state.delegates.data = null;
-    },
+    resetState: () => initialState,
     setSelectedSafe(state, action: PayloadAction<string>) {
       state.selectedSafeAddress.data = action.payload;
     },

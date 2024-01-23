@@ -21,7 +21,7 @@ const StyledGrayButton = styled(GrayButton)`
   height: 39px;
 `;
 
-export default function AddNode() {
+export default function AddNode(props?: { onDone?: Function, onBack?: Function, nodeAddress?: string | null }) {
   const dispatch = useAppDispatch();
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
 
@@ -34,7 +34,7 @@ export default function AddNode() {
   const account = useAppSelector((store) => store.web3.account);
   const signer = useEthersSigner();
   const [isLoading, set_isLoading] = useState(false);
-  const [address, set_address] = useState(HOPRdNodeAddressForOnboarding ? HOPRdNodeAddressForOnboarding : '');
+  const [address, set_address] = useState(HOPRdNodeAddressForOnboarding ? HOPRdNodeAddressForOnboarding : props?.nodeAddress ? props.nodeAddress : '');
   const nodeInNetworkRegistry = nodesAddedToSafe.includes(address.toLocaleLowerCase());
 
   const addDelegate = async () => {
@@ -52,8 +52,12 @@ export default function AddNode() {
         }),
       ).unwrap()
         .then(() => {
-          dispatch(stakingHubActions.setOnboardingNodeAddress(address));
-          dispatch(stakingHubActions.setOnboardingStep(13));
+          if (props?.onDone){
+            props.onDone();
+          } else {
+            dispatch(stakingHubActions.setOnboardingNodeAddress(address));
+            dispatch(stakingHubActions.setOnboardingStep(13));
+          }
         })
         .catch(e => {
           console.log('ERROR when adding a delegate to Safe:', e)
@@ -82,7 +86,7 @@ export default function AddNode() {
 
   return (
     <StepContainer
-      title="ADD NODE"
+      title="ADD NODE AS A DELEGATE"
       description={
         <>
           Please enter and confirm your node address. This will initiate a transaction which you will need to sign. If you do not have your node address follow the instructions here for{' '}
@@ -114,7 +118,11 @@ export default function AddNode() {
         <>
           <StyledGrayButton
             onClick={() => {
-              dispatch(stakingHubActions.setOnboardingStep(11));
+              if(props?.onBack) {
+                props.onBack();
+              } else {
+                dispatch(stakingHubActions.setOnboardingStep(11));
+              }
             }}
           >
             Back

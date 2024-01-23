@@ -117,6 +117,7 @@ function SafeDashboard() {
           .finally(() => {
             set_updating(false);
           });
+
       } else if (moduleAddress && updateStrategy === 'configWillLetOpenChannels') {
         // GROUP 2: Safes cloned with old wrong config, but correct SC addresses
 
@@ -154,7 +155,7 @@ function SafeDashboard() {
         const newConfig = `0x693bac5ce61c720ddc68533991ceb41199d8f8ae010103030303030303030303`;
 
         const addChannelsAndTokenTarget = encodeFunctionData({
-          abi: nodeManagementModuleAbi,
+          abi: web3.hoprNodeManagementModuleABI,
           functionName: 'addChannelsAndTokenTarget',
           args: [newConfig],
         });
@@ -207,23 +208,23 @@ function SafeDashboard() {
         <GrayCard
           id="Update-Node-Configuration"
           title="Safe Configuration"
-          currency={needsUpdate ? <span style={{ color: 'red' }}>Update needed</span> : <span>Current version</span>}
-        >
-          <SafeTransactionButton
-            executeOptions={{
-              pending: updating,
-              disabled: !needsUpdate,
-              onClick: executeUpdateConfig,
-              buttonText: 'Update',
-            }}
-            signOptions={{
-              pending: updating,
-              disabled: !needsUpdate,
-              onClick: signUpdateConfig,
-              buttonText: 'Sign update',
-            }}
-            safeInfo={safeInfo}
-          />
+          currency={needsUpdate ? <span style={{ color: 'red' }}>Update needed</span> : <span style={{ color: 'darkGreen' }}>Current version</span>}
+          >
+            <SafeTransactionButton
+              executeOptions={{
+                pending: updating,
+                disabled: !needsUpdate,
+                onClick: executeUpdateConfig,
+                buttonText: 'Update',
+              }}
+              signOptions={{
+                pending: updating,
+                disabled: !needsUpdate,
+                onClick: signUpdateConfig,
+                buttonText: 'Sign update',
+              }}
+              safeInfo={safeInfo}
+            />
         </GrayCard>
         <GrayCard
           id="transfer-nft"
@@ -263,6 +264,7 @@ function SafeDashboard() {
         </GrayCard>
       </div>
 
+
       <p className="center">
         In order to adjust the settings of your safe or transfer assets that are not supported by the HOPR Staking Hub
         use any of the below mentioned third party general purpose Safe user interfaces:
@@ -271,6 +273,7 @@ function SafeDashboard() {
         <Button href={`https://app.safe.global/home?safe=gno:${selectedSafeAddress}`}>safe.global</Button>
         <Button href={`https://app.onchainden.com/safes/gnosis:${selectedSafeAddress}`}>OnChainDen.com</Button>
       </div>
+
     </Container>
   );
 }

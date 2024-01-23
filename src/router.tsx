@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouteObject, useSearchParams, Navigate, useLocation } from 'react-router-dom';
+import { createBrowserRouter, RouteObject, useSearchParams, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { environment } from '../config';
 import { useDisconnect } from 'wagmi';
 
@@ -23,7 +23,7 @@ import PeersPage from './pages/node/peers';
 import TicketsPage from './pages/node/tickets';
 import ChannelsPageIncoming from './pages/node/channelsIncoming';
 import ChannelsPageOutgoing from './pages/node/channelsOutgoing';
-import MetricsPage from './pages/node/metrics';
+//import MetricsPage from './pages/node/metrics';
 import ConfigurationPage from './pages/node/configuration';
 import WrapperPage from './pages/staking-hub/wrapper';
 import StakingScreen from './pages/staking-hub/dashboard/staking';
@@ -32,6 +32,7 @@ import NodeAdded from './pages/staking-hub/dashboard/node';
 import SafeActions from './pages/staking-hub/dashboard/transactions';
 import NoNodeAdded from './pages/staking-hub/dashboard/noNodeAdded';
 import Onboarding from './pages/staking-hub/onboarding';
+import OnboardingNextNode from './pages/staking-hub/onboarding/nextNode';
 import Dashboard from './pages/staking-hub/dashboard';
 import StakewxHOPR from './pages/staking-hub/stakewxHOPR';
 import StakexDAI from './pages/staking-hub/stakexDai';
@@ -121,13 +122,13 @@ export const applicationMapNode: ApplicationMapType = [
         element: <TicketsPage />,
         loginNeeded: 'node',
       },
-      {
-        name: 'METRICS',
-        path: 'metrics',
-        icon: <BarChartIcon />,
-        element: <MetricsPage />,
-        loginNeeded: 'node',
-      },
+      // {
+      //   name: 'METRICS',
+      //   path: 'metrics',
+      //   icon: <BarChartIcon />,
+      //   element: <MetricsPage />,
+      //   loginNeeded: 'node',
+      // },
       {
         name: 'CONFIGURATION',
         path: 'configuration',
@@ -222,6 +223,14 @@ export const applicationMapStakingHub: ApplicationMapType = [
         icon: <TrainIcon />,
         element: <Onboarding />,
         loginNeeded: 'web3',
+      },
+      {
+        name: 'Onboarding',
+        path: 'onboarding/nextNode',
+        icon: <TrainIcon />,
+        element: <OnboardingNextNode />,
+        loginNeeded: 'web3',
+        inDrawer: false,
       },
       {
         name: 'Dashboard',
@@ -336,7 +345,9 @@ function createApplicationMap() {
 export const applicationMap: ApplicationMapType = createApplicationMap();
 
 const LayoutEnhanced = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const location = useLocation();
   const { disconnect } = useDisconnect();
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const web3Connected = useAppSelector((store) => store.web3.status.connected);
@@ -344,10 +355,9 @@ const LayoutEnhanced = () => {
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [searchParams] = useSearchParams();
-  const location = useLocation();
   const apiEndpoint = searchParams.get('apiEndpoint');
   const apiToken = searchParams.get('apiToken');
-  const HOPRdNodeAddressForOnboarding = searchParams.get('HOPRdNodeAddressForOnboarding');
+  const HOPRdNodeAddressForOnboarding = searchParams.get('HOPRdNodeAddressForOnboarding'); //Address given in HOPRd: https://hub.hoprnet.org/staking/onboarding?HOPRdNodeAddressForOnboarding={my_address}
 
   useEffect(() => {
     if (environment === 'web3') {
@@ -451,10 +461,11 @@ const LayoutEnhanced = () => {
 
   const handleDisconnectMM = () => {
     disconnect();
-    dispatch(appActions.resetSafeState());
+    dispatch(appActions.resetState());
     dispatch(web3Actions.resetState());
     dispatch(safeActions.resetState());
     dispatch(stakingHubActions.resetState());
+    navigate('/');
   };
 
   const drawerFunctionItems: ApplicationMapType = [
@@ -483,11 +494,11 @@ const LayoutEnhanced = () => {
       drawer
       webapp
       drawerItems={applicationMap}
-      drawerFunctionItems={drawerFunctionItems}
+      drawerFunctionItems={environment === 'web3' ? drawerFunctionItems : undefined}
       drawerLoginState={{
         node: nodeConnected,
         web3: web3Connected,
-        safe: !!safeAddress,
+        safe: !!safeAddress && web3Connected,
       }}
       className={environment}
       drawerType={environment === 'web3' ? 'blue' : undefined}

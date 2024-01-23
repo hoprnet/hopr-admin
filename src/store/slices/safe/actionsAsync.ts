@@ -682,6 +682,8 @@ const createAndExecuteSafeTransactionThunk = createAsyncThunk<
 
       // error is not serializable
       return rejectWithValue(JSON.stringify(e));
+    } finally {
+      dispatch(safeActionsFetching.setExecuteTransactionFetching(false));
     }
   },
   { condition: (_payload, { getState }) => {
@@ -707,6 +709,7 @@ const createAndExecuteSafeContractTransactionThunk = createAsyncThunk<
   dispatch,
 }) => {
   try {
+
     const {
       smartContractAddress,
       data,
@@ -854,7 +857,7 @@ const addSafeDelegateThunk = createAsyncThunk<
       dispatch(
         getSafeDelegatesThunk({
           signer: payload.signer,
-          options: { ...payload.options },
+          options: { safeAddress: payload.options.safeAddress },
         }),
       );
 
@@ -1274,6 +1277,9 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     state.confirmTransaction.isFetching = false;
   });
   // ExecuteTransaction
+  builder.addCase(executePendingTransactionThunk.pending, (state) => {
+    state.executeTransaction.isFetching = true;
+  });
   builder.addCase(executePendingTransactionThunk.fulfilled, (state) => {
     state.executeTransaction.isFetching = false;
   });

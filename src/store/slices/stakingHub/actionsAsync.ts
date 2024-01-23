@@ -16,6 +16,7 @@ import { gql } from 'graphql-request';
 import { stakingHubActions } from '.';
 import { safeActionsAsync } from '../safe';
 import { NodePayload } from './initialState';
+import { formatEther } from 'viem';
 
 const getHubSafesByOwnerThunk = createAsyncThunk<
   {
@@ -97,13 +98,14 @@ const registerNodeAndSafeToNRThunk = createAsyncThunk<
 
 const getSubgraphDataThunk = createAsyncThunk<
   SubgraphParsedOutput,
-  { safeAddress: string; moduleAddress: string },
+  { safeAddress: string; moduleAddress: string, browserClient: PublicClient },
   { state: RootState }
 >(
   'stakingHub/getSubgraphData',
   async ({
     safeAddress,
     moduleAddress,
+    browserClient
   }, {
     rejectWithValue,
     dispatch,
@@ -185,8 +187,6 @@ const getSubgraphDataThunk = createAsyncThunk<
       }
     }`
 
-
-
     try {
       const resp = await fetch(STAKING_V2_SUBGRAPH, {
         method: 'POST',
@@ -200,10 +200,19 @@ const getSubgraphDataThunk = createAsyncThunk<
       if (json.nodeManagementModules.length > 0) output.module = json.nodeManagementModules[0];
       if (json.balances.length > 0) output.overall_staking_v2_balances = json.balances[0];
 
-      if (output.registeredNodesInNetworkRegistry?.length > 0) {
-        let nodeAddress = output.registeredNodesInNetworkRegistry[0].node.id;
-        dispatch(getNodeDataThunk(nodeAddress));
-      }
+      console.log('output.registeredNodesInNetworkRegistry', output.registeredNodesInNetworkRegistry);
+      console.log('output.registeredNodesInSafeRegistry', output.registeredNodesInSafeRegistry);
+
+      let allNodes = [...output.registeredNodesInNetworkRegistry, ...output.registeredNodesInSafeRegistry];
+      allNodes = allNodes.filter(function(item, pos) {
+        return allNodes.indexOf(item) == pos;
+      })
+
+      console.log('allNodes found', allNodes);
+      allNodes.forEach((safeRegNode: {node: { id: string}}) => {
+        let nodeAddress = safeRegNode.node.id;
+        dispatch(getNodeDataThunk({nodeAddress, browserClient}));
+      })
 
       console.log('SubgraphParsedOutput', output);
       return output;
@@ -416,6 +425,7 @@ const getOnboardingDataThunk = createAsyncThunk<
     getSubgraphDataThunk({
       safeAddress: payload.safeAddress,
       moduleAddress,
+      browserClient: payload.browserClient
     }),
   ).unwrap();
 
@@ -441,8 +451,8 @@ const getOnboardingDataThunk = createAsyncThunk<
 });
 
 const getNodeDataThunk = createAsyncThunk<
-  NodePayload[], 
-  string, 
+  NodePayload,
+  { nodeAddress: string, browserClient: PublicClient, },
   { state: RootState }
 >(
   'stakingHub/getNodeData',
@@ -450,19 +460,49 @@ const getNodeDataThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    console.log('getNodeData', payload);
-    dispatch(setNodeDataFetching(true));
-    const rez = await fetch(`https://network.hoprnet.org/api/getNode?env=37&nodeAddress=${payload}`);
+    dispatch(getNodeBalanceThunk(payload));
+    const rez = await fetch(`https://network.hoprnet.org/api/getNode?env=37&nodeAddress=${payload.nodeAddress}`);
     const json = await rez.json();
-    return json;
-  },
-  { condition: (_payload, { getState }) => {
-    if(getState().stakingHub.nodes.length > 0) {
-      const isFetching = getState().stakingHub.nodes[0].isFetching;
-      if (isFetching) {
-        return false;
+    let nodeData = {
+      nodeAddress: payload.nodeAddress,
+      isFetching: false,
+    };
+    if(json.length > 0) {
+      nodeData = {
+        ...json[0],
+        ...nodeData
       }
     }
+    return nodeData;
+  },
+  { condition: (_payload, { getState }) => {
+    return true;
+  } },
+);
+
+const getNodeBalanceThunk = createAsyncThunk<
+  NodePayload,
+  { nodeAddress: string, browserClient: PublicClient, },
+  { state: RootState }
+>(
+  'stakingHub/getNodeBalance',
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    const nodeBalanceInBigInt = await payload.browserClient?.getBalance({ address: payload.nodeAddress as Address });
+    console.log('nodeBalanceInBigInt', payload.nodeAddress, nodeBalanceInBigInt)
+    const nodeXDaiBalance = nodeBalanceInBigInt?.toString() ?? '0';
+    const nodeXDaiBalanceFormatted = formatEther(nodeBalanceInBigInt);
+    let nodeBalance = {
+      nodeAddress: payload.nodeAddress,
+      balance: nodeXDaiBalance,
+      balanceFormatted: nodeXDaiBalanceFormatted,
+      isFetching: false,
+    };
+    return nodeBalance;
+  },
+  { condition: (_payload, { getState }) => {
     return true;
   } },
 );
@@ -489,9 +529,50 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       state.safeInfo.data = action.payload;
       if (action.payload?.registeredNodesInNetworkRegistry?.length > 0) {
         let tmp = [];
-        tmp = action.payload.registeredNodesInNetworkRegistry.map((elem) => elem.node.id as string);
+        tmp = action.payload.registeredNodesInNetworkRegistry.map((elem: { node: { id: string | null}}) => {
+          if(elem.node.id) {
+            const nodeAddress = elem.node.id.toLocaleLowerCase();
+            if(state.nodes[nodeAddress]) state.nodes[nodeAddress].registeredNodesInNetworkRegistry = true;
+            else state.nodes[nodeAddress] = {
+              nodeAddress: nodeAddress,
+              registeredNodesInNetworkRegistry:true,
+              isFetching: false,
+            }
+          }
+          return elem.node.id as string
+        });
         state.safeInfo.data.registeredNodesInNetworkRegistryParsed = tmp;
         state.onboarding.nodeAddress = tmp[tmp.length - 1];
+      }
+      if (action.payload?.registeredNodesInSafeRegistry?.length > 0) {
+        let tmp = [];
+        tmp = action.payload.registeredNodesInSafeRegistry.map((elem: { node: { id: string | null}}) => {
+          if(elem.node.id) {
+            const nodeAddress = elem.node.id.toLocaleLowerCase();
+            if(state.nodes[nodeAddress]) state.nodes[nodeAddress].registeredNodesInSafeRegistry = true;
+            else state.nodes[nodeAddress] = {
+              nodeAddress: nodeAddress,
+              registeredNodesInSafeRegistry:true,
+              isFetching: false,
+            }
+          }
+          return elem.node.id as string
+        });
+        state.safeInfo.data.registeredNodesInSafeRegistryParsed = tmp;
+        state.onboarding.nodeAddress = tmp[tmp.length - 1];
+      }
+      if (action.payload?.module?.includedNodes?.length > 0) {
+        action.payload.module.includedNodes.map((elem: { node: { id: string | null}}) => {
+          if(elem.node.id) {
+            const nodeAddress = elem.node.id.toLocaleLowerCase();
+            if(state.nodes[nodeAddress]) state.nodes[nodeAddress].includedInModule = true;
+            else state.nodes[nodeAddress] = {
+              nodeAddress: nodeAddress,
+              includedInModule: true,
+              isFetching: false,
+            }
+          }
+        })
       }
     }
     state.safeInfo.isFetching = false;
@@ -527,8 +608,17 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     }
   });
   builder.addCase(getNodeDataThunk.fulfilled, (state, action) => {
-    if(action.payload.length > 0) {
-      state.nodes.push(action.payload[0]);
+    const nodeData = action.payload;
+    if(nodeData.nodeAddress){
+      const nodeAddress = nodeData.nodeAddress.toLocaleLowerCase();
+      if(state.nodes[nodeAddress]) {
+        state.nodes[nodeAddress] = {
+          ...state.nodes[nodeAddress],
+          ...nodeData
+        }
+      } else {
+        state.nodes[nodeAddress] = nodeData;
+      }
     }
     if (state.nodes[0]) {
       state.nodes[0].isFetching = false;
@@ -536,6 +626,20 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   builder.addCase(getNodeDataThunk.rejected, (state) => {
     state.nodes[0].isFetching = false;
+  });
+  builder.addCase(getNodeBalanceThunk.fulfilled, (state, action) => {
+    const nodeData = action.payload;
+    if(nodeData.nodeAddress){
+      const nodeAddress = nodeData.nodeAddress.toLocaleLowerCase();
+      if(state.nodes[nodeAddress]) {
+        state.nodes[nodeAddress] = {
+          ...state.nodes[nodeAddress],
+          ...nodeData
+        }
+      } else {
+        state.nodes[nodeAddress] = nodeData;
+      }
+    }
   });
 };
 

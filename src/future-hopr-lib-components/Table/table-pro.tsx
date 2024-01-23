@@ -29,7 +29,11 @@ interface TablePaginationActionsProps {
   onPageChange: (event: React.MouseEvent<HTMLButtonElement>, newPage: number) => void;
 }
 
-const STable = styled(Table)``;
+const STable = styled(Table)`
+  tr.onRowClick{
+    cursor: pointer;
+  }
+`;
 
 const STableCell = styled(TableCell)`
   max-width: 0;
@@ -127,7 +131,11 @@ const STextField = styled(TextField)`
 `;
 
 interface Props {
-  data: {id: string, actions: JSX.Element, [key: string]: string | JSX.Element;  }[];
+  data: {
+    [key: string]: string | JSX.Element,
+    id: string,
+    actions: JSX.Element
+  }[];
   header: {
     key: string,
     name: string,
@@ -137,9 +145,12 @@ interface Props {
     wrap?: boolean,
     maxWidth?: string,
     copy?: boolean,
+    hidden?: boolean,
+    tooltipHeader?: string | JSX.Element,
   }[];
   search?: boolean;
   loading?: boolean;
+  onRowClick?: Function
 }
 
 export default function CustomPaginationActionsTable(props: Props) {
@@ -230,13 +241,19 @@ export default function CustomPaginationActionsTable(props: Props) {
         <thead>
           <TableRow>
             {props.header.map((headElem, idx) => (
-              <STableCell
-                key={idx}
-                className={`TableCell TableCellHeader`}
-                width={headElem?.width ?? ''}
-              >
-                {headElem.name}
-              </STableCell>
+                !headElem.hidden &&
+                <STableCell
+                  key={idx}
+                  className={`TableCell TableCellHeader`}
+                  width={headElem?.width ?? ''}
+                >
+                  <Tooltip
+                    title={headElem.tooltipHeader}
+                    notWide
+                  >
+                    <span>{headElem.name}</span>
+                  </Tooltip>
+                </STableCell>
             ))}
           </TableRow>
         </thead>
@@ -245,7 +262,7 @@ export default function CustomPaginationActionsTable(props: Props) {
             ? filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : filteredData
           ).map((row) => (
-            <CustomTableRow row={row} header={props.header} key={row.id}/>
+            <CustomTableRow row={row} header={props.header} key={row.id} onRowClick={props.onRowClick}/>
           ))}
           {!props.data ||
             (props.data.length === 0 && (
@@ -271,11 +288,15 @@ export default function CustomPaginationActionsTable(props: Props) {
 
 
 const CustomTableRow = ({
-  row, 
+  row,
   header,
-}: {row: Props['data'][0], header: Props['header']}) => {
+  onRowClick
+}: {
+  row: Props['data'][0],
+  header: Props['header'],
+  onRowClick?: Function
+}) => {
   const [tooltip, set_tooltip] = useState<string>()
-
 
   const onDoubleClick = (event: React.MouseEvent<HTMLTableCellElement, MouseEvent>, value: string) => {
     // if row is clicked twice
@@ -288,10 +309,14 @@ const CustomTableRow = ({
     }
   }
 
-
   return (
-    <TableRow key={row.id}>
+    <TableRow
+      key={row.id}
+      onClick={()=>{onRowClick && onRowClick(row)}}
+      className={`${onRowClick ? 'onRowClick' : ''}`}
+    >
       {header.map((headElem) => (
+        !headElem.hidden &&
         <STableCell
           key={headElem.key}
           className={`TableCell ${headElem.key} ${headElem.wrap ? 'wrap' : ''}`}

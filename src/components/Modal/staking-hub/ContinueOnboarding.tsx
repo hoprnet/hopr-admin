@@ -29,12 +29,13 @@ const ContinueOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const notFinished = useAppSelector((state) => state.stakingHub.onboarding.notFinished);
+  const isConnected = useAppSelector((state) => state.web3.status.connected);
   const [openModal, set_openModal] = useState(false);
 
   useEffect(() => {
-    if (notFinished) handleOpenModal();
+    if (notFinished && isConnected) handleOpenModal();
     else handleCloseModal();
-  }, [notFinished]);
+  }, [notFinished, isConnected]);
 
   const handleOpenModal = () => {
     set_openModal(true);

@@ -4,7 +4,7 @@ import { StepContainer } from '../components';
 import { useEthersSigner } from '../../../../hooks';
 
 // Web3
-import { createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../../../utils/blockchain';
+import { createIncludeNodeTransactionData } from '../../../../utils/blockchain';
 
 // Store
 import { useAppSelector, useAppDispatch } from '../../../../store';
@@ -19,28 +19,38 @@ export const ConfirmButton = styled(SafeTransactionButton)`
   align-self: center;
 `;
 
-export default function ConfigureNode() {
+export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?: string | null}) {
   const dispatch = useAppDispatch();
+  const signer = useEthersSigner();
   const safeInfo = useAppSelector((store) => store.safe.info.data);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
-  const nodeAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
   const moduleAddress = useAppSelector((state) => state.stakingHub.onboarding.moduleAddress) as Address;
   const isLoading = useAppSelector((store) => store.safe.executeTransaction.isFetching);
-  const signer = useEthersSigner();
+  const nodeAddressFromOnboarding = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
+  const nodeAddress = props?.nodeAddress ? props.nodeAddress : nodeAddressFromOnboarding;
 
   const executeIncludeNode = async () => {
     if (signer && selectedSafeAddress && moduleAddress && nodeAddress) {
       dispatch(
         safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
           smartContractAddress: moduleAddress,
-          data: createIncludeNodeTransactionData(encodeDefaultPermissions(getAddress(nodeAddress))),
+          data: createIncludeNodeTransactionData(nodeAddress),
           safeAddress: selectedSafeAddress,
           signer,
         }),
       )
         .unwrap()
         .then(() => {
-          dispatch(stakingHubActions.setOnboardingStep(14));
+          if (props?.onDone){
+            props.onDone();
+            dispatch(stakingHubActions.setNextOnboarding({
+              key: 'includedInModule',
+              nodeAddress: nodeAddress,
+              value: true,
+            }));
+          } else {
+            dispatch(stakingHubActions.setOnboardingStep(14));
+          }
         });
     }
   };
@@ -50,7 +60,7 @@ export default function ConfigureNode() {
       dispatch(
         safeActionsAsync.createSafeContractTransactionThunk({
           smartContractAddress: moduleAddress,
-          data: createIncludeNodeTransactionData(encodeDefaultPermissions(getAddress(nodeAddress))),
+          data: createIncludeNodeTransactionData(nodeAddress),
           safeAddress: selectedSafeAddress,
           signer,
         }),

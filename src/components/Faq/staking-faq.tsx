@@ -527,6 +527,17 @@ const stakingFaq: FaqData = {
         </span>
       ),
     },
+    {
+      id: 7,
+      title: 'What is a delegate',
+      content: (
+        <span>
+          When a node is a delegate, it is be able to submit transations to the safe, which later have to be signed by the safe owner/s.
+          <br/><br/>
+          If the safe owner will not sign a transaction, nothing will be done on-chain.
+        </span>
+      ),
+    },
   ],
 };
 

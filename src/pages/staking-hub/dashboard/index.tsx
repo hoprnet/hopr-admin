@@ -10,6 +10,7 @@ import { stakingHubActions, stakingHubActionsAsync } from '../../../store/slices
 
 // HOPR Components
 import NetworkOverlay from '../../../components/NetworkOverlay';
+import StartOnboarding from '../../../components/Modal/staking-hub/StartOnboarding';
 
 // Mui
 import Paper from '@mui/material/Paper/Paper';
@@ -22,6 +23,8 @@ import SafeActions from './transactions';
 import SafeDashboard from './safe';
 import NoNodeAdded from './noNodeAdded';
 import NodeAdded from './node'
+
+import { browserClient } from '../../../providers/wagmi';
 
 export const DASHBOARD = {
   staking: 0,
@@ -89,11 +92,12 @@ function Dashboard() {
   const moduleAddress =  useAppSelector((store) => store.stakingHub.onboarding.moduleAddress);
 
   useEffect(()=>{
-    if(safeAddress && moduleAddress) {
+    if(safeAddress && moduleAddress && browserClient) {
       dispatch(
         stakingHubActionsAsync.getSubgraphDataThunk({
           safeAddress,
           moduleAddress,
+          browserClient
         }),
       );
     }
@@ -116,12 +120,15 @@ function Dashboard() {
     };
   }
 
+
+
   return (
     <DashboardContainer className="DashboardContainer">
+      <StartOnboarding />
       <SPaper>
         <Tabs value={tabIndex} onChange={handleTabChange} aria-label="basic tabs example">
           <Tab label="STAKING" {...a11yProps(0)} />
-          <Tab label="NODE" {...a11yProps(1)} />
+          <Tab label="NODES" {...a11yProps(1)} />
           <Tab label="SAFE" {...a11yProps(2)} />
           <Tab label="TRANSACTIONS" {...a11yProps(3)} />
         </Tabs>

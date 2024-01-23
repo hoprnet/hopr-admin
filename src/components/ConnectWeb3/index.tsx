@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import WalletButton from '../../future-hopr-lib-components/Button/wallet-button';
 import Modal from '../../future-hopr-lib-components/Modal';
 
@@ -99,6 +100,7 @@ export default function ConnectWeb3({
   open,
   onClose,
 }: ConnectWeb3Props) {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const {
@@ -114,7 +116,7 @@ export default function ConnectWeb3({
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const modalOpen = useAppSelector((store) => store.web3.modalOpen);
   const chain = useAppSelector((store) => store.web3.chain);
-  const walletPresent = useAppSelector((store) => store.web3.walletPresent);
+  const walletPresent = useAppSelector((store) => store.web3.status.walletPresent);
   const [localError, set_localError] = useState<false | string>(false);
   const containerRef = useRef<HTMLButtonElement>(null);
 
@@ -146,17 +148,17 @@ export default function ConnectWeb3({
   }, [open]);
 
   useEffect(() => {
-    if (error) { 
+    if (error) {
       if (error instanceof UserRejectedRequestError) {
-        let parsedError = error.shortMessage; 
+        let parsedError = error.shortMessage;
         if(error.details && error.details !== error.shortMessage && error.details.length > 10) {
           parsedError = parsedError + '\n\n' + error.details;
         }
-        set_localError(parsedError); 
+        set_localError(parsedError);
       } else {
         set_localError( JSON.stringify(error))
       }
-      // wallet connect modal can 
+      // wallet connect modal can
       // cause errors if it is closed without connecting
       if (pendingConnector?.id === 'walletConnect') {
         reset()
@@ -187,10 +189,11 @@ export default function ConnectWeb3({
 
   const handleDisconnectMM = () => {
     disconnect();
-    dispatch(appActions.resetSafeState());
+    dispatch(appActions.resetState());
     dispatch(web3Actions.resetState());
     dispatch(safeActions.resetState());
     dispatch(stakingHubActions.resetState());
+    navigate('/');
   };
 
   // New function to handle opening the menu

@@ -36,11 +36,13 @@ type InitialState = {
       isFetching: boolean;
     }
   },
-  nodes: NodePayload[]
+  nodes: {
+    [key: string]: NodePayload
+  }
 };
 
 export type NodePayload = {
-  nodeAddress: string,
+  nodeAddress?: string,
   peerId?: string,
   lastSeen?: number,
   latencyAverage?: number,
@@ -50,6 +52,11 @@ export type NodePayload = {
   availability24h?: number,
   version?: string
   isFetching: boolean;
+  balance?: string;
+  balanceFormatted?: string;
+  registeredNodesInNetworkRegistry?: boolean;
+  registeredNodesInSafeRegistry?: boolean;
+  includedInModule?: boolean;
 }
 
 export type SubgraphParsedOutput = {
@@ -86,14 +93,17 @@ export type SubgraphParsedOutput = {
     }
   ];
   isEligibleOnNetworkRegistry: boolean | null;
-  registeredNodesInSafeRegistry: [];
-  registeredNodesInNetworkRegistry: [
-    {
-      node: {
-        id: string | null;
-      };
-    }
-  ];
+  registeredNodesInSafeRegistry: {
+    node: {
+      id: string | null;
+    };
+  }[];
+  registeredNodesInSafeRegistryParsed: string[];
+  registeredNodesInNetworkRegistry: {
+    node: {
+      id: string | null;
+    };
+  }[];
   registeredNodesInNetworkRegistryParsed: string[];
   module: {
     id: string | null;
@@ -163,6 +173,7 @@ export const initialState: InitialState = {
       addedModules: [{ module: { id: null } }],
       isEligibleOnNetworkRegistry: null,
       registeredNodesInSafeRegistry: [],
+      registeredNodesInSafeRegistryParsed: [],
       registeredNodesInNetworkRegistry: [{ node: { id: null } }],
       registeredNodesInNetworkRegistryParsed: [],
       module: {
@@ -187,5 +198,5 @@ export const initialState: InitialState = {
       isFetching: false,
     }
   },
-  nodes: [],
+  nodes: {},
 };

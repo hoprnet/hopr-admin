@@ -3,13 +3,11 @@ import { useEffect, useState } from 'react';
 import { Address, formatEther } from 'viem';
 import { erc20ABI, useContractRead, useWalletClient } from 'wagmi';
 import { web3 } from '@hoprnet/hopr-sdk';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config'
-import { nodeManagementModuleAbi } from '../../abi/nodeManagementModuleAbi';
-import { nodeSafeRegistryAbi } from '../../abi/nodeSafeRegistryAbi';
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config';
 import { useEthersSigner } from '../../hooks';
 import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
 import { appActions } from '../../store/slices/app';
-import { MAX_UINT256, createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../utils/blockchain'
+import { MAX_UINT256, createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../utils/blockchain';
 import { Container, FlexContainer, Text } from './onboarding/styled';
 
 
@@ -102,7 +100,7 @@ function SafeSection() {
         newThreshold: newThreshold,
         safeAddress: safeAddress,
       })).unwrap()
-      
+
       if (removeTransactionData) {
         await dispatch(
           safeActionsAsync.createSafeTransactionThunk({
@@ -130,7 +128,7 @@ function SafeSection() {
       })).unwrap()
 
       if (!transactionData) return;
-      
+
       const transactionHash = await dispatch(safeActionsAsync.createAndExecuteSafeTransactionThunk({
         safeAddress: safeAddress,
         signer,
@@ -157,7 +155,7 @@ function SafeSection() {
           signer,
           safeTransactionData: transactionData,
         })).unwrap()
-  
+
         await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -319,7 +317,7 @@ function SafeSection() {
             dispatch(
               safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
                 smartContractAddress: safeModules.at(0) as Address,
-                data: createIncludeNodeTransactionData(encodeDefaultPermissions(nodeAddress)),
+                data: createIncludeNodeTransactionData(nodeAddress),
                 safeAddress: selectedSafeAddress,
                 signer,
               }),
