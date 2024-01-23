@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config';
 
@@ -13,7 +13,7 @@ import { web3Actions, web3ActionsAsync } from '../../store/slices/web3';
 import { stakingHubActions, stakingHubActionsAsync } from '../../store/slices/stakingHub';
 
 export default function WagmiUpdater() {
- // const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const nodeHoprAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress); // Staking Hub
   const addressInStore = useAppSelector((store) => store.web3.account);
@@ -25,6 +25,34 @@ export default function WagmiUpdater() {
   } = useAccount();
 
   const { chain } = useNetwork();
+
+  /*
+
+  If wagmi is not always able to detect address change, add this code:
+
+  useEffect(() => {
+    function handleAccountsChanged(accounts: string[]) {
+      if(accounts && accounts[0] && typeof(accounts[0]) === 'string') {
+        set_lastAccountUsed(accounts[0]);
+      }
+    }
+
+    function addEventListener() {
+      window?.ethereum?.on('accountsChanged', handleAccountsChanged);
+    }
+
+    function removeEventListener() {
+      window?.ethereum?.removeListener('accountsChanged', handleAccountsChanged);
+    }
+
+    window.addEventListener('load', addEventListener);
+
+    return () => {
+      window.addEventListener('beforeunload', removeEventListener);
+    };
+  }, []);
+
+  */
 
   // Account change in Wallet
   useEffect(() => {
@@ -42,13 +70,8 @@ export default function WagmiUpdater() {
       dispatch(web3Actions.setConnected(isConnected));
       dispatch(web3ActionsAsync.getCommunityNftsOwnedByWallet({ account: address }));
       dispatch(stakingHubActionsAsync.getHubSafesByOwnerThunk(address));
-
-      if(chain){
-        dispatch(web3Actions.setChain(chain.name));
-        dispatch(web3Actions.setChainId(chain.id));
-      }
     }
-  }, [isConnected, address]);
+  }, [isConnected, addressInStore, address]);
 
   useEffect(() => {
     if (isConnected && chain) {
