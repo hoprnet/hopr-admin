@@ -85,7 +85,7 @@ const codeHTML = (moduleAddress?: string | null, safeAddress?: string | null) =>
     <span style={{color: '#00fc00'}}>YOUR_SECURITY_TOKEN</span>
     {`' --healthCheck --healthCheckHost "0.0.0.0" --announce --safeAddress ${safeAddress} --moduleAddress ${moduleAddress} --host `}
     <span style={{color: '#00fc00'}}>{`YOUR_PUBLIC_IP`}</span>{`:9091 --provider `}
-    <span style={{color: '#00fc00'}}>provider CUSTOM_RPC_PROVIDER</span>
+    <span style={{color: '#00fc00'}}>CUSTOM_RPC_PROVIDER</span>
   </>
 )}
 
