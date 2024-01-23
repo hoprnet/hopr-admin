@@ -4,6 +4,7 @@ import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS
 
 // wagmi
 import { useAccount, useBalance, useNetwork } from 'wagmi';
+import { watchAccount } from '@wagmi/core'
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -22,18 +23,32 @@ export default function WagmiUpdater() {
   const {
     address,
     isConnected,
+    connector
   } = useAccount();
 
   const { chain } = useNetwork();
 
-  /*
+  // **********************
+  // Leaving for on-going testing of wagmi losing connection with wallet
+  useEffect(() => {
+    console.log('Detected wagmi address change', address)
+  }, [address]);
 
-  If wagmi is not always able to detect address change, add this code:
+  useEffect(() => {
+    console.log('Detected wagmi isConnected change', isConnected)
+  }, [isConnected]);
+
+  useEffect(() => {
+    console.log('Detected wagmi connector change', connector)
+  }, [connector]);
+
+  // If wagmi is not always able to detect address change, add this code:
 
   useEffect(() => {
     function handleAccountsChanged(accounts: string[]) {
       if(accounts && accounts[0] && typeof(accounts[0]) === 'string') {
-        set_lastAccountUsed(accounts[0]);
+        //set_lastAccountUsed(accounts[0]);
+        console.log('Detected accountsChanged event', accounts[0])
       }
     }
 
@@ -52,7 +67,7 @@ export default function WagmiUpdater() {
     };
   }, []);
 
-  */
+  // **********************
 
   // Account change in Wallet
   useEffect(() => {
