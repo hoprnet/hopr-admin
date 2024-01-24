@@ -44,6 +44,10 @@ const Container = styled.div`
     width: 100%;
   }
 
+  .inline {
+    display: inline;
+  }
+
   .half-line {
     display: flex;
     flex-wrap: wrap;
@@ -87,6 +91,8 @@ function SafeDashboard() {
   const communityNftIdInWallet = useAppSelector((store) => store.web3.communityNftId);
   const communityNftIdInSafe = useAppSelector((store) => !!store.safe.communityNftIds.data.length);
   const sendingNFT = useAppSelector((store) => store.web3.communityNftTransferring);
+  const safeOwners = useAppSelector((store) => store.stakingHub.safeInfo.data.owners);
+  const safeThreshold = useAppSelector((store) => store.stakingHub.safeInfo.data.threshold);
   const [updating, set_updating] = useState(false);
 
   const executeUpdateConfig = async () => {
@@ -204,6 +210,24 @@ function SafeDashboard() {
 
   return (
     <Container className="SafeDashboard">
+      <div>
+        <GrayCard
+          id="owners"
+          title="Safe Owners:"
+          buttons={[
+              {
+                text: 'Edit',
+                link: '/staking/edit-owners',
+              },
+            ]
+          }
+        >
+          <ul>
+            {safeOwners?.map(elem => elem?.owner?.id && <li key={`safe_owner_${elem.owner.id}`}>{elem.owner.id}</li>)}
+          </ul>
+          <div className="inline"><h4 className="inline">Required confirmations:</h4> {safeThreshold} out of {safeOwners.length} owners.</div>
+        </GrayCard>
+      </div>
       <div className="line">
         <GrayCard
           id="Update-Node-Configuration"
@@ -263,8 +287,6 @@ function SafeDashboard() {
           </TransferNFT>
         </GrayCard>
       </div>
-
-
       <p className="center">
         In order to adjust the settings of your safe or transfer assets that are not supported by the HOPR Staking Hub
         use any of the below mentioned third party general purpose Safe user interfaces:

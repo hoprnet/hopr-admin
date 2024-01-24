@@ -38,6 +38,7 @@ import StakewxHOPR from './pages/staking-hub/stakewxHOPR';
 import StakexDAI from './pages/staking-hub/stakexDai';
 import SetAllowance from './pages/staking-hub/setAllowance';
 import FundNode from './pages/staking-hub/fundNode';
+import EditOwners from './pages/staking-hub/editOwners';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
@@ -252,6 +253,12 @@ export const applicationMapStakingHub: ApplicationMapType = [
         icon: <PaidIcon />,
         element: <WrapperPage />,
         loginNeeded: 'web3',
+      },
+      {
+        path: 'edit-owners',
+        element: <EditOwners />,
+        loginNeeded: 'safe',
+        inDrawer: false,
       },
       {
         path: 'stake-wxHOPR',

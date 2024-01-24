@@ -186,7 +186,7 @@ export default function ConnectSafe() {
       onClick={handleSafeButtonClick}
       ref={menuRef}
       disabled={!isConnected}
-      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${environment === 'dev' ? 'display' : 'display-none'
+      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${safes.length > 1 ? 'display' : 'display-none'
         }`}
     >
       <div className="image-container">

@@ -124,7 +124,6 @@ function Dashboard() {
 
   return (
     <DashboardContainer className="DashboardContainer">
-      <StartOnboarding />
       <SPaper>
         <Tabs value={tabIndex} onChange={handleTabChange} aria-label="basic tabs example">
           <Tab label="STAKING" {...a11yProps(0)} />
@@ -140,6 +139,7 @@ function Dashboard() {
         </div>
       </SPaper>
       <NetworkOverlay/>
+      <StartOnboarding />
     </DashboardContainer>
   );
 }

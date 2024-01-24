@@ -111,7 +111,7 @@ export function StepContainer(props: StepContainerProps) {
       <div>{props.children}</div>
 
       {
-        props.buttons && 
+        props.buttons &&
         <BottomContainer>
           <Buttons>
             {props.buttons}

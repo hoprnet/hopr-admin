@@ -43,6 +43,15 @@ const stakingHubSlice = createSlice({
     addSafe: (state, action) => {
       state.safes.data = [...state.safes.data, action.payload];
     },
+    addOwnerToSafe: (state, action) => {
+      state.safeInfo.data.owners.push(
+        {
+          owner: {
+            id: action.payload
+          }
+        }
+      )
+    },
     addSafeAndUseItForOnboarding: (state, action) => {
       state.safes.data = [...state.safes.data, action.payload];
       state.onboarding.safeAddress = action.payload.safeAddress;
