@@ -1,26 +1,29 @@
-// UI
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
-import { DEFAULT_ALLOWANCE, HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config'
-import Button from '../../future-hopr-lib-components/Button';
-import Section from '../../future-hopr-lib-components/Section';
 import { useEthersSigner } from '../../hooks';
 import { StepContainer } from './onboarding/components';
-import { Lowercase, StyledCoinLabel, StyledInputGroup, StyledTextField } from './onboarding/styled';
+import { StyledInputGroup, StyledTextField } from './onboarding/styled';
 
+// Components
 import StartOnboarding from '../../components/Modal/staking-hub/StartOnboarding';
 import NetworkOverlay from '../../components/NetworkOverlay';
+import ConfirmModal from '../../components/Modal/staking-hub/ConfirmModal';
+import Button from '../../future-hopr-lib-components/Button';
+import Section from '../../future-hopr-lib-components/Section';
+import { MenuItem, Select, TextField } from '@mui/material';
 
 // Blockchain
 import { Address, parseUnits } from 'viem';
 import { createApproveTransactionData } from '../../utils/blockchain';
 
 // Store
-import { useState } from 'react';
 import SafeTransactionButton from '../../components/SafeTransactionButton';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActionsAsync } from '../../store/slices/safe';
 import { stakingHubActions } from '../../store/slices/stakingHub';
+
+
 
 const StyledText = styled.h3`
   color: var(--414141, #414141);
@@ -32,6 +35,20 @@ const StyledText = styled.h3`
   margin: 0;
   margin-top: 5px;
 `;
+
+const FlexContainer = styled.div`
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+`;
+
+const Text = styled.p<{ center?: boolean }>`
+  text-align: ${(props) => props.center && 'center'};
+  font-weight: 500;
+  color: #414141;
+  margin: 0;
+`;
+
 
 export const ConfirmButton = styled(SafeTransactionButton)`
   max-width: 250px;
@@ -49,7 +66,13 @@ export default function EditOwners() {
   const safeThreshold = useAppSelector((store) => store.stakingHub.safeInfo.data.threshold);
   const signer = useEthersSigner();
   const [newOwner, set_newOwner] = useState('');
-  const [loading, set_loading] = useState(false);
+  const [newThreshold, set_newThreshold] = useState<null | string>(null);
+  const [confirmUpdateSafeThreshold, set_confirmUpdateSafeThreshold] = useState(false);
+  const [confirmAddOwner, set_confirmAddOwner] = useState(false);
+
+  useEffect(()=>{
+    set_newThreshold(safeThreshold);
+  }, [safeThreshold])
 
   const addOwner = async () => {
     if (signer && selectedSafeAddress) {
@@ -85,6 +108,27 @@ export default function EditOwners() {
     }
   };
 
+  const updateSafeThreshold = async () => {
+    if (signer && selectedSafeAddress) {
+      const removeTransactionData = await dispatch(safeActionsAsync.createSetThresholdToSafeTransactionDataThunk({
+        signer: signer,
+        newThreshold: Number(newThreshold),
+        safeAddress: selectedSafeAddress,
+      })).unwrap()
+
+      if (removeTransactionData) {
+        await dispatch(
+          safeActionsAsync.createSafeTransactionThunk({
+            signer: signer,
+            safeAddress: selectedSafeAddress,
+            safeTransactionData: removeTransactionData,
+          }),
+        );
+      }
+    }
+  };
+
+
   return (
     <Section
       center
@@ -113,12 +157,57 @@ export default function EditOwners() {
             }}
             onChange={(e) => set_newOwner(e.target.value)}
           />
-          <Button onClick={() => addOwner()}>EXECUTE</Button>
+          <Button
+            disabled={!newOwner.includes('0x')}
+            onClick={()=>{set_confirmAddOwner(true)}}
+          >
+            EXECUTE
+          </Button>
         </StyledInputGroup>
         <br/><br/><br/>
-        <div className="inline"><h4 className="inline">Required confirmations:</h4> {safeThreshold} out of {safeOwners.length} owners.</div>
-
+        <div className="inline"><h4 className="inline">Required confirmations:</h4> <Select
+            value={newThreshold}
+            onChange={(e) => set_newThreshold(e.target.value)}
+            MenuProps={{ disableScrollLock: true }}
+            style={{
+              width: '80px',
+            }}
+          >
+            {safeOwners?.map((_, index) => (
+              <MenuItem
+                key={index + 1}
+                value={`${index + 1}`}
+              >
+                {index + 1}
+              </MenuItem>
+            ))}
+          </Select> out of {safeOwners.length} owner(s)
+        </div>
+        <Button
+          disabled={newThreshold === safeThreshold || newThreshold === '0'}
+          onClick={()=>{set_confirmUpdateSafeThreshold(true)}}
+        >UPDATE</Button>
       </StepContainer>
+
+      <ConfirmModal
+        open={confirmAddOwner}
+        onConfirm={() => addOwner()}
+        onNotConfirm={()=>{set_confirmAddOwner(false)}}
+        title={'Add owner'}
+        description={`Are you sure that you want to add new owner (${newOwner}) to your safe?`}
+        confirmText={'YES'}
+        notConfirmText={'NO'}
+      />
+
+      <ConfirmModal
+        open={confirmUpdateSafeThreshold}
+        onConfirm={() => updateSafeThreshold()}
+        onNotConfirm={()=>{set_confirmUpdateSafeThreshold(false)}}
+        title={'Update threshold'}
+        description={`Are you sure that you want to change threshold to ${newThreshold} owners`}
+        confirmText={'YES'}
+        notConfirmText={'NO'}
+      />
 
       <StartOnboarding/>
       <NetworkOverlay/>
