@@ -50,15 +50,12 @@ const Text = styled.p<{ center?: boolean }>`
 `;
 
 
-export const ConfirmButton = styled(SafeTransactionButton)`
-  max-width: 250px;
-  width: 100%;
-  align-self: center;
+export const SSafeTransactionButton = styled(SafeTransactionButton)`
+  padding: 6px 16px;
 `;
 
 export default function EditOwners() {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const safeInfo = useAppSelector((store) => store.safe.info.data);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
   const safeModules = useAppSelector((state) => state.safe.info.data?.modules);
@@ -67,15 +64,17 @@ export default function EditOwners() {
   const signer = useEthersSigner();
   const [newOwner, set_newOwner] = useState('');
   const [newThreshold, set_newThreshold] = useState<null | string>(null);
-  const [confirmUpdateSafeThreshold, set_confirmUpdateSafeThreshold] = useState(false);
+  const [updateSafeThresholdConfirm, set_updateSafeThresholdConfirm] = useState(false);
+  const [pending, set_pending] = useState(false);
   const [confirmAddOwner, set_confirmAddOwner] = useState(false);
 
   useEffect(()=>{
     set_newThreshold(safeThreshold);
   }, [safeThreshold])
 
-  const addOwner = async () => {
+  const addOwnerExecute = async () => {
     if (signer && selectedSafeAddress) {
+      set_pending(true);
       const transactionData = await dispatch(
         safeActionsAsync.createAddOwnerToSafeTransactionDataThunk({
           ownerAddress: newOwner,
@@ -89,32 +88,89 @@ export default function EditOwners() {
           safeAddress: selectedSafeAddress,
           signer,
           safeTransactionData: transactionData,
-        })).unwrap();
-
-        dispatch(stakingHubActions.addOwnerToSafe(newOwner));
-        set_newOwner('');
-
-        await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            transactionHash: transactionHash,
-            safeAddress: selectedSafeAddress,
-            moduleAddress: safeModules?.[0] ?? '',
-            ownerAddress: newOwner,
-          }),
+        })).unwrap().finally(async()=>{
+          dispatch(stakingHubActions.addOwnerToSafe(newOwner));
+          set_newOwner('');
+          set_confirmAddOwner(false);
+          set_pending(false);
+          await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              transactionHash: transactionHash,
+              safeAddress: selectedSafeAddress,
+              moduleAddress: safeModules?.[0] ?? '',
+              ownerAddress: newOwner,
+            }),
+          });
         });
       }
     }
   };
 
-  const updateSafeThreshold = async () => {
+  const addOwnerSign = async () => {
     if (signer && selectedSafeAddress) {
-      const removeTransactionData = await dispatch(safeActionsAsync.createSetThresholdToSafeTransactionDataThunk({
-        signer: signer,
-        newThreshold: Number(newThreshold),
-        safeAddress: selectedSafeAddress,
-      })).unwrap()
+      set_pending(true);
+      const transactionData = await dispatch(
+        safeActionsAsync.createAddOwnerToSafeTransactionDataThunk({
+          ownerAddress: newOwner,
+          safeAddress: selectedSafeAddress,
+          signer: signer,
+        }),
+      ).unwrap();
+
+      if (transactionData) {
+        await dispatch(
+          safeActionsAsync.createSafeTransactionThunk({
+            safeAddress: selectedSafeAddress,
+            signer,
+            safeTransactionData: transactionData,
+          })).unwrap().finally(()=>{
+            set_newOwner('');
+            set_confirmAddOwner(false);
+            set_pending(false);
+          });
+      }
+    }
+  };
+
+  const updateSafeThresholdExecute = async () => {
+    if (signer && selectedSafeAddress) {
+      set_pending(true);
+      const removeTransactionData = await dispatch(
+        safeActionsAsync.createSetThresholdToSafeTransactionDataThunk({
+          signer: signer,
+          newThreshold: Number(newThreshold),
+          safeAddress: selectedSafeAddress,
+        })).unwrap();
+
+      if (removeTransactionData) {
+        await dispatch(
+          safeActionsAsync.createAndExecuteSafeTransactionThunk({
+            signer,
+            safeAddress: selectedSafeAddress,
+            safeTransactionData: removeTransactionData,
+          }),
+        ).unwrap().then(res => {
+          set_updateSafeThresholdConfirm(false);
+          dispatch(stakingHubActions.updateThreshold(newThreshold));
+        }).finally(()=>{
+          set_pending(false);
+        });
+
+      }
+    }
+  };
+
+  const updateSafeThresholdSign = async () => {
+    if (signer && selectedSafeAddress) {
+      set_pending(true);
+      const removeTransactionData = await dispatch(
+        safeActionsAsync.createSetThresholdToSafeTransactionDataThunk({
+          signer: signer,
+          newThreshold: Number(newThreshold),
+          safeAddress: selectedSafeAddress,
+        })).unwrap();
 
       if (removeTransactionData) {
         await dispatch(
@@ -123,7 +179,12 @@ export default function EditOwners() {
             safeAddress: selectedSafeAddress,
             safeTransactionData: removeTransactionData,
           }),
-        );
+        ).unwrap().then(res => {
+          set_updateSafeThresholdConfirm(false);
+        }).finally(()=>{
+          set_pending(false);
+        });
+
       }
     }
   };
@@ -185,28 +246,54 @@ export default function EditOwners() {
         </div>
         <Button
           disabled={newThreshold === safeThreshold || newThreshold === '0'}
-          onClick={()=>{set_confirmUpdateSafeThreshold(true)}}
+          onClick={()=>{set_updateSafeThresholdConfirm(true)}}
         >UPDATE</Button>
       </StepContainer>
 
       <ConfirmModal
         open={confirmAddOwner}
-        onConfirm={() => addOwner()}
         onNotConfirm={()=>{set_confirmAddOwner(false)}}
         title={'Add owner'}
         description={`Are you sure that you want to add new owner (${newOwner}) to your safe?`}
-        confirmText={'YES'}
         notConfirmText={'NO'}
+        confirmButton={
+          <SSafeTransactionButton
+            executeOptions={{
+              pending: pending,
+              onClick: addOwnerExecute,
+              buttonText: 'ADD',
+            }}
+            signOptions={{
+              pending: pending,
+              onClick: addOwnerSign,
+              buttonText: 'SIGN ADD',
+            }}
+            safeInfo={safeInfo}
+          />
+        }
       />
 
       <ConfirmModal
-        open={confirmUpdateSafeThreshold}
-        onConfirm={() => updateSafeThreshold()}
-        onNotConfirm={()=>{set_confirmUpdateSafeThreshold(false)}}
+        open={updateSafeThresholdConfirm}
+        onNotConfirm={()=>{set_updateSafeThresholdConfirm(false)}}
         title={'Update threshold'}
         description={`Are you sure that you want to change threshold to ${newThreshold} owners`}
-        confirmText={'YES'}
         notConfirmText={'NO'}
+        confirmButton={
+          <SSafeTransactionButton
+            executeOptions={{
+              pending: pending,
+              onClick: updateSafeThresholdExecute,
+              buttonText: 'UPDATE',
+            }}
+            signOptions={{
+              pending: pending,
+              onClick: updateSafeThresholdSign,
+              buttonText: 'SIGN UPDATE',
+            }}
+            safeInfo={safeInfo}
+          />
+        }
       />
 
       <StartOnboarding/>

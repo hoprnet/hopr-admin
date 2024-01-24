@@ -350,7 +350,11 @@ const getSafeInfoThunk = createAsyncThunk<
 
 const createSafeTransactionThunk = createAsyncThunk<
   string | undefined,
-  { signer: ethers.providers.JsonRpcSigner; safeAddress: string; safeTransactionData: SafeTransactionDataPartial },
+  {
+    signer: ethers.providers.JsonRpcSigner;
+    safeAddress: string;
+    safeTransactionData: SafeTransactionDataPartial
+  },
   { state: RootState }
 >(
   'safe/createTransaction',
@@ -1237,7 +1241,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   builder.addCase(getSafesByOwnerThunk.rejected, (state) => {
     state.safesByOwner.isFetching = false;
-  });  
+  });
   // GetSafeInfo
   builder.addCase(getSafeInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {

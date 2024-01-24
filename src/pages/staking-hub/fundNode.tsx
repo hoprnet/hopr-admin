@@ -54,7 +54,7 @@ const StyledCoinLabel = styled.p`
 `;
 
 
-export const ConfirmButton = styled(SafeTransactionButton)`
+export const SSafeTransactionButton = styled(SafeTransactionButton)`
   max-width: 250px;
   width: 100%;
   align-self: center;
@@ -153,7 +153,7 @@ export default function FundNode() {
           height: 133,
         }}
         buttons={
-          <ConfirmButton
+          <SSafeTransactionButton
             executeOptions={{
               onClick: createAndExecuteTx,
               pending: isWalletLoading,

@@ -1,13 +1,9 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../../store';
 import { DialogTitle } from '@mui/material';
 import Button from '../../../future-hopr-lib-components/Button';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../../future-hopr-lib-components/Modal/styled';
 import CloseIcon from '@mui/icons-material/Close';
-import { stakingHubActions } from '../../../store/slices/stakingHub';
 
 const Content = styled(SDialogContent)`
   gap: 1rem;
@@ -18,13 +14,15 @@ const Content = styled(SDialogContent)`
     button {
       margin-top: 16px;;
       padding-inline: 2rem;
+      height: 43px;
     }
   }
 `;
 
 type ConfirmModalProps = {
   open?: boolean,
-  onConfirm: Function,
+  confirmButton?: JSX.Element,
+  onConfirm?: Function,
   onNotConfirm: Function,
   confirmText?: string,
   notConfirmText?: string,
@@ -39,7 +37,7 @@ const ConfirmModal = (props: ConfirmModalProps) => {
   };
 
   const handleConfirm = () => {
-    props.onNotConfirm();
+    props.onConfirm && props.onConfirm();
   };
 
   return (
@@ -66,11 +64,16 @@ const ConfirmModal = (props: ConfirmModalProps) => {
             >
               {props.notConfirmText}
             </Button>
-            <Button
-              onClick={handleConfirm}
-            >
-              {props.confirmText}
-            </Button>
+            {
+              props.confirmButton ?
+              props.confirmButton
+              :
+              <Button
+                onClick={handleConfirm}
+              >
+                {props.confirmText}
+              </Button>
+            }
           </div>
         </Content>
       </SDialog>

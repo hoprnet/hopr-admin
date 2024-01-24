@@ -27,14 +27,6 @@ type SafeButtonProps = {
 };
 
 /**
- * Default button for SafeButton
- */
-const StyledBlueButton = styled(Button)`
-  text-transform: uppercase;
-  padding: 0.2rem 4rem;
-`;
-
-/**
  * Button to choose to either sign or execute transactions for safe.
  * If the transaction is signed by others it can not be executed by this button
  * Multisig execution should be handled in Transactions page
@@ -52,13 +44,13 @@ export default function SafeTransactionButton(props: SafeButtonProps) {
     return (
       <Tooltip title={props.executeOptions.tooltipText}>
         <span>
-          <StyledBlueButton
+          <Button
             pending={!!props.executeOptions?.pending ?? false}
             disabled={!!props.executeOptions?.disabled ?? false}
             onClick={props.executeOptions.onClick}
           >
             {props.executeOptions.buttonText ?? 'Execute'}
-          </StyledBlueButton>
+          </Button>
         </span>
       </Tooltip>
     );
@@ -66,13 +58,13 @@ export default function SafeTransactionButton(props: SafeButtonProps) {
     return (
       <Tooltip title={props.signOptions.tooltipText}>
         <span>
-          <StyledBlueButton
+          <Button
             pending={!!props.signOptions?.pending ?? false}
             disabled={!!props.signOptions?.disabled ?? false}
             onClick={props.signOptions.onClick}
           >
             {props.signOptions.buttonText ?? 'Sign'}
-          </StyledBlueButton>
+          </Button>
         </span>
       </Tooltip>
     );

@@ -49,6 +49,7 @@ import {
 import { calculateTimeInGMT, formatDateToUserTimezone, formatTimeToUserTimezone } from '../../../utils/date';
 import { truncateEthereumAddress } from '../../../utils/blockchain';
 import { getUserActionForPendingTransaction } from '../../../utils/safeTransactions';
+import { StringLiteral } from 'typescript';
 
 const StyledContainer = styled(Paper)`
   padding: 2rem;
@@ -77,10 +78,10 @@ const StyledBlueButton = styled(Button)`
 
 const StyledButtonGroup = styled.div`
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
   align-items: baseline;
   gap: 0.5rem;
-  
+
   // allows the execute/sign button to grow
   & span:last-child {
     flex: 1 0 auto; /* grow, don't shrink, and auto basis */
@@ -320,7 +321,6 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
   useEffect(() => {
     if (signer && transaction) {
       getValueFromTransaction(transaction, signer).then((value) => set_value(value?.toString()));
-      getCurrencyFromTransaction(transaction, signer).then((currency) => set_currency(currency));
       set_dateInGMT(calculateTimeInGMT(transaction.submissionDate));
       set_dateInUserTimezone(formatDateToUserTimezone(transaction.submissionDate));
       set_transactionStatus(getTransactionStatus());
@@ -369,14 +369,24 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
     return token.symbol;
   };
 
+
   const getValueFromTransaction = async (
     transaction: SafeMultisigTransactionResponse,
     signer: ethers.providers.JsonRpcSigner,
   ) => {
     const isNativeTransaction = !transaction.data;
+
+    const currency = getCurrencyFromTransaction(transaction, signer);
+
     if (isNativeTransaction) {
-      return formatEther(BigInt(transaction.value));
+      return formatEther(BigInt(transaction.value)) + ' ' + currency;
     }
+
+    try {
+      if (transaction?.dataDecoded?.method === 'addOwnerWithThreshold') {
+        return transaction.dataDecoded.parameters[0].value;
+      }
+    } catch (e) {}
 
     const token = await dispatch(
       safeActionsAsync.getToken({
@@ -445,9 +455,11 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
         </TableCell>
         <TableCell align="left">{transaction.source}</TableCell>
         <TableCell align="left">{transaction.request}</TableCell>
-        <TableCell align="left">{`${
-          value && value.length > 18 ? value.slice(0, 18).concat('...') : value
-        } ${currency}`}</TableCell>
+
+        <TableCell align="left">
+          {value && `${value && value.length > 18 ? value.slice(0, 18).concat('...') : value}`}
+        </TableCell>
+
         <TableCell align="left">
           <ActionButtons transaction={transaction} />
         </TableCell>

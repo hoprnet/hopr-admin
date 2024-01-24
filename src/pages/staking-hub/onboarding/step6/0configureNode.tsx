@@ -13,7 +13,7 @@ import { safeActionsAsync } from '../../../../store/slices/safe';
 import SafeTransactionButton from '../../../../components/SafeTransactionButton';
 
 
-export const ConfirmButton = styled(SafeTransactionButton)`
+export const SSafeTransactionButton = styled(SafeTransactionButton)`
   max-width: 250px;
   width: 100%;
   align-self: center;
@@ -78,7 +78,7 @@ export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?:
         height: 200,
       }}
       buttons={
-        <ConfirmButton
+        <SSafeTransactionButton
           executeOptions={{
             onClick: executeIncludeNode,
             pending: isLoading,

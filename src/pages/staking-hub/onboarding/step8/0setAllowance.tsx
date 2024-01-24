@@ -29,7 +29,7 @@ const StyledText = styled.h3`
   margin-top: 5px;
 `;
 
-export const ConfirmButton = styled(SafeTransactionButton)`
+export const SSafeTransactionButton = styled(SafeTransactionButton)`
   max-width: 250px;
   width: 100%;
   align-self: center;
@@ -89,7 +89,7 @@ export default function SetAllowance() {
       title="SET wxHOPR ALLOWANCE"
       description={`Your node will need to access wxHOPR from your safe to fund payment channels on the HOPR network. You can set a maximum allowance to reduce your funds at risk in case your node is ever compromised.`}
       buttons={
-        <ConfirmButton
+        <SSafeTransactionButton
           executeOptions={{
             onClick: executeAllowance,
             disabled: wxHoprValue === '' || wxHoprValue === '0' || wxHoprValue.includes('-') || wxHoprValue.includes('+'),
@@ -103,7 +103,7 @@ export default function SetAllowance() {
             pending: isWalletLoading,
             buttonText: 'SIGN',
           }}
-        />          
+        />
       }
     >
       <StyledInputGroup style={{ alignItems: 'flex-start' }}>

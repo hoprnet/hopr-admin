@@ -72,7 +72,7 @@ export const StyledGrayButton = styled(GrayButton)`
   height: 39px;
 `;
 
-export const ConfirmButton = styled(SafeTransactionButton)`
+export const SSafeTransactionButton = styled(SafeTransactionButton)`
   max-width: 250px;
   width: 100%;
   align-self: center;
@@ -172,7 +172,7 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
         height: 133,
       }}
       buttons={
-        <ConfirmButton
+        <SSafeTransactionButton
           safeInfo={safeInfo}
           executeOptions={{
             onClick: createAndExecuteTx,

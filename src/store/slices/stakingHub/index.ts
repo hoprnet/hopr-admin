@@ -94,6 +94,9 @@ const stakingHubSlice = createSlice({
           }
       }
     },
+    updateThreshold: (state, action) => {
+      state.safeInfo.data.threshold = `${action.payload}`;
+    },
   },
   extraReducers: (builder) => {
     createAsyncReducer(builder);
