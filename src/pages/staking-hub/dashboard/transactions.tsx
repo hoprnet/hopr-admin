@@ -395,9 +395,9 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
 
     try {
       if(
+        transaction.dataDecoded &&
         typeof transaction.dataDecoded === 'object' &&
         !Array.isArray(transaction.dataDecoded) &&
-        transaction.dataDecoded !== null
       ){
         if (transaction?.dataDecoded?.method === 'addOwnerWithThreshold') {
           return transaction.dataDecoded.parameters[0].value;
