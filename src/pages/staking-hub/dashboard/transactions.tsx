@@ -313,7 +313,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
   const [userAction, set_userAction] = useState<'EXECUTE' | 'SIGN' | null>(null);
   // value can represent token value or json params of data
   const [value, set_value] = useState<string>();
-  const [currency, set_currency] = useState<string>();
+  const [currency, set_currency] = useState<string>('');
   const [dateInUserTimezone, set_dateInUserTimezone] = useState<string>();
   const [dateInGMT, set_dateInGMT] = useState<string>();
   const [transactionStatus, set_transactionStatus] = useState<string>();
@@ -329,7 +329,9 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
 
   useEffect(() => {
     if (address) {
-      set_userAction(getUserActionForPendingTransaction(transaction, address));
+      const userActionForPendingTransaction = getUserActionForPendingTransaction(transaction, address);
+      console.log('userActionForPendingTransaction', userActionForPendingTransaction);
+      set_userAction(userActionForPendingTransaction);
     }
   }, [address, transaction]);
 
@@ -375,17 +377,29 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
     signer: ethers.providers.JsonRpcSigner,
   ) => {
     const isNativeTransaction = !transaction.data;
+    console.log('transaction', transaction)
+
+    // Rejection
+    if (transaction.safe === transaction.to && !BigInt(transaction.value)){
+      return ''
+    }
 
     const currency = getCurrencyFromTransaction(transaction, signer);
-
     if (isNativeTransaction) {
       return formatEther(BigInt(transaction.value)) + ' ' + currency;
     }
+
+    // change allowance:
+    //cap: approve
+    // data: { "method": "approve", "parameters": [ { "name": "spender", "type": "address", "value": "0x693Bac5ce61c720dDC68533991Ceb41199D8F8ae" }, { "name": "value", "type": "uint256", "value": "1000000000000000000000" } ] }
 
     try {
       if (transaction?.dataDecoded?.method === 'addOwnerWithThreshold') {
         return transaction.dataDecoded.parameters[0].value;
       }
+      // if (transaction.request === 'Rejection') {
+      //   return ;
+      // }
     } catch (e) {}
 
     const token = await dispatch(
@@ -455,11 +469,9 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
         </TableCell>
         <TableCell align="left">{transaction.source}</TableCell>
         <TableCell align="left">{transaction.request}</TableCell>
-
         <TableCell align="left">
-          {value && `${value && value.length > 18 ? value.slice(0, 18).concat('...') : value}`}
+          {value}
         </TableCell>
-
         <TableCell align="left">
           <ActionButtons transaction={transaction} />
         </TableCell>
