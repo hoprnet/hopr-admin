@@ -394,7 +394,11 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
     // data: { "method": "approve", "parameters": [ { "name": "spender", "type": "address", "value": "0x693Bac5ce61c720dDC68533991Ceb41199D8F8ae" }, { "name": "value", "type": "uint256", "value": "1000000000000000000000" } ] }
 
     try {
-      if(typeof(transaction?.dataDecoded) !== 'string' ){
+      if(
+        typeof transaction.dataDecoded === 'object' &&
+        !Array.isArray(transaction.dataDecoded) &&
+        transaction.dataDecoded !== null
+      ){
         if (transaction?.dataDecoded?.method === 'addOwnerWithThreshold') {
           return transaction.dataDecoded.parameters[0].value;
         }
