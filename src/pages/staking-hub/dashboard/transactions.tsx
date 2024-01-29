@@ -399,7 +399,9 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
         typeof transaction.dataDecoded === 'object' &&
         !Array.isArray(transaction.dataDecoded)
       ){
+        // @ts-ignore
         if (transaction?.dataDecoded?.method === 'addOwnerWithThreshold') {
+           // @ts-ignore
           return transaction.dataDecoded.parameters[0].value;
         }
         // if (transaction.request === 'Rejection') {
