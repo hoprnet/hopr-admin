@@ -238,7 +238,7 @@ function WrapperPage() {
     >
       <StyledPaper>
         <h2>Wrapper</h2>
-        <p>Utility to wrap (xHOPR &#8594; wxHOPR) and unwrap (wxHOPR &#8594; xHOPR) xHOPR tokens.</p>
+        <p>Utility to wrap (xHOPR &#8594; wxHOPR) and unwrap (wxHOPR &#8594; xHOPR) xHOPR tokens.<br/><br/>Funds source: Your wallet</p>
         <WrapperContainer>
           <StyledTextField
             label="xHOPR"

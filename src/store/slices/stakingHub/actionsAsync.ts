@@ -321,21 +321,21 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
 
           console.log(
             '[Onboarding check] state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
-            state.stakingHub.safeInfo.data.module.includedNodes,
+            state.stakingHub.safeInfo.data?.module?.includedNodes,
           );
           console.log(
             '[Onboarding check] state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
-            state.stakingHub.safeInfo.data.module.includedNodes &&
+            state.stakingHub.safeInfo.data?.module?.includedNodes &&
               state.stakingHub.safeInfo.data.module.includedNodes.length > 0,
           );
           console.log(
             '[Onboarding check] Node configured (includeNode()): ',
-            state.stakingHub.safeInfo.data.module.includedNodes &&
+            state.stakingHub.safeInfo.data?.module?.includedNodes &&
               state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
               state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null,
           );
           if (
-            state.stakingHub.safeInfo.data.module.includedNodes &&
+            state.stakingHub.safeInfo.data?.module?.includedNodes &&
             state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
             state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null
           ) {

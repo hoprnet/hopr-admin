@@ -261,6 +261,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
                 className='positive-action'
                 disabled={transactionAfterSafeNonce}
                 onClick={() => executeTx(transaction)}
+                pending={isLoadingExecuting}
               >
                 execute
               </StyledBlueButton>
@@ -281,7 +282,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
                 disabled={transactionAfterSafeNonce}
                 onClick={() => rejectTx(transaction)}
               >
-                reject
+                Reject
               </StyledBlueButton>
             </span>
           </Tooltip>
@@ -293,7 +294,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
                 onClick={() => approveTx(transaction)}
                 disabled={!userAction}
               >
-                approve/sign
+                Approve
               </StyledBlueButton>
             </span>
           </Tooltip>
@@ -401,7 +402,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
       ){
         // @ts-ignore
         if (transaction?.dataDecoded?.method === 'addOwnerWithThreshold') {
-           // @ts-ignore
+          // @ts-ignore
           return transaction.dataDecoded.parameters[0].value;
         }
         // if (transaction.request === 'Rejection') {

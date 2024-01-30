@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Address, parseUnits } from 'viem';
 import { GNOSIS_CHAIN_HOPR_BOOST_NFT, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config'
 import { useEthersSigner } from '../../hooks';
@@ -116,6 +116,7 @@ const SUPPORTED_TOKENS = {
 
 function SafeWithdraw() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   // hooks
   const [searchParams, setSearchParams] = useSearchParams();
   const tokenParam = searchParams.get('token');
@@ -169,6 +170,7 @@ function SafeWithdraw() {
           .unwrap()
           .then((safeTxHash) => {
             set_proposedTxHash(safeTxHash);
+            navigate('/staking/dashboard#transactions');
           })
           .finally(() => {
             set_isWalletLoading(false);
@@ -187,6 +189,7 @@ function SafeWithdraw() {
           .unwrap()
           .then((transactionResponse) => {
             set_proposedTxHash(transactionResponse);
+            navigate('/staking/dashboard#transactions');
           })
           .finally(() => {
             set_isWalletLoading(false);
@@ -205,6 +208,7 @@ function SafeWithdraw() {
           .unwrap()
           .then((safeTxHash) => {
             set_proposedTxHash(safeTxHash);
+            navigate('/staking/dashboard#transactions');
           })
           .finally(() => {
             set_isWalletLoading(false);
