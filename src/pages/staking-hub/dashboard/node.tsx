@@ -549,7 +549,7 @@ const NodeAdded = () => {
         >
           <Button
             title='add'
-            href={`https://cryptpad.fr/form/#/2/form/view/K3KSF-UAM-mLjUCs4w3Cruu4wZeOdwQFLNG1aYqrjbg/`}
+            href={`https://cryptpad.fr/form/#/2/form/view/7TwSgsF+CnW-aw24uyPlE4Gej3DX-jjeYmyk9-Q-6RQ/`}
             target="_blank"
             rel="noopener noreferrer"
           >

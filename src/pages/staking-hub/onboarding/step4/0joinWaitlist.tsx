@@ -136,8 +136,8 @@ export default function JoinWaitListStep() {
             <Content>
               <span>
                 Join the waitlist by filling out{' '}
-                <StyledLink 
-                  to={`https://cryptpad.fr/form/#/2/form/view/K3KSF-UAM-mLjUCs4w3Cruu4wZeOdwQFLNG1aYqrjbg/`}
+                <StyledLink
+                  to={`https://cryptpad.fr/form/#/2/form/view/7TwSgsF+CnW-aw24uyPlE4Gej3DX-jjeYmyk9-Q-6RQ/`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >this form</StyledLink>.
@@ -162,7 +162,7 @@ export default function JoinWaitListStep() {
           <Instruction num={2}>
             <p>
               View your position on the waitlist{' '}
-              <StyledLink 
+              <StyledLink
                 to={`https://cryptpad.fr/sheet/#/2/sheet/view/NYbRDH+C993dfHwEL1RyyKNtxG5pRoOaxtI4hbRVUBw/`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -182,13 +182,13 @@ export default function JoinWaitListStep() {
         <Note>
           Note: You can close this tab now, as it may take over a week to approve your address.
           Once approved, you can return to this point in the journey by re-visiting{' '}
-          <StyledLink 
+          <StyledLink
             to={`https://hub.hoprnet.org`}
             target="_blank"
             rel="noopener noreferrer"
           >hub.HOPRnet.org</StyledLink>{' '}and re-connecting your wallet.
           For now, keep an eye on the{' '}
-          <StyledLink 
+          <StyledLink
             to={`https://cryptpad.fr/sheet/#/2/sheet/view/NYbRDH+C993dfHwEL1RyyKNtxG5pRoOaxtI4hbRVUBw/`}
             target="_blank"
             rel="noopener noreferrer"
