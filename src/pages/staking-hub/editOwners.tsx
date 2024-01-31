@@ -65,7 +65,7 @@ export default function EditOwners() {
   const safeInfo = useAppSelector((store) => store.safe.info.data);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
   const safeModules = useAppSelector((state) => state.safe.info.data?.modules);
-  const safeOwners = useAppSelector((store) => store.stakingHub.safeInfo.data.owners);
+  const safeOwners = useAppSelector((store) => store.safe.info.data?.owners);
   const safeThreshold = useAppSelector((store) => store.stakingHub.safeInfo.data.threshold);
   const signer = useEthersSigner();
   const [newOwner, set_newOwner] = useState('');
@@ -259,18 +259,18 @@ export default function EditOwners() {
         description={`Add, remove and replace existing owners.`}
       >
         <br/><br/>
-        <h4 className="inline">Owners ({safeOwners.length}):</h4>
+        <h4 className="inline">Owners ({safeOwners?.length}):</h4>
         <ul>
-          {safeOwners?.map(elem => elem?.owner?.id &&
-          <li key={`safe_owner_${elem.owner.id}`}>
-            {elem.owner.id}
+          {safeOwners?.map(owner =>
+          <li key={`safe_owner_${owner}`}>
+            {owner}
             {
               safeOwners.length !== 1 &&
               <Tooltip title={'Remove owner from Safe'}>
                 <IconButton
                   aria-label="Remove owner from Safe"
                   onClick={() => {
-                    set_confirmRemoveOwner(elem.owner.id ? elem.owner.id : false);
+                    set_confirmRemoveOwner(owner ? owner : false);
                   }}
                 >
                   <DeleteIcon />
@@ -315,7 +315,7 @@ export default function EditOwners() {
                 {index + 1}
               </MenuItem>
             ))}
-          </Select> out of {safeOwners.length} owner(s)
+          </Select> out of {safeOwners?.length} owner(s)
         </div>
         <Button
           disabled={newThreshold === safeThreshold || newThreshold === '0'}
