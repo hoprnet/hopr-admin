@@ -378,7 +378,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
     signer: ethers.providers.JsonRpcSigner,
   ) => {
     const isNativeTransaction = !transaction.data;
-    console.log('transaction', transaction)
+    console.log('getValueFromTransaction', transaction)
 
     // Rejection
     if (transaction.safe === transaction.to && !BigInt(transaction.value)){
