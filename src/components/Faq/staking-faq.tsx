@@ -539,6 +539,34 @@ const stakingFaq: FaqData = {
       ),
     },
   ],
+  '/staking/dashboard#safe': [
+    {
+      id: 1,
+      title: 'What are owner(s)?',
+      content:
+        'Owners are external wallets whose private keys you use to sign transactions within the Staking Hub. You can edit the owners for your Safe and how many signatures are needed to confirm a single transaction.',
+    },
+    {
+      id: 2,
+      title: 'How many owner(s) should I add?',
+      content: <span>This is completely up to you. Maybe you want to add three owner wallets, of which two are needed to sign transactions; this should give you extra security as two separate owner wallets would need to be compromised to exploit your Safe, and you can still access your Safe if you lose access to one wallet.<br /><br />But this is just an example; you can set the number of owners and necessary confirmations to fit your needs.</span>,
+    },
+    {
+      id: 3,
+      title: 'How to add owners',
+      content: 'Press the “Edit” button on the top right of the “Safe Owners” section. This will open a window allowing you to add new Safe Owners and update the amount of confirmations needed to approve a transaction.',
+    },
+    {
+      id: 4,
+      title: 'Does the NFT allow all my nodes to receive cover traffic with 10k wxHOPR?',
+      content: <span>Yes, all nodes associated with your HOPR Safe can receive cover traffic with just 10k wxHOPR per node as long as your HOPR Safe contains an NR NFT. Make sure not to add too many nodes, though, as if your total stake in wxHOPR divided by your number of nodes drops below 10k wxHOPR per node, then all nodes will become ineligible for cover traffic.<br /><br />This means if you have 50k staked, you should run at most five nodes.</span>,
+    },
+    {
+      id: 5,
+      title: 'Should I update my configuration?',
+      content: 'If the update button is highlighted, you should always update. Running the latest version is always recommended.',
+    },
+  ],
 };
 
 export default stakingFaq;
