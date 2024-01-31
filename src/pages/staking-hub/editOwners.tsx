@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEthersSigner } from '../../hooks';
 import { StepContainer } from './onboarding/components';
 import { StyledInputGroup, StyledTextField } from './onboarding/styled';
+import { browserClient } from '../../providers/wagmi';
 
 // Components
 import StartOnboarding from '../../components/Modal/staking-hub/StartOnboarding';
@@ -23,7 +24,7 @@ import { createApproveTransactionData } from '../../utils/blockchain';
 // Store
 import SafeTransactionButton from '../../components/SafeTransactionButton';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { safeActionsAsync } from '../../store/slices/safe';
+import { safeActions, safeActionsAsync } from '../../store/slices/safe';
 import { stakingHubActions } from '../../store/slices/stakingHub';
 
 //Icons
@@ -95,8 +96,9 @@ export default function EditOwners() {
           safeAddress: selectedSafeAddress,
           signer,
           safeTransactionData: transactionData,
-        })).unwrap().then(()=>{
-          dispatch(stakingHubActions.addOwnerToSafe(newOwner));
+        })).unwrap().then(async(transactionHash)=>{
+          browserClient && await browserClient.waitForTransactionReceipt({ hash: transactionHash as `0x${string}` });
+          dispatch(safeActions.addOwnerToSafe(newOwner));
           set_newOwner('');
         }).finally(async()=>{
           set_confirmAddOwner(false);
@@ -158,8 +160,8 @@ export default function EditOwners() {
             signer,
             safeAddress: selectedSafeAddress,
             safeTransactionData: removeTransactionData,
-          }),
-        ).unwrap().then(res => {
+          })).unwrap().then(async(transactionHash)=>{
+            browserClient && await browserClient.waitForTransactionReceipt({ hash: transactionHash as `0x${string}` });
           set_updateSafeThresholdConfirm(false);
           dispatch(stakingHubActions.updateThreshold(newThreshold));
         }).finally(()=>{
@@ -213,8 +215,9 @@ export default function EditOwners() {
         safeAddress: selectedSafeAddress,
         signer,
         safeTransactionData: transactionData,
-      })).unwrap().then(()=>{
-        dispatch(stakingHubActions.removeOwnerFromSafe(confirmRemoveOwner));
+      })).unwrap().then(async(transactionHash)=>{
+        browserClient && await browserClient.waitForTransactionReceipt({ hash: transactionHash as `0x${string}` });
+        dispatch(safeActions.removeOwnerFromSafe(confirmRemoveOwner));
       }).finally(async()=>{
         set_confirmRemoveOwner(false);
         set_pending(false);
