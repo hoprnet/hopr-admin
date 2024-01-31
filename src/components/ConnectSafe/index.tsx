@@ -74,6 +74,8 @@ export default function ConnectSafe() {
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const safes = useAppSelector((store) => store.stakingHub.safes.data);
   const safesByOwner = useAppSelector((store) => store.safe.safesByOwner.data);
+  const moduleAddresses = useAppSelector((store) => store.safe.info.data?.modules);
+  const moduleAddress = moduleAddresses && moduleAddresses?.length > 0  && moduleAddresses[0] && typeof(moduleAddresses[0]) === 'string' ? moduleAddresses[0] : '';
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
@@ -113,23 +115,28 @@ export default function ConnectSafe() {
   }, [signer]);
 
   useEffect(() => {
-    if (safes.length > 0 && !safeAddress) {
-      dispatch(safeActions.setSelectedSafe(safes[0].safeAddress));
+    if (safesByOwner.length > 0 && !safeAddress) {
+      dispatch(safeActions.setSelectedSafe(safesByOwner[0]));
     }
-  }, [safes, safeAddress]);
+  }, [safesByOwner, safeAddress]);
 
   useEffect(() => {
-    if (safeAddress && browserClient && safes) {
+    if (safeAddress && browserClient) {
       useSelectedSafe(safeAddress);
+    }
+  }, [safeAddress]);
+
+  useEffect(() => {
+    if (safeAddress && browserClient && moduleAddress) {
       dispatch(
         stakingHubActionsAsync.getOnboardingDataThunk({
           browserClient,
           safeAddress,
-          safes,
+          moduleAddress,
         })
       );
     }
-  }, [safeAddress]);
+  }, [safeAddress, moduleAddress]);
 
   const useSelectedSafe = async (safeAddress: string) => {
     if (signer) {
@@ -183,7 +190,7 @@ export default function ConnectSafe() {
   };
 
   const handleSafeButtonClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (isConnected && safes.length > 0) {
+    if (isConnected && safesByOwner.length > 0) {
       handleOpenMenu(event);
     }
   };

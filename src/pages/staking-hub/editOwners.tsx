@@ -83,6 +83,7 @@ export default function EditOwners() {
   const addOwnerExecute = async () => {
     if (signer && selectedSafeAddress) {
       set_pending(true);
+      console.log(newOwner, selectedSafeAddress, signer)
       const transactionData = await dispatch(
         safeActionsAsync.createAddOwnerToSafeTransactionDataThunk({
           ownerAddress: newOwner,

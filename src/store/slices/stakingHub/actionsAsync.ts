@@ -399,7 +399,7 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
 
 const getOnboardingDataThunk = createAsyncThunk<
   void,
-  { browserClient: PublicClient; safeAddress: string; safes: RootState['stakingHub']['safes']['data'] },
+  { browserClient: PublicClient; safeAddress: string; moduleAddress: string },
   { state: RootState }
 >('stakingHub/getOnboardingData', async (payload, {
   rejectWithValue,
@@ -407,7 +407,7 @@ const getOnboardingDataThunk = createAsyncThunk<
 }) => {
   dispatch(stakingHubActions.onboardingIsFetching(true));
   await dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(payload.safeAddress)).unwrap();
-  const moduleAddress = payload.safes.find((elem) => elem.safeAddress === payload.safeAddress)?.moduleAddress;
+  const moduleAddress = payload.moduleAddress;
 
   if (!moduleAddress) {
     return rejectWithValue('No module address found');
