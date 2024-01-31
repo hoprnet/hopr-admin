@@ -91,7 +91,7 @@ function SafeDashboard() {
   const communityNftIdInWallet = useAppSelector((store) => store.web3.communityNftId);
   const communityNftIdInSafe = useAppSelector((store) => !!store.safe.communityNftIds.data.length);
   const sendingNFT = useAppSelector((store) => store.web3.communityNftTransferring);
-  const safeOwners = useAppSelector((store) => store.stakingHub.safeInfo.data.owners);
+  const safeOwners = useAppSelector((store) => store.safe.info.data?.owners);
   const safeThreshold = useAppSelector((store) => store.stakingHub.safeInfo.data.threshold);
   const [updating, set_updating] = useState(false);
 
@@ -223,9 +223,9 @@ function SafeDashboard() {
           }
         >
           <ul>
-            {safeOwners?.map(elem => elem?.owner?.id && <li key={`safe_owner_${elem.owner.id}`}>{elem.owner.id}</li>)}
+            {safeOwners?.map(owner => <li key={`safe_owner_${owner}`}>{owner}</li>)}
           </ul>
-          <div className="inline"><h4 className="inline">Required confirmations:</h4> {safeThreshold} out of {safeOwners.length} owners.</div>
+          <div className="inline"><h4 className="inline">Required confirmations:</h4> {safeThreshold} out of {safeOwners && safeOwners.length} owners.</div>
         </GrayCard>
       </div>
       <div className="line">
