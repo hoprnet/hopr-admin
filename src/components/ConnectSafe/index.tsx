@@ -72,7 +72,6 @@ export default function ConnectSafe() {
   const dispatch = useAppDispatch();
   const signer = useEthersSigner();
   const isConnected = useAppSelector((store) => store.web3.status.connected);
-  const safes = useAppSelector((store) => store.stakingHub.safes.data);
   const safesByOwner = useAppSelector((store) => store.safe.safesByOwner.data);
   const moduleAddresses = useAppSelector((store) => store.safe.info.data?.modules);
   const moduleAddress = moduleAddresses && moduleAddresses?.length > 0  && moduleAddresses[0] && typeof(moduleAddresses[0]) === 'string' ? moduleAddresses[0] : '';
