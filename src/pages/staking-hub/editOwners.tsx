@@ -11,7 +11,10 @@ import NetworkOverlay from '../../components/NetworkOverlay';
 import ConfirmModal from '../../components/Modal/staking-hub/ConfirmModal';
 import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';
+
+// Mui
 import { MenuItem, Select, TextField } from '@mui/material';
+import { Tooltip, IconButton } from '@mui/material';
 
 // Blockchain
 import { Address, parseUnits } from 'viem';
@@ -22,6 +25,9 @@ import SafeTransactionButton from '../../components/SafeTransactionButton';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActionsAsync } from '../../store/slices/safe';
 import { stakingHubActions } from '../../store/slices/stakingHub';
+
+//Icons
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 
@@ -67,6 +73,7 @@ export default function EditOwners() {
   const [updateSafeThresholdConfirm, set_updateSafeThresholdConfirm] = useState(false);
   const [pending, set_pending] = useState(false);
   const [confirmAddOwner, set_confirmAddOwner] = useState(false);
+  const [confirmRemoveOwner, set_confirmRemoveOwner] = useState<false | string>(false);
 
   useEffect(()=>{
     set_newThreshold(safeThreshold);
@@ -88,9 +95,10 @@ export default function EditOwners() {
           safeAddress: selectedSafeAddress,
           signer,
           safeTransactionData: transactionData,
-        })).unwrap().finally(async()=>{
+        })).unwrap().then(()=>{
           dispatch(stakingHubActions.addOwnerToSafe(newOwner));
           set_newOwner('');
+        }).finally(async()=>{
           set_confirmAddOwner(false);
           set_pending(false);
           await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
@@ -189,6 +197,55 @@ export default function EditOwners() {
     }
   };
 
+  const removeOwnerExecute = async () => {
+    if (signer && selectedSafeAddress && confirmRemoveOwner && safeThreshold) {
+      set_pending(true);
+      const transactionData = await dispatch(safeActionsAsync.createRemoveOwnerFromSafeTransactionDataThunk({
+        ownerAddress: confirmRemoveOwner,
+        safeAddress: selectedSafeAddress,
+        signer,
+        threshold: parseInt(safeThreshold),
+      })).unwrap()
+
+      if (!transactionData) return;
+
+      const transactionHash = await dispatch(safeActionsAsync.createAndExecuteSafeTransactionThunk({
+        safeAddress: selectedSafeAddress,
+        signer,
+        safeTransactionData: transactionData,
+      })).unwrap().then(()=>{
+        dispatch(stakingHubActions.removeOwnerFromSafe(confirmRemoveOwner));
+      }).finally(async()=>{
+        set_confirmRemoveOwner(false);
+        set_pending(false);
+      });
+
+    }
+  };
+
+  const removeOwnerSign = async () => {
+    if (signer && selectedSafeAddress && confirmRemoveOwner && safeThreshold) {
+      set_pending(true);
+      const transactionData = await dispatch(safeActionsAsync.createRemoveOwnerFromSafeTransactionDataThunk({
+        ownerAddress: confirmRemoveOwner,
+        safeAddress: selectedSafeAddress,
+        signer,
+        threshold: parseInt(safeThreshold),
+      })).unwrap()
+
+      if (transactionData) {
+        await dispatch(
+          safeActionsAsync.createSafeTransactionThunk({
+            safeAddress: selectedSafeAddress,
+            signer,
+            safeTransactionData: transactionData,
+          })).unwrap().finally(()=>{
+            set_confirmRemoveOwner(false);
+            set_pending(false);
+          });
+      }
+    }
+  };
 
   return (
     <Section
@@ -199,12 +256,28 @@ export default function EditOwners() {
 
       <StepContainer
         title='MANAGE SAFE ACCOUNT OWNERS'
-        description={`Add, remove and replace or rename existing owners.`}
+        description={`Add, remove and replace existing owners.`}
       >
         <br/><br/>
         <h4 className="inline">Owners ({safeOwners.length}):</h4>
         <ul>
-          {safeOwners?.map(elem => elem?.owner?.id && <li key={`safe_owner_${elem.owner.id}`}>{elem.owner.id}</li>)}
+          {safeOwners?.map(elem => elem?.owner?.id &&
+          <li key={`safe_owner_${elem.owner.id}`}>
+            {elem.owner.id}
+            {
+              safeOwners.length !== 1 &&
+              <Tooltip title={'Remove owner from Safe'}>
+                <IconButton
+                  aria-label="Remove owner from Safe"
+                  onClick={() => {
+                    set_confirmRemoveOwner(elem.owner.id ? elem.owner.id : false);
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
+            }
+          </li>)}
         </ul>
         <StyledInputGroup style={{ alignItems: 'flex-start' }}>
           <StyledText>ADD OWNER</StyledText>
@@ -222,7 +295,7 @@ export default function EditOwners() {
             disabled={!newOwner.includes('0x')}
             onClick={()=>{set_confirmAddOwner(true)}}
           >
-            EXECUTE
+            ADD
           </Button>
         </StyledInputGroup>
         <br/><br/><br/>
@@ -292,6 +365,29 @@ export default function EditOwners() {
               buttonText: 'SIGN UPDATE',
             }}
             safeInfo={safeInfo}
+          />
+        }
+      />
+
+        <ConfirmModal
+          open={!!confirmRemoveOwner}
+          onNotConfirm={()=>{set_confirmRemoveOwner(false)}}
+          title={'Remove owner'}
+          description={`Are you sure that you want to change remove ${confirmRemoveOwner} from owners?`}
+          notConfirmText={'NO'}
+          confirmButton={
+            <SSafeTransactionButton
+              executeOptions={{
+                pending: pending,
+                onClick: removeOwnerExecute,
+                buttonText: 'REMOVE',
+              }}
+              signOptions={{
+                pending: pending,
+                onClick: removeOwnerSign,
+                buttonText: 'SIGN REMOVE',
+              }}
+              safeInfo={safeInfo}
           />
         }
       />

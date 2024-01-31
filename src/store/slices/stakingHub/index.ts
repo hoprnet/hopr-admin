@@ -52,6 +52,9 @@ const stakingHubSlice = createSlice({
         }
       )
     },
+    removeOwnerFromSafe: (state, action) => {
+      state.safeInfo.data.owners = state.safeInfo.data.owners.filter(elem => elem.owner.id !== action.payload);
+    },
     addSafeAndUseItForOnboarding: (state, action) => {
       state.safes.data = [...state.safes.data, action.payload];
       state.onboarding.safeAddress = action.payload.safeAddress;
