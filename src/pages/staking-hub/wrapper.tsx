@@ -12,6 +12,17 @@ import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';
 import NetworkOverlay from '../../components/NetworkOverlay';
 
+import { ConfirmButton, StepContainer } from './onboarding/components';
+import {
+  Lowercase,
+  StyledCoinLabel,
+  StyledForm,
+  StyledGrayButton,
+  StyledInputGroup,
+  StyledInstructions,
+  Text
+} from './onboarding/styled';
+
 // Mui
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -236,9 +247,28 @@ function WrapperPage() {
       fullHeightMin
       lightBlue
     >
-      <StyledPaper>
-        <h2>Wrapper</h2>
-        <p>Utility to wrap (xHOPR &#8594; wxHOPR) and unwrap (wxHOPR &#8594; xHOPR) xHOPR tokens.<br/><br/>Funds source: Your wallet</p>
+      <StepContainer
+        title="Wrapper"
+        description={<p>Utility to wrap (xHOPR &#8594; wxHOPR) and unwrap (wxHOPR &#8594; xHOPR) xHOPR tokens.<br/><br/>Funds source: Your wallet</p>}
+        image={{
+          src: '/assets/wrapper-wallet-wallet.png',
+          alt: 'Funds to safe image',
+          height: 134,
+        }}
+        buttons={
+          <Button
+            className="swap-button"
+            disabled={
+              (swapDirection === 'xHOPR_to_wxHOPR' && !write_xHOPR_to_wxHOPR) ||
+              (swapDirection === 'wxHOPR_to_xHOPR' && !write_wxHOPR_to_xHOPR)
+            }
+            onClick={handleClick}
+          >
+          SWAP
+        </Button>
+        }
+      >
+        <br/><br/><br/>
         <WrapperContainer>
           <StyledTextField
             label="xHOPR"
@@ -306,16 +336,6 @@ function WrapperPage() {
               },
             }}
           />
-          <Button
-            className="swap-button"
-            disabled={
-              (swapDirection === 'xHOPR_to_wxHOPR' && !write_xHOPR_to_wxHOPR) ||
-              (swapDirection === 'wxHOPR_to_xHOPR' && !write_wxHOPR_to_xHOPR)
-            }
-            onClick={handleClick}
-          >
-            Swap
-          </Button>
           {(is_xHOPR_to_wxHOPR_loading || is_wxHOPR_to_xHOPR_loading) && <span>Check your Wallet...</span>}
           {address && (
             <>
@@ -332,7 +352,7 @@ function WrapperPage() {
             </>
           )}
         </WrapperContainer>
-      </StyledPaper>
+      </StepContainer>
       <NetworkOverlay />
     </Section>
   );

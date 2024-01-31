@@ -16,6 +16,7 @@ import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import WalletIcon from '@mui/icons-material/Wallet';
+import TooltipMui from '@mui/material/Tooltip';
 
 // HOPR components
 import Button from '../../../future-hopr-lib-components/Button';
@@ -169,6 +170,7 @@ type GrayCardProps = {
   title?: string;
   subtitle?: string;
   value?: string;
+  valueTooltip?: string;
   currency?: 'xDAI' | 'xHOPR' | 'wxHOPR' | string;
   chip?: {
     label: string;
@@ -187,6 +189,7 @@ const GrayCard = ({
   title,
   subtitle,
   value,
+  valueTooltip,
   currency,
   chip,
   buttons,
@@ -199,6 +202,16 @@ const GrayCard = ({
           {title && <h4 className='title'>{title}</h4>}
           {subtitle && <h5 className='subtitle'>{subtitle}</h5>}
           {value && (
+            valueTooltip ?
+            <Tooltip
+              title={valueTooltip}
+            >
+              <ValueAndCurrency>
+                <CardValue>{value}</CardValue>
+                {currency && <CardCurrency>{currency}</CardCurrency>}
+              </ValueAndCurrency>
+            </Tooltip>
+            :
             <ValueAndCurrency>
               <CardValue>{value}</CardValue>
               {currency && <CardCurrency>{currency}</CardCurrency>}
@@ -508,6 +521,7 @@ const NodeAdded = () => {
           id="node-balance"
           title="xDAI"
           value={chosenNodeData?.balanceFormatted ? rounder(chosenNodeData?.balanceFormatted, 5) : '-'}
+          valueTooltip={chosenNodeData?.balanceFormatted && chosenNodeData.balanceFormatted || '-'}
         />
         <GrayCard
           id="earned-rewards"

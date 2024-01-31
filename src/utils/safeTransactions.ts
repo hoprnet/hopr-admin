@@ -63,6 +63,8 @@ export const getUserActionForPendingTransaction = (
     return 'EXECUTE';
   }
 
+  console.log('transaction', transaction)
+
   const ownerHasSignedTransaction = transaction?.confirmations?.find(
     (confirmation) => confirmation.owner === ownerAddress,
   );

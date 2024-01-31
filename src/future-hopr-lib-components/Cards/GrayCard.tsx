@@ -3,11 +3,13 @@ import styled from '@emotion/styled';
 import { Card, Chip, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import Button from '../Button';
+import Tooltip from '@mui/material/Tooltip';
 
 export type GrayCardProps = {
     id: string;
     title?: string;
     value?: string;
+    valueTooltip?: string;
     currency?: string | ReactNode;
     chip?: {
       label: string;
@@ -75,11 +77,12 @@ const StyledChip = styled(Chip) <{ color: string }>`
   color: ${(props) => props.color === 'success' && '#00c213'};
   font-weight: 700;
 `;
-  
+
 export const GrayCard = ({
     id,
     title,
     value,
+    valueTooltip,
     currency,
     chip,
     buttons,
@@ -91,11 +94,22 @@ export const GrayCard = ({
           <CardContent>
             {title && <CardTitle>{title}</CardTitle>}
             {
-              (currency || value) &&
-              <ValueAndCurrency>
-                {value && <CardValue>{value}</CardValue> }
-                {currency && <CardCurrency>{currency}</CardCurrency>}
-              </ValueAndCurrency>
+              (currency || value) && (
+                valueTooltip ?
+                <Tooltip
+                  title={valueTooltip}
+                >
+                  <ValueAndCurrency>
+                    {value && <CardValue>{value}</CardValue> }
+                    {currency && <CardCurrency>{currency}</CardCurrency>}
+                  </ValueAndCurrency>
+                </Tooltip>
+                :
+                <ValueAndCurrency>
+                  {value && <CardValue>{value}</CardValue> }
+                  {currency && <CardCurrency>{currency}</CardCurrency>}
+                </ValueAndCurrency>
+              )
             }
             {chip && (
               <StyledChip

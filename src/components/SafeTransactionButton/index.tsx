@@ -49,7 +49,7 @@ export default function SafeTransactionButton(props: SafeButtonProps) {
             disabled={!!props.executeOptions?.disabled ?? false}
             onClick={props.executeOptions.onClick}
           >
-            {props.executeOptions.buttonText ?? 'Execute'}
+            {props.executeOptions.buttonText ?? 'EXECUTE'}
           </Button>
         </span>
       </Tooltip>
@@ -63,7 +63,7 @@ export default function SafeTransactionButton(props: SafeButtonProps) {
             disabled={!!props.signOptions?.disabled ?? false}
             onClick={props.signOptions.onClick}
           >
-            {props.signOptions.buttonText ?? 'Sign'}
+            {props.signOptions.buttonText ?? 'SIGN'}
           </Button>
         </span>
       </Tooltip>

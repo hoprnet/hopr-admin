@@ -376,6 +376,13 @@ const createSafeTransactionThunk = createAsyncThunk<
       const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
       const signature = await safeSDK.signTypedData(safeTransaction);
       const senderAddress = await payload.signer.getAddress();
+      console.log('Proposing transaction: ', {
+        safeAddress: payload.safeAddress,
+        safeTransactionData: safeTransaction.data,
+        safeTxHash,
+        senderAddress,
+        senderSignature: signature.data,
+      })
       // propose safe transaction
       await safeApi.proposeTransaction({
         safeAddress: payload.safeAddress,

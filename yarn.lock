@@ -1436,19 +1436,19 @@
     estree-walker "^2.0.2"
     picomatch "^2.3.1"
 
-"@safe-global/api-kit@^1.1.0":
-  version "1.3.0"
-  resolved "https://registry.npmjs.org/@safe-global/api-kit/-/api-kit-1.3.0.tgz"
-  integrity sha512-3fdvoBtgufzmqmoBHir7vbS5N2t9Yc4kTeIJmAgmAGl8rHAy3z1bSv5uoEHYSMow34q1Am1aUar6vVAwwkIXhg==
+"@safe-global/api-kit@1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@safe-global/api-kit/-/api-kit-1.3.1.tgz#108f5ba2f3770354abcec91225cc1ae21ee417a8"
+  integrity sha512-JKvCNs8p+42+N8pV2MIqoXlBLckTe5CKboVT7t9mTluuA66i5W8+Kr+B5j9D//EIU5vO7iSOOIYnJuA2ck4XRQ==
   dependencies:
     "@ethersproject/abstract-signer" "^5.7.0"
-    "@safe-global/safe-core-sdk-types" "^2.2.0"
+    "@safe-global/safe-core-sdk-types" "^2.3.0"
     node-fetch "^2.6.6"
 
-"@safe-global/protocol-kit@^1.0.1":
-  version "1.2.0"
-  resolved "https://registry.npmjs.org/@safe-global/protocol-kit/-/protocol-kit-1.2.0.tgz"
-  integrity sha512-drU2uK30AZ4tqI/9ER7PGMD/lZp/5B9T02t+noTk7WF9Xb7HxskJd8GNU01KE55oyH31Y0AfXaE68H/f9lYa4A==
+"@safe-global/protocol-kit@1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/protocol-kit/-/protocol-kit-1.3.0.tgz#fb84a3797a4afc74ac7fc218e796037d6e3cc3cc"
+  integrity sha512-zBhwHpaUggywmnR1Xm5RV22DpyjmVWYP3pnOl4rcf9LAc1k7IVmw6WIt2YVhHRaWGxVYMd4RitJX8Dx2+8eLZQ==
   dependencies:
     "@ethersproject/address" "^5.7.0"
     "@ethersproject/bignumber" "^5.7.0"
@@ -1459,6 +1459,7 @@
     web3 "^1.8.1"
     web3-core "^1.8.1"
     web3-utils "^1.8.1"
+    zksync-web3 "^0.14.3"
 
 "@safe-global/safe-apps-provider@^0.18.1":
   version "0.18.2"
@@ -1484,10 +1485,21 @@
     "@safe-global/safe-gateway-typescript-sdk" "^3.5.3"
     viem "^1.6.0"
 
-"@safe-global/safe-core-sdk-types@^2.0.0", "@safe-global/safe-core-sdk-types@^2.2.0":
+"@safe-global/safe-core-sdk-types@^2.0.0":
   version "2.2.0"
   resolved "https://registry.npmjs.org/@safe-global/safe-core-sdk-types/-/safe-core-sdk-types-2.2.0.tgz"
   integrity sha512-vVG9qQnUYx+Xwsbuqraq25MPJX1I1aV1P81ZnHZa1lEMU7stqYWAmykUm/mvqsm8+AsvEB/wBKlFjbFJ/duzoA==
+  dependencies:
+    "@ethersproject/bignumber" "^5.7.0"
+    "@ethersproject/contracts" "^5.7.0"
+    "@safe-global/safe-deployments" "^1.26.0"
+    web3-core "^1.8.1"
+    web3-utils "^1.8.1"
+
+"@safe-global/safe-core-sdk-types@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-core-sdk-types/-/safe-core-sdk-types-2.3.0.tgz#e3be109e58a2d224d1b89052563b04f3efed4bec"
+  integrity sha512-dU0KkDV1KJNf11ajbUjWiSi4ygdyWfhk1M50lTJWUdCn1/2Bsb/hICM8LoEk6DCoFumxaoCet02SmYakXsW2CA==
   dependencies:
     "@ethersproject/bignumber" "^5.7.0"
     "@ethersproject/contracts" "^5.7.0"
@@ -9131,6 +9143,11 @@ yocto-queue@^0.1.0:
   version "0.1.0"
   resolved "https://registry.npmjs.org/yocto-queue/-/yocto-queue-0.1.0.tgz"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
+
+zksync-web3@^0.14.3:
+  version "0.14.4"
+  resolved "https://registry.yarnpkg.com/zksync-web3/-/zksync-web3-0.14.4.tgz#0b70a7e1a9d45cc57c0971736079185746d46b1f"
+  integrity sha512-kYehMD/S6Uhe1g434UnaMN+sBr9nQm23Ywn0EUP5BfQCsbjcr3ORuS68PosZw8xUTu3pac7G6YMSnNHk+fwzvg==
 
 zod@^3.21.4:
   version "3.22.2"
