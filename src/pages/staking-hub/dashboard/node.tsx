@@ -254,27 +254,27 @@ const header = [
     name: 'NR',
     search: true,
     maxWidth: '160px',
-    tooltipHeader: 'Node registered by HOPR to the Network Registry',
+    tooltipHeader: 'Has this node been successfully added to the HOPR Network Registry?',
   },
   {
     key: 'inSafeRegistry',
     name: 'SR',
     search: true,
-    tooltipHeader: 'Node started and registered itself in the Safe Registry',
+    tooltipHeader: 'Has this node been successfully added to the Safe Registry?',
   },
   {
     key: 'isDelegate',
     name: 'Delegate',
     search: true,
     maxWidth: '160px',
-    tooltipHeader: 'Node added as a safe delegate, so it can propose transactions to the safe owner'
+    tooltipHeader: 'Is this node a delegate? (allowed to propose transactions to the safe owner)'
   },
   {
     key: 'includedInModule',
     name: 'Config',
     search: true,
     maxWidth: '160px',
-    tooltipHeader: 'Node included in the Safe Module and configured'
+    tooltipHeader: 'Is this node included & configured in the Node Management Module?'
   },
   {
     key: 'balance',

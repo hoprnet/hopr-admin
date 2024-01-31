@@ -443,11 +443,11 @@ const stakingFaq: FaqData = {
       content:
         'Your node can be funded and run successfully with 1 xDAI. Depositing more in your safe will make refunding your node easier but in general, node running with HOPR does not require much xDAI.',
     },
-    {
-      id: 2,
-      title: 'Suggested node strategy',
-      content: 'Not defined TBD',
-    },
+    // {
+    //   id: 2,
+    //   title: 'Suggested node strategy',
+    //   content: 'Not defined TBD',
+    // },
     {
       id: 3,
       title: 'Waitlist status and policy',
@@ -532,9 +532,53 @@ const stakingFaq: FaqData = {
       title: 'What is a delegate',
       content: (
         <span>
-          When a node is a delegate, it is be able to submit transations to the safe, which later have to be signed by the safe owner/s.
+          A delegate node can initiate on-chain transactions such as closing or opening payment channels. However these transactions still need to be approved by the Safe owner(s).
           <br/><br/>
-          If the safe owner will not sign a transaction, nothing will be done on-chain.
+          The owner(s) can approve or reject transaction requests under the transactions tab of the dashboard. A rejected transaction will do nothing.
+        </span>
+      ),
+    },
+    {
+      id: 8,
+      title: 'What is the Node Management Module?',
+      content: (
+        <span>
+          The Node Management Module is a Safe Module that manages a particular node's level of access (permissions) to use its associated HOPR Safe.
+          <br/><br/>
+          It's a capability-based management module for HOPR node operations that can be configured by Safe owner(s) to allow certain nodes to perform or restrict a specific set of actions.
+          <br/><br/>
+          For example, one node may be allowed to open and close payment channels freely, while another is not.
+        </span>
+      ),
+    },
+    {
+      id: 9,
+      title: 'What is the Safe Registry?',
+      content: (
+        <span>
+          The Safe Registry is a record of all the nodes associated with a particular Safe. If your node has not been added to the Safe Registry, it has no associated HOPR node and has likely not completed the onboarding process correctly.
+        </span>
+      ),
+    },
+    {
+      id: 10,
+      title: 'What is the Network Registry?',
+      content: (
+        <span>
+          The NR (Network Registry) is a smart contract that maintains the list of nodes that are allowed to enter the HOPR network.
+          <br/><br/>
+          If your node is not on the NR, it has not fully onboarded and will not be able to communicate with other nodes.
+        </span>
+      ),
+    },
+    {
+      id: 11,
+      title: 'How many nodes should I add?',
+      content: (
+        <span>
+          You should not add so many nodes that your stake per node drops below 10,000 wxHOPR if you have a NR NFT or 30,000 wxHOPR per node if you don’t have a NR NFT.
+          <br/><br/>
+          For example if you have a NR NFT and 50,000 wxHOPR staked you should run a maximum of 5 nodes as any more will cause you to become ineligible for cover traffic rewards.
         </span>
       ),
     },
