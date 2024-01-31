@@ -376,7 +376,11 @@ const NodeAdded = () => {
       isDelegate: isDelegate ? 'Yes' : 'No',
       includedInModule: includedInModule ? 'Yes' : 'No',
       id: node,
-      balance: nodes[node]?.balanceFormatted ? `${rounder(nodes[node].balanceFormatted)} xDAI` : '-',
+      balance: <Tooltip
+                  title={nodes[node].balanceFormatted}
+                >
+                  <span>{nodes[node]?.balanceFormatted ? `${rounder(nodes[node].balanceFormatted)} xDAI` : '-'}</span>
+                </Tooltip>,
       search: node,
       actions: <>
         <IconButton
