@@ -92,28 +92,30 @@ export default function EditOwners() {
       ).unwrap();
 
       if (transactionData) {
+
         const transactionHash = await dispatch(safeActionsAsync.createAndExecuteSafeTransactionThunk({
           safeAddress: selectedSafeAddress,
           signer,
           safeTransactionData: transactionData,
-        })).unwrap().then(async(transactionHash)=>{
-          browserClient && await browserClient.waitForTransactionReceipt({ hash: transactionHash as `0x${string}` });
-          dispatch(safeActions.addOwnerToSafe(newOwner));
-          set_newOwner('');
-        }).finally(async()=>{
-          set_confirmAddOwner(false);
-          set_pending(false);
-          await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              transactionHash: transactionHash,
-              safeAddress: selectedSafeAddress,
-              moduleAddress: safeModules?.[0] ?? '',
-              ownerAddress: newOwner,
-            }),
-          });
+        })).unwrap();
+
+        if(browserClient && transactionHash) await browserClient.waitForTransactionReceipt({ hash: transactionHash as `0x${string}` });
+
+        dispatch(safeActions.addOwnerToSafe(newOwner));
+        set_newOwner('');
+        set_confirmAddOwner(false);
+        set_pending(false);
+        await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            transactionHash: transactionHash,
+            safeAddress: selectedSafeAddress,
+            moduleAddress: safeModules?.[0] ?? '',
+            ownerAddress: newOwner,
+          }),
         });
+
       }
     }
   };
@@ -155,18 +157,18 @@ export default function EditOwners() {
         })).unwrap();
 
       if (removeTransactionData) {
-        await dispatch(
+         const transactionHash = await dispatch(
           safeActionsAsync.createAndExecuteSafeTransactionThunk({
             signer,
             safeAddress: selectedSafeAddress,
             safeTransactionData: removeTransactionData,
-          })).unwrap().then(async(transactionHash)=>{
-            browserClient && await browserClient.waitForTransactionReceipt({ hash: transactionHash as `0x${string}` });
+          })).unwrap();
+
+          if(browserClient && transactionHash) await browserClient.waitForTransactionReceipt({ hash: transactionHash as `0x${string}` });
+
           set_updateSafeThresholdConfirm(false);
           dispatch(stakingHubActions.updateThreshold(newThreshold));
-        }).finally(()=>{
           set_pending(false);
-        });
 
       }
     }
@@ -215,13 +217,13 @@ export default function EditOwners() {
         safeAddress: selectedSafeAddress,
         signer,
         safeTransactionData: transactionData,
-      })).unwrap().then(async(transactionHash)=>{
-        browserClient && await browserClient.waitForTransactionReceipt({ hash: transactionHash as `0x${string}` });
-        dispatch(safeActions.removeOwnerFromSafe(confirmRemoveOwner));
-      }).finally(async()=>{
-        set_confirmRemoveOwner(false);
-        set_pending(false);
-      });
+      })).unwrap();
+
+      if(browserClient && transactionHash) await browserClient.waitForTransactionReceipt({ hash: transactionHash as `0x${string}` });
+
+      dispatch(safeActions.removeOwnerFromSafe(confirmRemoveOwner));
+      set_confirmRemoveOwner(false);
+      set_pending(false);
 
     }
   };
