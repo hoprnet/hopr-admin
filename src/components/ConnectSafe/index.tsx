@@ -153,14 +153,14 @@ export default function ConnectSafe() {
         },
       });
       dispatch(
-        safeActionsAsync.getSafeInfoThunk({
+        safeActionsAsync.getSafesByOwnerThunk({
           signer: signer,
-          safeAddress,
         })
       );
       dispatch(
-        safeActionsAsync.getSafesByOwnerThunk({
+        safeActionsAsync.getSafeInfoThunk({
           signer: signer,
+          safeAddress,
         })
       );
       dispatch(

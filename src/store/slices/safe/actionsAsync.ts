@@ -161,6 +161,7 @@ const getSafesByOwnerThunk = createAsyncThunk<
       const safeApi = await createSafeApiService(payload.signer);
       const signerAddress = await payload.signer.getAddress();
       const safeAddresses = await safeApi.getSafesByOwner(signerAddress);
+
       return safeAddresses;
     } catch (e) {
       if (e instanceof Error) {

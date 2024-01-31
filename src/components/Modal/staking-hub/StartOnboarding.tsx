@@ -35,11 +35,17 @@ const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
   const modalToSartOnboardingDismissed = useAppSelector((state) => state.stakingHub.onboarding.modalToSartOnboardingDismissed);
   const web3connected = useAppSelector((state) => state.web3.status.connected);
   const [openModal, set_openModal] = useState(false);
+  const [moduleAddressAbsentFor5sTmp, set_moduleAddressAbsentFor5sTmp] = useState<false | number>(false);
+  const [moduleAddressAbsentFor5s, set_moduleAddressAbsentFor5s] = useState(false);
+
+  const moduleAddresses = useAppSelector((store) => store.safe.info.data?.modules);
+  const moduleAddressIsFetching = useAppSelector((store) => store.safe.info.isFetching);
+  const moduleAddress = moduleAddresses && moduleAddresses?.length > 0  && moduleAddresses[0] && typeof(moduleAddresses[0]) === 'string' ? moduleAddresses[0] : null;
 
   useEffect(() => {
-    if (!modalToSartOnboardingDismissed && web3connected && notStarted && !notFinished) handleOpenModal();
+    if ((!modalToSartOnboardingDismissed && web3connected && notStarted && !notFinished) || (!moduleAddress && !moduleAddressIsFetching)) handleOpenModal();
     else set_openModal(false);
-  }, [web3connected, notFinished, notStarted, modalToSartOnboardingDismissed]);
+  }, [web3connected, notFinished, notStarted, modalToSartOnboardingDismissed, moduleAddress, moduleAddressIsFetching]);
 
   const handleOpenModal = () => {
     set_openModal(true);

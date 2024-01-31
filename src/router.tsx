@@ -366,6 +366,9 @@ const LayoutEnhanced = () => {
   const apiToken = searchParams.get('apiToken');
   const HOPRdNodeAddressForOnboarding = searchParams.get('HOPRdNodeAddressForOnboarding'); //Address given in HOPRd: https://hub.hoprnet.org/staking/onboarding?HOPRdNodeAddressForOnboarding={my_address}
 
+  const moduleAddresses = useAppSelector((store) => store.safe.info.data?.modules);
+  const moduleAddress = moduleAddresses && moduleAddresses?.length > 0  && moduleAddresses[0] && typeof(moduleAddresses[0]) === 'string' ? moduleAddresses[0] : '';
+
   useEffect(() => {
     if (environment === 'web3') {
       document.title = 'HOPR | Staking Hub';
@@ -505,7 +508,7 @@ const LayoutEnhanced = () => {
       drawerLoginState={{
         node: nodeConnected,
         web3: web3Connected,
-        safe: !!safeAddress && web3Connected,
+        safe: !!safeAddress && web3Connected && !!moduleAddress,
       }}
       className={environment}
       drawerType={environment === 'web3' ? 'blue' : undefined}
