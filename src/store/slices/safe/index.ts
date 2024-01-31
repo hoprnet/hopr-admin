@@ -8,6 +8,12 @@ const safeSlice = createSlice({
   initialState,
   reducers: {
     resetState: () => initialState,
+    resetStateWithoutSelectedSafe: (state) => {
+      const selectedSafeAddress = state.selectedSafeAddress;
+      const initialStateCopy = JSON.parse(JSON.stringify(initialState));
+      if (selectedSafeAddress) initialStateCopy.selectedSafeAddress = selectedSafeAddress;
+      return initialStateCopy;
+    },
     setSelectedSafe(state, action: PayloadAction<string>) {
       state.selectedSafeAddress.data = action.payload;
     },

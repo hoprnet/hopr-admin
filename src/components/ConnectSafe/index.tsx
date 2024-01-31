@@ -73,6 +73,7 @@ export default function ConnectSafe() {
   const signer = useEthersSigner();
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const safes = useAppSelector((store) => store.stakingHub.safes.data);
+  const safesByOwner = useAppSelector((store) => store.safe.safesByOwner.data);
   const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
@@ -133,6 +134,7 @@ export default function ConnectSafe() {
   const useSelectedSafe = async (safeAddress: string) => {
     if (signer) {
       dispatch(appActions.resetState());
+      dispatch(safeActions.resetStateWithoutSelectedSafe());
       dispatch(safeActions.setSelectedSafe(safeAddress));
       observePendingSafeTransactions({
         dispatch,
@@ -148,6 +150,11 @@ export default function ConnectSafe() {
         safeActionsAsync.getSafeInfoThunk({
           signer: signer,
           safeAddress,
+        })
+      );
+      dispatch(
+        safeActionsAsync.getSafesByOwnerThunk({
+          signer: signer,
         })
       );
       dispatch(
@@ -186,7 +193,7 @@ export default function ConnectSafe() {
       onClick={handleSafeButtonClick}
       ref={menuRef}
       disabled={!isConnected}
-      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${safes.length > 1 ? 'display' : 'display-none'
+      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${safesByOwner.length > 1 ? 'display' : 'display-none'
         }`}
     >
       <div className="image-container">
@@ -218,18 +225,17 @@ export default function ConnectSafe() {
             }}
             disableScrollLock={true}
           >
-            {safes.map((safe, index) => (
+            {safesByOwner.map((safe, index) => (
               <MenuItem
-                key={`${safe.safeAddress}_${index}`}
-                value={safe.safeAddress}
+                key={`${safe}_${index}`}
+                value={safe}
                 onClick={() => {
-                  useSelectedSafe(safe.safeAddress);
+                  useSelectedSafe(safe);
                 }}
               >
-                {safe.safeAddress &&
-                  `${safe.safeAddress.substring(0, 6)}...${safe.safeAddress.substring(
-                    safe.safeAddress.length - 8,
-                    safe.safeAddress.length
+                  {`${safe.substring(0, 6)}...${safe.substring(
+                    safe.length - 8,
+                    safe.length
                   )}`}
               </MenuItem>
             ))}
