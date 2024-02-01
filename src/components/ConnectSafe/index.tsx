@@ -73,14 +73,15 @@ export default function ConnectSafe() {
   const signer = useEthersSigner();
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const safes = useAppSelector((store) => store.stakingHub.safes.data);
-  const safeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
+  const safeAddressFromSafeInfo = useAppSelector((store) => store.safe.info.data?.address);
+  const safeObject = useAppSelector((store) => store.safe.selectedSafe.data);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
   const activePendingSafeTransaction = useAppSelector(
     (store) => store.app.configuration.notifications.pendingSafeTransaction
   );
 
-  const safeObject = safes.filter(elem => elem.safeAddress === safeAddress)[0];
+  const safeAddress = safeObject.safeAddress;
 
   const menuRef = useRef<HTMLButtonElement>(null);
 
@@ -120,19 +121,12 @@ export default function ConnectSafe() {
   }, [safes, safeAddress]);
 
   useEffect(() => {
-    if (safeAddress && browserClient && safes) {
-      const safeObject = safes.filter(elem => elem.safeAddress === safeAddress)[0];
-      useSelectedSafe(safeObject);
-    }
-  }, [safeAddress, browserClient, safes]);
-
-  useEffect(() => {
-    if (safeObject && browserClient) {
+    if (safeObject && browserClient && safeObject.safeAddress) {
       dispatch(
         stakingHubActionsAsync.getOnboardingDataThunk({
           browserClient,
-          safeAddress: safeObject.safeAddress,
-          moduleAddress: safeObject.moduleAddress,
+          safeAddress: safeObject.safeAddress as string,
+          moduleAddress: safeObject.moduleAddress as string ,
         })
       );
     }
