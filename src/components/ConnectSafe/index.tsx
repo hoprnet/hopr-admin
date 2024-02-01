@@ -74,6 +74,7 @@ export default function ConnectSafe() {
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const safes = useAppSelector((store) => store.stakingHub.safes.data);
   const safeAddressFromSafeInfo = useAppSelector((store) => store.safe.info.data?.address);
+  const safeInfoFetching = useAppSelector((store) => store.safe.info.isFetching);
   const safeObject = useAppSelector((store) => store.safe.selectedSafe.data);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
@@ -114,12 +115,20 @@ export default function ConnectSafe() {
     fetchInitialStateForSigner();
   }, [signer]);
 
+  // If no selected safeAddress, choose 1st one
   useEffect(() => {
     if (safes.length > 0 && !safeAddress) {
       dispatch(safeActions.setSelectedSafe(safes[0]));
     }
   }, [safes, safeAddress]);
 
+  useEffect(() => {
+    if(!safeInfoFetching && safeObject.safeAddress !== safeAddressFromSafeInfo) {
+      useSelectedSafe(safeObject);
+    }
+  }, [safeAddressFromSafeInfo, safeObject, safeInfoFetching]);
+
+  // If safe got selected, update all and onboarding data
   useEffect(() => {
     if (safeObject && browserClient && safeObject.safeAddress) {
       dispatch(
@@ -132,13 +141,18 @@ export default function ConnectSafe() {
     }
   }, [safeObject, browserClient]);
 
-  const useSelectedSafe = async (safeObject: {safeAddress: string, moduleAddress: string}) => {
+  const useSelectedSafe = async (safeObject: {safeAddress?: string | null, moduleAddress?: string| null}) => {
+    if(!safeObject.safeAddress || !safeObject.moduleAddress) return;
+
     const safeAddress = safeObject.safeAddress;
     const moduleAddress = safeObject.moduleAddress;
     if (signer) {
       dispatch(appActions.resetState());
       dispatch(safeActions.resetStateWithoutSelectedSafe());
-      dispatch(safeActions.setSelectedSafe(safeObject));
+      dispatch(safeActions.setSelectedSafe({
+        safeAddress,
+        moduleAddress
+      }));
       observePendingSafeTransactions({
         dispatch,
         active: activePendingSafeTransaction,
