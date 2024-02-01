@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { Address, getAddress } from 'viem';
 import { StepContainer } from '../components';
 import { useEthersSigner } from '../../../../hooks';
+import { useNavigate } from 'react-router-dom';
 
 // Web3
 import { createIncludeNodeTransactionData } from '../../../../utils/blockchain';
@@ -21,6 +22,7 @@ export const SSafeTransactionButton = styled(SafeTransactionButton)`
 
 export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?: string | null}) {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const signer = useEthersSigner();
   const safeInfo = useAppSelector((store) => store.safe.info.data);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress) as Address;
@@ -57,15 +59,15 @@ export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?:
 
   const signIncludeNode = async () => {
     if (signer && selectedSafeAddress && moduleAddress && nodeAddress) {
-      dispatch(
+      await dispatch(
         safeActionsAsync.createSafeContractTransactionThunk({
           smartContractAddress: moduleAddress,
           data: createIncludeNodeTransactionData(nodeAddress),
           safeAddress: selectedSafeAddress,
           signer,
         }),
-      )
-        .unwrap()
+      ).unwrap();
+      navigate('/staking/dashboard#transactions');
     }
   };
 

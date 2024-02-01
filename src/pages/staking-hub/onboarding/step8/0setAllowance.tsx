@@ -4,6 +4,7 @@ import Button from '../../../../future-hopr-lib-components/Button';
 import { useEthersSigner } from '../../../../hooks';
 import { StepContainer } from '../components';
 import { Lowercase, StyledCoinLabel, StyledInputGroup, StyledTextField } from '../styled';
+import { useNavigate } from 'react-router-dom';
 
 // Blockchain
 import { Address, parseUnits } from 'viem';
@@ -37,6 +38,7 @@ export const SSafeTransactionButton = styled(SafeTransactionButton)`
 
 export default function SetAllowance() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress) as Address;
   const safeInfo = useAppSelector((store) => store.safe.info.data)
   const signer = useEthersSigner();
@@ -80,6 +82,7 @@ export default function SetAllowance() {
         .unwrap()
         .finally(() => {
           set_isWalletLoading(false);
+          navigate('/staking/dashboard#transactions');
         });
     }
   };
