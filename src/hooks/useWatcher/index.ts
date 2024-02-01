@@ -17,7 +17,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   } = useAppSelector((store) => store.auth.loginData);
   const messages = useAppSelector((store) => store.node.messages);
   const connected = useAppSelector((store) => store.auth.status.connected);
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const signer = useEthersSigner();
   // flags to activate notifications
   const activeChannels = useAppSelector(store => store.app.configuration.notifications.channels)

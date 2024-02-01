@@ -837,7 +837,7 @@ function TransactionHistoryRow(props: { transaction: NonNullable<CustomAllTransa
 function TransactionHistoryTable() {
   const dispatch = useAppDispatch();
   const safeTransactions = useAppSelector((store) => store.safe.allTransactions.data);
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const signer = useEthersSigner();
 
   const fetchAllSafeTransaction = () => {
@@ -890,7 +890,7 @@ function TransactionHistoryTable() {
 const PendingTransactionsTable = () => {
   const dispatch = useAppDispatch();
   const pendingTransactions = useAppSelector((store) => store.safe.pendingTransactions.data);
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const signer = useEthersSigner();
 
   useEffect(() => {

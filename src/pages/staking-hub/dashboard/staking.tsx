@@ -109,13 +109,11 @@ const ColumnChart = () => {
 };
 
 const StakingScreen = () => {
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as `0x${string}`;
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress) as `0x${string}`;
+  const moduleAddress = useAppSelector((store) => store.safe.selectedSafe.data.moduleAddress) as `0x${string}`;
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
   const wxHoprAllowance = useAppSelector((store) => store.stakingHub.safeInfo.data.allowance.wxHoprAllowance);
   const [openBuyModal, set_openBuyModal] = useState(false);
-
-  const moduleAddresses = useAppSelector((store) => store.safe.info.data?.modules);
-  const moduleAddress = moduleAddresses && moduleAddresses?.length > 0  && moduleAddresses[0] && typeof(moduleAddresses[0]) === 'string' ? moduleAddresses[0] : '';
 
   return (
     <Container>

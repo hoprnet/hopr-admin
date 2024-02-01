@@ -82,7 +82,7 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
   const dispatch = useAppDispatch();
   // injected states
   const safeInfo = useAppSelector((store) => store.safe.info.data);
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const nodeAddressFromStore = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
   const safeXDaiBalance = useAppSelector((store) => store.safe.balance.data.xDai.formatted) as string;
   const isExecutionLoading = useAppSelector((store) => store.safe.executeTransaction.isFetching);

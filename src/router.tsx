@@ -358,16 +358,13 @@ const LayoutEnhanced = () => {
   const { disconnect } = useDisconnect();
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const web3Connected = useAppSelector((store) => store.web3.status.connected);
-  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [searchParams] = useSearchParams();
   const apiEndpoint = searchParams.get('apiEndpoint');
   const apiToken = searchParams.get('apiToken');
   const HOPRdNodeAddressForOnboarding = searchParams.get('HOPRdNodeAddressForOnboarding'); //Address given in HOPRd: https://hub.hoprnet.org/staking/onboarding?HOPRdNodeAddressForOnboarding={my_address}
-
-  const moduleAddresses = useAppSelector((store) => store.safe.info.data?.modules);
-  const moduleAddress = moduleAddresses && moduleAddresses?.length > 0  && moduleAddresses[0] && typeof(moduleAddresses[0]) === 'string' ? moduleAddresses[0] : '';
 
   useEffect(() => {
     if (environment === 'web3') {
@@ -508,7 +505,7 @@ const LayoutEnhanced = () => {
       drawerLoginState={{
         node: nodeConnected,
         web3: web3Connected,
-        safe: !!safeAddress && web3Connected && !!moduleAddress,
+        safe: !!safeAddress && web3Connected,
       }}
       className={environment}
       drawerType={environment === 'web3' ? 'blue' : undefined}

@@ -88,8 +88,8 @@ function Dashboard() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [tabIndex, set_tabIndex] = useState(getTabIndexFromUrl());
-  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as string;
-  const moduleAddress =  useAppSelector((store) => store.stakingHub.onboarding.moduleAddress);
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress) as string;
+  const moduleAddress =  useAppSelector((store) => store.safe.selectedSafe.data.moduleAddress);
 
   useEffect(()=>{
     if(safeAddress && moduleAddress && browserClient) {
@@ -138,8 +138,10 @@ function Dashboard() {
           { tabIndex === DASHBOARD.transactions && <SafeActions/>}
         </div>
       </SPaper>
-      <NetworkOverlay/>
-      <StartOnboarding />
+
+      {/* <NetworkOverlay/>
+      <StartOnboarding /> */}
+
     </DashboardContainer>
   );
 }

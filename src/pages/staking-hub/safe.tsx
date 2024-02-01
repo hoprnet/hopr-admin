@@ -31,7 +31,7 @@ function SafeSection() {
   const dispatch = useAppDispatch();
   const safe = useAppSelector((store) => store.safe);
   const stakingHub = useAppSelector((store) => store.stakingHub);
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress) as Address;
   const safesByOwner = useAppSelector((store) => store.safe.safesByOwner.data);
   const allTransactions = useAppSelector((store) => store.safe.allTransactions.data);
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);

@@ -23,7 +23,7 @@ export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?:
   const dispatch = useAppDispatch();
   const signer = useEthersSigner();
   const safeInfo = useAppSelector((store) => store.safe.info.data);
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress) as Address;
   const moduleAddress = useAppSelector((state) => state.stakingHub.onboarding.moduleAddress) as Address;
   const isLoading = useAppSelector((store) => store.safe.executeTransaction.isFetching);
   const nodeAddressFromOnboarding = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;

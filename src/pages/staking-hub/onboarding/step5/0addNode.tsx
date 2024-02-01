@@ -23,7 +23,7 @@ const StyledGrayButton = styled(GrayButton)`
 
 export default function AddNode(props?: { onDone?: Function, onBack?: Function, nodeAddress?: string | null }) {
   const dispatch = useAppDispatch();
-  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
 
   //http://localhost:5173/staking/onboarding?HOPRdNodeAddressForOnboarding=helloMyfield
   const HOPRdNodeAddressForOnboarding = useAppSelector((store) => store.stakingHub.onboarding.nodeAddressProvidedByMagicLink);

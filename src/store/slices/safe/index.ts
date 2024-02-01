@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { getAddress } from 'viem';
 import { actionsAsync, createAsyncReducer } from './actionsAsync';
 import { createFetchingReducer } from './actionsFetching';
 import { initialState } from './initialState';
@@ -9,13 +10,17 @@ const safeSlice = createSlice({
   reducers: {
     resetState: () => initialState,
     resetStateWithoutSelectedSafe: (state) => {
-      const selectedSafeAddress = state.selectedSafeAddress;
+      const selectedSafeAddress = JSON.parse(JSON.stringify(initialState));
       const initialStateCopy = JSON.parse(JSON.stringify(initialState));
       if (selectedSafeAddress) initialStateCopy.selectedSafeAddress = selectedSafeAddress;
       return initialStateCopy;
     },
-    setSelectedSafe(state, action: PayloadAction<string>) {
-      state.selectedSafeAddress.data = action.payload;
+    setSelectedSafe(state, action: PayloadAction<{
+      safeAddress: string,
+      moduleAddress: string
+    }>) {
+      state.selectedSafe.data.safeAddress = getAddress(action.payload.safeAddress);
+      state.selectedSafe.data.moduleAddress = getAddress(action.payload.moduleAddress);
     },
     setSafeBalance_xDai(state, action) {
       state.balance.data.xDai.value = action.payload ? action.payload.value : null;

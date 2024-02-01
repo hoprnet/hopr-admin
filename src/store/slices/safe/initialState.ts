@@ -50,7 +50,13 @@ export type CustomAllTransactionsListResponse =
   | null;
 
 type InitialState = {
-  selectedSafeAddress: { data: string | null; isFetching: boolean };
+  selectedSafe: {
+    data: {
+      safeAddress: string | null;
+      moduleAddress: string | null;
+    }
+    isFetching: boolean
+  };
   safesByOwner: { data: string[]; isFetching: boolean };
   allTransactions: { data: CustomAllTransactionsListResponse | null; isFetching: boolean };
   pendingTransactions: { data: CustomSafeMultisigTransactionListResponse | null; isFetching: boolean };
@@ -88,8 +94,11 @@ type InitialState = {
 };
 
 export const initialState: InitialState = {
-  selectedSafeAddress: {
-    data: null,
+  selectedSafe: {
+    data:  {
+      safeAddress: null,
+      moduleAddress: null,
+    },
     isFetching: false,
   },
   safesByOwner: {

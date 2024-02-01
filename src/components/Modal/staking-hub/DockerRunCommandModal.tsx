@@ -17,8 +17,8 @@ type DockerRunCommandModalProps = {
 
 export const DockerRunCommandModal = (props: DockerRunCommandModalProps) => {
   const [openModal, setOpenModal] = useState(false);
-  const safeAddress = useAppSelector((store) => store.stakingHub.onboarding.safeAddress);
-  const moduleAddress = useAppSelector((store) => store.stakingHub.onboarding.moduleAddress);
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
+  const moduleAddress = useAppSelector((store) => store.safe.selectedSafe.data.moduleAddress);
 
   const handleOpenModal = () => {
     setOpenModal(true);

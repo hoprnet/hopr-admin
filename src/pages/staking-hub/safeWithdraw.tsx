@@ -121,7 +121,7 @@ function SafeWithdraw() {
   const [searchParams, setSearchParams] = useSearchParams();
   const tokenParam = searchParams.get('token');
   const pendingTransactions = useAppSelector((store) => store.safe.pendingTransactions.data);
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const safeInfo = useAppSelector((store) => store.safe.info.data);
   const address = useAppSelector((store) => store.web3.account);
   const communityNftIds = useAppSelector((store) => store.safe.communityNftIds.data);

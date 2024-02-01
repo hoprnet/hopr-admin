@@ -30,7 +30,8 @@ import {
   keccak256,
   publicActions,
   toBytes,
-  toHex
+  toHex,
+  getAddress,
 } from 'viem'
 import { RootState } from '../..';
 import {
@@ -139,7 +140,7 @@ const createVanillaSafeWithConfigThunk = createAsyncThunk<
     }
   },
   { condition: (_payload, { getState }) => {
-    const isFetching = getState().safe.selectedSafeAddress.isFetching;
+    const isFetching = getState().safe.selectedSafe.isFetching;
     if (isFetching) {
       return false;
     }
@@ -779,7 +780,7 @@ const getAllSafeTransactionsThunk = createAsyncThunk<
       const safeApi = await createSafeApiService(payload.signer);
       const transactions = await safeApi.getAllTransactions(payload.safeAddress, {
         ...payload.options,
-        executed: true,
+        executed: true
       });
       return transactions;
     } catch (e) {
@@ -1164,7 +1165,7 @@ const createSafeWithConfigThunk = createAsyncThunk<
     }
   },
   { condition: (_payload, { getState }) => {
-    const isFetching = getState().safe.selectedSafeAddress.isFetching;
+    const isFetching = getState().safe.selectedSafe.isFetching;
     if (isFetching) {
       return false;
     }
@@ -1223,22 +1224,22 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       state.delegates.data = null;
       state.pendingTransactions.data = null;
       state.info.data = null;
-      state.selectedSafeAddress.data = action.payload.safeAddress;
+      state.selectedSafe.data.safeAddress = getAddress(action.payload.safeAddress);
     }
-    state.selectedSafeAddress.isFetching = false;
+    state.selectedSafe.isFetching = false;
   });
   builder.addCase(createSafeWithConfigThunk.rejected, (state) => {
-    state.selectedSafeAddress.isFetching = false;
+    state.selectedSafe.isFetching = false;
   });
   // CreateVanillaSafeWithConfig
   builder.addCase(createVanillaSafeWithConfigThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      state.selectedSafeAddress.data = action.payload;
+      state.selectedSafe.data.safeAddress = getAddress(action.payload);
     }
-    state.selectedSafeAddress.isFetching = false;
+    state.selectedSafe.isFetching = false;
   });
   builder.addCase(createVanillaSafeWithConfigThunk.rejected, (state) => {
-    state.selectedSafeAddress.isFetching = false;
+    state.selectedSafe.isFetching = false;
   });
   // GetSafesByOwner
   builder.addCase(getSafesByOwnerThunk.fulfilled, (state, action) => {

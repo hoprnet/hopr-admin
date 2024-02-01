@@ -84,8 +84,8 @@ function SafeDashboard() {
   const walletAddress = useAppSelector((store) => store.web3.account);
   const { data: walletClient } = useWalletClient();
   const safeInfo = useAppSelector((store) => store.safe.info.data);
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as `0x${string}`;
-  const moduleAddress = useAppSelector((store) => store.stakingHub.onboarding.moduleAddress) as `0x${string}`;
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress) as `0x${string}`;
+  const moduleAddress = useAppSelector((store) => store.safe.selectedSafe.data.moduleAddress) as `0x${string}`;
   const needsUpdate = useAppSelector((store) => store.stakingHub.config.needsUpdate.data);
   const updateStrategy = useAppSelector((store) => store.stakingHub.config.needsUpdate.strategy);
   const communityNftIdInWallet = useAppSelector((store) => store.web3.communityNftId);

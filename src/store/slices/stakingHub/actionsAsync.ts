@@ -16,7 +16,7 @@ import { gql } from 'graphql-request';
 import { stakingHubActions } from '.';
 import { safeActionsAsync } from '../safe';
 import { NodePayload } from './initialState';
-import { formatEther } from 'viem';
+import { formatEther, getAddress } from 'viem';
 
 const getHubSafesByOwnerThunk = createAsyncThunk<
   {
@@ -33,18 +33,42 @@ const getHubSafesByOwnerThunk = createAsyncThunk<
   }) => {
     dispatch(setHubSafesByOwnerFetching(true));
     try {
-      const resp = await fetch('https://stake.hoprnet.org/api/hub/getSafes', {
+      const ownerAddress = payload.toLocaleLowerCase();
+
+      const GET_THEGRAPH_QUERY = gql`{
+        safes(
+          where: {isCreatedByNodeStakeFactory: true, owners_: {owner: "${ownerAddress}"}}
+          first: 1000
+        ) {
+          id
+          addedModules {
+            module {
+              id
+            }
+          }
+        }
+      }`
+
+      const resp = await fetch(STAKING_V2_SUBGRAPH, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ownerAddress: payload }),
+        body: GET_THEGRAPH_QUERY,
       });
-      const json: { moduleaddress: string; safeaddress: string }[] = await resp.json();
-      const mapped = json.map((elem) => {
+      const json: { safes: {
+        id: string,
+        addedModules: {
+          module: {
+            id: string
+          }
+        }[]
+      }[]} = await resp.json();
+
+      let mapped = json.safes.map((elem) => {
         return {
-          moduleAddress: elem.moduleaddress,
-          safeAddress: elem.safeaddress,
+          moduleAddress: getAddress(elem.addedModules[0].module.id),
+          safeAddress: getAddress(elem.id),
         };
       });
+      mapped = mapped.filter(elem => elem.moduleAddress);
       return mapped;
     } catch (e) {
       return rejectWithValue(e);
@@ -57,6 +81,7 @@ const getHubSafesByOwnerThunk = createAsyncThunk<
     }
   } },
 );
+
 
 const registerNodeAndSafeToNRThunk = createAsyncThunk<
   | {
@@ -379,8 +404,8 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
         return 4;
       }
 
-      console.log('[Onboarding check] Safe created', state.safe.selectedSafeAddress.data);
-      if (state.safe.selectedSafeAddress.data) {
+      console.log('[Onboarding check] Safe created', state.safe.selectedSafe.data.safeAddress);
+      if (state.safe.selectedSafe.data.safeAddress) {
         return 2;
       }
 

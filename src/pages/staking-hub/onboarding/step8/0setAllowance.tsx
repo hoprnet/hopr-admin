@@ -37,7 +37,7 @@ export const SSafeTransactionButton = styled(SafeTransactionButton)`
 
 export default function SetAllowance() {
   const dispatch = useAppDispatch();
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress) as Address;
   const safeInfo = useAppSelector((store) => store.safe.info.data)
   const signer = useEthersSigner();
   const [wxHoprValue, set_wxHoprValue] = useState('');

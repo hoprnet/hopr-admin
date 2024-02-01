@@ -72,15 +72,15 @@ export default function ConnectSafe() {
   const dispatch = useAppDispatch();
   const signer = useEthersSigner();
   const isConnected = useAppSelector((store) => store.web3.status.connected);
-  const safesByOwner = useAppSelector((store) => store.safe.safesByOwner.data);
-  const moduleAddresses = useAppSelector((store) => store.safe.info.data?.modules);
-  const moduleAddress = moduleAddresses && moduleAddresses?.length > 0  && moduleAddresses[0] && typeof(moduleAddresses[0]) === 'string' ? moduleAddresses[0] : '';
-  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const safes = useAppSelector((store) => store.stakingHub.safes.data);
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
   const activePendingSafeTransaction = useAppSelector(
     (store) => store.app.configuration.notifications.pendingSafeTransaction
   );
+
+  const safeObject = safes.filter(elem => elem.safeAddress === safeAddress)[0];
 
   const menuRef = useRef<HTMLButtonElement>(null);
 
@@ -114,34 +114,37 @@ export default function ConnectSafe() {
   }, [signer]);
 
   useEffect(() => {
-    if (safesByOwner.length > 0 && !safeAddress) {
-      dispatch(safeActions.setSelectedSafe(safesByOwner[0]));
+    if (safes.length > 0 && !safeAddress) {
+      dispatch(safeActions.setSelectedSafe(safes[0]));
     }
-  }, [safesByOwner, safeAddress]);
+  }, [safes, safeAddress]);
 
   useEffect(() => {
-    if (safeAddress && browserClient) {
-      useSelectedSafe(safeAddress);
+    if (safeAddress && browserClient && safes) {
+      const safeObject = safes.filter(elem => elem.safeAddress === safeAddress)[0];
+      useSelectedSafe(safeObject);
     }
-  }, [safeAddress]);
+  }, [safeAddress, browserClient, safes]);
 
   useEffect(() => {
-    if (safeAddress && browserClient && moduleAddress) {
+    if (safeObject && browserClient) {
       dispatch(
         stakingHubActionsAsync.getOnboardingDataThunk({
           browserClient,
-          safeAddress,
-          moduleAddress,
+          safeAddress: safeObject.safeAddress,
+          moduleAddress: safeObject.moduleAddress,
         })
       );
     }
-  }, [safeAddress, moduleAddress]);
+  }, [safeObject, browserClient]);
 
-  const useSelectedSafe = async (safeAddress: string) => {
+  const useSelectedSafe = async (safeObject: {safeAddress: string, moduleAddress: string}) => {
+    const safeAddress = safeObject.safeAddress;
+    const moduleAddress = safeObject.moduleAddress;
     if (signer) {
       dispatch(appActions.resetState());
       dispatch(safeActions.resetStateWithoutSelectedSafe());
-      dispatch(safeActions.setSelectedSafe(safeAddress));
+      dispatch(safeActions.setSelectedSafe(safeObject));
       observePendingSafeTransactions({
         dispatch,
         active: activePendingSafeTransaction,
@@ -189,7 +192,7 @@ export default function ConnectSafe() {
   };
 
   const handleSafeButtonClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (isConnected && safesByOwner.length > 0) {
+    if (isConnected && safes.length > 0) {
       handleOpenMenu(event);
     }
   };
@@ -199,7 +202,7 @@ export default function ConnectSafe() {
       onClick={handleSafeButtonClick}
       ref={menuRef}
       disabled={!isConnected}
-      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${safesByOwner.length > 1 ? 'display' : 'display-none'
+      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${safes.length > 1 ? 'display' : 'display-none'
         }`}
     >
       <div className="image-container">
@@ -231,17 +234,17 @@ export default function ConnectSafe() {
             }}
             disableScrollLock={true}
           >
-            {safesByOwner.map((safe, index) => (
+            {safes.map((safe, index) => (
               <MenuItem
-                key={`${safe}_${index}`}
-                value={safe}
+                key={`${safe.safeAddress}_${index}`}
+                value={safe.safeAddress}
                 onClick={() => {
                   useSelectedSafe(safe);
                 }}
               >
-                  {`${safe.substring(0, 6)}...${safe.substring(
-                    safe.length - 8,
-                    safe.length
+                  {`${safe.safeAddress.substring(0, 6)}...${safe.safeAddress.substring(
+                    safe.safeAddress.length - 8,
+                    safe.safeAddress.length
                   )}`}
               </MenuItem>
             ))}
