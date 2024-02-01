@@ -119,14 +119,9 @@ export default function ConnectSafe() {
   useEffect(() => {
     if (safes.length > 0 && !safeAddress) {
       dispatch(safeActions.setSelectedSafe(safes[0]));
+      useSelectedSafe(safes[0]);
     }
   }, [safes, safeAddress]);
-
-  useEffect(() => {
-    if(!safeInfoFetching && safeObject.safeAddress !== safeAddressFromSafeInfo) {
-      useSelectedSafe(safeObject);
-    }
-  }, [safeAddressFromSafeInfo, safeObject, safeInfoFetching]);
 
   // If safe got selected, update all and onboarding data
   useEffect(() => {
