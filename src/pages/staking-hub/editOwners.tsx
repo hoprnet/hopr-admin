@@ -249,6 +249,7 @@ export default function EditOwners() {
       }
     }
   };
+  const cantRemoveOwner = safeOwners?.length === parseInt(safeThreshold ? safeThreshold : '0');
 
   return (
     <Section
@@ -269,15 +270,18 @@ export default function EditOwners() {
             {owner}
             {
               safeOwners.length !== 1 &&
-              <Tooltip title={'Remove owner from Safe'}>
-                <IconButton
-                  aria-label="Remove owner from Safe"
-                  onClick={() => {
-                    set_confirmRemoveOwner(owner ? owner : false);
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
+              <Tooltip title={cantRemoveOwner ? 'Safe threshold can`t be lower than number of owners. Change nubmer of required confirmations first.' : 'Remove owner from Safe'}>
+                <span>
+                  <IconButton
+                    aria-label="Remove owner from Safe"
+                    disabled={cantRemoveOwner}
+                    onClick={() => {
+                      set_confirmRemoveOwner(owner ? owner : false);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </span>
               </Tooltip>
             }
           </li>)}
@@ -394,9 +398,9 @@ export default function EditOwners() {
           />
         }
       />
-
+{/*
       <StartOnboarding/>
-      <NetworkOverlay/>
+      <NetworkOverlay/> */}
     </Section>
   );
 }

@@ -145,7 +145,7 @@ export default function FundNode() {
       fullHeightMin
       lightBlue
     >
-      <StartOnboarding />
+      {/* <StartOnboarding /> */}
       <StepContainer
         title="FUND YOUR NODE WITH xDAI"
         image={{
