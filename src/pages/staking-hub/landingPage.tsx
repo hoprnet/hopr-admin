@@ -346,8 +346,8 @@ const StakingLandingPage = () => {
         gradient
       >
 
-        {/* <StartOnboarding />
-        <ContinueOnboarding /> */}
+        <StartOnboarding />
+        <ContinueOnboarding />
 
         <StyledContainer>
           <ImageContainer>

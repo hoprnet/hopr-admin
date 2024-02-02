@@ -139,8 +139,8 @@ function Dashboard() {
         </div>
       </SPaper>
 
-      {/* <NetworkOverlay/>
-      <StartOnboarding /> */}
+      <NetworkOverlay/>
+      <StartOnboarding />
 
     </DashboardContainer>
   );
