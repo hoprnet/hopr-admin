@@ -166,6 +166,7 @@ export default function EditOwners() {
             browserClient && await browserClient.waitForTransactionReceipt({ hash: transactionHash as `0x${string}` });
           set_updateSafeThresholdConfirm(false);
           dispatch(stakingHubActions.updateThreshold(newThreshold));
+          dispatch(safeActions.updateThreshold(newThreshold));
         }).finally(()=>{
           set_pending(false);
         });

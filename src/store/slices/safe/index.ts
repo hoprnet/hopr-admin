@@ -46,6 +46,9 @@ const safeSlice = createSlice({
     addOwnerToSafe: (state, action) => {
       state.info.data?.owners.push(action.payload);
     },
+    updateThreshold: (state, action) => {
+      if(action.payload && state.info.data?.threshold) state.info.data.threshold = parseInt(action.payload);
+    },
     removeOwnerFromSafe: (state, action) => {
       if(state.info.data?.owners){
         state.info.data.owners = state.info.data.owners.filter(owner => owner !== action.payload);
