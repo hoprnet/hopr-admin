@@ -613,12 +613,20 @@ const executePendingTransactionThunk = createAsyncThunk<
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
       await safeSDK.executeTransaction(payload.safeTransaction);
       // re fetch all txs
-      dispatch(
-        getPendingSafeTransactionsThunk({
-          safeAddress: payload.safeAddress,
-          signer: payload.signer,
-        }),
-      );
+      setTimeout(()=> {
+        dispatch(
+          getPendingSafeTransactionsThunk({
+            safeAddress: payload.safeAddress,
+            signer: payload.signer,
+          }),
+        );
+        dispatch(
+          getAllSafeTransactionsThunk({
+            safeAddress: payload.safeAddress,
+            signer: payload.signer,
+          }),
+        );
+      }, 1_000);
       return true;
     } catch (e) {
       if (e instanceof Error) {
@@ -1315,7 +1323,6 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     }
     state.allTransactions.isFetching = false;
   });
-
   builder.addCase(getAllSafeTransactionsThunk.rejected, (state) => {
     state.allTransactions.isFetching = false;
   });
