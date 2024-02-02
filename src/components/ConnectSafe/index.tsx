@@ -103,25 +103,26 @@ export default function ConnectSafe() {
     };
   }, []);
 
-  useEffect(() => {
-    const fetchInitialStateForSigner = async () => {
-      if (signer) {
-        dispatch(safeActions.resetState());
-        dispatch(stakingHubActions.resetStateWithoutMagicLinkForOnboarding());
-        dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer }));
-      }
-    };
+  // useEffect(() => {
+  //   const fetchInitialStateForSigner = async () => {
+  //     if (signer) {
+  //       dispatch(safeActions.resetState());
+  //       dispatch(stakingHubActions.resetStateWithoutMagicLinkForOnboarding());
+  //       dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer }));
+  //     }
+  //   };
 
-    fetchInitialStateForSigner();
-  }, [signer]);
+  //   fetchInitialStateForSigner();
+  // }, [signer]);
 
   // If no selected safeAddress, choose 1st one
   useEffect(() => {
-    if (safes.length > 0 && !safeAddress) {
-      dispatch(safeActions.setSelectedSafe(safes[0]));
+    if (safes.length > 0 && !safeAddress && signer) {
+      console.log('useSelectedSafe', safes[0])
+//      dispatch(safeActions.setSelectedSafe(safes[0]));
       useSelectedSafe(safes[0]);
     }
-  }, [safes, safeAddress]);
+  }, [safes, safeAddress, signer]);
 
   // If safe got selected, update all and onboarding data
   useEffect(() => {
@@ -138,7 +139,7 @@ export default function ConnectSafe() {
 
   const useSelectedSafe = async (safeObject: {safeAddress?: string | null, moduleAddress?: string| null}) => {
     if(!safeObject.safeAddress || !safeObject.moduleAddress) return;
-
+    console.log('useSelectedSafe in', safeObject, signer)
     const safeAddress = safeObject.safeAddress;
     const moduleAddress = safeObject.moduleAddress;
     if (signer) {

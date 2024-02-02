@@ -40,15 +40,18 @@ export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?:
   const [thisTransactionHasSignaturesIsWaitingToExecute, set_thisTransactionHasSignaturesIsWaitingToExecute] = useState<false | SafeMultisigTransactionResponse>(false);
 
   useEffect(()=>{
-    if(walletAddress && moduleAddress && threshold && threshold > 1) {
+    if(walletAddress && moduleAddress && threshold && threshold > 1 && nodeAddress) {
       if(pendingTransations && pendingTransations.length !== 0) {
         for(let i = 0; i < pendingTransations.length; i++) {
           if(
             pendingTransations[i] &&
             moduleAddress === pendingTransations[i].to &&
-            pendingTransations[i].data === '0xb573696234c7bc61c7a860a2f30754e8c425f9a68605d484010201000000000000000000' &&
+            pendingTransations[i].data && typeof(pendingTransations[i].data) === 'string' &&
+            // @ts-ignore
+            pendingTransations[i].data.slice(0,10) === '0xb5736962' && pendingTransations[i].data.slice(50,73) === '01020100000000000000000' && pendingTransations[i].data.slice(10,50).toLowerCase() === nodeAddress.toLowerCase().slice(2,42) &&
             pendingTransations[i].confirmations!.length > 0
           ) {
+            console.log('[Onboarding check] We have an onboarding TX created for that node', pendingTransations[i])
             const confirmationsDone = pendingTransations[i].confirmations!.length | 0;
 
             // If this is the last signature or we have all signatures
@@ -73,7 +76,7 @@ export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?:
         }
       }
     }
-  },[threshold, pendingTransations, moduleAddress, walletAddress])
+  },[threshold, pendingTransations, moduleAddress, walletAddress, nodeAddress])
 
   const executeIncludeNode = async () => {
     if (signer && selectedSafeAddress && moduleAddress && nodeAddress) {
