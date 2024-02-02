@@ -629,6 +629,8 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       if (state.onboarding.step !== 0 && state.onboarding.step !== 15 && state.onboarding.step !== 16) {
         state.onboarding.notFinished = true;
         state.onboarding.notStarted = false;
+      } else if (state.onboarding.step === 16) {
+        state.onboarding.notFinished = false;
       }
     }
   });

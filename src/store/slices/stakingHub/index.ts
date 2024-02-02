@@ -13,6 +13,12 @@ const stakingHubSlice = createSlice({
       if (nodeAddressProvidedByMagicLink) state.onboarding.nodeAddressProvidedByMagicLink = nodeAddressProvidedByMagicLink;
       return initialStateCopy;
     },
+    resetStateWithoutSafeList: (state) => {
+      const safes = JSON.parse(JSON.stringify(state.safes.data));
+      const initialStateCopy = JSON.parse(JSON.stringify(initialState));
+      initialStateCopy.safes.data = safes;
+      return initialStateCopy;
+    },
     resetOnboardingState: (state) => {
       state.onboarding = {
         step: 0,

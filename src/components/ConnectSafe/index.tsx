@@ -145,6 +145,7 @@ export default function ConnectSafe() {
     if (signer) {
       dispatch(appActions.resetState());
       dispatch(safeActions.resetStateWithoutSelectedSafe());
+      dispatch(stakingHubActions.resetStateWithoutSafeList());
       dispatch(safeActions.setSelectedSafe({
         safeAddress,
         moduleAddress
