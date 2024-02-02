@@ -182,6 +182,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
 
   // TODO: remove this isLoading functions when isLoading is moved to redux
   const executeTx = (transaction: SafeMultisigTransactionResponse) => {
+    console.log('transaction' , transaction)
     if (signer) {
       set_isLoadingExecuting(true);
       dispatch(

@@ -3,15 +3,18 @@ import { Address, getAddress } from 'viem';
 import { StepContainer } from '../components';
 import { useEthersSigner } from '../../../../hooks';
 import { useNavigate } from 'react-router-dom';
-
-// Web3
-import { createIncludeNodeTransactionData } from '../../../../utils/blockchain';
+import Button from '../../../../future-hopr-lib-components/Button';
 
 // Store
 import { useAppSelector, useAppDispatch } from '../../../../store';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
 import { safeActionsAsync } from '../../../../store/slices/safe';
 import SafeTransactionButton from '../../../../components/SafeTransactionButton';
+import { useState, useEffect } from 'react';
+
+// Web3
+import { createIncludeNodeTransactionData } from '../../../../utils/blockchain';
+import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 
 
 export const SSafeTransactionButton = styled(SafeTransactionButton)`
@@ -25,11 +28,52 @@ export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?:
   const navigate = useNavigate();
   const signer = useEthersSigner();
   const safeInfo = useAppSelector((store) => store.safe.info.data);
+  const walletAddress =  useAppSelector((store) => store.web3.account);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress) as Address;
   const moduleAddress = useAppSelector((state) => state.stakingHub.onboarding.moduleAddress) as Address;
   const isLoading = useAppSelector((store) => store.safe.executeTransaction.isFetching);
   const nodeAddressFromOnboarding = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
+  const threshold = safeInfo?.threshold;
   const nodeAddress = props?.nodeAddress ? props.nodeAddress : nodeAddressFromOnboarding;
+  const pendingTransations = useAppSelector((store) => store.safe.pendingTransactions.data?.results);
+  const [thisTransactionIsWaitingToSign, set_thisTransactionIsWaitingToSign] = useState(false);
+  const [thisTransactionHasSignaturesIsWaitingToExecute, set_thisTransactionHasSignaturesIsWaitingToExecute] = useState<false | SafeMultisigTransactionResponse>(false);
+
+  useEffect(()=>{
+    if(walletAddress && moduleAddress && threshold && threshold > 1) {
+      if(pendingTransations && pendingTransations.length !== 0) {
+        for(let i = 0; i < pendingTransations.length; i++) {
+          if(
+            pendingTransations[i] &&
+            moduleAddress === pendingTransations[i].to &&
+            pendingTransations[i].data === '0xb573696234c7bc61c7a860a2f30754e8c425f9a68605d484010201000000000000000000' &&
+            pendingTransations[i].confirmations!.length > 0
+          ) {
+            const confirmationsDone = pendingTransations[i].confirmations!.length | 0;
+
+            // If this is the last signature or we have all signatures
+            if(pendingTransations[i].confirmationsRequired - 1 >= confirmationsDone) {
+              console.log('pendingTransations[i]', pendingTransations[i])
+              set_thisTransactionHasSignaturesIsWaitingToExecute(pendingTransations[i]);
+              return
+            }
+
+            //If not last signature needed
+            const confirmations = pendingTransations[i].confirmations;
+            for(let j = 0; j < confirmationsDone; j++) {
+              // @ts-ignore
+              const confirmation = confirmations[j];
+              const signerOfTheConfirmation = confirmation.owner;
+              if(signerOfTheConfirmation === walletAddress) {
+                set_thisTransactionIsWaitingToSign(true);
+                return;
+              }
+            }
+          }
+        }
+      }
+    }
+  },[threshold, pendingTransations, moduleAddress, walletAddress])
 
   const executeIncludeNode = async () => {
     if (signer && selectedSafeAddress && moduleAddress && nodeAddress) {
@@ -71,6 +115,29 @@ export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?:
     }
   };
 
+  const executeSignedIncludeNode = async (transaction: SafeMultisigTransactionResponse) => {
+    if (signer && selectedSafeAddress && moduleAddress && nodeAddress){
+      await dispatch(
+        safeActionsAsync.executePendingTransactionThunk({
+          safeAddress: transaction.safe,
+          signer,
+          safeTransaction: transaction,
+        }),
+      ).unwrap().then(() => {
+        if (props?.onDone){
+          props.onDone();
+          dispatch(stakingHubActions.setNextOnboarding({
+            key: 'includedInModule',
+            nodeAddress: nodeAddress,
+            value: true,
+          }));
+        } else {
+          dispatch(stakingHubActions.setOnboardingStep(14));
+        }
+      });
+    }
+  };
+
   return (
     <StepContainer
       title="CONFIGURE NODE"
@@ -80,6 +147,13 @@ export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?:
         height: 200,
       }}
       buttons={
+        thisTransactionHasSignaturesIsWaitingToExecute ?
+        <Button
+          onClick={()=>{executeSignedIncludeNode(thisTransactionHasSignaturesIsWaitingToExecute)}}
+        >
+          EXECUTE
+        </Button>
+        :
         <SSafeTransactionButton
           executeOptions={{
             onClick: executeIncludeNode,
@@ -90,10 +164,12 @@ export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?:
             onClick: signIncludeNode,
             pending: isLoading,
             buttonText: 'SIGN',
+            disabled: thisTransactionIsWaitingToSign,
+            tooltipText: thisTransactionIsWaitingToSign ? 'You need to sign this transaction by using  another owner' : undefined
           }}
           safeInfo={safeInfo}
         />
-      }
+       }
     />
   );
 }
