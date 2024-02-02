@@ -33,10 +33,13 @@ type SafeButtonProps = {
  */
 export default function SafeTransactionButton(props: SafeButtonProps) {
   const [userCanSkipProposal, set_userCanSkipProposal] = useState(false);
+  const [indexerDidNotWork, set_indexerDidNotWork] = useState(false);
 
   useEffect(() => {
     if (props.safeInfo) {
       set_userCanSkipProposal(getUserCanSkipProposal(props.safeInfo));
+    } else {
+      set_indexerDidNotWork(true)
     }
   }, [props.safeInfo]);
 
@@ -50,6 +53,18 @@ export default function SafeTransactionButton(props: SafeButtonProps) {
             onClick={props.executeOptions.onClick}
           >
             {props.executeOptions.buttonText ?? 'EXECUTE'}
+          </Button>
+        </span>
+      </Tooltip>
+    );
+  } else if (indexerDidNotWork) {
+    return (
+      <Tooltip title='Indexer did not find your safe yet. Please try in 10min'>
+        <span>
+          <Button
+            disabled={true}
+          >
+            {props.signOptions.buttonText ?? 'SIGN'}
           </Button>
         </span>
       </Tooltip>

@@ -154,7 +154,7 @@ export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?:
         <Button
           onClick={()=>{executeSignedIncludeNode(thisTransactionHasSignaturesIsWaitingToExecute)}}
         >
-          EXECUTE
+          EXECUTE2
         </Button>
         :
         <SSafeTransactionButton
