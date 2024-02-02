@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { Address, getAddress } from 'viem';
 import { StepContainer } from '../components';
@@ -10,7 +11,6 @@ import { useAppSelector, useAppDispatch } from '../../../../store';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
 import { safeActionsAsync } from '../../../../store/slices/safe';
 import SafeTransactionButton from '../../../../components/SafeTransactionButton';
-import { useState, useEffect } from 'react';
 
 // Web3
 import { createIncludeNodeTransactionData } from '../../../../utils/blockchain';
@@ -168,7 +168,7 @@ export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?:
             pending: isLoading,
             buttonText: 'SIGN',
             disabled: thisTransactionIsWaitingToSign,
-            tooltipText: thisTransactionIsWaitingToSign ? 'You need to sign this transaction by using  another owner' : undefined
+            tooltipText: thisTransactionIsWaitingToSign ? 'You need to sign this transaction by using another owner' : undefined
           }}
           safeInfo={safeInfo}
         />
