@@ -302,6 +302,7 @@ const getOnboardingTooltip = (
   inNetworkRegistry?: boolean,
   isDelegate?: boolean,
   includedInModule?: boolean,
+  balanceFormatted?: string,
 ) => {
   if(onboardingNotFinished) {
     return (
@@ -315,7 +316,7 @@ const getOnboardingTooltip = (
         Node not registered on the network
       </span>
     )
-  }else if (!includedInModule || !isDelegate) {
+  }else if (!includedInModule || !isDelegate || balanceFormatted === '0') {
     return (
       <span>
         Finish ONBOARDING for this node
@@ -350,9 +351,9 @@ const NodeAdded = () => {
     console.log('chosenNode', chosenNode)
   }, [chosenNode]);
 
-  const delegatesArray = delegates?.results?.map(elem => elem.delegate.toLocaleLowerCase()) || [];
-  const nodesPeerIdArr = Object.keys(nodes);
-  const parsedTableData = nodesPeerIdArr.map((node, index) => {
+    const delegatesArray = delegates?.results?.map(elem => elem.delegate.toLocaleLowerCase()) || [];
+    const nodesPeerIdArr = Object.keys(nodes);
+    const parsedTableData = nodesPeerIdArr.map((node, index) => {
     const inNetworkRegistry = nodes[node].registeredNodesInNetworkRegistry;
     const inSafeRegistry = nodes[node].registeredNodesInSafeRegistry
     const isDelegate = delegatesArray.includes(node);
@@ -390,11 +391,12 @@ const NodeAdded = () => {
             inNetworkRegistry,
             isDelegate,
             includedInModule,
+            nodes[node].balanceFormatted
           )}
           onClick={()=>{
             navigate(`/staking/onboarding/nextNode?nodeAddress=${node}`);
           }}
-          disabled={onboardingNotFinished || (includedInModule && isDelegate)}
+          disabled={(onboardingNotFinished || (includedInModule && isDelegate && nodes[node].balanceFormatted !== '0'))}
         />
         <IconButton
           iconComponent={<VisibilityIcon />}
