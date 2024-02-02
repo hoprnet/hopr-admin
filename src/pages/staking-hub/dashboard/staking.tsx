@@ -18,6 +18,7 @@ const Container = styled.div`
   flex-direction: column;
   gap: 1rem;
   padding: 2rem;
+  color: #414141;
 `;
 
 const FlexContainer = styled.div`

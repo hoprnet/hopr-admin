@@ -260,6 +260,7 @@ const StyledAccordion = styled(Accordion)`
   box-shadow: none;
   border: none;
   margin: 0;
+  text-align: justify;
 
   &::before {
     display: none;
@@ -277,6 +278,7 @@ const SAccordionSummary = styled(AccordionSummary)`
 
   &.Mui-expanded {
     min-height: 48px;
+    border-bottom: 0;
   }
 
   .MuiAccordionSummary-content,
