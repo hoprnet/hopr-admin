@@ -63,11 +63,13 @@ export const SSafeTransactionButton = styled(SafeTransactionButton)`
 
 export default function EditOwners() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const safeInfo = useAppSelector((store) => store.safe.info.data);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress) as Address;
   const safeModules = useAppSelector((state) => state.safe.info.data?.modules);
   const safeOwners = useAppSelector((store) => store.safe.info.data?.owners);
   const safeThreshold = useAppSelector((store) => store.stakingHub.safeInfo.data.threshold);
+  const walletAddress = useAppSelector((store) => store.web3.account);
   const signer = useEthersSigner();
   const [newOwner, set_newOwner] = useState('');
   const [newThreshold, set_newThreshold] = useState<null | string>(null);
@@ -219,8 +221,13 @@ export default function EditOwners() {
         browserClient && await browserClient.waitForTransactionReceipt({ hash: transactionHash as `0x${string}` });
         dispatch(safeActions.removeOwnerFromSafe(confirmRemoveOwner));
       }).finally(async()=>{
-        set_confirmRemoveOwner(false);
-        set_pending(false);
+        // set_confirmRemoveOwner(false);
+        // set_pending(false);
+        if(walletAddress && confirmRemoveOwner.toLowerCase() === walletAddress.toLowerCase()) {
+          setTimeout(()=>{
+            window.location.href = window.location.origin;
+          }, 2_000)
+        }
       });
 
     }
