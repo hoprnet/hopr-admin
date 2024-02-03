@@ -59,7 +59,7 @@ export default function SafeTransactionButton(props: SafeButtonProps) {
     );
   } else if (indexerDidNotWork) {
     return (
-      <Tooltip title='Indexer did not find your safe yet. Please try in 10min'>
+      <Tooltip title={`Your safe wasn\'t indexed yet by HOPR Safe Infrastructure. Please try in 1 hour`}>
         <span>
           <Button
             disabled={true}

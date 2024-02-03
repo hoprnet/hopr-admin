@@ -60,7 +60,11 @@ type InitialState = {
   safesByOwner: { data: string[]; isFetching: boolean };
   allTransactions: { data: CustomAllTransactionsListResponse | null; isFetching: boolean };
   pendingTransactions: { data: CustomSafeMultisigTransactionListResponse | null; isFetching: boolean };
-  info: { data: SafeInfoResponse | null; isFetching: boolean };
+  info: {
+    data: SafeInfoResponse | null;
+    safeIndexed: boolean | null,
+    isFetching: boolean
+  };
   delegates: { data: SafeDelegateListResponse | null; isFetching: boolean };
   createTransaction: { isFetching: boolean };
   confirmTransaction: { isFetching: boolean };
@@ -115,6 +119,7 @@ export const initialState: InitialState = {
   },
   info: {
     data: null,
+    safeIndexed: null,
     isFetching: false,
   },
   delegates: {

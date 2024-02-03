@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { environment } from '../../../config';
+import { useWatcher } from '../../hooks';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -11,6 +12,7 @@ import { useEthersSigner } from '../../hooks';
 
 import { Button, Menu, MenuItem } from '@mui/material';
 import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
+import { observeSafeInfo } from '../../hooks/useWatcher/safeInfo';
 import { appActions } from '../../store/slices/app';
 import { truncateEthereumAddress } from '../../utils/blockchain';
 
@@ -69,12 +71,12 @@ const SafeAddress = styled.div`
 `;
 
 export default function ConnectSafe() {
+  useWatcher({});
   const dispatch = useAppDispatch();
   const signer = useEthersSigner();
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const safes = useAppSelector((store) => store.stakingHub.safes.data);
-  const safeAddressFromSafeInfo = useAppSelector((store) => store.safe.info.data?.address);
-  const safeInfoFetching = useAppSelector((store) => store.safe.info.isFetching);
+  const safeIndexed = useAppSelector((store) => store.safe.info.safeIndexed);
   const safeObject = useAppSelector((store) => store.safe.selectedSafe.data);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);

@@ -326,7 +326,7 @@ const getSafeInfoThunk = createAsyncThunk<
     dispatch(safeActionsFetching.setInfoFetching(true));
     try {
       const safeApi = await createSafeApiService(payload.signer);
-      const info = await safeApi.getSafeInfo(payload.safeAddress);
+      const info = await safeApi.getSafeInfo(getAddress(payload.safeAddress));
       return info;
     } catch (e) {
       if (e instanceof Error) {
@@ -1263,10 +1263,12 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(getSafeInfoThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.info.data = action.payload;
+      state.info.safeIndexed = true;
     }
     state.info.isFetching = false;
   });
-  builder.addCase(getSafeInfoThunk.rejected, (state) => {
+  builder.addCase(getSafeInfoThunk.rejected, (state, info) => {
+    state.info.safeIndexed = false;
     state.info.isFetching = false;
   });
   // CreateSafeTransaction
