@@ -5,6 +5,7 @@ import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS
 // wagmi
 import { useAccount, useBalance, useNetwork } from 'wagmi';
 import { watchAccount } from '@wagmi/core'
+import { useEthersSigner } from '../../hooks';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -16,8 +17,10 @@ import { stakingHubActions, stakingHubActionsAsync } from '../../store/slices/st
 export default function WagmiUpdater() {
   // const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const signer = useEthersSigner();
   const nodeHoprAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress); // Staking Hub
   const addressInStore = useAppSelector((store) => store.web3.account);
+  const web3Disconnecting = useAppSelector((store) => store.web3.status.disconnecting);
 
   // Wallet Account
   const {
@@ -72,8 +75,11 @@ export default function WagmiUpdater() {
   // Account change in Wallet
   useEffect(() => {
     if(addressInStore === address) return;
+    if(web3Disconnecting) return;
 
     if (isConnected && address) {
+      console.log('isConnected', isConnected);
+      console.log('address', address);
       //reset whole app
       dispatch(appActions.resetState());
       dispatch(web3Actions.resetState());
@@ -86,7 +92,7 @@ export default function WagmiUpdater() {
       dispatch(web3ActionsAsync.getCommunityNftsOwnedByWallet({ account: address }));
       dispatch(stakingHubActionsAsync.getHubSafesByOwnerThunk(address));
     }
-  }, [isConnected, addressInStore, address]);
+  }, [isConnected, addressInStore, address, web3Disconnecting]);
 
   useEffect(() => {
     if (isConnected && chain) {

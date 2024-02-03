@@ -3,12 +3,11 @@ import styled from '@emotion/styled';
 import { environment } from '../../../config';
 import { useWatcher } from '../../hooks';
 
+
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActions, safeActionsAsync } from '../../store/slices/safe';
 import { stakingHubActions, stakingHubActionsAsync } from '../../store/slices/stakingHub';
-
-import { useEthersSigner } from '../../hooks';
 
 import { Button, Menu, MenuItem } from '@mui/material';
 import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
@@ -18,6 +17,7 @@ import { truncateEthereumAddress } from '../../utils/blockchain';
 
 //web3
 import { browserClient } from '../../providers/wagmi';
+import { useEthersSigner } from '../../hooks';
 
 const AppBarContainer = styled(Button)`
   align-items: center;

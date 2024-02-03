@@ -14,7 +14,7 @@ export const HOPR_TOKEN_USED_CONTRACT_ADDRESS = wxHOPR_TOKEN_SMART_CONTRACT_ADDR
 
 // Safe Contracts
 export const SAFE_SERVICE_URL = 'https://safe-transaction.prod.hoprtech.net';
-export const HOPR_NODE_STAKE_FACTORY = '0x1b2263195722Ec759ef3FD6191fe35F314c62dfB';
+export const HOPR_NODE_STAKE_FACTORY = '0x098B275485c406573D042848D66eb9d63fca311C';
 export const HOPR_NODE_MANAGEMENT_MODULE = '0xB7397C218766eBe6A1A634df523A1a7e412e67eA';
 export const HOPR_NODE_SAFE_REGISTRY = '0xe15C24a0910311c83aC78B5930d771089E93077b';
 export const HOPR_NETWORK_REGISTRY = '0x582b4b586168621dAf83bEb2AeADb5fb20F8d50d';
@@ -22,7 +22,7 @@ export const HOPR_CHANNELS_SMART_CONTRACT_ADDRESS = '0x693Bac5ce61c720dDC6853399
 
 //Subgraphs
 export const STAKE_SUBGRAPH = 'https://stake.hoprnet.org/api/hub/subgraph-allSeasons';
-export const STAKING_V2_SUBGRAPH = 'https://stake.hoprnet.org/api/hub/subgraph-dufour-test';
+export const STAKING_V2_SUBGRAPH = 'https://stake.hoprnet.org/api/hub/subgraph-dufour';
 
 // Wallet Connect
 export const VITE_WALLET_CONNECT_PROJECT_ID = 'efdce6b5c6b10913211ff1b40bc4d54d';
