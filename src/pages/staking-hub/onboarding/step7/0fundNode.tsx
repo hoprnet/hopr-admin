@@ -80,6 +80,7 @@ export const SSafeTransactionButton = styled(SafeTransactionButton)`
 
 export default function FundNode(props?: { onDone?: Function, nodeAddress?: string | null}) {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   // injected states
   const safeInfo = useAppSelector((store) => store.safe.info.data);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
@@ -114,7 +115,11 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
       .unwrap()
       .then((hash) => {
         set_transactionHash(hash as Address);
-        dispatch(stakingHubActions.setOnboardingStep(15));
+        if (props?.onDone){
+          props.onDone();
+        } else {
+          dispatch(stakingHubActions.setOnboardingStep(15));
+        }
       })
       .catch(() => {
         set_error(true);
@@ -137,14 +142,6 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
       }),
     )
       .unwrap()
-      .then((hash) => {
-        set_transactionHash(hash as Address);
-        if (props?.onDone){
-          props.onDone();
-        } else {
-          dispatch(stakingHubActions.setOnboardingStep(15));
-        }
-      })
       .catch((error) => {
         console.warn(error);
         if(JSON.stringify(error).includes('user rejected transaction')){
@@ -152,7 +149,10 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
         }
         set_error(true);
       })
-      .finally(() => set_isWalletLoading(false));
+      .finally(() => {
+        set_isWalletLoading(false);
+        navigate('/staking/dashboard#transactions');
+      });
   };
 
   useEffect(() => {
