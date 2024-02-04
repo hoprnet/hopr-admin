@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Address, parseUnits } from 'viem';
 import { MINIMUM_XDAI_TO_FUND_NODE } from '../../../../../config';
 import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
