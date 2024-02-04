@@ -49,10 +49,19 @@ const getHubSafesByOwnerThunk = createAsyncThunk<
         }
       }`
 
-      const resp = await fetch(STAKING_V2_SUBGRAPH, {
-        method: 'POST',
-        body: GET_THEGRAPH_QUERY,
-      });
+
+      // temporary
+      const resp = await Promise.all([
+        fetch(STAKING_V2_SUBGRAPH, {
+          method: 'POST',
+          body: GET_THEGRAPH_QUERY,
+        }),
+        fetch(`${STAKING_V2_SUBGRAPH}-test`, {
+          method: 'POST',
+          body: GET_THEGRAPH_QUERY,
+        })
+      ])
+
       const json: { safes: {
         id: string,
         addedModules: {
@@ -60,16 +69,34 @@ const getHubSafesByOwnerThunk = createAsyncThunk<
             id: string
           }
         }[]
-      }[]} = await resp.json();
+      }[]} = await resp[0].json();
 
-      let mapped = json.safes.map((elem) => {
+      const json2: { safes: {
+        id: string,
+        addedModules: {
+          module: {
+            id: string
+          }
+        }[]
+      }[]} = await resp[1].json();
+
+      let mapped1 = json.safes.map((elem) => {
         return {
           moduleAddress: getAddress(elem.addedModules[0].module.id),
           safeAddress: getAddress(elem.id),
         };
       });
-      mapped = mapped.filter(elem => elem.moduleAddress);
-      return mapped;
+      mapped1 = mapped1.filter(elem => elem.moduleAddress);
+
+      let mapped2 = json2.safes.map((elem) => {
+        return {
+          moduleAddress: getAddress(elem.addedModules[0].module.id),
+          safeAddress: getAddress(elem.id),
+        };
+      });
+      mapped2 = mapped2.filter(elem => elem.moduleAddress);
+
+      return [...mapped1, ...mapped2 ];
     } catch (e) {
       return rejectWithValue(e);
     }
@@ -213,11 +240,23 @@ const getSubgraphDataThunk = createAsyncThunk<
     }`
 
     try {
-      const resp = await fetch(STAKING_V2_SUBGRAPH, {
-        method: 'POST',
-        body: GET_THEGRAPH_QUERY,
-      });
-      const json = await resp.json();
+      // temporary
+      const resp = await Promise.all([
+        fetch(STAKING_V2_SUBGRAPH, {
+          method: 'POST',
+          body: GET_THEGRAPH_QUERY,
+        }),
+        fetch(`${STAKING_V2_SUBGRAPH}-test`, {
+          method: 'POST',
+          body: GET_THEGRAPH_QUERY,
+        })
+      ])
+
+      const json1 = await resp[0].json();
+      const json2 = await resp[1].json();
+
+      const json = json1.safes.length > 0 ? json1 : json2;
+
       console.log('SubgraphOutput', json);
 
       let output = JSON.parse(JSON.stringify(initialState.safeInfo.data));
