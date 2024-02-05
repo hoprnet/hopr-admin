@@ -255,7 +255,7 @@ const getSubgraphDataThunk = createAsyncThunk<
       const json1 = await resp[0].json();
       const json2 = await resp[1].json();
 
-      const json = json1.safes.length > 0 ? json1 : json2;
+      const json = json1.nodeManagementModules.length > 0 ? json1 : json2;
 
       console.log('SubgraphOutput', json);
 
