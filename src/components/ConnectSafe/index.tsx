@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { environment } from '../../../config';
 import { useWatcher } from '../../hooks';
-
+import { loadStateFromLocalStorage, saveStateToLocalStorage } from '../../utils/localStorage';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -70,11 +70,27 @@ const SafeAddress = styled.div`
   color: #414141;
 `;
 
+function handleSaveSelectedSafeInLocalStorage (safeObject: {safeAddress?: string | null, moduleAddress?: string | null}, owner?: string | null) {
+  const safeAddress = safeObject.safeAddress;
+  const moduleAddress = safeObject.moduleAddress;
+  if(safeAddress && moduleAddress && owner){
+    let json = loadStateFromLocalStorage(`staking-hub-chosen-safe`);
+    if(json) {
+      // @ts-ignore
+      json[owner] = safeObject;
+    } else {
+      json = {[owner]: safeObject}
+    }
+    saveStateToLocalStorage(`staking-hub-chosen-safe`, json)
+  }
+}
+
 export default function ConnectSafe() {
   useWatcher({});
   const dispatch = useAppDispatch();
   const signer = useEthersSigner();
   const isConnected = useAppSelector((store) => store.web3.status.connected);
+  const ownerAddress = useAppSelector((store) => store.web3.account);
   const safes = useAppSelector((store) => store.stakingHub.safes.data);
   const safeIndexed = useAppSelector((store) => store.safe.info.safeIndexed);
   const safeObject = useAppSelector((store) => store.safe.selectedSafe.data);
@@ -119,12 +135,21 @@ export default function ConnectSafe() {
 
   // If no selected safeAddress, choose 1st one
   useEffect(() => {
-    if (safes.length > 0 && !safeAddress && signer) {
-      console.log('useSelectedSafe', safes[0])
-//      dispatch(safeActions.setSelectedSafe(safes[0]));
+    if (safes.length > 0 && !safeAddress && signer && ownerAddress) {
+      try{
+        //@ts-ignore
+        let json: {[key: string]:{safeAddress: string, moduleAddress: string}} = loadStateFromLocalStorage(`staking-hub-chosen-safe`);
+        if(json && json[ownerAddress] && safes.filter(safe=>safe?.safeAddress === json[ownerAddress]?.safeAddress).length > 0){
+          useSelectedSafe(json[ownerAddress]);
+          console.log('useSelectedSafe from ls', json[ownerAddress])
+        } else {
+          useSelectedSafe(safes[0]);
+          console.log('useSelectedSafe [0]', safes[0])
+        }
+      } catch(e){}
       useSelectedSafe(safes[0]);
     }
-  }, [safes, safeAddress, signer]);
+  }, [safes, safeAddress, signer, ownerAddress]);
 
   // If safe got selected, update all and onboarding data
   useEffect(() => {
@@ -148,6 +173,7 @@ export default function ConnectSafe() {
       dispatch(appActions.resetState());
       dispatch(safeActions.resetStateWithoutSelectedSafe());
       dispatch(stakingHubActions.resetStateWithoutSafeList());
+      handleSaveSelectedSafeInLocalStorage(safeObject, ownerAddress);
       dispatch(safeActions.setSelectedSafe({
         safeAddress,
         moduleAddress
@@ -187,6 +213,7 @@ export default function ConnectSafe() {
       );
     }
   };
+
 
   // New function to handle opening the menu
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
