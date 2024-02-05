@@ -168,11 +168,14 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
   const dispatch = useAppDispatch();
   const address = useAppSelector((store) => store.web3.account);
   const safeNonce = useAppSelector((store) => store.safe.info.data?.nonce);
+  const safeThresholdFromSafe = useAppSelector((store)=>store.safe.info.data?.threshold);
+  const possibleThresholdProblem = safeThresholdFromSafe !== transaction.confirmationsRequired;
   const transactionAfterSafeNonce = safeNonce !== transaction.nonce;
   const [userAction, set_userAction] = useState<'EXECUTE' | 'SIGN' | null>(null);
   const [isLoadingApproving, set_isLoadingApproving] = useState<boolean>(false);
   const [isLoadingExecuting, set_isLoadingExecuting] = useState<boolean>(false);
   const [isLoadingRejecting, set_isLoadingRejecting] = useState<boolean>(false);
+
 
   useEffect(() => {
     if (address) {
@@ -242,11 +245,17 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
     }
   };
 
+
+
+  // <Tooltip
+  //   title={`It apears that your safe threshold is not the same as the number of confirmations required for the transaction. It could be the indexer fault. Please wait about 1h untill the data is indexed.`}
+  // >
+
   if (userAction === 'EXECUTE') {
     return (
       <>
         <StyledButtonGroup>
-          <Tooltip title={transactionAfterSafeNonce && `Earlier actions should be handled first`}>
+          <Tooltip title={possibleThresholdProblem ? `WARNING: It apears that your safe threshold is not the same as the number of confirmations required for this transaction. It could be the indexer fault. Please wait about 1h untill the data is indexed.` : transactionAfterSafeNonce && `Earlier actions should be handled first`}>
             <span>
               <StyledBlueButton
                 disabled={transactionAfterSafeNonce}
@@ -256,7 +265,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
               </StyledBlueButton>
             </span>
           </Tooltip>
-          <Tooltip title={transactionAfterSafeNonce && `Earlier actions should be handled first`}>
+          <Tooltip title={possibleThresholdProblem ? `WARNING: It apears that your safe threshold is not the same as the number of confirmations required for this transaction. It could be the indexer fault. Please wait about 1h untill the data is indexed.` : transactionAfterSafeNonce && `Earlier actions should be handled first`}>
             <span>
               <StyledBlueButton
                 className='positive-action'
@@ -319,6 +328,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
   const [dateInUserTimezone, set_dateInUserTimezone] = useState<string>();
   const [dateInGMT, set_dateInGMT] = useState<string>();
   const [transactionStatus, set_transactionStatus] = useState<string>();
+
 
   useEffect(() => {
     if (signer && transaction) {
