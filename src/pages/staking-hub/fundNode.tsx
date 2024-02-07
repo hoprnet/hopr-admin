@@ -5,13 +5,14 @@ import { Address, parseUnits } from 'viem';
 import { MINIMUM_XDAI_TO_FUND_NODE } from '../../../config';
 import Section from '../../future-hopr-lib-components/Section';
 import { useEthersSigner } from '../../hooks';
-import { ConfirmButton, StepContainer } from './onboarding/components';
+import { StepContainer } from './onboarding/components';
 import { StyledTextField } from './onboarding/styled';
 
 // Store
 import { FeedbackTransaction } from '../../components/FeedbackTransaction';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActionsAsync } from '../../store/slices/safe';
+import SafeTransactionButton from '../../components/SafeTransactionButton';
 
 // HOPR Components
 import StartOnboarding from '../../components/Modal/staking-hub/StartOnboarding';
@@ -52,6 +53,13 @@ const StyledCoinLabel = styled.p`
   letter-spacing: 0.35px;
 `;
 
+
+export const SSafeTransactionButton = styled(SafeTransactionButton)`
+  max-width: 250px;
+  width: 100%;
+  align-self: center;
+`;
+
 export default function FundNode() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -60,7 +68,8 @@ export default function FundNode() {
   const nodeAddressFromParams = searchParams.get('nodeAddress');
 
   // injected states
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
+  const safeInfo = useAppSelector((store) => store.safe.info.data);
   const nodeAddressFromTheStore = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
   const safeXDaiBalance = useAppSelector((store) => store.safe.balance.data.xDai.formatted) as string;
 
@@ -78,7 +87,31 @@ export default function FundNode() {
     set_isWalletLoading(true);
 
     await dispatch(
-      safeActionsAsync.createAndExecuteTransactionThunk({
+      safeActionsAsync.createAndExecuteSafeTransactionThunk({
+        signer,
+        safeAddress: selectedSafeAddress,
+        safeTransactionData: {
+          to: nodeAddress,
+          value: parseUnits(xdaiValue as `${number}`, 18).toString(),
+          data: '0x',
+        },
+      }),
+    ).unwrap().then(res => {
+      set_transactionHash(res as Address)
+      setTimeout(() => {
+        navigate('/staking/dashboard#node');
+      }, 3000)
+    });
+    set_isWalletLoading(false);
+  };
+
+
+  const signTx = async () => {
+    if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
+    set_isWalletLoading(true);
+
+    await dispatch(
+      safeActionsAsync.createSafeTransactionThunk({
         signer,
         safeAddress: selectedSafeAddress,
         safeTransactionData: {
@@ -120,13 +153,21 @@ export default function FundNode() {
           height: 133,
         }}
         buttons={
-          <ConfirmButton
-            onClick={createAndExecuteTx}
-            pending={isWalletLoading}
-            disabled={error || xdaiValue === '' || parseUnits(xdaiValue, 18) === parseUnits('0', 18) || xdaiValue.includes('-') || xdaiValue.includes('+')}
-          >
-            FUND
-          </ConfirmButton>
+          <SSafeTransactionButton
+            executeOptions={{
+              onClick: createAndExecuteTx,
+              pending: isWalletLoading,
+              disabled: error || xdaiValue === '' || parseUnits(xdaiValue, 18) === parseUnits('0', 18) || xdaiValue.includes('-') || xdaiValue.includes('+'),
+              buttonText: 'FUND',
+            }}
+            signOptions={{
+              onClick: signTx,
+              pending: isWalletLoading,
+              disabled: error || xdaiValue === '' || parseUnits(xdaiValue, 18) === parseUnits('0', 18) || xdaiValue.includes('-') || xdaiValue.includes('+'),
+              buttonText: 'SIGN FUND',
+            }}
+            safeInfo={safeInfo}
+          />
         }
       >
         <div>

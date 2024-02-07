@@ -22,7 +22,7 @@ import {
 } from './onboarding/styled';
 
 const StakewxHOPR = () => {
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const walletBalance = useAppSelector((store) => store.web3.balance);
   const [wxhoprValue, set_wxhoprValue] = useState('');
   const [transactionHash, set_transactionHash] = useState<Address>();

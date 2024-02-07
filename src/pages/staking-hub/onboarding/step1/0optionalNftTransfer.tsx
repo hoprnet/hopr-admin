@@ -85,7 +85,7 @@ export default function optionalNftTtransfer() {
   const [option, set_option] = useState<0 | 1 | null>(null);
   const communityNftIdInWallet = useAppSelector((store) => store.web3.communityNftId);
   const communityNftIdInSafe = useAppSelector((store) => !!store.safe.communityNftIds.data.length);
-  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const walletAddress = useAppSelector((store) => store.web3.account);
   const { data: walletClient } = useWalletClient();
   const [startedNftTransfer, set_startedNftTransfer] = useState<boolean>(false);
@@ -129,7 +129,7 @@ export default function optionalNftTtransfer() {
         </a>.
       </>}
       buttons={
-        <Tooltip 
+        <Tooltip
           title={tooltipText()}
         >
           <span style={{ textAlign: 'center' }}>

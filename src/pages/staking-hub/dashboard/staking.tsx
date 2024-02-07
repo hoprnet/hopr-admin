@@ -109,11 +109,10 @@ const ColumnChart = () => {
 };
 
 const StakingScreen = () => {
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as `0x${string}`;
-  const moduleAddress = useAppSelector((store) => store.stakingHub.onboarding.moduleAddress) as `0x${string}`;
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress) as `0x${string}`;
+  const moduleAddress = useAppSelector((store) => store.safe.selectedSafe.data.moduleAddress) as `0x${string}`;
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
   const wxHoprAllowance = useAppSelector((store) => store.stakingHub.safeInfo.data.allowance.wxHoprAllowance);
-
   const [openBuyModal, set_openBuyModal] = useState(false);
 
   return (
@@ -162,6 +161,8 @@ const StakingScreen = () => {
             id="wxhopr-total-stake"
             title="wxHOPR Total Stake"
             value={rounder(safeBalance.wxHopr.formatted, 6) ?? '-'}
+            valueTooltip={safeBalance.wxHopr.formatted || '-'}
+            currency={'wxHOPR'}
             // chip={{
             //   label: '+%/24h',
             //   color: 'success',
@@ -191,6 +192,7 @@ const StakingScreen = () => {
             id="xdai-in-safe"
             title="xDAI in Safe"
             value={rounder(safeBalance.xDai.formatted, 6) ?? '-'}
+            valueTooltip={safeBalance.xDai.formatted || '-'}
             buttons={[
               {
                 text: 'Buy xDAI',
@@ -236,6 +238,7 @@ const StakingScreen = () => {
             title="Remaining wxHOPR Allowance
             to Channels"
             value={wxHoprAllowance ? rounder(wxHoprAllowance) : '-'}
+            valueTooltip={wxHoprAllowance || '-'}
             currency="wxHOPR"
             buttons={[
               {

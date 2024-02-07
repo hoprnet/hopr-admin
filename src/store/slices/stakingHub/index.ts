@@ -13,6 +13,12 @@ const stakingHubSlice = createSlice({
       if (nodeAddressProvidedByMagicLink) state.onboarding.nodeAddressProvidedByMagicLink = nodeAddressProvidedByMagicLink;
       return initialStateCopy;
     },
+    resetStateWithoutSafeList: (state) => {
+      const safes = JSON.parse(JSON.stringify(state.safes.data));
+      const initialStateCopy = JSON.parse(JSON.stringify(initialState));
+      initialStateCopy.safes.data = safes;
+      return initialStateCopy;
+    },
     resetOnboardingState: (state) => {
       state.onboarding = {
         step: 0,
@@ -42,6 +48,18 @@ const stakingHubSlice = createSlice({
     },
     addSafe: (state, action) => {
       state.safes.data = [...state.safes.data, action.payload];
+    },
+    addOwnerToSafe: (state, action) => {
+      state.safeInfo.data.owners.push(
+        {
+          owner: {
+            id: action.payload
+          }
+        }
+      )
+    },
+    removeOwnerFromSafe: (state, action) => {
+      state.safeInfo.data.owners = state.safeInfo.data.owners.filter(elem => elem.owner.id !== action.payload);
     },
     addSafeAndUseItForOnboarding: (state, action) => {
       state.safes.data = [...state.safes.data, action.payload];
@@ -84,6 +102,9 @@ const stakingHubSlice = createSlice({
             state.nodes[nodeAddress][action.payload.key] = action.payload.value;
           }
       }
+    },
+    updateThreshold: (state, action) => {
+      state.safeInfo.data.threshold = `${action.payload}`;
     },
   },
   extraReducers: (builder) => {

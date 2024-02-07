@@ -16,6 +16,7 @@ import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import WalletIcon from '@mui/icons-material/Wallet';
+import TooltipMui from '@mui/material/Tooltip';
 
 // HOPR components
 import Button from '../../../future-hopr-lib-components/Button';
@@ -169,6 +170,7 @@ type GrayCardProps = {
   title?: string;
   subtitle?: string;
   value?: string;
+  valueTooltip?: string;
   currency?: 'xDAI' | 'xHOPR' | 'wxHOPR' | string;
   chip?: {
     label: string;
@@ -187,6 +189,7 @@ const GrayCard = ({
   title,
   subtitle,
   value,
+  valueTooltip,
   currency,
   chip,
   buttons,
@@ -199,6 +202,16 @@ const GrayCard = ({
           {title && <h4 className='title'>{title}</h4>}
           {subtitle && <h5 className='subtitle'>{subtitle}</h5>}
           {value && (
+            valueTooltip ?
+            <Tooltip
+              title={valueTooltip}
+            >
+              <ValueAndCurrency>
+                <CardValue>{value}</CardValue>
+                {currency && <CardCurrency>{currency}</CardCurrency>}
+              </ValueAndCurrency>
+            </Tooltip>
+            :
             <ValueAndCurrency>
               <CardValue>{value}</CardValue>
               {currency && <CardCurrency>{currency}</CardCurrency>}
@@ -241,27 +254,27 @@ const header = [
     name: 'NR',
     search: true,
     maxWidth: '160px',
-    tooltipHeader: 'Node registered by HOPR to the Network Registry',
+    tooltipHeader: 'Has this node been successfully added to the HOPR Network Registry?',
   },
   {
     key: 'inSafeRegistry',
     name: 'SR',
     search: true,
-    tooltipHeader: 'Node started and registered itself in the Safe Registry',
+    tooltipHeader: 'Has this node been successfully added to the Safe Registry?',
   },
   {
     key: 'isDelegate',
     name: 'Delegate',
     search: true,
     maxWidth: '160px',
-    tooltipHeader: 'Node added as a safe delegate, so it can propose transactions to the safe owner'
+    tooltipHeader: 'Is this node a delegate? (allowed to propose transactions to the safe owner)'
   },
   {
     key: 'includedInModule',
     name: 'Config',
     search: true,
     maxWidth: '160px',
-    tooltipHeader: 'Node included in the Safe Module and configured'
+    tooltipHeader: 'Is this node included & configured in the Node Management Module?'
   },
   {
     key: 'balance',
@@ -289,6 +302,7 @@ const getOnboardingTooltip = (
   inNetworkRegistry?: boolean,
   isDelegate?: boolean,
   includedInModule?: boolean,
+  balanceFormatted?: string,
 ) => {
   if(onboardingNotFinished) {
     return (
@@ -302,7 +316,7 @@ const getOnboardingTooltip = (
         Node not registered on the network
       </span>
     )
-  }else if (!includedInModule || !isDelegate) {
+  }else if (!includedInModule || !isDelegate || balanceFormatted === '0') {
     return (
       <span>
         Finish ONBOARDING for this node
@@ -337,9 +351,9 @@ const NodeAdded = () => {
     console.log('chosenNode', chosenNode)
   }, [chosenNode]);
 
-  const delegatesArray = delegates?.results?.map(elem => elem.delegate.toLocaleLowerCase()) || [];
-  const nodesPeerIdArr = Object.keys(nodes);
-  const parsedTableData = nodesPeerIdArr.map((node, index) => {
+    const delegatesArray = delegates?.results?.map(elem => elem.delegate.toLocaleLowerCase()) || [];
+    const nodesPeerIdArr = Object.keys(nodes);
+    const parsedTableData = nodesPeerIdArr.map((node, index) => {
     const inNetworkRegistry = nodes[node].registeredNodesInNetworkRegistry;
     const inSafeRegistry = nodes[node].registeredNodesInSafeRegistry
     const isDelegate = delegatesArray.includes(node);
@@ -363,7 +377,11 @@ const NodeAdded = () => {
       isDelegate: isDelegate ? 'Yes' : 'No',
       includedInModule: includedInModule ? 'Yes' : 'No',
       id: node,
-      balance: nodes[node]?.balanceFormatted ? `${rounder(nodes[node].balanceFormatted)} xDAI` : '-',
+      balance: <Tooltip
+                  title={nodes[node].balanceFormatted}
+                >
+                  <span>{nodes[node]?.balanceFormatted ? `${rounder(nodes[node].balanceFormatted)} xDAI` : '-'}</span>
+                </Tooltip>,
       search: node,
       actions: <>
         <IconButton
@@ -373,11 +391,12 @@ const NodeAdded = () => {
             inNetworkRegistry,
             isDelegate,
             includedInModule,
+            nodes[node].balanceFormatted
           )}
           onClick={()=>{
             navigate(`/staking/onboarding/nextNode?nodeAddress=${node}`);
           }}
-          disabled={onboardingNotFinished || (includedInModule && isDelegate)}
+          disabled={(onboardingNotFinished || (includedInModule && isDelegate && nodes[node].balanceFormatted !== '0'))}
         />
         <IconButton
           iconComponent={<VisibilityIcon />}
@@ -508,6 +527,7 @@ const NodeAdded = () => {
           id="node-balance"
           title="xDAI"
           value={chosenNodeData?.balanceFormatted ? rounder(chosenNodeData?.balanceFormatted, 5) : '-'}
+          valueTooltip={chosenNodeData?.balanceFormatted && chosenNodeData.balanceFormatted || '-'}
         />
         <GrayCard
           id="earned-rewards"

@@ -57,12 +57,13 @@ export const getUserActionForPendingTransaction = (
   ownerAddress: string,
 ): 'EXECUTE' | 'SIGN' | null => {
   if (!ownerAddress) return null;
-
   const transactionHasEnoughSignatures = (transaction.confirmations?.length ?? 0) >= transaction.confirmationsRequired;
 
   if (transactionHasEnoughSignatures) {
     return 'EXECUTE';
   }
+
+  console.log('getUserActionForPendingTransaction', transaction)
 
   const ownerHasSignedTransaction = transaction?.confirmations?.find(
     (confirmation) => confirmation.owner === ownerAddress,
@@ -74,7 +75,7 @@ export const getUserActionForPendingTransaction = (
     return null;
   }
 
-  const oneSignaturePending = transaction.confirmationsRequired - (transaction.confirmations?.length ?? 0);
+  const oneSignaturePending = transaction.confirmationsRequired - (transaction.confirmations?.length ?? 0) === 1;
 
   if (oneSignaturePending) {
     return 'EXECUTE';

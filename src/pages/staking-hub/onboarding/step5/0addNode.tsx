@@ -23,7 +23,7 @@ const StyledGrayButton = styled(GrayButton)`
 
 export default function AddNode(props?: { onDone?: Function, onBack?: Function, nodeAddress?: string | null }) {
   const dispatch = useAppDispatch();
-  const safeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const safeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
 
   //http://localhost:5173/staking/onboarding?HOPRdNodeAddressForOnboarding=helloMyfield
   const HOPRdNodeAddressForOnboarding = useAppSelector((store) => store.stakingHub.onboarding.nodeAddressProvidedByMagicLink);
@@ -32,6 +32,7 @@ export default function AddNode(props?: { onDone?: Function, onBack?: Function, 
   );
   const ownerAddress = useAppSelector((store) => store.stakingHub.safeInfo.data.owners[0].owner.id)
   const account = useAppSelector((store) => store.web3.account);
+  const safeIndexed =  useAppSelector((store) => store.safe.info.safeIndexed);
   const signer = useEthersSigner();
   const [isLoading, set_isLoading] = useState(false);
   const [address, set_address] = useState(HOPRdNodeAddressForOnboarding ? HOPRdNodeAddressForOnboarding : props?.nodeAddress ? props.nodeAddress : '');
@@ -62,7 +63,7 @@ export default function AddNode(props?: { onDone?: Function, onBack?: Function, 
         .catch(e => {
           console.log('ERROR when adding a delegate to Safe:', e)
           if (e.includes("does not exist or it's still not indexed")) {
-            const errMsg = "Your safe wasn't indexed yet by HOPR Safe Infrastructure. Please try in 5min."
+            const errMsg = "Your safe wasn't indexed yet by HOPR Safe Infrastructure. Please try in 1 hour."
             sendNotification({
               notificationPayload: {
                 source: 'safe',
@@ -127,11 +128,11 @@ export default function AddNode(props?: { onDone?: Function, onBack?: Function, 
           >
             Back
           </StyledGrayButton>
-          <Tooltip title={address === '' ? 'Please enter and confirm your node address' : !nodeInNetworkRegistry && 'This node is not on the whitelist'}>
+          <Tooltip title={!safeIndexed ? `Your safe wasn\'t indexed yet by HOPR Safe Infrastructure. Please try in 1 hour` : address === '' ? 'Please enter and confirm your node address' : !nodeInNetworkRegistry && 'This node is not on the whitelist'}>
             <span>
               <ConfirmButton
                 onClick={addDelegate}
-                disabled={!nodeInNetworkRegistry || addressIsOwnerAddress()}
+                disabled={!nodeInNetworkRegistry || addressIsOwnerAddress() || !safeIndexed}
                 pending={isLoading}
                 style={{ width: '250px' }}
               >

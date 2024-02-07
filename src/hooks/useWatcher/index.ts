@@ -8,6 +8,7 @@ import { observeChannels } from './channels';
 import { observeNodeInfo } from './info';
 import { observeMessages } from './messages';
 import { observePendingSafeTransactions } from './safeTransactions';
+import { observeSafeInfo } from './safeInfo';
 
 export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: number }) => {
   const dispatch = useAppDispatch();
@@ -17,7 +18,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   } = useAppSelector((store) => store.auth.loginData);
   const messages = useAppSelector((store) => store.node.messages);
   const connected = useAppSelector((store) => store.auth.status.connected);
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+
   const signer = useEthersSigner();
   // flags to activate notifications
   const activeChannels = useAppSelector(store => store.app.configuration.notifications.channels)
@@ -90,6 +91,9 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   }, [connected, apiEndpoint, apiToken, prevNodeBalances, prevNodeInfo, prevChannels]);
 
   // safe watchers
+  const safeIndexed = useAppSelector((store) => store.safe.info.safeIndexed);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
+
   useEffect(() => {
     const watchPendingSafeTransactionsInterval = setInterval(() => {
       observePendingSafeTransactions({
@@ -104,10 +108,21 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
       });
     }, intervalDuration);
 
+    const watchSafeInfoInterval = setInterval(() => {
+      observeSafeInfo({
+        dispatch,
+        selectedSafeAddress,
+        safeIndexed,
+        active: true,
+        signer,
+      });
+    }, intervalDuration);
+
     return () => {
       clearInterval(watchPendingSafeTransactionsInterval);
+      clearInterval(watchSafeInfoInterval);
     };
-  }, [selectedSafeAddress, signer, prevPendingSafeTransaction]);
+  }, [selectedSafeAddress, signer, prevPendingSafeTransaction, safeIndexed]);
 
   // check when redux receives new messages
   useEffect(() => {

@@ -59,6 +59,12 @@ export type NodePayload = {
   includedInModule?: boolean;
 }
 
+type Owner = {
+  owner: {
+    id: string | null;
+  };
+}
+
 export type SubgraphParsedOutput = {
   balance: {
     mHoprBalance: string | null;
@@ -66,13 +72,7 @@ export type SubgraphParsedOutput = {
     xHoprBalance: string | null;
   };
   threshold: string | null;
-  owners: [
-    {
-      owner: {
-        id: string | null;
-      };
-    }
-  ];
+  owners: Owner[];
   isCreatedByNodeStakeFactory: boolean | null;
   targetedModules: [
     {

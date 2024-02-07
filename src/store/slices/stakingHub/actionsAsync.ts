@@ -16,7 +16,7 @@ import { gql } from 'graphql-request';
 import { stakingHubActions } from '.';
 import { safeActionsAsync } from '../safe';
 import { NodePayload } from './initialState';
-import { formatEther } from 'viem';
+import { formatEther, getAddress } from 'viem';
 
 const getHubSafesByOwnerThunk = createAsyncThunk<
   {
@@ -33,19 +33,70 @@ const getHubSafesByOwnerThunk = createAsyncThunk<
   }) => {
     dispatch(setHubSafesByOwnerFetching(true));
     try {
-      const resp = await fetch('https://stake.hoprnet.org/api/hub/getSafes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ownerAddress: payload }),
-      });
-      const json: { moduleaddress: string; safeaddress: string }[] = await resp.json();
-      const mapped = json.map((elem) => {
+      const ownerAddress = payload.toLocaleLowerCase();
+
+      const GET_THEGRAPH_QUERY = gql`{
+        safes(
+          where: {isCreatedByNodeStakeFactory: true, owners_: {owner: "${ownerAddress}"}}
+          first: 1000
+        ) {
+          id
+          addedModules {
+            module {
+              id
+            }
+          }
+        }
+      }`
+
+
+      // temporary
+      const resp = await Promise.all([
+        fetch(STAKING_V2_SUBGRAPH, {
+          method: 'POST',
+          body: GET_THEGRAPH_QUERY,
+        }),
+        fetch(`${STAKING_V2_SUBGRAPH}-test`, {
+          method: 'POST',
+          body: GET_THEGRAPH_QUERY,
+        })
+      ])
+
+      const json: { safes: {
+        id: string,
+        addedModules: {
+          module: {
+            id: string
+          }
+        }[]
+      }[]} = await resp[0].json();
+
+      const json2: { safes: {
+        id: string,
+        addedModules: {
+          module: {
+            id: string
+          }
+        }[]
+      }[]} = await resp[1].json();
+
+      let mapped1 = json.safes.map((elem) => {
         return {
-          moduleAddress: elem.moduleaddress,
-          safeAddress: elem.safeaddress,
+          moduleAddress: getAddress(elem.addedModules[0].module.id),
+          safeAddress: getAddress(elem.id),
         };
       });
-      return mapped;
+      mapped1 = mapped1.filter(elem => elem.moduleAddress);
+
+      let mapped2 = json2.safes.map((elem) => {
+        return {
+          moduleAddress: getAddress(elem.addedModules[0].module.id),
+          safeAddress: getAddress(elem.id),
+        };
+      });
+      mapped2 = mapped2.filter(elem => elem.moduleAddress);
+
+      return [...mapped1, ...mapped2 ];
     } catch (e) {
       return rejectWithValue(e);
     }
@@ -57,6 +108,7 @@ const getHubSafesByOwnerThunk = createAsyncThunk<
     }
   } },
 );
+
 
 const registerNodeAndSafeToNRThunk = createAsyncThunk<
   | {
@@ -188,11 +240,23 @@ const getSubgraphDataThunk = createAsyncThunk<
     }`
 
     try {
-      const resp = await fetch(STAKING_V2_SUBGRAPH, {
-        method: 'POST',
-        body: GET_THEGRAPH_QUERY,
-      });
-      const json = await resp.json();
+      // temporary
+      const resp = await Promise.all([
+        fetch(STAKING_V2_SUBGRAPH, {
+          method: 'POST',
+          body: GET_THEGRAPH_QUERY,
+        }),
+        fetch(`${STAKING_V2_SUBGRAPH}-test`, {
+          method: 'POST',
+          body: GET_THEGRAPH_QUERY,
+        })
+      ])
+
+      const json1 = await resp[0].json();
+      const json2 = await resp[1].json();
+
+      const json = json1.nodeManagementModules.length > 0 ? json1 : json2;
+
       console.log('SubgraphOutput', json);
 
       let output = JSON.parse(JSON.stringify(initialState.safeInfo.data));
@@ -321,21 +385,21 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
 
           console.log(
             '[Onboarding check] state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
-            state.stakingHub.safeInfo.data.module.includedNodes,
+            state.stakingHub.safeInfo.data?.module?.includedNodes,
           );
           console.log(
             '[Onboarding check] state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
-            state.stakingHub.safeInfo.data.module.includedNodes &&
+            state.stakingHub.safeInfo.data?.module?.includedNodes &&
               state.stakingHub.safeInfo.data.module.includedNodes.length > 0,
           );
           console.log(
             '[Onboarding check] Node configured (includeNode()): ',
-            state.stakingHub.safeInfo.data.module.includedNodes &&
+            state.stakingHub.safeInfo.data?.module?.includedNodes &&
               state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
               state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null,
           );
           if (
-            state.stakingHub.safeInfo.data.module.includedNodes &&
+            state.stakingHub.safeInfo.data?.module?.includedNodes &&
             state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
             state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null
           ) {
@@ -379,8 +443,8 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
         return 4;
       }
 
-      console.log('[Onboarding check] Safe created', state.safe.selectedSafeAddress.data);
-      if (state.safe.selectedSafeAddress.data) {
+      console.log('[Onboarding check] Safe created', state.safe.selectedSafe.data.safeAddress);
+      if (state.safe.selectedSafe.data.safeAddress) {
         return 2;
       }
 
@@ -399,7 +463,7 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
 
 const getOnboardingDataThunk = createAsyncThunk<
   void,
-  { browserClient: PublicClient; safeAddress: string; safes: RootState['stakingHub']['safes']['data'] },
+  { browserClient: PublicClient; safeAddress: string; moduleAddress: string },
   { state: RootState }
 >('stakingHub/getOnboardingData', async (payload, {
   rejectWithValue,
@@ -407,7 +471,7 @@ const getOnboardingDataThunk = createAsyncThunk<
 }) => {
   dispatch(stakingHubActions.onboardingIsFetching(true));
   await dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(payload.safeAddress)).unwrap();
-  const moduleAddress = payload.safes.find((elem) => elem.safeAddress === payload.safeAddress)?.moduleAddress;
+  const moduleAddress = payload.moduleAddress;
 
   if (!moduleAddress) {
     return rejectWithValue('No module address found');
@@ -604,6 +668,8 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       if (state.onboarding.step !== 0 && state.onboarding.step !== 15 && state.onboarding.step !== 16) {
         state.onboarding.notFinished = true;
         state.onboarding.notStarted = false;
+      } else if (state.onboarding.step === 16) {
+        state.onboarding.notFinished = false;
       }
     }
   });
@@ -620,6 +686,12 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         state.nodes[nodeAddress] = nodeData;
       }
     }
+    if (state.nodes[0]) {
+      state.nodes[0].isFetching = false;
+    }
+  });
+  builder.addCase(getNodeDataThunk.rejected, (state) => {
+    state.nodes[0].isFetching = false;
   });
   builder.addCase(getNodeBalanceThunk.fulfilled, (state, action) => {
     const nodeData = action.payload;

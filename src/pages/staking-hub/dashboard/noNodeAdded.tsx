@@ -221,7 +221,7 @@ const StakingCard = ({
 };
 
 const NoNodeAdded = () => {
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as `0x${string}`;
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress) as `0x${string}`;
   const safeBalance = useAppSelector((store) => store.safe.balance.data);
   const [openBuyModal, set_openBuyModal] = useState(false);
 
