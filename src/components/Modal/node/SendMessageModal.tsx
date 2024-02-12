@@ -77,7 +77,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const peersAndOwnNode = peers && addresses.hopr && addresses.native ? [...peers, {
     peerId: addresses.hopr,
     peerAddress: addresses.native,
-    multiAddr:"",
+    multiaddr:"",
     lastSeen: 0,
     quality:0,
     backoff:0,
@@ -93,7 +93,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
     peerId: string;
     peerAddress: string;
     quality: number;
-    multiAddr: string;
+    multiaddr?: string | null;
     heartbeats: {
       sent: number;
       success: number;

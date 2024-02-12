@@ -425,7 +425,7 @@ const LayoutEnhanced = () => {
             })
           );
           dispatch(
-            nodeActionsAsync.getStatisticsThunk({
+            nodeActionsAsync.getTicketStatisticsThunk({
               apiToken,
               apiEndpoint,
             })

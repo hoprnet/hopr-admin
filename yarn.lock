@@ -897,10 +897,10 @@
   resolved "https://registry.npmjs.org/@graphql-typed-document-node/core/-/core-3.2.0.tgz"
   integrity sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==
 
-"@hoprnet/hopr-sdk@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@hoprnet/hopr-sdk/-/hopr-sdk-2.0.1.tgz#69d35f077d3dab7edc354e41c95b59088fa58e2e"
-  integrity sha512-iR9zGHtQDR0UAnTTZZvmUJSQl9QG3nXdpKr0+Doa6U850qlSoPXDmiUMYZHrNowqhJyLtSgm629O9UZQw2/XPw==
+"@hoprnet/hopr-sdk@2.1.0-beta.12":
+  version "2.1.0-beta.12"
+  resolved "https://registry.yarnpkg.com/@hoprnet/hopr-sdk/-/hopr-sdk-2.1.0-beta.12.tgz#635c37d1b44d62cf89b12a62ab82b39c2cc53ba6"
+  integrity sha512-jeOhVyKPK8DyVxjang1uGLeAZKO3HHGymYUpKYPDXqCO66e6UEE7a21pvL5ciiMBru7WKB3seIF0ZPoQ3DDMuQ==
   dependencies:
     cross-fetch "^3.1.5"
     debug "^4.3.4"
@@ -3383,9 +3383,9 @@ camelcase@^6.2.0, camelcase@^6.3.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30001517:
-  version "1.0.30001522"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001522.tgz"
-  integrity sha512-TKiyTVZxJGhsTszLuzb+6vUZSjVOAhClszBr2Ta2k9IwtNBT/4dzmL6aywt0HCgEZlmwJzXJd8yNiob6HgwTRg==
+  version "1.0.30001587"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001587.tgz"
+  integrity sha512-HMFNotUmLXn71BQxg8cijvqxnIAofforZOwGsxyXJ0qugTdspUF4sPSJ2vhgprHCB996tIDzEq1ubumPDV8ULA==
 
 canvas-confetti@^1.6.0:
   version "1.6.0"

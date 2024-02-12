@@ -12,7 +12,7 @@ const setPeersFetching = createAction<boolean>('node/setPeersFetching');
 const setPeerInfoFetching = createAction<boolean>('node/setPeerInfoFetching');
 const setEntryNodesFetching = createAction<boolean>('node/setEntryNodesFetching');
 const setSettingsFetching = createAction<boolean>('node/setSettingsFetching');
-const setStatisticsFetching = createAction<boolean>('node/setStatisticsFetching');
+const setTicketStatisticsFetching = createAction<boolean>('node/setTicketStatisticsFetching');
 const setTicketsFetching = createAction<boolean>('node/setTicketsFetching');
 const setTokensFetching = createAction<boolean>('node/setTokensFetching');
 const setVersionFetching = createAction<boolean>('node/setVersionFetching');
@@ -31,7 +31,7 @@ export const nodeActionsFetching = {
   setPeersFetching,
   setEntryNodesFetching,
   setSettingsFetching,
-  setStatisticsFetching,
+  setTicketStatisticsFetching,
   setTicketsFetching,
   setTokensFetching,
   setVersionFetching,
@@ -69,10 +69,7 @@ export const createFetchingReducer = (builder: ActionReducerMapBuilder<typeof in
   builder.addCase(setEntryNodesFetching, (state, action) => {
     state.entryNodes.isFetching = action.payload;
   }),
-  builder.addCase(setSettingsFetching, (state, action) => {
-    state.settings.isFetching = action.payload;
-  }),
-  builder.addCase(setStatisticsFetching, (state, action) => {
+  builder.addCase(setTicketStatisticsFetching, (state, action) => {
     state.statistics.isFetching = action.payload;
   }),
   builder.addCase(setTicketsFetching, (state, action) => {

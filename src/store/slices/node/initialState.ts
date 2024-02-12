@@ -1,10 +1,9 @@
 import type {
-  GetStatisticsResponseType,
+  GetTicketStatisticsResponseType,
   GetAliasesResponseType,
   GetChannelsResponseType,
   GetInfoResponseType,
   GetPeersResponseType,
-  GetSettingsResponseType,
   GetTicketsResponseType,
   GetTokenResponseType,
   GetEntryNodesResponseType,
@@ -83,8 +82,7 @@ type InitialState = {
     };
     isFetching: boolean;
   };
-  settings: { data: GetSettingsResponseType | null; isFetching: boolean };
-  statistics: { data: GetStatisticsResponseType | null; isFetching: boolean };
+  statistics: { data: GetTicketStatisticsResponseType | null; isFetching: boolean };
   tickets: { data: GetTicketsResponseType | null; isFetching: boolean };
   tokens: { data: GetTokenResponseType[]; isFetching: boolean };
   version: { data: string | null; isFetching: boolean };
@@ -184,10 +182,6 @@ export const initialState: InitialState = {
     isFetching: false,
   },
   entryNodes: {
-    data: null,
-    isFetching: false,
-  },
-  settings: {
     data: null,
     isFetching: false,
   },

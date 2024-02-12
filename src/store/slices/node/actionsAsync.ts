@@ -12,17 +12,15 @@ import {
   type PingPeerPayloadType,
   type SendMessagePayloadType,
   type SetAliasPayloadType,
-  type SetSettingPayloadType,
   type GetChannelTicketsPayloadType,
   type WithdrawPayloadType,
   type RedeemChannelTicketsPayloadType,
   type GetPeerPayloadType,
   GetChannelResponseType,
   GetPeersResponseType,
-  GetSettingsResponseType,
   GetAliasesResponseType,
   GetInfoResponseType,
-  GetStatisticsResponseType,
+  GetTicketStatisticsResponseType,
   GetTicketsResponseType,
   GetTokenResponseType,
   GetEntryNodesResponseType,
@@ -56,8 +54,7 @@ const {
   getInfo,
   getMetrics,
   getPeers,
-  getSettings,
-  getStatistics,
+  getTicketStatistics,
   getTickets,
   getToken,
   getVersion,
@@ -69,7 +66,6 @@ const {
   removeAlias,
   sendMessage,
   setAlias,
-  setSetting,
   withdraw,
 } = api;
 const { openMultipleChannels } = flows;
@@ -240,6 +236,7 @@ const getPeersThunk = createAsyncThunk<GetPeersResponseType | undefined, GetPeer
       const peers = await getPeers(payload);
       return peers;
     } catch (e) {
+      console.log('f', e)
       if (e instanceof APIError) {
         return rejectWithValue({
           status: e.status,
@@ -283,46 +280,19 @@ const getPeerInfoThunk = createAsyncThunk<GetPeerResponseType | undefined, GetPe
   } },
 );
 
-const getSettingsThunk = createAsyncThunk<GetSettingsResponseType | undefined, BasePayloadType, { state: RootState }>(
-  'node/getSettings',
-  async (payload, {
-    rejectWithValue,
-    dispatch,
-  }) => {
-    dispatch(nodeActionsFetching.setSettingsFetching(true));
-    try {
-      const settings = await getSettings(payload);
-      return settings;
-    } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
-      }
-    }
-  },
-  { condition: (_payload, { getState }) => {
-    const isFetching = getState().node.settings.isFetching;
-    if (isFetching) {
-      return false;
-    }
-  } },
-);
-
-const getStatisticsThunk = createAsyncThunk<
-  GetStatisticsResponseType | undefined,
+const getTicketStatisticsThunk = createAsyncThunk<
+  GetTicketStatisticsResponseType | undefined,
   BasePayloadType,
   { state: RootState }
 >(
-  'node/getStatistics',
+  'node/getTicketStatistics',
   async (payload, {
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(nodeActionsFetching.setStatisticsFetching(true));
+    dispatch(nodeActionsFetching.setTicketStatisticsFetching(true));
     try {
-      const statistics = await getStatistics(payload);
+      const statistics = await getTicketStatistics(payload);
       return statistics;
     } catch (e) {
       if (e instanceof APIError) {
@@ -788,33 +758,6 @@ const pingNodeThunk = createAsyncThunk('node/pingNode', async (payload: PingPeer
   }
 });
 
-const setSettingThunk = createAsyncThunk<boolean | undefined, SetSettingPayloadType, { state: RootState }>(
-  'node/setSetting',
-  async (payload, {
-    rejectWithValue,
-    dispatch,
-  }) => {
-    dispatch(nodeActionsFetching.setSettingsFetching(true));
-    try {
-      const res = await setSetting(payload);
-      return res;
-    } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
-      }
-    }
-  },
-  { condition: (_payload, { getState }) => {
-    const isFetching = getState().node.settings.isFetching;
-    if (isFetching) {
-      return false;
-    }
-  } },
-);
-
 const redeemTicketsThunk = createAsyncThunk<boolean | undefined, BasePayloadType, { state: RootState }>(
   'node/redeemTickets',
   async (payload, {
@@ -1004,7 +947,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(getChannelsThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.channels.data = action.payload;
-      
+
       if (action.payload.outgoing.length > 0) {
         let balance = BigInt(0);
         action.payload.outgoing.forEach(
@@ -1025,6 +968,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   // getPeers
   builder.addCase(getPeersThunk.fulfilled, (state, action) => {
     if (action.payload) {
+      console.log('getPeers', action.payload)
       state.peers.data = {
         announced: [],
         connected: [],
@@ -1034,6 +978,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     state.peers.isFetching = false;
   });
   builder.addCase(getPeersThunk.rejected, (state) => {
+    console.log('getPeers rejected')
     state.peers.isFetching = false;
   });
   // getPeer
@@ -1045,33 +990,6 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   builder.addCase(getPeerInfoThunk.rejected, (state) => {
     state.peerInfo.isFetching = false;
-  });
-  // getSettings
-  builder.addCase(getSettingsThunk.fulfilled, (state, action) => {
-    if (action.payload) {
-      state.settings.data = action.payload;
-    }
-    state.settings.isFetching = false;
-  });
-  builder.addCase(getSettingsThunk.rejected, (state) => {
-    state.settings.isFetching = false;
-  });
-  // setSettings
-  builder.addCase(setSettingThunk.fulfilled, (state) => {
-    state.settings.isFetching = false;
-  });
-  builder.addCase(setSettingThunk.rejected, (state) => {
-    state.settings.isFetching = false;
-  });
-  // getStatistics
-  builder.addCase(getStatisticsThunk.fulfilled, (state, action) => {
-    if (action.payload) {
-      state.statistics.data = action.payload;
-    }
-    state.statistics.isFetching = false;
-  });
-  builder.addCase(getStatisticsThunk.rejected, (state) => {
-    state.statistics.isFetching = false;
   });
   // getTickets
   builder.addCase(getTicketsThunk.fulfilled, (state, action) => {
@@ -1196,9 +1114,8 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     if (action.payload) {
       for (const updatedTicket of action.payload) {
         // using challenge as an id between tickets
-        const uniqueIdentifier = updatedTicket.index;
-        const existingIndex = state.tickets.data?.findIndex((ticket) => ticket.index === uniqueIdentifier);
-  
+        const existingIndex = state.tickets.data?.findIndex((ticket) => ticket.index === updatedTicket.index);
+
         if (existingIndex && existingIndex !== -1 && state.tickets.data) {
           // Update the existing ticket with the new values
           state.tickets.data[existingIndex] = {
@@ -1215,6 +1132,16 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       }
     }
     state.tickets.isFetching = false;
+  });
+  // getTicketStatistics
+  builder.addCase(getTicketStatisticsThunk.fulfilled, (state, action) => {
+    if (action.payload) {
+      state.statistics.data = action.payload;
+    }
+    state.statistics.isFetching = false;
+  });
+  builder.addCase(getTicketStatisticsThunk.rejected, (state) => {
+    state.statistics.isFetching = false;
   });
   builder.addCase(getChannelTicketsThunk.rejected, (state) => {
     state.tickets.isFetching = false;
@@ -1320,8 +1247,7 @@ export const actionsAsync = {
   getChannelsThunk,
   getPeersThunk,
   getPeerInfoThunk,
-  getSettingsThunk,
-  getStatisticsThunk,
+  getTicketStatisticsThunk,
   getTicketsThunk,
   getTokenThunk,
   getEntryNodesThunk,
@@ -1337,7 +1263,6 @@ export const actionsAsync = {
   redeemChannelTicketsThunk,
   sendMessageThunk,
   pingNodeThunk,
-  setSettingThunk,
   redeemTicketsThunk,
   createTokenThunk,
   deleteTokenThunk,

@@ -97,7 +97,7 @@ function InfoPage() {
         })
       );
       dispatch(
-        actionsAsync.getStatisticsThunk({
+        actionsAsync.getTicketStatisticsThunk({
           apiEndpoint,
           apiToken,
         })
@@ -295,9 +295,9 @@ function InfoPage() {
                 </Tooltip>
               </th>
               <td>
-                { 
-                  balances.channels?.value && 
-                  balances.safeHopr?.value ? 
+                {
+                  balances.channels?.value &&
+                  balances.safeHopr?.value ?
                   formatEther(BigInt(balances.channels?.value) + BigInt(balances.safeHopr?.value)) : '-'
                 } wxHOPR
               </td>
@@ -373,12 +373,12 @@ function InfoPage() {
                 </Tooltip>
               </th>
               <TdActionIcons>
-                {info?.nodeSafe}
+                {info?.hoprNodeSafe}
                 {
-                  info?.nodeSafe &&
+                  info?.hoprNodeSafe &&
                   <>
                     <SmallActionButton
-                      onClick={() => navigator.clipboard.writeText(info?.nodeSafe as string)}
+                      onClick={() => navigator.clipboard.writeText(info.hoprNodeSafe as string)}
                       tooltip={'Copy'}
                     >
                       <CopyIcon />
@@ -386,7 +386,7 @@ function InfoPage() {
                     <SmallActionButton
                       tooltip={'Open in gnosisscan.io'}
                     >
-                      <Link to={`https://gnosisscan.io/address/${info?.nodeSafe}`} target='_blank'>
+                      <Link to={`https://gnosisscan.io/address/${info.hoprNodeSafe}`} target='_blank'>
                         <LaunchIcon />
                       </Link>
                     </SmallActionButton>
@@ -404,12 +404,12 @@ function InfoPage() {
                 </Tooltip>
               </th>
               <TdActionIcons>
-                {info?.nodeManagementModule}
+                {info?.hoprManagementModule}
                 {
-                  info?.nodeManagementModule &&
+                  info?.hoprManagementModule &&
                   <>
                     <SmallActionButton
-                      onClick={() => navigator.clipboard.writeText(info?.nodeManagementModule as string)}
+                      onClick={() => navigator.clipboard.writeText(info.hoprManagementModule as string)}
                       tooltip={'Copy'}
                     >
                       <CopyIcon />
@@ -417,7 +417,7 @@ function InfoPage() {
                     <SmallActionButton
                       tooltip={'Open on gnosisscan.io'}
                     >
-                      <Link to={`https://gnosisscan.io/address/${info?.nodeManagementModule}`} target='_blank'>
+                      <Link to={`https://gnosisscan.io/address/${info.hoprManagementModule}`} target='_blank'>
                         <LaunchIcon />
                       </Link>
                     </SmallActionButton>

@@ -62,7 +62,7 @@ function PeersPage() {
           peerId: peer.peerId,
           nodeAddress: peer.peerAddress,
           quality: peer.quality,
-          multiAddr: peer.multiAddr,
+          multiaddr: peer.multiaddr,
           heartbeats: peer.heartbeats,
           lastSeen: peer.lastSeen,
           backoff: peer.backoff,
