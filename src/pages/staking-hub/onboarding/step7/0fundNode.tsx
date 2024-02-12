@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Address, parseUnits } from 'viem';
 import { MINIMUM_XDAI_TO_FUND_NODE } from '../../../../../config';
 import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
 import { useEthersSigner } from '../../../../hooks';
-import { ConfirmButton, StepContainer } from '../components';
+import { StepContainer } from '../components';
 import { StyledTextField } from '../styled';
 
 // Store
@@ -15,18 +16,20 @@ import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
 // MUI
 import { Tooltip, TooltipProps, tooltipClasses } from '@mui/material';
+import SafeTransactionButton from '../../../../components/SafeTransactionButton';
 
-const BlueTooltip = styled(({ className, ...props }: TooltipProps) => (
+const BlueTooltip = styled(({
+  className,
+  ...props
+}: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: "#DAF8FF",
-    color: '#414141',
-    borderRadius: "10px",
-    fontSize: "12px",
-    boxShadow: "0px 4px 4px #00000040"
-  },
-}));
+))(() => ({ [`& .${tooltipClasses.tooltip}`]: {
+  backgroundColor: "#DAF8FF",
+  color: '#414141',
+  borderRadius: "10px",
+  fontSize: "12px",
+  boxShadow: "0px 4px 4px #00000040",
+} }));
 
 
 const StyledForm = styled.div`
@@ -70,10 +73,18 @@ export const StyledGrayButton = styled(GrayButton)`
   height: 39px;
 `;
 
+export const SSafeTransactionButton = styled(SafeTransactionButton)`
+  max-width: 250px;
+  width: 100%;
+  align-self: center;
+`;
+
 export default function FundNode(props?: { onDone?: Function, nodeAddress?: string | null}) {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   // injected states
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const safeInfo = useAppSelector((store) => store.safe.info.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const nodeAddressFromStore = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress) as Address;
   const safeXDaiBalance = useAppSelector((store) => store.safe.balance.data.xDai.formatted) as string;
   const isExecutionLoading = useAppSelector((store) => store.safe.executeTransaction.isFetching);
@@ -92,7 +103,7 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
     set_isWalletLoading(true);
     dispatch(
-      safeActionsAsync.createAndExecuteTransactionThunk({
+      safeActionsAsync.createAndExecuteSafeTransactionThunk({
         signer,
         safeAddress: selectedSafeAddress,
         safeTransactionData: {
@@ -111,6 +122,27 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
           dispatch(stakingHubActions.setOnboardingStep(15));
         }
       })
+      .catch(() => {
+        set_error(true);
+      })
+      .finally(() => set_isWalletLoading(false));
+  };
+
+  const signTx = () => {
+    if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
+    set_isWalletLoading(true);
+    dispatch(
+      safeActionsAsync.createSafeTransactionThunk({
+        signer,
+        safeAddress: selectedSafeAddress,
+        safeTransactionData: {
+          to: nodeAddress,
+          value: parseUnits(xdaiValue as `${number}`, 18).toString(),
+          data: '0x',
+        },
+      }),
+    )
+      .unwrap()
       .catch((error) => {
         console.warn(error);
         if(JSON.stringify(error).includes('user rejected transaction')){
@@ -118,7 +150,10 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
         }
         set_error(true);
       })
-      .finally(() => set_isWalletLoading(false));
+      .finally(() => {
+        set_isWalletLoading(false);
+        navigate('/staking/dashboard#transactions');
+      });
   };
 
   useEffect(() => {
@@ -138,19 +173,31 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
         height: 133,
       }}
       buttons={
-        <ConfirmButton
-          onClick={createAndExecuteTx}
-          pending={isExecutionLoading}
-          disabled={
-            error ||
-            xdaiValue === '' ||
-            parseUnits(xdaiValue, 18) === parseUnits('0', 18) ||
-            xdaiValue.includes('-') ||
-            xdaiValue.includes('+')
-          }
-        >
-          FUND
-        </ConfirmButton>
+        <SSafeTransactionButton
+          safeInfo={safeInfo}
+          executeOptions={{
+            onClick: createAndExecuteTx,
+            pending: isExecutionLoading || isWalletLoading,
+            disabled:
+              error ||
+              xdaiValue === '' ||
+              parseUnits(xdaiValue, 18) === parseUnits('0', 18) ||
+              xdaiValue.includes('-') ||
+              xdaiValue.includes('+'),
+            buttonText: 'FUND',
+          }}
+          signOptions={{
+            onClick: signTx,
+            pending: isWalletLoading,
+            disabled:
+              error ||
+              xdaiValue === '' ||
+              parseUnits(xdaiValue, 18) === parseUnits('0', 18) ||
+              xdaiValue.includes('-') ||
+              xdaiValue.includes('+'),
+            buttonText: 'SIGN FUND',
+          }}
+        />
       }
     >
       <div>

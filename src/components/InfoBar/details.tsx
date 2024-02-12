@@ -153,7 +153,7 @@ export default function Details(props: Props) {
   const peers = useAppSelector((store) => store.node.peers.data);
   const balances = useAppSelector((store) => store.node.balances.data);
   const info = useAppSelector((store) => store.node.info.data);
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const web3Connected = useAppSelector((store) => store.web3.status.connected);
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
   const walletBalance = useAppSelector((store) => store.web3.balance);
@@ -168,7 +168,7 @@ export default function Details(props: Props) {
     else if(balances.native.value && (BigInt(balances.native.value) < BigInt('1000000000000000'))) return 'Red'
     return ''
   }
-  
+
   const web3Drawer = (
     <Web3Container style={props.style}>
       <TitleColumn className="web3">
@@ -304,7 +304,7 @@ export default function Details(props: Props) {
             </ColorStatus>
           </p>
           <p>
-            <ColorStatus 
+            <ColorStatus
               className={`status-${isXdaiEnough()}`}
             >
               {balances.native?.formatted ?? '-'}

@@ -345,8 +345,8 @@ const StakingLandingPage = () => {
         fullHeightMin
         gradient
       >
-        <StartOnboarding />
         <ContinueOnboarding />
+
         <StyledContainer>
           <ImageContainer>
             <Image

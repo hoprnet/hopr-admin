@@ -39,7 +39,7 @@ export const createFetchingReducer = (builder: ActionReducerMapBuilder<typeof in
     state.info.isFetching = action.payload;
   });
   builder.addCase(setSelectedSafeFetching, (state, action) => {
-    state.selectedSafeAddress.isFetching = action.payload;
+    state.selectedSafe.isFetching = action.payload;
   });
   builder.addCase(setSafeByOwnerFetching, (state, action) => {
     state.safesByOwner.isFetching = action.payload;

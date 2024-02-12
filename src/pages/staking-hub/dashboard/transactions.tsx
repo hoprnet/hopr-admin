@@ -49,6 +49,7 @@ import {
 import { calculateTimeInGMT, formatDateToUserTimezone, formatTimeToUserTimezone } from '../../../utils/date';
 import { truncateEthereumAddress } from '../../../utils/blockchain';
 import { getUserActionForPendingTransaction } from '../../../utils/safeTransactions';
+import { StringLiteral } from 'typescript';
 
 const StyledContainer = styled(Paper)`
   padding: 2rem;
@@ -77,10 +78,10 @@ const StyledBlueButton = styled(Button)`
 
 const StyledButtonGroup = styled.div`
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
   align-items: baseline;
   gap: 0.5rem;
-  
+
   // allows the execute/sign button to grow
   & span:last-child {
     flex: 1 0 auto; /* grow, don't shrink, and auto basis */
@@ -167,11 +168,14 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
   const dispatch = useAppDispatch();
   const address = useAppSelector((store) => store.web3.account);
   const safeNonce = useAppSelector((store) => store.safe.info.data?.nonce);
+  const safeThresholdFromSafe = useAppSelector((store)=>store.safe.info.data?.threshold);
+  const possibleThresholdProblem = safeThresholdFromSafe !== transaction.confirmationsRequired;
   const transactionAfterSafeNonce = safeNonce !== transaction.nonce;
   const [userAction, set_userAction] = useState<'EXECUTE' | 'SIGN' | null>(null);
   const [isLoadingApproving, set_isLoadingApproving] = useState<boolean>(false);
   const [isLoadingExecuting, set_isLoadingExecuting] = useState<boolean>(false);
   const [isLoadingRejecting, set_isLoadingRejecting] = useState<boolean>(false);
+
 
   useEffect(() => {
     if (address) {
@@ -181,6 +185,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
 
   // TODO: remove this isLoading functions when isLoading is moved to redux
   const executeTx = (transaction: SafeMultisigTransactionResponse) => {
+    console.log('transaction' , transaction)
     if (signer) {
       set_isLoadingExecuting(true);
       dispatch(
@@ -240,11 +245,17 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
     }
   };
 
+
+
+  // <Tooltip
+  //   title={`It apears that your safe threshold is not the same as the number of confirmations required for the transaction. It could be the indexer fault. Please wait about 1h untill the data is indexed.`}
+  // >
+
   if (userAction === 'EXECUTE') {
     return (
       <>
         <StyledButtonGroup>
-          <Tooltip title={transactionAfterSafeNonce && `Earlier actions should be handled first`}>
+          <Tooltip title={possibleThresholdProblem ? `WARNING: It apears that your safe threshold is not the same as the number of confirmations required for this transaction. It could be the indexer fault. Please wait about 1h untill the data is indexed.` : transactionAfterSafeNonce && `Earlier actions should be handled first`}>
             <span>
               <StyledBlueButton
                 disabled={transactionAfterSafeNonce}
@@ -254,12 +265,13 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
               </StyledBlueButton>
             </span>
           </Tooltip>
-          <Tooltip title={transactionAfterSafeNonce && `Earlier actions should be handled first`}>
+          <Tooltip title={possibleThresholdProblem ? `WARNING: It apears that your safe threshold is not the same as the number of confirmations required for this transaction. It could be the indexer fault. Please wait about 1h untill the data is indexed.` : transactionAfterSafeNonce && `Earlier actions should be handled first`}>
             <span>
               <StyledBlueButton
                 className='positive-action'
                 disabled={transactionAfterSafeNonce}
                 onClick={() => executeTx(transaction)}
+                pending={isLoadingExecuting}
               >
                 execute
               </StyledBlueButton>
@@ -280,7 +292,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
                 disabled={transactionAfterSafeNonce}
                 onClick={() => rejectTx(transaction)}
               >
-                reject
+                Reject
               </StyledBlueButton>
             </span>
           </Tooltip>
@@ -292,7 +304,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
                 onClick={() => approveTx(transaction)}
                 disabled={!userAction}
               >
-                approve/sign
+                Approve
               </StyledBlueButton>
             </span>
           </Tooltip>
@@ -312,15 +324,15 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
   const [userAction, set_userAction] = useState<'EXECUTE' | 'SIGN' | null>(null);
   // value can represent token value or json params of data
   const [value, set_value] = useState<string>();
-  const [currency, set_currency] = useState<string>();
+  const [currency, set_currency] = useState<string>('');
   const [dateInUserTimezone, set_dateInUserTimezone] = useState<string>();
   const [dateInGMT, set_dateInGMT] = useState<string>();
   const [transactionStatus, set_transactionStatus] = useState<string>();
 
+
   useEffect(() => {
     if (signer && transaction) {
       getValueFromTransaction(transaction, signer).then((value) => set_value(value?.toString()));
-      getCurrencyFromTransaction(transaction, signer).then((currency) => set_currency(currency));
       set_dateInGMT(calculateTimeInGMT(transaction.submissionDate));
       set_dateInUserTimezone(formatDateToUserTimezone(transaction.submissionDate));
       set_transactionStatus(getTransactionStatus());
@@ -329,7 +341,9 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
 
   useEffect(() => {
     if (address) {
-      set_userAction(getUserActionForPendingTransaction(transaction, address));
+      const userActionForPendingTransaction = getUserActionForPendingTransaction(transaction, address);
+      console.log('userActionForPendingTransaction', userActionForPendingTransaction);
+      set_userAction(userActionForPendingTransaction);
     }
   }, [address, transaction]);
 
@@ -369,14 +383,44 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
     return token.symbol;
   };
 
+
   const getValueFromTransaction = async (
     transaction: SafeMultisigTransactionResponse,
     signer: ethers.providers.JsonRpcSigner,
   ) => {
     const isNativeTransaction = !transaction.data;
-    if (isNativeTransaction) {
-      return formatEther(BigInt(transaction.value));
+    console.log('getValueFromTransaction', transaction)
+
+    // Rejection
+    if (transaction.safe === transaction.to && !BigInt(transaction.value)){
+      return ''
     }
+
+    const currency = getCurrencyFromTransaction(transaction, signer);
+    if (isNativeTransaction) {
+      return formatEther(BigInt(transaction.value)) + ' ' + currency;
+    }
+
+    // change allowance:
+    //cap: approve
+    // data: { "method": "approve", "parameters": [ { "name": "spender", "type": "address", "value": "0x693Bac5ce61c720dDC68533991Ceb41199D8F8ae" }, { "name": "value", "type": "uint256", "value": "1000000000000000000000" } ] }
+
+    try {
+      if(
+        transaction.dataDecoded &&
+        typeof transaction.dataDecoded === 'object' &&
+        !Array.isArray(transaction.dataDecoded)
+      ){
+        // @ts-ignore
+        if (transaction?.dataDecoded?.method === 'addOwnerWithThreshold') {
+          // @ts-ignore
+          return transaction.dataDecoded.parameters[0].value;
+        }
+        // if (transaction.request === 'Rejection') {
+        //   return ;
+        // }
+      }
+    } catch (e) {}
 
     const token = await dispatch(
       safeActionsAsync.getToken({
@@ -445,9 +489,9 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
         </TableCell>
         <TableCell align="left">{transaction.source}</TableCell>
         <TableCell align="left">{transaction.request}</TableCell>
-        <TableCell align="left">{`${
-          value && value.length > 18 ? value.slice(0, 18).concat('...') : value
-        } ${currency}`}</TableCell>
+        <TableCell align="left">
+          {value}
+        </TableCell>
         <TableCell align="left">
           <ActionButtons transaction={transaction} />
         </TableCell>
@@ -804,7 +848,7 @@ function TransactionHistoryRow(props: { transaction: NonNullable<CustomAllTransa
 function TransactionHistoryTable() {
   const dispatch = useAppDispatch();
   const safeTransactions = useAppSelector((store) => store.safe.allTransactions.data);
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const signer = useEthersSigner();
 
   const fetchAllSafeTransaction = () => {
@@ -857,7 +901,7 @@ function TransactionHistoryTable() {
 const PendingTransactionsTable = () => {
   const dispatch = useAppDispatch();
   const pendingTransactions = useAppSelector((store) => store.safe.pendingTransactions.data);
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const signer = useEthersSigner();
 
   useEffect(() => {

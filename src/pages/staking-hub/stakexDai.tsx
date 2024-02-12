@@ -33,7 +33,7 @@ import Section from '../../future-hopr-lib-components/Section';
 
 const StakexDai = () => {
   const dispatch = useAppDispatch();
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const walletBalance = useAppSelector((store) => store.web3.balance);
   const [xdaiValue, set_xdaiValue] = useState('');
 
@@ -62,7 +62,7 @@ const StakexDai = () => {
     isLoading: is_xDAI_to_safe_loading,
     sendTransaction: send_xDAI_to_safe,
   } = useSendTransaction({
-    ...xDAI_to_safe_config, onSuccess: () => refetchXDaiSafeBalance(), 
+    ...xDAI_to_safe_config, onSuccess: () => refetchXDaiSafeBalance(),
   });
 
   useEffect(() => {

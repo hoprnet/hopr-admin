@@ -46,15 +46,15 @@ ul.notification-menu-list,
 ul.connect-node-menu-list,
 ul.safe-menu-list {
   padding: 0;
-} 
+}
 
 ul.connect-node-menu-list {
   width: 200px;
-} 
+}
 
 ul.safe-menu-list {
   width: 240px;
-} 
+}
 
 ul.safe-menu-list > li {
   display: flex;
@@ -79,7 +79,7 @@ body::-webkit-scrollbar {
 }
 body::-webkit-scrollbar-track {
   background: #ffffa0;
- 
+
 }
 body::-webkit-scrollbar-thumb {
   background: #3c64a5;
@@ -98,4 +98,9 @@ body::-webkit-scrollbar-thumb:hover {
 
 .STooltip.notWide .MuiTooltip-tooltip {
   width: 160px;
+}
+
+
+.inline{
+  display: inline;
 }

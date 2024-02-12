@@ -8,7 +8,7 @@ export const formatDateToUserTimezone = (date: string) => {
   dayjs.extend(timezone);
   // guess user timezone;
   const userTimezone = dayjs.tz.guess();
-  const formattedDate = dayjs(date).tz(userTimezone).format('YYYY-MM-DD');
+  const formattedDate = dayjs(date).tz(userTimezone).format('YYYY-MM-DD HH:MM');
   return formattedDate;
 };
 

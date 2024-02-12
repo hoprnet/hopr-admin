@@ -4,6 +4,8 @@ import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS
 
 // wagmi
 import { useAccount, useBalance, useNetwork } from 'wagmi';
+import { watchAccount } from '@wagmi/core'
+import { useEthersSigner } from '../../hooks';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -15,25 +17,41 @@ import { stakingHubActions, stakingHubActionsAsync } from '../../store/slices/st
 export default function WagmiUpdater() {
   // const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const signer = useEthersSigner();
   const nodeHoprAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress); // Staking Hub
   const addressInStore = useAppSelector((store) => store.web3.account);
+  const web3Disconnecting = useAppSelector((store) => store.web3.status.disconnecting);
 
   // Wallet Account
   const {
     address,
     isConnected,
+    connector
   } = useAccount();
 
   const { chain } = useNetwork();
 
-  /*
+  // **********************
+  // Leaving for on-going testing of wagmi losing connection with wallet
+  useEffect(() => {
+    console.log('Detected wagmi address change', address)
+  }, [address]);
 
-  If wagmi is not always able to detect address change, add this code:
+  useEffect(() => {
+    console.log('Detected wagmi isConnected change', isConnected)
+  }, [isConnected]);
+
+  useEffect(() => {
+    console.log('Detected wagmi connector change', connector)
+  }, [connector]);
+
+  // If wagmi is not always able to detect address change, add this code:
 
   useEffect(() => {
     function handleAccountsChanged(accounts: string[]) {
       if(accounts && accounts[0] && typeof(accounts[0]) === 'string') {
-        set_lastAccountUsed(accounts[0]);
+        //set_lastAccountUsed(accounts[0]);
+        console.log('Detected accountsChanged event', accounts[0])
       }
     }
 
@@ -52,13 +70,16 @@ export default function WagmiUpdater() {
     };
   }, []);
 
-  */
+  // **********************
 
   // Account change in Wallet
   useEffect(() => {
     if(addressInStore === address) return;
+    if(web3Disconnecting) return;
 
     if (isConnected && address) {
+      console.log('isConnected', isConnected);
+      console.log('address', address);
       //reset whole app
       dispatch(appActions.resetState());
       dispatch(web3Actions.resetState());
@@ -71,7 +92,7 @@ export default function WagmiUpdater() {
       dispatch(web3ActionsAsync.getCommunityNftsOwnedByWallet({ account: address }));
       dispatch(stakingHubActionsAsync.getHubSafesByOwnerThunk(address));
     }
-  }, [isConnected, addressInStore, address]);
+  }, [isConnected, addressInStore, address, web3Disconnecting]);
 
   useEffect(() => {
     if (isConnected && chain) {
@@ -81,7 +102,7 @@ export default function WagmiUpdater() {
   }, [isConnected, chain]);
 
   // Balances
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const account = useAppSelector((store) => store.web3.account) as `0x${string}`;
 
   const { data: xDAI_balance } = useBalance({

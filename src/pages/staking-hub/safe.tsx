@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react';
 import { utils } from 'ethers';
-import { useEthersSigner } from '../../hooks';
-import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
+import { useEffect, useState } from 'react';
 import { Address, formatEther } from 'viem';
-import { appActions } from '../../store/slices/app';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config'
 import { erc20ABI, useContractRead, useWalletClient } from 'wagmi';
 import { web3 } from '@hoprnet/hopr-sdk';
-import { MAX_UINT256, createApproveTransactionData, createIncludeNodeTransactionData, } from '../../utils/blockchain'
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config';
+import { useEthersSigner } from '../../hooks';
+import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
+import { appActions } from '../../store/slices/app';
+import { MAX_UINT256, createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../utils/blockchain';
+import { Container, FlexContainer, Text } from './onboarding/styled';
 
 
 //Stores
@@ -15,14 +16,22 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActionsAsync } from '../../store/slices/safe';
 
 // HOPR Components
+import styled from '@emotion/styled';
 import Section from '../../future-hopr-lib-components/Section';
 import { stakingHubActionsAsync } from '../../store/slices/stakingHub';
+import { MenuItem, Select, TextField } from '@mui/material';
+
+const RemoveOwnerDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+`;
 
 function SafeSection() {
   const dispatch = useAppDispatch();
   const safe = useAppSelector((store) => store.safe);
   const stakingHub = useAppSelector((store) => store.stakingHub);
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data) as Address;
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress) as Address;
   const safesByOwner = useAppSelector((store) => store.safe.safesByOwner.data);
   const allTransactions = useAppSelector((store) => store.safe.allTransactions.data);
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
@@ -30,12 +39,15 @@ function SafeSection() {
   const { account } = useAppSelector((store) => store.web3);
   const signer = useEthersSigner();
   const { data: walletClient } = useWalletClient();
-  const [threshold, set_threshold] = useState(1);
+  const [createSafeThreshold, set_createSafeThreshold] = useState(1);
   const [owners, set_owners] = useState('');
   const [nodeAddress, set_nodeAddress] = useState('');
   const [includeNodeResponse, set_includeNodeResponse] = useState('');
   const [safeAddressForRegistry, set_safeAddressForRegistry] = useState('');
   const [nodeAddressForRegistry, set_nodeAddressForRegistry] = useState('');
+  const [newThreshold, set_newThreshold] = useState(safe?.info.data?.threshold || 0);
+  const [newOwner, set_newOwner] = useState('');
+
   const activePendingSafeTransaction = useAppSelector(
     (store) => store.app.configuration.notifications.pendingSafeTransaction,
   );
@@ -78,6 +90,83 @@ function SafeSection() {
   const fetchInitialStateForSigner = async () => {
     if (signer) {
       dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer }));
+    }
+  };
+
+  const updateSafeThreshold = async (safeAddress: string) => {
+    if (signer && safeAddress) {
+      const removeTransactionData = await dispatch(safeActionsAsync.createSetThresholdToSafeTransactionDataThunk({
+        signer: signer,
+        newThreshold: newThreshold,
+        safeAddress: safeAddress,
+      })).unwrap()
+
+      if (removeTransactionData) {
+        await dispatch(
+          safeActionsAsync.createSafeTransactionThunk({
+            signer: signer,
+            safeAddress: safeAddress,
+            safeTransactionData: removeTransactionData,
+          }),
+        );
+      }
+    }
+  };
+
+  const handleNewOwnerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const owner = event.target.value;
+    set_newOwner(owner);
+  };
+
+  const removeOwner = async (address: string, safeAddress: string, threshold?: number) => {
+    if (signer && safeAddress) {
+      const transactionData = await dispatch(safeActionsAsync.createRemoveOwnerFromSafeTransactionDataThunk({
+        ownerAddress: address,
+        safeAddress: safeAddress,
+        signer,
+        threshold: threshold,
+      })).unwrap()
+
+      if (!transactionData) return;
+
+      const transactionHash = await dispatch(safeActionsAsync.createAndExecuteSafeTransactionThunk({
+        safeAddress: safeAddress,
+        signer,
+        safeTransactionData: transactionData,
+      })).unwrap()
+
+      return transactionHash
+    }
+  };
+
+  const addOwner = async (safeAddress: string) => {
+    if (signer && safeAddress) {
+      const transactionData = await dispatch(
+        safeActionsAsync.createAddOwnerToSafeTransactionDataThunk({
+          ownerAddress: newOwner,
+          safeAddress: safeAddress,
+          signer: signer,
+        }),
+      ).unwrap()
+
+      if (transactionData) {
+        const transactionHash = await dispatch(safeActionsAsync.createAndExecuteSafeTransactionThunk({
+          safeAddress: safeAddress,
+          signer,
+          safeTransactionData: transactionData,
+        })).unwrap()
+
+        await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            transactionHash: transactionHash,
+            safeAddress,
+            moduleAddress: safeModules?.[0] ?? '',
+            ownerAddress: newOwner,
+          }),
+        });
+      }
     }
   };
 
@@ -146,10 +235,10 @@ function SafeSection() {
       <label htmlFor="threshold">threshold</label>
       <input
         id="threshold"
-        value={threshold}
+        value={createSafeThreshold}
         type="number"
         onChange={(event) => {
-          set_threshold(Number(event.target.value));
+          set_createSafeThreshold(Number(event.target.value));
         }}
       />
       <label htmlFor="owners">owners</label>
@@ -169,7 +258,7 @@ function SafeSection() {
               safeActionsAsync.createVanillaSafeWithConfigThunk({
                 config: {
                   owners: owners.split(','),
-                  threshold,
+                  threshold: createSafeThreshold,
                 },
                 signer,
               }),
@@ -186,7 +275,7 @@ function SafeSection() {
               safeActionsAsync.createSafeWithConfigThunk({
                 config: {
                   owners: owners.split(','),
-                  threshold,
+                  threshold: createSafeThreshold,
                 },
                 walletClient,
               }),
@@ -226,7 +315,7 @@ function SafeSection() {
         onClick={() => {
           if (signer && selectedSafeAddress && safeModules && safeModules.at(0) && nodeAddress) {
             dispatch(
-              safeActionsAsync.createAndExecuteContractTransactionThunk({
+              safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
                 smartContractAddress: safeModules.at(0) as Address,
                 data: createIncludeNodeTransactionData(nodeAddress),
                 safeAddress: selectedSafeAddress,
@@ -320,7 +409,61 @@ function SafeSection() {
         }}
       />
       <span>is safe registered: {JSON.stringify(isNodeSafeRegistered)}</span>
-
+      <h1>Safe Settings</h1>
+      <h2>Threshold</h2>
+      <Container column>
+        <Text>Any transaction requires the confirmation of:</Text>
+        <Text>Currently: {safe?.info.data?.threshold}</Text>
+        <FlexContainer>
+          <Text>New threshold:</Text>
+          <Select
+            value={newThreshold}
+            onChange={(e) => set_newThreshold(Number(e.target.value))}
+          >
+            {safe?.info.data?.owners?.map((_, index) => (
+              <MenuItem
+                key={index + 1}
+                value={`${index + 1}`}
+              >
+                {index + 1}
+              </MenuItem>
+            ))}
+          </Select>
+          <Text>Out of {safe?.info.data?.owners.length} owner(s).</Text>
+        </FlexContainer>
+        <button
+          disabled={newThreshold === safe?.info.data?.threshold || newThreshold === 0}
+          onClick={() => void updateSafeThreshold(selectedSafeAddress)}
+        >
+          Update
+        </button>
+      </Container>
+      <h2>Add Owner</h2>
+      <Container column>
+        <TextField
+          type="text"
+          name="newOwner"
+          label="address"
+          placeholder="New owner address here..."
+          onChange={handleNewOwnerChange}
+          value={newOwner}
+        />
+        <button
+          onClick={() => addOwner(selectedSafeAddress)}
+          disabled={newOwner === '' || safe === null || safe?.info.data?.owners.includes(newOwner)}
+        >
+          Add owner
+        </button>
+      </Container>
+      <h2>Remove Owner</h2>
+      <Container column>
+        {safe?.info.data?.owners.map((address, id) => (
+          <RemoveOwnerDiv key={`remove-owner_${id}`}>
+            <p>{address}</p>
+            <button onClick={() => removeOwner(address, selectedSafeAddress)}>Remove</button>
+          </RemoveOwnerDiv>
+        ))}
+      </Container>
       <h2>transactions actions</h2>
       {allTransactions?.results.map((transaction, key) => (
         <div key={key}>
@@ -371,7 +514,7 @@ function SafeSection() {
         onClick={() => {
           if (signer && selectedSafeAddress) {
             dispatch(
-              safeActionsAsync.createSafeContractTransaction({
+              safeActionsAsync.createSafeContractTransactionThunk({
                 data: createApproveTransactionData(HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, MAX_UINT256),
                 signer,
                 safeAddress: selectedSafeAddress,

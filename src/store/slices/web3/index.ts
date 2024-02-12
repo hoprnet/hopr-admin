@@ -23,6 +23,9 @@ const web3Slice = createSlice({
     setChain(state, action) {
       state.chain = action.payload ? action.payload : null;
     },
+    setDisconnecting(state, action) {
+      state.status.disconnecting = action.payload ? action.payload : false;
+    },
     setModalOpen(state, action) {
       state.modalOpen = action.payload ? action.payload : false;
     },

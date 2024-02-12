@@ -27,6 +27,7 @@ type WithdrawModalProps = {
 };
 
 const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
+  console.log('StartOnboarding')
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,16 +37,25 @@ const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
   const web3connected = useAppSelector((state) => state.web3.status.connected);
   const [openModal, set_openModal] = useState(false);
 
+  const moduleAddress = useAppSelector((store) => store.safe.selectedSafe.data.moduleAddress);
+
   useEffect(() => {
-    if (!modalToSartOnboardingDismissed && web3connected && notStarted && !notFinished) handleOpenModal();
+    if (modalToSartOnboardingDismissed) {
+      set_openModal(false);
+      return;
+    }
+    if ((!modalToSartOnboardingDismissed && web3connected && notStarted && !notFinished) || (!moduleAddress)) handleOpenModal();
     else set_openModal(false);
-  }, [web3connected, notFinished, notStarted, modalToSartOnboardingDismissed]);
+  }, [web3connected, notFinished, notStarted, modalToSartOnboardingDismissed, moduleAddress]);
+
 
   const handleOpenModal = () => {
+    console.log('handleOpenModal')
     set_openModal(true);
   };
 
   const handleCloseModal = () => {
+    console.log('handleCloseModal')
     set_openModal(false);
     dispatch(stakingHubActions.dismissModalToSartOnboarding());
     if(location.pathname !== '/') navigate('/');

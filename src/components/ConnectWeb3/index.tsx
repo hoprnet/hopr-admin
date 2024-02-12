@@ -1,8 +1,11 @@
 import styled from '@emotion/styled';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+// UI
 import WalletButton from '../../future-hopr-lib-components/Button/wallet-button';
 import Modal from '../../future-hopr-lib-components/Modal';
+import { Button, Menu, MenuItem } from '@mui/material';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -11,8 +14,7 @@ import { safeActions } from '../../store/slices/safe';
 import { stakingHubActions, stakingHubActionsAsync } from '../../store/slices/stakingHub';
 
 // wagmi
-import { Button, Menu, MenuItem } from '@mui/material';
-import { Connector, useConnect, useDisconnect } from 'wagmi';
+import { Connector, useConnect, useDisconnect, useAccount } from 'wagmi';
 import { truncateEthereumAddress } from '../../utils/blockchain';
 import { web3Actions } from '../../store/slices/web3';
 import { UserRejectedRequestError } from 'viem';
@@ -102,16 +104,18 @@ export default function ConnectWeb3({
 }: ConnectWeb3Props) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const {
     connectors,
     connect,
     error,
-    data,
     reset,
     pendingConnector,
   } = useConnect();
+  const { connector } = useAccount();
   const { disconnect } = useDisconnect();
+
   const account = useAppSelector((store) => store.web3.account);
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const modalOpen = useAppSelector((store) => store.web3.modalOpen);
@@ -119,6 +123,7 @@ export default function ConnectWeb3({
   const walletPresent = useAppSelector((store) => store.web3.status.walletPresent);
   const [localError, set_localError] = useState<false | string>(false);
   const containerRef = useRef<HTMLButtonElement>(null);
+
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -178,6 +183,7 @@ export default function ConnectWeb3({
 
   const handleConnectToWallet = (connector: Connector) => {
     dispatch(web3Actions.setLoading(true));
+    dispatch(web3Actions.setDisconnecting(false));
 
     connect({ connector });
 
@@ -188,11 +194,13 @@ export default function ConnectWeb3({
   };
 
   const handleDisconnectMM = () => {
+    console.log('handleDisconnectMM')
     disconnect();
     dispatch(appActions.resetState());
     dispatch(web3Actions.resetState());
     dispatch(safeActions.resetState());
     dispatch(stakingHubActions.resetState());
+    dispatch(web3Actions.setDisconnecting(true));
     navigate('/');
   };
 
@@ -225,7 +233,7 @@ export default function ConnectWeb3({
           <div className="image-container">
             <img
               src={
-                data?.connector?.id === 'walletConnect'
+                connector?.id === 'walletConnect'
                   ? '/assets/wallets/WalletConnect-Icon.svg'
                   : '/assets/wallets/MetaMask_Fox.svg'
               }
@@ -238,7 +246,7 @@ export default function ConnectWeb3({
               <Web3Button>
                 <div className="wallet-info">
                   <p className="chain">
-                    {data?.connector?.name ?? 'Metamask'} @ {chain}
+                    {connector?.name ?? 'Metamask'} @ {chain}
                   </p>
                   <p>eth: {truncateEthereumAddress(account as string)}</p>
                 </div>

@@ -64,7 +64,7 @@ const BlueTooltip = styled(({ className, ...props }: TooltipProps) => (
 
 const FundsToSafe = () => {
   const dispatch = useAppDispatch();
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafeAddress.data);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const communityNftIdInSafe = useAppSelector((store) => !!store.safe.communityNftIds.data.length);
   const walletBalance = useAppSelector((store) => store.web3.balance);
   const [xdaiValue, set_xdaiValue] = useState('');
