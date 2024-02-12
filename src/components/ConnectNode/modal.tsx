@@ -307,6 +307,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   const clearLocalNodes = () => {
     set_nodesSavedLocallyChosenIndex('');
     dispatch(authActions.clearLocalNodes());
+    set_areYouSureYouWannaDeleteAllSavedNodes(false);
   };
 
   const handleSelectlocalNodes = (event: SelectChangeEvent<unknown>) => {
