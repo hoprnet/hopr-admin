@@ -21,14 +21,14 @@ const messages = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (apiEndpoint && apiToken) {
-      dispatch(
-        actionsAsync.getAliasesThunk({
-          apiEndpoint,
-          apiToken,
-        }),
-      );
-    }
+    if (!apiEndpoint || !apiToken) return;
+
+    dispatch(
+      actionsAsync.getAliasesThunk({
+        apiEndpoint,
+        apiToken,
+      }),
+    );
   }, []);
 
   const header = [

@@ -165,14 +165,15 @@ function MetricsPage() {
   }, [apiEndpoint, apiToken]);
 
   const handleRefresh = () => {
-    if (apiEndpoint && apiToken) {
-      dispatch(
-        actionsAsync.getPrometheusMetricsThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-    }
+    if (!apiEndpoint || !apiToken) return;
+
+    dispatch(
+      actionsAsync.getPrometheusMetricsThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+
   };
 
   const isTooltipTextString = (tooltipText: string | JSX.Element): boolean => {

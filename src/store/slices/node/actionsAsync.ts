@@ -968,7 +968,6 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   // getPeers
   builder.addCase(getPeersThunk.fulfilled, (state, action) => {
     if (action.payload) {
-      console.log('getPeers', action.payload)
       state.peers.data = {
         announced: [],
         connected: [],
@@ -978,7 +977,6 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     state.peers.isFetching = false;
   });
   builder.addCase(getPeersThunk.rejected, (state) => {
-    console.log('getPeers rejected')
     state.peers.isFetching = false;
   });
   // getPeer

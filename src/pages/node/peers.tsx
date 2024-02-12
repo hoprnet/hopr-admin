@@ -32,6 +32,8 @@ function PeersPage() {
   }, [loginData, dispatch]);
 
   const handleRefresh = () => {
+    if(!loginData.apiEndpoint || !loginData.apiToken) return;
+
     dispatch(
       actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,

@@ -57,6 +57,8 @@ function ChannelsPage() {
   }, [queryParams]);
 
   const handleRefresh = () => {
+    if(!loginData.apiEndpoint || !loginData.apiToken) return;
+
     dispatch(
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
@@ -81,6 +83,7 @@ function ChannelsPage() {
         apiToken: loginData.apiToken!,
       })
     );
+
   };
 
   const getAliasByPeerAddress = (peerAddress: string): string => {
@@ -165,8 +168,8 @@ function ChannelsPage() {
       funds: `${utils.formatEther(channel.balance)} ${HOPR_TOKEN_USED}`,
       actions: (
         <>
-          <PingModal 
-            peerId={getPeerIdFromPeerAddress(channel.peerAddress)} 
+          <PingModal
+            peerId={getPeerIdFromPeerAddress(channel.peerAddress)}
             disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
           />
           <CreateAliasModal
@@ -179,7 +182,7 @@ function ChannelsPage() {
             title="Open outgoing channel"
             type={'open'}
           />
-          <SendMessageModal 
+          <SendMessageModal
             peerId={getPeerIdFromPeerAddress(channel.peerAddress)}
             disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
           />

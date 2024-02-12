@@ -53,56 +53,57 @@ function InfoPage() {
   }, [apiEndpoint, apiToken]);
 
   const fetchInfoData = () => {
-    if (apiEndpoint && apiToken) {
-      dispatch(
-        actionsAsync.getBalancesThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-      dispatch(
-        actionsAsync.getChannelsThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-      dispatch(
-        actionsAsync.getAddressesThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-      dispatch(
-        actionsAsync.getVersionThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-      dispatch(
-        actionsAsync.getInfoThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-      dispatch(
-        actionsAsync.getPeersThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-      dispatch(
-        actionsAsync.getAliasesThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-      dispatch(
-        actionsAsync.getTicketStatisticsThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-    }
+    if (!apiEndpoint || !apiToken) return;
+
+    dispatch(
+      actionsAsync.getBalancesThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+    dispatch(
+      actionsAsync.getChannelsThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+    dispatch(
+      actionsAsync.getAddressesThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+    dispatch(
+      actionsAsync.getVersionThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+    dispatch(
+      actionsAsync.getInfoThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+    dispatch(
+      actionsAsync.getPeersThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+    dispatch(
+      actionsAsync.getAliasesThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+    dispatch(
+      actionsAsync.getTicketStatisticsThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+
   };
 
   // This will allow us to improve readability on the reloading prop for SubpageTitle
