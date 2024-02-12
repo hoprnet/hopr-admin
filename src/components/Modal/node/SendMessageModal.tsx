@@ -115,6 +115,9 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
 
   useEffect(() => {
     switch (sendMode) {
+      case 'automaticPath':
+        set_numberOfHops(1);
+        break;
       case 'path':
         set_numberOfHops(0);
         break;
@@ -126,7 +129,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
         set_path('');
     }
 
-  }, [sendMode, path, numberOfHops]);
+  }, [sendMode]);
 
   const handleSendMessage = () => {
     if (!(loginData.apiEndpoint && loginData.apiToken)) return;
@@ -141,7 +144,9 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       peerId: validatedReceiver,
       tag: 1,
     };
-
+    if (sendMode === 'automaticPath') {
+      messagePayload.hops = 1;
+    }
     if (sendMode === 'directMessage') {
       messagePayload.path = [];
     }
