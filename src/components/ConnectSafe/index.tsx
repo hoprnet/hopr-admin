@@ -121,18 +121,6 @@ export default function ConnectSafe() {
     };
   }, []);
 
-  // useEffect(() => {
-  //   const fetchInitialStateForSigner = async () => {
-  //     if (signer) {
-  //       dispatch(safeActions.resetState());
-  //       dispatch(stakingHubActions.resetStateWithoutMagicLinkForOnboarding());
-  //       dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer }));
-  //     }
-  //   };
-
-  //   fetchInitialStateForSigner();
-  // }, [signer]);
-
   // If no selected safeAddress, choose 1st one
   useEffect(() => {
     if (safes.length > 0 && !safeAddress && signer && ownerAddress) {
