@@ -11,7 +11,7 @@ import { createSendNftTransactionData, createSendTokensTransactionData } from '.
 
 // components
 import Card from '../../components/Card';
-import NetworkOverlay from '../../components/NetworkOverlay';
+import NetworkOverlay from '../../components/Overlays/NetworkOverlay';
 import Section from '../../future-hopr-lib-components/Section';
 import StartOnboarding from '../../components/Modal/staking-hub/StartOnboarding';
 

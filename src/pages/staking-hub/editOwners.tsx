@@ -8,7 +8,7 @@ import { browserClient } from '../../providers/wagmi';
 
 // Components
 import StartOnboarding from '../../components/Modal/staking-hub/StartOnboarding';
-import NetworkOverlay from '../../components/NetworkOverlay';
+import NetworkOverlay from '../../components/Overlays/NetworkOverlay';
 import ConfirmModal from '../../components/Modal/staking-hub/ConfirmModal';
 import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';

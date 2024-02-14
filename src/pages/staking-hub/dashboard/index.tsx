@@ -9,7 +9,7 @@ import { safeActions, safeActionsAsync } from '../../../store/slices/safe';
 import { stakingHubActions, stakingHubActionsAsync } from '../../../store/slices/stakingHub';
 
 // HOPR Components
-import NetworkOverlay from '../../../components/NetworkOverlay';
+import NetworkOverlay from '../../../components/Overlays/NetworkOverlay';
 import StartOnboarding from '../../../components/Modal/staking-hub/StartOnboarding';
 
 // Mui

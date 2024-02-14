@@ -7,14 +7,14 @@ import { useAppSelector } from '../../../store';
 
 // HOPR Components
 import { Stepper } from '../../../components/Stepper';
-import NetworkOverlay from '../../../components/NetworkOverlay';
+import NetworkOverlay from '../../../components/Overlays/NetworkOverlay';
 
 //Steps
 import OnboardingIsFetching from './isFetching';
-import AddNode from './step5/0addNode';
-import ConfigureNode from './step6/0configureNode';
-import FundNode from './step7/0fundNode';
-import NodeIsReady from './step9/0nodeIsReady';
+import AddNode from './step6/0addNode';
+import ConfigureNode from './step7/0configureNode';
+import FundNode from './step8/0fundNode';
+import NodeIsReady from './step10/0nodeIsReady';
 
 const OnboardingContainer = styled.div`
   display: flex;

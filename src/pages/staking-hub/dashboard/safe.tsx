@@ -100,6 +100,7 @@ function SafeDashboard() {
   const executeUpdateConfig = async () => {
     if (signer) {
       set_updating(true);
+      // TODO: merge all groups into 1 call
       if (updateStrategy === 'configWillPointToCorrectContracts') {
         // GROUP 1 when target is false 1. addChannelsAndTokenTarget (0xa2450f89) in the module contract
         const newConfig = `0x693bac5ce61c720ddc68533991ceb41199d8f8ae010103030303030303030303`;
@@ -109,6 +110,8 @@ function SafeDashboard() {
           functionName: 'addChannelsAndTokenTarget',
           args: [newConfig],
         });
+
+        console.log('addChannelsAndTokenTarget', addChannelsAndTokenTarget)
 
         dispatch(
           safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
@@ -125,13 +128,15 @@ function SafeDashboard() {
           .finally(() => {
             set_updating(false);
           });
-
-      } else if (moduleAddress && updateStrategy === 'configWillLetOpenChannels') {
+      } else if (moduleAddress && updateStrategy === 'configWillLetOpenChannels' || updateStrategy === 'configAnnounceOnly') {
         // GROUP 2: Safes cloned with old wrong config, but correct SC addresses
 
         const moduleAddressWithout0x = moduleAddress.slice(2).toLocaleLowerCase();
 
         const newConfig = `0x8d80ff0a0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000016b00${moduleAddressWithout0x}000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000243401cde8000000000000000000000000693bac5ce61c720ddc68533991ceb41199d8f8ae00${moduleAddressWithout0x}000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000243401cde8000000000000000000000000d4fdec44db9d44b8f2b6d529620f9c0c7066a2c100${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024a2450f89693bac5ce61c720ddc68533991ceb41199d8f8ae010103030303030303030303000000000000000000000000000000000000000000`;
+
+      //TEST
+       // const newConfig = `0x8d80ff0a0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000016b00${moduleAddressWithout0x}000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000243401cde8000000000000000000000000693bac5ce61c720ddc68533991ceb41199d8f8ae00${moduleAddressWithout0x}000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000243401cde8000000000000000000000000d4fdec44db9d44b8f2b6d529620f9c0c7066a2c100${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024a2450f89693bac5ce61c720ddc68533991ceb41199d8f8ae01010303030303030303030300${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024a76c9a2f619eabE23FD0E2291B50a507719aa633fE6069b8010003000000000000000000000000000000000000000000000000000000000000`;
 
         dispatch(
           safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
@@ -140,6 +145,33 @@ function SafeDashboard() {
             safeAddress: selectedSafeAddress,
             operation: OperationType.DelegateCall,
             smartContractAddress: MULTISEND_CONTRACT_GNOSIS,
+          }),
+        )
+          .unwrap()
+          .then(() => {
+            dispatch(stakingHubActions.setConfigUpdated());
+          })
+          .finally(() => {
+            set_updating(false);
+          });
+      } if (updateStrategy === 'configAnnounceOnly') {
+        // GROUP 3 when announce target was not provided earlier
+        const newConfig = `0x619eabE23FD0E2291B50a507719aa633fE6069b8010003000000000000000000`;
+
+        const scopeTargetToken  = encodeFunctionData({
+          abi: web3.hoprNodeManagementModuleABI,
+          functionName: 'scopeTargetToken',
+          args: [newConfig],
+        });
+
+        console.log('scopeTargetToken', scopeTargetToken)
+
+        dispatch(
+          safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
+            data: scopeTargetToken,
+            signer,
+            safeAddress: selectedSafeAddress,
+            smartContractAddress: moduleAddress,
           }),
         )
           .unwrap()
@@ -200,6 +232,31 @@ function SafeDashboard() {
           .finally(() => {
             set_updating(false);
           });
+      } else if (updateStrategy === 'configAnnounceOnly') {
+        // GROUP 3 when announce target was not provided earlier
+        const newConfig = `0x619eabE23FD0E2291B50a507719aa633fE6069b8010003000000000000000000`;
+
+        const scopeTargetToken  = encodeFunctionData({
+          abi: web3.hoprNodeManagementModuleABI,
+          functionName: 'scopeTargetToken',
+          args: [newConfig],
+        });
+
+        console.log('scopeTargetToken', scopeTargetToken)
+
+        dispatch(
+          safeActionsAsync.createSafeContractTransactionThunk({
+            data: scopeTargetToken,
+            signer,
+            safeAddress: selectedSafeAddress,
+            smartContractAddress: moduleAddress,
+          }),
+        )
+          .unwrap()
+          .finally(() => {
+            set_updating(false);
+          });
+
       }
     }
   };

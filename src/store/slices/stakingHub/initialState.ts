@@ -142,7 +142,7 @@ export const initialState: InitialState = {
     notFinished: false,
     userIsInOnboarding: false,
     nodeXDaiBalance: null,
-    isFetching: false,
+    isFetching: true,
     notStarted: null,
     modalToSartOnboardingDismissed: false,
     nodeAddressProvidedByMagicLink: null,

@@ -7,6 +7,7 @@ import {
   MINIMUM_WXHOPR_TO_FUND,
   MINIMUM_XDAI_TO_FUND,
   MINIMUM_XDAI_TO_FUND_NODE,
+  HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS,
   HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,
   wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS
 } from '../../../../config';
@@ -299,6 +300,7 @@ const getSubgraphDataThunk = createAsyncThunk<
 type ParsedTargets =   {
   channels: false | string;
   wxHOPR: false | string;
+  announcmentTarget: false | string;
 }
 
 const getModuleTargetsThunk = createAsyncThunk<
@@ -328,11 +330,19 @@ const getModuleTargetsThunk = createAsyncThunk<
         args: [wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS]
       }) as [boolean, BigInt];
 
-      console.log('targets', wxHOPRTarget, channelsTarget)
+      const announcmentTarget = await superWalletClient.readContract({
+        address: moduleAddress as `0x${string}`,
+        abi: web3.hoprNodeManagementModuleABI,
+        functionName: 'tryGetTarget',
+        args: [HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS]
+      }) as [boolean, BigInt];
+
+      console.log('targets', {wxHOPRTarget, channelsTarget, announcmentTarget})
 
       const targets = {
         channels: channelsTarget[0] === true ? channelsTarget[1].toString() : false,
         wxHOPR: wxHOPRTarget[0] === true ? wxHOPRTarget[1].toString() : false,
+        announcmentTarget: announcmentTarget[0] === true ? announcmentTarget[1].toString() : false,
       } as ParsedTargets;
 
       // TODO: Decode the targets
@@ -577,12 +587,16 @@ const setSubgraphDataFetching = createAction<boolean>('stakingHub/setSubgraphDat
 const setNodeDataFetching = createAction<boolean>('stakingHub/setNodeDataFetching');
 
 export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
+  builder.addCase(getHubSafesByOwnerThunk.pending, (state) => {
+    state.safes.isFetching = true;
+  });
   builder.addCase(getHubSafesByOwnerThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.safes.data = action.payload;
     }
     if (action.payload.length === 0) {
       state.onboarding.notStarted = true;
+      state.onboarding.isFetching = false;
     } else {
       state.onboarding.notStarted = false;
     }
@@ -649,7 +663,11 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     if (action.payload) {
       const correctConfig1 = '47598282682985165703087897390610028112494826122342268517157719752757376909312';
       const correctConfig2 = '96338966875583709871840581638487531229018761285270926761304390858285246317315';
+      const correctConfig3 = '44154694447105676396867590936447101190536019366130432120501522583128004100096';
 
+      // state.config.needsUpdate.data = true;
+      //   state.config.needsUpdate.strategy =  'configWillPointToCorrectContracts';
+      //   return;
       if(!action.payload.channels || !action.payload.wxHOPR){
         console.log('Old safe config present, needs update. Targets:', action.payload);
         state.config.needsUpdate.data = true;
@@ -658,13 +676,21 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         console.log('Old safe config present, need update. Targets:', action.payload);
         state.config.needsUpdate.data = true;
         state.config.needsUpdate.strategy = 'configWillLetOpenChannels';
+      } else if(action.payload.announcmentTarget !== correctConfig3 || !action.payload.announcmentTarget){
+        console.log('Old safe config present, need update. Targets:', action.payload);
+        state.config.needsUpdate.data = true;
+        state.config.needsUpdate.strategy = 'configAnnounceOnly';
       }
       state.config.needsUpdate.isFetching = false;
     }
   });
+  builder.addCase(goToStepWeShouldBeOnThunk.pending, (state) => {
+    state.onboarding.isFetching = true;
+  });
   builder.addCase(goToStepWeShouldBeOnThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.onboarding.step = action.payload;
+      state.onboarding.isFetching = false;
       if (state.onboarding.step !== 0 && state.onboarding.step !== 15 && state.onboarding.step !== 16) {
         state.onboarding.notFinished = true;
         state.onboarding.notStarted = false;
