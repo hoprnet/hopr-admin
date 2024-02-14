@@ -67,7 +67,9 @@ export default function EditOwners() {
   const safeInfo = useAppSelector((store) => store.safe.info.data);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress) as Address;
   const safeModules = useAppSelector((state) => state.safe.info.data?.modules);
-  const safeOwners = useAppSelector((store) => store.safe.info.data?.owners);
+  //const safeOwners = useAppSelector((store) => store.safe.info.data?.owners); // Safe Infra
+  const safeOwnersSubgraph = useAppSelector((store) => store.stakingHub.safeInfo.data.owners); // Subgraph
+  const safeOwners = safeOwnersSubgraph.map((elem) => elem.owner.id);
   const safeThreshold = useAppSelector((store) => store.stakingHub.safeInfo.data.threshold);
   const walletAddress = useAppSelector((store) => store.web3.account);
   const signer = useEthersSigner();

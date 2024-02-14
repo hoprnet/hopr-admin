@@ -91,7 +91,9 @@ function SafeDashboard() {
   const communityNftIdInWallet = useAppSelector((store) => store.web3.communityNftId);
   const communityNftIdInSafe = useAppSelector((store) => !!store.safe.communityNftIds.data.length);
   const sendingNFT = useAppSelector((store) => store.web3.communityNftTransferring);
-  const safeOwners = useAppSelector((store) => store.safe.info.data?.owners);
+  //const safeOwners = useAppSelector((store) => store.safe.info.data?.owners); // Safe Infra
+  const safeOwnersSubgraph = useAppSelector((store) => store.stakingHub.safeInfo.data.owners); // Subgraph
+  const safeOwners = safeOwnersSubgraph.map((elem) => elem.owner.id);
   const safeThreshold = useAppSelector((store) => store.stakingHub.safeInfo.data.threshold);
   const [updating, set_updating] = useState(false);
 
