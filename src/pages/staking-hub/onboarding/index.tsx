@@ -23,7 +23,7 @@ import SetupYourDappNode from './step3/1setupYourDappNode';
 import JoinWaitListStep from './step4/0joinWaitlist';
 import AddedToWhitelist from './step4/1addedToWhitelist';
 import AddNode from './step5/0addNode';
-import ConfigureNode from './step6/0configureNode';
+import ConfigureModule from './step6/0configureModule';
 import FundNode from './step7/0fundNode';
 import SetAllowance from './step8/0setAllowance';
 import NodeIsReady from './step9/0nodeIsReady';
@@ -166,7 +166,7 @@ function Onboarding() {
             {onboardingStep === ONBOARDING_PAGES.JOIN_WAITLIST && <JoinWaitListStep />}
             {onboardingStep === ONBOARDING_PAGES.ADDED_TO_WHITELIST && <AddedToWhitelist />}
             {onboardingStep === ONBOARDING_PAGES.ADD_NODE && <AddNode />}
-            {onboardingStep === ONBOARDING_PAGES.CONFIGURE_NODE && <ConfigureNode />}
+            {onboardingStep === ONBOARDING_PAGES.CONFIGURE_NODE && <ConfigureModule onboardingType={'main'}/>}
             {onboardingStep === ONBOARDING_PAGES.FUND_NODE && <FundNode />}
             {onboardingStep === ONBOARDING_PAGES.SET_ALLOWANCE && <SetAllowance />}
             {onboardingStep === ONBOARDING_PAGES.NODE_IS_READY && <NodeIsReady />}

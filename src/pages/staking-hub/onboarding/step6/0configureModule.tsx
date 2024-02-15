@@ -15,6 +15,8 @@ import SafeTransactionButton from '../../../../components/SafeTransactionButton'
 // Web3
 import { createIncludeNodeTransactionData } from '../../../../utils/blockchain';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
+import { MULTISEND_CONTRACT_GNOSIS, HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS } from '../../../../../config'
+import { OperationType } from '@safe-global/safe-core-sdk-types';
 
 
 export const SSafeTransactionButton = styled(SafeTransactionButton)`
@@ -23,7 +25,7 @@ export const SSafeTransactionButton = styled(SafeTransactionButton)`
   align-self: center;
 `;
 
-export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?: string | null}) {
+export default function ConfigureModule(props?: { onDone?: Function, nodeAddress?: string | null, onboardingType?: 'nextNode' | 'main' | null}) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const signer = useEthersSigner();
@@ -79,30 +81,41 @@ export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?:
   },[threshold, pendingTransations, moduleAddress, walletAddress, nodeAddress])
 
   const executeIncludeNode = async () => {
+    if (!signer || !selectedSafeAddress || !moduleAddress || !nodeAddress) return;
 
-    //new payload
-    // 2 transactions:
-    // includedInModule
-    // scopeTargetToken (0xa76c9a2f)
-    // so that node can announce itself thotugh the node managment module,
-    // You need to sign a transaction to configure the announcement smart contract of the network as a target in your safe module.
-   // const configureModulePayload = `0x8d80ff0a000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000f200${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024b573696206e7df53f76d5a0d3114e1ab6332a66b4e36cd8601020100000000000000000000${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024a76c9a2f619eabe23fd0e2291b50a507719aa633fe6069b80100030000000000000000000000000000000000000000000000`
+    if(props?.onboardingType === 'main') {
+
+      const moduleAddressWithout0x = moduleAddress.slice(2).toLocaleLowerCase();
+      const nodeAddressWithout0x = nodeAddress.slice(2).toLocaleLowerCase();
+      const HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS_Without0x = HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS.slice(2).toLocaleLowerCase();
+      // so that node can announce itself thotugh the node managment module,
+      // You need to sign a transaction to configure the announcement smart contract of the network as a target in your safe module.
+      const newConfig = `0x8d80ff0a000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000f200${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024b5736962${nodeAddressWithout0x}01020100000000000000000000${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024a76c9a2f${HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS_Without0x}0100030000000000000000000000000000000000000000000000`
+
+      // from q
+    //  const newConfig =   `0x8d80ff0a000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000f200${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024b573696206e7df53f76d5a0d3114e1ab6332a66b4e36cd8601020100000000000000000000${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024a76c9a2f619eabe23fd0e2291b50a507719aa633fe6069b80100030000000000000000000000000000000000000000000000`
+
+// manual from q
+ //     0x8d80ff0a000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000f200d197dd1dcba421a106739f6c37196e39268b663a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024b573696206e7df53f76d5a0d3114e1ab6332a66b4e36cd8601020100000000000000000000d197dd1dcba421a106739f6c37196e39268b663a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024a76c9a2f619eabe23fd0e2291b50a507719aa633fe6069b80100030000000000000000000000000000000000000000000000
 
 
-    if (signer && selectedSafeAddress && moduleAddress && nodeAddress) {
-      const includeNodeTransactionData = createIncludeNodeTransactionData(nodeAddress);
-      console.log('WithQ includeNodeTransactionData', includeNodeTransactionData)
-      // 0xb573696206e7df53f76d5a0d3114e1ab6332a66b4e36cd86010201000000000000000000
+      // from generated
+ //     0x8d80ff0a000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000f200d197dd1dcba421a106739f6c37196e39268b663a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024b573696206e7df53f76d5a0d3114e1ab6332a66b4e36cd8601020100000000000000000000d197dd1dcba421a106739f6c37196e39268b663a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024a76c9a2f619eabe23fd0e2291b50a507719aa633fe6069b80100030000000000000000000000000000000000000000000000
+
+
+      console.log('newConfig', newConfig)
+
       dispatch(
         safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
-          smartContractAddress: moduleAddress,
-          data: includeNodeTransactionData,
-          safeAddress: selectedSafeAddress,
+          data: newConfig,
           signer,
+          safeAddress: selectedSafeAddress,
+          operation: OperationType.DelegateCall,
+          smartContractAddress: MULTISEND_CONTRACT_GNOSIS,
         }),
       )
-        .unwrap()
-        .then(() => {
+      .unwrap()
+      .then(() => {
           if (props?.onDone){
             props.onDone();
             dispatch(stakingHubActions.setNextOnboarding({
@@ -113,8 +126,36 @@ export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?:
           } else {
             dispatch(stakingHubActions.setOnboardingStep(14));
           }
-        });
+      })
+
     }
+
+    else if(props?.onboardingType === 'nextNode') {
+      const includeNodeTransactionData = createIncludeNodeTransactionData(nodeAddress);
+
+      dispatch(
+        safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
+          smartContractAddress: moduleAddress,
+          data: includeNodeTransactionData,
+          safeAddress: selectedSafeAddress,
+          signer,
+        }),
+      )
+      .unwrap()
+      .then(() => {
+        if (props?.onDone){
+          props.onDone();
+          dispatch(stakingHubActions.setNextOnboarding({
+            key: 'includedInModule',
+            nodeAddress: nodeAddress,
+            value: true,
+          }));
+        } else {
+          dispatch(stakingHubActions.setOnboardingStep(14));
+        }
+      });
+    }
+
   };
 
   const signIncludeNode = async () => {

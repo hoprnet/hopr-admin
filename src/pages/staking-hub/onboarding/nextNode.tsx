@@ -12,7 +12,7 @@ import NetworkOverlay from '../../../components/Overlays/NetworkOverlay';
 //Steps
 import OnboardingIsFetching from './isFetching';
 import AddNode from './step5/0addNode';
-import ConfigureNode from './step6/0configureNode';
+import ConfigureModule from './step6/0configureModule';
 import FundNode from './step7/0fundNode';
 import NodeIsReady from './step9/0nodeIsReady';
 
@@ -130,9 +130,10 @@ function Onboarding() {
               />
             }
             {onboardingStep === ONBOARDING_PAGES.CONFIGURE_NODE &&
-              <ConfigureNode
+              <ConfigureModule
                 onDone={()=>{set_onboardingStep(3)}}
                 nodeAddress={nodeAddress}
+                onboardingType={'nextNode'}
               />
             }
             {onboardingStep === ONBOARDING_PAGES.FUND_NODE &&
