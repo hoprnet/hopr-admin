@@ -35,6 +35,7 @@ import {
 } from 'viem'
 import { RootState } from '../..';
 import {
+  HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS,
   HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,
   HOPR_NODE_MANAGEMENT_MODULE,
   HOPR_NODE_STAKE_FACTORY,
@@ -371,6 +372,7 @@ const createSafeTransactionThunk = createAsyncThunk<
       // gets next nonce considering pending txs
       const nextSafeNonce = await safeApi.getNextNonce(payload.safeAddress);
       // create safe transaction
+      console.log('WithQ payload.safeTransactionData', payload.safeTransactionData)
       const safeTransaction = await safeSDK.createTransaction({ safeTransactionData: {
         ...payload.safeTransactionData,
         nonce: nextSafeNonce,
@@ -457,6 +459,7 @@ const createSafeContractTransactionThunk = createAsyncThunk<
         operation: payload.operation ?? OperationType.Call,
         value: '0',
       };
+      console.log('WithQ safeTransactionData', safeTransactionData)
       const safeTxHash = await dispatch(
         createSafeTransactionThunk({
           signer,

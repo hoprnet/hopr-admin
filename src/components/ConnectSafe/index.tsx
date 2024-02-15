@@ -126,16 +126,15 @@ export default function ConnectSafe() {
     if (safes.length > 0 && !safeAddress && signer && ownerAddress) {
       try{
         //@ts-ignore
-        let json: {[key: string]:{safeAddress: string, moduleAddress: string}} = loadStateFromLocalStorage(`staking-hub-chosen-safe`);
-        if(json && json[ownerAddress] && safes.filter(safe=>safe?.safeAddress === json[ownerAddress]?.safeAddress).length > 0){
-          useSelectedSafe(json[ownerAddress]);
-          console.log('useSelectedSafe from ls', json[ownerAddress])
+        let localStorage: {[key: string]:{safeAddress: string, moduleAddress: string}} = loadStateFromLocalStorage(`staking-hub-chosen-safe`);
+        if(localStorage && localStorage[ownerAddress] && safes.filter(safe=>safe?.safeAddress === localStorage[ownerAddress]?.safeAddress).length > 0){
+          useSelectedSafe(localStorage[ownerAddress]);
+          console.log('useSelectedSafe from ls', localStorage[ownerAddress])
         } else {
           useSelectedSafe(safes[0]);
           console.log('useSelectedSafe [0]', safes[0])
         }
       } catch(e){}
-      useSelectedSafe(safes[0]);
     }
   }, [safes, safeAddress, signer, ownerAddress]);
 

@@ -8,7 +8,7 @@ import CodeIcon from '@mui/icons-material/Code';
 // HOPR Components
 import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
 import Button from '../../../future-hopr-lib-components/Button';
-import { CodeContainer } from '../../../pages/staking-hub/onboarding/step4/1setupYourNode';
+import { CodeContainer } from '../../../pages/staking-hub/onboarding/step3/1setupYourNode';
 
 type DockerRunCommandModalProps = {
   normalButton?: boolean,

@@ -23,7 +23,7 @@ export const SSafeTransactionButton = styled(SafeTransactionButton)`
   align-self: center;
 `;
 
-export default function ConfigureModule(props?: { onDone?: Function, nodeAddress?: string | null}) {
+export default function ConfigureNode(props?: { onDone?: Function, nodeAddress?: string | null}) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const signer = useEthersSigner();
@@ -39,51 +39,64 @@ export default function ConfigureModule(props?: { onDone?: Function, nodeAddress
   const [thisTransactionIsWaitingToSign, set_thisTransactionIsWaitingToSign] = useState(false);
   const [thisTransactionHasSignaturesIsWaitingToExecute, set_thisTransactionHasSignaturesIsWaitingToExecute] = useState<false | SafeMultisigTransactionResponse>(false);
 
-  // useEffect(()=>{
-  //   if(walletAddress && moduleAddress && threshold && threshold > 1 && nodeAddress) {
-  //     if(pendingTransations && pendingTransations.length !== 0) {
-  //       for(let i = 0; i < pendingTransations.length; i++) {
-  //         if(
-  //           pendingTransations[i] &&
-  //           moduleAddress === pendingTransations[i].to &&
-  //           pendingTransations[i].data && typeof(pendingTransations[i].data) === 'string' &&
-  //           // @ts-ignore
-  //           pendingTransations[i].data.slice(0,10) === '0xb5736962' && pendingTransations[i].data.slice(50,73) === '01020100000000000000000' && pendingTransations[i].data.slice(10,50).toLowerCase() === nodeAddress.toLowerCase().slice(2,42) &&
-  //           pendingTransations[i].confirmations!.length > 0
-  //         ) {
-  //           console.log('[Onboarding check] We have an onboarding TX created for that node', pendingTransations[i])
-  //           const confirmationsDone = pendingTransations[i].confirmations!.length | 0;
+  useEffect(()=>{
+    if(walletAddress && moduleAddress && threshold && threshold > 1 && nodeAddress) {
+      if(pendingTransations && pendingTransations.length !== 0) {
+        for(let i = 0; i < pendingTransations.length; i++) {
+          if(
+            pendingTransations[i] &&
+            moduleAddress === pendingTransations[i].to &&
+            pendingTransations[i].data && typeof(pendingTransations[i].data) === 'string' &&
+            // @ts-ignore
+            pendingTransations[i].data.slice(0,10) === '0xb5736962' && pendingTransations[i].data.slice(50,73) === '01020100000000000000000' && pendingTransations[i].data.slice(10,50).toLowerCase() === nodeAddress.toLowerCase().slice(2,42) &&
+            pendingTransations[i].confirmations!.length > 0
+          ) {
+            console.log('[Onboarding check] We have an onboarding TX created for that node', pendingTransations[i])
+            const confirmationsDone = pendingTransations[i].confirmations!.length | 0;
 
-  //           // If this is the last signature or we have all signatures
-  //           if(pendingTransations[i].confirmationsRequired - 1 >= confirmationsDone) {
-  //             console.log('pendingTransations[i]', pendingTransations[i])
-  //             set_thisTransactionHasSignaturesIsWaitingToExecute(pendingTransations[i]);
-  //             return
-  //           }
+            // If this is the last signature or we have all signatures
+            if(pendingTransations[i].confirmationsRequired - 1 >= confirmationsDone) {
+              console.log('pendingTransations[i]', pendingTransations[i])
+              set_thisTransactionHasSignaturesIsWaitingToExecute(pendingTransations[i]);
+              return
+            }
 
-  //           //If not last signature needed
-  //           const confirmations = pendingTransations[i].confirmations;
-  //           for(let j = 0; j < confirmationsDone; j++) {
-  //             // @ts-ignore
-  //             const confirmation = confirmations[j];
-  //             const signerOfTheConfirmation = confirmation.owner;
-  //             if(signerOfTheConfirmation === walletAddress) {
-  //               set_thisTransactionIsWaitingToSign(true);
-  //               return;
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // },[threshold, pendingTransations, moduleAddress, walletAddress, nodeAddress])
+            //If not last signature needed
+            const confirmations = pendingTransations[i].confirmations;
+            for(let j = 0; j < confirmationsDone; j++) {
+              // @ts-ignore
+              const confirmation = confirmations[j];
+              const signerOfTheConfirmation = confirmation.owner;
+              if(signerOfTheConfirmation === walletAddress) {
+                set_thisTransactionIsWaitingToSign(true);
+                return;
+              }
+            }
+          }
+        }
+      }
+    }
+  },[threshold, pendingTransations, moduleAddress, walletAddress, nodeAddress])
 
   const executeIncludeNode = async () => {
+
+    //new payload
+    // 2 transactions:
+    // includedInModule
+    // scopeTargetToken (0xa76c9a2f)
+    // so that node can announce itself thotugh the node managment module,
+    // You need to sign a transaction to configure the announcement smart contract of the network as a target in your safe module.
+   // const configureModulePayload = `0x8d80ff0a000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000f200${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024b573696206e7df53f76d5a0d3114e1ab6332a66b4e36cd8601020100000000000000000000${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024a76c9a2f619eabe23fd0e2291b50a507719aa633fe6069b80100030000000000000000000000000000000000000000000000`
+
+
     if (signer && selectedSafeAddress && moduleAddress && nodeAddress) {
+      const includeNodeTransactionData = createIncludeNodeTransactionData(nodeAddress);
+      console.log('WithQ includeNodeTransactionData', includeNodeTransactionData)
+      // 0xb573696206e7df53f76d5a0d3114e1ab6332a66b4e36cd86010201000000000000000000
       dispatch(
         safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
           smartContractAddress: moduleAddress,
-          data: createIncludeNodeTransactionData(nodeAddress),
+          data: includeNodeTransactionData,
           safeAddress: selectedSafeAddress,
           signer,
         }),
@@ -144,7 +157,7 @@ export default function ConfigureModule(props?: { onDone?: Function, nodeAddress
   return (
     <StepContainer
       title="CONFIGURE MODULE"
-      description={'You need to sign a transaction to configure the announcement smart contract of the network as target in your safe module.'}
+      description={'You need to sign a transaction to connect your node to your existing HOPR safe.'}
       image={{
         src: '/assets/safe-and-node-chain.svg',
         height: 200,
