@@ -68,6 +68,7 @@ const SafeAddress = styled.div`
   font-size: 14px;
   gap: 10px;
   color: #414141;
+  text-transform: none;
 `;
 
 function handleSaveSelectedSafeInLocalStorage (safeObject: {safeAddress?: string | null, moduleAddress?: string | null}, owner?: string | null) {
@@ -263,10 +264,10 @@ export default function ConnectSafe() {
                   useSelectedSafe(safe);
                 }}
               >
-                  {`${safe.safeAddress.substring(0, 6)}...${safe.safeAddress.substring(
+                  0x{`${safe.safeAddress.substring(2, 6)}...${safe.safeAddress.substring(
                     safe.safeAddress.length - 8,
                     safe.safeAddress.length
-                  )}`}
+                  )}`.toUpperCase()}
               </MenuItem>
             ))}
           </Menu>

@@ -22,7 +22,7 @@ export function truncateEthereumAddress(address: string) {
 
   const match = address.match(truncateRegex);
   if (!match) return address;
-  return `${match[1]}…${match[2]}`;
+  return `0x${match[1].substring(2).toUpperCase()}…${match[2].toUpperCase()}`;
 }
 
 export const createSendTokensTransactionData = (recipient: Address, amount: bigint) => {

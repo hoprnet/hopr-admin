@@ -58,6 +58,7 @@ const Web3Button = styled.div`
   justify-content: center;
   color: #414141;
   gap: 10px;
+  text-transform: none;
   p {
     margin: 0;
     font-size: 12px;
