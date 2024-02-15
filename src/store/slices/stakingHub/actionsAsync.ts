@@ -665,9 +665,6 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       const correctConfig2 = '96338966875583709871840581638487531229018761285270926761304390858285246317315';
       const correctConfig3 = '44154694447105676396867590936447101190536019366130432120501522583128004100096';
 
-      // state.config.needsUpdate.data = true;
-      //   state.config.needsUpdate.strategy =  'configWillPointToCorrectContracts';
-      //   return;
       if(!action.payload.channels || !action.payload.wxHOPR){
         console.log('Old safe config present, needs update. Targets:', action.payload);
         state.config.needsUpdate.data = true;
