@@ -199,7 +199,8 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
         .then(() => {
           set_isLoadingExecuting(false);
         })
-        .catch(() => {
+        .catch((e) => {
+          console.error('Error: Multisig transaction not executed', e)
           set_isLoadingExecuting(false);
         });
     }
@@ -367,7 +368,6 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
     if (isNativeTransaction) {
       return 'xDai';
     }
-
     const token = await dispatch(
       safeActionsAsync.getToken({
         signer,
@@ -421,7 +421,6 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
         // }
       }
     } catch (e) {}
-
     const token = await dispatch(
       safeActionsAsync.getToken({
         signer,

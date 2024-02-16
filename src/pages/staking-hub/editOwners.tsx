@@ -103,6 +103,7 @@ export default function EditOwners() {
         })).unwrap().then(async(transactionHash)=>{
           browserClient && await browserClient.waitForTransactionReceipt({ hash: transactionHash as `0x${string}` });
           dispatch(safeActions.addOwnerToSafe(newOwner));
+          dispatch(stakingHubActions.addOwnerToSafe(newOwner));
           set_newOwner('');
         }).finally(async()=>{
           set_confirmAddOwner(false);
