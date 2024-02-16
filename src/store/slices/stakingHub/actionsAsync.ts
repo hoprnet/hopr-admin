@@ -421,19 +421,20 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
               const wxHoprAllowanceCheck = state.stakingHub.safeInfo.data.allowance.wxHoprAllowance && parseEther(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance) > BigInt(0);
               console.log('[Onboarding check] Allowance set: ', state.stakingHub.safeInfo.data.allowance.wxHoprAllowance, wxHoprAllowanceCheck);
               if (wxHoprAllowanceCheck) {
+                console.log('[Onboarding check] step: 16');
                 return 16;
               }
-
+              console.log('[Onboarding check] step: 15');
               return 15;
             }
-
+            console.log('[Onboarding check] step: 14');
             return 14;
           }
-
+          console.log('[Onboarding check] step: 13');
           return 13;
 
         }
-
+        console.log('[Onboarding check] step: 11');
         return 11;
       }
 
@@ -444,20 +445,23 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
       console.log('[Onboarding check] Safe balance (xDai):', state.safe.balance.data.xDai.value, xDaiInSafeCheck);
       console.log('[Onboarding check] Safe balance (wxHopr):', state.safe.balance.data.wxHopr.value, wxHoprInSafeCheck);
       if ( xDaiInSafeCheck && wxHoprInSafeCheck ) {
+        console.log('[Onboarding check] step: 5');
         return 5;
       }
 
 
       console.log('[Onboarding check] CommunityNftId in Safe', state.safe.communityNftIds.data.length, state.safe.communityNftIds.data.length !== 0);
       if (state.safe.communityNftIds.data.length !== 0) {
+        console.log('[Onboarding check] step: 4');
         return 4;
       }
 
       console.log('[Onboarding check] Safe created', state.safe.selectedSafe.data.safeAddress);
       if (state.safe.selectedSafe.data.safeAddress) {
+        console.log('[Onboarding check] step: 2');
         return 2;
       }
-
+      console.log('[Onboarding check] step: 0');
       // default case
       return 0;
     } catch (e) {
@@ -688,7 +692,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     if (action.payload) {
       state.onboarding.step = action.payload;
       state.onboarding.isFetching = false;
-      if (state.onboarding.step !== 0 && state.onboarding.step !== 15 && state.onboarding.step !== 16) {
+      if (state.onboarding.step !== 0 && state.onboarding.step !== 16) {
         state.onboarding.notFinished = true;
         state.onboarding.notStarted = false;
       } else if (state.onboarding.step === 16) {

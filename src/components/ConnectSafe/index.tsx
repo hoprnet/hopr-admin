@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { environment } from '../../../config';
 import { useWatcher } from '../../hooks';
@@ -89,6 +90,7 @@ function handleSaveSelectedSafeInLocalStorage (safeObject: {safeAddress?: string
 export default function ConnectSafe() {
   useWatcher({});
   const dispatch = useAppDispatch();
+  const [searchParams] = useSearchParams();
   const signer = useEthersSigner();
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const ownerAddress = useAppSelector((store) => store.web3.account);
@@ -101,7 +103,13 @@ export default function ConnectSafe() {
     (store) => store.app.configuration.notifications.pendingSafeTransaction
   );
 
+  console.log('searchParams', searchParams)
+  const safeFromUrl = searchParams.get('safe');
+  const moduleFromUrl = searchParams.get('module');
   const safeAddress = selectedSafe.safeAddress;
+
+
+
 
   const menuRef = useRef<HTMLButtonElement>(null);
 
@@ -124,7 +132,15 @@ export default function ConnectSafe() {
 
   // If no selected safeAddress, choose 1st one
   useEffect(() => {
-    if (safes.length > 0 && !safeAddress && signer && ownerAddress) {
+    console.log({safeFromUrl, moduleFromUrl})
+    if(safeFromUrl && moduleFromUrl && !safeAddress) {
+      console.log('useSelectedSafe from url', safeFromUrl, moduleFromUrl)
+      useSelectedSafe({
+        safeAddress: safeFromUrl,
+        moduleAddress: moduleFromUrl
+      });
+    }
+    else if (safes.length > 0 && !safeAddress && signer && ownerAddress) {
       try{
         //@ts-ignore
         let localStorage: {[key: string]:{safeAddress: string, moduleAddress: string}} = loadStateFromLocalStorage(`staking-hub-chosen-safe`);
@@ -137,7 +153,7 @@ export default function ConnectSafe() {
         }
       } catch(e){}
     }
-  }, [safes, safeAddress, signer, ownerAddress]);
+  }, [safes, safeAddress, signer, ownerAddress, safeFromUrl, moduleFromUrl]);
 
   // If safe got selected, update all and onboarding data
   useEffect(() => {
