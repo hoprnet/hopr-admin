@@ -411,7 +411,6 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
     if (transaction.safe === transaction.to && !BigInt(transaction.value)){
       return ''
     }
-    console.log('1')
     const currency = getCurrencyFromTransaction(transaction, signer);
     if (isNativeTransaction) {
       return formatEther(BigInt(transaction.value)) + ' ' + currency;
@@ -422,16 +421,13 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
     // data: { "method": "approve", "parameters": [ { "name": "spender", "type": "address", "value": "0x693Bac5ce61c720dDC68533991Ceb41199D8F8ae" }, { "name": "value", "type": "uint256", "value": "1000000000000000000000" } ] }
 
     try {
-      console.log('2')
       if(
         transaction.dataDecoded &&
         typeof transaction.dataDecoded === 'object' &&
         !Array.isArray(transaction.dataDecoded)
       ){
-        console.log('2a')
         // @ts-ignore
         if (transaction?.dataDecoded?.method === 'addOwnerWithThreshold') {
-          console.log('3')
           // @ts-ignore
           return transaction.dataDecoded.parameters[0].value;
         }
@@ -452,16 +448,13 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
       return JSON.stringify(transaction.dataDecoded);
     }
 
-    console.log('4')
     try {
-      console.log('5')
       const decodedData = decodeFunctionData({
         data: transaction.data as Address,
         // assuming it is a erc20 token because we want to get the value
         abi: erc20ABI,
       });
 
-      console.log('6')
       const value = getValueFromERC20Functions(decodedData);
 
       return value;

@@ -103,13 +103,9 @@ export default function ConnectSafe() {
     (store) => store.app.configuration.notifications.pendingSafeTransaction
   );
 
-  console.log('searchParams', searchParams)
   const safeFromUrl = searchParams.get('safe');
   const moduleFromUrl = searchParams.get('module');
   const safeAddress = selectedSafe.safeAddress;
-
-
-
 
   const menuRef = useRef<HTMLButtonElement>(null);
 

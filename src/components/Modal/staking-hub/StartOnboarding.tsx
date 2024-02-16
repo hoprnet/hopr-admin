@@ -28,7 +28,7 @@ type WithdrawModalProps = {
 };
 
 const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
-  console.log('StartOnboarding')
+//  console.log('StartOnboarding')
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -52,7 +52,7 @@ const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
 
 
   const handleOpenModal = () => {
-    console.log('handleOpenModal')
+   // console.log('handleOpenModal')
     set_openModal(true);
   };
 
