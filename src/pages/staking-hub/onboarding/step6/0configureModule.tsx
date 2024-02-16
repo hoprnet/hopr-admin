@@ -11,6 +11,7 @@ import { useAppSelector, useAppDispatch } from '../../../../store';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
 import { safeActionsAsync } from '../../../../store/slices/safe';
 import SafeTransactionButton from '../../../../components/SafeTransactionButton';
+import { sendNotification } from '../../../../hooks/useWatcher/notifications';
 
 // Web3
 import { createIncludeNodeTransactionData } from '../../../../utils/blockchain';
@@ -191,6 +192,17 @@ export default function ConfigureModule(props?: { onDone?: Function, nodeAddress
         } else {
           dispatch(stakingHubActions.setOnboardingStep(14));
         }
+      }).catch((e)=>{
+        sendNotification({
+          notificationPayload: {
+            source: 'safe',
+            name: `Multisig transaction not executed. ${JSON.stringify(e)}`,
+            url: null,
+            timeout: null,
+          },
+          toastPayload: { message: `Multisig transaction not executed. ${JSON.stringify(e)}`, type: 'error' },
+          dispatch,
+        });
       });
     }
   };
@@ -208,7 +220,7 @@ export default function ConfigureModule(props?: { onDone?: Function, nodeAddress
         <Button
           onClick={()=>{executeSignedIncludeNode(thisTransactionHasSignaturesIsWaitingToExecute)}}
         >
-          EXECUTE2
+          EXECUTE
         </Button>
         :
         <SSafeTransactionButton
