@@ -51,6 +51,8 @@ import { truncateEthereumAddress } from '../../../utils/blockchain';
 import { getUserActionForPendingTransaction } from '../../../utils/safeTransactions';
 import { StringLiteral } from 'typescript';
 
+import { sendNotification } from '../../../hooks/useWatcher/notifications';
+
 const StyledContainer = styled(Paper)`
   padding: 2rem;
   display: flex;
@@ -185,7 +187,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
 
   // TODO: remove this isLoading functions when isLoading is moved to redux
   const executeTx = (transaction: SafeMultisigTransactionResponse) => {
-    console.log('transaction' , transaction)
+    console.log('executeTx transaction' , transaction)
     if (signer) {
       set_isLoadingExecuting(true);
       dispatch(
@@ -200,8 +202,18 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           set_isLoadingExecuting(false);
         })
         .catch((e) => {
-          console.error('Error: Multisig transaction not executed', e)
+          console.error('Error: Multisig transaction not executed', e);
           set_isLoadingExecuting(false);
+          sendNotification({
+            notificationPayload: {
+              source: 'safe',
+              name: `Multisig transaction not executed. ${JSON.stringify(e)}`,
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: `Multisig transaction not executed. ${JSON.stringify(e)}`, type: 'error' },
+            dispatch,
+          });
         });
     }
   };
@@ -262,7 +274,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
                 disabled={transactionAfterSafeNonce}
                 onClick={() => rejectTx(transaction)}
               >
-                reject
+                REJECT
               </StyledBlueButton>
             </span>
           </Tooltip>
@@ -274,7 +286,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
                 onClick={() => executeTx(transaction)}
                 pending={isLoadingExecuting}
               >
-                execute
+                EXECUTE
               </StyledBlueButton>
             </span>
           </Tooltip>
@@ -333,7 +345,11 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
 
   useEffect(() => {
     if (signer && transaction) {
-      getValueFromTransaction(transaction, signer).then((value) => set_value(value?.toString()));
+      getValueFromTransaction(transaction, signer).then((value) => {
+        console.log('gotValueFromTransaction', value)
+        const valueString = value?.toString();
+        set_value(valueString)
+      });
       set_dateInGMT(calculateTimeInGMT(transaction.submissionDate));
       set_dateInUserTimezone(formatDateToUserTimezone(transaction.submissionDate));
       set_transactionStatus(getTransactionStatus());
@@ -395,7 +411,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
     if (transaction.safe === transaction.to && !BigInt(transaction.value)){
       return ''
     }
-
+    console.log('1')
     const currency = getCurrencyFromTransaction(transaction, signer);
     if (isNativeTransaction) {
       return formatEther(BigInt(transaction.value)) + ' ' + currency;
@@ -406,13 +422,16 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
     // data: { "method": "approve", "parameters": [ { "name": "spender", "type": "address", "value": "0x693Bac5ce61c720dDC68533991Ceb41199D8F8ae" }, { "name": "value", "type": "uint256", "value": "1000000000000000000000" } ] }
 
     try {
+      console.log('2')
       if(
         transaction.dataDecoded &&
         typeof transaction.dataDecoded === 'object' &&
         !Array.isArray(transaction.dataDecoded)
       ){
+        console.log('2a')
         // @ts-ignore
         if (transaction?.dataDecoded?.method === 'addOwnerWithThreshold') {
+          console.log('3')
           // @ts-ignore
           return transaction.dataDecoded.parameters[0].value;
         }
@@ -433,17 +452,21 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
       return JSON.stringify(transaction.dataDecoded);
     }
 
+    console.log('4')
     try {
+      console.log('5')
       const decodedData = decodeFunctionData({
         data: transaction.data as Address,
         // assuming it is a erc20 token because we want to get the value
         abi: erc20ABI,
       });
 
+      console.log('6')
       const value = getValueFromERC20Functions(decodedData);
 
       return value;
     } catch (e) {
+      console.log('the data may not decode', e)
       // if the function is not from an abi stated above
       // the data may not decode
       return null;

@@ -15,6 +15,7 @@ import SafeApiKit, {
   TokenInfoResponse
 } from '@safe-global/api-kit';
 import Safe, { EthersAdapter, SafeAccountConfig, SafeFactory } from '@safe-global/protocol-kit';
+// import Safe from '@safe-global/protocol-kit/dist/src/Safe2';
 import {
   OperationType,
   SafeMultisigTransactionResponse,
@@ -614,6 +615,7 @@ const executePendingTransactionThunk = createAsyncThunk<
     dispatch(safeActionsFetching.setExecuteTransactionFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
+      console.log('payload.signer', payload.signer);
       await safeSDK.executeTransaction(payload.safeTransaction);
       // re fetch all txs
       setTimeout(()=> {
