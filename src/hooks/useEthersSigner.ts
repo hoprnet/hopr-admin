@@ -27,9 +27,6 @@ function walletClientToSigner(walletClient: WalletClient) {
 /*   https://1.x.wagmi.sh/react/ethers-adapters#usage-1
     TODO: https://github.com/wevm/wagmi/issues/2784    */
 export function useEthersSigner({ chainId }: { chainId?: number } = {}) {
-  const { data: walletClient, isLoading: isLoadingWalletClient } = useWalletClient();
-  return React.useMemo(
-    () => (walletClient ? walletClientToSigner(walletClient) : undefined),
-    [walletClient]
-  );
+  const { data: walletClient } = useWalletClient({ chainId });
+  return React.useMemo(() => (walletClient ? walletClientToSigner(walletClient) : undefined), [walletClient]);
 }

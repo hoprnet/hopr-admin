@@ -83,7 +83,7 @@ export default function ConfigureModule(props?: { onDone?: Function, nodeAddress
   const executeIncludeNode = async () => {
     if (!signer || !selectedSafeAddress || !moduleAddress || !nodeAddress) return;
 
-    if(props?.onboardingType === 'main') {
+    if(false){ //props?.onboardingType === 'main') {
 
       const moduleAddressWithout0x = moduleAddress.slice(2).toLocaleLowerCase();
       const nodeAddressWithout0x = nodeAddress.slice(2).toLocaleLowerCase();
@@ -130,7 +130,7 @@ export default function ConfigureModule(props?: { onDone?: Function, nodeAddress
 
     }
 
-    else if(props?.onboardingType === 'nextNode') {
+ //   else if(props?.onboardingType === 'nextNode') {
       const includeNodeTransactionData = createIncludeNodeTransactionData(nodeAddress);
 
       dispatch(
@@ -154,7 +154,7 @@ export default function ConfigureModule(props?: { onDone?: Function, nodeAddress
           dispatch(stakingHubActions.setOnboardingStep(14));
         }
       });
-    }
+//    }
 
   };
 
