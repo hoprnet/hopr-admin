@@ -19,6 +19,7 @@ import { truncateEthereumAddress } from '../../utils/blockchain';
 //web3
 import { browserClient } from '../../providers/wagmi';
 import { useEthersSigner } from '../../hooks';
+import { getAddress } from 'viem';
 
 const AppBarContainer = styled(Button)`
   align-items: center;
@@ -132,8 +133,8 @@ export default function ConnectSafe() {
     if(safeFromUrl && moduleFromUrl && !safeAddress) {
       console.log('useSelectedSafe from url', safeFromUrl, moduleFromUrl)
       useSelectedSafe({
-        safeAddress: safeFromUrl,
-        moduleAddress: moduleFromUrl
+        safeAddress: getAddress(safeFromUrl),
+        moduleAddress: getAddress(moduleFromUrl)
       });
     }
     else if (safes.length > 0 && !safeAddress && signer && ownerAddress) {
