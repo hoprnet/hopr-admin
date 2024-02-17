@@ -288,15 +288,15 @@ function SafeWithdraw() {
     const errors: string[] = [];
 
     if (!signer) {
-      errors.push('wallet is required');
+      errors.push('Wallet is required');
     }
 
     if (!selectedSafeAddress) {
-      errors.push('safe is required');
+      errors.push('Safe is required');
     }
 
     if (!receiver) {
-      errors.push('receiver is required');
+      errors.push('Receiver is required');
     }
 
     // only require xDai value if there
