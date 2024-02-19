@@ -272,6 +272,7 @@ export default function ConnectSafe() {
             {safes.map((safe, index) => (
               <MenuItem
                 key={`${safe.safeAddress}_${index}`}
+                className={`${safe.safeAddress === safeAddress ? 'selected-safe' : ''}`}
                 value={safe.safeAddress}
                 onClick={() => {
                   useSelectedSafe(safe);
