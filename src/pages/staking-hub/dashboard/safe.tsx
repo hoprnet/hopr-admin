@@ -49,6 +49,10 @@ const Container = styled.div`
     grid-column: span 1;
   }
 
+  #extra-info {
+    grid-column: span 2;
+  }
+
   p.center {
     width: calc(100% - 32px);
     text-align: center;
@@ -62,7 +66,8 @@ const Container = styled.div`
 
   @media screen and (max-width: 1350px) {
     grid-template-columns: repeat(1, 1fr);
-    #safe-owners {
+    #safe-owners,
+    #extra-info {
       grid-column: span 1;
     }
   }
@@ -361,15 +366,16 @@ function SafeDashboard() {
             <img src={whichNFTimage()} />
           </TransferNFT>
         </GrayCard>
-      <p className="center">
-        In order to adjust the settings of your safe or transfer assets that are not supported by the HOPR Staking Hub
-        use any of the below mentioned third party general purpose Safe user interfaces:
-      </p>
-      <div className="center">
-        <Button href={`https://app.safe.global/home?safe=gno:${selectedSafeAddress}`}>safe.global</Button>
-        <Button href={`https://app.onchainden.com/safes/gnosis:${selectedSafeAddress}`}>OnChainDen.com</Button>
+      <div id="extra-info">
+        <p className="center">
+          In order to adjust the settings of your safe or transfer assets that are not supported by the HOPR Staking Hub
+          use any of the below mentioned third party general purpose Safe user interfaces:
+        </p>
+        <div className="center">
+          <Button href={`https://app.safe.global/home?safe=gno:${selectedSafeAddress}`}>safe.global</Button>
+          <Button href={`https://app.onchainden.com/safes/gnosis:${selectedSafeAddress}`}>OnChainDen.com</Button>
+        </div>
       </div>
-
     </Container>
   );
 }
