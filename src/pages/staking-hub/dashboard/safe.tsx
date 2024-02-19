@@ -18,14 +18,37 @@ import SafeTransactionButton from '../../../components/SafeTransactionButton';
 
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  /* justify-content: center; */
-  /* justify-items: center; */
-  /* align-items: center; */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   padding: 16px;
-  flex-grow: 1;
   gap: 32px;
+
+  .line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    width: 100%;
+  }
+
+  #safe-owners {
+    grid-column: span 2;
+    li {
+      overflow-wrap: break-word;
+    }
+    .inline {
+      display: inline;
+    }
+  }
+
+
+  #Update-Node-Configuration {
+    grid-column: span 1;
+  }
+
+  #transfer-nft{
+    grid-column: span 1;
+  }
+
   p.center {
     width: calc(100% - 32px);
     text-align: center;
@@ -37,32 +60,13 @@ const Container = styled.div`
     justify-content: center;
   }
 
-  .line {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    width: 100%;
+  @media screen and (max-width: 1350px) {
+    grid-template-columns: repeat(1, 1fr);
+    #safe-owners {
+      grid-column: span 1;
+    }
   }
 
-  .inline {
-    display: inline;
-  }
-
-  .half-line {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: space-between;
-  }
-
-  #redeemed-tickets,
-  #earned-rewards,
-  #wxhopr-total-stake,
-  #xdai-in-safe,
-  #Update-Node-Configuration,
-  #transfer-nft {
-    flex: 1;
-  }
 `;
 
 const TransferNFT = styled.div`
@@ -284,9 +288,8 @@ function SafeDashboard() {
 
   return (
     <Container className="SafeDashboard">
-      <div>
         <GrayCard
-          id="owners"
+          id="safe-owners"
           title="Safe Owners:"
           buttons={[
               {
@@ -301,8 +304,6 @@ function SafeDashboard() {
           </ul>
           <div className="inline"><h4 className="inline">Required confirmations:</h4> {safeThreshold} out of {safeOwners && safeOwners.length} owners.</div>
         </GrayCard>
-      </div>
-      <div className="line">
         <GrayCard
           id="Update-Node-Configuration"
           title="Safe Configuration"
@@ -360,7 +361,6 @@ function SafeDashboard() {
             <img src={whichNFTimage()} />
           </TransferNFT>
         </GrayCard>
-      </div>
       <p className="center">
         In order to adjust the settings of your safe or transfer assets that are not supported by the HOPR Staking Hub
         use any of the below mentioned third party general purpose Safe user interfaces:

@@ -18,6 +18,13 @@ const Container = styled.div`
   flex-direction: column;
   gap: 1rem;
   padding: 2rem;
+
+  .safe-and-module-addresses{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
 `;
 
 const FlexContainer = styled.div`
@@ -29,9 +36,12 @@ const FlexContainer = styled.div`
 const SafeAddress = styled.p`
   font-weight: 700;
   margin: 0;
+  overflow-wrap: anywhere;
 `;
 
 const StyledIconButton = styled(IconButton)`
+  width: 26px;
+  height: 26px;
   svg {
     width: 1rem;
     height: 1rem;
@@ -39,43 +49,44 @@ const StyledIconButton = styled(IconButton)`
 `;
 
 const Content = styled.div`
-  display: flex;
+  display: grid;
   flex-direction: column;
   gap: 2rem;
-  // for redeemed-tickets: (99px + 99px + 32px => 230px)
-  grid-template-columns: 1fr 230px repeat(2, 99px) 230px 1fr;
+  grid-template-columns: repeat(2, 1fr);
 
-  .line {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    width: 100%;
+  #wxhopr-total-stake {
+    grid-column: 1;
   }
 
-  .half-line {
-    display: flex;
-    flex-wrap: wrap;
-    width: calc(50% - 1rem);
+  #xdai-in-safe {
+    grid-column: 2;
   }
 
-  #redeemed-tickets, #earned-rewards, #wxhopr-total-stake, #xdai-in-safe, #remaining-wxhopr-allowance {
-    flex: 1;
+  #redeemed-tickets{
+    grid-column: 1;
   }
 
-  #expected-apy {
-    grid-column: 2/3;
+  #redeemed-tickets{
+    grid-column: 1;
   }
 
-  #redeemed-tickets {
-    grid-column: 3/5;
+  #earned-rewards{
+    grid-column: 2;
   }
 
-  #earned-rewards {
-    grid-column: 5/6;
+  #remaining-wxhopr-allowance {
+    grid-column: 1;
   }
 
-  #stake-development {
-    grid-column: 1/7;
+
+  @media screen and (max-width: 1350px) {
+    grid-template-columns: repeat(1, 1fr);
+    #xdai-in-safe {
+      grid-column: 1;
+    }
+    #earned-rewards {
+      grid-column: 1;
+    }
   }
 `;
 
@@ -118,7 +129,7 @@ const StakingScreen = () => {
   return (
     <Container>
       {selectedSafeAddress && (
-        <div>
+        <div className="safe-and-module-addresses">
           <FlexContainer>
             <SafeAddress>Safe address: {selectedSafeAddress}</SafeAddress>
             <div>
@@ -156,7 +167,7 @@ const StakingScreen = () => {
         </div>
       )}
       <Content>
-        <div className="line">
+        {/* <div className="line"> */}
           <GrayCard
             id="wxhopr-total-stake"
             title="wxHOPR Total Stake"
@@ -193,6 +204,7 @@ const StakingScreen = () => {
             title="xDAI in Safe"
             value={rounder(safeBalance.xDai.formatted, 6) ?? '-'}
             valueTooltip={safeBalance.xDai.formatted || '-'}
+            currency={'xDAI'}
             buttons={[
               {
                 text: 'Buy xDAI',
@@ -210,8 +222,8 @@ const StakingScreen = () => {
               },
             ]}
           />
-        </div>
-        <div className="line">
+        {/* </div>
+        <div className="line"> */}
           <GrayCard
             id="redeemed-tickets"
             title="Redeemed Tickets"
@@ -231,8 +243,8 @@ const StakingScreen = () => {
           //   color: 'error',
           // }}
           />
-        </div>
-        <div className='half-line'>
+        {/* </div>
+        <div className='half-line'> */}
           <GrayCard
             id="remaining-wxhopr-allowance"
             title="Remaining wxHOPR Allowance
@@ -247,7 +259,7 @@ const StakingScreen = () => {
               },
             ]}
           />
-        </div>
+        {/* </div> */}
         <BuyXHopr
           open={openBuyModal}
           onClose={() => set_openBuyModal(false)}
