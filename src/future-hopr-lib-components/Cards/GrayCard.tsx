@@ -98,22 +98,23 @@ export const GrayCard = ({
           <CardContent>
             {title && <CardTitle>{title}</CardTitle>}
             {
-              (currency || value) && (
-                valueTooltip ?
-                <Tooltip
-                  title={valueTooltip}
-                >
-                  <ValueAndCurrency>
-                    {value && <CardValue>{value}</CardValue> }
-                    {currency && <CardCurrency>{currency}</CardCurrency>}
-                  </ValueAndCurrency>
-                </Tooltip>
-                :
+              (currency || value) &&
                 <ValueAndCurrency>
-                  {value && <CardValue>{value}</CardValue> }
+                  {value &&
+                    valueTooltip ?
+                    <Tooltip
+                      title={valueTooltip}
+                    >
+                      <CardValue>
+                        {value}
+                      </CardValue>
+                    </Tooltip> :
+                    <CardValue>
+                      {value}
+                    </CardValue>
+                  }
                   {currency && <CardCurrency>{currency}</CardCurrency>}
                 </ValueAndCurrency>
-              )
             }
             {chip && (
               <StyledChip
