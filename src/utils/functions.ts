@@ -46,6 +46,8 @@ export function rounder(value: number | string | null | undefined, charLength: n
   } else {
     splitted = [`${value}`, '0']
   }
+  const wholes = splitted[0];
+  const decimas = splitted[1];
   let rez: string | null = null;
   if (value >= 99999999999999) {
     let numLength = splitted[0].length;
@@ -62,16 +64,49 @@ export function rounder(value: number | string | null | undefined, charLength: n
       if (shortValue && shortValue % 1 != 0) shortValue = shortValue.toFixed(1);
       rez = shortValue+suffixes[suffixNum];
   } else if (value >= 100) {
-    let decilalNum = charLength - 4;
-    rez = value.toFixed(decilalNum)
+    let decilalNumToStay = charLength - 4;
+    if(decimas.length > decilalNumToStay) rez = value.toFixed(decilalNumToStay)
+    else rez = value.toString()
   } else if (value >= 10) {
-    let decilalNum = charLength - 3;
-    rez = value.toFixed(decilalNum)
+    let decilalNumToStay = charLength - 3;
+    if(decimas.length > decilalNumToStay) rez = value.toFixed(decilalNumToStay)
+    else rez = value.toString()
   } else {
-    let decilalNum = charLength - 2;
-    rez = value.toFixed(decilalNum)
+    let decilalNumToStay = charLength - 2;
+    if(decimas.length > decilalNumToStay) rez = value.toFixed(decilalNumToStay)
+    else rez = value.toString()
   }
-  if(parseFloat(rez) !== value) rez = '~' + rez;
+
   return rez;
 }
 
+
+function unround(value: string) {
+  try{
+    if(value === '-' || value === '0' ) return value;
+    let multiplier = 1;
+    let rez = value;
+    if(value?.length > 1 && ["k", "m", "b", "t"].includes(value.slice(-1))) {
+      const multiplierLetter = value.slice(-1);
+      switch(multiplierLetter){
+        case 'k':
+          multiplier = 10e3;
+          break;
+        case 'm':
+          multiplier = 10e6;
+          break;
+        case 'b':
+          multiplier = 10e9;
+          break;
+        case 't':
+          multiplier = 10e12;
+          break;
+      }
+      rez = (parseFloat(value.slice(0,value.length-2))*multiplier).toString();
+    }
+
+    return rez;
+  } catch (e) {
+    return ''
+  }
+}
