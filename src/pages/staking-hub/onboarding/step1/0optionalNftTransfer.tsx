@@ -168,33 +168,36 @@ export default function optionalNftTtransfer() {
           </OptionText>
           <TransferNft>
             <img src={whichNFTimage()} />
-            <Button
-              onClick={async (event) => {
-                event.stopPropagation();
-                if (!walletClient) return;
-                if (walletAddress && safeAddress && communityNftInWallet) {
-                  set_startedNftTransfer(true);
-                  set_sendingNFT(true);
-                  await dispatch(
-                    web3ActionsAsync.sendNftToSafeThunk({
-                      walletAddress,
-                      safeAddress,
-                      walletClient,
-                      communityNftId: communityNftIdInWallet,
-                    }),
-                  ).unwrap().finally(
-                    ()=>{
-                      set_sendingNFT(false)
-                    }
-                  );
-                }
-              }}
-              disabled={!communityNftInWallet || communityNftInSafe}
-              pending={sendingNFT}
-              style={{pointerEvents: 'all'}}
-            >
-              Transfer NFT to Safe
-            </Button>
+            {
+              !communityNftInSafe &&
+              <Button
+                onClick={async (event) => {
+                  event.stopPropagation();
+                  if (!walletClient) return;
+                  if (walletAddress && safeAddress && communityNftInWallet) {
+                    set_startedNftTransfer(true);
+                    set_sendingNFT(true);
+                    await dispatch(
+                      web3ActionsAsync.sendNftToSafeThunk({
+                        walletAddress,
+                        safeAddress,
+                        walletClient,
+                        communityNftId: communityNftIdInWallet,
+                      }),
+                    ).unwrap().finally(
+                      ()=>{
+                        set_sendingNFT(false)
+                      }
+                    );
+                  }
+                }}
+                disabled={!communityNftInWallet || communityNftInSafe}
+                pending={sendingNFT}
+                style={{pointerEvents: 'all'}}
+              >
+                Transfer NFT to Safe
+              </Button>
+            }
           </TransferNft>
         </Option>
         <Option
