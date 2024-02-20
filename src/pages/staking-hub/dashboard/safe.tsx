@@ -314,21 +314,25 @@ function SafeDashboard() {
           title="Safe Configuration"
           currency={needsUpdate && onboardingIsFinished ? <span style={{ color: 'red' }}>Update needed</span> : <span style={{ color: 'darkGreen' }}>Current version</span>}
           >
-            <SafeTransactionButton
-              executeOptions={{
-                pending: updating,
-                disabled: !(needsUpdate && onboardingIsFinished),
-                onClick: executeUpdateConfig,
-                buttonText: 'Update',
-              }}
-              signOptions={{
-                pending: updating,
-                disabled: !(needsUpdate && onboardingIsFinished),
-                onClick: signUpdateConfig,
-                buttonText: 'Sign update',
-              }}
-              safeInfo={safeInfo}
-            />
+            {
+              needsUpdate && onboardingIsFinished &&
+              <SafeTransactionButton
+                executeOptions={{
+                  pending: updating,
+                  disabled: !(needsUpdate && onboardingIsFinished),
+                  onClick: executeUpdateConfig,
+                  buttonText: 'Update',
+                }}
+                signOptions={{
+                  pending: updating,
+                  disabled: !(needsUpdate && onboardingIsFinished),
+                  onClick: signUpdateConfig,
+                  buttonText: 'Sign update',
+                }}
+                safeInfo={safeInfo}
+              />
+            }
+
         </GrayCard>
         <GrayCard
           id="transfer-nft"
