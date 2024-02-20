@@ -112,7 +112,7 @@ function Onboarding() {
         style={{ flex: '1 1 10%' }}
         steps={[
           { name: 'ADD NODE AS A DELEGATE' },
-          { name: 'CONFIGURE NODE' },
+          { name: 'CONFIGURE MODULE' },
           { name: 'FUND NODE' },
         ]}
       />
