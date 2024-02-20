@@ -81,18 +81,17 @@ export default function ConfigureModule(props?: { onDone?: Function, nodeAddress
     }
   },[threshold, pendingTransations, moduleAddress, walletAddress, nodeAddress])
 
-  const executeIncludeNode = async () => {
-    if (!signer || !selectedSafeAddress || !moduleAddress || !nodeAddress) return;
 
-    if(props?.onboardingType === 'main') {
+  const createDataToIncludeNodeAndSetAnnoucmentContractAsTarget = () => {
+    const moduleAddressWithout0x = moduleAddress.slice(2).toLocaleLowerCase();
+    const nodeAddressWithout0x = nodeAddress.slice(2).toLocaleLowerCase();
+    const HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS_Without0x = HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS.slice(2).toLocaleLowerCase();
+    // so that node can announce itself thotugh the node managment module,
+    // You need to sign a transaction to configure the announcement smart contract of the network as a target in your safe module.
+    const newConfig = `0x8d80ff0a000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000f200${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024b5736962${nodeAddressWithout0x}01020100000000000000000000${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024a76c9a2f${HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS_Without0x}0100030000000000000000000000000000000000000000000000`;
+    return newConfig;
 
-      const moduleAddressWithout0x = moduleAddress.slice(2).toLocaleLowerCase();
-      const nodeAddressWithout0x = nodeAddress.slice(2).toLocaleLowerCase();
-      const HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS_Without0x = HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS.slice(2).toLocaleLowerCase();
-      // so that node can announce itself thotugh the node managment module,
-      // You need to sign a transaction to configure the announcement smart contract of the network as a target in your safe module.
-      const newConfig = `0x8d80ff0a000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000f200${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024b5736962${nodeAddressWithout0x}01020100000000000000000000${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024a76c9a2f${HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS_Without0x}0100030000000000000000000000000000000000000000000000`
-
+    // To remove after it's te
     // from q
     //  const newConfig =   `0x8d80ff0a000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000f200${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024b573696206e7df53f76d5a0d3114e1ab6332a66b4e36cd8601020100000000000000000000${moduleAddressWithout0x}00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024a76c9a2f619eabe23fd0e2291b50a507719aa633fe6069b80100030000000000000000000000000000000000000000000000`
 
@@ -102,12 +101,15 @@ export default function ConfigureModule(props?: { onDone?: Function, nodeAddress
 
     // from generated
     //     0x8d80ff0a000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000f200d197dd1dcba421a106739f6c37196e39268b663a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024b573696206e7df53f76d5a0d3114e1ab6332a66b4e36cd8601020100000000000000000000d197dd1dcba421a106739f6c37196e39268b663a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000024a76c9a2f619eabe23fd0e2291b50a507719aa633fe6069b80100030000000000000000000000000000000000000000000000
+  }
 
-      console.log('newConfig', newConfig)
+  const executeIncludeNode = async () => {
+    if (!signer || !selectedSafeAddress || !moduleAddress || !nodeAddress) return;
 
+    if(props?.onboardingType === 'main') {
       dispatch(
         safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
-          data: newConfig,
+          data: createDataToIncludeNodeAndSetAnnoucmentContractAsTarget(),
           signer,
           safeAddress: selectedSafeAddress,
           operation: OperationType.DelegateCall,
@@ -127,9 +129,9 @@ export default function ConfigureModule(props?: { onDone?: Function, nodeAddress
             dispatch(stakingHubActions.setOnboardingStep(14));
           }
       })
-
     }
 
+    // accoucment contract is already added as a target now to the module, so we can only include a node in the safe module
     else if(props?.onboardingType === 'nextNode') {
       const includeNodeTransactionData = createIncludeNodeTransactionData(nodeAddress);
 
@@ -159,17 +161,29 @@ export default function ConfigureModule(props?: { onDone?: Function, nodeAddress
   };
 
   const signIncludeNode = async () => {
-    if (signer && selectedSafeAddress && moduleAddress && nodeAddress) {
+    if (!signer || !selectedSafeAddress || !moduleAddress || !nodeAddress) return;
+
+    if(props?.onboardingType === 'main') {
+      await dispatch(
+        safeActionsAsync.createSafeContractTransactionThunk({
+          data: createDataToIncludeNodeAndSetAnnoucmentContractAsTarget(),
+          signer,
+          safeAddress: selectedSafeAddress,
+          operation: OperationType.DelegateCall,
+          smartContractAddress: MULTISEND_CONTRACT_GNOSIS,
+        })).unwrap();
+
+    } else if(props?.onboardingType === 'nextNode') {
       await dispatch(
         safeActionsAsync.createSafeContractTransactionThunk({
           smartContractAddress: moduleAddress,
           data: createIncludeNodeTransactionData(nodeAddress),
           safeAddress: selectedSafeAddress,
           signer,
-        }),
-      ).unwrap();
-      navigate('/staking/dashboard#transactions');
+        })).unwrap();
     }
+
+    navigate('/staking/dashboard#transactions');
   };
 
   const executeSignedIncludeNode = async (transaction: SafeMultisigTransactionResponse) => {
@@ -209,7 +223,7 @@ export default function ConfigureModule(props?: { onDone?: Function, nodeAddress
   return (
     <StepContainer
       title="CONFIGURE MODULE"
-      description={'You need to sign a transaction to connect your node to your existing HOPR safe.'}
+      description={'You need to sign this multi-transaction to connect your node to your existing HOPR safe module and also configure the announcement smart contract of the network as a target in your safe module so that your node will be able to announce itself on the network.'}
       image={{
         src: '/assets/safe-and-node-chain.svg',
         height: 200,
