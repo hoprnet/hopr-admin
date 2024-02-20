@@ -91,13 +91,6 @@ export default function ConfigureModule(props?: { onDone?: Function, nodeAddress
               console.log('[Onboarding check] We have an onboarding TX created for that node', pendingTransations[i])
               const confirmationsDone = pendingTransations[i].confirmations!.length | 0;
 
-              // If this is the last signature or we have all signatures
-              if(pendingTransations[i].confirmationsRequired - 1 >= confirmationsDone) {
-                console.log('pendingTransations[i]', pendingTransations[i])
-                set_thisTransactionHasSignaturesIsWaitingToExecute(pendingTransations[i]);
-                return
-              }
-
               //If not last signature needed
               const confirmations = pendingTransations[i].confirmations;
               for(let j = 0; j < confirmationsDone; j++) {
@@ -108,6 +101,13 @@ export default function ConfigureModule(props?: { onDone?: Function, nodeAddress
                   set_thisTransactionIsWaitingToSign(true);
                   return;
                 }
+              }
+
+              // If this is the last signature or we have all signatures
+              if(pendingTransations[i].confirmationsRequired - 1 >= confirmationsDone) {
+                console.log('pendingTransations[i]', pendingTransations[i])
+                set_thisTransactionHasSignaturesIsWaitingToExecute(pendingTransations[i]);
+                return
               }
             }
           }

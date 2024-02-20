@@ -84,7 +84,9 @@ export default function optionalNftTtransfer() {
   const dispatch = useAppDispatch();
   const [option, set_option] = useState<0 | 1 | null>(null);
   const communityNftIdInWallet = useAppSelector((store) => store.web3.communityNftId);
-  const communityNftIdInSafe = useAppSelector((store) => !!store.safe.communityNftIds.data.length);
+  const communityNftInWallet = !!communityNftIdInWallet;
+  const communityNftIdsInSafe = useAppSelector((store) => store.safe.communityNftIds.data);
+  const communityNftInSafe = communityNftIdsInSafe.length > 0;
   const safeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const walletAddress = useAppSelector((store) => store.web3.account);
   const { data: walletClient } = useWalletClient();
@@ -92,25 +94,25 @@ export default function optionalNftTtransfer() {
   const [sendingNFT, set_sendingNFT] = useState<boolean>(false);
 
   useEffect(() => {
-    if (startedNftTransfer && !communityNftIdInSafe && safeAddress) {
+    if (startedNftTransfer && !communityNftInSafe && safeAddress) {
       interval = setInterval(()=>{dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(safeAddress));}, 10_000);
-    } else if (startedNftTransfer && communityNftIdInSafe ) {
+    } else if (startedNftTransfer && communityNftInSafe ) {
       clearInterval(interval);
       set_startedNftTransfer(false);
     }
     return () => {
       clearInterval(interval);
     };
-  }, [safeAddress, communityNftIdInSafe, startedNftTransfer]);
+  }, [safeAddress, communityNftInSafe, startedNftTransfer]);
 
   function whichNFTimage() {
-    if (communityNftIdInSafe !== null) return '/assets/nft-in-safe.png';
-    if (communityNftIdInWallet === null) return '/assets/nft-NOT-detected-in-wallet.png';
-    if (communityNftIdInWallet !== null) return '/assets/nft-detected-in-wallet.png';
+    if (communityNftInSafe) return '/assets/nft-in-safe.png';
+    if (communityNftInWallet) return '/assets/nft-detected-in-wallet.png';
+    return '/assets/nft-NOT-detected-in-wallet.png';
   }
 
   function tooltipText(){
-    if(option === 0 && !communityNftIdInSafe) return "You need to transfer Community NFT to the Safe in order to use that option";
+    if(option === 0 && !communityNftInSafe) return "You need to transfer Community NFT to the Safe in order to use that option";
     if(option === null) return "You need to choose an option";
     return null
   }
@@ -137,7 +139,7 @@ export default function optionalNftTtransfer() {
               onClick={() => {
                 dispatch(stakingHubActions.setOnboardingStep(4));
               }}
-              disabled={option === null || (option === 0 && !communityNftIdInSafe)}
+              disabled={option === null || (option === 0 && !communityNftInSafe)}
               style={{width: '250px'}}
             >
               CONTINUE
@@ -152,7 +154,7 @@ export default function optionalNftTtransfer() {
           onClick={() => {
             set_option(0);
           }}
-          style={communityNftIdInSafe === false ? {pointerEvents: 'none'} : {}}
+          style={communityNftInSafe === false ? {pointerEvents: 'none'} : {}}
         >
           <OptionText>
             <div className="left">
@@ -170,7 +172,7 @@ export default function optionalNftTtransfer() {
               onClick={async (event) => {
                 event.stopPropagation();
                 if (!walletClient) return;
-                if (walletAddress && safeAddress && communityNftIdInWallet !== null) {
+                if (walletAddress && safeAddress && communityNftInWallet) {
                   set_startedNftTransfer(true);
                   set_sendingNFT(true);
                   await dispatch(
@@ -187,7 +189,7 @@ export default function optionalNftTtransfer() {
                   );
                 }
               }}
-              disabled={communityNftIdInWallet === null || !!communityNftIdInSafe}
+              disabled={communityNftInWallet || communityNftInSafe}
               pending={sendingNFT}
               style={{pointerEvents: 'all'}}
             >
