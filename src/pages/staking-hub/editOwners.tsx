@@ -409,9 +409,9 @@ export default function EditOwners() {
           />
         }
       />
-{/*
+
       <StartOnboarding/>
-      <NetworkOverlay/> */}
+      <NetworkOverlay/>
     </Section>
   );
 }

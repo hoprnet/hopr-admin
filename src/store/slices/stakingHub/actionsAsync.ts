@@ -163,8 +163,6 @@ const getSubgraphDataThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setSubgraphDataFetching(true));
-
     safeAddress = safeAddress.toLocaleLowerCase();
     moduleAddress = moduleAddress.toLocaleLowerCase();
 
@@ -606,6 +604,9 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     }
     state.safes.isFetching = false;
   });
+  builder.addCase(getSubgraphDataThunk.pending, (state, action) => {
+    state.safeInfo.isFetching = true;
+  });
   builder.addCase(getSubgraphDataThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.safeInfo.data = action.payload;
@@ -657,6 +658,9 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         })
       }
     }
+    state.safeInfo.isFetching = false;
+  });
+  builder.addCase(getSubgraphDataThunk.rejected, (state, action) => {
     state.safeInfo.isFetching = false;
   });
   builder.addCase(getModuleTargetsThunk.rejected, (state, action) => {

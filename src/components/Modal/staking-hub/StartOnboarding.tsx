@@ -39,7 +39,10 @@ const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
   const [openModal, set_openModal] = useState(false);
   const moduleAddress = useAppSelector((store) => store.safe.selectedSafe.data.moduleAddress);
 
-  const isFetching = useAppSelector((store) => store.stakingHub.safes.isFetching);
+  const isFetchingSafes = useAppSelector((store) => store.stakingHub.safes.isFetching);
+  const isFetchingSafeInfo = useAppSelector((store) => store.stakingHub.safeInfo.isFetching);
+
+  const isFetching = isFetchingSafes || isFetchingSafeInfo;
 
   useEffect(() => {
     if (modalToSartOnboardingDismissed) {

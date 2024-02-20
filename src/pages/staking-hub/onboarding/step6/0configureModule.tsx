@@ -45,37 +45,74 @@ export default function ConfigureModule(props?: { onDone?: Function, nodeAddress
   useEffect(()=>{
     if(walletAddress && moduleAddress && threshold && threshold > 1 && nodeAddress) {
       if(pendingTransations && pendingTransations.length !== 0) {
-        for(let i = 0; i < pendingTransations.length; i++) {
-          if(
-            pendingTransations[i] &&
-            moduleAddress === pendingTransations[i].to &&
-            pendingTransations[i].data && typeof(pendingTransations[i].data) === 'string' &&
-            // @ts-ignore
-            pendingTransations[i].data.slice(0,10) === '0xb5736962' && pendingTransations[i].data.slice(50,73) === '01020100000000000000000' && pendingTransations[i].data.slice(10,50).toLowerCase() === nodeAddress.toLowerCase().slice(2,42) &&
-            pendingTransations[i].confirmations!.length > 0
-          ) {
-            console.log('[Onboarding check] We have an onboarding TX created for that node', pendingTransations[i])
-            const confirmationsDone = pendingTransations[i].confirmations!.length | 0;
-
-            // If this is the last signature or we have all signatures
-            if(pendingTransations[i].confirmationsRequired - 1 >= confirmationsDone) {
-              console.log('pendingTransations[i]', pendingTransations[i])
-              set_thisTransactionHasSignaturesIsWaitingToExecute(pendingTransations[i]);
-              return
-            }
-
-            //If not last signature needed
-            const confirmations = pendingTransations[i].confirmations;
-            for(let j = 0; j < confirmationsDone; j++) {
+        try{
+          for(let i = 0; i < pendingTransations.length; i++) {
+            // mainNode
+            if(
+              pendingTransations[i] &&
+              MULTISEND_CONTRACT_GNOSIS === pendingTransations[i].to &&
+              pendingTransations[i].data && typeof(pendingTransations[i].data) === 'string' &&
               // @ts-ignore
-              const confirmation = confirmations[j];
-              const signerOfTheConfirmation = confirmation.owner;
-              if(signerOfTheConfirmation === walletAddress) {
-                set_thisTransactionIsWaitingToSign(true);
+              pendingTransations[i].data.slice(0,10) === '0x8d80ff0a' && pendingTransations[i].data.slice(356,379) === '01020100000000000000000' && pendingTransations[i].data.slice(316,356).toLowerCase() === nodeAddress.toLowerCase().slice(2,42) &&
+              pendingTransations[i].confirmations!.length > 0
+            ) {
+              console.log('[Onboarding check] We have an onboarding TX created for that node', pendingTransations[i])
+              const confirmationsDone = pendingTransations[i].confirmations!.length | 0;
+              const confirmations = pendingTransations[i].confirmations;
+
+              //If not last signature needed
+              for(let j = 0; j < confirmationsDone; j++) {
+                // @ts-ignore
+                const confirmation = confirmations[j];
+                const signerOfTheConfirmation = confirmation.owner;
+                if(signerOfTheConfirmation === walletAddress) {
+                  set_thisTransactionIsWaitingToSign(true);
+                  return;
+                }
+              }
+
+              // If this is the last signature or we have all signatures
+              if(pendingTransations[i].confirmationsRequired - 1 >= confirmationsDone) {
+                console.log('pendingTransations[i]', pendingTransations[i])
+                set_thisTransactionHasSignaturesIsWaitingToExecute(pendingTransations[i]);
                 return;
               }
             }
+
+            // nextNode
+            else if(
+              pendingTransations[i] &&
+              moduleAddress === pendingTransations[i].to &&
+              pendingTransations[i].data && typeof(pendingTransations[i].data) === 'string' &&
+              // @ts-ignore
+              pendingTransations[i].data.slice(0,10) === '0xb5736962' && pendingTransations[i].data.slice(50,73) === '01020100000000000000000' && pendingTransations[i].data.slice(10,50).toLowerCase() === nodeAddress.toLowerCase().slice(2,42) &&
+              pendingTransations[i].confirmations!.length > 0
+            ) {
+              console.log('[Onboarding check] We have an onboarding TX created for that node', pendingTransations[i])
+              const confirmationsDone = pendingTransations[i].confirmations!.length | 0;
+
+              // If this is the last signature or we have all signatures
+              if(pendingTransations[i].confirmationsRequired - 1 >= confirmationsDone) {
+                console.log('pendingTransations[i]', pendingTransations[i])
+                set_thisTransactionHasSignaturesIsWaitingToExecute(pendingTransations[i]);
+                return
+              }
+
+              //If not last signature needed
+              const confirmations = pendingTransations[i].confirmations;
+              for(let j = 0; j < confirmationsDone; j++) {
+                // @ts-ignore
+                const confirmation = confirmations[j];
+                const signerOfTheConfirmation = confirmation.owner;
+                if(signerOfTheConfirmation === walletAddress) {
+                  set_thisTransactionIsWaitingToSign(true);
+                  return;
+                }
+              }
+            }
           }
+        } catch (e) {
+          console.error("Error while trying to get onboarding status with multi-sig account.", e)
         }
       }
     }
@@ -220,10 +257,12 @@ export default function ConfigureModule(props?: { onDone?: Function, nodeAddress
     }
   };
 
+  const description = props?.onboardingType === 'main' ? 'You need to sign this multi-transaction to connect your node to your existing HOPR safe module and also configure the announcement smart contract of the network as a target in your safe module so that your node will be able to announce itself on the network.' : 'You need to sign this transaction to connect your node to your existing HOPR safe module';
+
   return (
     <StepContainer
       title="CONFIGURE MODULE"
-      description={'You need to sign this multi-transaction to connect your node to your existing HOPR safe module and also configure the announcement smart contract of the network as a target in your safe module so that your node will be able to announce itself on the network.'}
+      description={description}
       image={{
         src: '/assets/safe-and-node-chain.svg',
         height: 200,

@@ -63,44 +63,49 @@ export default function SetAllowance() {
   useEffect(()=>{
     if(walletAddress && wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS && threshold && threshold > 1) {
       if(pendingTransations && pendingTransations.length !== 0) {
-        for(let i = 0; i < pendingTransations.length; i++) {
-          if(
-            pendingTransations[i] &&
-            wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS === pendingTransations[i].to &&
-            pendingTransations[i].data && typeof(pendingTransations[i].data) === 'string' &&
-            //ex: "0x095ea7b3000000000000000000000000693bac5ce61c720ddc68533991ceb41199d8f8ae00000000000000000000000000000000000000000000006c5db2a4d815dc0000"
-            //  pendingTransations[i].data.slice(0,10) === '0xb5736962' && pendingTransations[i].data.slice(50,73) === '01020100000000000000000' &&
-            // @ts-ignore
-            pendingTransations[i].data.slice(34,74).toLowerCase() === HOPR_CHANNELS_SMART_CONTRACT_ADDRESS.toLowerCase().slice(2,42) &&
-            pendingTransations[i].confirmations!.length > 0
-          ) {
-            console.log('[Onboarding check] We have an onboarding TX created for that ALLOWANCE', pendingTransations[i])
-            const confirmationsDone = pendingTransations[i].confirmations!.length | 0;
-
-            // If this is the last signature or we have all signatures
-            if(pendingTransations[i].confirmationsRequired - 1 >= confirmationsDone) {
-              console.log('pendingTransations[i]', pendingTransations[i]);
-              set_thisTransactionHasSignaturesIsWaitingToExecute(pendingTransations[i]);
+        try{
+          for(let i = 0; i < pendingTransations.length; i++) {
+            if(
+              pendingTransations[i] &&
+              wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS === pendingTransations[i].to &&
+              pendingTransations[i].data && typeof(pendingTransations[i].data) === 'string' &&
+              //ex: "0x095ea7b3000000000000000000000000693bac5ce61c720ddc68533991ceb41199d8f8ae00000000000000000000000000000000000000000000006c5db2a4d815dc0000"
+              //  pendingTransations[i].data.slice(0,10) === '0xb5736962' && pendingTransations[i].data.slice(50,73) === '01020100000000000000000' &&
               // @ts-ignore
-              if(pendingTransations[i].dataDecoded?.parameters[1].value) {
+              pendingTransations[i].data.slice(34,74).toLowerCase() === HOPR_CHANNELS_SMART_CONTRACT_ADDRESS.toLowerCase().slice(2,42) &&
+              pendingTransations[i].confirmations!.length > 0
+            ) {
+              console.log('[Onboarding check] We have an onboarding TX created for that ALLOWANCE', pendingTransations[i])
+              const confirmationsDone = pendingTransations[i].confirmations!.length | 0;
+              const confirmations = pendingTransations[i].confirmations;
+
+              //If not last signature needed
+              for(let j = 0; j < confirmationsDone; j++) {
                 // @ts-ignore
-                set_wxHoprValue(formatEther(pendingTransations[i].dataDecoded?.parameters[1].value))
+                const confirmation = confirmations[j];
+                const signerOfTheConfirmation = confirmation.owner;
+                if(signerOfTheConfirmation === walletAddress) {
+                  set_thisTransactionIsWaitingToSign(true);
+                  return;
+                }
               }
-              return
-            }
 
-            //If not last signature needed
-            const confirmations = pendingTransations[i].confirmations;
-            for(let j = 0; j < confirmationsDone; j++) {
-              // @ts-ignore
-              const confirmation = confirmations[j];
-              const signerOfTheConfirmation = confirmation.owner;
-              if(signerOfTheConfirmation === walletAddress) {
-                set_thisTransactionIsWaitingToSign(true);
-                return;
+              // If this is the last signature or we have all signatures
+              if(pendingTransations[i].confirmationsRequired - 1 >= confirmationsDone) {
+                console.log('pendingTransations[i]', pendingTransations[i]);
+                set_thisTransactionHasSignaturesIsWaitingToExecute(pendingTransations[i]);
+                // @ts-ignore
+                if(pendingTransations[i].dataDecoded?.parameters[1].value) {
+                  // @ts-ignore
+                  set_wxHoprValue(formatEther(pendingTransations[i].dataDecoded?.parameters[1].value))
+                }
+                return
               }
+
             }
           }
+        } catch (e) {
+          console.error("Error while trying to get onboarding status with multi-sig account.", e)
         }
       }
     }

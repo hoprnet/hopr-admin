@@ -143,7 +143,7 @@ function Onboarding() {
           { name: 'CHOOSE YOUR NODE SETUP' },
           { name: 'WAITLIST' },
           { name: 'ADD NODE AS A DELEGATE' },
-          { name: 'CONFIGURE NODE' },
+          { name: 'CONFIGURE MODULE' },
           { name: 'FUND NODE' },
           { name: 'SET wxHOPR ALLOWANCE' },
         ]}
