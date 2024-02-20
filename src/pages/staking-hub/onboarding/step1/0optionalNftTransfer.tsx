@@ -189,7 +189,7 @@ export default function optionalNftTtransfer() {
                   );
                 }
               }}
-              disabled={communityNftInWallet || communityNftInSafe}
+              disabled={!communityNftInWallet || communityNftInSafe}
               pending={sendingNFT}
               style={{pointerEvents: 'all'}}
             >
