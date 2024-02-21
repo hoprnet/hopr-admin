@@ -18,13 +18,13 @@ const nodeSlice = createSlice({
     setInfo(state, action) {
       state.info = action.payload;
     },
-    messageReceived(state, action: PayloadAction<(typeof initialState.messages)[0]>) {
-      state.messages.push(action.payload);
-      if (state.messages.length > 100)
-        state.messages = state.messages.slice(state.messages.length - 100, state.messages.length);
+    messageReceived(state, action: PayloadAction<(typeof initialState.messages.data)[0]>) {
+      state.messages.data.push(action.payload);
+      if (state.messages.data.length > 100)
+        state.messages.data = state.messages.data.slice(state.messages.data.length - 100, state.messages.data.length);
     },
-    toggleMessageSeen(state, action: PayloadAction<(typeof initialState.messages)[0]>) {
-      state.messages = state.messages.map((message) => {
+    toggleMessageSeen(state, action: PayloadAction<(typeof initialState.messages.data)[0]>) {
+      state.messages.data = state.messages.data.map((message) => {
         if (message.id === action.payload.id) {
           return {
             ...message,
@@ -33,7 +33,7 @@ const nodeSlice = createSlice({
         }
         return message;
       });
-    },  
+    },
     // handle ws state
     updateMessagesWebsocketStatus(state, action: PayloadAction<typeof initialState.messagesWebsocketStatus>) {
       state.messagesWebsocketStatus = action.payload;

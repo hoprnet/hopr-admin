@@ -426,6 +426,12 @@ const LayoutEnhanced = () => {
             })
           );
           dispatch(
+            nodeActionsAsync.getMessagesThunk({
+              apiToken,
+              apiEndpoint,
+            })
+          );
+          dispatch(
             nodeActionsAsync.getChannelsThunk({
               apiToken,
               apiEndpoint,

@@ -123,7 +123,7 @@ export default function ConnectNode() {
     dispatch(authActions.resetState());
     dispatch(nodeActions.resetState());
     dispatch(appActions.resetNodeState());
-    dispatch(nodeActions.closeMessagesWebsocket());
+  //  dispatch(nodeActions.closeMessagesWebsocket());
     navigate('/');
   };
 

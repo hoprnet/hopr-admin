@@ -16,7 +16,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
     apiEndpoint,
     apiToken,
   } = useAppSelector((store) => store.auth.loginData);
-  const messages = useAppSelector((store) => store.node.messages);
+  const messages = useAppSelector((store) => store.node.messages.data);
   const connected = useAppSelector((store) => store.auth.status.connected);
 
   const signer = useEthersSigner();
@@ -28,7 +28,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   const activePendingSafeTransaction = useAppSelector(store => store.app.configuration.notifications.pendingSafeTransaction)
   // redux previous states, this can be updated from anywhere in the app
   const prevChannels = useAppSelector((store) => store.app.previousStates.prevChannels);
-  const prevMessage = useAppSelector((store) => store.app.previousStates.prevMessage);
+  const prevMessagesUuids = useAppSelector((store) => store.app.previousStates.prevMessagesUuids);
   const prevNodeBalances = useAppSelector((store) => store.app.previousStates.prevNodeBalances);
   const prevNodeInfo = useAppSelector((store) => store.app.previousStates.prevNodeInfo);
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
@@ -63,6 +63,19 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
       });
     }, intervalDuration);
 
+    const watchMessagesInterval = setInterval(() => {
+      observeMessages({
+        apiEndpoint,
+        apiToken,
+        dispatch,
+        active: activeNodeInfo,
+        previousState: prevMessagesUuids,
+        updatePreviousData: (newNodeInfo) => {
+          dispatch(()=>{});
+        },
+      });
+    }, 5_000);
+
     const watchNodeBalancesInterval = setInterval(() => {
       observeNodeBalances({
         apiEndpoint,
@@ -87,6 +100,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
       clearInterval(watchChannelsInterval);
       clearInterval(watchNodeInfoInterval);
       clearInterval(watchNodeBalancesInterval);
+      clearInterval(watchMessagesInterval);
     };
   }, [connected, apiEndpoint, apiToken, prevNodeBalances, prevNodeInfo, prevChannels]);
 
@@ -124,16 +138,4 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
     };
   }, [selectedSafeAddress, signer, prevPendingSafeTransaction, safeIndexed]);
 
-  // check when redux receives new messages
-  useEffect(() => {
-    observeMessages({
-      dispatch,
-      messages,
-      previousState: prevMessage,
-      active: activeMessage,
-      updatePreviousData: (newMessage) => {
-        dispatch(appActions.setPrevMessage(newMessage));
-      },
-    });
-  }, [messages, prevMessage]);
 };

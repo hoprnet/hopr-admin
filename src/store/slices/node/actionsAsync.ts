@@ -1,5 +1,6 @@
 import { ActionReducerMapBuilder, AnyAction, ThunkDispatch, createAsyncThunk } from '@reduxjs/toolkit';
 import { initialState } from './initialState';
+import { v4 as uuidv4 } from 'uuid';
 import {
   type AliasPayloadType,
   type BasePayloadType,
@@ -11,12 +12,13 @@ import {
   type OpenChannelPayloadType,
   type PingPeerPayloadType,
   type SendMessagePayloadType,
+  type PeekAllMessagesPayloadType,
   type SetAliasPayloadType,
   type GetChannelTicketsPayloadType,
   type WithdrawPayloadType,
   type RedeemChannelTicketsPayloadType,
   type GetPeerPayloadType,
-  GetChannelResponseType,
+  type GetChannelResponseType,
   GetPeersResponseType,
   GetAliasesResponseType,
   GetInfoResponseType,
@@ -61,6 +63,7 @@ const {
   openChannel,
   pingPeer,
   getPeer, // old getPeerInfo
+  peekAllMessages,
   redeemChannelTickets,
   redeemTickets,
   removeAlias,
@@ -81,6 +84,7 @@ const getInfoThunk = createAsyncThunk<GetInfoResponseType | undefined, BasePaylo
       const info = await getInfo(payload);
       return info;
     } catch (e) {
+      console.error(e);
       if (e instanceof APIError) {
         return rejectWithValue({
           status: e.status,
@@ -706,6 +710,23 @@ const redeemChannelTicketsThunk = createAsyncThunk<
   } },
 );
 
+const getMessagesThunk = createAsyncThunk(
+  'node/getMessages',
+  async (payload: PeekAllMessagesPayloadType, { rejectWithValue }) => {
+    try {
+      const res = await peekAllMessages(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
+    }
+  },
+);
+
 const sendMessageThunk = createAsyncThunk(
   'node/sendMessage',
   async (payload: SendMessagePayloadType, { rejectWithValue }) => {
@@ -1144,13 +1165,35 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(getChannelTicketsThunk.rejected, (state) => {
     state.tickets.isFetching = false;
   });
+  // getMessages
+  builder.addCase(getMessagesThunk.pending, (state) => {
+    state.messages.isFetching = true;
+  });
+  builder.addCase(getMessagesThunk.fulfilled, (state, action) => {
+    if (action.payload && action.payload.messages) {
+      action.payload.messages.forEach(msgReceived => {
+        let addMessage = state.messages.data.findIndex(msgSaved => msgSaved.tag === msgReceived.tag && msgSaved.receivedAt === msgReceived.receivedAt && msgSaved.body === msgReceived.body) === -1;
+        if(addMessage)
+        state.messages.data.unshift({
+          body: msgReceived.body,
+          receivedAt: msgReceived.receivedAt,
+          tag: msgReceived.tag,
+          id: uuidv4(),
+        })
+      })
+    }
+    state.messages.isFetching = false;
+  });
+  builder.addCase(getMessagesThunk.rejected, (state, action) => {
+    state.messages.isFetching = false;
+  });
   // sendMessage
   builder.addCase(sendMessageThunk.pending, (state, action) => {
     if (action.meta) {
       state.messagesSent.push({
         id: action.meta.requestId,
         body: action.meta.arg.body,
-        createdAt: Date.now(),
+        timestamp: Date.now(),
         status: 'sending',
         receiver: action.meta.arg.peerId,
       });
@@ -1161,7 +1204,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     if (action.payload && index !== -1) {
       state.messagesSent[index].status = 'sent';
       state.messagesSent[index].challenge = action.payload.challenge;
-      state.messagesSent[index].createdAt = Date.now();
+      state.messagesSent[index].timestamp = Date.now();
     }
   });
   builder.addCase(sendMessageThunk.rejected, (state, action) => {
@@ -1243,6 +1286,7 @@ export const actionsAsync = {
   getAliasesThunk,
   getBalancesThunk,
   getChannelsThunk,
+  getMessagesThunk,
   getPeersThunk,
   getPeerInfoThunk,
   getTicketStatisticsThunk,

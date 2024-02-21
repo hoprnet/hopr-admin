@@ -2,6 +2,7 @@ import { useAppDispatch } from '../../store';
 import { Message } from '../../store/slices/node/initialState';
 import { sendNotification } from './notifications';
 import { observeData } from './observeData';
+import { nodeActionsAsync } from '../../store/slices/node';
 
 /**
  * Describes a message being watched for changes.
@@ -9,7 +10,7 @@ import { observeData } from './observeData';
  * and the actual message object.
  */
 export type WatcherMessage = {
-  createdAt: number;
+  timestamp: number;
   amountOfTimesRepeated: number;
   message?: Message;
 } | null;
@@ -22,13 +23,13 @@ export type WatcherMessage = {
 const getLatestMessage = (newMessages?: Message[]): WatcherMessage | undefined => {
   if (!newMessages?.length) return;
 
-  const sortedMessages = [...newMessages].sort((a, b) => b.createdAt - a.createdAt);
+  const sortedMessages = [...newMessages].sort((a, b) => b.timestamp - a.timestamp);
   const latestMessage = sortedMessages?.[0];
-  const latestTimestamp = latestMessage.createdAt ?? 0;
-  const amountOfMessagesWithTimestamp = newMessages.filter((msg) => msg.createdAt === latestTimestamp)?.length;
+  const latestTimestamp = latestMessage.timestamp ?? 0;
+  const amountOfMessagesWithTimestamp = newMessages.filter((msg) => msg.timestamp === latestTimestamp)?.length;
 
   return {
-    createdAt: latestTimestamp,
+    timestamp: latestTimestamp,
     amountOfTimesRepeated: amountOfMessagesWithTimestamp,
     message: latestMessage,
   };
@@ -40,17 +41,7 @@ const getLatestMessage = (newMessages?: Message[]): WatcherMessage | undefined =
  * @param oldMessage The old message to compare.
  * @param newMessage The new message to compare.
  */
-const checkForNewMessage = (oldMessage: WatcherMessage, newMessage: NonNullable<WatcherMessage>) => {
-  if (!oldMessage) return true;
-
-  if (oldMessage.createdAt < newMessage.createdAt) {
-    return true;
-  }
-
-  if (oldMessage.createdAt === newMessage.createdAt) {
-    return oldMessage.amountOfTimesRepeated < newMessage.amountOfTimesRepeated;
-  }
-
+const didWeGetNewMessage = (oldMessageUuids: string[], newMessages: NonNullable<WatcherMessage>) => {
   return false;
 };
 
@@ -64,22 +55,32 @@ const checkForNewMessage = (oldMessage: WatcherMessage, newMessage: NonNullable<
  */
 export const observeMessages = ({
   previousState,
-  messages,
+  apiToken,
+  apiEndpoint,
   active,
   updatePreviousData,
   dispatch,
 }: {
-  previousState: WatcherMessage | null;
-  messages: Message[];
+  previousState: string[];
+  apiToken: string | null;
+  apiEndpoint: string | null;
   active: boolean;
   updatePreviousData: (currentData: WatcherMessage) => void;
   dispatch: ReturnType<typeof useAppDispatch>;
 }) =>
   observeData<WatcherMessage>({
-    active: active && !!getLatestMessage(messages),
+    active: active && !!apiEndpoint && !!apiToken,
+    fetcher: async () => {
+      if (!apiEndpoint || !apiToken) return;
+      return dispatch(
+        nodeActionsAsync.getMessagesThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      ).unwrap();
+    },
     previousData: previousState,
-    fetcher: async () => getLatestMessage(messages),
-    isDataDifferent: (newData) => checkForNewMessage(previousState, newData),
+    isDataDifferent: (newData) => didWeGetNewMessage(previousState, newData),
     notificationHandler: (newData) => {
       sendNotification({
         notificationPayload: {

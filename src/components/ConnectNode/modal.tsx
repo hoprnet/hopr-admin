@@ -277,8 +277,14 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
             apiEndpoint: formattedApiEndpoint,
           }),
         );
+        dispatch(
+          nodeActionsAsync.getMessagesThunk({
+            apiToken,
+            apiEndpoint: formattedApiEndpoint,
+          }),
+        );
         dispatch(nodeActions.setInfo(loginInfo));
-        dispatch(nodeActions.initializeMessagesWebsocket());
+      //  dispatch(nodeActions.initializeMessagesWebsocket());
         navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${formattedApiEndpoint}`);
         trackGoal('IZUWDE9K', 1);
         props.handleClose();

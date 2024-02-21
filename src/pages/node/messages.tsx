@@ -13,7 +13,7 @@ import { SubpageTitle } from '../../components/SubpageTitle';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 const messages = () => {
-  const messages = useAppSelector((store) => store.node.messages);
+  const messages = useAppSelector((store) => store.node.messages.data);
   const {
     apiEndpoint,
     apiToken,
@@ -33,22 +33,22 @@ const messages = () => {
 
   const header = [
     {
-      key: 'timestamp',
+      key: 'receivedAt',
       name: 'Timestamp',
       width: '120px',
       maxWidth: '120px',
     },
     {
+      key: 'tag',
+      name: 'Tag',
+      search: true,
+      width: '70px',
+      maxWidth: '70px',
+    },
+    {
       key: 'body',
       name: 'Message',
       wrap: true,
-    },
-    {
-      key: 'actions',
-      name: 'Actions',
-      search: false,
-      width: '168px',
-      maxWidth: '168px',
     },
   ];
 
@@ -56,12 +56,13 @@ const messages = () => {
     return {
       id: message.id,
       body: message.body,
-      timestamp: formatDate(message.createdAt),
+      receivedAt: message.receivedAt ? formatDate(message.receivedAt) : '',
+      tag: message.tag ? message.tag.toString() : '',
       actions: (
         <>
-          <button onClick={() => dispatch(nodeActions.toggleMessageSeen(message))}>
+          {/* <button onClick={() => dispatch(nodeActions.toggleMessageSeen(message))}>
             Mark as {message.seen ? 'unseen' : 'seen'}
-          </button>
+          </button> */}
         </>
       ),
     };

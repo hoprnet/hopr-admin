@@ -26,7 +26,7 @@ type InitialState = {
     prevChannels: GetChannelsResponseType | null;
     prevNodeInfo: GetInfoResponseType | null;
     prevNodeBalances: GetBalancesResponseType | null;
-    prevMessage: WatcherMessage;
+    prevMessagesUuids: string[];
     prevPendingSafeTransaction: SafeMultisigTransactionResponse | null;
   };
 };
@@ -45,7 +45,7 @@ export const initialState: InitialState = {
   previousStates: {
     prevChannels: null,
     prevPendingSafeTransaction: null,
-    prevMessage: null,
+    prevMessagesUuids: [],
     prevNodeBalances: null,
     prevNodeInfo: null,
   },

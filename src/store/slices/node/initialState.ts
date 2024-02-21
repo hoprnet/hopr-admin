@@ -7,18 +7,20 @@ import type {
   GetTicketsResponseType,
   GetTokenResponseType,
   GetEntryNodesResponseType,
-  PingPeerResponseType
+  PingPeerResponseType,
 } from '@hoprnet/hopr-sdk';
 
 export type Message = {
   id: string;
-  createdAt: number;
+  timestamp?: number;
+  receivedAt?: number;
   body: string;
   seen?: boolean;
   status?: 'sending' | 'sent' | 'error';
   error?: string;
   challenge?: string;
   receiver?: string;
+  tag?: number;
 };
 
 type WebsocketConnectionStatus = 'connecting' | 'connected' | 'error' | null;
@@ -70,9 +72,12 @@ type InitialState = {
     data: GetChannelsResponseType | null;
     isFetching: boolean;
   };
-  messages: Message[];
+  messages: {
+    data: Message[],
+    isFetching: boolean;
+  };
   messagesSent: Message[];
-  signedMessages: { createdAt: number; body: string }[];
+  signedMessages: { timestamp: number; body: string }[];
   peers: { data: GetPeersResponseType | null; isFetching: boolean };
   entryNodes: { data: GetEntryNodesResponseType | null; isFetching: boolean };
   peerInfo: {
@@ -164,7 +169,10 @@ export const initialState: InitialState = {
     data: null,
     isFetching: false,
   },
-  messages: [],
+  messages: {
+    data: [],
+    isFetching: false,
+  },
   messagesSent: [],
   signedMessages: [],
   peers: {

@@ -128,14 +128,14 @@ const nodeFaq: FaqData = {
     {
       id: 2,
       title: 'How do I redeem tickets?',
-      content: 'You can use the redeem all tickets icon on the top left of this page.',
+      content: 'Tickets are combined and redeemed automatically by your node to save on gas prices.',
     },
-    {
-      id: 3,
-      title: 'When should I redeem my tickets?',
-      content:
-        'Ticket redemption costs a small fee in xDAI to complete the on-chain transaction. To lower this cost, the HOPR protocol batches ticket redemption, so it is generally more efficient to redeem multiple tickets at once. For maximum margins, only redeem tickets when you would otherwise lose them due to channel closure.',
-    },
+    // {
+    //   id: 3,
+    //   title: 'When should I redeem my tickets?',
+    //   content:
+    //     'Ticket redemption costs a small fee in xDAI to complete the on-chain transaction. To lower this cost, the HOPR protocol batches ticket redemption, so it is generally more efficient to redeem multiple tickets at once. For maximum margins, only redeem tickets when you would otherwise lose them due to channel closure.',
+    // },
     {
       id: 4,
       title: 'How is ticket value calculated?',
