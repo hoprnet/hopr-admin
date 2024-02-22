@@ -76,6 +76,7 @@ type InitialState = {
   messages: {
     data: Message[],
     isFetching: boolean;
+    isDeleting: boolean;
   };
   messagesSent: Message[];
   signedMessages: { timestamp: number; body: string }[];
@@ -173,6 +174,7 @@ export const initialState: InitialState = {
   messages: {
     data: [],
     isFetching: false,
+    isDeleting: false,
   },
   messagesSent: [],
   signedMessages: [],

@@ -13,6 +13,7 @@ import {
   type PingPeerPayloadType,
   type SendMessagePayloadType,
   type PeekAllMessagesPayloadType,
+  type DeleteMessagesPayloadType,
   type SetAliasPayloadType,
   type GetChannelTicketsPayloadType,
   type WithdrawPayloadType,
@@ -66,6 +67,7 @@ const {
   pingPeer,
   getPeer, // old getPeerInfo
   peekAllMessages,
+  deleteMessages,
   redeemChannelTickets,
   redeemTickets,
   removeAlias,
@@ -753,6 +755,23 @@ const sendMessageThunk = createAsyncThunk(
   },
 );
 
+const deleteMessagesThunk = createAsyncThunk(
+  'node/deleteMessages',
+  async (payload: DeleteMessagesPayloadType, { rejectWithValue }) => {
+    try {
+      const res = await deleteMessages(payload);
+      return;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
+    }
+  },
+);
+
 //
 // const signThunk = createAsyncThunk('node/sign', async (payload: SignPayloadType, { rejectWithValue }) => {
 //   try {
@@ -1232,6 +1251,17 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         state.messagesSent[index].error = action.payload.status;
       }
     }
+  });
+  // deleteMessages
+  builder.addCase(deleteMessagesThunk.pending, (state) => {
+    state.messages.isDeleting = true;
+  });
+  builder.addCase(deleteMessagesThunk.fulfilled, (state) => {
+    state.messages.data = [];
+    state.messages.isDeleting = false;
+  });
+  builder.addCase(deleteMessagesThunk.rejected, (state) => {
+    state.messages.isDeleting = false;
   });
   // pingNode
   builder.addCase(pingNodeThunk.fulfilled, (state, action) => {
