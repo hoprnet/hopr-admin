@@ -45,6 +45,12 @@ const nodeSlice = createSlice({
     closeMessagesWebsocket() {
       // state changes in node middleware
     },
+    setMessageNotified(state, action: PayloadAction<number>) {
+      const index = action.payload;
+      if(state.messages && state.messages.data[index]) {
+        state.messages.data[index].notified = true;
+      }
+    },
   },
   extraReducers: (builder) => {
     createAsyncReducer(builder), createFetchingReducer(builder);

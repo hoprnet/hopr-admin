@@ -8,7 +8,8 @@ import { observeChannels } from './channels';
 import { observeNodeInfo } from './info';
 import { observePendingSafeTransactions } from './safeTransactions';
 import { observeSafeInfo } from './safeInfo';
-import { nodeActionsAsync } from '../../store/slices/node';
+import { sendNotification } from '../../hooks/useWatcher/notifications';
+import { nodeActions, nodeActionsAsync } from '../../store/slices/node';
 
 export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: number }) => {
   const dispatch = useAppDispatch();
@@ -61,6 +62,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
         },
       });
     }, intervalDuration);
+
 
     const watchMessagesInterval = setInterval(() => {
       if (!apiEndpoint || !apiToken) return;
@@ -133,5 +135,28 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
       clearInterval(watchSafeInfoInterval);
     };
   }, [selectedSafeAddress, signer, prevPendingSafeTransaction, safeIndexed]);
+
+
+  useEffect(() => {
+    if(activeMessage && messages && messages.length > 0) {
+        messages.forEach((msgReceived, index) => {
+          let hasToNotify = !msgReceived.notified;
+          if(hasToNotify){
+            const notification = `Message received: ${msgReceived.body}`;
+            sendNotification({
+              notificationPayload: {
+                source: 'node',
+                name: notification,
+                url: null,
+                timeout: null,
+              },
+              toastPayload: { message: notification },
+              dispatch,
+            });
+            dispatch(nodeActions.setMessageNotified(index));
+          }
+        })
+    }
+  }, [activeMessage, messages]);
 
 };

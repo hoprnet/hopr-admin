@@ -15,6 +15,7 @@ export type Message = {
   timestamp?: number;
   receivedAt?: number;
   body: string;
+  notified?: boolean;
   seen?: boolean;
   status?: 'sending' | 'sent' | 'error';
   error?: string;

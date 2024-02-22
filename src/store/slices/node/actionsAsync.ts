@@ -40,6 +40,8 @@ import { parseMetrics } from '../../../utils/metrics';
 import { RootState } from '../..';
 import { formatEther } from 'viem';
 import { nodeActionsFetching } from './actionsFetching';
+import { sendNotification } from '../../../hooks/useWatcher/notifications';
+import { useAppDispatch } from '../../../store';
 const { APIError } = utils;
 const {
   closeChannel,
@@ -710,9 +712,13 @@ const redeemChannelTicketsThunk = createAsyncThunk<
   } },
 );
 
+interface GetMessagesThunk extends PeekAllMessagesPayloadType {
+  firstLoad?: boolean;
+}
+
 const getMessagesThunk = createAsyncThunk(
   'node/getMessages',
-  async (payload: PeekAllMessagesPayloadType, { rejectWithValue }) => {
+  async (payload: GetMessagesThunk, { rejectWithValue }) => {
     try {
       const res = await peekAllMessages(payload);
       return res.messages;
@@ -1170,16 +1176,20 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     state.messages.isFetching = true;
   });
   builder.addCase(getMessagesThunk.fulfilled, (state, action) => {
-    if (action.payload && action.payload) {
-      action.payload.forEach(msgReceived => {
+    const messages = action.payload;
+    const firstLoad = action.meta?.arg?.firstLoad ? true : false;
+    if (messages) {
+      messages.forEach(msgReceived => {
         let addMessage = state.messages.data.findIndex(msgSaved => msgSaved.tag === msgReceived.tag && msgSaved.receivedAt === msgReceived.receivedAt && msgSaved.body === msgReceived.body) === -1;
-        if(addMessage)
-        state.messages.data.unshift({
-          body: msgReceived.body,
-          receivedAt: msgReceived.receivedAt,
-          tag: msgReceived.tag,
-          id: uuidv4(),
-        })
+        if(addMessage){
+          state.messages.data.unshift({
+            body: msgReceived.body,
+            receivedAt: msgReceived.receivedAt,
+            tag: msgReceived.tag,
+            id: uuidv4(),
+            notified: firstLoad,
+          });
+        }
       })
     }
     state.messages.isFetching = false;

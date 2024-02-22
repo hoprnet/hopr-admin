@@ -281,6 +281,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           nodeActionsAsync.getMessagesThunk({
             apiToken,
             apiEndpoint: formattedApiEndpoint,
+            firstLoad: true,
           }),
         );
         dispatch(nodeActions.setInfo(loginInfo));
