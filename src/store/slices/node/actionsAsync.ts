@@ -715,7 +715,7 @@ const getMessagesThunk = createAsyncThunk(
   async (payload: PeekAllMessagesPayloadType, { rejectWithValue }) => {
     try {
       const res = await peekAllMessages(payload);
-      return res;
+      return res.messages;
     } catch (e) {
       if (e instanceof APIError) {
         return rejectWithValue({
@@ -1170,8 +1170,8 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     state.messages.isFetching = true;
   });
   builder.addCase(getMessagesThunk.fulfilled, (state, action) => {
-    if (action.payload && action.payload.messages) {
-      action.payload.messages.forEach(msgReceived => {
+    if (action.payload && action.payload) {
+      action.payload.forEach(msgReceived => {
         let addMessage = state.messages.data.findIndex(msgSaved => msgSaved.tag === msgReceived.tag && msgSaved.receivedAt === msgReceived.receivedAt && msgSaved.body === msgReceived.body) === -1;
         if(addMessage)
         state.messages.data.unshift({

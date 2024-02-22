@@ -6,9 +6,9 @@ import { appActions } from '../../store/slices/app';
 import { observeNodeBalances } from './balances';
 import { observeChannels } from './channels';
 import { observeNodeInfo } from './info';
-import { observeMessages } from './messages';
 import { observePendingSafeTransactions } from './safeTransactions';
 import { observeSafeInfo } from './safeInfo';
+import { nodeActionsAsync } from '../../store/slices/node';
 
 export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: number }) => {
   const dispatch = useAppDispatch();
@@ -28,7 +28,6 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   const activePendingSafeTransaction = useAppSelector(store => store.app.configuration.notifications.pendingSafeTransaction)
   // redux previous states, this can be updated from anywhere in the app
   const prevChannels = useAppSelector((store) => store.app.previousStates.prevChannels);
-  const prevMessagesUuids = useAppSelector((store) => store.app.previousStates.prevMessagesUuids);
   const prevNodeBalances = useAppSelector((store) => store.app.previousStates.prevNodeBalances);
   const prevNodeInfo = useAppSelector((store) => store.app.previousStates.prevNodeInfo);
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
@@ -64,16 +63,13 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
     }, intervalDuration);
 
     const watchMessagesInterval = setInterval(() => {
-      observeMessages({
-        apiEndpoint,
-        apiToken,
-        dispatch,
-        active: activeNodeInfo,
-        previousState: prevMessagesUuids,
-        updatePreviousData: (newNodeInfo) => {
-          dispatch(()=>{});
-        },
-      });
+      if (!apiEndpoint || !apiToken) return;
+      return dispatch(
+        nodeActionsAsync.getMessagesThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
     }, 5_000);
 
     const watchNodeBalancesInterval = setInterval(() => {

@@ -1,5 +1,4 @@
 import type { GetBalancesResponseType, GetChannelsResponseType, GetInfoResponseType } from '@hoprnet/hopr-sdk';
-import type { WatcherMessage } from '../../../hooks/useWatcher/messages';
 import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { loadStateFromLocalStorage } from '../../../utils/localStorage';
 
