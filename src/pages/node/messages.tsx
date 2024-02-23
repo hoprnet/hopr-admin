@@ -11,6 +11,9 @@ import Section from '../../future-hopr-lib-components/Section';
 import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 import { SubpageTitle } from '../../components/SubpageTitle';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
+import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+import RemoveMessages from '../../future-hopr-lib-components/Icons/RemoveMessages';
+
 
 const messages = () => {
   const messages = useAppSelector((store) => store.node.messages.data);
@@ -78,6 +81,25 @@ const messages = () => {
         actions={
           <>
             <SendMessageModal />
+            <IconButton
+              iconComponent={<RemoveMessages />}
+              tooltipText={
+                <span>
+                  REMOVE ALL
+                  <br />
+                  messages
+                </span>
+              }
+              onClick={() => {
+                if(!apiEndpoint || !apiToken) return;
+                dispatch(
+                  actionsAsync.deleteMessagesThunk({
+                    apiEndpoint,
+                    apiToken,
+                  }),
+                );
+              }}
+            />
           </>
         }
       />

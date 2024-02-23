@@ -1327,6 +1327,7 @@ export const actionsAsync = {
   getBalancesThunk,
   getChannelsThunk,
   getMessagesThunk,
+  deleteMessagesThunk,
   getPeersThunk,
   getPeerInfoThunk,
   getTicketStatisticsThunk,
