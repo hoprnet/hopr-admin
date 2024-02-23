@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { Link } from 'react-router-dom';
@@ -17,6 +17,7 @@ import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-widt
 import WithdrawModal from '../../components/Modal/node/WithdrawModal';
 import SmallActionButton from '../../future-hopr-lib-components/Button/SmallActionButton';
 import { ColorStatus } from '../../components/InfoBar/details';
+import ProgressBar from '../../future-hopr-lib-components/Progressbar';
 
 //Icons
 import CopyIcon from '@mui/icons-material/ContentCopy';
@@ -27,6 +28,27 @@ const TdActionIcons = styled.td`
   gap: 8px;
   align-items: center;
 `;
+
+
+function Row(props: {
+  tooltip: any,
+  title: any,
+  value: any,
+}) {
+  return(
+    <tr>
+      <th>
+        <Tooltip
+          title={props.tooltip}
+          notWide
+        >
+        <span>{props.title}</span>
+      </Tooltip>
+      </th>
+      <td>{props.value}</td>
+    </tr>
+  )
+}
 
 function InfoPage() {
   const dispatch = useAppDispatch();
@@ -47,10 +69,31 @@ function InfoPage() {
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
   const statistics = useAppSelector((store) => store.node.statistics.data);
   const statisticsFetching = useAppSelector((store) => store.node.statistics.isFetching);
+  const nodeStartedEpoch = useAppSelector((store) => store.node.metrics.data.parsed?.hopr_up?.data[0]);
+  const nodeStartedTime = nodeStartedEpoch && typeof(nodeStartedEpoch) === 'number'? new Date(nodeStartedEpoch*1000).toJSON().replace('T', ' ').replace('Z', ' UTC') : '-';
+  const [nodeTimeUp, set_nodeTimeUp] = useState('-');
+  const nodeSync = useAppSelector((store) => store.node.metrics.data.parsed?.hopr_indexer_sync_progress?.data[0]);
+
 
   useEffect(() => {
     fetchInfoData();
   }, [apiEndpoint, apiToken]);
+
+  useEffect(() => {
+    let interval:any;
+    if(nodeStartedEpoch && typeof(nodeStartedEpoch) === 'number') {
+      interval = setInterval(() => {
+        const nodeStartedEpochMs = Math.floor(nodeStartedEpoch * 1000);
+        const uptimeSec = Math.floor((Date.now() - nodeStartedEpochMs) / 1000);
+        const days = Math.floor(uptimeSec / 86400);
+        const hours = Math.floor((uptimeSec-(days * 86400)) / 3600);
+        const minutes = Math.floor((uptimeSec-(days * 86400)-(hours * 3600)) / 60);
+        const seconds = Math.floor((uptimeSec-(days * 86400)-(hours * 3600)-(minutes * 60)));
+        set_nodeTimeUp(`${days} days ${hours} hours ${minutes} min ${seconds} sec`)
+      }, 1_000)
+    }
+    return () => clearInterval(interval);
+  }, [nodeStartedEpoch]);
 
   const fetchInfoData = () => {
     if (!apiEndpoint || !apiToken) return;
@@ -166,6 +209,26 @@ function InfoPage() {
                 </Tooltip>
               </th>
               <td>{info?.isEligible ? 'Yes' : 'No'}</td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="Whether or not your node is eligible to connect to the Monte Rosa network."
+                  notWide
+                >
+                  <span>Sync process</span>
+                </Tooltip>
+              </th>
+              <td>
+                {
+               nodeSync && typeof(nodeSync)==='number'?
+                  <ProgressBar
+                    value={nodeSync}
+                  />
+                :
+                '-'
+                }
+              </td>
             </tr>
             <tr>
               <th>
@@ -492,7 +555,7 @@ function InfoPage() {
         </TableExtended>
 
         <TableExtended
-          title="Software"
+          title="Node"
           style={{ marginBottom: '42px' }}
         >
           <tbody>
@@ -518,6 +581,33 @@ function InfoPage() {
               </th>
               <td>{info?.network}</td>
             </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="Date when you node was started"
+                  notWide
+                >
+                  <span>Start date</span>
+                </Tooltip>
+              </th>
+              <td>{nodeStartedTime}</td>
+            </tr>
+            {/* <tr>
+              <th>
+                <Tooltip
+                  title="The amount of the node is up"
+                  notWide
+                >
+                  <span>Uptime</span>
+                </Tooltip>
+              </th>
+              <td>{nodeTimeUp}</td>
+            </tr> */}
+            <Row
+              title={"Uptime"}
+              tooltip={"The amount of the node is up"}
+              value={nodeTimeUp}
+            />
           </tbody>
         </TableExtended>
 

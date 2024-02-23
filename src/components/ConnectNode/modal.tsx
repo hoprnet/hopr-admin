@@ -284,6 +284,12 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
             firstLoad: true,
           }),
         );
+        dispatch(
+          nodeActionsAsync.getPrometheusMetricsThunk({
+            apiToken,
+            apiEndpoint,
+          })
+        );
         dispatch(nodeActions.setInfo(loginInfo));
       //  dispatch(nodeActions.initializeMessagesWebsocket());
         navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${formattedApiEndpoint}`);

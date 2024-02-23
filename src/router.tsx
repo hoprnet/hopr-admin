@@ -23,7 +23,7 @@ import PeersPage from './pages/node/peers';
 import TicketsPage from './pages/node/tickets';
 import ChannelsPageIncoming from './pages/node/channelsIncoming';
 import ChannelsPageOutgoing from './pages/node/channelsOutgoing';
-//import MetricsPage from './pages/node/metrics';
+import MetricsPage from './pages/node/metrics';
 import ConfigurationPage from './pages/node/configuration';
 import WrapperPage from './pages/staking-hub/wrapper';
 import StakingScreen from './pages/staking-hub/dashboard/staking';
@@ -123,13 +123,13 @@ export const applicationMapNode: ApplicationMapType = [
         element: <TicketsPage />,
         loginNeeded: 'node',
       },
-      // {
-      //   name: 'METRICS',
-      //   path: 'metrics',
-      //   icon: <BarChartIcon />,
-      //   element: <MetricsPage />,
-      //   loginNeeded: 'node',
-      // },
+      {
+        name: 'METRICS',
+        path: 'metrics',
+        icon: <BarChartIcon />,
+        element: <MetricsPage />,
+        loginNeeded: 'node',
+      },
       {
         name: 'CONFIGURATION',
         path: 'configuration',
@@ -440,6 +440,12 @@ const LayoutEnhanced = () => {
           );
           dispatch(
             nodeActionsAsync.getTicketStatisticsThunk({
+              apiToken,
+              apiEndpoint,
+            })
+          );
+          dispatch(
+            nodeActionsAsync.getPrometheusMetricsThunk({
               apiToken,
               apiEndpoint,
             })
