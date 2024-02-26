@@ -10,12 +10,10 @@ import { HOPR_TOKEN_USED } from '../../../../config';
 // HOPR Components
 import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
 import AddChannelIcon from '../../../future-hopr-lib-components/Icons/AddChannel';
-import FundChannelIcon from '../../../future-hopr-lib-components/Icons/FundChannel';
 import Button from '../../../future-hopr-lib-components/Button';
 
 // Mui
 import CloseIcon from '@mui/icons-material/Close';
-import HubIcon from '@mui/icons-material/Hub';
 
 type OpenChannelModalProps = {
   peerAddress?: string;

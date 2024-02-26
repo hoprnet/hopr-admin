@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store';
 import styled from '@emotion/styled';
 import { trackGoal } from 'fathom-client';
+import { parseAndFormatUrl } from '../../utils/parseAndFormatUrl';
 
 // Stores
 import { authActions, authActionsAsync } from '../../store/slices/auth';
@@ -199,33 +200,13 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     if (errorMessage) navigate(`/?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
   }, [errorMessage]);
 
-  const parseAndFormatUrl = (url: string) => {
-
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'http://' + url;
-    }
-    const parts = url.split('/');
-    let hostAndPort = parts[2]; // Get the part that contains the host and port
-
-    if (hostAndPort.indexOf(':') === -1) {
-      hostAndPort += ':3001';
-    }
-
-    parts[2] = hostAndPort;
-    try {
-      new URL(parts.join('/'));
-      set_apiEndpointError(null)
-      return parts.join('/');
-    } catch (e) {
-      set_apiEndpointError('API Endpoint was incorrectly formatted')
-      return null;
-    }
-  };
-
   const saveNode = () => {
     const formattedApiEndpoint = parseAndFormatUrl(apiEndpoint);
     if (!formattedApiEndpoint) {
+      set_apiEndpointError('API Endpoint was incorrectly formatted')
       return;
+    } else {
+      set_apiEndpointError(null)
     }
     dispatch(
       authActions.addNodeData({
@@ -239,7 +220,10 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   const useNode = async ({ force }: { force?: boolean }) => {
     const formattedApiEndpoint = parseAndFormatUrl(apiEndpoint);
     if (!formattedApiEndpoint) {
+      set_apiEndpointError('API Endpoint was incorrectly formatted')
       return;
+    } else {
+      set_apiEndpointError(null)
     }
     set_searchParams({
       apiToken,
@@ -258,6 +242,11 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         }),
       ).unwrap();
       if (loginInfo) {
+        dispatch(
+          nodeActions.setApiEndpoint({
+            apiEndpoint: formattedApiEndpoint,
+          }),
+        );
         dispatch(
           authActions.useNodeData({
             apiEndpoint: formattedApiEndpoint,

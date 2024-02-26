@@ -71,6 +71,24 @@ type InitialState = {
   };
   channels: {
     data: GetChannelsResponseType | null;
+    parsed: {
+      outgoing: {
+        [id: string]: {
+          status?: "Open" | "PendingToClose" | "Closed";
+          balance?: string;
+          peerAddress?: string;
+        }
+      },
+      incoming: {
+        [id: string]: {
+          status?: "Open" | "PendingToClose" | "Closed";
+          balance?: string;
+          peerAddress?: string;
+          tickets: number;
+          ticketBalance: string;
+        }
+      };
+    }
     isFetching: boolean;
   };
   messages: {
@@ -116,6 +134,7 @@ type InitialState = {
     isFetching: boolean;
     error: string | undefined;
   };
+  apiEndpoint: string | null
 };
 
 export const initialState: InitialState = {
@@ -169,6 +188,10 @@ export const initialState: InitialState = {
   },
   channels: {
     data: null,
+    parsed: {
+      outgoing: {},
+      incoming: {}
+    },
     isFetching: false,
   },
   messages: {
@@ -230,4 +253,5 @@ export const initialState: InitialState = {
     isFetching: false,
     error: undefined,
   },
+  apiEndpoint: null,
 };

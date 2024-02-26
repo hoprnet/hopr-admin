@@ -578,7 +578,6 @@ const closeChannelThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(nodeActionsFetching.setCloseChannelFetching(true));
     try {
       const res = await closeChannel(payload);
       return res;
@@ -948,6 +947,7 @@ const getPrometheusMetricsThunk = createAsyncThunk<string | undefined, BasePaylo
 export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   // getInfo
   builder.addCase(getInfoThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       state.info.data = action.payload;
     }
@@ -958,6 +958,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // getAddresses
   builder.addCase(getAddressesThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       state.addresses.data = action.payload;
     }
@@ -968,6 +969,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // getAliases
   builder.addCase(getAliasesThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       state.aliases.data = action.payload;
     }
@@ -978,6 +980,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // getBalances
   builder.addCase(getBalancesThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       state.balances.data = {
         native: {
@@ -1013,9 +1016,9 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // getChannels
   builder.addCase(getChannelsThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       state.channels.data = action.payload;
-
       if (action.payload.outgoing.length > 0) {
         let balance = BigInt(0);
         action.payload.outgoing.forEach(
@@ -1027,6 +1030,42 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         }
       }
 
+      // Parse the data
+      for(let i = 0; i < action.payload.outgoing.length; i++) {
+        console.log(i, action.payload.outgoing[i])
+        const channelId = action.payload.outgoing[i].id;
+        if(!state.channels.parsed.outgoing[channelId]) {
+          state.channels.parsed.outgoing[channelId] = {
+            balance: action.payload.outgoing[i].balance,
+            peerAddress: action.payload.outgoing[i].peerAddress,
+            status: action.payload.outgoing[i].status,
+          };
+        } else {
+          state.channels.parsed.outgoing[channelId].balance = action.payload.outgoing[i].balance;
+          state.channels.parsed.outgoing[channelId].peerAddress = action.payload.outgoing[i].peerAddress;
+          state.channels.parsed.outgoing[channelId].status = action.payload.outgoing[i].status;
+        }
+      }
+
+      for(let i = 0; i < action.payload.incoming.length; i++) {
+        console.log(i, action.payload.incoming[i])
+        const channelId = action.payload.incoming[i].id;
+        if(!state.channels.parsed.incoming[channelId]) {
+          state.channels.parsed.incoming[channelId] = {
+            balance: action.payload.incoming[i].balance,
+            peerAddress: action.payload.incoming[i].peerAddress,
+            status: action.payload.incoming[i].status,
+            tickets: 0,
+            ticketBalance: '0',
+          };
+        } else {
+          state.channels.parsed.incoming[channelId].balance = action.payload.incoming[i].balance;
+          state.channels.parsed.incoming[channelId].peerAddress = action.payload.incoming[i].peerAddress;
+          state.channels.parsed.incoming[channelId].status = action.payload.incoming[i].status;
+        }
+      }
+
+
     }
     state.channels.isFetching = false;
   });
@@ -1035,6 +1074,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // getPeers
   builder.addCase(getPeersThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       state.peers.data = {
         announced: [],
@@ -1049,6 +1089,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // getPeer
   builder.addCase(getPeerInfoThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       state.peerInfo.data = action.payload;
     }
@@ -1059,8 +1100,24 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // getTickets
   builder.addCase(getTicketsThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       state.tickets.data = action.payload;
+
+      for(let i = 0; i < action.payload.length; i++) {
+        console.log(i, action.payload[i])
+        const channelId = action.payload[i].channelId;
+        if(!state.channels.parsed.incoming[channelId]) {
+          state.channels.parsed.incoming[channelId] = {
+            tickets: 1,
+            ticketBalance: action.payload[i].amount,
+          };
+        } else {
+          state.channels.parsed.incoming[channelId].tickets++;
+          state.channels.parsed.incoming[channelId].ticketBalance = (BigInt(state.channels.parsed.incoming[channelId].ticketBalance) + BigInt(action.payload[i].amount)).toString();
+        }
+      }
+
     }
     state.tickets.isFetching = false;
   });
@@ -1073,6 +1130,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     state.redeemTickets.error = undefined;
   });
   builder.addCase(redeemTicketsThunk.rejected, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     state.redeemTickets.isFetching = false;
     // Assign the error to the errors state
     state.redeemTickets.error = (
@@ -1084,6 +1142,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // getTokenThunk
   builder.addCase(getTokenThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       const tokenExists = state.tokens.data?.findIndex((token) => token.id === action.payload?.id);
 
@@ -1107,6 +1166,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // getEntryNodes
   builder.addCase(getEntryNodesThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       state.entryNodes.data = action.payload;
     }
@@ -1117,6 +1177,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // getVersion
   builder.addCase(getVersionThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       state.version.data = action.payload;
     }
@@ -1127,6 +1188,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // getAlias
   builder.addCase(getAliasThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       if (state.aliases.data) {
         state.aliases.data[action.payload.alias] = action.payload.peerId;
@@ -1141,6 +1203,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // setAlias
   builder.addCase(setAliasThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       if (state.aliases.data) {
         state.aliases.data[action.payload.alias] = action.payload.peerId;
@@ -1155,6 +1218,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // removeAlias
   builder.addCase(removeAliasThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload && state.aliases.data) {
       if (state.aliases.data) {
         delete state.aliases.data[action.payload.alias];
@@ -1167,6 +1231,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // withdraw
   builder.addCase(withdrawThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       state.transactions.data.push(action.payload);
     }
@@ -1177,6 +1242,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // getChannelTickets
   builder.addCase(getChannelTicketsThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       for (const updatedTicket of action.payload) {
         // using challenge as an id between tickets
@@ -1201,6 +1267,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // getTicketStatistics
   builder.addCase(getTicketStatisticsThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       state.statistics.data = action.payload;
     }
@@ -1217,6 +1284,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     state.messages.isFetching = true;
   });
   builder.addCase(getMessagesThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     const messages = action.payload;
     const firstLoad = action.meta?.arg?.firstLoad ? true : false;
     if (messages) {
@@ -1236,10 +1304,12 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     state.messages.isFetching = false;
   });
   builder.addCase(getMessagesThunk.rejected, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     state.messages.isFetching = false;
   });
   // sendMessage
   builder.addCase(sendMessageThunk.pending, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.meta) {
       state.messagesSent.push({
         id: action.meta.requestId,
@@ -1251,6 +1321,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     }
   });
   builder.addCase(sendMessageThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     const index = state.messagesSent.findIndex((msg) => msg.id === action.meta.requestId);
     if (action.payload && index !== -1) {
       state.messagesSent[index].status = 'sent';
@@ -1259,6 +1330,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     }
   });
   builder.addCase(sendMessageThunk.rejected, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     const index = state.messagesSent.findIndex((msg) => msg.id === action.meta.requestId);
     if (index !== -1) {
       state.messagesSent[index].status = 'error';
@@ -1278,7 +1350,8 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(deleteMessagesThunk.pending, (state) => {
     state.messages.isDeleting = true;
   });
-  builder.addCase(deleteMessagesThunk.fulfilled, (state) => {
+  builder.addCase(deleteMessagesThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     state.messages.data = [];
     state.messages.isDeleting = false;
   });
@@ -1287,6 +1360,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // pingNode
   builder.addCase(pingNodeThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       const pingExists = state.pings.findIndex((ping) => ping.peerId === action.payload?.peerId);
 
@@ -1307,6 +1381,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // deleteToken
   builder.addCase(deleteTokenThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload?.deleted) {
       state.tokens.data = state.tokens.data.filter((token) => token.id !== action.payload?.id);
     }
@@ -1317,6 +1392,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   // getPrometheusMetrics
   builder.addCase(getPrometheusMetricsThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       state.metrics.data.raw = action.payload;
       state.metrics.data.parsed = parseMetrics(action.payload);
@@ -1325,13 +1401,6 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   builder.addCase(getPrometheusMetricsThunk.rejected, (state) => {
     state.metrics.isFetching = false;
-  });
-  // closeChannel
-  builder.addCase(closeChannelThunk.fulfilled, (state) => {
-    state.closeChannel.isFetching = false;
-  });
-  builder.addCase(closeChannelThunk.rejected, (state) => {
-    state.closeChannel.isFetching = false;
   });
   // redeemChannelTickets
   builder.addCase(redeemChannelTicketsThunk.fulfilled, (state) => {

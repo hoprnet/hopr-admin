@@ -15,6 +15,9 @@ const nodeSlice = createSlice({
       state.status.initiating = false;
       state.status.initiated = true;
     },
+    setApiEndpoint(state, action) {
+      state.apiEndpoint = action.payload.apiEndpoint;
+    },
     setInfo(state, action) {
       state.info = action.payload;
     },

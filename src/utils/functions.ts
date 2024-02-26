@@ -17,7 +17,6 @@ export function bubbleSortObject(arr: any[], key: string | number) {
   return arr;
 }
 
-
 export function copyStringToClipboard(input: string) {
   let el = document.createElement('textarea');
   el.value = input;
