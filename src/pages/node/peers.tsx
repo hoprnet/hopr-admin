@@ -7,7 +7,7 @@ import { exportToCsv } from '../../utils/helpers';
 import Section from '../../future-hopr-lib-components/Section';
 import { SubpageTitle } from '../../components/SubpageTitle';
 import { CreateAliasModal } from '../../components/Modal/node//AddAliasModal';
-import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
+import { OpenChannelModal } from '../../components/Modal/node/OpenChannelModal';
 import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
@@ -147,9 +147,8 @@ function PeersPage() {
             handleRefresh={handleRefresh}
             peerId={peer.peerId}
           />
-          <OpenOrFundChannelModal
+          <OpenChannelModal
             peerAddress={peer.peerAddress}
-            type={'open'}
           />
           <SendMessageModal peerId={peer.peerId} />
         </>

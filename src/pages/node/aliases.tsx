@@ -16,7 +16,7 @@ import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 // Modals
 import { PingModal } from '../../components/Modal/node/PingModal';
 import { CreateAliasModal } from '../../components/Modal/node//AddAliasModal';
-import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
+import { OpenChannelModal } from '../../components/Modal/node/OpenChannelModal';
 
 //Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
@@ -131,9 +131,8 @@ function AliasesPage() {
       actions: (
         <>
           <PingModal peerId={peerId} disabled={peerId === hoprAddresses} />
-          <OpenOrFundChannelModal
+          <OpenChannelModal
             peerAddress={getPeerAddressByPeerId(peerId)}
-            type={'open'}
             disabled={peerId === hoprAddresses}
           />
           <SendMessageModal peerId={peerId} disabled={peerId === hoprAddresses} />

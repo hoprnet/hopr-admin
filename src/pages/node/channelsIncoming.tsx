@@ -14,7 +14,7 @@ import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 // Modals
 import { PingModal } from '../../components/Modal/node/PingModal';
-import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
+import { OpenChannelModal } from '../../components/Modal/node/OpenChannelModal';
 import { CreateAliasModal } from '../../components/Modal/node//AddAliasModal';
 import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 
@@ -177,10 +177,8 @@ function ChannelsPage() {
             peerId={getPeerIdFromPeerAddress(channel.peerAddress)}
             disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
           />
-          <OpenOrFundChannelModal
+          <OpenChannelModal
             peerAddress={channel.peerAddress}
-            title="Open outgoing channel"
-            type={'open'}
           />
           <SendMessageModal
             peerId={getPeerIdFromPeerAddress(channel.peerAddress)}

@@ -16,26 +16,28 @@ import {
   type DeleteMessagesPayloadType,
   type SetAliasPayloadType,
   type GetChannelTicketsPayloadType,
+  type FundChannelsPayloadType,
+  type FundChannelsResponseType,
   type WithdrawPayloadType,
   type RedeemChannelTicketsPayloadType,
   type GetPeerPayloadType,
   type GetChannelResponseType,
-  GetPeersResponseType,
-  GetAliasesResponseType,
-  GetInfoResponseType,
-  GetTicketStatisticsResponseType,
-  GetTicketsResponseType,
-  GetTokenResponseType,
-  GetEntryNodesResponseType,
-  GetChannelTicketsResponseType,
-  GetChannelsResponseType,
+  type GetPeersResponseType,
+  type GetAliasesResponseType,
+  type GetInfoResponseType,
+  type GetTicketStatisticsResponseType,
+  type GetTicketsResponseType,
+  type GetTokenResponseType,
+  type GetEntryNodesResponseType,
+  type GetChannelTicketsResponseType,
+  type GetChannelsResponseType,
   flows,
   api,
   utils,
-  OpenChannelResponseType,
-  CreateTokenResponseType,
-  GetPeerResponseType,
-  GetBalancesResponseType
+  type OpenChannelResponseType,
+  type CreateTokenResponseType,
+  type GetPeerResponseType,
+  type GetBalancesResponseType
 } from '@hoprnet/hopr-sdk';
 import { parseMetrics } from '../../../utils/metrics';
 import { RootState } from '../..';
@@ -62,6 +64,7 @@ const {
   getTicketStatistics,
   getTickets,
   getToken,
+  fundChannel,
   getVersion,
   openChannel,
   pingPeer,
@@ -644,6 +647,25 @@ const openChannelThunk = createAsyncThunk<
     }
   }
 });
+
+const fundChannelThunk = createAsyncThunk<
+  FundChannelsResponseType| undefined,
+   FundChannelsPayloadType,
+  { state: RootState }
+>('node/fundChannel', async (payload, { rejectWithValue }) => {
+  try {
+    const res = await fundChannel(payload);
+    return res;
+  } catch (e) {
+    if (e instanceof APIError) {
+      return rejectWithValue({
+        status: e.status,
+        error: e.error,
+      });
+    }
+  }
+});
+
 
 // will not be used for now, as it doesn't give good errors
 const openMultipleChannelsThunk = createAsyncThunk(
@@ -1341,6 +1363,7 @@ export const actionsAsync = {
   withdrawThunk,
   closeChannelThunk,
   getChannelTicketsThunk,
+  fundChannelThunk,
   openChannelThunk,
   openMultipleChannelsThunk,
   redeemChannelTicketsThunk,

@@ -897,10 +897,10 @@
   resolved "https://registry.npmjs.org/@graphql-typed-document-node/core/-/core-3.2.0.tgz"
   integrity sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==
 
-"@hoprnet/hopr-sdk@2.1.0-beta.17":
-  version "2.1.0-beta.17"
-  resolved "https://registry.yarnpkg.com/@hoprnet/hopr-sdk/-/hopr-sdk-2.1.0-beta.17.tgz#edff85467511267e88581d20acc6f64dcc38a2df"
-  integrity sha512-Jx82cCQ+VDM8wZGfrxmwaapEeBGNrAHXu0WkfBMjbhMUa6DYGshApgxu7/yVcVGnqD3KFF8l+tofvm2nyMtddw==
+"@hoprnet/hopr-sdk@2.1.0-beta.18":
+  version "2.1.0-beta.18"
+  resolved "https://registry.yarnpkg.com/@hoprnet/hopr-sdk/-/hopr-sdk-2.1.0-beta.18.tgz#946d39119f32ba325f1cbadcf015a5abb50b48ff"
+  integrity sha512-bEGh+mVA//0Dmf0+zKhp6aZezwY14HopPflNyLFCcEvjSxI7t8RUSBN/9csNmOY90QAp+tejRAd2cOza/esr2w==
   dependencies:
     cross-fetch "^3.1.5"
     debug "^4.3.4"

@@ -17,7 +17,9 @@ import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 // Modals
 import { OpenMultipleChannelsModal } from '../../components/Modal/node/OpenMultipleChannelsModal';
 import { PingModal } from '../../components/Modal/node/PingModal';
-import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
+import { OpenChannelModal } from '../../components/Modal/node/OpenChannelModal';
+import { FundChannelModal } from '../../components/Modal/node/FundChannelModal';
+
 import { CreateAliasModal } from '../../components/Modal/node//AddAliasModal';
 import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 
@@ -254,18 +256,8 @@ function ChannelsPage() {
             peerId={getPeerIdFromPeerAddress(channel.peerAddress)}
             disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
           />
-          <OpenOrFundChannelModal
-            peerAddress={channel.peerAddress}
-            title="Fund outgoing channel"
-            modalBtnText={
-              <span>
-                FUND
-                <br />
-                outgoing channel
-              </span>
-            }
-            actionBtnText="Fund outgoing channel"
-            type="fund"
+          <FundChannelModal
+            channelId={channel.id}
           />
           <IconButton
             iconComponent={<CloseChannelIcon />}
@@ -301,20 +293,9 @@ function ChannelsPage() {
         reloading={channelsFetching}
         actions={
           <>
-            <OpenOrFundChannelModal type={'open'} />
+            <OpenChannelModal />
             <OpenMultipleChannelsModal />
-            <OpenOrFundChannelModal
-              type={'fund'}
-              title="Fund outgoing channel"
-              modalBtnText={
-                <span>
-                  FUND
-                  <br />
-                  outgoing channel
-                </span>
-              }
-              actionBtnText="Fund outgoing channel"
-            />
+            <FundChannelModal />
             <IconButton
               iconComponent={<GetAppIcon />}
               tooltipText={
