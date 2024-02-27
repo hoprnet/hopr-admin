@@ -88,9 +88,12 @@ type InitialState = {
           ticketBalance: string;
         }
       };
-    }
+    },
     isFetching: boolean;
   };
+  // links: {
+  //   channeIdId
+  // }
   messages: {
     data: Message[],
     isFetching: boolean;
@@ -98,7 +101,26 @@ type InitialState = {
   };
   messagesSent: Message[];
   signedMessages: { timestamp: number; body: string }[];
-  peers: { data: GetPeersResponseType | null; isFetching: boolean };
+  peers: {
+    data: GetPeersResponseType | null;
+    parsed: {
+      [peerAddress: string]: {
+        peerId: string;
+        quality: number;
+        multiaddr: string | null;
+        heartbeats: {
+          sent: number;
+          success: number;
+        };
+        lastSeen: number;
+        lastSeenLatency: number;
+        backoff: number;
+        isNew: boolean;
+        reportedVersion: string;
+      }
+    }
+    isFetching: boolean
+  };
   entryNodes: { data: GetEntryNodesResponseType | null; isFetching: boolean };
   peerInfo: {
     data: {
@@ -108,7 +130,10 @@ type InitialState = {
     isFetching: boolean;
   };
   statistics: { data: GetTicketStatisticsResponseType | null; isFetching: boolean };
-  tickets: { data: GetTicketsResponseType | null; isFetching: boolean };
+  tickets: {
+    data: GetTicketsResponseType | null;
+    isFetching: boolean
+  };
   tokens: { data: GetTokenResponseType[]; isFetching: boolean };
   version: { data: string | null; isFetching: boolean };
   transactions: { data: string[]; isFetching: boolean };
