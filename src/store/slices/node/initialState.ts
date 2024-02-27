@@ -103,22 +103,22 @@ type InitialState = {
   signedMessages: { timestamp: number; body: string }[];
   peers: {
     data: GetPeersResponseType | null;
-    parsed: {
-      [peerAddress: string]: {
-        peerId: string;
-        quality: number;
-        multiaddr: string | null;
-        heartbeats: {
-          sent: number;
-          success: number;
-        };
-        lastSeen: number;
-        lastSeenLatency: number;
-        backoff: number;
-        isNew: boolean;
-        reportedVersion: string;
-      }
-    }
+    // parsed: {
+    //   [peerAddress: string]: {
+    //     peerId: string;
+    //     quality: number;
+    //     multiaddr: string | null;
+    //     heartbeats: {
+    //       sent: number;
+    //       success: number;
+    //     };
+    //     lastSeen: number;
+    //     lastSeenLatency: number;
+    //     backoff: number;
+    //     isNew: boolean;
+    //     reportedVersion: string;
+    //   }
+    // }
     isFetching: boolean
   };
   entryNodes: { data: GetEntryNodesResponseType | null; isFetching: boolean };
