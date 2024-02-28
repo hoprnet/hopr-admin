@@ -53,30 +53,30 @@ export const OpenChannelModal = ({
         .unwrap()
         .then(() => {
           const msg = `Channel to ${peerAddress} is opened`;
-          sendNotification({
-            notificationPayload: {
-              source: 'node',
-              name: msg,
-              url: null,
-              timeout: null,
-            },
-            toastPayload: { message: msg },
-            dispatch,
-          });
+          // sendNotification({
+          //   notificationPayload: {
+          //     source: 'node',
+          //     name: msg,
+          //     url: null,
+          //     timeout: null,
+          //   },
+          //   toastPayload: { message: msg },
+          //   dispatch,
+          // });
         })
         .catch((e) => {
           let errMsg = `Channel to ${peerAddress} failed to be opened`;
           if (e.status) errMsg = errMsg + `\n${e.status}`;
-          sendNotification({
-            notificationPayload: {
-              source: 'node',
-              name: errMsg,
-              url: null,
-              timeout: null,
-            },
-            toastPayload: { message: errMsg },
-            dispatch,
-          });
+          // sendNotification({
+          //   notificationPayload: {
+          //     source: 'node',
+          //     name: errMsg,
+          //     url: null,
+          //     timeout: null,
+          //   },
+          //   toastPayload: { message: errMsg },
+          //   dispatch,
+          // });
         });
     };
 

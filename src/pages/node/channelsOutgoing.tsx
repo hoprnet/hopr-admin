@@ -153,53 +153,53 @@ function ChannelsPage() {
     )
       .unwrap()
       .then(() => {
-        set_closingStates((prevStates) => ({
-          ...prevStates,
-          [channelId]: {
-            closing: false,
-            closeSuccess: true,
-            closeErrors: [],
-          },
-        }));
+        // set_closingStates((prevStates) => ({
+        //   ...prevStates,
+        //   [channelId]: {
+        //     closing: false,
+        //     closeSuccess: true,
+        //     closeErrors: [],
+        //   },
+        // }));
         handleRefresh();
         const msg = `Closing of ${channelId} succeded`;
-        sendNotification({
-          notificationPayload: {
-            source: 'node',
-            name: msg,
-            url: null,
-            timeout: null,
-          },
-          toastPayload: { message: msg },
-          dispatch,
-        });
+        // sendNotification({
+        //   notificationPayload: {
+        //     source: 'node',
+        //     name: msg,
+        //     url: null,
+        //     timeout: null,
+        //   },
+        //   toastPayload: { message: msg },
+        //   dispatch,
+        // });
       })
       .catch((e) => {
-        set_closingStates((prevStates) => ({
-          ...prevStates,
-          [channelId]: {
-            closing: false,
-            closeSuccess: false,
-            closeErrors: [
-              ...(prevStates[channelId]?.closeErrors || []),
-              {
-                error: e.error,
-                status: e.status,
-              },
-            ],
-          },
-        }));
-        const msg = `Closing of ${channelId} failed`;
-        sendNotification({
-          notificationPayload: {
-            source: 'node',
-            name: msg,
-            url: null,
-            timeout: null,
-          },
-          toastPayload: { message: msg },
-          dispatch,
-        });
+        // set_closingStates((prevStates) => ({
+        //   ...prevStates,
+        //   [channelId]: {
+        //     closing: false,
+        //     closeSuccess: false,
+        //     closeErrors: [
+        //       ...(prevStates[channelId]?.closeErrors || []),
+        //       {
+        //         error: e.error,
+        //         status: e.status,
+        //       },
+        //     ],
+        //   },
+        // }));
+      //   const msg = `Closing of ${channelId} failed`;
+      //   sendNotification({
+      //     notificationPayload: {
+      //       source: 'node',
+      //       name: msg,
+      //       url: null,
+      //       timeout: null,
+      //     },
+      //     toastPayload: { message: msg },
+      //     dispatch,
+      //   });
       });
   };
 
