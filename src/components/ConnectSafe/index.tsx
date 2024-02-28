@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { environment } from '../../../config';
 import { useWatcher } from '../../hooks';
@@ -18,6 +19,7 @@ import { truncateEthereumAddress } from '../../utils/blockchain';
 //web3
 import { browserClient } from '../../providers/wagmi';
 import { useEthersSigner } from '../../hooks';
+import { getAddress } from 'viem';
 
 const AppBarContainer = styled(Button)`
   align-items: center;
@@ -68,6 +70,7 @@ const SafeAddress = styled.div`
   font-size: 14px;
   gap: 10px;
   color: #414141;
+  text-transform: none;
 `;
 
 function handleSaveSelectedSafeInLocalStorage (safeObject: {safeAddress?: string | null, moduleAddress?: string | null}, owner?: string | null) {
@@ -88,19 +91,22 @@ function handleSaveSelectedSafeInLocalStorage (safeObject: {safeAddress?: string
 export default function ConnectSafe() {
   useWatcher({});
   const dispatch = useAppDispatch();
+  const [searchParams] = useSearchParams();
   const signer = useEthersSigner();
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const ownerAddress = useAppSelector((store) => store.web3.account);
   const safes = useAppSelector((store) => store.stakingHub.safes.data);
   const safeIndexed = useAppSelector((store) => store.safe.info.safeIndexed);
-  const safeObject = useAppSelector((store) => store.safe.selectedSafe.data);
+  const selectedSafe = useAppSelector((store) => store.safe.selectedSafe.data);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
   const activePendingSafeTransaction = useAppSelector(
     (store) => store.app.configuration.notifications.pendingSafeTransaction
   );
 
-  const safeAddress = safeObject.safeAddress;
+  const safeFromUrl = searchParams.get('safe');
+  const moduleFromUrl = searchParams.get('module');
+  const safeAddress = selectedSafe.safeAddress;
 
   const menuRef = useRef<HTMLButtonElement>(null);
 
@@ -121,48 +127,43 @@ export default function ConnectSafe() {
     };
   }, []);
 
-  // useEffect(() => {
-  //   const fetchInitialStateForSigner = async () => {
-  //     if (signer) {
-  //       dispatch(safeActions.resetState());
-  //       dispatch(stakingHubActions.resetStateWithoutMagicLinkForOnboarding());
-  //       dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer }));
-  //     }
-  //   };
-
-  //   fetchInitialStateForSigner();
-  // }, [signer]);
-
   // If no selected safeAddress, choose 1st one
   useEffect(() => {
-    if (safes.length > 0 && !safeAddress && signer && ownerAddress) {
+    console.log({safeFromUrl, moduleFromUrl})
+    if(safeFromUrl && moduleFromUrl && !safeAddress) {
+      console.log('useSelectedSafe from url', safeFromUrl, moduleFromUrl)
+      useSelectedSafe({
+        safeAddress: getAddress(safeFromUrl),
+        moduleAddress: getAddress(moduleFromUrl)
+      });
+    }
+    else if (safes.length > 0 && !safeAddress && signer && ownerAddress) {
       try{
         //@ts-ignore
-        let json: {[key: string]:{safeAddress: string, moduleAddress: string}} = loadStateFromLocalStorage(`staking-hub-chosen-safe`);
-        if(json && json[ownerAddress] && safes.filter(safe=>safe?.safeAddress === json[ownerAddress]?.safeAddress).length > 0){
-          useSelectedSafe(json[ownerAddress]);
-          console.log('useSelectedSafe from ls', json[ownerAddress])
+        let localStorage: {[key: string]:{safeAddress: string, moduleAddress: string}} = loadStateFromLocalStorage(`staking-hub-chosen-safe`);
+        if(localStorage && localStorage[ownerAddress] && safes.filter(safe=>safe?.safeAddress === localStorage[ownerAddress]?.safeAddress).length > 0){
+          useSelectedSafe(localStorage[ownerAddress]);
+          console.log('useSelectedSafe from ls', localStorage[ownerAddress])
         } else {
           useSelectedSafe(safes[0]);
           console.log('useSelectedSafe [0]', safes[0])
         }
       } catch(e){}
-      useSelectedSafe(safes[0]);
     }
-  }, [safes, safeAddress, signer, ownerAddress]);
+  }, [safes, safeAddress, signer, ownerAddress, safeFromUrl, moduleFromUrl]);
 
   // If safe got selected, update all and onboarding data
   useEffect(() => {
-    if (safeObject && browserClient && safeObject.safeAddress) {
+    if (selectedSafe && browserClient && selectedSafe.safeAddress) {
       dispatch(
         stakingHubActionsAsync.getOnboardingDataThunk({
           browserClient,
-          safeAddress: safeObject.safeAddress as string,
-          moduleAddress: safeObject.moduleAddress as string ,
+          safeAddress: selectedSafe.safeAddress as string,
+          moduleAddress: selectedSafe.moduleAddress as string,
         })
       );
     }
-  }, [safeObject, browserClient]);
+  }, [selectedSafe, browserClient]);
 
   const useSelectedSafe = async (safeObject: {safeAddress?: string | null, moduleAddress?: string| null}) => {
     if(!safeObject.safeAddress || !safeObject.moduleAddress) return;
@@ -271,15 +272,16 @@ export default function ConnectSafe() {
             {safes.map((safe, index) => (
               <MenuItem
                 key={`${safe.safeAddress}_${index}`}
+                className={`${safe.safeAddress === safeAddress ? 'selected-safe' : ''}`}
                 value={safe.safeAddress}
                 onClick={() => {
                   useSelectedSafe(safe);
                 }}
               >
-                  {`${safe.safeAddress.substring(0, 6)}...${safe.safeAddress.substring(
+                  0x{`${safe.safeAddress.substring(2, 6)}...${safe.safeAddress.substring(
                     safe.safeAddress.length - 8,
                     safe.safeAddress.length
-                  )}`}
+                  )}`.toUpperCase()}
               </MenuItem>
             ))}
           </Menu>

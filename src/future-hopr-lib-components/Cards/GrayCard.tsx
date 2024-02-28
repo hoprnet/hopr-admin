@@ -36,6 +36,9 @@ const CardContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  flex-shrink: 1;
+  min-width: 80px;
+  flex-grow: 1;
 `;
 
 const CardTitle = styled.h4`
@@ -59,6 +62,7 @@ const CardCurrency = styled.p`
 const ValueAndCurrency = styled.div`
   align-items: flex-end;
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   min-height: 40px;
 `;
@@ -94,22 +98,23 @@ export const GrayCard = ({
           <CardContent>
             {title && <CardTitle>{title}</CardTitle>}
             {
-              (currency || value) && (
-                valueTooltip ?
-                <Tooltip
-                  title={valueTooltip}
-                >
-                  <ValueAndCurrency>
-                    {value && <CardValue>{value}</CardValue> }
-                    {currency && <CardCurrency>{currency}</CardCurrency>}
-                  </ValueAndCurrency>
-                </Tooltip>
-                :
+              (currency || value) &&
                 <ValueAndCurrency>
-                  {value && <CardValue>{value}</CardValue> }
+                  {value &&
+                    valueTooltip ?
+                    <Tooltip
+                      title={valueTooltip}
+                    >
+                      <CardValue>
+                        {value}
+                      </CardValue>
+                    </Tooltip> :
+                    <CardValue>
+                      {value}
+                    </CardValue>
+                  }
                   {currency && <CardCurrency>{currency}</CardCurrency>}
                 </ValueAndCurrency>
-              )
             }
             {chip && (
               <StyledChip

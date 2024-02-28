@@ -7,12 +7,12 @@ import { useAppSelector } from '../../../store';
 
 // HOPR Components
 import { Stepper } from '../../../components/Stepper';
-import NetworkOverlay from '../../../components/NetworkOverlay';
+import NetworkOverlay from '../../../components/Overlays/NetworkOverlay';
 
 //Steps
 import OnboardingIsFetching from './isFetching';
 import AddNode from './step5/0addNode';
-import ConfigureNode from './step6/0configureNode';
+import ConfigureModule from './step6/0configureModule';
 import FundNode from './step7/0fundNode';
 import NodeIsReady from './step9/0nodeIsReady';
 
@@ -112,7 +112,7 @@ function Onboarding() {
         style={{ flex: '1 1 10%' }}
         steps={[
           { name: 'ADD NODE AS A DELEGATE' },
-          { name: 'CONFIGURE NODE' },
+          { name: 'CONFIGURE MODULE' },
           { name: 'FUND NODE' },
         ]}
       />
@@ -130,9 +130,10 @@ function Onboarding() {
               />
             }
             {onboardingStep === ONBOARDING_PAGES.CONFIGURE_NODE &&
-              <ConfigureNode
+              <ConfigureModule
                 onDone={()=>{set_onboardingStep(3)}}
                 nodeAddress={nodeAddress}
+                onboardingType={'nextNode'}
               />
             }
             {onboardingStep === ONBOARDING_PAGES.FUND_NODE &&

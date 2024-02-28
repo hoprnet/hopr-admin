@@ -15,6 +15,7 @@ import SafeApiKit, {
   TokenInfoResponse
 } from '@safe-global/api-kit';
 import Safe, { EthersAdapter, SafeAccountConfig, SafeFactory } from '@safe-global/protocol-kit';
+// import Safe from '@safe-global/protocol-kit/dist/src/Safe2';
 import {
   OperationType,
   SafeMultisigTransactionResponse,
@@ -35,6 +36,7 @@ import {
 } from 'viem'
 import { RootState } from '../..';
 import {
+  HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS,
   HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,
   HOPR_NODE_MANAGEMENT_MODULE,
   HOPR_NODE_STAKE_FACTORY,
@@ -371,6 +373,7 @@ const createSafeTransactionThunk = createAsyncThunk<
       // gets next nonce considering pending txs
       const nextSafeNonce = await safeApi.getNextNonce(payload.safeAddress);
       // create safe transaction
+      console.log('WithQ payload.safeTransactionData', payload.safeTransactionData)
       const safeTransaction = await safeSDK.createTransaction({ safeTransactionData: {
         ...payload.safeTransactionData,
         nonce: nextSafeNonce,
@@ -457,6 +460,7 @@ const createSafeContractTransactionThunk = createAsyncThunk<
         operation: payload.operation ?? OperationType.Call,
         value: '0',
       };
+      console.log('WithQ safeTransactionData', safeTransactionData)
       const safeTxHash = await dispatch(
         createSafeTransactionThunk({
           signer,
@@ -611,6 +615,7 @@ const executePendingTransactionThunk = createAsyncThunk<
     dispatch(safeActionsFetching.setExecuteTransactionFetching(true));
     try {
       const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
+      console.log('payload.signer', payload.signer);
       await safeSDK.executeTransaction(payload.safeTransaction);
       // re fetch all txs
       setTimeout(()=> {

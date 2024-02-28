@@ -7,6 +7,7 @@ import {
   MINIMUM_WXHOPR_TO_FUND,
   MINIMUM_XDAI_TO_FUND,
   MINIMUM_XDAI_TO_FUND_NODE,
+  HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS,
   HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,
   wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS
 } from '../../../../config';
@@ -162,8 +163,6 @@ const getSubgraphDataThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(setSubgraphDataFetching(true));
-
     safeAddress = safeAddress.toLocaleLowerCase();
     moduleAddress = moduleAddress.toLocaleLowerCase();
 
@@ -299,6 +298,7 @@ const getSubgraphDataThunk = createAsyncThunk<
 type ParsedTargets =   {
   channels: false | string;
   wxHOPR: false | string;
+  announcmentTarget: false | string;
 }
 
 const getModuleTargetsThunk = createAsyncThunk<
@@ -328,11 +328,19 @@ const getModuleTargetsThunk = createAsyncThunk<
         args: [wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS]
       }) as [boolean, BigInt];
 
-      console.log('targets', wxHOPRTarget, channelsTarget)
+      const announcmentTarget = await superWalletClient.readContract({
+        address: moduleAddress as `0x${string}`,
+        abi: web3.hoprNodeManagementModuleABI,
+        functionName: 'tryGetTarget',
+        args: [HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS]
+      }) as [boolean, BigInt];
+
+      console.log('targets', {wxHOPRTarget, channelsTarget, announcmentTarget})
 
       const targets = {
         channels: channelsTarget[0] === true ? channelsTarget[1].toString() : false,
         wxHOPR: wxHOPRTarget[0] === true ? wxHOPRTarget[1].toString() : false,
+        announcmentTarget: announcmentTarget[0] === true ? announcmentTarget[1].toString() : false,
       } as ParsedTargets;
 
       // TODO: Decode the targets
@@ -411,19 +419,20 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
               const wxHoprAllowanceCheck = state.stakingHub.safeInfo.data.allowance.wxHoprAllowance && parseEther(state.stakingHub.safeInfo.data.allowance.wxHoprAllowance) > BigInt(0);
               console.log('[Onboarding check] Allowance set: ', state.stakingHub.safeInfo.data.allowance.wxHoprAllowance, wxHoprAllowanceCheck);
               if (wxHoprAllowanceCheck) {
+                console.log('[Onboarding check] step: 16');
                 return 16;
               }
-
+              console.log('[Onboarding check] step: 15');
               return 15;
             }
-
+            console.log('[Onboarding check] step: 14');
             return 14;
           }
-
+          console.log('[Onboarding check] step: 13');
           return 13;
 
         }
-
+        console.log('[Onboarding check] step: 11');
         return 11;
       }
 
@@ -434,20 +443,23 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
       console.log('[Onboarding check] Safe balance (xDai):', state.safe.balance.data.xDai.value, xDaiInSafeCheck);
       console.log('[Onboarding check] Safe balance (wxHopr):', state.safe.balance.data.wxHopr.value, wxHoprInSafeCheck);
       if ( xDaiInSafeCheck && wxHoprInSafeCheck ) {
+        console.log('[Onboarding check] step: 5');
         return 5;
       }
 
 
       console.log('[Onboarding check] CommunityNftId in Safe', state.safe.communityNftIds.data.length, state.safe.communityNftIds.data.length !== 0);
       if (state.safe.communityNftIds.data.length !== 0) {
+        console.log('[Onboarding check] step: 4');
         return 4;
       }
 
       console.log('[Onboarding check] Safe created', state.safe.selectedSafe.data.safeAddress);
       if (state.safe.selectedSafe.data.safeAddress) {
+        console.log('[Onboarding check] step: 2');
         return 2;
       }
-
+      console.log('[Onboarding check] step: 0');
       // default case
       return 0;
     } catch (e) {
@@ -577,16 +589,23 @@ const setSubgraphDataFetching = createAction<boolean>('stakingHub/setSubgraphDat
 const setNodeDataFetching = createAction<boolean>('stakingHub/setNodeDataFetching');
 
 export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
+  builder.addCase(getHubSafesByOwnerThunk.pending, (state) => {
+    state.safes.isFetching = true;
+  });
   builder.addCase(getHubSafesByOwnerThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.safes.data = action.payload;
     }
     if (action.payload.length === 0) {
       state.onboarding.notStarted = true;
+      state.onboarding.isFetching = false;
     } else {
       state.onboarding.notStarted = false;
     }
     state.safes.isFetching = false;
+  });
+  builder.addCase(getSubgraphDataThunk.pending, (state, action) => {
+    state.safeInfo.isFetching = true;
   });
   builder.addCase(getSubgraphDataThunk.fulfilled, (state, action) => {
     if (action.payload) {
@@ -641,6 +660,9 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     }
     state.safeInfo.isFetching = false;
   });
+  builder.addCase(getSubgraphDataThunk.rejected, (state, action) => {
+    state.safeInfo.isFetching = false;
+  });
   builder.addCase(getModuleTargetsThunk.rejected, (state, action) => {
     console.log('getModuleTargetsThunk.rejected');
     state.config.needsUpdate.isFetching = false;
@@ -649,6 +671,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     if (action.payload) {
       const correctConfig1 = '47598282682985165703087897390610028112494826122342268517157719752757376909312';
       const correctConfig2 = '96338966875583709871840581638487531229018761285270926761304390858285246317315';
+      const correctConfig3 = '44154694447105676396867590936447101190536019366130432120501522583128004100096';
 
       if(!action.payload.channels || !action.payload.wxHOPR){
         console.log('Old safe config present, needs update. Targets:', action.payload);
@@ -658,14 +681,22 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         console.log('Old safe config present, need update. Targets:', action.payload);
         state.config.needsUpdate.data = true;
         state.config.needsUpdate.strategy = 'configWillLetOpenChannels';
+      } else if(action.payload.announcmentTarget !== correctConfig3 || !action.payload.announcmentTarget){
+        console.log('Old safe config present, need update. Targets:', action.payload);
+        state.config.needsUpdate.data = true;
+        state.config.needsUpdate.strategy = 'configAnnounceOnly';
       }
       state.config.needsUpdate.isFetching = false;
     }
   });
+  builder.addCase(goToStepWeShouldBeOnThunk.pending, (state) => {
+    state.onboarding.isFetching = true;
+  });
   builder.addCase(goToStepWeShouldBeOnThunk.fulfilled, (state, action) => {
     if (action.payload) {
       state.onboarding.step = action.payload;
-      if (state.onboarding.step !== 0 && state.onboarding.step !== 15 && state.onboarding.step !== 16) {
+      state.onboarding.isFetching = false;
+      if (state.onboarding.step !== 0 && state.onboarding.step !== 16) {
         state.onboarding.notFinished = true;
         state.onboarding.notStarted = false;
       } else if (state.onboarding.step === 16) {
