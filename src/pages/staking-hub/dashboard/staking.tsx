@@ -167,99 +167,93 @@ const StakingScreen = () => {
         </div>
       )}
       <Content>
-        {/* <div className="line"> */}
-          <GrayCard
-            id="wxhopr-total-stake"
-            title="wxHOPR Total Stake"
-            value={rounder(safeBalance.wxHopr.formatted, 6) ?? '-'}
-            valueTooltip={safeBalance.wxHopr.formatted || '-'}
-            currency={'wxHOPR'}
-            // chip={{
-            //   label: '+%/24h',
-            //   color: 'success',
-            // }}
-            buttons={[
-              {
-                text: 'Buy xHOPR',
-                onClick: () => {
-                  set_openBuyModal(true);
-                },
-              },
-              {
-                text: 'Wrap xHOPR',
-                link: '/staking/wrapper',
-              },
-              {
-                text: 'Deposit',
-                link: '/staking/stake-wxHOPR',
-              },
-              {
-                text: 'Withdraw',
-                link: '/staking/withdraw?token=wxhopr',
-              },
-            ]}
-          />
-          <GrayCard
-            id="xdai-in-safe"
-            title="xDAI in Safe"
-            value={rounder(safeBalance.xDai.formatted, 6) ?? '-'}
-            valueTooltip={safeBalance.xDai.formatted || '-'}
-            currency={'xDAI'}
-            buttons={[
-              {
-                text: 'Buy xDAI',
-                onClick: () => {
-                  set_openBuyModal(true);
-                },
-              },
-              {
-                text: 'Deposit',
-                link: '/staking/stake-xDAI',
-              },
-              {
-                text: 'Withdraw',
-                link: '/staking/withdraw?token=xdai',
-              },
-            ]}
-          />
-        {/* </div>
-        <div className="line"> */}
-          <GrayCard
-            id="redeemed-tickets"
-            title="Redeemed Tickets"
-            value="-"
+        <GrayCard
+          id="wxhopr-total-stake"
+          title="wxHOPR Total Stake"
+          value={rounder(safeBalance.wxHopr.formatted, 6) ?? '-'}
+          valueTooltip={safeBalance.wxHopr.formatted || '-'}
+          currency={'wxHOPR'}
           // chip={{
           //   label: '+%/24h',
           //   color: 'success',
           // }}
-          />
-          <GrayCard
-            id="earned-rewards"
-            title="Earned rewards"
-            value="-"
-            currency="wxHOPR"
-          // chip={{
-          //   label: '-%/24h',
-          //   color: 'error',
-          // }}
-          />
-        {/* </div>
-        <div className='half-line'> */}
-          <GrayCard
-            id="remaining-wxhopr-allowance"
-            title="Remaining wxHOPR Allowance
-            to Channels"
-            value={wxHoprAllowance ? rounder(wxHoprAllowance) : '-'}
-            valueTooltip={wxHoprAllowance || '-'}
-            currency="wxHOPR"
-            buttons={[
-              {
-                text: 'Adjust',
-                link: '/staking/set-allowance',
+          buttons={[
+            {
+              text: 'Buy xHOPR',
+              onClick: () => {
+                set_openBuyModal(true);
               },
-            ]}
-          />
-        {/* </div> */}
+            },
+            {
+              text: 'Wrap xHOPR',
+              link: '/staking/wrapper',
+            },
+            {
+              text: 'Deposit',
+              link: '/staking/stake-wxHOPR',
+            },
+            {
+              text: 'Withdraw',
+              link: '/staking/withdraw?token=wxhopr',
+            },
+          ]}
+        />
+        <GrayCard
+          id="xdai-in-safe"
+          title="xDAI in Safe"
+          value={rounder(safeBalance.xDai.formatted, 6) ?? '-'}
+          valueTooltip={safeBalance.xDai.formatted || '-'}
+          currency={'xDAI'}
+          buttons={[
+            {
+              text: 'Buy xDAI',
+              onClick: () => {
+                set_openBuyModal(true);
+              },
+            },
+            {
+              text: 'Deposit',
+              link: '/staking/stake-xDAI',
+            },
+            {
+              text: 'Withdraw',
+              link: '/staking/withdraw?token=xdai',
+            },
+          ]}
+        />
+        {/* <GrayCard
+          id="redeemed-tickets"
+          title="Redeemed Tickets"
+          value="-"
+        // chip={{
+        //   label: '+%/24h',
+        //   color: 'success',
+        // }}
+        />
+        <GrayCard
+          id="earned-rewards"
+          title="Earned rewards"
+          value="-"
+          currency="wxHOPR"
+        // chip={{
+        //   label: '-%/24h',
+        //   color: 'error',
+        // }}
+        /> */}
+        <GrayCard
+          id="remaining-wxhopr-allowance"
+          title="Remaining wxHOPR Allowance
+          to Channels"
+          value={wxHoprAllowance ? rounder(wxHoprAllowance) : '-'}
+          valueTooltip={wxHoprAllowance || '-'}
+          currency="wxHOPR"
+          buttons={[
+            {
+              text: 'Adjust',
+              link: '/staking/set-allowance',
+            },
+          ]}
+        />
         <BuyXHopr
           open={openBuyModal}
           onClose={() => set_openBuyModal(false)}
