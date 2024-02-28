@@ -155,18 +155,9 @@ interface Props {
 
 export default function CustomPaginationActionsTable(props: Props) {
   const [page, set_Page] = React.useState(0);
-  // const pageRef = useRef(0);
-  // const page = pageRef.current;
-  // const set_Page = (input: number) => {
-  //   pageRef.current = input;
-  // }
   const [rowsPerPage, set_RowsPerPage] = React.useState(10);
   const [searchPhrase, set_searchPhrase] = React.useState('');
   const [filteredData, set_filteredData] = React.useState<typeof props.data>([]);
-
-  useEffect(() => {
-    console.log("Mounted")
-  }, [])
 
   useEffect(() => {
     filterData(searchPhrase);
