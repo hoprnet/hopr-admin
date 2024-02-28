@@ -51,6 +51,8 @@ import { truncateEthereumAddress } from '../../../utils/blockchain';
 import { getUserActionForPendingTransaction } from '../../../utils/safeTransactions';
 import { StringLiteral } from 'typescript';
 
+import { sendNotification } from '../../../hooks/useWatcher/notifications';
+
 const StyledContainer = styled(Paper)`
   padding: 2rem;
   display: flex;
@@ -185,7 +187,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
 
   // TODO: remove this isLoading functions when isLoading is moved to redux
   const executeTx = (transaction: SafeMultisigTransactionResponse) => {
-    console.log('transaction' , transaction)
+    console.log('executeTx transaction' , transaction)
     if (signer) {
       set_isLoadingExecuting(true);
       dispatch(
@@ -199,8 +201,19 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
         .then(() => {
           set_isLoadingExecuting(false);
         })
-        .catch(() => {
+        .catch((e) => {
+          console.error('Error: Multisig transaction not executed', e);
           set_isLoadingExecuting(false);
+          sendNotification({
+            notificationPayload: {
+              source: 'safe',
+              name: `Multisig transaction not executed. ${JSON.stringify(e)}`,
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: `Multisig transaction not executed. ${JSON.stringify(e)}`, type: 'error' },
+            dispatch,
+          });
         });
     }
   };
@@ -261,7 +274,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
                 disabled={transactionAfterSafeNonce}
                 onClick={() => rejectTx(transaction)}
               >
-                reject
+                REJECT
               </StyledBlueButton>
             </span>
           </Tooltip>
@@ -273,7 +286,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
                 onClick={() => executeTx(transaction)}
                 pending={isLoadingExecuting}
               >
-                execute
+                EXECUTE
               </StyledBlueButton>
             </span>
           </Tooltip>
@@ -332,7 +345,11 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
 
   useEffect(() => {
     if (signer && transaction) {
-      getValueFromTransaction(transaction, signer).then((value) => set_value(value?.toString()));
+      getValueFromTransaction(transaction, signer).then((value) => {
+        console.log('gotValueFromTransaction', value)
+        const valueString = value?.toString();
+        set_value(valueString)
+      });
       set_dateInGMT(calculateTimeInGMT(transaction.submissionDate));
       set_dateInUserTimezone(formatDateToUserTimezone(transaction.submissionDate));
       set_transactionStatus(getTransactionStatus());
@@ -367,7 +384,6 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
     if (isNativeTransaction) {
       return 'xDai';
     }
-
     const token = await dispatch(
       safeActionsAsync.getToken({
         signer,
@@ -395,7 +411,6 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
     if (transaction.safe === transaction.to && !BigInt(transaction.value)){
       return ''
     }
-
     const currency = getCurrencyFromTransaction(transaction, signer);
     if (isNativeTransaction) {
       return formatEther(BigInt(transaction.value)) + ' ' + currency;
@@ -421,7 +436,6 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
         // }
       }
     } catch (e) {}
-
     const token = await dispatch(
       safeActionsAsync.getToken({
         signer,
@@ -445,6 +459,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
 
       return value;
     } catch (e) {
+      console.log('the data may not decode', e)
       // if the function is not from an abi stated above
       // the data may not decode
       return null;

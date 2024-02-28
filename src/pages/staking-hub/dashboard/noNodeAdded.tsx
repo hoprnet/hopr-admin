@@ -317,7 +317,7 @@ const NoNodeAdded = () => {
             title="Expected APY"
             value="2 %"
           />
-          <StakingCard
+          {/* <StakingCard
             id="redeemed-tickets"
             title="Redeemed Tickets"
             value="-"
@@ -335,7 +335,7 @@ const NoNodeAdded = () => {
               label: '-%/24h',
               color: 'error',
             }}
-          />
+          /> */}
           <BuyXHopr
             open={openBuyModal}
             onClose={() => set_openBuyModal(false)}

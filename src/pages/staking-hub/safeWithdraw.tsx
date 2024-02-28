@@ -11,7 +11,7 @@ import { createSendNftTransactionData, createSendTokensTransactionData } from '.
 
 // components
 import Card from '../../components/Card';
-import NetworkOverlay from '../../components/NetworkOverlay';
+import NetworkOverlay from '../../components/Overlays/NetworkOverlay';
 import Section from '../../future-hopr-lib-components/Section';
 import StartOnboarding from '../../components/Modal/staking-hub/StartOnboarding';
 
@@ -288,15 +288,15 @@ function SafeWithdraw() {
     const errors: string[] = [];
 
     if (!signer) {
-      errors.push('wallet is required');
+      errors.push('Wallet is required');
     }
 
     if (!selectedSafeAddress) {
-      errors.push('safe is required');
+      errors.push('Safe is required');
     }
 
     if (!receiver) {
-      errors.push('receiver is required');
+      errors.push('Receiver is required');
     }
 
     // only require xDai value if there

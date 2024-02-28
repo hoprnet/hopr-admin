@@ -91,6 +91,13 @@ body::-webkit-scrollbar-thumb:hover {
 }
 */
 
+/* Safe-selector list*/
+
+li.selected-safe {
+  background-color: rgba(0, 0, 0, 0.24);
+  background-color: #edf2f7;
+}
+
  /* Tooltips */
 .STooltip.MuiPopper-root.MuiTooltip-popper[data-popper-placement*="bottom"] > .MuiTooltip-tooltip.MuiTooltip-tooltipPlacementBottom{
   margin-top: 4px;

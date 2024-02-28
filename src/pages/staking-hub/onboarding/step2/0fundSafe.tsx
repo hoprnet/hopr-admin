@@ -67,6 +67,8 @@ const FundsToSafe = () => {
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const communityNftIdInSafe = useAppSelector((store) => !!store.safe.communityNftIds.data.length);
   const walletBalance = useAppSelector((store) => store.web3.balance);
+  const walletwxHoprBalance = walletBalance.wxHopr.value;
+  const walletxDaiBalance = walletBalance.xDai.value;
   const [xdaiValue, set_xdaiValue] = useState('');
   const [wxhoprValue, set_wxhoprValue] = useState('');
   const [wxhoprValueMin, set_wxhoprValueMin] = useState(MINIMUM_WXHOPR_TO_FUND);
@@ -197,6 +199,9 @@ const FundsToSafe = () => {
     return false;
   };
 
+  const notEnoughxDaiInWallet = !!walletxDaiBalance && !!xdaiValue && BigInt(parseFloat(xdaiValue) * 1e18) > BigInt(walletxDaiBalance);
+  const notEnoughwxHoprInWallet = !!walletwxHoprBalance && !!wxhoprValue && BigInt(parseFloat(wxhoprValue) * 1e18) > BigInt(walletwxHoprBalance);
+
   return (
     <StepContainer
       image={{
@@ -254,13 +259,30 @@ const FundsToSafe = () => {
           />
           <StyledCoinLabel>xDAI</StyledCoinLabel>
           <StyledGrayButton onClick={setMin_xDAI}>Min</StyledGrayButton>
-          <Button
-            onClick={handleFundxDai}
-            disabled={!xdaiValue || xdaiValue === '' || xdaiValue === '0'}
-            pending={is_xDAI_to_safe_loading}
-          >
-            Fund
-          </Button>
+          {
+            notEnoughxDaiInWallet ?
+            <Tooltip
+              title='You do not have enough xDai in your wallet'
+            >
+              <span>
+                <Button
+                  onClick={handleFundxDai}
+                  disabled={!xdaiValue || xdaiValue === '' || xdaiValue === '0' || notEnoughxDaiInWallet}
+                  pending={is_xDAI_to_safe_loading}
+                >
+                  Fund
+                </Button>
+              </span>
+            </Tooltip>
+            :
+            <Button
+              onClick={handleFundxDai}
+              disabled={!xdaiValue || xdaiValue === '' || xdaiValue === '0'}
+              pending={is_xDAI_to_safe_loading}
+            >
+              Fund
+            </Button>
+          }
         </StyledInputGroup>
       </StyledForm>
       <GreenText className="underline mb16">{xdaiEnoughBalance() && 'You transferred enough xDai'}</GreenText>
@@ -293,13 +315,31 @@ const FundsToSafe = () => {
           />
           <StyledCoinLabel>wxHOPR</StyledCoinLabel>
           <StyledGrayButton onClick={setMax_wxHOPR}>Max</StyledGrayButton>
-          <Button
-            onClick={handleFundwxHopr}
-            disabled={!wxhoprValue || wxhoprValue === '' || wxhoprValue === '0'}
-            pending={is_wxHOPR_to_safe_loading}
-          >
-            Fund
-          </Button>
+
+          {
+            notEnoughwxHoprInWallet ?
+            <Tooltip
+              title='You do not have enough xDai in your wallet'
+            >
+              <span>
+                <Button
+                  onClick={handleFundwxHopr}
+                  disabled={!wxhoprValue || wxhoprValue === '' || wxhoprValue === '0' || notEnoughwxHoprInWallet}
+                  pending={is_wxHOPR_to_safe_loading}
+                >
+                  Fund
+                </Button>
+              </span>
+            </Tooltip>
+            :
+            <Button
+              onClick={handleFundwxHopr}
+              disabled={!wxhoprValue || wxhoprValue === '' || wxhoprValue === '0'}
+              pending={is_wxHOPR_to_safe_loading}
+            >
+              Fund
+            </Button>
+          }
         </StyledInputGroup>
       </StyledForm>
       <GreenText>{wxhoprEnoughBalance() && 'You transferred enough wxHOPR'}</GreenText>

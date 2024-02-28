@@ -14,7 +14,7 @@ import Button from '../../future-hopr-lib-components/Button';
 // MUI
 import { CircularProgress } from '@mui/material';
 
-const Overlay = styled.div`
+export const Overlay = styled.div`
   transition: margin-left 0.4s ease-out;
   position: fixed;
   top: 0;

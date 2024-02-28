@@ -9,7 +9,7 @@ import { safeActions, safeActionsAsync } from '../../../store/slices/safe';
 import { stakingHubActions, stakingHubActionsAsync } from '../../../store/slices/stakingHub';
 
 // HOPR Components
-import NetworkOverlay from '../../../components/NetworkOverlay';
+import NetworkOverlay from '../../../components/Overlays/NetworkOverlay';
 import StartOnboarding from '../../../components/Modal/staking-hub/StartOnboarding';
 
 // Mui
@@ -83,6 +83,12 @@ const SPaper = styled(Paper)`
   }
 `;
 
+const STabs = styled(Tabs)`
+  .MuiTabs-flexContainer {
+    flex-wrap: wrap;
+  }
+`;
+
 
 function Dashboard() {
   const dispatch = useAppDispatch();
@@ -125,12 +131,12 @@ function Dashboard() {
   return (
     <DashboardContainer className="DashboardContainer">
       <SPaper>
-        <Tabs value={tabIndex} onChange={handleTabChange} aria-label="basic tabs example">
+        <STabs value={tabIndex} onChange={handleTabChange} aria-label="basic tabs example">
           <Tab label="STAKING" {...a11yProps(0)} />
           <Tab label="NODES" {...a11yProps(1)} />
           <Tab label="SAFE" {...a11yProps(2)} />
           <Tab label="TRANSACTIONS" {...a11yProps(3)} />
-        </Tabs>
+        </STabs>
         <div className='Content'>
           { tabIndex === DASHBOARD.staking && <StakingScreen/>}
           { tabIndex === DASHBOARD.node && <NodeAdded/>}

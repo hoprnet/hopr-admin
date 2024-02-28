@@ -8,6 +8,7 @@ import Button from '../../../future-hopr-lib-components/Button';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../../future-hopr-lib-components/Modal/styled';
 import CloseIcon from '@mui/icons-material/Close';
 import { stakingHubActions } from '../../../store/slices/stakingHub';
+import LoadingOverlay from '../../Overlays/LoadingOverlay';
 
 const Content = styled(SDialogContent)`
   gap: 1rem;
@@ -27,7 +28,7 @@ type WithdrawModalProps = {
 };
 
 const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
-  console.log('StartOnboarding')
+//  console.log('StartOnboarding')
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,8 +37,12 @@ const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
   const modalToSartOnboardingDismissed = useAppSelector((state) => state.stakingHub.onboarding.modalToSartOnboardingDismissed);
   const web3connected = useAppSelector((state) => state.web3.status.connected);
   const [openModal, set_openModal] = useState(false);
-
   const moduleAddress = useAppSelector((store) => store.safe.selectedSafe.data.moduleAddress);
+
+  const isFetchingSafes = useAppSelector((store) => store.stakingHub.safes.isFetching);
+  const isFetchingSafeInfo = useAppSelector((store) => store.stakingHub.safeInfo.isFetching);
+
+  const isFetching = isFetchingSafes || isFetchingSafeInfo;
 
   useEffect(() => {
     if (modalToSartOnboardingDismissed) {
@@ -50,7 +55,7 @@ const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
 
 
   const handleOpenModal = () => {
-    console.log('handleOpenModal')
+   // console.log('handleOpenModal')
     set_openModal(true);
   };
 
@@ -60,6 +65,12 @@ const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
     dispatch(stakingHubActions.dismissModalToSartOnboarding());
     if(location.pathname !== '/') navigate('/');
   };
+
+  if(isFetching) {
+    return (
+     <LoadingOverlay/>
+    );
+  }
 
   return (
     <>

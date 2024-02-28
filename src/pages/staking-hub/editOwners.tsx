@@ -8,7 +8,7 @@ import { browserClient } from '../../providers/wagmi';
 
 // Components
 import StartOnboarding from '../../components/Modal/staking-hub/StartOnboarding';
-import NetworkOverlay from '../../components/NetworkOverlay';
+import NetworkOverlay from '../../components/Overlays/NetworkOverlay';
 import ConfirmModal from '../../components/Modal/staking-hub/ConfirmModal';
 import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';
@@ -67,7 +67,9 @@ export default function EditOwners() {
   const safeInfo = useAppSelector((store) => store.safe.info.data);
   const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress) as Address;
   const safeModules = useAppSelector((state) => state.safe.info.data?.modules);
-  const safeOwners = useAppSelector((store) => store.safe.info.data?.owners);
+  //const safeOwners = useAppSelector((store) => store.safe.info.data?.owners); // Safe Infra
+  const safeOwnersSubgraph = useAppSelector((store) => store.stakingHub.safeInfo.data.owners); // Subgraph
+  const safeOwners = safeOwnersSubgraph.map((elem) => elem.owner.id);
   const safeThreshold = useAppSelector((store) => store.stakingHub.safeInfo.data.threshold);
   const walletAddress = useAppSelector((store) => store.web3.account);
   const signer = useEthersSigner();
@@ -101,6 +103,7 @@ export default function EditOwners() {
         })).unwrap().then(async(transactionHash)=>{
           browserClient && await browserClient.waitForTransactionReceipt({ hash: transactionHash as `0x${string}` });
           dispatch(safeActions.addOwnerToSafe(newOwner));
+          dispatch(stakingHubActions.addOwnerToSafe(newOwner));
           set_newOwner('');
         }).finally(async()=>{
           set_confirmAddOwner(false);
@@ -406,9 +409,9 @@ export default function EditOwners() {
           />
         }
       />
-{/*
+
       <StartOnboarding/>
-      <NetworkOverlay/> */}
+      <NetworkOverlay/>
     </Section>
   );
 }

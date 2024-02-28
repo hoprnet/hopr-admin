@@ -1,6 +1,7 @@
 import { useAppSelector } from '../../store';
 import styled from '@emotion/styled';
 import { formatEther } from 'viem';
+import Tooltip from '@mui/material/Tooltip';
 
 interface Props {
   style?: object;
@@ -205,9 +206,9 @@ export default function Details(props: Props) {
           <>
             <DataTitle>Safe</DataTitle>
             <Data>
-              <p>{safeBalance.wxHopr.formatted ?? '-'}</p>
-              <p>{safeBalance.xHopr.formatted ?? '-'}</p>
-              <p>{safeBalance.xDai.formatted ?? '-'}</p>
+              <Tooltip title={safeBalance.wxHopr.formatted && safeBalance.wxHopr.formatted !== '0' ? safeBalance.wxHopr.formatted : null}><p>{safeBalance.wxHopr.formatted ?? '-'}</p></Tooltip>
+              <Tooltip title={safeBalance.xHopr.formatted && safeBalance.xHopr.formatted !== '0' ? safeBalance.xHopr.formatted : null }><p>{safeBalance.xHopr.formatted ?? '-'}</p></Tooltip>
+              <Tooltip title={safeBalance.xDai.formatted && safeBalance.xDai.formatted !== '0'  ? safeBalance.xDai.formatted : null }><p>{safeBalance.xDai.formatted ?? '-'}</p></Tooltip>
             </Data>
           </>
         )}
@@ -215,9 +216,9 @@ export default function Details(props: Props) {
       <DataColumn>
         <DataTitle>Wallet</DataTitle>
         <Data>
-          <p>{walletBalance.wxHopr.formatted ?? '-'}</p>
-          <p>{walletBalance.xHopr.formatted ?? '-'}</p>
-          <p>{walletBalance.xDai.formatted ?? '-'}</p>
+          <Tooltip title={walletBalance.wxHopr.formatted && walletBalance.wxHopr.formatted !== '0' ? walletBalance.wxHopr.formatted : null }><p>{walletBalance.wxHopr.formatted ?? '-'}</p></Tooltip>
+          <Tooltip title={walletBalance.xHopr.formatted && walletBalance.xHopr.formatted !== '0' ? walletBalance.xHopr.formatted: null }><p>{walletBalance.xHopr.formatted ?? '-'}</p></Tooltip>
+          <Tooltip title={walletBalance.xDai.formatted && walletBalance.xDai.formatted !== '0' ? walletBalance.xDai.formatted: null }><p>{walletBalance.xDai.formatted ?? '-'}</p></Tooltip>
         </Data>
       </DataColumn>
     </Web3Container>

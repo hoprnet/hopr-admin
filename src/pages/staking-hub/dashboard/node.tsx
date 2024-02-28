@@ -303,8 +303,15 @@ const getOnboardingTooltip = (
   isDelegate?: boolean,
   includedInModule?: boolean,
   balanceFormatted?: string,
+  finishMainOnboardingForThisNode?: boolean,
 ) => {
-  if(onboardingNotFinished) {
+  if(finishMainOnboardingForThisNode) {
+    return (
+      <span>
+        Finish ONBOARDING for this node first
+      </span>
+    )
+  } else if(onboardingNotFinished) {
     return (
       <span>
         Please finish the main<br/> ONBOARDING first
@@ -335,6 +342,7 @@ const NodeAdded = () => {
   const navigate = useNavigate();
   const nodeHoprAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress);
   const onboardingNotFinished = useAppSelector((store) => store.stakingHub.onboarding.notFinished);
+  const onboardingNodeAddress = useAppSelector((store) => store.stakingHub.onboarding.nodeAddress);
   const nodeBalance = useAppSelector((store) => store.stakingHub.onboarding.nodeBalance.xDai.formatted);
   const nodes = useAppSelector((store) => store.stakingHub.nodes);
   const delegates = useAppSelector((store) => store.safe.delegates.data);
@@ -351,13 +359,16 @@ const NodeAdded = () => {
     console.log('chosenNode', chosenNode)
   }, [chosenNode]);
 
-    const delegatesArray = delegates?.results?.map(elem => elem.delegate.toLocaleLowerCase()) || [];
-    const nodesPeerIdArr = Object.keys(nodes);
-    const parsedTableData = nodesPeerIdArr.map((node, index) => {
+  const delegatesArray = delegates?.results?.map(elem => elem.delegate.toLocaleLowerCase()) || [];
+  const nodesPeerIdArr = Object.keys(nodes);
+  const parsedTableData = nodesPeerIdArr.map((node, index) => {
     const inNetworkRegistry = nodes[node].registeredNodesInNetworkRegistry;
     const inSafeRegistry = nodes[node].registeredNodesInSafeRegistry
     const isDelegate = delegatesArray.includes(node);
     const includedInModule = nodes[node].includedInModule;
+
+    const finishMainOnboardingForThisNode = onboardingNotFinished && onboardingNodeAddress?.toLowerCase() === node?.toLowerCase();
+
     return {
       peerId: <>
                 {node}
@@ -391,12 +402,14 @@ const NodeAdded = () => {
             inNetworkRegistry,
             isDelegate,
             includedInModule,
-            nodes[node].balanceFormatted
+            nodes[node].balanceFormatted,
+            finishMainOnboardingForThisNode,
           )}
           onClick={()=>{
-            navigate(`/staking/onboarding/nextNode?nodeAddress=${node}`);
+            if(finishMainOnboardingForThisNode) {navigate(`/staking/onboarding/`)}
+            else {navigate(`/staking/onboarding/nextNode?nodeAddress=${node}`);}
           }}
-          disabled={(onboardingNotFinished || (includedInModule && isDelegate && nodes[node].balanceFormatted !== '0'))}
+          disabled={(onboardingNotFinished || (includedInModule && isDelegate && nodes[node].balanceFormatted !== '0')) && !finishMainOnboardingForThisNode}
         />
         <IconButton
           iconComponent={<VisibilityIcon />}
@@ -427,7 +440,7 @@ const NodeAdded = () => {
         />
       </>
     }
-  }) || [];
+  }).filter(node => node.inNetworkRegistry === 'Yes' ) || [];
   const chosenNodeData = chosenNode && nodes[chosenNode] ? nodes[chosenNode] : null;
 
   return (

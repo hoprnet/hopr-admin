@@ -10,7 +10,7 @@ import { useAppSelector } from '../../store';
 // HOPR Components
 import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';
-import NetworkOverlay from '../../components/NetworkOverlay';
+import NetworkOverlay from '../../components/Overlays/NetworkOverlay';
 
 import { ConfirmButton, StepContainer } from './onboarding/components';
 import {
