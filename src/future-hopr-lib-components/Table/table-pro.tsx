@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import styled from '@emotion/styled';
 import _debounce from 'lodash/debounce';
 
@@ -155,9 +155,18 @@ interface Props {
 
 export default function CustomPaginationActionsTable(props: Props) {
   const [page, set_Page] = React.useState(0);
+  // const pageRef = useRef(0);
+  // const page = pageRef.current;
+  // const set_Page = (input: number) => {
+  //   pageRef.current = input;
+  // }
   const [rowsPerPage, set_RowsPerPage] = React.useState(10);
   const [searchPhrase, set_searchPhrase] = React.useState('');
   const [filteredData, set_filteredData] = React.useState<typeof props.data>([]);
+
+  useEffect(() => {
+    console.log("Mounted")
+  }, [])
 
   useEffect(() => {
     filterData(searchPhrase);
@@ -179,13 +188,14 @@ export default function CustomPaginationActionsTable(props: Props) {
 
   function handleSearchChange(event: { target: { value: string } }) {
     const search: string = event.target.value;
+    if(search !== searchPhrase) {
+      set_Page(0);
+    }
     set_searchPhrase(search);
     debounceFn(search);
   }
 
   function filterData(searchPhrase: string) {
-    set_Page(0);
-
     const data = props.data;
     const filterBy = props.header.filter((elem) => elem.search === true).map(header => header.key);
 

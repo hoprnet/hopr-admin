@@ -1032,7 +1032,6 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
 
       // Parse the data
       for(let i = 0; i < action.payload.outgoing.length; i++) {
-        console.log(i, action.payload.outgoing[i])
         const channelId = action.payload.outgoing[i].id;
         if(!state.channels.parsed.outgoing[channelId]) {
           state.channels.parsed.outgoing[channelId] = {
@@ -1048,7 +1047,6 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       }
 
       for(let i = 0; i < action.payload.incoming.length; i++) {
-        console.log(i, action.payload.incoming[i])
         const channelId = action.payload.incoming[i].id;
         if(!state.channels.parsed.incoming[channelId]) {
           state.channels.parsed.incoming[channelId] = {
@@ -1104,8 +1102,15 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     if (action.payload) {
       state.tickets.data = action.payload;
 
+      // reset tickets data
+      const incomingChannels = Object.keys(state.channels.parsed.incoming);
+      for(let i = 0; i < incomingChannels.length; i++) {
+        state.channels.parsed.incoming[incomingChannels[i]].tickets = 0;
+        state.channels.parsed.incoming[incomingChannels[i]].ticketBalance = '0';
+      }
+
+      // update tickets data
       for(let i = 0; i < action.payload.length; i++) {
-        console.log(i, action.payload[i])
         const channelId = action.payload[i].channelId;
         if(!state.channels.parsed.incoming[channelId]) {
           state.channels.parsed.incoming[channelId] = {

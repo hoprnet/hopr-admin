@@ -29,6 +29,7 @@ import GetAppIcon from '@mui/icons-material/GetApp';
 function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((store) => store.node.channels.data);
+  const channelsOutgoingObject = useAppSelector((store) => store.node.channels.parsed.outgoing);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
   const aliases = useAppSelector((store) => store.node.aliases.data)
   const peers = useAppSelector((store) => store.node.peers.data)
@@ -205,7 +206,7 @@ function ChannelsPage() {
 
   const header = [
     {
-      key: 'key',
+      key: 'id',
       name: '#',
     },
     {
@@ -238,30 +239,31 @@ function ChannelsPage() {
     },
   ];
 
-  const parsedTableData = Object.entries(channels?.outgoing ?? []).map(([, channel], key) => {
+  const parsedTableData = Object.keys(channelsOutgoingObject).map((id, index) => {
+    if(!channelsOutgoingObject[id].peerAddress || !channelsOutgoingObject[id].balance || !channelsOutgoingObject[id].status) return;
     return {
-      id: channel.id,
-      key: key.toString(),
-      peerAddress: getAliasByPeerAddress(channel.peerAddress),
-      status: channel.status,
-      funds: `${utils.formatEther(channel.balance)} ${HOPR_TOKEN_USED}`,
+      id: index.toString(),
+      key: id,
+      peerAddress: getAliasByPeerAddress(channelsOutgoingObject[id].peerAddress as string),
+      status: channelsOutgoingObject[id].status as string,
+      funds: `${utils.formatEther(channelsOutgoingObject[id].balance as string)} ${HOPR_TOKEN_USED}`,
       actions: (
         <>
           <PingModal
-            peerId={getPeerIdFromPeerAddress(channel.peerAddress)}
-            disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
+            peerId={getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string)}
+            disabled={!getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string)}
           />
           <CreateAliasModal
             handleRefresh={handleRefresh}
-            peerId={getPeerIdFromPeerAddress(channel.peerAddress)}
-            disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
+            peerId={getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string)}
+            disabled={!getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string)}
           />
           <FundChannelModal
-            channelId={channel.id}
+            channelId={id}
           />
           <IconButton
             iconComponent={<CloseChannelIcon />}
-            pending={closingStates[channel.id]?.closing}
+            pending={closingStates[id]?.closing}
             tooltipText={
               <span>
                 CLOSE
@@ -269,16 +271,23 @@ function ChannelsPage() {
                 outgoing channel
               </span>
             }
-            onClick={() => handleCloseChannels(channel.id)}
+            onClick={() => handleCloseChannels(id)}
           />
           <SendMessageModal
-            peerId={getPeerIdFromPeerAddress(channel.peerAddress)}
-            disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
+            peerId={getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string)}
+            disabled={!getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string)}
           />
         </>
       ),
     };
-  });
+  }).filter(elem => elem !== undefined) as {
+    id: string;
+    key: string;
+    peerAddress: string;
+    status: "Open" | "PendingToClose" | "Closed" ;
+    funds: string;
+    actions: JSX.Element;
+  }[];
 
   return (
     <Section
