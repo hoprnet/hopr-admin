@@ -36,7 +36,7 @@ export default function AddNode(props?: { onDone?: Function, onBack?: Function, 
   const signer = useEthersSigner();
   const [isLoading, set_isLoading] = useState(false);
   const [address, set_address] = useState(HOPRdNodeAddressForOnboarding ? HOPRdNodeAddressForOnboarding : props?.nodeAddress ? props.nodeAddress : '');
-  const nodeInNetworkRegistry = nodesAddedToSafe.includes(address.toLocaleLowerCase());
+  const nodeInNetworkRegistry = nodesAddedToSafe && nodesAddedToSafe.length > 0 && nodesAddedToSafe.includes(address.toLocaleLowerCase());
 
   const addDelegate = async () => {
     if (signer && safeAddress && account) {
