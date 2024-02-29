@@ -323,7 +323,14 @@ const getOnboardingTooltip = (
         Node not registered on the network
       </span>
     )
-  }else if (!includedInModule || !isDelegate || balanceFormatted === '0') {
+  }
+  else if (includedInModule && isDelegate && balanceFormatted === '0') {
+    return (
+      <span>
+        You need to fund this node
+      </span>
+    )
+  } else if (!includedInModule || !isDelegate) {
     return (
       <span>
         Finish ONBOARDING for this node
@@ -542,12 +549,12 @@ const NodeAdded = () => {
           value={chosenNodeData?.balanceFormatted ? rounder(chosenNodeData?.balanceFormatted, 5) : '-'}
           valueTooltip={chosenNodeData?.balanceFormatted && chosenNodeData.balanceFormatted || '-'}
         />
-        <GrayCard
+        {/* <GrayCard
           id="earned-rewards"
           title="Earned rewards"
           value="-"
           currency="wxHOPR"
-        />
+        /> */}
         <GrayCard
           id="docker-command"
           title="Docker run command"
