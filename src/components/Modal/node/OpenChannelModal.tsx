@@ -18,6 +18,7 @@ import CloseIcon from '@mui/icons-material/Close';
 type OpenChannelModalProps = {
   peerAddress?: string;
   disabled?: boolean;
+  tooltip?: JSX.Element | string;
 };
 
 export const OpenChannelModal = ({
@@ -98,6 +99,9 @@ export const OpenChannelModal = ({
         iconComponent={<AddChannelIcon />}
         disabled={props.disabled}
         tooltipText={
+          props.tooltip ?
+          props.tooltip
+          :
           <span>
             OPEN
             <br />

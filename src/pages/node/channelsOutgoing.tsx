@@ -34,19 +34,6 @@ function ChannelsPage() {
   const aliases = useAppSelector((store) => store.node.aliases.data)
   const peers = useAppSelector((store) => store.node.peers.data)
   const loginData = useAppSelector((store) => store.auth.loginData);
-  const [closingStates, set_closingStates] = useState<
-    Record<
-      string,
-      {
-        closing: boolean;
-        closeSuccess: boolean;
-        closeErrors: {
-          status: string | undefined;
-          error: string | undefined;
-        }[];
-      }
-    >
-  >({});
   const tabLabel = 'outgoing';
   const channelsData = channels?.outgoing;
 
@@ -136,15 +123,6 @@ function ChannelsPage() {
   };
 
   const handleCloseChannels = (channelId: string) => {
-    set_closingStates((prevStates) => ({
-      ...prevStates,
-      [channelId]: {
-        closing: true,
-        closeSuccess: false,
-        closeErrors: [],
-      },
-    }));
-
     dispatch(
       actionsAsync.closeChannelThunk({
         apiEndpoint: loginData.apiEndpoint!,
@@ -263,7 +241,7 @@ function ChannelsPage() {
           />
           <IconButton
             iconComponent={<CloseChannelIcon />}
-            pending={closingStates[id]?.closing}
+            pending={channelsOutgoingObject[id]?.isClosing}
             tooltipText={
               <span>
                 CLOSE

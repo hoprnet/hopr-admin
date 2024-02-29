@@ -591,10 +591,11 @@ const closeChannelThunk = createAsyncThunk<
     }
   },
   { condition: (_payload, { getState }) => {
-    const isFetching = getState().node.closeChannel.isFetching;
-    if (isFetching) {
-      return false;
-    }
+    const channelId = _payload.channelId;
+    const isClosing = !!getState().node.channels.parsed.outgoing[channelId].isClosing;
+      if (isClosing) {
+        return false;
+      }
   } },
 );
 
@@ -1033,32 +1034,38 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       // Parse the data
       for(let i = 0; i < action.payload.outgoing.length; i++) {
         const channelId = action.payload.outgoing[i].id;
+        const nodeAddress = action.payload.outgoing[i].peerAddress;
+        state.links.nodeAddressToOutgoingChannel[nodeAddress] = channelId;
+
         if(!state.channels.parsed.outgoing[channelId]) {
           state.channels.parsed.outgoing[channelId] = {
             balance: action.payload.outgoing[i].balance,
-            peerAddress: action.payload.outgoing[i].peerAddress,
+            peerAddress: nodeAddress,
             status: action.payload.outgoing[i].status,
           };
         } else {
           state.channels.parsed.outgoing[channelId].balance = action.payload.outgoing[i].balance;
-          state.channels.parsed.outgoing[channelId].peerAddress = action.payload.outgoing[i].peerAddress;
+          state.channels.parsed.outgoing[channelId].peerAddress = nodeAddress;
           state.channels.parsed.outgoing[channelId].status = action.payload.outgoing[i].status;
         }
       }
 
       for(let i = 0; i < action.payload.incoming.length; i++) {
         const channelId = action.payload.incoming[i].id;
+        const nodeAddress = action.payload.incoming[i].peerAddress;
+        state.links.nodeAddressToIncomingChannel[nodeAddress] = channelId;
+
         if(!state.channels.parsed.incoming[channelId]) {
           state.channels.parsed.incoming[channelId] = {
             balance: action.payload.incoming[i].balance,
-            peerAddress: action.payload.incoming[i].peerAddress,
+            peerAddress: nodeAddress,
             status: action.payload.incoming[i].status,
             tickets: 0,
             ticketBalance: '0',
           };
         } else {
           state.channels.parsed.incoming[channelId].balance = action.payload.incoming[i].balance;
-          state.channels.parsed.incoming[channelId].peerAddress = action.payload.incoming[i].peerAddress;
+          state.channels.parsed.incoming[channelId].peerAddress = nodeAddress;
           state.channels.parsed.incoming[channelId].status = action.payload.incoming[i].status;
         }
       }
@@ -1069,6 +1076,21 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   builder.addCase(getChannelsThunk.rejected, (state) => {
     state.channels.isFetching = false;
+  });
+  //closeChannel
+  builder.addCase(closeChannelThunk.pending, (state, action) => {
+    const channelId = action.meta.arg.channelId;
+    state.channels.parsed.outgoing[channelId].isClosing = true;
+  });
+  builder.addCase(closeChannelThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
+    const channelId = action.meta.arg.channelId;
+    state.channels.parsed.outgoing[channelId].isClosing = false;
+  });
+  builder.addCase(closeChannelThunk.rejected, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
+    const channelId = action.meta.arg.channelId;
+    state.channels.parsed.outgoing[channelId].isClosing = false;
   });
   // getPeers
   builder.addCase(getPeersThunk.fulfilled, (state, action) => {

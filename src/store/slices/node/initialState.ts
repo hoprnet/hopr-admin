@@ -73,14 +73,15 @@ type InitialState = {
     data: GetChannelsResponseType | null;
     parsed: {
       outgoing: {
-        [id: string]: {
+        [channelId: string]: {
           status?: "Open" | "PendingToClose" | "Closed";
           balance?: string;
           peerAddress?: string;
+          isClosing?: boolean;
         }
       },
       incoming: {
-        [id: string]: {
+        [channelId: string]: {
           status?: "Open" | "PendingToClose" | "Closed";
           balance?: string;
           peerAddress?: string;
@@ -91,9 +92,14 @@ type InitialState = {
     },
     isFetching: boolean;
   };
-  // links: {
-  //   channeIdId
-  // }
+  links: {
+    nodeAddressToOutgoingChannel: {
+      [nodeAddress: string]: string
+    },
+    nodeAddressToIncomingChannel: {
+      [nodeAddress: string]: string
+    },
+  };
   messages: {
     data: Message[],
     isFetching: boolean;
@@ -277,6 +283,10 @@ export const initialState: InitialState = {
   redeemTickets: {
     isFetching: false,
     error: undefined,
+  },
+  links: {
+    nodeAddressToOutgoingChannel: {},
+    nodeAddressToIncomingChannel: {},
   },
   apiEndpoint: null,
 };

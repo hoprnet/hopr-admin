@@ -26,6 +26,7 @@ function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((store) => store.node.channels.data);
   const channelsIncomingObject = useAppSelector((store) => store.node.channels.parsed.incoming);
+  const nodeAddressToOutgoingChannel =  useAppSelector((store) => store.node.links.nodeAddressToOutgoingChannel);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
   const aliases = useAppSelector((store) => store.node.aliases.data)
   const peers = useAppSelector((store) => store.node.peers.data)
@@ -167,6 +168,8 @@ function ChannelsPage() {
 
   const parsedTableData = Object.keys(channelsIncomingObject).map((id, index) => {
     if(!channelsIncomingObject[id].peerAddress || !channelsIncomingObject[id].balance || !channelsIncomingObject[id].status) return;
+    // @ts-ignore: check was done in line above
+    const outgoingChannelOpened = !!(channelsIncomingObject[id].peerAddress && !!nodeAddressToOutgoingChannel[channelsIncomingObject[id].peerAddress]);
 
     return {
       id: index.toString(),
@@ -188,6 +191,8 @@ function ChannelsPage() {
           />
           <OpenChannelModal
             peerAddress={channelsIncomingObject[id].peerAddress}
+            disabled={outgoingChannelOpened}
+            tooltip={outgoingChannelOpened ? <span>Outgoing channel<br/>already opened</span> : undefined }
           />
           <SendMessageModal
             peerId={getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string)}
