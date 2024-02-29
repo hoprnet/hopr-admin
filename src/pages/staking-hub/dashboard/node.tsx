@@ -324,7 +324,7 @@ const getOnboardingTooltip = (
       </span>
     )
   }
-  else if (balanceFormatted === '0') {
+  else if (includedInModule && isDelegate && balanceFormatted === '0') {
     return (
       <span>
         You need to fund this node
