@@ -174,7 +174,7 @@ function ChannelsPage() {
     const peerId = getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string);
 
     return {
-      id: index.toString(),
+      id: (index+1).toString(),
       key: id,
       peerAddress: getAliasByPeerAddress(channelsIncomingObject[id].peerAddress as string),
       status: channelsIncomingObject[id].status,
