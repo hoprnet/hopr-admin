@@ -304,17 +304,15 @@ export default function Details(props: Props) {
               {info?.connectivityStatus}
             </ColorStatus>
           </p>
-          <p>
-            <ColorStatus
-              className={`status-${isXdaiEnough()}`}
-            >
-              {balances.native?.formatted ?? '-'}
-            </ColorStatus>
-          </p>
-          <p>{balances.safeNative?.formatted ?? '-'}</p>
-          <p>{balances.safeHopr?.formatted ?? '-'}</p>
-          <p className="double">{balances.channels?.formatted ?? '-'}</p>
-          <p className="double">{totalwxHOPR}</p>
+          <ColorStatus
+            className={`status-${isXdaiEnough()}`}
+          >
+            <Tooltip title={balances.native?.formatted && balances.native?.formatted !== '0' ? balances.native?.formatted : null}><p>{balances.native?.formatted ?? '-'}</p></Tooltip>
+          </ColorStatus>
+          <Tooltip title={balances.safeNative?.formatted && balances.safeNative?.formatted !== '0' ? balances.safeNative?.formatted : null}><p>{balances.safeNative?.formatted ?? '-'}</p></Tooltip>
+          <Tooltip title={balances.safeHopr?.formatted && balances.safeHopr?.formatted !== '0' ? balances.safeHopr?.formatted : null}><p>{balances.safeHopr?.formatted ?? '-'}</p></Tooltip>
+          <Tooltip title={balances.channels?.formatted && balances.channels?.formatted !== '0' ? balances.channels?.formatted : null}><p className="double">{balances.channels?.formatted ?? '-'}</p></Tooltip>
+          <Tooltip title={totalwxHOPR && totalwxHOPR !== '0' ? totalwxHOPR : null}><p  className="double">{totalwxHOPR ?? '-'}</p></Tooltip>
           <p>{truncateBalanceto5charsWhenNoDecimals(peers?.announced?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.outgoing?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.incoming?.length) || '-'}</p>

@@ -143,6 +143,7 @@ function ChannelsPage() {
     {
       key: 'status',
       name: 'Status',
+      search: true,
       maxWidth: '368px',
       tooltip: true,
     },
