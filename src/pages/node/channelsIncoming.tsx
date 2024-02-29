@@ -170,6 +170,7 @@ function ChannelsPage() {
     if(!channelsIncomingObject[id].peerAddress || !channelsIncomingObject[id].balance || !channelsIncomingObject[id].status) return;
     // @ts-ignore: check was done in line above
     const outgoingChannelOpened = !!(channelsIncomingObject[id].peerAddress && !!nodeAddressToOutgoingChannel[channelsIncomingObject[id].peerAddress]);
+    const peerId = getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string);
 
     return {
       id: index.toString(),
@@ -181,13 +182,15 @@ function ChannelsPage() {
       actions: (
         <>
           <PingModal
-            peerId={getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string)}
-            disabled={!getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string)}
+            peerId={peerId}
+            disabled={!peerId}
+            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
           />
           <CreateAliasModal
             handleRefresh={handleRefresh}
-            peerId={getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string)}
-            disabled={!getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string)}
+            peerId={peerId}
+            disabled={!peerId}
+            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
           />
           <OpenChannelModal
             peerAddress={channelsIncomingObject[id].peerAddress}
@@ -195,8 +198,9 @@ function ChannelsPage() {
             tooltip={outgoingChannelOpened ? <span>Outgoing channel<br/>already opened</span> : undefined }
           />
           <SendMessageModal
-            peerId={getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string)}
-            disabled={!getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string)}
+            peerId={peerId}
+            disabled={!peerId}
+            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
           />
         </>
       ),

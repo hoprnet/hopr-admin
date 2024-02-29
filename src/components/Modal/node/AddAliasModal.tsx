@@ -16,6 +16,7 @@ type CreateAliasModalProps = {
   handleRefresh: () => void;
   peerId?: string;
   disabled?: boolean;
+  tooltip?: JSX.Element | string;
 };
 
 export const CreateAliasModal = (props: CreateAliasModalProps) => {
@@ -105,6 +106,9 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
       <IconButton
         iconComponent={<AddAliasIcon />}
         tooltipText={
+          props.tooltip ?
+          props.tooltip
+          :
           <span>
             ADD
             <br />

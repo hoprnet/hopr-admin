@@ -219,6 +219,8 @@ function ChannelsPage() {
 
   const parsedTableData = Object.keys(channelsOutgoingObject).map((id, index) => {
     if(!channelsOutgoingObject[id].peerAddress || !channelsOutgoingObject[id].balance || !channelsOutgoingObject[id].status) return;
+    const peerId = getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string);
+
     return {
       id: index.toString(),
       key: id,
@@ -228,13 +230,15 @@ function ChannelsPage() {
       actions: (
         <>
           <PingModal
-            peerId={getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string)}
-            disabled={!getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string)}
+            peerId={peerId}
+            disabled={!peerId}
+            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
           />
           <CreateAliasModal
             handleRefresh={handleRefresh}
-            peerId={getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string)}
-            disabled={!getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string)}
+            peerId={peerId}
+            disabled={!peerId}
+            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
           />
           <FundChannelModal
             channelId={id}
@@ -252,8 +256,9 @@ function ChannelsPage() {
             onClick={() => handleCloseChannels(id)}
           />
           <SendMessageModal
-            peerId={getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string)}
-            disabled={!getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string)}
+            peerId={peerId}
+            disabled={!peerId}
+            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
           />
         </>
       ),

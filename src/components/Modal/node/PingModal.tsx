@@ -14,6 +14,7 @@ import Button from '../../../future-hopr-lib-components/Button';
 type PingModalProps = {
   peerId?: string;
   disabled?: boolean;
+  tooltip?: JSX.Element | string;
 };
 
 export const PingModal = (props: PingModalProps) => {
@@ -93,6 +94,9 @@ export const PingModal = (props: PingModalProps) => {
       <IconButton
         iconComponent={<RssFeedIcon />}
         tooltipText={
+          props.tooltip ?
+          props.tooltip
+          :
           <span>
             PING
             <br />

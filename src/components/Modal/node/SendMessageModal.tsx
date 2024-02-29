@@ -58,6 +58,7 @@ const StatusContainer = styled.div`
 type SendMessageModalProps = {
   peerId?: string;
   disabled?: boolean;
+  tooltip?: JSX.Element | string;
 };
 
 export const SendMessageModal = (props: SendMessageModalProps) => {
@@ -275,6 +276,9 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       <IconButton
         iconComponent={<ForwardToInboxIcon />}
         tooltipText={
+          props.tooltip ?
+          props.tooltip
+          :
           <span>
             SEND
             <br />
