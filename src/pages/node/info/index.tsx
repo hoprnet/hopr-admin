@@ -427,37 +427,6 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="Your module's Ethereum address."
-                  notWide
-                >
-                  <span>Module Address</span>
-                </Tooltip>
-              </th>
-              <TdActionIcons>
-                {info?.hoprManagementModule}
-                {
-                  info?.hoprManagementModule &&
-                  <>
-                    <SmallActionButton
-                      onClick={() => navigator.clipboard.writeText(info.hoprManagementModule as string)}
-                      tooltip={'Copy'}
-                    >
-                      <CopyIcon />
-                    </SmallActionButton>
-                    <SmallActionButton
-                      tooltip={'Open on gnosisscan.io'}
-                    >
-                      <Link to={`https://gnosisscan.io/address/${info.hoprManagementModule}`} target='_blank'>
-                        <LaunchIcon />
-                      </Link>
-                    </SmallActionButton>
-                  </>
-                }
-              </TdActionIcons>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
                   title="The contract address of the HOPR token."
                   notWide
                 >
@@ -479,6 +448,37 @@ function InfoPage() {
                       tooltip={'Open in gnosisscan.io'}
                     >
                       <Link to={`https://gnosisscan.io/address/${info?.hoprToken}`} target='_blank'>
+                        <LaunchIcon />
+                      </Link>
+                    </SmallActionButton>
+                  </>
+                }
+              </TdActionIcons>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The contract address of the Hopr management module."
+                  notWide
+                >
+                  <span>Hopr management module address</span>
+                </Tooltip>
+              </th>
+              <TdActionIcons>
+                {info?.hoprManagementModule}
+                {
+                  info?.hoprManagementModule &&
+                  <>
+                    <SmallActionButton
+                      onClick={() => navigator.clipboard.writeText(info.hoprManagementModule as string)}
+                      tooltip={'Copy'}
+                    >
+                      <CopyIcon />
+                    </SmallActionButton>
+                    <SmallActionButton
+                      tooltip={'Open on gnosisscan.io'}
+                    >
+                      <Link to={`https://gnosisscan.io/address/${info.hoprManagementModule}`} target='_blank'>
                         <LaunchIcon />
                       </Link>
                     </SmallActionButton>
