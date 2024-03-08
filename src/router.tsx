@@ -378,6 +378,11 @@ const LayoutEnhanced = () => {
         apiToken: apiToken ? apiToken : '',
       })
     );
+    dispatch(
+      nodeActions.setApiEndpoint({
+        apiEndpoint: formattedApiEndpoint,
+      }),
+    );
     if (!apiToken) return;
     const useNode = async () => {
       try {
@@ -390,11 +395,6 @@ const LayoutEnhanced = () => {
         if (loginInfo) {
           // We do this after the loginInfo to make sure the login from url was successful
           trackGoal('Y641EPNA', 1) // LOGIN_TO_NODE_BY_URL
-          dispatch(
-            nodeActions.setApiEndpoint({
-              apiEndpoint: formattedApiEndpoint,
-            }),
-          );
           dispatch(
             nodeActionsAsync.getInfoThunk({
               apiToken,

@@ -151,9 +151,7 @@ const getAliasesThunk = createAsyncThunk<GetAliasesResponseType | undefined, Bas
   'node/getAliases',
   async (payload, {
     rejectWithValue,
-    dispatch,
   }) => {
-    dispatch(nodeActionsFetching.setAliasesFetching(true));
     try {
       const aliases = await getAliases(payload);
       return aliases;
@@ -969,6 +967,9 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     state.addresses.isFetching = false;
   });
   // getAliases
+  builder.addCase(getAliasesThunk.pending, (state) => {
+    state.aliases.isFetching = true;
+  });
   builder.addCase(getAliasesThunk.fulfilled, (state, action) => {
     if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
