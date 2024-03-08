@@ -52,6 +52,7 @@ const messages = () => {
       key: 'body',
       name: 'Message',
       wrap: true,
+      search: true,
     },
   ];
 
@@ -106,6 +107,7 @@ const messages = () => {
       <TablePro
         data={parsedTableData}
         header={header}
+        search
       />
     </Section>
   );

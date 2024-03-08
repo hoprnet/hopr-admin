@@ -241,12 +241,12 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           force,
         }),
       ).unwrap();
+      dispatch(
+        nodeActions.setApiEndpoint({
+          apiEndpoint: formattedApiEndpoint,
+        }),
+      );
       if (loginInfo) {
-        dispatch(
-          nodeActions.setApiEndpoint({
-            apiEndpoint: formattedApiEndpoint,
-          }),
-        );
         dispatch(
           authActions.useNodeData({
             apiEndpoint: formattedApiEndpoint,
