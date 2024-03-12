@@ -290,11 +290,11 @@ export default function Details(props: Props) {
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
-          <Text>Unredeemed tickets</Text>
+          <Text>Unredeemed wxHOPR</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
-          <Text>Redeemed tickets</Text>
+          <Text>Redeemed wxHOPR</Text>
         </IconAndText>
       </TitleColumn>
       <DataColumn>
@@ -316,8 +316,8 @@ export default function Details(props: Props) {
           <p>{truncateBalanceto5charsWhenNoDecimals(peers?.announced?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.outgoing?.length) || '-'}</p>
           <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.incoming?.length) || '-'}</p>
-          <p className="double">{truncateBalanceto5charsWhenNoDecimals(statistics?.unredeemed) || '-'}</p>
-          <p className="double">{truncateBalanceto5charsWhenNoDecimals(statistics?.redeemed) || '-'}</p>
+          <Tooltip title={statistics?.unredeemedValue && statistics?.unredeemedValue !== '0' ? formatEther(BigInt(statistics?.unredeemedValue as string)) : null}><p className="double">{statistics?.unredeemedValue ? formatEther(BigInt(statistics?.unredeemedValue as string)) : '-'}</p></Tooltip>
+          <Tooltip title={statistics?.redeemedValue && statistics?.redeemedValue !== '0' ? formatEther(BigInt(statistics?.redeemedValue as string)) : null}><p className="double">{statistics?.redeemedValue ? formatEther(BigInt(statistics?.redeemedValue as string)) : '-'}</p></Tooltip>
         </Data>
       </DataColumn>
     </Web3Container>

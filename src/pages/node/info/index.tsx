@@ -168,7 +168,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="Whether or not your node is eligible to connect to the Monte Rosa network."
+                  title="Whether or not your node is eligible to connect to the network"
                   notWide
                 >
                   <span>Eligible</span>
@@ -179,7 +179,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="Whether or not your node is eligible to connect to the Monte Rosa network."
+                  title="The sync process of your node with the blockchain"
                   notWide
                 >
                   <span>Sync process</span>
@@ -199,7 +199,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The blockchain network your node is using for on-chain transactions."
+                  title="The blockchain network your node is using for on-chain transactions"
                   notWide
                 >
                   <span>Blockchain Network</span>
@@ -233,7 +233,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The address your node announces to make itself reachable for other nodes."
+                  title="The address your node announces to make itself reachable for other nodes"
                   notWide
                 >
                   <span>Announced address</span>
@@ -244,7 +244,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The address your node uses to listen for incoming connections."
+                  title="The address your node uses to listen for incoming connections"
                   notWide
                 >
                   <span>Listening address</span>
@@ -365,7 +365,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="Your node's Ethereum address."
+                  title="Your node's Ethereum address"
                   notWide
                 >
                   <span>Node Address</span>
@@ -396,7 +396,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="Your safe's Ethereum address."
+                  title="Your safe's Ethereum address"
                   notWide
                 >
                   <span>Safe Address</span>
@@ -427,7 +427,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The contract address of the HOPR token."
+                  title="The contract address of the HOPR token"
                   notWide
                 >
                   <span>Hopr Token Address</span>
@@ -458,7 +458,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The contract address of the Hopr management module."
+                  title="The contract address of the Hopr management module"
                   notWide
                 >
                   <span>Hopr management module address</span>
@@ -489,7 +489,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The contract address of the hoprChannels smart contract."
+                  title="The contract address of the hoprChannels smart contract"
                   notWide
                 >
                   <span>Hopr Channels Address</span>
@@ -528,7 +528,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The version of HOPR your node is running."
+                  title="The version of HOPR your node is running"
                   notWide
                 >
                   <span>Version</span>
@@ -539,7 +539,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The environment your node is running in."
+                  title="The environment your node is running in"
                   notWide
                 >
                   <span>Environment</span>
@@ -572,7 +572,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The number of incoming channels connected to your node."
+                  title="The number of incoming channels connected to your node"
                   notWide
                 >
                   <span>Incoming</span>
@@ -583,7 +583,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The number of outgoing channels connected to your node."
+                  title="The number of outgoing channels connected to your node"
                   notWide
                 >
                   <span>Outgoing</span>
@@ -602,7 +602,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The number of announced nodes on the network visible to your node."
+                  title="The number of announced nodes on the network visible to your node"
                   notWide
                 >
                   <span>Announced</span>
@@ -613,7 +613,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The number of nodes on the network your node can reach."
+                  title="The number of nodes on the network your node can reach"
                   notWide
                 >
                   <span>Connected</span>

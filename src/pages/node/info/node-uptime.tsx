@@ -45,7 +45,12 @@ function NodeUptime() {
         const hours = Math.floor((uptimeSec-(days * 86400)) / 3600);
         const minutes = Math.floor((uptimeSec-(days * 86400)-(hours * 3600)) / 60);
         const seconds = Math.floor((uptimeSec-(days * 86400)-(hours * 3600)-(minutes * 60)));
-        set_nodeTimeUp(`${days} days ${hours} hours ${minutes} min ${seconds} sec`)
+
+        if(days !== 0) set_nodeTimeUp(`${days} days ${hours} hours ${minutes} min ${seconds} sec`);
+        else if(hours !== 0) set_nodeTimeUp(`${hours} hours ${minutes} min ${seconds} sec`);
+        else if(minutes !== 0) set_nodeTimeUp(`${minutes} min ${seconds} sec`);
+        else set_nodeTimeUp(`${seconds} sec`);
+
       }, 1_000)
     }
     return () => clearInterval(interval);
