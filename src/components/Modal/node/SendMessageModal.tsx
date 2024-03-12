@@ -52,7 +52,13 @@ const PathOrHops = styled.div`
 `;
 
 const StatusContainer = styled.div`
-  height: 32px;
+  position: absolute;
+  height: calc( 100% - 32px );
+  width: calc( 100% - 32px );
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 100;
 `;
 
 type SendMessageModalProps = {
@@ -65,7 +71,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const dispatch = useAppDispatch();
   const [path, set_path] = useState<string>('');
   const [loader, set_loader] = useState<boolean>(false);
-  const [status, set_status] = useState<string>('');
+  const [error, set_error] = useState<string | null>(null);
   const [numberOfHops, set_numberOfHops] = useState<number>(0);
   const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops' | 'directMessage'>('directMessage');
   const [message, set_message] = useState<string>('');
@@ -78,7 +84,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
 
   console.log('SendMessageModal', props);
 
-  const peersAndOwnNode = peers && addresses.hopr && addresses.native ? [...peers.map(peer => peer.peerId), addresses.hopr ] : [];
+  const peersAndOwnNode = peers && addresses.hopr && addresses.native ? [...peers.map(peer => peer.peerId), addresses.hopr] : [];
   console.log(peersAndOwnNode)
 
   const [selectedReceiver, set_selectedReceiver] = useState<string | null>(props.peerId ? props.peerId : null);
@@ -111,7 +117,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
 
   const handleSendMessage = () => {
     if (!(loginData.apiEndpoint && loginData.apiToken) || !selectedReceiver) return;
-    set_status('');
+    set_error(null);
     set_loader(true);
     //const validatedReceiver = validatePeerId(selectedReceiver);
 
@@ -152,12 +158,11 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       .unwrap()
       .then((res) => {
         console.log('@message: ', res?.challenge);
-        set_status('Message sent');
         handleCloseModal();
       })
       .catch((e) => {
         console.log('@message err:', e);
-        set_status(e.error);
+        set_error(e.error);
       })
       .finally(() => {
         set_loader(false);
@@ -190,7 +195,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
     set_selectedReceiver(props.peerId ? props.peerId : null);
     set_path('');
     set_openModal(false);
-    set_status('');
+    set_error(null);
   };
 
   const handlePathKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -254,13 +259,13 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
         iconComponent={<ForwardToInboxIcon />}
         tooltipText={
           props.tooltip ?
-          props.tooltip
-          :
-          <span>
-            SEND
-            <br />
-            message
-          </span>
+            props.tooltip
+            :
+            <span>
+              SEND
+              <br />
+              message
+            </span>
         }
         onClick={handleOpenModal}
         disabled={props.disabled}
@@ -362,6 +367,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
         <DialogActions>
           <Button
             onClick={handleSendMessage}
+            pending={loader}
             disabled={
               selectedReceiver === null || sendMode !== 'directMessage' && (sendMode !== 'automaticPath' && numberOfHops < 0 && path === '') || message.length === 0
             }
@@ -373,10 +379,23 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
             Send
           </Button>
         </DialogActions>
-        <StatusContainer>
-          {loader && <CircularProgress />}
-          {status}
-        </StatusContainer>
+        {
+          error &&
+          <StatusContainer>
+            <TopBar>
+              <DialogTitle>ERROR</DialogTitle>
+              <SIconButton
+                aria-label="hide error"
+                onClick={()=>{set_error(null)}}
+              >
+                <CloseIcon />
+              </SIconButton>
+            </TopBar>
+            <SDialogContent>
+              {error}
+            </SDialogContent>
+          </StatusContainer>
+        }
       </SDialog >
     </>
   );
