@@ -294,6 +294,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
                 ? `${findAlias(peerId)} (${peerId})`
                 : peerId
             }
+            autoSelect
             renderInput={(params) => (
               <TextField
                 {...params}
