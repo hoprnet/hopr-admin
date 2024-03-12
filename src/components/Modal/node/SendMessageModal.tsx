@@ -75,42 +75,19 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const peers = useAppSelector((store) => store.node.peers.data?.connected);
   const addresses = useAppSelector((store) => store.node.addresses.data);
 
-  const peersAndOwnNode = peers && addresses.hopr && addresses.native ? [...peers, {
-    peerId: addresses.hopr,
-    peerAddress: addresses.native,
-    multiaddr:"",
-    lastSeen: 0,
-    quality:0,
-    backoff:0,
-    isNew: false,
-    reportedVersion:"",
-    heartbeats: {
-      sent: 0,
-      success: 0,
-    }
-  }] : [];
 
-  const [selectedReceiver, set_selectedReceiver] = useState<{
-    peerId: string;
-    peerAddress: string;
-    quality: number;
-    multiaddr?: string | null;
-    heartbeats: {
-      sent: number;
-      success: number;
-    };
-    lastSeen: number;
-    backoff: number;
-    isNew: boolean;
-    reportedVersion: string;
-  } | null>(props.peerId ? peers!.find(elem => elem.peerId === props.peerId) || null : null);
+  console.log('SendMessageModal', props);
+
+  const peersAndOwnNode = peers && addresses.hopr && addresses.native ? [...peers.map(peer => peer.peerId), addresses.hopr ] : [];
+  console.log(peersAndOwnNode)
+
+  const [selectedReceiver, set_selectedReceiver] = useState<string | null>(props.peerId ? props.peerId : null);
 
   const maxLength = 500;
   const remainingChars = maxLength - message.length;
 
   const setPropPeerId = () => {
-    const reveiver = props.peerId ? peers!.find(elem => elem.peerId === props.peerId) || null : null;
-    if (props.peerId) set_selectedReceiver(reveiver);
+    if (props.peerId) set_selectedReceiver(props.peerId);
   };
   useEffect(setPropPeerId, [props.peerId]);
 
@@ -133,16 +110,16 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   }, [sendMode]);
 
   const handleSendMessage = () => {
-    if (!(loginData.apiEndpoint && loginData.apiToken)) return;
+    if (!(loginData.apiEndpoint && loginData.apiToken) || !selectedReceiver) return;
     set_status('');
     set_loader(true);
-    const validatedReceiver = validatePeerId(selectedReceiver!.peerId);
+    //const validatedReceiver = validatePeerId(selectedReceiver);
 
     const messagePayload: SendMessagePayloadType = {
       apiToken: loginData.apiToken,
       apiEndpoint: loginData.apiEndpoint,
       body: message,
-      peerId: validatedReceiver,
+      peerId: selectedReceiver,
       tag: 1,
     };
     if (sendMode === 'automaticPath') {
@@ -210,7 +187,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
     set_sendMode('directMessage');
     set_numberOfHops(0);
     set_message('');
-    set_selectedReceiver(null);
+    set_selectedReceiver(props.peerId ? props.peerId : null);
     set_path('');
     set_openModal(false);
     set_status('');
@@ -312,10 +289,10 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
               set_selectedReceiver(newValue);
             }}
             options={peersAndOwnNode}
-            getOptionLabel={(peer) =>
-              hasAlias(peer.peerId)
-                ? `${findAlias(peer.peerId)} (${peer.peerId})`
-                : peer.peerId
+            getOptionLabel={(peerId) =>
+              hasAlias(peerId)
+                ? `${findAlias(peerId)} (${peerId})`
+                : peerId
             }
             renderInput={(params) => (
               <TextField

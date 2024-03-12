@@ -27,7 +27,8 @@ function AliasesPage() {
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const peers = useAppSelector(store => store.node.peers.data)
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
-  const hoprAddresses = useAppSelector((store) => store.node.addresses.data.hopr)
+  const hoprAddress = useAppSelector((store) => store.node.addresses.data.hopr)
+  const nodeAddress = useAppSelector((store) => store.node.addresses.data.native)
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [importSuccess, set_importSuccess] = useState(false);
   const [deleteSuccess, set_deleteSuccess] = useState(false);
@@ -62,6 +63,7 @@ function AliasesPage() {
 
 
   const getPeerAddressByPeerId = (peerId: string): string | undefined => {
+    if(peerId === hoprAddress && typeof(nodeAddress) === 'string' ) return nodeAddress;
 
     const peer = peers?.announced.find(peer => peer.peerId === peerId);
 
@@ -130,12 +132,19 @@ function AliasesPage() {
       peerAddress: getPeerAddressByPeerId(peerId) ?? '',
       actions: (
         <>
-          <PingModal peerId={peerId} disabled={peerId === hoprAddresses} />
+          <PingModal
+            peerId={peerId}
+            disabled={peerId === hoprAddress}
+            tooltip={`You can't ping yourself`}
+          />
           <OpenChannelModal
             peerAddress={getPeerAddressByPeerId(peerId)}
-            disabled={peerId === hoprAddresses}
+            disabled={peerId === hoprAddress}
+            tooltip={`You can't open a channel to yourself`}
           />
-          <SendMessageModal peerId={peerId} disabled={peerId === hoprAddresses} />
+          <SendMessageModal
+            peerId={peerId}
+          />
           <DeleteAliasButton
             onSuccess={() => {
               set_deleteSuccess(true);
