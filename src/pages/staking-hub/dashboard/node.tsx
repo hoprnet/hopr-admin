@@ -582,6 +582,7 @@ const NodeAdded = () => {
       <br/>
       <TablePro
         data={parsedTableData}
+        id={'nodes-in-safe-table'}
         search={true}
         header={header}
       />

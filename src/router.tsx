@@ -94,6 +94,7 @@ export type ApplicationMapType = {
     loginNeeded?: 'node' | 'web3' | 'safe';
     onClick?: () => void;
     mobileOnly?: boolean | null;
+    numberKey?: string;
   }[];
 }[];
 
@@ -144,6 +145,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <LanIcon />,
         element: <PeersPage />,
         loginNeeded: 'node',
+        numberKey: 'numberOfPeers'
       },
       {
         name: 'ALIASES',
@@ -151,6 +153,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <ContactPhone />,
         element: <AliasesPage />,
         loginNeeded: 'node',
+        numberKey: 'numberOfAliases'
       },
       {
         name: 'MESSAGES',
@@ -158,6 +161,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <MailIcon />,
         element: <MessagesPage />,
         loginNeeded: 'node',
+        numberKey: 'numberOfMessagesReceived'
       },
       {
         name: 'CHANNELS: IN',
@@ -165,6 +169,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <IncomingChannelsIcon />,
         element: <ChannelsPageIncoming />,
         loginNeeded: 'node',
+        numberKey: 'numberOfChannelsIn'
       },
       {
         name: 'CHANNELS: OUT',
@@ -172,6 +177,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <OutgoingChannelsIcon />,
         element: <ChannelsPageOutgoing />,
         loginNeeded: 'node',
+        numberKey: 'numberOfChannelsOut'
       },
     ],
   },
@@ -360,6 +366,20 @@ const LayoutEnhanced = () => {
   const apiToken = searchParams.get('apiToken');
   const HOPRdNodeAddressForOnboarding = searchParams.get('HOPRdNodeAddressForOnboarding'); //Address given in HOPRd: https://hub.hoprnet.org/staking/onboarding?HOPRdNodeAddressForOnboarding={my_address}
 
+  const numberOfPeers = useAppSelector((store) => store.node.peers.data?.connected.length);
+  const numberOfAliases = useAppSelector((store) => store.node.aliases?.data && Object.keys(store.node.aliases?.data).length);
+  const numberOfMessagesReceived = useAppSelector((store) => store.node.messages.data.length);
+  const numberOfChannelsIn = useAppSelector((store) => store.node.channels.data?.incoming.length);
+  const numberOfChannelsOut = useAppSelector((store) => store.node.channels.data?.outgoing.length);
+
+  const numberForDrawer = {
+    numberOfPeers,
+    numberOfAliases,
+    numberOfMessagesReceived,
+    numberOfChannelsIn,
+    numberOfChannelsOut
+  }
+
   useEffect(() => {
     if (environment === 'web3') {
       document.title = 'HOPR | Staking Hub';
@@ -515,6 +535,7 @@ const LayoutEnhanced = () => {
       webapp
       drawerItems={applicationMap}
       drawerFunctionItems={environment === 'web3' ? drawerFunctionItems : undefined}
+      drawerNumbers={numberForDrawer}
       drawerLoginState={{
         node: nodeConnected,
         web3: web3Connected,

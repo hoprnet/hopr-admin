@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import styled from '@emotion/styled';
 import _debounce from 'lodash/debounce';
+import { loadStateFromLocalStorage, saveStateToLocalStorage } from '../../utils/localStorage';
 
 // HOPR
 import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
@@ -136,6 +137,7 @@ interface Props {
     id: string,
     actions: JSX.Element
   }[];
+  id?: string,
   header: {
     key: string,
     name: string,
@@ -154,10 +156,13 @@ interface Props {
 }
 
 export default function CustomPaginationActionsTable(props: Props) {
+  const rowsPerPageFromLocalStorage = loadStateFromLocalStorage(`pro-table_rows-per-page_${props.id}`) as number | null;
   const [page, set_Page] = React.useState(0);
-  const [rowsPerPage, set_RowsPerPage] = React.useState(10);
+  const [rowsPerPage, set_RowsPerPage] = React.useState(props.id && rowsPerPageFromLocalStorage ? rowsPerPageFromLocalStorage : 10);
   const [searchPhrase, set_searchPhrase] = React.useState('');
   const [filteredData, set_filteredData] = React.useState<typeof props.data>([]);
+
+  const ref = useRef(null);
 
   useEffect(() => {
     filterData(searchPhrase);
@@ -171,7 +176,9 @@ export default function CustomPaginationActionsTable(props: Props) {
   };
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    set_RowsPerPage(parseInt(event.target.value, 10));
+    const newRowsPerPage = parseInt(event.target.value, 10);
+    set_RowsPerPage(newRowsPerPage);
+    if(props.id) saveStateToLocalStorage(`pro-table_rows-per-page_${props.id}`, newRowsPerPage)
     set_Page(0);
   };
 
@@ -205,7 +212,10 @@ export default function CustomPaginationActionsTable(props: Props) {
   }
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer
+      component={Paper}
+      ref={ref}
+    >
       <OverTable className={`OverTable ${props.search ? 'searchIncluded' : ''}`}>
         {props.search && (
           <STextField

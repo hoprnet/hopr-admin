@@ -78,7 +78,7 @@ const messages = () => {
       yellow
     >
       <SubpageTitle
-        title={`MESSAGES`}
+        title={`MESSAGES (${messages.length})`}
         actions={
           <>
             <SendMessageModal />
@@ -106,6 +106,7 @@ const messages = () => {
       />
       <TablePro
         data={parsedTableData}
+        id={'node-messages-table'}
         header={header}
         search
       />

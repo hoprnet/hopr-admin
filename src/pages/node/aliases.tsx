@@ -90,6 +90,7 @@ function AliasesPage() {
   const handleCSVUpload = async (parsedData: any[]) => {
     for (const data of parsedData) {
       if (data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken) {
+        console.log('data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken')
         await dispatch(
           actionsAsync.setAliasThunk({
             alias: String(data.alias),
@@ -175,7 +176,7 @@ function AliasesPage() {
       yellow
     >
       <SubpageTitle
-        title={`ALIASES`}
+        title={`ALIASES (${parsedTableData.length})`}
         refreshFunction={handleRefresh}
         reloading={aliasesFetching}
         actions={
@@ -200,6 +201,7 @@ function AliasesPage() {
       <TablePro
         data={parsedTableData}
         search={true}
+        id={'node-aliases-table'}
         header={[
           {
             key: 'alias',

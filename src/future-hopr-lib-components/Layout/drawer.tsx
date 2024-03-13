@@ -15,6 +15,7 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import { ApplicationMapType } from '../../router';
 import Details from '../../components/InfoBar/details';
+import { rounder2 } from '../../utils/functions';
 
 const drawerWidth = 240;
 const minDrawerWidth = 56;
@@ -88,16 +89,22 @@ const StyledListItemButton = styled(ListItemButton)`
   height: 48px;
   fill: rgba(0, 0, 0, 0.54);
   width: 100%;
-  svg {
-    width: 24px;
-    height: 24px;
+  padding-right: 10px;
+  .MuiListItemIcon-root{
+    min-width: 48px;
+    svg {
+      width: 24px;
+      height: 24px;
+    }
   }
   &.Mui-selected {
     color: #0000b4;
     fill: #0000b4;
     background-color: rgba(255, 255, 255, 0.45);
-    text-decoration: underline 2px #0000b4;
-    text-underline-offset: 4px;
+    .MuiListItemText-root{// ListItemText css-tlelie-MuiListItemText-root"
+      text-decoration: underline 2px #0000b4;
+      text-underline-offset: 4px;
+    }
     .MuiTypography-root {
       font-weight: bold;
     }
@@ -115,6 +122,12 @@ const SListItemIcon = styled(ListItemIcon)`
   }
 `;
 
+const Numbers = styled.div`
+  font-size: 11px;
+  background-color: #0000b433;
+  padding: 3px;
+`;
+
 type DrawerProps = {
   drawerItems: ApplicationMapType;
   drawerFunctionItems?: ApplicationMapType;
@@ -123,6 +136,9 @@ type DrawerProps = {
     web3?: boolean;
     safe?: boolean;
   };
+  drawerNumbers?: {
+    [key: string]: number | string | undefined | null
+  }
   openedNavigationDrawer: boolean;
   drawerType?: 'blue' | 'white' | false;
   set_openedNavigationDrawer: (openedNavigationDrawer: boolean) => void;
@@ -135,6 +151,7 @@ const Drawer = ({
   set_openedNavigationDrawer,
   drawerType,
   drawerFunctionItems,
+  drawerNumbers,
 }: DrawerProps) => {
   const location = useLocation();
   const searchParams = location.search;
@@ -166,6 +183,8 @@ const Drawer = ({
 
   const preare = drawerFunctionItems ? drawerFunctionItems : [];
   const allItems = [...preare, ...drawerItems];
+
+
 
   return (
     <StyledDrawer
@@ -230,6 +249,15 @@ const Drawer = ({
                         >
                           <SListItemIcon className="SListItemIcon">{item.icon}</SListItemIcon>
                           <ListItemText className="ListItemText">{item.name}</ListItemText>
+                          {
+                            item.numberKey &&
+                            drawerNumbers &&
+                            openedNavigationDrawer &&
+                            (item.loginNeeded && drawerLoginState?.[item.loginNeeded]) &&
+                            <Numbers>
+                              {rounder2(drawerNumbers[item.numberKey])}
+                            </Numbers>
+                          }
                         </StyledListItemButton>
                       </Tooltip>
                     ),

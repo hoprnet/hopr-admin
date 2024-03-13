@@ -187,6 +187,7 @@ function PeersPage() {
         data={parsedTableData}
         search={true}
         header={header}
+        id={'node-peers-table'}
       />
     </Section>
   );

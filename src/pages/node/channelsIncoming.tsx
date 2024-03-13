@@ -155,8 +155,9 @@ function ChannelsPage() {
     },
     {
       key: 'tickets',
-      name: 'Tickets',
+      name: 'Unredeemed',
       maxWidth: '60px',
+      tooltipHeader: <>Unredeemed tickets<br/>per channel</>
     },
     {
       key: 'actions',
@@ -224,7 +225,7 @@ function ChannelsPage() {
       yellow
     >
       <SubpageTitle
-        title={`INCOMING CHANNELS`}
+        title={`INCOMING CHANNELS (${channelsData ? channelsData.length : '-'})`}
         refreshFunction={handleRefresh}
         reloading={channelsFetching}
         actions={
@@ -246,6 +247,7 @@ function ChannelsPage() {
       />
       <TablePro
         data={parsedTableData}
+        id={'node-channels-in-table'}
         header={headerIncoming}
         search
         loading={parsedTableData.length === 0 && channelsFetching}

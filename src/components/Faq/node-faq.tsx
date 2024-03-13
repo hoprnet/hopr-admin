@@ -153,6 +153,12 @@ const nodeFaq: FaqData = {
       content:
         'Currently, there is no way to redeem neglected tickets. Make sure to redeem tickets before closing channels.',
     },
+    {
+      id: 7,
+      title: 'Unredeemed tickets',
+      content:
+        'The tickets earned by your node that have yet to be redeemed. Those tickets have to reach a specified treshold per channel in order to automaticly get redeemd. Please check the incomming channels page to see the number of unredeemed tickets per channel.',
+    },
   ],
   '/node/metrics': [
     {
@@ -260,6 +266,14 @@ const nodeFaq: FaqData = {
       title: 'What is an alias?',
       content:
         'An alias is a nickname you set a node so you can keep a reminder of who they are. E.g. Great Node 3, John etc...',
+    },
+  ],
+  '/networking/channels-INCOMING': [
+    {
+      id: 1,
+      title: 'Unredeemed tickets',
+      content:
+        'The tickets earned by your node that have yet to be redeemed. Those tickets have to reach a specified treshold per channel in order to automaticly get redeemd. Please check the incomming channels page to see the number of unredeemed tickets per channel',
     },
   ],
   '/networking/channels': [

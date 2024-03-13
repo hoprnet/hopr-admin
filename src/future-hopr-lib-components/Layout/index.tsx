@@ -73,6 +73,9 @@ const Layout: React.FC<{
   drawerItems: ApplicationMapType;
   drawerFunctionItems?: ApplicationMapType;
   drawerRight?: React.ReactNode;
+  drawerNumbers?: {
+    [key: string]: number | string | undefined | null
+  }
 }> = ({
   className = '',
   children,
@@ -85,6 +88,7 @@ const Layout: React.FC<{
   drawerRight,
   drawerType,
   drawerFunctionItems,
+  drawerNumbers
 }) => {
     const isMobile = !useMediaQuery('(min-width: 500px)');
     const isConnected = useAppSelector((store) => store.auth.status.connected);
@@ -129,6 +133,7 @@ const Layout: React.FC<{
             drawerItems={drawerItems}
             drawerFunctionItems={drawerFunctionItems}
             drawerLoginState={drawerLoginState}
+            drawerNumbers={drawerNumbers}
             set_openedNavigationDrawer={handleOpenedNavigationDrawer}
             openedNavigationDrawer={isMobile ? openedNavigationDrawerMobile : openedNavigationDrawerPC}
           />

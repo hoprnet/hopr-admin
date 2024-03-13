@@ -80,13 +80,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const peers = useAppSelector((store) => store.node.peers.data?.connected);
   const addresses = useAppSelector((store) => store.node.addresses.data);
-
-
-  console.log('SendMessageModal', props);
-
   const peersAndOwnNode = peers && addresses.hopr && addresses.native ? [...peers.map(peer => peer.peerId), addresses.hopr] : [];
-  console.log(peersAndOwnNode)
-
   const [selectedReceiver, set_selectedReceiver] = useState<string | null>(props.peerId ? props.peerId : null);
 
   const maxLength = 500;
@@ -374,6 +368,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
             style={{
               width: '100%',
               marginTop: '8px',
+              marginBottom: '8px',
             }}
           >
             Send

@@ -280,7 +280,7 @@ function ChannelsPage() {
       yellow
     >
       <SubpageTitle
-        title={`OUTGOING CHANNELS`}
+        title={`OUTGOING CHANNELS (${channelsData ? channelsData.length : '-'})`}
         refreshFunction={handleRefresh}
         reloading={channelsFetching}
         actions={
@@ -305,6 +305,7 @@ function ChannelsPage() {
       />
       <TablePro
         data={parsedTableData}
+        id={'node-channels-out-table'}
         header={header}
         search
         loading={parsedTableData.length === 0 && channelsFetching}

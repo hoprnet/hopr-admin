@@ -507,7 +507,6 @@ const setAliasThunk = createAsyncThunk<
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(nodeActionsFetching.setAliasesFetching(true));
     try {
       const res = await setAlias(payload);
       if (res) {
@@ -1230,10 +1229,16 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     state.aliases.isFetching = false;
   });
   // setAlias
+  builder.addCase(setAliasThunk.pending, (state) => {
+    state.aliases.isFetching = true;
+  });
   builder.addCase(setAliasThunk.fulfilled, (state, action) => {
     if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
+    console.log('a', action)
     if (action.payload) {
+      console.log('b', action.payload)
       if (state.aliases.data) {
+        console.log('c', state.aliases.data)
         state.aliases.data[action.payload.alias] = action.payload.peerId;
       } else {
         state.aliases.data = { [action.payload.alias]: action.payload.peerId };
