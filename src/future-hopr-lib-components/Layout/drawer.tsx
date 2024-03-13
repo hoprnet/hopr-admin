@@ -123,8 +123,9 @@ const SListItemIcon = styled(ListItemIcon)`
 `;
 
 const Numbers = styled.div`
+
   font-size: 11px;
-  background-color: #0000b433;
+  background-color: #ddeaff;
   padding: 3px;
 `;
 
