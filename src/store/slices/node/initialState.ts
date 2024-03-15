@@ -24,6 +24,28 @@ export type Message = {
   tag?: number;
 };
 
+export type ChannelOutgoingType = {
+  status?: "Open" | "PendingToClose" | "Closed";
+  balance?: string;
+  peerAddress?: string;
+  isClosing?: boolean;
+}
+
+export type ChannelsParsed = {
+  outgoing:  {
+    [channelId: string]: ChannelOutgoingType
+  },
+  incoming: {
+    [channelId: string]: {
+      status?: "Open" | "PendingToClose" | "Closed";
+      balance?: string;
+      peerAddress?: string;
+      tickets: number;
+      ticketBalance: string;
+    }
+  };
+}
+
 type WebsocketConnectionStatus = 'connecting' | 'connected' | 'error' | null;
 
 type InitialState = {
@@ -71,25 +93,7 @@ type InitialState = {
   };
   channels: {
     data: GetChannelsResponseType | null;
-    parsed: {
-      outgoing: {
-        [channelId: string]: {
-          status?: "Open" | "PendingToClose" | "Closed";
-          balance?: string;
-          peerAddress?: string;
-          isClosing?: boolean;
-        }
-      },
-      incoming: {
-        [channelId: string]: {
-          status?: "Open" | "PendingToClose" | "Closed";
-          balance?: string;
-          peerAddress?: string;
-          tickets: number;
-          ticketBalance: string;
-        }
-      };
-    },
+    parsed: ChannelsParsed,
     isFetching: boolean;
   };
   links: {

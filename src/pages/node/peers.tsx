@@ -8,6 +8,7 @@ import Section from '../../future-hopr-lib-components/Section';
 import { SubpageTitle } from '../../components/SubpageTitle';
 import { CreateAliasModal } from '../../components/Modal/node//AddAliasModal';
 import { OpenChannelModal } from '../../components/Modal/node/OpenChannelModal';
+import { FundChannelModal } from '../../components/Modal/node/FundChannelModal';
 import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
@@ -19,6 +20,7 @@ import { PingModal } from '../../components/Modal/node/PingModal';
 //Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
 
+
 function PeersPage() {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((store) => store.auth.loginData);
@@ -26,6 +28,7 @@ function PeersPage() {
   const peersFetching = useAppSelector((store) => store.node.peers.isFetching);
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
+  const nodeAddressToOutgoingChannelLink = useAppSelector((store) => store.node.links.nodeAddressToOutgoingChannel);
 
   useEffect(() => {
     handleRefresh();
@@ -147,9 +150,17 @@ function PeersPage() {
             handleRefresh={handleRefresh}
             peerId={peer.peerId}
           />
-          <OpenChannelModal
-            peerAddress={peer.peerAddress}
-          />
+          {
+            nodeAddressToOutgoingChannelLink[peer.peerAddress] ?
+            <FundChannelModal
+              channelId={nodeAddressToOutgoingChannelLink[peer.peerAddress]}
+            />
+            :
+            <OpenChannelModal
+              peerAddress={peer.peerAddress}
+            />
+          }
+
           <SendMessageModal peerId={peer.peerId} />
         </>
       ),

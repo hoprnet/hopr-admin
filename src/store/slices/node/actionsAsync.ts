@@ -213,7 +213,6 @@ const getChannelsThunk = createAsyncThunk<GetChannelsResponseType | undefined, B
     rejectWithValue,
     dispatch,
   }) => {
-    dispatch(nodeActionsFetching.setChannelsFetching(true));
     try {
       const channels = await getChannels(payload);
       return channels;
@@ -577,6 +576,7 @@ const closeChannelThunk = createAsyncThunk<
   }) => {
     try {
       const res = await closeChannel(payload);
+      dispatch(getChannelsThunk(payload))
       return res;
     } catch (e) {
       if (e instanceof APIError) {
@@ -1016,6 +1016,9 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     state.balances.isFetching = false;
   });
   // getChannels
+  builder.addCase(getChannelsThunk.pending, (state, action) => {
+    state.channels.isFetching = true;
+  });
   builder.addCase(getChannelsThunk.fulfilled, (state, action) => {
     if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
@@ -1032,6 +1035,22 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       }
 
       // Parse the data
+
+      // Save isClosing status
+      let areClosing = [];
+      let outgoingIds = Object.keys(state.channels.parsed.outgoing);
+      for(let i = 0; i < outgoingIds.length; i++) {
+        let channelId = outgoingIds[i];
+        if(state.channels.parsed.outgoing[channelId].isClosing) {
+          areClosing.push(channelId);
+        }
+      }
+
+      // Clean store to make sure that removed channels do not stay here
+      state.channels.parsed.outgoing = {};
+      state.links.nodeAddressToOutgoingChannel = {};
+
+      // Regenerate channels
       for(let i = 0; i < action.payload.outgoing.length; i++) {
         const channelId = action.payload.outgoing[i].id;
         const nodeAddress = action.payload.outgoing[i].peerAddress;
@@ -1042,14 +1061,18 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
             balance: action.payload.outgoing[i].balance,
             peerAddress: nodeAddress,
             status: action.payload.outgoing[i].status,
+            isClosing: areClosing.includes(channelId)
           };
         } else {
           state.channels.parsed.outgoing[channelId].balance = action.payload.outgoing[i].balance;
           state.channels.parsed.outgoing[channelId].peerAddress = nodeAddress;
           state.channels.parsed.outgoing[channelId].status = action.payload.outgoing[i].status;
+          state.channels.parsed.outgoing[channelId].isClosing = areClosing.includes(channelId)
         }
       }
 
+      state.channels.parsed.incoming = {};
+      state.links.nodeAddressToIncomingChannel = {};
       for(let i = 0; i < action.payload.incoming.length; i++) {
         const channelId = action.payload.incoming[i].id;
         const nodeAddress = action.payload.incoming[i].peerAddress;

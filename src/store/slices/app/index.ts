@@ -3,6 +3,7 @@ import { initialState } from './initialState';
 import { GetBalancesResponseType, GetChannelsResponseType, GetInfoResponseType } from '@hoprnet/hopr-sdk';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { saveStateToLocalStorage } from '../../../utils/localStorage';
+import { ChannelsParsed, ChannelOutgoingType } from '../../../store/slices/node/initialState';
 
 const appSlice = createSlice({
   name: 'app',
@@ -95,7 +96,7 @@ const appSlice = createSlice({
         seen: true,
       }));
     },
-    setPrevChannels: (state, action: PayloadAction<GetChannelsResponseType | null>) => {
+    setPrevChannels: (state, action: PayloadAction<ChannelsParsed | null>) => {
       state.previousStates.prevChannels = action.payload;
     },
     setPrevNodeInfo: (state, action: PayloadAction<GetInfoResponseType | null>) => {

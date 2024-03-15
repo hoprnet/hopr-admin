@@ -4,12 +4,12 @@ import { useEthersSigner } from '..';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { appActions } from '../../store/slices/app';
 import { observeNodeBalances } from './balances';
-import { observeChannels } from './channels';
 import { observeNodeInfo } from './info';
 import { observePendingSafeTransactions } from './safeTransactions';
 import { observeSafeInfo } from './safeInfo';
 import { sendNotification } from '../../hooks/useWatcher/notifications';
 import { nodeActions, nodeActionsAsync } from '../../store/slices/node';
+import { checkHowChannelsHaveChanged } from './channels';
 
 export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: number }) => {
   const dispatch = useAppDispatch();
@@ -18,6 +18,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
     apiToken,
   } = useAppSelector((store) => store.auth.loginData);
   const messages = useAppSelector((store) => store.node.messages.data);
+  const channels = useAppSelector((store) => store.node.channels.parsed);
   const connected = useAppSelector((store) => store.auth.status.connected);
 
   const signer = useEthersSigner();
@@ -38,16 +39,13 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
     if (!connected) return;
 
     const watchChannelsInterval = setInterval(() => {
-      observeChannels({
-        apiEndpoint,
-        apiToken,
-        dispatch,
-        active: activeChannels,
-        previousState: prevChannels,
-        updatePreviousData: (newChannels) => {
-          dispatch(appActions.setPrevChannels(newChannels));
-        },
-      });
+      if (!apiEndpoint || !apiToken || !activeChannels) return;
+      return dispatch(
+        nodeActionsAsync.getChannelsThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
     }, intervalDuration);
 
     const watchNodeInfoInterval = setInterval(() => {
@@ -158,5 +156,44 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
         })
     }
   }, [activeMessage, messages]);
+
+  useEffect(() => {
+    console.log('useEffect channels', channels, prevChannels)
+    if(!prevChannels) {
+      if(Object.keys(channels.incoming).length !==0 || Object.keys(channels.outgoing).length !==0) {
+        dispatch(appActions.setPrevChannels(channels));
+      };
+      return
+    };
+    if(activeChannels) {
+      const changes = checkHowChannelsHaveChanged(prevChannels, channels);
+      if(changes.length !== 0) {
+        console.log('changes channels', changes)
+        for(let i = 0; i < changes.length; i++){
+          let notificationText: null | string = null;
+          if(changes[i].status === "Open") {
+            notificationText = `Channel to ${changes[i].peerAddress} opened.`
+          } else if(changes[i].status === "PendingToClose") {
+            notificationText = `Channel to ${changes[i].peerAddress} is pending to close.`
+          } else if(changes[i].status === "Closed") {
+            notificationText = `Channel to ${changes[i].peerAddress} closed.`
+          }
+          if (notificationText) {
+            sendNotification({
+              notificationPayload: {
+                source: 'node',
+                name: notificationText,
+                url: null,
+                timeout: null,
+              },
+              toastPayload: { message: notificationText },
+              dispatch,
+            });
+          }
+        }
+        dispatch(appActions.setPrevChannels(channels));
+      }
+    }
+  }, [activeChannels, channels, prevChannels]);
 
 };
