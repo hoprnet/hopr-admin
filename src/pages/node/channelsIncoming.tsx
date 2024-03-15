@@ -31,7 +31,8 @@ function ChannelsPage() {
   const aliases = useAppSelector((store) => store.node.aliases.data)
   const peers = useAppSelector((store) => store.node.peers.data)
   const loginData = useAppSelector((store) => store.auth.loginData);
-
+  const nodeAddressToPeerIdLink = useAppSelector((store) => store.node.links.nodeAddressToPeerId);
+  const peerIdToAliasLink = useAppSelector((store) => store.node.links.peerIdToAlias);
   const tabLabel = 'incoming';
   const channelsData = channels?.incoming;
 
@@ -88,29 +89,18 @@ function ChannelsPage() {
 
   };
 
-  const getAliasByPeerAddress = (peerAddress: string): string => {
-
-    const peerId = peers?.announced.find(peer => peer.peerAddress === peerAddress)?.peerId;
-
-    if (!peerId) {
-      return peerAddress;
-    }
-
-    if (aliases) {
-      for (const [alias, id] of Object.entries(aliases)) {
-        if (id === peerId) {
-          return alias;
-        }
-      }
-    }
-
-    return peerAddress
+  const getPeerIdFromPeerAddress = (nodeAddress: string): string => {
+    const peerId = nodeAddressToPeerIdLink[nodeAddress];
+    return peerId!;
   }
 
-
-  const getPeerIdFromPeerAddress = (peerAddress: string): string | undefined => {
-    const peerId = peers?.announced.find(peer => peer.peerAddress === peerAddress)?.peerId;
-    return peerId;
+  const getAliasByPeerAddress = (nodeAddress: string): string => {
+    const peerId = getPeerIdFromPeerAddress(nodeAddress);
+    if (nodeAddress === '0x6f9b56d7e8d4efaf0b9364f52972a1984a76e68b') {
+      console.log('getPeerIdFromPeerAddress' , peerId)
+    }
+    if(aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${nodeAddress})`
+    return nodeAddress;
   }
 
   const handleExport = () => {

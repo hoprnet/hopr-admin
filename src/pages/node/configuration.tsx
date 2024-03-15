@@ -65,8 +65,7 @@ function SettingsPage() {
                   <div>
                   Channels: False
                     <Switch
-                      disabled
-                   //   checked={localNotificationSettings?.channels}
+                      checked={localNotificationSettings?.channels}
                       onChange={() => {
                         if (localNotificationSettings) {
                           set_localNotificationSettings({

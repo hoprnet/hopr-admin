@@ -103,6 +103,15 @@ type InitialState = {
     nodeAddressToIncomingChannel: {
       [nodeAddress: string]: string
     },
+    nodeAddressToPeerId: {
+      [nodeAddress: string]: string
+    },
+    peerIdToNodeAddress: {
+      [peerId: string]: string
+    },
+    peerIdToAlias: {
+      [peerId: string]: string
+    },
   };
   messages: {
     data: Message[],
@@ -291,6 +300,9 @@ export const initialState: InitialState = {
   links: {
     nodeAddressToOutgoingChannel: {},
     nodeAddressToIncomingChannel: {},
+    nodeAddressToPeerId: {},
+    peerIdToNodeAddress: {},
+    peerIdToAlias: {},
   },
   apiEndpoint: null,
 };

@@ -28,8 +28,9 @@ function AliasesPage() {
   const peers = useAppSelector(store => store.node.peers.data)
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
   const hoprAddress = useAppSelector((store) => store.node.addresses.data.hopr)
-  const nodeAddress = useAppSelector((store) => store.node.addresses.data.native)
+  const myNodeAddress = useAppSelector((store) => store.node.addresses.data.native)
   const loginData = useAppSelector((store) => store.auth.loginData);
+  const peerIdToNodeAddressLink = useAppSelector((store) => store.node.links.peerIdToNodeAddress);
   const [importSuccess, set_importSuccess] = useState(false);
   const [deleteSuccess, set_deleteSuccess] = useState(false);
   const [importErrors, set_importErrors] = useState<
@@ -61,17 +62,9 @@ function AliasesPage() {
     }
   };
 
-
-  const getPeerAddressByPeerId = (peerId: string): string | undefined => {
-    if(peerId === hoprAddress && typeof(nodeAddress) === 'string' ) return nodeAddress;
-
-    const peer = peers?.announced.find(peer => peer.peerId === peerId);
-
-    if (!peer) {
-      return;
-    }
-
-    return peer.peerAddress
+  const getNodeAddressByPeerId = (peerId: string): string | undefined => {
+    if(peerId === hoprAddress && typeof(myNodeAddress) === 'string' ) return myNodeAddress;
+    return peerIdToNodeAddressLink[peerId];
   }
 
   const handleExport = () => {
@@ -119,18 +112,13 @@ function AliasesPage() {
     }
   };
 
-  const getPeerAddressFromPeerId = (peerId: string): string | undefined => {
-    const peerAddress = peers?.announced.find(peer => peer.peerId === peerId)?.peerAddress;
-    return peerAddress;
-  }
-
   const parsedTableData = Object.entries(aliases ?? {}).map(([alias, peerId], key) => {
     return {
       id: peerId,
       key: key.toString(),
       alias,
       peerId,
-      peerAddress: getPeerAddressByPeerId(peerId) ?? '',
+      peerAddress: getNodeAddressByPeerId(peerId) ?? '',
       actions: (
         <>
           <PingModal
@@ -139,7 +127,7 @@ function AliasesPage() {
             tooltip={`You can't ping yourself`}
           />
           <OpenChannelModal
-            peerAddress={getPeerAddressByPeerId(peerId)}
+            peerAddress={getNodeAddressByPeerId(peerId)}
             disabled={peerId === hoprAddress}
             tooltip={`You can't open a channel to yourself`}
           />

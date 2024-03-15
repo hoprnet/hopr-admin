@@ -32,8 +32,10 @@ function ChannelsPage() {
   const channelsOutgoingObject = useAppSelector((store) => store.node.channels.parsed.outgoing);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
   const aliases = useAppSelector((store) => store.node.aliases.data)
-  const peers = useAppSelector((store) => store.node.peers.data)
   const loginData = useAppSelector((store) => store.auth.loginData);
+  const currentApiEndpoint = useAppSelector((store) => store.node.apiEndpoint);
+  const nodeAddressToPeerIdLink = useAppSelector((store) => store.node.links.nodeAddressToPeerId);
+  const peerIdToAliasLink = useAppSelector((store) => store.node.links.peerIdToAlias);
   const tabLabel = 'outgoing';
   const channelsData = channels?.outgoing;
 
@@ -82,31 +84,19 @@ function ChannelsPage() {
     )
   };
 
-  const getAliasByPeerAddress = (peerAddress: string): string => {
-
-    const peerId = peers?.announced.find(peer => peer.peerAddress === peerAddress)?.peerId;
-
-    if (!peerId) {
-      return peerAddress;
-    }
-
-    if (aliases) {
-      for (const [alias, id] of Object.entries(aliases)) {
-        if (id === peerId) {
-          return alias;
-        }
-      }
-    }
-
-    return peerAddress
-  }
-
-  const getPeerIdFromPeerAddress = (peerAddress: string): string => {
-    const peerId = peers?.announced.find(peer => peer.peerAddress === peerAddress)?.peerId;
-
+  const getPeerIdFromPeerAddress = (nodeAddress: string): string => {
+    const peerId = nodeAddressToPeerIdLink[nodeAddress];
     return peerId!;
   }
 
+  const getAliasByPeerAddress = (nodeAddress: string): string => {
+    const peerId = getPeerIdFromPeerAddress(nodeAddress);
+    if (nodeAddress === '0x6f9b56d7e8d4efaf0b9364f52972a1984a76e68b') {
+      console.log('getPeerIdFromPeerAddress' , peerId)
+    }
+    if(aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${nodeAddress})`
+    return nodeAddress;
+  }
 
   const handleExport = () => {
     if (channelsData) {
@@ -123,6 +113,7 @@ function ChannelsPage() {
   };
 
   const handleCloseChannels = (channelId: string) => {
+    const usedApiEndpoint = loginData.apiEndpoint;
     dispatch(
       actionsAsync.closeChannelThunk({
         apiEndpoint: loginData.apiEndpoint!,
@@ -132,53 +123,23 @@ function ChannelsPage() {
     )
       .unwrap()
       .then(() => {
-        // set_closingStates((prevStates) => ({
-        //   ...prevStates,
-        //   [channelId]: {
-        //     closing: false,
-        //     closeSuccess: true,
-        //     closeErrors: [],
-        //   },
-        // }));
+
         handleRefresh();
-        const msg = `Closing of ${channelId} succeded`;
-        // sendNotification({
-        //   notificationPayload: {
-        //     source: 'node',
-        //     name: msg,
-        //     url: null,
-        //     timeout: null,
-        //   },
-        //   toastPayload: { message: msg },
-        //   dispatch,
-        // });
       })
       .catch((e) => {
-        // set_closingStates((prevStates) => ({
-        //   ...prevStates,
-        //   [channelId]: {
-        //     closing: false,
-        //     closeSuccess: false,
-        //     closeErrors: [
-        //       ...(prevStates[channelId]?.closeErrors || []),
-        //       {
-        //         error: e.error,
-        //         status: e.status,
-        //       },
-        //     ],
-        //   },
-        // }));
-      //   const msg = `Closing of ${channelId} failed`;
-      //   sendNotification({
-      //     notificationPayload: {
-      //       source: 'node',
-      //       name: msg,
-      //       url: null,
-      //       timeout: null,
-      //     },
-      //     toastPayload: { message: msg },
-      //     dispatch,
-      //   });
+        if(usedApiEndpoint === currentApiEndpoint) {
+          const msg = `Closing of ${channelId} failed`;
+          sendNotification({
+            notificationPayload: {
+              source: 'node',
+              name: msg,
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: msg },
+            dispatch,
+          });
+        }
       });
   };
 

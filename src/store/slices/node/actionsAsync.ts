@@ -973,6 +973,12 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     if (action.payload) {
       state.aliases.data = action.payload;
+
+
+      let aliases = Object.keys(action.payload)
+      for (let i = 0; i < aliases.length; i++) {
+        state.links.peerIdToAlias[action.payload[aliases[i]]] = aliases[i];
+      }
     }
     state.aliases.isFetching = false;
   });
@@ -1072,7 +1078,6 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       }
 
       state.channels.parsed.incoming = {};
-      state.links.nodeAddressToIncomingChannel = {};
       for(let i = 0; i < action.payload.incoming.length; i++) {
         const channelId = action.payload.incoming[i].id;
         const nodeAddress = action.payload.incoming[i].peerAddress;
@@ -1124,6 +1129,19 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         connected: [],
       };
       state.peers.data = action.payload;
+
+      // Generate links
+      for(let i = 0; i < action.payload.connected.length; i++) {
+        const node = action.payload.connected[i];
+        state.links.nodeAddressToPeerId[node.peerAddress] = node.peerId;
+        state.links.peerIdToNodeAddress[node.peerId] = node.peerAddress;
+      }
+      for(let i = 0; i < action.payload.announced.length; i++) {
+        const node = action.payload.announced[i];
+        state.links.nodeAddressToPeerId[node.peerAddress] = node.peerId;
+        state.links.peerIdToNodeAddress[node.peerId] = node.peerAddress;
+      }
+
     }
     state.peers.isFetching = false;
   });

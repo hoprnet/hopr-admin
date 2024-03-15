@@ -29,6 +29,7 @@ function PeersPage() {
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
   const nodeAddressToOutgoingChannelLink = useAppSelector((store) => store.node.links.nodeAddressToOutgoingChannel);
+  const peerIdToAliasLink = useAppSelector((store) => store.node.links.peerIdToAlias);
 
   useEffect(() => {
     handleRefresh();
@@ -52,13 +53,9 @@ function PeersPage() {
   };
 
   const getAliasByPeerId = (peerId: string): string => {
-    for (const [alias, id] of Object.entries(aliases!)) {
-      if (id === peerId) {
-        return alias;
-      }
-    }
-    return ''; // Return 'N/A' if alias not found for the given peerId
-  };
+    if(aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${peerId})`
+    return peerId;
+  }
 
   const handleExport = () => {
     if (peers?.announced) {
@@ -82,12 +79,6 @@ function PeersPage() {
     {
       key: 'number',
       name: '#',
-    },
-    {
-      key: 'alias',
-      name: 'Alias',
-      search: true,
-      maxWidth: '60px',
     },
     {
       key: 'peerId',
@@ -129,8 +120,7 @@ function PeersPage() {
     return {
       id: id,
       number: id,
-      alias: aliases ? getAliasByPeerId(peer.peerId) : '',
-      peerId: peer.peerId,
+      peerId: getAliasByPeerId(peer.peerId),
       peerAddress: peer.peerAddress,
       quality: <ProgressBar
         value={peer.quality}
