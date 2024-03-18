@@ -158,13 +158,17 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   }, [activeMessage, messages]);
 
   useEffect(() => {
-    console.log('useEffect channels', channels, prevChannels)
     if(!prevChannels) {
-      if(Object.keys(channels.incoming).length !==0 || Object.keys(channels.outgoing).length !==0) {
+      const channelsOutgoingIds = Object.keys(channels.outgoing);
+      if(
+        channelsOutgoingIds.length !==0 && //true
+        Object.keys(channels.outgoing[channelsOutgoingIds[0]]).includes('status') // If the channels are populated more than with tickets data
+      ) {
         dispatch(appActions.setPrevChannels(channels));
       };
       return
     };
+
     if(activeChannels) {
       const changes = checkHowChannelsHaveChanged(prevChannels, channels);
       if(changes.length !== 0) {

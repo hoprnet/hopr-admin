@@ -207,6 +207,33 @@ const getBalancesThunk = createAsyncThunk<
   } },
 );
 
+const getBalanceInAllSafeChannelsThunk = createAsyncThunk<GetChannelsResponseType | undefined, BasePayloadType, { state: RootState }>(
+  'node/getBalanceInAllSafeChannels',
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    try {
+      const channels = await getChannels(payload);
+      return channels;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
+    }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.channels.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
+);
+
+
 const getChannelsThunk = createAsyncThunk<GetChannelsResponseType | undefined, BasePayloadType, { state: RootState }>(
   'node/getChannels',
   async (payload, {

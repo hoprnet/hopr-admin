@@ -23,7 +23,7 @@ export const checkHowChannelsHaveChanged = (
     const newChannel = newChannelsLocal.outgoing[newChannelId];
     if(
       previousChannelsOutgoing.includes(newChannelId) &&
-      previousChannelsLocal.outgoing[newChannelId].status === newChannel.status
+      ( previousChannelsLocal.outgoing[newChannelId].status === newChannel.status )
     ) {
       delete previousChannelsLocal.outgoing[newChannelId];
       delete newChannelsLocal.outgoing[newChannelId];

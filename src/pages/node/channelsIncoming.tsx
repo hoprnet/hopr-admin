@@ -15,6 +15,7 @@ import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 // Modals
 import { PingModal } from '../../components/Modal/node/PingModal';
 import { OpenChannelModal } from '../../components/Modal/node/OpenChannelModal';
+import { FundChannelModal } from '../../components/Modal/node/FundChannelModal';
 import { CreateAliasModal } from '../../components/Modal/node//AddAliasModal';
 import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 
@@ -26,12 +27,12 @@ function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((store) => store.node.channels.data);
   const channelsIncomingObject = useAppSelector((store) => store.node.channels.parsed.incoming);
-  const nodeAddressToOutgoingChannel =  useAppSelector((store) => store.node.links.nodeAddressToOutgoingChannel);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
   const aliases = useAppSelector((store) => store.node.aliases.data)
   const peers = useAppSelector((store) => store.node.peers.data)
   const loginData = useAppSelector((store) => store.auth.loginData);
   const nodeAddressToPeerIdLink = useAppSelector((store) => store.node.links.nodeAddressToPeerId);
+  const nodeAddressToOutgoingChannelLink = useAppSelector((store) => store.node.links.nodeAddressToOutgoingChannel);
   const peerIdToAliasLink = useAppSelector((store) => store.node.links.peerIdToAlias);
   const tabLabel = 'incoming';
   const channelsData = channels?.incoming;
@@ -161,7 +162,7 @@ function ChannelsPage() {
   const parsedTableData = Object.keys(channelsIncomingObject).map((id, index) => {
     if(!channelsIncomingObject[id].peerAddress || !channelsIncomingObject[id].balance || !channelsIncomingObject[id].status) return;
     // @ts-ignore: check was done in line above
-    const outgoingChannelOpened = !!(channelsIncomingObject[id].peerAddress && !!nodeAddressToOutgoingChannel[channelsIncomingObject[id].peerAddress]);
+    const outgoingChannelOpened = !!(channelsIncomingObject[id].peerAddress && !!nodeAddressToOutgoingChannelLink[channelsIncomingObject[id].peerAddress]);
     const peerId = getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string);
 
     return {
@@ -184,11 +185,16 @@ function ChannelsPage() {
             disabled={!peerId}
             tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
           />
-          <OpenChannelModal
-            peerAddress={channelsIncomingObject[id].peerAddress}
-            disabled={outgoingChannelOpened}
-            tooltip={outgoingChannelOpened ? <span>Outgoing channel<br/>already opened</span> : undefined }
-          />
+          {
+            outgoingChannelOpened ?
+            <FundChannelModal
+              channelId={id}
+            />
+            :
+            <OpenChannelModal
+              peerAddress={channelsIncomingObject[id].peerAddress}
+            />
+          }
           <SendMessageModal
             peerId={peerId}
             disabled={!peerId}
