@@ -155,17 +155,6 @@ function SafeSection() {
           signer,
           safeTransactionData: transactionData,
         })).unwrap()
-
-        await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            transactionHash: transactionHash,
-            safeAddress,
-            moduleAddress: safeModules?.[0] ?? '',
-            ownerAddress: newOwner,
-          }),
-        });
       }
     }
   };

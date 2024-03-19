@@ -223,6 +223,40 @@ const createAddOwnerToSafeTransactionDataThunk = createAsyncThunk<
   },
 );
 
+const createRemoveSafeTransactionDataThunk = createAsyncThunk<
+  SafeTransactionData | undefined,
+  {
+    signer: ethers.providers.JsonRpcSigner;
+    safeAddress: string;
+    ownerAddress: string;
+  },
+  { state: RootState }
+>(
+  'safe/removeSafe',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
+      const changeOwnerTx = await safeSDK.createSwapOwnerTx({
+        oldOwnerAddress: payload.ownerAddress,
+        newOwnerAddress: '0xddCf0b9aa57bCce35CDfAB8f91C647dA1DE1E1ed',
+      });
+      return changeOwnerTx.data;
+    } catch (e) {
+      if (e instanceof Error) {
+        return rejectWithValue(e.message);
+      }
+
+      // value is serializable
+      if (isPlain(e)) {
+        return rejectWithValue(e);
+      }
+
+      // error is not serializable
+      return rejectWithValue(JSON.stringify(e));
+    }
+  },
+);
+
 const createRemoveOwnerFromSafeTransactionDataThunk = createAsyncThunk<
   SafeTransactionData | undefined,
   {
@@ -1140,17 +1174,6 @@ const createSafeWithConfigThunk = createAsyncThunk<
 
       const [moduleProxy, safeAddress] = result as [Address, Address];
 
-      await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          transactionHash,
-          safeAddress,
-          moduleAddress: moduleProxy,
-          ownerAddress: payload.walletClient.account?.address,
-        }),
-      });
-
       dispatch(
         stakingHubActions.addSafeAndUseItForOnboarding({
           safeAddress,
@@ -1406,6 +1429,7 @@ export const actionsAsync = {
   createSafeWithConfigThunk,
   getSafesByOwnerThunk,
   createAddOwnerToSafeTransactionDataThunk,
+  createRemoveSafeTransactionDataThunk,
   createRemoveOwnerFromSafeTransactionDataThunk,
   getAllSafeTransactionsThunk,
   confirmTransactionThunk,

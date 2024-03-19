@@ -7,7 +7,7 @@ import Tooltip from '@mui/material/Tooltip';
 
 export type GrayCardProps = {
     id: string;
-    title?: string;
+    title?: string | JSX.Element;
     value?: string;
     valueTooltip?: string;
     currency?: string | ReactNode;
@@ -91,12 +91,13 @@ export const GrayCard = ({
     chip,
     buttons,
     children,
+    red
   }: GrayCardProps) => {
     return (
       <StyledGrayCard id={id}>
         {(title || value || children) && (
           <CardContent>
-            {title && <CardTitle>{title}</CardTitle>}
+            {title && <CardTitle className={`${red ? 'red' : ''}`}>{title}</CardTitle>}
             {
               (currency || value) &&
                 <ValueAndCurrency>

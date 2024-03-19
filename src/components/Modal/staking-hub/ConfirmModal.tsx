@@ -26,8 +26,9 @@ type ConfirmModalProps = {
   onNotConfirm: Function,
   confirmText?: string,
   notConfirmText?: string,
-  title?: string,
-  description?: string,
+  timer?: number,
+  title?: string | JSX.Element,
+  description?: string | JSX.Element,
 };
 
 const ConfirmModal = (props: ConfirmModalProps) => {

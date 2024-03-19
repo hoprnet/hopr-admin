@@ -15,6 +15,7 @@ import { stakingHubActions } from '../../../store/slices/stakingHub';
 import { web3ActionsAsync } from '../../../store/slices/web3';
 import { useWalletClient } from 'wagmi';
 import SafeTransactionButton from '../../../components/SafeTransactionButton';
+import ConfirmModal from '../../../components/Modal/staking-hub/ConfirmModal';
 
 
 const Container = styled.div`
@@ -107,6 +108,8 @@ function SafeDashboard() {
   const onboardingIsNotFinished = useAppSelector((store) => store.stakingHub.onboarding.notFinished);
   const onboardingIsFetching = useAppSelector((store) => store.stakingHub.onboarding.notFinished);
   const [updating, set_updating] = useState(false);
+  const [removeSafeModal, set_removeSafeModal] = useState(false);
+  const [removeOwnerPending, set_RemoveOwnerPending] = useState(false);
 
   const onboardingIsFinished = !onboardingIsFetching && !onboardingIsNotFinished;
 
@@ -285,11 +288,38 @@ function SafeDashboard() {
     }
   };
 
+  const removeSafeExecute = async () => {
+    if (signer && selectedSafeAddress && walletAddress) {
+      set_RemoveOwnerPending(true);
+      const transactionData = await dispatch(
+        safeActionsAsync.createRemoveOwnerFromSafeTransactionDataThunk({
+          ownerAddress: walletAddress,
+          safeAddress: selectedSafeAddress,
+          signer: signer,
+        }),
+      ).unwrap();
+
+      if (transactionData) {
+        await dispatch(safeActionsAsync.createAndExecuteSafeTransactionThunk({
+          safeAddress: selectedSafeAddress,
+          signer,
+          safeTransactionData: transactionData,
+        })).unwrap().then(async()=>{
+          setTimeout(()=>{
+            window.location.href = window.location.origin;
+          }, 3_000);
+        }).finally(async()=>{
+          set_RemoveOwnerPending(false);
+        });
+      }
+    }
+  };
+
   function whichNFTimage() {
     if (communityNftIdInSafe !== false) return '/assets/nft-in-safe.png';
     if (communityNftIdInWallet === null) return '/assets/nft-NOT-detected-in-wallet.png';
     if (communityNftIdInWallet !== null) return '/assets/nft-detected-in-wallet.png';
-  }
+  };
 
   return (
     <Container className="SafeDashboard">
@@ -370,6 +400,12 @@ function SafeDashboard() {
             <img src={whichNFTimage()} />
           </TransferNFT>
         </GrayCard>
+        <GrayCard
+          id="Remove-Safe"
+          title={<span style={{color: "#ad0000"}} >Remove Safe</span>}
+        >
+          <Button onClick={()=>{set_removeSafeModal(true)}}>Remove Safe</Button>
+        </GrayCard>
       <div id="extra-info">
         <p className="center">
           In order to adjust the settings of your safe or transfer assets that are not supported by the HOPR Staking Hub
@@ -380,6 +416,29 @@ function SafeDashboard() {
           <Button href={`https://app.onchainden.com/safes/gnosis:${selectedSafeAddress}`}>OnChainDen.com</Button>
         </div>
       </div>
+
+      <ConfirmModal
+        open={removeSafeModal}
+        onNotConfirm={()=>{set_removeSafeModal(false)}}
+        title={<span style={{color: "#ad0000"}} >Remove Safe</span>}
+        description={<span style={{color: "#ad0000"}} >Are you sure that you want to remove your safe? Everything in it will be lost.</span>}
+        notConfirmText={'NO'}
+        confirmButton={
+          <SafeTransactionButton
+            executeOptions={{
+              pending: updating,
+              onClick: removeSafeExecute,
+              buttonText: 'Remove Safe',
+            }}
+            signOptions={{
+              pending: updating,
+              onClick: signUpdateConfig,
+              buttonText: 'Sign remove',
+            }}
+            safeInfo={safeInfo}
+          />
+        }
+      />
     </Container>
   );
 }
