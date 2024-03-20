@@ -201,6 +201,6 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
         dispatch(appActions.setPrevChannels(channels));
       }
     }
-  }, [activeChannels, channelsCallWasSuccesfull, channels, prevChannels]);
+  }, [activeChannels, firstChannelsCallWasSuccesfull, channels, prevChannels]);
 
 };
