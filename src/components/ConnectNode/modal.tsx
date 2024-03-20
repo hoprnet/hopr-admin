@@ -69,6 +69,10 @@ const ConnectContainer = styled.div`
   justify-content: center;
 `;
 
+const SirenImage = styled.img`
+  width: 100%;
+`;
+
 const Overlay = styled.div`
   position: absolute;
   top: 0;
@@ -123,7 +127,7 @@ const CloseOverlayIconButton = styled(IconButton)`
   top: 16px;
 `;
 
-const loginAnywaysWarning = "Your node did not start properly and might not be fully functioning. Some features might be offline and not working";
+const loginAnywaysWarning = "Your node did not start properly and might not be fully functioning. Some features might be offline and not working. By clicking on the \"Login anyways\" button, you are only troubleshooting issues. It should not be used when your node is in the syncing process or has not been properly started.";
 const defaultProps = { open: false };
 
 function ConnectNodeModal(props: ConnectNodeModalProps) {
@@ -478,6 +482,8 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         disableScrollLock={true}
         title="WARNING"
       >
+
+        <SirenImage src="/assets/police-siren-siren.gif" />
         <p>{loginAnywaysWarning}</p>
         <ButtonGroupContainer>
           <Button outlined onClick={() => set_forceLogin(false)}>BACK</Button>
