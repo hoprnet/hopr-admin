@@ -4,7 +4,7 @@ import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS
 
 // wagmi
 import { useAccount, useBalance, useNetwork } from 'wagmi';
-import { watchAccount } from '@wagmi/core'
+import { watchAccount } from '@wagmi/core';
 import { useEthersSigner } from '../../hooks';
 
 // Redux
@@ -26,7 +26,7 @@ export default function WagmiUpdater() {
   const {
     address,
     isConnected,
-    connector
+    connector,
   } = useAccount();
 
   const { chain } = useNetwork();
@@ -34,24 +34,24 @@ export default function WagmiUpdater() {
   // **********************
   // Leaving for on-going testing of wagmi losing connection with wallet
   useEffect(() => {
-    console.log('Detected wagmi address change', address)
+    console.log('Detected wagmi address change', address);
   }, [address]);
 
   useEffect(() => {
-    console.log('Detected wagmi isConnected change', isConnected)
+    console.log('Detected wagmi isConnected change', isConnected);
   }, [isConnected]);
 
   useEffect(() => {
-    console.log('Detected wagmi connector change', connector)
+    console.log('Detected wagmi connector change', connector);
   }, [connector]);
 
   // If wagmi is not always able to detect address change, add this code:
 
   useEffect(() => {
     function handleAccountsChanged(accounts: string[]) {
-      if(accounts && accounts[0] && typeof(accounts[0]) === 'string') {
+      if (accounts && accounts[0] && typeof accounts[0] === 'string') {
         //set_lastAccountUsed(accounts[0]);
-        console.log('Detected accountsChanged event', accounts[0])
+        console.log('Detected accountsChanged event', accounts[0]);
       }
     }
 
@@ -74,8 +74,8 @@ export default function WagmiUpdater() {
 
   // Account change in Wallet
   useEffect(() => {
-    if(addressInStore === address) return;
-    if(web3Disconnecting) return;
+    if (addressInStore === address) return;
+    if (web3Disconnecting) return;
 
     if (isConnected && address) {
       console.log('isConnected', isConnected);
@@ -92,7 +92,7 @@ export default function WagmiUpdater() {
       dispatch(web3ActionsAsync.getCommunityNftsOwnedByWallet({ account: address }));
       dispatch(stakingHubActionsAsync.getHubSafesByOwnerThunk(address));
     }
-    if(!isConnected) {
+    if (!isConnected) {
       dispatch(web3Actions.setConnected(isConnected));
       dispatch(web3Actions.setAccount(null));
     }
@@ -203,7 +203,6 @@ export default function WagmiUpdater() {
         }),
       );
   }, [safe_xHopr_balance]);
-
 
   useEffect(() => {
     if (nodeLinkedToSafe_xDai_balance)

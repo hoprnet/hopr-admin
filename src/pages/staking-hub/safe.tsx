@@ -3,13 +3,12 @@ import { useEffect, useState } from 'react';
 import { Address, formatEther } from 'viem';
 import { erc20ABI, useContractRead, useWalletClient } from 'wagmi';
 import { web3 } from '@hoprnet/hopr-sdk';
-import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config';
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config'
 import { useEthersSigner } from '../../hooks';
 import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
 import { appActions } from '../../store/slices/app';
-import { MAX_UINT256, createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../utils/blockchain';
+import { MAX_UINT256, createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../utils/blockchain'
 import { Container, FlexContainer, Text } from './onboarding/styled';
-
 
 //Stores
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -95,11 +94,13 @@ function SafeSection() {
 
   const updateSafeThreshold = async (safeAddress: string) => {
     if (signer && safeAddress) {
-      const removeTransactionData = await dispatch(safeActionsAsync.createSetThresholdToSafeTransactionDataThunk({
-        signer: signer,
-        newThreshold: newThreshold,
-        safeAddress: safeAddress,
-      })).unwrap()
+      const removeTransactionData = await dispatch(
+        safeActionsAsync.createSetThresholdToSafeTransactionDataThunk({
+          signer: signer,
+          newThreshold: newThreshold,
+          safeAddress: safeAddress,
+        }),
+      ).unwrap();
 
       if (removeTransactionData) {
         await dispatch(
@@ -120,22 +121,26 @@ function SafeSection() {
 
   const removeOwner = async (address: string, safeAddress: string, threshold?: number) => {
     if (signer && safeAddress) {
-      const transactionData = await dispatch(safeActionsAsync.createRemoveOwnerFromSafeTransactionDataThunk({
-        ownerAddress: address,
-        safeAddress: safeAddress,
-        signer,
-        threshold: threshold,
-      })).unwrap()
+      const transactionData = await dispatch(
+        safeActionsAsync.createRemoveOwnerFromSafeTransactionDataThunk({
+          ownerAddress: address,
+          safeAddress: safeAddress,
+          signer,
+          threshold: threshold,
+        }),
+      ).unwrap();
 
       if (!transactionData) return;
 
-      const transactionHash = await dispatch(safeActionsAsync.createAndExecuteSafeTransactionThunk({
-        safeAddress: safeAddress,
-        signer,
-        safeTransactionData: transactionData,
-      })).unwrap()
+      const transactionHash = await dispatch(
+        safeActionsAsync.createAndExecuteSafeTransactionThunk({
+          safeAddress: safeAddress,
+          signer,
+          safeTransactionData: transactionData,
+        }),
+      ).unwrap();
 
-      return transactionHash
+      return transactionHash;
     }
   };
 
@@ -147,14 +152,16 @@ function SafeSection() {
           safeAddress: safeAddress,
           signer: signer,
         }),
-      ).unwrap()
+      ).unwrap();
 
       if (transactionData) {
-        const transactionHash = await dispatch(safeActionsAsync.createAndExecuteSafeTransactionThunk({
-          safeAddress: safeAddress,
-          signer,
-          safeTransactionData: transactionData,
-        })).unwrap()
+        const transactionHash = await dispatch(
+          safeActionsAsync.createAndExecuteSafeTransactionThunk({
+            safeAddress: safeAddress,
+            signer,
+            safeTransactionData: transactionData,
+          }),
+        ).unwrap();
 
         await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
           method: 'POST',

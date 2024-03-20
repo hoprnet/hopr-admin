@@ -127,7 +127,8 @@ const CloseOverlayIconButton = styled(IconButton)`
   top: 16px;
 `;
 
-const loginAnywaysWarning = "Your node did not start properly and might not be fully functioning. Some features might be offline and not working. By clicking on the \"Login anyways\" button, you are only troubleshooting issues. It should not be used when your node is in the syncing process or has not been properly started.";
+const loginAnywaysWarning =
+  'Your node did not start properly and might not be fully functioning. Some features might be offline and not working. By clicking on the "Login anyways" button, you are only troubleshooting issues. It should not be used when your node is in the syncing process or has not been properly started.';
 const defaultProps = { open: false };
 
 function ConnectNodeModal(props: ConnectNodeModalProps) {
@@ -207,10 +208,10 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   const saveNode = () => {
     const formattedApiEndpoint = parseAndFormatUrl(apiEndpoint);
     if (!formattedApiEndpoint) {
-      set_apiEndpointError('API Endpoint was incorrectly formatted')
+      set_apiEndpointError('API Endpoint was incorrectly formatted');
       return;
     } else {
-      set_apiEndpointError(null)
+      set_apiEndpointError(null);
     }
     dispatch(
       authActions.addNodeData({
@@ -224,10 +225,10 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   const useNode = async ({ force }: { force?: boolean }) => {
     const formattedApiEndpoint = parseAndFormatUrl(apiEndpoint);
     if (!formattedApiEndpoint) {
-      set_apiEndpointError('API Endpoint was incorrectly formatted')
+      set_apiEndpointError('API Endpoint was incorrectly formatted');
       return;
     } else {
-      set_apiEndpointError(null)
+      set_apiEndpointError(null);
     }
     set_searchParams({
       apiToken,
@@ -246,9 +247,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         }),
       ).unwrap();
       dispatch(
-        nodeActions.setApiEndpoint({
-          apiEndpoint: formattedApiEndpoint,
-        }),
+        nodeActions.setApiEndpoint({ apiEndpoint: formattedApiEndpoint }),
       );
       if (loginInfo) {
         dispatch(
@@ -281,10 +280,10 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           nodeActionsAsync.getPrometheusMetricsThunk({
             apiToken,
             apiEndpoint,
-          })
+          }),
         );
         dispatch(nodeActions.setInfo(loginInfo));
-      //  dispatch(nodeActions.initializeMessagesWebsocket());
+        //  dispatch(nodeActions.initializeMessagesWebsocket());
         navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${formattedApiEndpoint}`);
         trackGoal('IZUWDE9K', 1);
         props.handleClose();
@@ -434,10 +433,13 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
                 {errorMessage}
               </div>
 
-              {errorMessage !== 'UNAUTHORIZED' &&
-                <div style={{
-                  textAlign: 'center', marginTop: '32px',
-                }}>
+              {errorMessage !== 'UNAUTHORIZED' && (
+                <div
+                  style={{
+                    textAlign: 'center',
+                    marginTop: '32px',
+                  }}
+                >
                   <Tooltip title={loginAnywaysWarning}>
                     <ForceLoginButton
                       onClick={() => set_forceLogin(true)}
@@ -446,11 +448,11 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
                       Login anyways
                     </ForceLoginButton>
                   </Tooltip>
-                </div>}
+                </div>
+              )}
             </div>
           </Overlay>
         )}
-
       </SModal>
 
       <Modal
@@ -482,11 +484,15 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         disableScrollLock={true}
         title="WARNING"
       >
-
         <SirenImage src="/assets/police-siren-siren.gif" />
         <p>{loginAnywaysWarning}</p>
         <ButtonGroupContainer>
-          <Button outlined onClick={() => set_forceLogin(false)}>BACK</Button>
+          <Button
+            outlined
+            onClick={() => set_forceLogin(false)}
+          >
+            BACK
+          </Button>
           <ForceLoginButton
             onClick={() => {
               set_forceLogin(false);

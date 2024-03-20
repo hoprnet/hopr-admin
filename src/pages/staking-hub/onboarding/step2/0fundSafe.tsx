@@ -50,17 +50,21 @@ const GreenText = styled.div`
   }
 `;
 
-const BlueTooltip = styled(({ className, ...props }: TooltipProps) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: "#DAF8FF",
-    color: '#414141',
-    borderRadius: "10px",
-    fontSize: "12px",
-    boxShadow: "0px 4px 4px #00000040"
-  },
-}));
+const BlueTooltip = styled(({
+  className,
+  ...props
+}: TooltipProps) => (
+  <Tooltip
+    {...props}
+    classes={{ popper: className }}
+  />
+))(({ theme }) => ({ [`& .${tooltipClasses.tooltip}`]: {
+  backgroundColor: '#DAF8FF',
+  color: '#414141',
+  borderRadius: '10px',
+  fontSize: '12px',
+  boxShadow: '0px 4px 4px #00000040',
+} }));
 
 const FundsToSafe = () => {
   const dispatch = useAppDispatch();
@@ -199,8 +203,10 @@ const FundsToSafe = () => {
     return false;
   };
 
-  const notEnoughxDaiInWallet = !!walletxDaiBalance && !!xdaiValue && BigInt(parseFloat(xdaiValue) * 1e18) > BigInt(walletxDaiBalance);
-  const notEnoughwxHoprInWallet = !!walletwxHoprBalance && !!wxhoprValue && BigInt(parseFloat(wxhoprValue) * 1e18) > BigInt(walletwxHoprBalance);
+  const notEnoughxDaiInWallet =
+    !!walletxDaiBalance && !!xdaiValue && BigInt(parseFloat(xdaiValue) * 1e18) > BigInt(walletxDaiBalance);
+  const notEnoughwxHoprInWallet =
+    !!walletwxHoprBalance && !!wxhoprValue && BigInt(parseFloat(wxhoprValue) * 1e18) > BigInt(walletwxHoprBalance);
 
   return (
     <StepContainer
@@ -234,9 +240,12 @@ const FundsToSafe = () => {
       <StyledForm>
         <StyledInstructions>
           <Text>
-            Move <Lowercase>x</Lowercase>DAI to safe {' '}
-            <BlueTooltip title="Enter the amount of xDAI you would like to deposit to your Safe. In a later step this will be used to fund your node." >
-              <img src='/assets/question-icon.svg' style={{ height: "100%" }} />
+            Move <Lowercase>x</Lowercase>DAI to safe{' '}
+            <BlueTooltip title="Enter the amount of xDAI you would like to deposit to your Safe. In a later step this will be used to fund your node.">
+              <img
+                src="/assets/question-icon.svg"
+                style={{ height: '100%' }}
+              />
             </BlueTooltip>
           </Text>
         </StyledInstructions>
@@ -248,22 +257,17 @@ const FundsToSafe = () => {
             size="small"
             value={xdaiValue}
             onChange={(e) => set_xdaiValue(e.target.value)}
-            InputProps={{
-              inputProps: {
-                style: { textAlign: 'right' },
-                min: 0,
-                pattern: '[0-9]*',
-              }
-            }}
+            InputProps={{ inputProps: {
+              style: { textAlign: 'right' },
+              min: 0,
+              pattern: '[0-9]*',
+            } }}
             helperText={`min. ${MINIMUM_XDAI_TO_FUND}`}
           />
           <StyledCoinLabel>xDAI</StyledCoinLabel>
           <StyledGrayButton onClick={setMin_xDAI}>Min</StyledGrayButton>
-          {
-            notEnoughxDaiInWallet ?
-            <Tooltip
-              title='You do not have enough xDai in your wallet'
-            >
+          {notEnoughxDaiInWallet ? (
+            <Tooltip title="You do not have enough xDai in your wallet">
               <span>
                 <Button
                   onClick={handleFundxDai}
@@ -274,7 +278,7 @@ const FundsToSafe = () => {
                 </Button>
               </span>
             </Tooltip>
-            :
+          ) : (
             <Button
               onClick={handleFundxDai}
               disabled={!xdaiValue || xdaiValue === '' || xdaiValue === '0'}
@@ -282,16 +286,19 @@ const FundsToSafe = () => {
             >
               Fund
             </Button>
-          }
+          )}
         </StyledInputGroup>
       </StyledForm>
       <GreenText className="underline mb16">{xdaiEnoughBalance() && 'You transferred enough xDai'}</GreenText>
       <StyledForm>
         <StyledInstructions>
           <Text>
-            Move <Lowercase>wx</Lowercase>HOPR into safe {' '}
-            <BlueTooltip title="Enter the amount of wxHOPR you would like to deposit to your Safe. We recommend moving all of your wxHOPR." >
-              <img src='/assets/question-icon.svg' style={{ height: "100%" }} />
+            Move <Lowercase>wx</Lowercase>HOPR into safe{' '}
+            <BlueTooltip title="Enter the amount of wxHOPR you would like to deposit to your Safe. We recommend moving all of your wxHOPR.">
+              <img
+                src="/assets/question-icon.svg"
+                style={{ height: '100%' }}
+              />
             </BlueTooltip>
           </Text>
           <GreenText></GreenText>
@@ -304,23 +311,18 @@ const FundsToSafe = () => {
             size="small"
             value={wxhoprValue}
             onChange={(e) => set_wxhoprValue(e.target.value)}
-            InputProps={{
-              inputProps: {
-                style: { textAlign: 'right' },
-                min: 0,
-                pattern: '[0-9]*',
-              }
-            }}
+            InputProps={{ inputProps: {
+              style: { textAlign: 'right' },
+              min: 0,
+              pattern: '[0-9]*',
+            } }}
             helperText={`min. ${wxhoprValueMin}`}
           />
           <StyledCoinLabel>wxHOPR</StyledCoinLabel>
           <StyledGrayButton onClick={setMax_wxHOPR}>Max</StyledGrayButton>
 
-          {
-            notEnoughwxHoprInWallet ?
-            <Tooltip
-              title='You do not have enough xDai in your wallet'
-            >
+          {notEnoughwxHoprInWallet ? (
+            <Tooltip title="You do not have enough xDai in your wallet">
               <span>
                 <Button
                   onClick={handleFundwxHopr}
@@ -331,7 +333,7 @@ const FundsToSafe = () => {
                 </Button>
               </span>
             </Tooltip>
-            :
+          ) : (
             <Button
               onClick={handleFundwxHopr}
               disabled={!wxhoprValue || wxhoprValue === '' || wxhoprValue === '0'}
@@ -339,7 +341,7 @@ const FundsToSafe = () => {
             >
               Fund
             </Button>
-          }
+          )}
         </StyledInputGroup>
       </StyledForm>
       <GreenText>{wxhoprEnoughBalance() && 'You transferred enough wxHOPR'}</GreenText>

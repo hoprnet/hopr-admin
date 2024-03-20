@@ -28,7 +28,6 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
   const [duplicateAlias, set_duplicateAlias] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
-
   const setPropPeerId = () => {
     if (props.peerId) set_peerId(props.peerId);
   };
@@ -66,7 +65,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
           peerId: peerId,
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -91,7 +90,9 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
               url: null,
               timeout: null,
             },
-            toastPayload: { message: `Alias ${alias} failed to add.`, type: 'error' },
+            toastPayload: {
+              message: `Alias ${alias} failed to add.`, type: 'error', 
+            },
             dispatch,
           });
         })
@@ -106,14 +107,15 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
       <IconButton
         iconComponent={<AddAliasIcon />}
         tooltipText={
-          props.tooltip ?
-          props.tooltip
-          :
-          <span>
-            ADD
-            <br />
-            new alias
-          </span>
+          props.tooltip ? (
+            props.tooltip
+          ) : (
+            <span>
+              ADD
+              <br />
+              new alias
+            </span>
+          )
         }
         onClick={handleOpenModal}
         disabled={props.disabled}

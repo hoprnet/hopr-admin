@@ -111,20 +111,26 @@ export default function JoinWaitListStep() {
       title="JOIN THE WAITLIST"
       description={
         <>
-          If you have correctly funded your Safe, follow the steps below and we’ll onboard you to the HOPR network as soon as possible! For any additional information visit our{' '}
+          If you have correctly funded your Safe, follow the steps below and we’ll onboard you to the HOPR network as
+          soon as possible! For any additional information visit our{' '}
           <a
             href="https://docs.hoprnet.org/node/waitlist-FAQ"
             target="_blank"
             rel="noreferrer"
-            style={{ color: '#007bff', textDecoration: 'underline'}}
+            style={{
+              color: '#007bff', textDecoration: 'underline', 
+            }}
           >
             FAQ
-          </a>.
+          </a>
+          .
         </>
       }
       buttons={
         <ConfirmButton
-          onClick={()=>{navigate('/staking/dashboard');}}
+          onClick={() => {
+            navigate('/staking/dashboard');
+          }}
         >
           VIEW DASHBOARD
         </ConfirmButton>
@@ -140,7 +146,10 @@ export default function JoinWaitListStep() {
                   to={`https://cryptpad.fr/form/#/2/form/view/7TwSgsF+CnW-aw24uyPlE4Gej3DX-jjeYmyk9-Q-6RQ/`}
                   target="_blank"
                   rel="noopener noreferrer"
-                >this form</StyledLink>.
+                >
+                  this form
+                </StyledLink>
+                .
               </span>
               <StyledTransactionHashWithIcon>
                 <p>Safe address:</p>
@@ -168,7 +177,8 @@ export default function JoinWaitListStep() {
                 rel="noopener noreferrer"
               >
                 here
-              </StyledLink>.
+              </StyledLink>
+              .
             </p>
           </Instruction>
           <RightArrow>
@@ -180,21 +190,24 @@ export default function JoinWaitListStep() {
           />
         </StepsContainer>
         <Note>
-          Note: You can close this tab now, as it may take over a week to approve your address.
-          Once approved, you can return to this point in the journey by re-visiting{' '}
+          Note: You can close this tab now, as it may take over a week to approve your address. Once approved, you can
+          return to this point in the journey by re-visiting{' '}
           <StyledLink
             to={`https://hub.hoprnet.org`}
             target="_blank"
             rel="noopener noreferrer"
-          >hub.HOPRnet.org</StyledLink>{' '}and re-connecting your wallet.
-          For now, keep an eye on the{' '}
+          >
+            hub.HOPRnet.org
+          </StyledLink>{' '}
+          and re-connecting your wallet. For now, keep an eye on the{' '}
           <StyledLink
             to={`https://cryptpad.fr/sheet/#/2/sheet/view/NYbRDH+C993dfHwEL1RyyKNtxG5pRoOaxtI4hbRVUBw/`}
             target="_blank"
             rel="noopener noreferrer"
           >
             waitlist
-          </StyledLink>{' '} or view your funds in the dashboard by clicking the button below.
+          </StyledLink>{' '}
+          or view your funds in the dashboard by clicking the button below.
         </Note>
       </Content>
     </StepContainer>

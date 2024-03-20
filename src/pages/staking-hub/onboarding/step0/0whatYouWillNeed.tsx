@@ -60,8 +60,6 @@ const TextUnderImage = styled.div`
   }
 `;
 
-
-
 const Overlap = styled.div`
   display: flex;
   position: relative;
@@ -148,9 +146,7 @@ const TitleWithSVG = (props: {
   style?: object;
 }) => {
   return (
-    <TitleWithSVGContent
-      style={props.style}
-    >
+    <TitleWithSVGContent style={props.style}>
       <Title>{props.title}</Title>
       {props.img && (
         <ImageContainer
@@ -226,9 +222,7 @@ export default function WhatYouWillNeedPage() {
                   width: 90,
                 }}
               />
-              <TextUnderImage
-                style={{maxWidth: '280px'}}
-              >
+              <TextUnderImage style={{ maxWidth: '280px' }}>
                 <p>min. 10k wxHOPR with Network Registry NFT</p>
                 <p>min. 30k wxHOPR without Network Registry NFT</p>
                 <p>+</p>
@@ -245,16 +239,22 @@ export default function WhatYouWillNeedPage() {
             }}
           />
           <TitleWithSVG
-            title={<>Network<br/>registry NFT*</>}
+            title={
+              <>
+                Network
+                <br />
+                registry NFT*
+              </>
+            }
             img={{
               src: '/assets/network-registry-nft-icon.svg',
               height: 100,
               width: 100,
             }}
-            style={{maxWidth: '100px'}}
+            style={{ maxWidth: '100px' }}
           >
             <TextUnderImage>
-              <p style={{textAlign:'center'}}>*optional</p>
+              <p style={{ textAlign: 'center' }}>*optional</p>
             </TextUnderImage>
           </TitleWithSVG>
         </Container>

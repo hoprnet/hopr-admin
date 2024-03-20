@@ -24,11 +24,13 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
 
   const signer = useEthersSigner();
   // flags to activate notifications
-  const activeChannels = useAppSelector(store => store.app.configuration.notifications.channels)
-  const activeMessage = useAppSelector(store => store.app.configuration.notifications.message)
-  const activeNodeBalances = useAppSelector(store => store.app.configuration.notifications.nodeBalances)
-  const activeNodeInfo = useAppSelector(store => store.app.configuration.notifications.nodeInfo)
-  const activePendingSafeTransaction = useAppSelector(store => store.app.configuration.notifications.pendingSafeTransaction)
+  const activeChannels = useAppSelector((store) => store.app.configuration.notifications.channels);
+  const activeMessage = useAppSelector((store) => store.app.configuration.notifications.message);
+  const activeNodeBalances = useAppSelector((store) => store.app.configuration.notifications.nodeBalances);
+  const activeNodeInfo = useAppSelector((store) => store.app.configuration.notifications.nodeInfo);
+  const activePendingSafeTransaction = useAppSelector(
+    (store) => store.app.configuration.notifications.pendingSafeTransaction,
+  );
   // redux previous states, this can be updated from anywhere in the app
   const prevChannels = useAppSelector((store) => store.app.previousStates.prevChannels);
   const prevNodeBalances = useAppSelector((store) => store.app.previousStates.prevNodeBalances);
@@ -61,7 +63,6 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
         },
       });
     }, intervalDuration);
-
 
     const watchMessagesInterval = setInterval(() => {
       if (!apiEndpoint || !apiToken) return;
@@ -135,55 +136,54 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
     };
   }, [selectedSafeAddress, signer, prevPendingSafeTransaction, safeIndexed]);
 
-
   useEffect(() => {
-    if(activeMessage && messages && messages.length > 0) {
-        messages.forEach((msgReceived, index) => {
-          let hasToNotify = !msgReceived.notified;
-          if(hasToNotify){
-            const notification = `Message received: ${msgReceived.body}`;
-            sendNotification({
-              notificationPayload: {
-                source: 'node',
-                name: notification,
-                url: null,
-                timeout: null,
-              },
-              toastPayload: { message: notification },
-              dispatch,
-            });
-            dispatch(nodeActions.setMessageNotified(index));
-          }
-        })
+    if (activeMessage && messages && messages.length > 0) {
+      messages.forEach((msgReceived, index) => {
+        const hasToNotify = !msgReceived.notified;
+        if (hasToNotify) {
+          const notification = `Message received: ${msgReceived.body}`;
+          sendNotification({
+            notificationPayload: {
+              source: 'node',
+              name: notification,
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: notification },
+            dispatch,
+          });
+          dispatch(nodeActions.setMessageNotified(index));
+        }
+      });
     }
   }, [activeMessage, messages]);
 
   useEffect(() => {
-    if(!firstChannelsCallWasSuccesfull) return;
+    if (!firstChannelsCallWasSuccesfull) return;
 
-    if(!prevChannels) {
+    if (!prevChannels) {
       const channelsOutgoingIds = Object.keys(channels.outgoing);
-      if(
-        channelsOutgoingIds.length !==0 && //true
+      if (
+        channelsOutgoingIds.length !== 0 && //true
         Object.keys(channels.outgoing[channelsOutgoingIds[0]]).includes('status') // If the channels are populated more than with tickets data
       ) {
         dispatch(appActions.setPrevChannels(channels));
-      };
-      return
-    };
+      }
+      return;
+    }
 
-    if(activeChannels) {
+    if (activeChannels) {
       const changes = checkHowChannelsHaveChanged(prevChannels, channels);
-      if(changes.length !== 0) {
-        console.log('changes channels', changes)
-        for(let i = 0; i < changes.length; i++){
+      if (changes.length !== 0) {
+        console.log('changes channels', changes);
+        for (let i = 0; i < changes.length; i++) {
           let notificationText: null | string = null;
-          if(changes[i].status === "Open") {
-            notificationText = `Channel to ${changes[i].peerAddress} opened.`
-          } else if(changes[i].status === "PendingToClose") {
-            notificationText = `Channel to ${changes[i].peerAddress} is pending to close.`
-          } else if(changes[i].status === "Closed") {
-            notificationText = `Channel to ${changes[i].peerAddress} closed.`
+          if (changes[i].status === 'Open') {
+            notificationText = `Channel to ${changes[i].peerAddress} opened.`;
+          } else if (changes[i].status === 'PendingToClose') {
+            notificationText = `Channel to ${changes[i].peerAddress} is pending to close.`;
+          } else if (changes[i].status === 'Closed') {
+            notificationText = `Channel to ${changes[i].peerAddress} closed.`;
           }
           if (notificationText) {
             sendNotification({
@@ -202,5 +202,4 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
       }
     }
   }, [activeChannels, firstChannelsCallWasSuccesfull, channels, prevChannels]);
-
 };

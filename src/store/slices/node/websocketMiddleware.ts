@@ -9,7 +9,8 @@ const {
   initializeMessagesWebsocket,
   closeMessagesWebsocket,
   updateMessagesWebsocketStatus,
-} = nodeActions;
+} =
+  nodeActions;
 
 const { WebsocketHelper } = utils;
 

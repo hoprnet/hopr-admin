@@ -363,7 +363,7 @@ function SafeWithdraw() {
       center
       fullHeightMin
     >
-      <StartOnboarding/>
+      <StartOnboarding />
       <Card
         image={{
           src: '/assets/funds-safe-withdraw.svg',

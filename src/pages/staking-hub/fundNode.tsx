@@ -53,7 +53,6 @@ const StyledCoinLabel = styled.p`
   letter-spacing: 0.35px;
 `;
 
-
 export const SSafeTransactionButton = styled(SafeTransactionButton)`
   max-width: 250px;
   width: 100%;
@@ -77,7 +76,7 @@ export default function FundNode() {
   const [xdaiValue, set_xdaiValue] = useState<string>('');
   const [isWalletLoading, set_isWalletLoading] = useState<boolean>();
   const [error, set_error] = useState<boolean>(false);
-  const [transactionHash, set_transactionHash] = useState<Address>()
+  const [transactionHash, set_transactionHash] = useState<Address>();
   const signer = useEthersSigner();
 
   const nodeAddress = nodeAddressFromParams ? nodeAddressFromParams : nodeAddressFromTheStore;
@@ -96,15 +95,16 @@ export default function FundNode() {
           data: '0x',
         },
       }),
-    ).unwrap().then(res => {
-      set_transactionHash(res as Address)
-      setTimeout(() => {
-        navigate('/staking/dashboard#node');
-      }, 3000)
-    });
+    )
+      .unwrap()
+      .then((res) => {
+        set_transactionHash(res as Address);
+        setTimeout(() => {
+          navigate('/staking/dashboard#node');
+        }, 3000);
+      });
     set_isWalletLoading(false);
   };
-
 
   const signTx = async () => {
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
@@ -120,19 +120,19 @@ export default function FundNode() {
           data: '0x',
         },
       }),
-    ).unwrap().then(res => {
-      set_transactionHash(res as Address)
-      setTimeout(() => {
-        navigate('/staking/dashboard#node');
-      }, 3000)
-    });
+    )
+      .unwrap()
+      .then((res) => {
+        set_transactionHash(res as Address);
+        setTimeout(() => {
+          navigate('/staking/dashboard#node');
+        }, 3000);
+      });
     set_isWalletLoading(false);
   };
 
   useEffect(() => {
-    if (safeXDaiBalance !== null &&
-      parseUnits(xdaiValue, 18) > parseUnits(safeXDaiBalance, 18)
-    ) {
+    if (safeXDaiBalance !== null && parseUnits(xdaiValue, 18) > parseUnits(safeXDaiBalance, 18)) {
       set_error(true);
     } else {
       set_error(false);
@@ -157,13 +157,23 @@ export default function FundNode() {
             executeOptions={{
               onClick: createAndExecuteTx,
               pending: isWalletLoading,
-              disabled: error || xdaiValue === '' || parseUnits(xdaiValue, 18) === parseUnits('0', 18) || xdaiValue.includes('-') || xdaiValue.includes('+'),
+              disabled:
+                error ||
+                xdaiValue === '' ||
+                parseUnits(xdaiValue, 18) === parseUnits('0', 18) ||
+                xdaiValue.includes('-') ||
+                xdaiValue.includes('+'),
               buttonText: 'FUND',
             }}
             signOptions={{
               onClick: signTx,
               pending: isWalletLoading,
-              disabled: error || xdaiValue === '' || parseUnits(xdaiValue, 18) === parseUnits('0', 18) || xdaiValue.includes('-') || xdaiValue.includes('+'),
+              disabled:
+                error ||
+                xdaiValue === '' ||
+                parseUnits(xdaiValue, 18) === parseUnits('0', 18) ||
+                xdaiValue.includes('-') ||
+                xdaiValue.includes('+'),
               buttonText: 'SIGN FUND',
             }}
             safeInfo={safeInfo}

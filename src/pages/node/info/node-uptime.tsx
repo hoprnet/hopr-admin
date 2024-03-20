@@ -36,30 +36,29 @@ function NodeUptime() {
   const [nodeTimeUp, set_nodeTimeUp] = useState('-');
 
   useEffect(() => {
-    let interval:any;
-    if(nodeStartedEpoch && typeof(nodeStartedEpoch) === 'number') {
+    let interval: any;
+    if (nodeStartedEpoch && typeof nodeStartedEpoch === 'number') {
       interval = setInterval(() => {
         const nodeStartedEpochMs = Math.floor(nodeStartedEpoch * 1000);
         const uptimeSec = Math.floor((Date.now() - nodeStartedEpochMs) / 1000);
         const days = Math.floor(uptimeSec / 86400);
-        const hours = Math.floor((uptimeSec-(days * 86400)) / 3600);
-        const minutes = Math.floor((uptimeSec-(days * 86400)-(hours * 3600)) / 60);
-        const seconds = Math.floor((uptimeSec-(days * 86400)-(hours * 3600)-(minutes * 60)));
+        const hours = Math.floor((uptimeSec - days * 86400) / 3600);
+        const minutes = Math.floor((uptimeSec - days * 86400 - hours * 3600) / 60);
+        const seconds = Math.floor(uptimeSec - days * 86400 - hours * 3600 - minutes * 60);
 
-        if(days !== 0) set_nodeTimeUp(`${days} days ${hours} hours ${minutes} min ${seconds} sec`);
-        else if(hours !== 0) set_nodeTimeUp(`${hours} hours ${minutes} min ${seconds} sec`);
-        else if(minutes !== 0) set_nodeTimeUp(`${minutes} min ${seconds} sec`);
+        if (days !== 0) set_nodeTimeUp(`${days} days ${hours} hours ${minutes} min ${seconds} sec`);
+        else if (hours !== 0) set_nodeTimeUp(`${hours} hours ${minutes} min ${seconds} sec`);
+        else if (minutes !== 0) set_nodeTimeUp(`${minutes} min ${seconds} sec`);
         else set_nodeTimeUp(`${seconds} sec`);
-
-      }, 1_000)
+      }, 1_000);
     }
     return () => clearInterval(interval);
   }, [nodeStartedEpoch]);
 
   return (
     <Row
-      title={"Uptime"}
-      tooltip={"The amount of the node is up"}
+      title={'Uptime'}
+      tooltip={'The amount of the node is up'}
       value={nodeTimeUp}
     />
   );

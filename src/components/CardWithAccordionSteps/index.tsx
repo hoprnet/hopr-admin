@@ -1,17 +1,16 @@
-import { useState } from "react";
-import styled from "@emotion/styled";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import styled from '@emotion/styled';
+import { useNavigate } from 'react-router-dom';
 
 // Store
-import { useAppDispatch, useAppSelector } from "../../store";
-import { web3Actions } from "../../store/slices/web3";
+import { useAppDispatch, useAppSelector } from '../../store';
+import { web3Actions } from '../../store/slices/web3';
 
 // HOPR Components
 import Button from '../../future-hopr-lib-components/Button';
 
-
 // Mui
-import { Accordion, AccordionDetails, AccordionSummary, Card } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Card } from '@mui/material';
 
 const SafeSideToSideContainer = styled.div`
   display: flex;
@@ -230,137 +229,137 @@ const StyledButton = styled(Button)`
 `;
 
 export default function CardWithAccordionSteps() {
-    const navigate = useNavigate();
-    const dispatch = useAppDispatch();
-    const status = useAppSelector((store) => store.web3.status);
-    const onboardingStep = useAppSelector((store) => store.stakingHub.onboarding.step);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const status = useAppSelector((store) => store.web3.status);
+  const onboardingStep = useAppSelector((store) => store.stakingHub.onboarding.step);
 
-    const [expandedId, set_expandedId] = useState<number | false>(0);
-    const [imageSrc, set_imageSrc] = useState<string>('/assets/get-ready.svg');
+  const [expandedId, set_expandedId] = useState<number | false>(0);
+  const [imageSrc, set_imageSrc] = useState<string>('/assets/get-ready.svg');
 
-    const handleAccordionClick = (id: number) => {
-        set_expandedId(id);
-        setImageById(id);
-    };
+  const handleAccordionClick = (id: number) => {
+    set_expandedId(id);
+    setImageById(id);
+  };
 
-    const setImageById = (id: number) => {
-        switch (id) {
-            case 0:
-                set_imageSrc('/assets/get-ready.svg');
-                break;
-            case 1:
-                set_imageSrc('/assets/create-safe.svg');
-                break;
-            case 2:
-                set_imageSrc('/assets/move-funds.svg');
-                break;
-            case 3:
-                set_imageSrc('/assets/HOPR_Node_Adming_with_plus.svg');
-                break;
-            default:
-                break;
-        }
-    };
+  const setImageById = (id: number) => {
+    switch (id) {
+    case 0:
+      set_imageSrc('/assets/get-ready.svg');
+      break;
+    case 1:
+      set_imageSrc('/assets/create-safe.svg');
+      break;
+    case 2:
+      set_imageSrc('/assets/move-funds.svg');
+      break;
+    case 3:
+      set_imageSrc('/assets/HOPR_Node_Adming_with_plus.svg');
+      break;
+    default:
+      break;
+    }
+  };
 
-    return (
-        <CreateSafeContainer>
-            <MainTitle>Create your Hopr safe now!</MainTitle>
-            <SafeSideToSideContainer>
-                <SafeCard>
-                    <SafeAccordion
-                        key={0}
-                        expanded={expandedId === 0}
-                        onChange={() => handleAccordionClick(0)}
-                    >
-                        <SafeAccordionSummary
-                            className={`SafeAccordionSummary`}
-                            expandIcon={<img src="/assets/1create-safe.svg" />}
-                        >
-                            <SafeTitle>GET READY</SafeTitle>
-                        </SafeAccordionSummary>
-                        <SafeAccordionContent>
-                            <SafeContent>Connect your wallet and make sure you have enough wxHOPR.</SafeContent>
-                        </SafeAccordionContent>
-                    </SafeAccordion>
-                    <SafeAccordion
-                        key={1}
-                        expanded={expandedId === 1}
-                        onChange={() => handleAccordionClick(1)}
-                    >
-                        <SafeAccordionSummary
-                            className={`SafeAccordionSummary`}
-                            expandIcon={<img src="/assets/2create-safe.svg" />}
-                        >
-                            <SafeTitle>CREATE Safe</SafeTitle>
-                        </SafeAccordionSummary>
-                        <SafeAccordionContent>
-                            <SafeContent>Deploy your new HOPR safe and configure who has access.</SafeContent>
-                        </SafeAccordionContent>
-                    </SafeAccordion>
-                    <SafeAccordion
-                        key={2}
-                        expanded={expandedId === 2}
-                        onChange={() => handleAccordionClick(2)}
-                    >
-                        <SafeAccordionSummary
-                            className={`SafeAccordionSummary`}
-                            expandIcon={<img src="/assets/3create-safe.svg" />}
-                        >
-                            <SafeTitle>MOVE FUNDS</SafeTitle>
-                        </SafeAccordionSummary>
-                        <SafeAccordionContent>
-                            <SafeContent>Fund your Safe with the xDAI and wxHOPR your node will need.</SafeContent>
-                        </SafeAccordionContent>
-                    </SafeAccordion>
-                    <SafeAccordion
-                        key={3}
-                        expanded={expandedId === 3}
-                        onChange={() => handleAccordionClick(3)}
-                    >
-                        <SafeAccordionSummary
-                            className={`SafeAccordionSummary`}
-                            expandIcon={<img src="/assets/4create-safe.svg" />}
-                        >
-                            <SafeTitle>ADD NODE</SafeTitle>
-                        </SafeAccordionSummary>
-                        <SafeAccordionContent>
-                            <SafeContent>Use your Safe to spin up a new HOPR node, and start earning $HOPR!</SafeContent>
-                        </SafeAccordionContent>
-                    </SafeAccordion>
-                    {!status.connected && (
-                        <StyledButton
-                            onClick={() => {
-                                dispatch(web3Actions.setModalOpen(true));
-                            }}
-                            disabled={status.connected}
-                        >
-                            CONNECT WALLET
-                        </StyledButton>
-                    )}
-                    {status.connected && onboardingStep !== 16 && (
-                        <BlueSectionButton
-                            onClick={() => {
-                                navigate('/staking/onboarding');
-                            }}
-                        >
-                            GO TO ONBOARDING
-                        </BlueSectionButton>
-                    )}
-                    {status.connected && onboardingStep === 16 && (
-                        <BlueSectionButton
-                            onClick={() => {
-                                navigate('/staking/dashboard');
-                            }}
-                            style={{ maxWidth: '300px' }}
-                        >
-                            VIEW STAKING OVERVIEW
-                        </BlueSectionButton>
-                    )}
-                </SafeCard>
-                <div className="ImageSide">
-                    <img src={imageSrc} />
-                </div>
-            </SafeSideToSideContainer>
-        </CreateSafeContainer>
-    );
-};
+  return (
+    <CreateSafeContainer>
+      <MainTitle>Create your Hopr safe now!</MainTitle>
+      <SafeSideToSideContainer>
+        <SafeCard>
+          <SafeAccordion
+            key={0}
+            expanded={expandedId === 0}
+            onChange={() => handleAccordionClick(0)}
+          >
+            <SafeAccordionSummary
+              className={`SafeAccordionSummary`}
+              expandIcon={<img src="/assets/1create-safe.svg" />}
+            >
+              <SafeTitle>GET READY</SafeTitle>
+            </SafeAccordionSummary>
+            <SafeAccordionContent>
+              <SafeContent>Connect your wallet and make sure you have enough wxHOPR.</SafeContent>
+            </SafeAccordionContent>
+          </SafeAccordion>
+          <SafeAccordion
+            key={1}
+            expanded={expandedId === 1}
+            onChange={() => handleAccordionClick(1)}
+          >
+            <SafeAccordionSummary
+              className={`SafeAccordionSummary`}
+              expandIcon={<img src="/assets/2create-safe.svg" />}
+            >
+              <SafeTitle>CREATE Safe</SafeTitle>
+            </SafeAccordionSummary>
+            <SafeAccordionContent>
+              <SafeContent>Deploy your new HOPR safe and configure who has access.</SafeContent>
+            </SafeAccordionContent>
+          </SafeAccordion>
+          <SafeAccordion
+            key={2}
+            expanded={expandedId === 2}
+            onChange={() => handleAccordionClick(2)}
+          >
+            <SafeAccordionSummary
+              className={`SafeAccordionSummary`}
+              expandIcon={<img src="/assets/3create-safe.svg" />}
+            >
+              <SafeTitle>MOVE FUNDS</SafeTitle>
+            </SafeAccordionSummary>
+            <SafeAccordionContent>
+              <SafeContent>Fund your Safe with the xDAI and wxHOPR your node will need.</SafeContent>
+            </SafeAccordionContent>
+          </SafeAccordion>
+          <SafeAccordion
+            key={3}
+            expanded={expandedId === 3}
+            onChange={() => handleAccordionClick(3)}
+          >
+            <SafeAccordionSummary
+              className={`SafeAccordionSummary`}
+              expandIcon={<img src="/assets/4create-safe.svg" />}
+            >
+              <SafeTitle>ADD NODE</SafeTitle>
+            </SafeAccordionSummary>
+            <SafeAccordionContent>
+              <SafeContent>Use your Safe to spin up a new HOPR node, and start earning $HOPR!</SafeContent>
+            </SafeAccordionContent>
+          </SafeAccordion>
+          {!status.connected && (
+            <StyledButton
+              onClick={() => {
+                dispatch(web3Actions.setModalOpen(true));
+              }}
+              disabled={status.connected}
+            >
+              CONNECT WALLET
+            </StyledButton>
+          )}
+          {status.connected && onboardingStep !== 16 && (
+            <BlueSectionButton
+              onClick={() => {
+                navigate('/staking/onboarding');
+              }}
+            >
+              GO TO ONBOARDING
+            </BlueSectionButton>
+          )}
+          {status.connected && onboardingStep === 16 && (
+            <BlueSectionButton
+              onClick={() => {
+                navigate('/staking/dashboard');
+              }}
+              style={{ maxWidth: '300px' }}
+            >
+              VIEW STAKING OVERVIEW
+            </BlueSectionButton>
+          )}
+        </SafeCard>
+        <div className="ImageSide">
+          <img src={imageSrc} />
+        </div>
+      </SafeSideToSideContainer>
+    </CreateSafeContainer>
+  );
+}

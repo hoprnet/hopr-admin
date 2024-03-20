@@ -22,15 +22,17 @@ const BlueTooltip = styled(({
   className,
   ...props
 }: TooltipProps) => (
-  <Tooltip {...props} classes={{ popper: className }} />
+  <Tooltip
+    {...props}
+    classes={{ popper: className }}
+  />
 ))(() => ({ [`& .${tooltipClasses.tooltip}`]: {
-  backgroundColor: "#DAF8FF",
+  backgroundColor: '#DAF8FF',
   color: '#414141',
-  borderRadius: "10px",
-  fontSize: "12px",
-  boxShadow: "0px 4px 4px #00000040",
+  borderRadius: '10px',
+  fontSize: '12px',
+  boxShadow: '0px 4px 4px #00000040',
 } }));
-
 
 const StyledForm = styled.div`
   width: 100%;
@@ -79,7 +81,7 @@ export const SSafeTransactionButton = styled(SafeTransactionButton)`
   align-self: center;
 `;
 
-export default function FundNode(props?: { onDone?: Function, nodeAddress?: string | null}) {
+export default function FundNode(props?: { onDone?: Function; nodeAddress?: string | null }) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   // injected states
@@ -97,7 +99,7 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
   const [isWalletLoading, set_isWalletLoading] = useState(false);
   const signer = useEthersSigner();
 
-  const nodeAddress:string = props?.nodeAddress ? props.nodeAddress : nodeAddressFromStore;
+  const nodeAddress: string = props?.nodeAddress ? props.nodeAddress : nodeAddressFromStore;
 
   const createAndExecuteTx = () => {
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
@@ -116,7 +118,7 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
       .unwrap()
       .then((hash) => {
         set_transactionHash(hash as Address);
-        if (props?.onDone){
+        if (props?.onDone) {
           props.onDone();
         } else {
           dispatch(stakingHubActions.setOnboardingStep(15));
@@ -145,7 +147,7 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
       .unwrap()
       .catch((error) => {
         console.warn(error);
-        if(JSON.stringify(error).includes('user rejected transaction')){
+        if (JSON.stringify(error).includes('user rejected transaction')) {
           set_errorMessage('User rejected transaction');
         }
         set_error(true);
@@ -219,10 +221,15 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
         </StyledForm>
         <StyledForm>
           <StyledInstructions>
-            <StyledText>SEND xDAI TO NODE {' '}
-              <BlueTooltip title="Enter the amount of xDAI you would like to transfer from your Safe to your node." >
-                <img src='/assets/question-icon.svg' style={{ height: "100%" }} />
-              </BlueTooltip></StyledText>
+            <StyledText>
+              SEND xDAI TO NODE{' '}
+              <BlueTooltip title="Enter the amount of xDAI you would like to transfer from your Safe to your node.">
+                <img
+                  src="/assets/question-icon.svg"
+                  style={{ height: '100%' }}
+                />
+              </BlueTooltip>
+            </StyledText>
           </StyledInstructions>
           <StyledInputGroup>
             <StyledTextField

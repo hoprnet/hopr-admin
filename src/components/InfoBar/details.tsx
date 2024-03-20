@@ -162,13 +162,16 @@ export default function Details(props: Props) {
   const loginData = useAppSelector((store) => store.auth.loginData);
   const statistics = useAppSelector((store) => store.node.statistics.data);
 
-  const totalwxHOPR = balances.channels?.value && balances.safeHopr?.value ? formatEther(BigInt(balances.channels?.value) + BigInt(balances.safeHopr?.value)) : '-'
+  const totalwxHOPR =
+    balances.channels?.value && balances.safeHopr?.value
+      ? formatEther(BigInt(balances.channels?.value) + BigInt(balances.safeHopr?.value))
+      : '-';
 
   const isXdaiEnough = () => {
-    if(balances.native.value && (BigInt(balances.native.value) < BigInt('50000000000000000'))) return 'Orange'
-    else if(balances.native.value && (BigInt(balances.native.value) < BigInt('1000000000000000'))) return 'Red'
-    return ''
-  }
+    if (balances.native.value && BigInt(balances.native.value) < BigInt('50000000000000000')) return 'Orange';
+    else if (balances.native.value && BigInt(balances.native.value) < BigInt('1000000000000000')) return 'Red';
+    return '';
+  };
 
   const web3Drawer = (
     <Web3Container style={props.style}>
@@ -206,9 +209,31 @@ export default function Details(props: Props) {
           <>
             <DataTitle>Safe</DataTitle>
             <Data>
-              <Tooltip title={safeBalance.wxHopr.formatted && safeBalance.wxHopr.formatted !== '0' ? safeBalance.wxHopr.formatted : null}><p>{safeBalance.wxHopr.formatted ?? '-'}</p></Tooltip>
-              <Tooltip title={safeBalance.xHopr.formatted && safeBalance.xHopr.formatted !== '0' ? safeBalance.xHopr.formatted : null }><p>{safeBalance.xHopr.formatted ?? '-'}</p></Tooltip>
-              <Tooltip title={safeBalance.xDai.formatted && safeBalance.xDai.formatted !== '0'  ? safeBalance.xDai.formatted : null }><p>{safeBalance.xDai.formatted ?? '-'}</p></Tooltip>
+              <Tooltip
+                title={
+                  safeBalance.wxHopr.formatted && safeBalance.wxHopr.formatted !== '0'
+                    ? safeBalance.wxHopr.formatted
+                    : null
+                }
+              >
+                <p>{safeBalance.wxHopr.formatted ?? '-'}</p>
+              </Tooltip>
+              <Tooltip
+                title={
+                  safeBalance.xHopr.formatted && safeBalance.xHopr.formatted !== '0'
+                    ? safeBalance.xHopr.formatted
+                    : null
+                }
+              >
+                <p>{safeBalance.xHopr.formatted ?? '-'}</p>
+              </Tooltip>
+              <Tooltip
+                title={
+                  safeBalance.xDai.formatted && safeBalance.xDai.formatted !== '0' ? safeBalance.xDai.formatted : null
+                }
+              >
+                <p>{safeBalance.xDai.formatted ?? '-'}</p>
+              </Tooltip>
             </Data>
           </>
         )}
@@ -216,9 +241,31 @@ export default function Details(props: Props) {
       <DataColumn>
         <DataTitle>Wallet</DataTitle>
         <Data>
-          <Tooltip title={walletBalance.wxHopr.formatted && walletBalance.wxHopr.formatted !== '0' ? walletBalance.wxHopr.formatted : null }><p>{walletBalance.wxHopr.formatted ?? '-'}</p></Tooltip>
-          <Tooltip title={walletBalance.xHopr.formatted && walletBalance.xHopr.formatted !== '0' ? walletBalance.xHopr.formatted: null }><p>{walletBalance.xHopr.formatted ?? '-'}</p></Tooltip>
-          <Tooltip title={walletBalance.xDai.formatted && walletBalance.xDai.formatted !== '0' ? walletBalance.xDai.formatted: null }><p>{walletBalance.xDai.formatted ?? '-'}</p></Tooltip>
+          <Tooltip
+            title={
+              walletBalance.wxHopr.formatted && walletBalance.wxHopr.formatted !== '0'
+                ? walletBalance.wxHopr.formatted
+                : null
+            }
+          >
+            <p>{walletBalance.wxHopr.formatted ?? '-'}</p>
+          </Tooltip>
+          <Tooltip
+            title={
+              walletBalance.xHopr.formatted && walletBalance.xHopr.formatted !== '0'
+                ? walletBalance.xHopr.formatted
+                : null
+            }
+          >
+            <p>{walletBalance.xHopr.formatted ?? '-'}</p>
+          </Tooltip>
+          <Tooltip
+            title={
+              walletBalance.xDai.formatted && walletBalance.xDai.formatted !== '0' ? walletBalance.xDai.formatted : null
+            }
+          >
+            <p>{walletBalance.xDai.formatted ?? '-'}</p>
+          </Tooltip>
         </Data>
       </DataColumn>
     </Web3Container>
@@ -256,7 +303,7 @@ export default function Details(props: Props) {
               alt="xDai Icon"
             />
           </IconContainer>
-          <Text className='noWrap'>wxHOPR: Safe</Text>
+          <Text className="noWrap">wxHOPR: Safe</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer>
@@ -265,7 +312,7 @@ export default function Details(props: Props) {
               alt="xDai Icon"
             />
           </IconContainer>
-          <Text >wxHOPR: Channels OUT</Text>
+          <Text>wxHOPR: Channels OUT</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer>
@@ -288,21 +335,65 @@ export default function Details(props: Props) {
       <DataColumn>
         <Data className="nodeOnly">
           <p>
-            <ColorStatus className={`status-${info?.connectivityStatus}`}>
-              {info?.connectivityStatus}
-            </ColorStatus>
+            <ColorStatus className={`status-${info?.connectivityStatus}`}>{info?.connectivityStatus}</ColorStatus>
           </p>
-          <ColorStatus
-            className={`status-${isXdaiEnough()}`}
-          >
-            <Tooltip title={balances.native?.formatted && balances.native?.formatted !== '0' ? balances.native?.formatted : null}><p>{balances.native?.formatted ?? '-'}</p></Tooltip>
+          <ColorStatus className={`status-${isXdaiEnough()}`}>
+            <Tooltip
+              title={
+                balances.native?.formatted && balances.native?.formatted !== '0' ? balances.native?.formatted : null
+              }
+            >
+              <p>{balances.native?.formatted ?? '-'}</p>
+            </Tooltip>
           </ColorStatus>
-          <Tooltip title={balances.safeNative?.formatted && balances.safeNative?.formatted !== '0' ? balances.safeNative?.formatted : null}><p>{balances.safeNative?.formatted ?? '-'}</p></Tooltip>
-          <Tooltip title={balances.safeHopr?.formatted && balances.safeHopr?.formatted !== '0' ? balances.safeHopr?.formatted : null}><p>{balances.safeHopr?.formatted ?? '-'}</p></Tooltip>
-          <Tooltip title={balances.channels?.formatted && balances.channels?.formatted !== '0' ? balances.channels?.formatted : null}><p className="double">{balances.channels?.formatted ?? '-'}</p></Tooltip>
-          <Tooltip title={totalwxHOPR && totalwxHOPR !== '0' ? totalwxHOPR : null}><p  className="double">{totalwxHOPR ?? '-'}</p></Tooltip>
-          <Tooltip title={statistics?.unredeemedValue && statistics?.unredeemedValue !== '0' ? formatEther(BigInt(statistics?.unredeemedValue as string)) : null}><p className="double">{statistics?.unredeemedValue ? formatEther(BigInt(statistics?.unredeemedValue as string)) : '-'}</p></Tooltip>
-          <Tooltip title={statistics?.redeemedValue && statistics?.redeemedValue !== '0' ? formatEther(BigInt(statistics?.redeemedValue as string)) : null}><p className="double">{statistics?.redeemedValue ? formatEther(BigInt(statistics?.redeemedValue as string)) : '-'}</p></Tooltip>
+          <Tooltip
+            title={
+              balances.safeNative?.formatted && balances.safeNative?.formatted !== '0'
+                ? balances.safeNative?.formatted
+                : null
+            }
+          >
+            <p>{balances.safeNative?.formatted ?? '-'}</p>
+          </Tooltip>
+          <Tooltip
+            title={
+              balances.safeHopr?.formatted && balances.safeHopr?.formatted !== '0' ? balances.safeHopr?.formatted : null
+            }
+          >
+            <p>{balances.safeHopr?.formatted ?? '-'}</p>
+          </Tooltip>
+          <Tooltip
+            title={
+              balances.channels?.formatted && balances.channels?.formatted !== '0' ? balances.channels?.formatted : null
+            }
+          >
+            <p className="double">{balances.channels?.formatted ?? '-'}</p>
+          </Tooltip>
+          <Tooltip title={totalwxHOPR && totalwxHOPR !== '0' ? totalwxHOPR : null}>
+            <p className="double">{totalwxHOPR ?? '-'}</p>
+          </Tooltip>
+          <Tooltip
+            title={
+              statistics?.unredeemedValue && statistics?.unredeemedValue !== '0'
+                ? formatEther(BigInt(statistics?.unredeemedValue as string))
+                : null
+            }
+          >
+            <p className="double">
+              {statistics?.unredeemedValue ? formatEther(BigInt(statistics?.unredeemedValue as string)) : '-'}
+            </p>
+          </Tooltip>
+          <Tooltip
+            title={
+              statistics?.redeemedValue && statistics?.redeemedValue !== '0'
+                ? formatEther(BigInt(statistics?.redeemedValue as string))
+                : null
+            }
+          >
+            <p className="double">
+              {statistics?.redeemedValue ? formatEther(BigInt(statistics?.redeemedValue as string)) : '-'}
+            </p>
+          </Tooltip>
         </Data>
       </DataColumn>
     </Web3Container>

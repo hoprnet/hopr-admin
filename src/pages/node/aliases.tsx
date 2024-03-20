@@ -25,10 +25,10 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 function AliasesPage() {
   const dispatch = useAppDispatch();
   const aliases = useAppSelector((store) => store.node.aliases.data);
-  const peers = useAppSelector(store => store.node.peers.data)
+  const peers = useAppSelector((store) => store.node.peers.data);
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
-  const hoprAddress = useAppSelector((store) => store.node.addresses.data.hopr)
-  const myNodeAddress = useAppSelector((store) => store.node.addresses.data.native)
+  const hoprAddress = useAppSelector((store) => store.node.addresses.data.hopr);
+  const myNodeAddress = useAppSelector((store) => store.node.addresses.data.native);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const peerIdToNodeAddressLink = useAppSelector((store) => store.node.links.peerIdToNodeAddress);
   const [importSuccess, set_importSuccess] = useState(false);
@@ -46,7 +46,7 @@ function AliasesPage() {
         actionsAsync.getAliasesThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        })
+        }),
       );
     }
   }, [loginData]);
@@ -57,15 +57,15 @@ function AliasesPage() {
         actionsAsync.getAliasesThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        })
+        }),
       );
     }
   };
 
   const getNodeAddressByPeerId = (peerId: string): string | undefined => {
-    if(peerId === hoprAddress && typeof(myNodeAddress) === 'string' ) return myNodeAddress;
+    if (peerId === hoprAddress && typeof myNodeAddress === 'string') return myNodeAddress;
     return peerIdToNodeAddressLink[peerId];
-  }
+  };
 
   const handleExport = () => {
     if (aliases) {
@@ -74,7 +74,7 @@ function AliasesPage() {
           alias: alias,
           peerId: aliases[alias],
         })),
-        'aliases.csv'
+        'aliases.csv',
       );
     }
   };
@@ -83,14 +83,14 @@ function AliasesPage() {
   const handleCSVUpload = async (parsedData: any[]) => {
     for (const data of parsedData) {
       if (data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken) {
-        console.log('data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken')
+        console.log('data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken');
         await dispatch(
           actionsAsync.setAliasThunk({
             alias: String(data.alias),
             peerId: String(data.peerId),
             apiEndpoint: loginData.apiEndpoint,
             apiToken: loginData.apiToken,
-          })
+          }),
         )
           .unwrap()
           .then(() => {
@@ -131,9 +131,7 @@ function AliasesPage() {
             disabled={peerId === hoprAddress}
             tooltip={`You can't open a channel to yourself`}
           />
-          <SendMessageModal
-            peerId={peerId}
-          />
+          <SendMessageModal peerId={peerId} />
           <DeleteAliasButton
             onSuccess={() => {
               set_deleteSuccess(true);
@@ -260,7 +258,7 @@ function DeleteAliasButton({
               alias,
               apiEndpoint: loginData.apiEndpoint,
               apiToken: loginData.apiToken,
-            })
+            }),
           )
             .unwrap()
             .then(() => {
@@ -288,7 +286,10 @@ function CreateAliasForm() {
   });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
+    const {
+      name,
+      value,
+    } = event.target;
     set_form({
       ...form,
       [name]: value,
@@ -321,7 +322,7 @@ function CreateAliasForm() {
                 peerId: form.peerId,
                 apiEndpoint: loginData.apiEndpoint,
                 apiToken: loginData.apiToken,
-              })
+              }),
             )
               .unwrap()
               .then(() => {
