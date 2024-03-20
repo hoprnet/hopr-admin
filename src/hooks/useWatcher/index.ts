@@ -19,6 +19,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   } = useAppSelector((store) => store.auth.loginData);
   const messages = useAppSelector((store) => store.node.messages.data);
   const channels = useAppSelector((store) => store.node.channels.parsed);
+  const firstChannelsCallWasSuccesfull = useAppSelector((store) => !!store.node.channels.data);
   const connected = useAppSelector((store) => store.auth.status.connected);
 
   const signer = useEthersSigner();
@@ -158,6 +159,8 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   }, [activeMessage, messages]);
 
   useEffect(() => {
+    if(!firstChannelsCallWasSuccesfull) return;
+
     if(!prevChannels) {
       const channelsOutgoingIds = Object.keys(channels.outgoing);
       if(
@@ -198,6 +201,6 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
         dispatch(appActions.setPrevChannels(channels));
       }
     }
-  }, [activeChannels, channels, prevChannels]);
+  }, [activeChannels, channelsCallWasSuccesfull, channels, prevChannels]);
 
 };
