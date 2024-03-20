@@ -18,7 +18,7 @@ export const sendNotification = ({
   // notification payload without id
   notificationPayload: Omit<Parameters<typeof appActions.addNotification>[0], 'id'>;
   toastPayload?: { message: string; type?: ToastOptions['type'] };
-  dispatch: ReturnType<typeof useAppDispatch>;
+  dispatch: ReturnType<typeof useAppDispatch> | any;
 }) => {
   const notificationId = nanoid();
   if (toastPayload) {

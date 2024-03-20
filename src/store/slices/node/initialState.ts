@@ -1,26 +1,50 @@
 import type {
-  GetStatisticsResponseType,
+  GetTicketStatisticsResponseType,
   GetAliasesResponseType,
   GetChannelsResponseType,
   GetInfoResponseType,
   GetPeersResponseType,
-  GetSettingsResponseType,
   GetTicketsResponseType,
   GetTokenResponseType,
   GetEntryNodesResponseType,
-  PingPeerResponseType
+  PingPeerResponseType,
 } from '@hoprnet/hopr-sdk';
 
 export type Message = {
   id: string;
-  createdAt: number;
+  timestamp?: number;
+  receivedAt?: number;
   body: string;
+  notified?: boolean;
   seen?: boolean;
   status?: 'sending' | 'sent' | 'error';
   error?: string;
   challenge?: string;
   receiver?: string;
+  tag?: number;
 };
+
+export type ChannelOutgoingType = {
+  status?: "Open" | "PendingToClose" | "Closed";
+  balance?: string;
+  peerAddress?: string;
+  isClosing?: boolean;
+}
+
+export type ChannelsParsed = {
+  outgoing:  {
+    [channelId: string]: ChannelOutgoingType
+  },
+  incoming: {
+    [channelId: string]: {
+      status?: "Open" | "PendingToClose" | "Closed";
+      balance?: string;
+      peerAddress?: string;
+      tickets: number;
+      ticketBalance: string;
+    }
+  };
+}
 
 type WebsocketConnectionStatus = 'connecting' | 'connected' | 'error' | null;
 
@@ -69,12 +93,53 @@ type InitialState = {
   };
   channels: {
     data: GetChannelsResponseType | null;
+    parsed: ChannelsParsed,
     isFetching: boolean;
   };
-  messages: Message[];
+  links: {
+    nodeAddressToOutgoingChannel: {
+      [nodeAddress: string]: string
+    },
+    nodeAddressToIncomingChannel: {
+      [nodeAddress: string]: string
+    },
+    nodeAddressToPeerId: {
+      [nodeAddress: string]: string
+    },
+    peerIdToNodeAddress: {
+      [peerId: string]: string
+    },
+    peerIdToAlias: {
+      [peerId: string]: string
+    },
+  };
+  messages: {
+    data: Message[],
+    isFetching: boolean;
+    isDeleting: boolean;
+  };
   messagesSent: Message[];
-  signedMessages: { createdAt: number; body: string }[];
-  peers: { data: GetPeersResponseType | null; isFetching: boolean };
+  signedMessages: { timestamp: number; body: string }[];
+  peers: {
+    data: GetPeersResponseType | null;
+    // parsed: {
+    //   [peerAddress: string]: {
+    //     peerId: string;
+    //     quality: number;
+    //     multiaddr: string | null;
+    //     heartbeats: {
+    //       sent: number;
+    //       success: number;
+    //     };
+    //     lastSeen: number;
+    //     lastSeenLatency: number;
+    //     backoff: number;
+    //     isNew: boolean;
+    //     reportedVersion: string;
+    //   }
+    // }
+    isFetching: boolean
+  };
   entryNodes: { data: GetEntryNodesResponseType | null; isFetching: boolean };
   peerInfo: {
     data: {
@@ -83,9 +148,11 @@ type InitialState = {
     };
     isFetching: boolean;
   };
-  settings: { data: GetSettingsResponseType | null; isFetching: boolean };
-  statistics: { data: GetStatisticsResponseType | null; isFetching: boolean };
-  tickets: { data: GetTicketsResponseType | null; isFetching: boolean };
+  statistics: { data: GetTicketStatisticsResponseType | null; isFetching: boolean };
+  tickets: {
+    data: GetTicketsResponseType | null;
+    isFetching: boolean
+  };
   tokens: { data: GetTokenResponseType[]; isFetching: boolean };
   version: { data: string | null; isFetching: boolean };
   transactions: { data: string[]; isFetching: boolean };
@@ -111,6 +178,7 @@ type InitialState = {
     isFetching: boolean;
     error: string | undefined;
   };
+  apiEndpoint: string | null
 };
 
 export const initialState: InitialState = {
@@ -164,9 +232,17 @@ export const initialState: InitialState = {
   },
   channels: {
     data: null,
+    parsed: {
+      outgoing: {},
+      incoming: {}
+    },
     isFetching: false,
   },
-  messages: [],
+  messages: {
+    data: [],
+    isFetching: false,
+    isDeleting: false,
+  },
   messagesSent: [],
   signedMessages: [],
   peers: {
@@ -184,10 +260,6 @@ export const initialState: InitialState = {
     isFetching: false,
   },
   entryNodes: {
-    data: null,
-    isFetching: false,
-  },
-  settings: {
     data: null,
     isFetching: false,
   },
@@ -225,4 +297,12 @@ export const initialState: InitialState = {
     isFetching: false,
     error: undefined,
   },
+  links: {
+    nodeAddressToOutgoingChannel: {},
+    nodeAddressToIncomingChannel: {},
+    nodeAddressToPeerId: {},
+    peerIdToNodeAddress: {},
+    peerIdToAlias: {},
+  },
+  apiEndpoint: null,
 };

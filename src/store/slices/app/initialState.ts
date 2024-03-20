@@ -1,7 +1,8 @@
-import type { GetBalancesResponseType, GetChannelsResponseType, GetInfoResponseType } from '@hoprnet/hopr-sdk';
-import type { WatcherMessage } from '../../../hooks/useWatcher/messages';
+import type { GetBalancesResponseType, GetInfoResponseType } from '@hoprnet/hopr-sdk';
 import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { loadStateFromLocalStorage } from '../../../utils/localStorage';
+import { ChannelsParsed } from '../node/initialState';
+
 
 type InitialState = {
   notifications: {
@@ -23,10 +24,10 @@ type InitialState = {
     }
   };
   previousStates: {
-    prevChannels: GetChannelsResponseType | null;
+    prevChannels: ChannelsParsed | null;
     prevNodeInfo: GetInfoResponseType | null;
     prevNodeBalances: GetBalancesResponseType | null;
-    prevMessage: WatcherMessage;
+    prevMessagesUuids: string[];
     prevPendingSafeTransaction: SafeMultisigTransactionResponse | null;
   };
 };
@@ -45,7 +46,7 @@ export const initialState: InitialState = {
   previousStates: {
     prevChannels: null,
     prevPendingSafeTransaction: null,
-    prevMessage: null,
+    prevMessagesUuids: [],
     prevNodeBalances: null,
     prevNodeInfo: null,
   },

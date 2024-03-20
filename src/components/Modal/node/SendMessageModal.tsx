@@ -52,19 +52,26 @@ const PathOrHops = styled.div`
 `;
 
 const StatusContainer = styled.div`
-  height: 32px;
+  position: absolute;
+  height: calc( 100% - 32px );
+  width: calc( 100% - 32px );
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 100;
 `;
 
 type SendMessageModalProps = {
   peerId?: string;
   disabled?: boolean;
+  tooltip?: JSX.Element | string;
 };
 
 export const SendMessageModal = (props: SendMessageModalProps) => {
   const dispatch = useAppDispatch();
   const [path, set_path] = useState<string>('');
   const [loader, set_loader] = useState<boolean>(false);
-  const [status, set_status] = useState<string>('');
+  const [error, set_error] = useState<string | null>(null);
   const [numberOfHops, set_numberOfHops] = useState<number>(0);
   const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops' | 'directMessage'>('directMessage');
   const [message, set_message] = useState<string>('');
@@ -73,48 +80,22 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const peers = useAppSelector((store) => store.node.peers.data?.connected);
   const addresses = useAppSelector((store) => store.node.addresses.data);
-
-  const peersAndOwnNode = peers && addresses.hopr && addresses.native ? [...peers, {
-    peerId: addresses.hopr,
-    peerAddress: addresses.native,
-    multiAddr:"",
-    lastSeen: 0,
-    quality:0,
-    backoff:0,
-    isNew: false,
-    reportedVersion:"",
-    heartbeats: {
-      sent: 0,
-      success: 0,
-    }
-  }] : [];
-
-  const [selectedReceiver, set_selectedReceiver] = useState<{
-    peerId: string;
-    peerAddress: string;
-    quality: number;
-    multiAddr: string;
-    heartbeats: {
-      sent: number;
-      success: number;
-    };
-    lastSeen: number;
-    backoff: number;
-    isNew: boolean;
-    reportedVersion: string;
-  } | null>(props.peerId ? peers!.find(elem => elem.peerId === props.peerId) || null : null);
+  const peersAndOwnNode = peers && addresses.hopr && addresses.native ? [...peers.map(peer => peer.peerId), addresses.hopr] : [];
+  const [selectedReceiver, set_selectedReceiver] = useState<string | null>(props.peerId ? props.peerId : null);
 
   const maxLength = 500;
   const remainingChars = maxLength - message.length;
 
   const setPropPeerId = () => {
-    const reveiver = props.peerId ? peers!.find(elem => elem.peerId === props.peerId) || null : null;
-    if (props.peerId) set_selectedReceiver(reveiver);
+    if (props.peerId) set_selectedReceiver(props.peerId);
   };
   useEffect(setPropPeerId, [props.peerId]);
 
   useEffect(() => {
     switch (sendMode) {
+      case 'automaticPath':
+        set_numberOfHops(1);
+        break;
       case 'path':
         set_numberOfHops(0);
         break;
@@ -126,22 +107,24 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
         set_path('');
     }
 
-  }, [sendMode, path, numberOfHops]);
+  }, [sendMode]);
 
   const handleSendMessage = () => {
-    if (!(loginData.apiEndpoint && loginData.apiToken)) return;
-    set_status('');
+    if (!(loginData.apiEndpoint && loginData.apiToken) || !selectedReceiver) return;
+    set_error(null);
     set_loader(true);
-    const validatedReceiver = validatePeerId(selectedReceiver!.peerId);
+    //const validatedReceiver = validatePeerId(selectedReceiver);
 
     const messagePayload: SendMessagePayloadType = {
       apiToken: loginData.apiToken,
       apiEndpoint: loginData.apiEndpoint,
       body: message,
-      peerId: validatedReceiver,
+      peerId: selectedReceiver,
       tag: 1,
     };
-
+    if (sendMode === 'automaticPath') {
+      messagePayload.hops = 1;
+    }
     if (sendMode === 'directMessage') {
       messagePayload.path = [];
     }
@@ -169,12 +152,11 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       .unwrap()
       .then((res) => {
         console.log('@message: ', res?.challenge);
-        set_status('Message sent');
         handleCloseModal();
       })
       .catch((e) => {
         console.log('@message err:', e);
-        set_status(e.error);
+        set_error(e.error);
       })
       .finally(() => {
         set_loader(false);
@@ -204,10 +186,10 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
     set_sendMode('directMessage');
     set_numberOfHops(0);
     set_message('');
-    set_selectedReceiver(null);
+    set_selectedReceiver(props.peerId ? props.peerId : null);
     set_path('');
     set_openModal(false);
-    set_status('');
+    set_error(null);
   };
 
   const handlePathKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -270,11 +252,14 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       <IconButton
         iconComponent={<ForwardToInboxIcon />}
         tooltipText={
-          <span>
-            SEND
-            <br />
-            message
-          </span>
+          props.tooltip ?
+            props.tooltip
+            :
+            <span>
+              SEND
+              <br />
+              message
+            </span>
         }
         onClick={handleOpenModal}
         disabled={props.disabled}
@@ -303,11 +288,12 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
               set_selectedReceiver(newValue);
             }}
             options={peersAndOwnNode}
-            getOptionLabel={(peer) =>
-              hasAlias(peer.peerId)
-                ? `${findAlias(peer.peerId)} (${peer.peerId})`
-                : peer.peerId
+            getOptionLabel={(peerId) =>
+              hasAlias(peerId)
+                ? `${findAlias(peerId)} (${peerId})`
+                : peerId
             }
+            autoSelect
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -375,21 +361,36 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
         <DialogActions>
           <Button
             onClick={handleSendMessage}
+            pending={loader}
             disabled={
               selectedReceiver === null || sendMode !== 'directMessage' && (sendMode !== 'automaticPath' && numberOfHops < 0 && path === '') || message.length === 0
             }
             style={{
               width: '100%',
               marginTop: '8px',
+              marginBottom: '8px',
             }}
           >
             Send
           </Button>
         </DialogActions>
-        <StatusContainer>
-          {loader && <CircularProgress />}
-          {status}
-        </StatusContainer>
+        {
+          error &&
+          <StatusContainer>
+            <TopBar>
+              <DialogTitle>ERROR</DialogTitle>
+              <SIconButton
+                aria-label="hide error"
+                onClick={()=>{set_error(null)}}
+              >
+                <CloseIcon />
+              </SIconButton>
+            </TopBar>
+            <SDialogContent>
+              {error}
+            </SDialogContent>
+          </StatusContainer>
+        }
       </SDialog >
     </>
   );

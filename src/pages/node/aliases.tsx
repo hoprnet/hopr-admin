@@ -16,7 +16,7 @@ import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 // Modals
 import { PingModal } from '../../components/Modal/node/PingModal';
 import { CreateAliasModal } from '../../components/Modal/node//AddAliasModal';
-import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
+import { OpenChannelModal } from '../../components/Modal/node/OpenChannelModal';
 
 //Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
@@ -27,8 +27,10 @@ function AliasesPage() {
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const peers = useAppSelector(store => store.node.peers.data)
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
-  const hoprAddresses = useAppSelector((store) => store.node.addresses.data.hopr)
+  const hoprAddress = useAppSelector((store) => store.node.addresses.data.hopr)
+  const myNodeAddress = useAppSelector((store) => store.node.addresses.data.native)
   const loginData = useAppSelector((store) => store.auth.loginData);
+  const peerIdToNodeAddressLink = useAppSelector((store) => store.node.links.peerIdToNodeAddress);
   const [importSuccess, set_importSuccess] = useState(false);
   const [deleteSuccess, set_deleteSuccess] = useState(false);
   const [importErrors, set_importErrors] = useState<
@@ -60,16 +62,9 @@ function AliasesPage() {
     }
   };
 
-
-  const getPeerAddressByPeerId = (peerId: string): string | undefined => {
-
-    const peer = peers?.announced.find(peer => peer.peerId === peerId);
-
-    if (!peer) {
-      return;
-    }
-
-    return peer.peerAddress
+  const getNodeAddressByPeerId = (peerId: string): string | undefined => {
+    if(peerId === hoprAddress && typeof(myNodeAddress) === 'string' ) return myNodeAddress;
+    return peerIdToNodeAddressLink[peerId];
   }
 
   const handleExport = () => {
@@ -88,6 +83,7 @@ function AliasesPage() {
   const handleCSVUpload = async (parsedData: any[]) => {
     for (const data of parsedData) {
       if (data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken) {
+        console.log('data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken')
         await dispatch(
           actionsAsync.setAliasThunk({
             alias: String(data.alias),
@@ -116,27 +112,28 @@ function AliasesPage() {
     }
   };
 
-  const getPeerAddressFromPeerId = (peerId: string): string | undefined => {
-    const peerAddress = peers?.announced.find(peer => peer.peerId === peerId)?.peerAddress;
-    return peerAddress;
-  }
-
   const parsedTableData = Object.entries(aliases ?? {}).map(([alias, peerId], key) => {
     return {
       id: peerId,
       key: key.toString(),
       alias,
       peerId,
-      peerAddress: getPeerAddressByPeerId(peerId) ?? '',
+      peerAddress: getNodeAddressByPeerId(peerId) ?? '',
       actions: (
         <>
-          <PingModal peerId={peerId} disabled={peerId === hoprAddresses} />
-          <OpenOrFundChannelModal
-            peerAddress={getPeerAddressByPeerId(peerId)}
-            type={'open'}
-            disabled={peerId === hoprAddresses}
+          <PingModal
+            peerId={peerId}
+            disabled={peerId === hoprAddress}
+            tooltip={`You can't ping yourself`}
           />
-          <SendMessageModal peerId={peerId} disabled={peerId === hoprAddresses} />
+          <OpenChannelModal
+            peerAddress={getNodeAddressByPeerId(peerId)}
+            disabled={peerId === hoprAddress}
+            tooltip={`You can't open a channel to yourself`}
+          />
+          <SendMessageModal
+            peerId={peerId}
+          />
           <DeleteAliasButton
             onSuccess={() => {
               set_deleteSuccess(true);
@@ -167,7 +164,7 @@ function AliasesPage() {
       yellow
     >
       <SubpageTitle
-        title={`ALIASES`}
+        title={`ALIASES (${parsedTableData.length})`}
         refreshFunction={handleRefresh}
         reloading={aliasesFetching}
         actions={
@@ -192,6 +189,7 @@ function AliasesPage() {
       <TablePro
         data={parsedTableData}
         search={true}
+        id={'node-aliases-table'}
         header={[
           {
             key: 'alias',

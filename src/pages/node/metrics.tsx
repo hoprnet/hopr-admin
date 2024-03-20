@@ -165,14 +165,15 @@ function MetricsPage() {
   }, [apiEndpoint, apiToken]);
 
   const handleRefresh = () => {
-    if (apiEndpoint && apiToken) {
-      dispatch(
-        actionsAsync.getPrometheusMetricsThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-    }
+    if (!apiEndpoint || !apiToken) return;
+
+    dispatch(
+      actionsAsync.getPrometheusMetricsThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+
   };
 
   const isTooltipTextString = (tooltipText: string | JSX.Element): boolean => {
@@ -183,24 +184,28 @@ function MetricsPage() {
     const render: JSX.Element[] = [];
     for (const [key, value] of Object.entries(metrics.parsed)) {
       if (!value.data) return;
-      if (!value.data[0]) return;
-      if (typeof value.data[0] !== 'string') return;
 
-      if (value.length === 1) {
-        render.push(
-          <tr key={key}>
-            <th>
-              <Tooltip
-                title={metricsHashMap[key]?.tooltipText}
-                notWide={isTooltipTextString(metricsHashMap[key]?.tooltipText)}
-              >
-                <span>{value.name}</span>
-              </Tooltip>
-            </th>
-            <td>{value.data[0]}</td>
-          </tr>
-        );
-      }
+      render.push(
+        <tr key={key}>
+          <th>
+            <Tooltip
+              title={metricsHashMap[key]?.tooltipText}
+              notWide={isTooltipTextString(metricsHashMap[key]?.tooltipText)}
+            >
+              <span>{value.name}</span>
+            </Tooltip>
+          </th>
+
+          <td>
+              {
+                value.data.length === 1 && (typeof(value.data[0]) === 'string' ||  typeof(value.data[0]) === 'number') && value.data[0]
+              }
+              {
+                value.data.length !== 1 && typeof(value.data) === 'object' && JSON.stringify(value.data)
+              }
+          </td>
+        </tr>
+      );
     }
     return <tbody>{render}</tbody>;
   }
@@ -243,11 +248,14 @@ function MetricsPage() {
         }}
       >
         <TableExtended width1stColumn={'400px'}>{renderMetricsTable()}</TableExtended>
+        {/* <br />
         <br />
-        <br />
-        <br />
+        <br /> */}
 
-        <TableTitle>
+
+        {/* TODO: bring back some tables in future versions */ }
+
+        {/* <TableTitle>
           <Tooltip
             title="Displays the total time a single ping takes to complete (seconds)."
             notWide
@@ -366,7 +374,7 @@ function MetricsPage() {
             maxWidth: '100%',
             width: '100%',
           }}
-        />
+        /> */}
       </Paper>
     </Section>
   );

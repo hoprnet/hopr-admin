@@ -9,35 +9,25 @@ import { HOPR_TOKEN_USED } from '../../../../config';
 
 // HOPR Components
 import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
-import AddChannelIcon from '../../../future-hopr-lib-components/Icons/AddChannel';
 import FundChannelIcon from '../../../future-hopr-lib-components/Icons/FundChannel';
 import Button from '../../../future-hopr-lib-components/Button';
 
 // Mui
 import CloseIcon from '@mui/icons-material/Close';
-import HubIcon from '@mui/icons-material/Hub';
 
-type OpenOrFundChannelModalProps = {
-  peerAddress?: string;
-  modalBtnText?: string | JSX.Element;
-  actionBtnText?: string;
-  title?: string;
-  type?: 'open' | 'fund';
+type FundChannelModalModalProps = {
+  channelId?: string;
   disabled?: boolean;
 };
 
-export const OpenOrFundChannelModal = ({
-  title,
-  modalBtnText,
-  actionBtnText,
-  type,
+export const FundChannelModal = ({
   ...props
-}: OpenOrFundChannelModalProps) => {
+}: FundChannelModalModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [openChannelModal, set_openChannelModal] = useState(false);
   const [amount, set_amount] = useState('');
-  const [peerAddress, set_peerAddress] = useState(props.peerAddress ? props.peerAddress : '');
+  const [channelId, set_channelId] = useState(props.channelId ? props.channelId : '');
 
   const handleOpenChannelDialog = () => {
     set_openChannelModal(true);
@@ -46,23 +36,24 @@ export const OpenOrFundChannelModal = ({
   const handleCloseModal = () => {
     set_openChannelModal(false);
     set_amount('');
-    set_peerAddress(props.peerAddress ? props.peerAddress : '');
+    set_channelId(props.channelId ? props.channelId : '');
   };
 
   const handleAction = async () => {
-    const handleOpenChannel = async (weiValue: string, peerAddress: string) => {
+
+    const handleFundChannel = async (weiValue: string, channelId: string) => {
       await dispatch(
-        actionsAsync.openChannelThunk({
+        actionsAsync.fundChannelThunk({
           apiEndpoint: loginData.apiEndpoint!,
           apiToken: loginData.apiToken!,
           amount: weiValue,
-          peerAddress: peerAddress,
+          channelId: channelId,
           timeout: 60e3,
         })
       )
         .unwrap()
         .then(() => {
-          const msg = `Channel to ${peerAddress} is ${type === 'open' ? 'opened' : 'funded'}`;
+          const msg = `Channel ${channelId} is funded`;
           sendNotification({
             notificationPayload: {
               source: 'node',
@@ -75,7 +66,7 @@ export const OpenOrFundChannelModal = ({
           });
         })
         .catch((e) => {
-          let errMsg = `Channel to ${peerAddress} failed to be ${type === 'open' ? 'opened' : 'funded'}`;
+          let errMsg = `Channel ${channelId} failed to be funded`;
           if (e.status) errMsg = errMsg + `\n${e.status}`;
           sendNotification({
             notificationPayload: {
@@ -93,7 +84,7 @@ export const OpenOrFundChannelModal = ({
     handleCloseModal();
     const parsedOutgoing = parseFloat(amount ?? '0') >= 0 ? amount ?? '0' : '0';
     const weiValue = ethers.utils.parseEther(parsedOutgoing).toString();
-    await handleOpenChannel(weiValue, peerAddress);
+    await handleFundChannel(weiValue, channelId)
     dispatch(
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
@@ -102,39 +93,17 @@ export const OpenOrFundChannelModal = ({
     );
   };
 
-  const icon = () => {
-    switch (type) {
-      case 'open':
-        return <AddChannelIcon />;
-      case 'fund':
-        return <FundChannelIcon />;
-      default:
-        return <HubIcon />;
-    }
-  };
-
   return (
     <>
       <IconButton
-        iconComponent={icon()}
-        disabled={type === 'fund' || props.disabled}
+        iconComponent={<FundChannelIcon />}
+        disabled={props.disabled}
         tooltipText={
-          type === 'fund' ?
-            <span>
-              FUND
-              <br />
-              function not avalible yet
-            </span>
-            :
-            modalBtnText ? (
-              modalBtnText
-            ) : (
-              <span>
-                OPEN
-                <br />
-                outgoing channel
-              </span>
-            )
+          <span>
+            FUND
+            <br />
+            outgoing channel
+          </span>
         }
         onClick={handleOpenChannelDialog}
       />
@@ -144,7 +113,7 @@ export const OpenOrFundChannelModal = ({
         disableScrollLock={true}
       >
         <TopBar>
-          <DialogTitle>{title ? title : 'Open Outgoing Channel'}</DialogTitle>
+          <DialogTitle>Fund outgoing channel</DialogTitle>
           <SIconButton
             aria-label="close modal"
             onClick={handleCloseModal}
@@ -154,10 +123,10 @@ export const OpenOrFundChannelModal = ({
         </TopBar>
         <SDialogContent>
           <TextField
-            label="Node Address"
-            value={peerAddress}
+            label="Channel Id"
+            value={channelId}
             placeholder="0x4f5a...1728"
-            onChange={(e) => set_peerAddress(e.target.value)}
+            onChange={(e) => set_channelId(e.target.value)}
             sx={{ mt: '6px' }}
           />
           <TextField
@@ -173,14 +142,14 @@ export const OpenOrFundChannelModal = ({
         <DialogActions>
           <Button
             onClick={handleAction}
-            disabled={!amount || parseFloat(amount) <= 0 || !peerAddress}
+            disabled={!amount || parseFloat(amount) <= 0 || !channelId}
             style={{
               marginRight: '16px',
               marginBottom: '6px',
               marginTop: '-6px',
             }}
           >
-            {actionBtnText ? actionBtnText : 'Open Channel'}
+            Fund outgoing channel
           </Button>
         </DialogActions>
       </SDialog>

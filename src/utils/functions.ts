@@ -17,7 +17,6 @@ export function bubbleSortObject(arr: any[], key: string | number) {
   return arr;
 }
 
-
 export function copyStringToClipboard(input: string) {
   let el = document.createElement('textarea');
   el.value = input;
@@ -79,6 +78,27 @@ export function rounder(value: number | string | null | undefined, charLength: n
 
   return rez;
 }
+
+export function rounder2(value: number | string | null | undefined) {
+  if( value == 0 ) return '0';
+  if(!value) return '-';
+  if(typeof(value) === 'string') value = parseInt(value);
+  if(value < 1000) return value;
+
+  let rez: string | null = null;
+  let suffixes = ["", "k", "m", "b","t"];
+  let suffixNum = Math.floor( (""+value).length/3 );
+  let shortValue: number | null | string = NaN;
+  for (let precision = 2; precision >= 1; precision--) {
+    shortValue = parseFloat( (suffixNum != 0 ? (value / Math.pow(1000,suffixNum) ) : value).toPrecision(precision));
+    let dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g,'');
+    if (dotLessShortValue.length <= 2) { break; }
+  }
+  if (shortValue && shortValue % 1 != 0) shortValue = shortValue.toFixed(1);
+  rez = shortValue+suffixes[suffixNum];
+  return rez;
+}
+
 
 
 function unround(value: string) {

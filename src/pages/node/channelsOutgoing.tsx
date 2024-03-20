@@ -17,7 +17,9 @@ import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 // Modals
 import { OpenMultipleChannelsModal } from '../../components/Modal/node/OpenMultipleChannelsModal';
 import { PingModal } from '../../components/Modal/node/PingModal';
-import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
+import { OpenChannelModal } from '../../components/Modal/node/OpenChannelModal';
+import { FundChannelModal } from '../../components/Modal/node/FundChannelModal';
+
 import { CreateAliasModal } from '../../components/Modal/node//AddAliasModal';
 import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 
@@ -27,23 +29,13 @@ import GetAppIcon from '@mui/icons-material/GetApp';
 function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((store) => store.node.channels.data);
+  const channelsOutgoingObject = useAppSelector((store) => store.node.channels.parsed.outgoing);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
   const aliases = useAppSelector((store) => store.node.aliases.data)
-  const peers = useAppSelector((store) => store.node.peers.data)
   const loginData = useAppSelector((store) => store.auth.loginData);
-  const [closingStates, set_closingStates] = useState<
-    Record<
-      string,
-      {
-        closing: boolean;
-        closeSuccess: boolean;
-        closeErrors: {
-          status: string | undefined;
-          error: string | undefined;
-        }[];
-      }
-    >
-  >({});
+  const currentApiEndpoint = useAppSelector((store) => store.node.apiEndpoint);
+  const nodeAddressToPeerIdLink = useAppSelector((store) => store.node.links.nodeAddressToPeerId);
+  const peerIdToAliasLink = useAppSelector((store) => store.node.links.peerIdToAlias);
   const tabLabel = 'outgoing';
   const channelsData = channels?.outgoing;
 
@@ -71,6 +63,7 @@ function ChannelsPage() {
   }, [queryParams]);
 
   const handleRefresh = () => {
+    if(!loginData.apiEndpoint || !loginData.apiToken) return;
     dispatch(
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
@@ -91,31 +84,19 @@ function ChannelsPage() {
     )
   };
 
-  const getAliasByPeerAddress = (peerAddress: string): string => {
-
-    const peerId = peers?.announced.find(peer => peer.peerAddress === peerAddress)?.peerId;
-
-    if (!peerId) {
-      return peerAddress;
-    }
-
-    if (aliases) {
-      for (const [alias, id] of Object.entries(aliases)) {
-        if (id === peerId) {
-          return alias;
-        }
-      }
-    }
-
-    return peerAddress
-  }
-
-  const getPeerIdFromPeerAddress = (peerAddress: string): string => {
-    const peerId = peers?.announced.find(peer => peer.peerAddress === peerAddress)?.peerId;
-
+  const getPeerIdFromPeerAddress = (nodeAddress: string): string => {
+    const peerId = nodeAddressToPeerIdLink[nodeAddress];
     return peerId!;
   }
 
+  const getAliasByPeerAddress = (nodeAddress: string): string => {
+    const peerId = getPeerIdFromPeerAddress(nodeAddress);
+    if (nodeAddress === '0x6f9b56d7e8d4efaf0b9364f52972a1984a76e68b') {
+      console.log('getPeerIdFromPeerAddress' , peerId)
+    }
+    if(aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${nodeAddress})`
+    return nodeAddress;
+  }
 
   const handleExport = () => {
     if (channelsData) {
@@ -132,15 +113,7 @@ function ChannelsPage() {
   };
 
   const handleCloseChannels = (channelId: string) => {
-    set_closingStates((prevStates) => ({
-      ...prevStates,
-      [channelId]: {
-        closing: true,
-        closeSuccess: false,
-        closeErrors: [],
-      },
-    }));
-
+    const usedApiEndpoint = loginData.apiEndpoint;
     dispatch(
       actionsAsync.closeChannelThunk({
         apiEndpoint: loginData.apiEndpoint!,
@@ -150,59 +123,29 @@ function ChannelsPage() {
     )
       .unwrap()
       .then(() => {
-        set_closingStates((prevStates) => ({
-          ...prevStates,
-          [channelId]: {
-            closing: false,
-            closeSuccess: true,
-            closeErrors: [],
-          },
-        }));
+
         handleRefresh();
-        const msg = `Closing of ${channelId} succeded`;
-        sendNotification({
-          notificationPayload: {
-            source: 'node',
-            name: msg,
-            url: null,
-            timeout: null,
-          },
-          toastPayload: { message: msg },
-          dispatch,
-        });
       })
       .catch((e) => {
-        set_closingStates((prevStates) => ({
-          ...prevStates,
-          [channelId]: {
-            closing: false,
-            closeSuccess: false,
-            closeErrors: [
-              ...(prevStates[channelId]?.closeErrors || []),
-              {
-                error: e.error,
-                status: e.status,
-              },
-            ],
-          },
-        }));
-        const msg = `Closing of ${channelId} failed`;
-        sendNotification({
-          notificationPayload: {
-            source: 'node',
-            name: msg,
-            url: null,
-            timeout: null,
-          },
-          toastPayload: { message: msg },
-          dispatch,
-        });
+        if(usedApiEndpoint === currentApiEndpoint) {
+          const msg = `Closing of ${channelId} failed`;
+          sendNotification({
+            notificationPayload: {
+              source: 'node',
+              name: msg,
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: msg },
+            dispatch,
+          });
+        }
       });
   };
 
   const header = [
     {
-      key: 'key',
+      key: 'id',
       name: '#',
     },
     {
@@ -235,40 +178,35 @@ function ChannelsPage() {
     },
   ];
 
-  const parsedTableData = Object.entries(channels?.outgoing ?? []).map(([, channel], key) => {
+  const parsedTableData = Object.keys(channelsOutgoingObject).map((id, index) => {
+    if(!channelsOutgoingObject[id].peerAddress || !channelsOutgoingObject[id].balance || !channelsOutgoingObject[id].status) return;
+    const peerId = getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string);
+
     return {
-      id: channel.id,
-      key: key.toString(),
-      peerAddress: getAliasByPeerAddress(channel.peerAddress),
-      status: channel.status,
-      funds: `${utils.formatEther(channel.balance)} ${HOPR_TOKEN_USED}`,
+      id: index.toString(),
+      key: id,
+      peerAddress: getAliasByPeerAddress(channelsOutgoingObject[id].peerAddress as string),
+      status: channelsOutgoingObject[id].status as string,
+      funds: `${utils.formatEther(channelsOutgoingObject[id].balance as string)} ${HOPR_TOKEN_USED}`,
       actions: (
         <>
-          <PingModal 
-            peerId={getPeerIdFromPeerAddress(channel.peerAddress)} 
-            disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
+          <PingModal
+            peerId={peerId}
+            disabled={!peerId}
+            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
           />
           <CreateAliasModal
             handleRefresh={handleRefresh}
-            peerId={getPeerIdFromPeerAddress(channel.peerAddress)}
-            disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
+            peerId={peerId}
+            disabled={!peerId}
+            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
           />
-          <OpenOrFundChannelModal
-            peerAddress={channel.peerAddress}
-            title="Fund outgoing channel"
-            modalBtnText={
-              <span>
-                FUND
-                <br />
-                outgoing channel
-              </span>
-            }
-            actionBtnText="Fund outgoing channel"
-            type="fund"
+          <FundChannelModal
+            channelId={id}
           />
           <IconButton
             iconComponent={<CloseChannelIcon />}
-            pending={closingStates[channel.id]?.closing}
+            pending={channelsOutgoingObject[id]?.isClosing}
             tooltipText={
               <span>
                 CLOSE
@@ -276,16 +214,24 @@ function ChannelsPage() {
                 outgoing channel
               </span>
             }
-            onClick={() => handleCloseChannels(channel.id)}
+            onClick={() => handleCloseChannels(id)}
           />
-          <SendMessageModal 
-            peerId={getPeerIdFromPeerAddress(channel.peerAddress)}
-            disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
+          <SendMessageModal
+            peerId={peerId}
+            disabled={!peerId}
+            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
           />
         </>
       ),
     };
-  });
+  }).filter(elem => elem !== undefined) as {
+    id: string;
+    key: string;
+    peerAddress: string;
+    status: "Open" | "PendingToClose" | "Closed" ;
+    funds: string;
+    actions: JSX.Element;
+  }[];
 
   return (
     <Section
@@ -295,25 +241,14 @@ function ChannelsPage() {
       yellow
     >
       <SubpageTitle
-        title={`OUTGOING CHANNELS`}
+        title={`OUTGOING CHANNELS (${channelsData ? channelsData.length : '-'})`}
         refreshFunction={handleRefresh}
         reloading={channelsFetching}
         actions={
           <>
-            <OpenOrFundChannelModal type={'open'} />
+            <OpenChannelModal />
             <OpenMultipleChannelsModal />
-            <OpenOrFundChannelModal
-              type={'fund'}
-              title="Fund outgoing channel"
-              modalBtnText={
-                <span>
-                  FUND
-                  <br />
-                  outgoing channel
-                </span>
-              }
-              actionBtnText="Fund outgoing channel"
-            />
+            <FundChannelModal />
             <IconButton
               iconComponent={<GetAppIcon />}
               tooltipText={
@@ -331,6 +266,7 @@ function ChannelsPage() {
       />
       <TablePro
         data={parsedTableData}
+        id={'node-channels-out-table'}
         header={header}
         search
         loading={parsedTableData.length === 0 && channelsFetching}

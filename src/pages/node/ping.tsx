@@ -24,14 +24,15 @@ function PingPage() {
 
   // Get aliases on page load
   useEffect(() => {
-    if (apiEndpoint && apiToken) {
-      dispatch(
-        nodeActionsAsync.getAliasesThunk({
-          apiEndpoint,
-          apiToken,
-        }),
-      );
-    }
+    if (!apiEndpoint || !apiToken) return;
+
+    dispatch(
+      nodeActionsAsync.getAliasesThunk({
+        apiEndpoint,
+        apiToken,
+      }),
+    );
+
   }, []);
 
   const isAlias = (alias: string) => {

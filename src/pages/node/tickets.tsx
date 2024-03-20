@@ -31,18 +31,20 @@ function TicketsPage() {
   }, [loginData, dispatch]);
 
   const handleRefresh = () => {
-    dispatch(
-      actionsAsync.getStatisticsThunk({
-        apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
-      })
-    );
-    dispatch(
-      actionsAsync.getTicketsThunk({
-        apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
-      })
-    );
+    if(loginData.apiEndpoint && loginData.apiToken) {
+      dispatch(
+        actionsAsync.getTicketStatisticsThunk({
+          apiEndpoint: loginData.apiEndpoint,
+          apiToken: loginData.apiToken,
+        })
+      );
+      dispatch(
+        actionsAsync.getTicketsThunk({
+          apiEndpoint: loginData.apiEndpoint,
+          apiToken: loginData.apiToken,
+        })
+      );
+    }
   };
 
   const handleRedeemAllTickets = () => {
@@ -92,6 +94,7 @@ function TicketsPage() {
                   all tickets as JSON
                 </span>
               }
+              disabled={tickets?.length === 0}
               pending={ticketsFetching}
               onClick={() => {
                 exportToFile(JSON.stringify(tickets), 'tickets.json', 'text/json');

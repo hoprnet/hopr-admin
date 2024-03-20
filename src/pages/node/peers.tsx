@@ -7,7 +7,8 @@ import { exportToCsv } from '../../utils/helpers';
 import Section from '../../future-hopr-lib-components/Section';
 import { SubpageTitle } from '../../components/SubpageTitle';
 import { CreateAliasModal } from '../../components/Modal/node//AddAliasModal';
-import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
+import { OpenChannelModal } from '../../components/Modal/node/OpenChannelModal';
+import { FundChannelModal } from '../../components/Modal/node/FundChannelModal';
 import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
@@ -19,6 +20,7 @@ import { PingModal } from '../../components/Modal/node/PingModal';
 //Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
 
+
 function PeersPage() {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((store) => store.auth.loginData);
@@ -26,12 +28,16 @@ function PeersPage() {
   const peersFetching = useAppSelector((store) => store.node.peers.isFetching);
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
+  const nodeAddressToOutgoingChannelLink = useAppSelector((store) => store.node.links.nodeAddressToOutgoingChannel);
+  const peerIdToAliasLink = useAppSelector((store) => store.node.links.peerIdToAlias);
 
   useEffect(() => {
     handleRefresh();
   }, [loginData, dispatch]);
 
   const handleRefresh = () => {
+    if(!loginData.apiEndpoint || !loginData.apiToken) return;
+
     dispatch(
       actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,
@@ -47,13 +53,9 @@ function PeersPage() {
   };
 
   const getAliasByPeerId = (peerId: string): string => {
-    for (const [alias, id] of Object.entries(aliases!)) {
-      if (id === peerId) {
-        return alias;
-      }
-    }
-    return ''; // Return 'N/A' if alias not found for the given peerId
-  };
+    if(aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${peerId})`
+    return peerId;
+  }
 
   const handleExport = () => {
     if (peers?.announced) {
@@ -62,7 +64,7 @@ function PeersPage() {
           peerId: peer.peerId,
           nodeAddress: peer.peerAddress,
           quality: peer.quality,
-          multiAddr: peer.multiAddr,
+          multiaddr: peer.multiaddr,
           heartbeats: peer.heartbeats,
           lastSeen: peer.lastSeen,
           backoff: peer.backoff,
@@ -77,12 +79,6 @@ function PeersPage() {
     {
       key: 'number',
       name: '#',
-    },
-    {
-      key: 'alias',
-      name: 'Alias',
-      search: true,
-      maxWidth: '60px',
     },
     {
       key: 'peerId',
@@ -124,8 +120,7 @@ function PeersPage() {
     return {
       id: id,
       number: id,
-      alias: aliases ? getAliasByPeerId(peer.peerId) : '',
-      peerId: peer.peerId,
+      peerId: getAliasByPeerId(peer.peerId),
       peerAddress: peer.peerAddress,
       quality: <ProgressBar
         value={peer.quality}
@@ -145,10 +140,17 @@ function PeersPage() {
             handleRefresh={handleRefresh}
             peerId={peer.peerId}
           />
-          <OpenOrFundChannelModal
-            peerAddress={peer.peerAddress}
-            type={'open'}
-          />
+          {
+            nodeAddressToOutgoingChannelLink[peer.peerAddress] ?
+            <FundChannelModal
+              channelId={nodeAddressToOutgoingChannelLink[peer.peerAddress]}
+            />
+            :
+            <OpenChannelModal
+              peerAddress={peer.peerAddress}
+            />
+          }
+
           <SendMessageModal peerId={peer.peerId} />
         </>
       ),
@@ -186,6 +188,7 @@ function PeersPage() {
         data={parsedTableData}
         search={true}
         header={header}
+        id={'node-peers-table'}
       />
     </Section>
   );

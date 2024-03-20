@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store';
 import styled from '@emotion/styled';
 import { trackGoal } from 'fathom-client';
+import { parseAndFormatUrl } from '../../utils/parseAndFormatUrl';
 
 // Stores
 import { authActions, authActionsAsync } from '../../store/slices/auth';
@@ -68,6 +69,10 @@ const ConnectContainer = styled.div`
   justify-content: center;
 `;
 
+const SirenImage = styled.img`
+  width: 100%;
+`;
+
 const Overlay = styled.div`
   position: absolute;
   top: 0;
@@ -122,7 +127,7 @@ const CloseOverlayIconButton = styled(IconButton)`
   top: 16px;
 `;
 
-const loginAnywaysWarning = "Your node did not start properly and might not be fully functioning. Some features might be offline and not working";
+const loginAnywaysWarning = "Your node did not start properly and might not be fully functioning. Some features might be offline and not working. By clicking on the \"Login anyways\" button, you are only troubleshooting issues. It should not be used when your node is in the syncing process or has not been properly started.";
 const defaultProps = { open: false };
 
 function ConnectNodeModal(props: ConnectNodeModalProps) {
@@ -199,33 +204,13 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     if (errorMessage) navigate(`/?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
   }, [errorMessage]);
 
-  const parseAndFormatUrl = (url: string) => {
-
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'http://' + url;
-    }
-    const parts = url.split('/');
-    let hostAndPort = parts[2]; // Get the part that contains the host and port
-
-    if (hostAndPort.indexOf(':') === -1) {
-      hostAndPort += ':3001';
-    }
-
-    parts[2] = hostAndPort;
-    try {
-      new URL(parts.join('/'));
-      set_apiEndpointError(null)
-      return parts.join('/');
-    } catch (e) {
-      set_apiEndpointError('API Endpoint was incorrectly formatted')
-      return null;
-    }
-  };
-
   const saveNode = () => {
     const formattedApiEndpoint = parseAndFormatUrl(apiEndpoint);
     if (!formattedApiEndpoint) {
+      set_apiEndpointError('API Endpoint was incorrectly formatted')
       return;
+    } else {
+      set_apiEndpointError(null)
     }
     dispatch(
       authActions.addNodeData({
@@ -239,7 +224,10 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   const useNode = async ({ force }: { force?: boolean }) => {
     const formattedApiEndpoint = parseAndFormatUrl(apiEndpoint);
     if (!formattedApiEndpoint) {
+      set_apiEndpointError('API Endpoint was incorrectly formatted')
       return;
+    } else {
+      set_apiEndpointError(null)
     }
     set_searchParams({
       apiToken,
@@ -257,6 +245,11 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           force,
         }),
       ).unwrap();
+      dispatch(
+        nodeActions.setApiEndpoint({
+          apiEndpoint: formattedApiEndpoint,
+        }),
+      );
       if (loginInfo) {
         dispatch(
           authActions.useNodeData({
@@ -277,8 +270,21 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
             apiEndpoint: formattedApiEndpoint,
           }),
         );
+        dispatch(
+          nodeActionsAsync.getMessagesThunk({
+            apiToken,
+            apiEndpoint: formattedApiEndpoint,
+            firstLoad: true,
+          }),
+        );
+        dispatch(
+          nodeActionsAsync.getPrometheusMetricsThunk({
+            apiToken,
+            apiEndpoint,
+          })
+        );
         dispatch(nodeActions.setInfo(loginInfo));
-        dispatch(nodeActions.initializeMessagesWebsocket());
+      //  dispatch(nodeActions.initializeMessagesWebsocket());
         navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${formattedApiEndpoint}`);
         trackGoal('IZUWDE9K', 1);
         props.handleClose();
@@ -307,6 +313,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   const clearLocalNodes = () => {
     set_nodesSavedLocallyChosenIndex('');
     dispatch(authActions.clearLocalNodes());
+    set_areYouSureYouWannaDeleteAllSavedNodes(false);
   };
 
   const handleSelectlocalNodes = (event: SelectChangeEvent<unknown>) => {
@@ -475,6 +482,8 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         disableScrollLock={true}
         title="WARNING"
       >
+
+        <SirenImage src="/assets/police-siren-siren.gif" />
         <p>{loginAnywaysWarning}</p>
         <ButtonGroupContainer>
           <Button outlined onClick={() => set_forceLogin(false)}>BACK</Button>

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { createBrowserRouter, RouteObject, useSearchParams, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { environment } from '../config';
 import { useDisconnect } from 'wagmi';
+import { parseAndFormatUrl } from './utils/parseAndFormatUrl';
 
 // Store
 import { useAppDispatch, useAppSelector } from './store';
@@ -23,7 +24,7 @@ import PeersPage from './pages/node/peers';
 import TicketsPage from './pages/node/tickets';
 import ChannelsPageIncoming from './pages/node/channelsIncoming';
 import ChannelsPageOutgoing from './pages/node/channelsOutgoing';
-//import MetricsPage from './pages/node/metrics';
+import MetricsPage from './pages/node/metrics';
 import ConfigurationPage from './pages/node/configuration';
 import WrapperPage from './pages/staking-hub/wrapper';
 import StakingScreen from './pages/staking-hub/dashboard/staking';
@@ -93,6 +94,7 @@ export type ApplicationMapType = {
     loginNeeded?: 'node' | 'web3' | 'safe';
     onClick?: () => void;
     mobileOnly?: boolean | null;
+    numberKey?: string;
   }[];
 }[];
 
@@ -109,13 +111,6 @@ export const applicationMapNode: ApplicationMapType = [
         element: <InfoPage />,
         loginNeeded: 'node',
       },
-      // {
-      //   name: 'LOGS',
-      //   path: 'logs',
-      //   icon: <TerminalIcon />,
-      //   element: <SectionLogs />,
-      //   loginNeeded: 'node',
-      // },
       {
         name: 'TICKETS',
         path: 'tickets',
@@ -123,13 +118,13 @@ export const applicationMapNode: ApplicationMapType = [
         element: <TicketsPage />,
         loginNeeded: 'node',
       },
-      // {
-      //   name: 'METRICS',
-      //   path: 'metrics',
-      //   icon: <BarChartIcon />,
-      //   element: <MetricsPage />,
-      //   loginNeeded: 'node',
-      // },
+      {
+        name: 'METRICS',
+        path: 'metrics',
+        icon: <BarChartIcon />,
+        element: <MetricsPage />,
+        loginNeeded: 'node',
+      },
       {
         name: 'CONFIGURATION',
         path: 'configuration',
@@ -150,6 +145,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <LanIcon />,
         element: <PeersPage />,
         loginNeeded: 'node',
+        numberKey: 'numberOfPeers'
       },
       {
         name: 'ALIASES',
@@ -157,6 +153,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <ContactPhone />,
         element: <AliasesPage />,
         loginNeeded: 'node',
+        numberKey: 'numberOfAliases'
       },
       {
         name: 'MESSAGES',
@@ -164,6 +161,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <MailIcon />,
         element: <MessagesPage />,
         loginNeeded: 'node',
+        numberKey: 'numberOfMessagesReceived'
       },
       {
         name: 'CHANNELS: IN',
@@ -171,6 +169,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <IncomingChannelsIcon />,
         element: <ChannelsPageIncoming />,
         loginNeeded: 'node',
+        numberKey: 'numberOfChannelsIn'
       },
       {
         name: 'CHANNELS: OUT',
@@ -178,6 +177,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <OutgoingChannelsIcon />,
         element: <ChannelsPageOutgoing />,
         loginNeeded: 'node',
+        numberKey: 'numberOfChannelsOut'
       },
     ],
   },
@@ -366,6 +366,20 @@ const LayoutEnhanced = () => {
   const apiToken = searchParams.get('apiToken');
   const HOPRdNodeAddressForOnboarding = searchParams.get('HOPRdNodeAddressForOnboarding'); //Address given in HOPRd: https://hub.hoprnet.org/staking/onboarding?HOPRdNodeAddressForOnboarding={my_address}
 
+  const numberOfPeers = useAppSelector((store) => store.node.peers.data?.connected.length);
+  const numberOfAliases = useAppSelector((store) => store.node.aliases?.data && Object.keys(store.node.aliases?.data).length);
+  const numberOfMessagesReceived = useAppSelector((store) => store.node.messages.data.length);
+  const numberOfChannelsIn = useAppSelector((store) => store.node.channels.data?.incoming.length);
+  const numberOfChannelsOut = useAppSelector((store) => store.node.channels.data?.outgoing.length);
+
+  const numberForDrawer = {
+    numberOfPeers,
+    numberOfAliases,
+    numberOfMessagesReceived,
+    numberOfChannelsIn,
+    numberOfChannelsOut
+  }
+
   useEffect(() => {
     if (environment === 'web3') {
       document.title = 'HOPR | Staking Hub';
@@ -377,11 +391,17 @@ const LayoutEnhanced = () => {
   useEffect(() => {
     if (!apiEndpoint) return;
     if (loginData.apiEndpoint === apiEndpoint && loginData.apiToken === apiToken) return;
+    const formattedApiEndpoint = parseAndFormatUrl(apiEndpoint);
     dispatch(
       authActions.useNodeData({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
       })
+    );
+    dispatch(
+      nodeActions.setApiEndpoint({
+        apiEndpoint: formattedApiEndpoint,
+      }),
     );
     if (!apiToken) return;
     const useNode = async () => {
@@ -426,13 +446,26 @@ const LayoutEnhanced = () => {
             })
           );
           dispatch(
+            nodeActionsAsync.getMessagesThunk({
+              apiToken,
+              apiEndpoint,
+              firstLoad: true,
+            })
+          );
+          dispatch(
             nodeActionsAsync.getChannelsThunk({
               apiToken,
               apiEndpoint,
             })
           );
           dispatch(
-            nodeActionsAsync.getStatisticsThunk({
+            nodeActionsAsync.getTicketStatisticsThunk({
+              apiToken,
+              apiEndpoint,
+            })
+          );
+          dispatch(
+            nodeActionsAsync.getPrometheusMetricsThunk({
               apiToken,
               apiEndpoint,
             })
@@ -502,6 +535,7 @@ const LayoutEnhanced = () => {
       webapp
       drawerItems={applicationMap}
       drawerFunctionItems={environment === 'web3' ? drawerFunctionItems : undefined}
+      drawerNumbers={numberForDrawer}
       drawerLoginState={{
         node: nodeConnected,
         web3: web3Connected,

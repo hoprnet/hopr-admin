@@ -7,7 +7,7 @@ import safeSlice from './slices/safe';
 import stakingHubSlice from './slices/stakingHub';
 import web3Slice from './slices/web3';
 import appSlice from './slices/app';
-import { websocketMiddleware } from './slices/node/websocketMiddleware';
+//import { websocketMiddleware } from './slices/node/websocketMiddleware';
 
 const store = configureStore({
   reducer: {
@@ -18,7 +18,7 @@ const store = configureStore({
     web3: web3Slice,
     app: appSlice,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(websocketMiddleware),
+//  middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(websocketMiddleware),
   devTools: process.env.NODE_ENV === 'production' ? false : { maxAge: 5000 },
 });
 

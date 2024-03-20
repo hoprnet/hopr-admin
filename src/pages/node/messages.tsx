@@ -11,9 +11,12 @@ import Section from '../../future-hopr-lib-components/Section';
 import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 import { SubpageTitle } from '../../components/SubpageTitle';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
+import IconButton from '../../future-hopr-lib-components/Button/IconButton';
+import RemoveMessages from '../../future-hopr-lib-components/Icons/RemoveMessages';
+
 
 const messages = () => {
-  const messages = useAppSelector((store) => store.node.messages);
+  const messages = useAppSelector((store) => store.node.messages.data);
   const {
     apiEndpoint,
     apiToken,
@@ -21,34 +24,35 @@ const messages = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (apiEndpoint && apiToken) {
-      dispatch(
-        actionsAsync.getAliasesThunk({
-          apiEndpoint,
-          apiToken,
-        }),
-      );
-    }
+    if (!apiEndpoint || !apiToken) return;
+
+    dispatch(
+      actionsAsync.getAliasesThunk({
+        apiEndpoint,
+        apiToken,
+      }),
+    );
   }, []);
 
   const header = [
     {
-      key: 'timestamp',
+      key: 'receivedAt',
       name: 'Timestamp',
       width: '120px',
       maxWidth: '120px',
     },
     {
+      key: 'tag',
+      name: 'Tag',
+      search: true,
+      width: '70px',
+      maxWidth: '70px',
+    },
+    {
       key: 'body',
       name: 'Message',
       wrap: true,
-    },
-    {
-      key: 'actions',
-      name: 'Actions',
-      search: false,
-      width: '168px',
-      maxWidth: '168px',
+      search: true,
     },
   ];
 
@@ -56,12 +60,13 @@ const messages = () => {
     return {
       id: message.id,
       body: message.body,
-      timestamp: formatDate(message.createdAt),
+      receivedAt: message.receivedAt ? formatDate(message.receivedAt) : '',
+      tag: message.tag ? message.tag.toString() : '',
       actions: (
         <>
-          <button onClick={() => dispatch(nodeActions.toggleMessageSeen(message))}>
+          {/* <button onClick={() => dispatch(nodeActions.toggleMessageSeen(message))}>
             Mark as {message.seen ? 'unseen' : 'seen'}
-          </button>
+          </button> */}
         </>
       ),
     };
@@ -73,16 +78,37 @@ const messages = () => {
       yellow
     >
       <SubpageTitle
-        title={`MESSAGES`}
+        title={`MESSAGES (${messages.length})`}
         actions={
           <>
             <SendMessageModal />
+            <IconButton
+              iconComponent={<RemoveMessages />}
+              tooltipText={
+                <span>
+                  REMOVE ALL
+                  <br />
+                  messages
+                </span>
+              }
+              onClick={() => {
+                if(!apiEndpoint || !apiToken) return;
+                dispatch(
+                  actionsAsync.deleteMessagesThunk({
+                    apiEndpoint,
+                    apiToken,
+                  }),
+                );
+              }}
+            />
           </>
         }
       />
       <TablePro
         data={parsedTableData}
+        id={'node-messages-table'}
         header={header}
+        search
       />
     </Section>
   );

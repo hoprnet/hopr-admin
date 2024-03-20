@@ -4,11 +4,12 @@ import { useEthersSigner } from '..';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { appActions } from '../../store/slices/app';
 import { observeNodeBalances } from './balances';
-import { observeChannels } from './channels';
 import { observeNodeInfo } from './info';
-import { observeMessages } from './messages';
 import { observePendingSafeTransactions } from './safeTransactions';
 import { observeSafeInfo } from './safeInfo';
+import { sendNotification } from '../../hooks/useWatcher/notifications';
+import { nodeActions, nodeActionsAsync } from '../../store/slices/node';
+import { checkHowChannelsHaveChanged } from './channels';
 
 export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: number }) => {
   const dispatch = useAppDispatch();
@@ -16,7 +17,9 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
     apiEndpoint,
     apiToken,
   } = useAppSelector((store) => store.auth.loginData);
-  const messages = useAppSelector((store) => store.node.messages);
+  const messages = useAppSelector((store) => store.node.messages.data);
+  const channels = useAppSelector((store) => store.node.channels.parsed);
+  const firstChannelsCallWasSuccesfull = useAppSelector((store) => !!store.node.channels.data);
   const connected = useAppSelector((store) => store.auth.status.connected);
 
   const signer = useEthersSigner();
@@ -28,7 +31,6 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   const activePendingSafeTransaction = useAppSelector(store => store.app.configuration.notifications.pendingSafeTransaction)
   // redux previous states, this can be updated from anywhere in the app
   const prevChannels = useAppSelector((store) => store.app.previousStates.prevChannels);
-  const prevMessage = useAppSelector((store) => store.app.previousStates.prevMessage);
   const prevNodeBalances = useAppSelector((store) => store.app.previousStates.prevNodeBalances);
   const prevNodeInfo = useAppSelector((store) => store.app.previousStates.prevNodeInfo);
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
@@ -38,16 +40,13 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
     if (!connected) return;
 
     const watchChannelsInterval = setInterval(() => {
-      observeChannels({
-        apiEndpoint,
-        apiToken,
-        dispatch,
-        active: activeChannels,
-        previousState: prevChannels,
-        updatePreviousData: (newChannels) => {
-          dispatch(appActions.setPrevChannels(newChannels));
-        },
-      });
+      if (!apiEndpoint || !apiToken || !activeChannels) return;
+      return dispatch(
+        nodeActionsAsync.getChannelsThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
     }, intervalDuration);
 
     const watchNodeInfoInterval = setInterval(() => {
@@ -62,6 +61,17 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
         },
       });
     }, intervalDuration);
+
+
+    const watchMessagesInterval = setInterval(() => {
+      if (!apiEndpoint || !apiToken) return;
+      return dispatch(
+        nodeActionsAsync.getMessagesThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+    }, 5_000);
 
     const watchNodeBalancesInterval = setInterval(() => {
       observeNodeBalances({
@@ -87,6 +97,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
       clearInterval(watchChannelsInterval);
       clearInterval(watchNodeInfoInterval);
       clearInterval(watchNodeBalancesInterval);
+      clearInterval(watchMessagesInterval);
     };
   }, [connected, apiEndpoint, apiToken, prevNodeBalances, prevNodeInfo, prevChannels]);
 
@@ -124,16 +135,72 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
     };
   }, [selectedSafeAddress, signer, prevPendingSafeTransaction, safeIndexed]);
 
-  // check when redux receives new messages
+
   useEffect(() => {
-    observeMessages({
-      dispatch,
-      messages,
-      previousState: prevMessage,
-      active: activeMessage,
-      updatePreviousData: (newMessage) => {
-        dispatch(appActions.setPrevMessage(newMessage));
-      },
-    });
-  }, [messages, prevMessage]);
+    if(activeMessage && messages && messages.length > 0) {
+        messages.forEach((msgReceived, index) => {
+          let hasToNotify = !msgReceived.notified;
+          if(hasToNotify){
+            const notification = `Message received: ${msgReceived.body}`;
+            sendNotification({
+              notificationPayload: {
+                source: 'node',
+                name: notification,
+                url: null,
+                timeout: null,
+              },
+              toastPayload: { message: notification },
+              dispatch,
+            });
+            dispatch(nodeActions.setMessageNotified(index));
+          }
+        })
+    }
+  }, [activeMessage, messages]);
+
+  useEffect(() => {
+    if(!firstChannelsCallWasSuccesfull) return;
+
+    if(!prevChannels) {
+      const channelsOutgoingIds = Object.keys(channels.outgoing);
+      if(
+        channelsOutgoingIds.length !==0 && //true
+        Object.keys(channels.outgoing[channelsOutgoingIds[0]]).includes('status') // If the channels are populated more than with tickets data
+      ) {
+        dispatch(appActions.setPrevChannels(channels));
+      };
+      return
+    };
+
+    if(activeChannels) {
+      const changes = checkHowChannelsHaveChanged(prevChannels, channels);
+      if(changes.length !== 0) {
+        console.log('changes channels', changes)
+        for(let i = 0; i < changes.length; i++){
+          let notificationText: null | string = null;
+          if(changes[i].status === "Open") {
+            notificationText = `Channel to ${changes[i].peerAddress} opened.`
+          } else if(changes[i].status === "PendingToClose") {
+            notificationText = `Channel to ${changes[i].peerAddress} is pending to close.`
+          } else if(changes[i].status === "Closed") {
+            notificationText = `Channel to ${changes[i].peerAddress} closed.`
+          }
+          if (notificationText) {
+            sendNotification({
+              notificationPayload: {
+                source: 'node',
+                name: notificationText,
+                url: null,
+                timeout: null,
+              },
+              toastPayload: { message: notificationText },
+              dispatch,
+            });
+          }
+        }
+        dispatch(appActions.setPrevChannels(channels));
+      }
+    }
+  }, [activeChannels, firstChannelsCallWasSuccesfull, channels, prevChannels]);
+
 };

@@ -278,23 +278,11 @@ export default function Details(props: Props) {
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
-          <Text>Peers</Text>
+          <Text>Unredeemed wxHOPR</Text>
         </IconAndText>
         <IconAndText>
           <IconContainer></IconContainer>
-          <Text>Outgoing Channels</Text>
-        </IconAndText>
-        <IconAndText>
-          <IconContainer></IconContainer>
-          <Text>Incoming Channels</Text>
-        </IconAndText>
-        <IconAndText>
-          <IconContainer></IconContainer>
-          <Text>Unredeemed tickets</Text>
-        </IconAndText>
-        <IconAndText>
-          <IconContainer></IconContainer>
-          <Text>Redeemed tickets</Text>
+          <Text>Redeemed wxHOPR</Text>
         </IconAndText>
       </TitleColumn>
       <DataColumn>
@@ -304,22 +292,17 @@ export default function Details(props: Props) {
               {info?.connectivityStatus}
             </ColorStatus>
           </p>
-          <p>
-            <ColorStatus
-              className={`status-${isXdaiEnough()}`}
-            >
-              {balances.native?.formatted ?? '-'}
-            </ColorStatus>
-          </p>
-          <p>{balances.safeNative?.formatted ?? '-'}</p>
-          <p>{balances.safeHopr?.formatted ?? '-'}</p>
-          <p className="double">{balances.channels?.formatted ?? '-'}</p>
-          <p className="double">{totalwxHOPR}</p>
-          <p>{truncateBalanceto5charsWhenNoDecimals(peers?.announced?.length) || '-'}</p>
-          <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.outgoing?.length) || '-'}</p>
-          <p className="double">{truncateBalanceto5charsWhenNoDecimals(channels?.incoming?.length) || '-'}</p>
-          <p className="double">{truncateBalanceto5charsWhenNoDecimals(statistics?.unredeemed) || '-'}</p>
-          <p className="double">{truncateBalanceto5charsWhenNoDecimals(statistics?.redeemed) || '-'}</p>
+          <ColorStatus
+            className={`status-${isXdaiEnough()}`}
+          >
+            <Tooltip title={balances.native?.formatted && balances.native?.formatted !== '0' ? balances.native?.formatted : null}><p>{balances.native?.formatted ?? '-'}</p></Tooltip>
+          </ColorStatus>
+          <Tooltip title={balances.safeNative?.formatted && balances.safeNative?.formatted !== '0' ? balances.safeNative?.formatted : null}><p>{balances.safeNative?.formatted ?? '-'}</p></Tooltip>
+          <Tooltip title={balances.safeHopr?.formatted && balances.safeHopr?.formatted !== '0' ? balances.safeHopr?.formatted : null}><p>{balances.safeHopr?.formatted ?? '-'}</p></Tooltip>
+          <Tooltip title={balances.channels?.formatted && balances.channels?.formatted !== '0' ? balances.channels?.formatted : null}><p className="double">{balances.channels?.formatted ?? '-'}</p></Tooltip>
+          <Tooltip title={totalwxHOPR && totalwxHOPR !== '0' ? totalwxHOPR : null}><p  className="double">{totalwxHOPR ?? '-'}</p></Tooltip>
+          <Tooltip title={statistics?.unredeemedValue && statistics?.unredeemedValue !== '0' ? formatEther(BigInt(statistics?.unredeemedValue as string)) : null}><p className="double">{statistics?.unredeemedValue ? formatEther(BigInt(statistics?.unredeemedValue as string)) : '-'}</p></Tooltip>
+          <Tooltip title={statistics?.redeemedValue && statistics?.redeemedValue !== '0' ? formatEther(BigInt(statistics?.redeemedValue as string)) : null}><p className="double">{statistics?.redeemedValue ? formatEther(BigInt(statistics?.redeemedValue as string)) : '-'}</p></Tooltip>
         </Data>
       </DataColumn>
     </Web3Container>

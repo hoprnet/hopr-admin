@@ -57,7 +57,7 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
               try {
                 const messageJSON: { type: 'message' | 'message-ack'; tag?: number; body?: string; id?: string } =
                   JSON.parse(message);
-                
+
                 // only show messages
                 if (messageJSON.type !== 'message') return;
 
@@ -66,7 +66,7 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({
                     messageReceived({
                       id: nanoid(),
                       body: messageJSON.body,
-                      createdAt: Date.now(),
+                      timestamp: Date.now(),
                       seen: false,
                     }),
                   );

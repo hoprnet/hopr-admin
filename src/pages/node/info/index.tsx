@@ -1,26 +1,31 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { useAppDispatch, useAppSelector } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../../store';
 import { Link } from 'react-router-dom';
-import { copyStringToClipboard } from '../../utils/functions';
+import { copyStringToClipboard } from '../../../utils/functions';
 import { formatEther } from 'viem';
 
 // Mui
 import { Paper } from '@mui/material';
 
 // HOPR Components
-import Section from '../../future-hopr-lib-components/Section';
-import { actionsAsync } from '../../store/slices/node/actionsAsync';
-import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
-import { SubpageTitle } from '../../components/SubpageTitle';
-import Tooltip from '../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
-import WithdrawModal from '../../components/Modal/node/WithdrawModal';
-import SmallActionButton from '../../future-hopr-lib-components/Button/SmallActionButton';
-import { ColorStatus } from '../../components/InfoBar/details';
+import Section from '../../../future-hopr-lib-components/Section';
+import { actionsAsync } from '../../../store/slices/node/actionsAsync';
+import { TableExtended } from '../../../future-hopr-lib-components/Table/columed-data';
+import { SubpageTitle } from '../../../components/SubpageTitle';
+import Tooltip from '../../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
+import WithdrawModal from '../../../components/Modal/node/WithdrawModal';
+import SmallActionButton from '../../../future-hopr-lib-components/Button/SmallActionButton';
+import { ColorStatus } from '../../../components/InfoBar/details';
+import ProgressBar from '../../../future-hopr-lib-components/Progressbar';
 
 //Icons
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
+
+//Info Components
+import NodeUptime from './node-uptime';
+
 
 const TdActionIcons = styled.td`
   display: flex;
@@ -47,62 +52,67 @@ function InfoPage() {
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
   const statistics = useAppSelector((store) => store.node.statistics.data);
   const statisticsFetching = useAppSelector((store) => store.node.statistics.isFetching);
+  const nodeStartedEpoch = useAppSelector((store) => store.node.metrics.data.parsed?.hopr_up?.data[0]);
+  const nodeStartedTime = nodeStartedEpoch && typeof(nodeStartedEpoch) === 'number'? new Date(nodeStartedEpoch*1000).toJSON().replace('T', ' ').replace('Z', ' UTC') : '-';
+  const nodeSync = useAppSelector((store) => store.node.metrics.data.parsed?.hopr_indexer_sync_progress?.data[0]);
+
 
   useEffect(() => {
     fetchInfoData();
   }, [apiEndpoint, apiToken]);
 
   const fetchInfoData = () => {
-    if (apiEndpoint && apiToken) {
-      dispatch(
-        actionsAsync.getBalancesThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-      dispatch(
-        actionsAsync.getChannelsThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-      dispatch(
-        actionsAsync.getAddressesThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-      dispatch(
-        actionsAsync.getVersionThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-      dispatch(
-        actionsAsync.getInfoThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-      dispatch(
-        actionsAsync.getPeersThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-      dispatch(
-        actionsAsync.getAliasesThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-      dispatch(
-        actionsAsync.getStatisticsThunk({
-          apiEndpoint,
-          apiToken,
-        })
-      );
-    }
+    if (!apiEndpoint || !apiToken) return;
+
+    dispatch(
+      actionsAsync.getBalancesThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+    dispatch(
+      actionsAsync.getChannelsThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+    dispatch(
+      actionsAsync.getAddressesThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+    dispatch(
+      actionsAsync.getVersionThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+    dispatch(
+      actionsAsync.getInfoThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+    dispatch(
+      actionsAsync.getPeersThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+    dispatch(
+      actionsAsync.getAliasesThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+    dispatch(
+      actionsAsync.getTicketStatisticsThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
+
   };
 
   // This will allow us to improve readability on the reloading prop for SubpageTitle
@@ -158,7 +168,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="Whether or not your node is eligible to connect to the Monte Rosa network."
+                  title="Whether or not your node is eligible to connect to the network"
                   notWide
                 >
                   <span>Eligible</span>
@@ -169,7 +179,27 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The blockchain network your node is using for on-chain transactions."
+                  title="The sync process of your node with the blockchain"
+                  notWide
+                >
+                  <span>Sync process</span>
+                </Tooltip>
+              </th>
+              <td>
+                {
+               nodeSync && typeof(nodeSync)==='number'?
+                  <ProgressBar
+                    value={nodeSync}
+                  />
+                :
+                '-'
+                }
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The blockchain network your node is using for on-chain transactions"
                   notWide
                 >
                   <span>Blockchain Network</span>
@@ -203,7 +233,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The address your node announces to make itself reachable for other nodes."
+                  title="The address your node announces to make itself reachable for other nodes"
                   notWide
                 >
                   <span>Announced address</span>
@@ -214,7 +244,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The address your node uses to listen for incoming connections."
+                  title="The address your node uses to listen for incoming connections"
                   notWide
                 >
                   <span>Listening address</span>
@@ -295,9 +325,9 @@ function InfoPage() {
                 </Tooltip>
               </th>
               <td>
-                { 
-                  balances.channels?.value && 
-                  balances.safeHopr?.value ? 
+                {
+                  balances.channels?.value &&
+                  balances.safeHopr?.value ?
                   formatEther(BigInt(balances.channels?.value) + BigInt(balances.safeHopr?.value)) : '-'
                 } wxHOPR
               </td>
@@ -335,7 +365,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="Your node's Ethereum address."
+                  title="Your node's Ethereum address"
                   notWide
                 >
                   <span>Node Address</span>
@@ -366,19 +396,19 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="Your safe's Ethereum address."
+                  title="Your safe's Ethereum address"
                   notWide
                 >
                   <span>Safe Address</span>
                 </Tooltip>
               </th>
               <TdActionIcons>
-                {info?.nodeSafe}
+                {info?.hoprNodeSafe}
                 {
-                  info?.nodeSafe &&
+                  info?.hoprNodeSafe &&
                   <>
                     <SmallActionButton
-                      onClick={() => navigator.clipboard.writeText(info?.nodeSafe as string)}
+                      onClick={() => navigator.clipboard.writeText(info.hoprNodeSafe as string)}
                       tooltip={'Copy'}
                     >
                       <CopyIcon />
@@ -386,7 +416,7 @@ function InfoPage() {
                     <SmallActionButton
                       tooltip={'Open in gnosisscan.io'}
                     >
-                      <Link to={`https://gnosisscan.io/address/${info?.nodeSafe}`} target='_blank'>
+                      <Link to={`https://gnosisscan.io/address/${info.hoprNodeSafe}`} target='_blank'>
                         <LaunchIcon />
                       </Link>
                     </SmallActionButton>
@@ -397,38 +427,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="Your module's Ethereum address."
-                  notWide
-                >
-                  <span>Module Address</span>
-                </Tooltip>
-              </th>
-              <TdActionIcons>
-                {info?.nodeManagementModule}
-                {
-                  info?.nodeManagementModule &&
-                  <>
-                    <SmallActionButton
-                      onClick={() => navigator.clipboard.writeText(info?.nodeManagementModule as string)}
-                      tooltip={'Copy'}
-                    >
-                      <CopyIcon />
-                    </SmallActionButton>
-                    <SmallActionButton
-                      tooltip={'Open on gnosisscan.io'}
-                    >
-                      <Link to={`https://gnosisscan.io/address/${info?.nodeManagementModule}`} target='_blank'>
-                        <LaunchIcon />
-                      </Link>
-                    </SmallActionButton>
-                  </>
-                }
-              </TdActionIcons>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The contract address of the HOPR token."
+                  title="The contract address of the HOPR token"
                   notWide
                 >
                   <span>Hopr Token Address</span>
@@ -459,7 +458,38 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The contract address of the hoprChannels smart contract."
+                  title="The contract address of the Hopr management module"
+                  notWide
+                >
+                  <span>Hopr management module address</span>
+                </Tooltip>
+              </th>
+              <TdActionIcons>
+                {info?.hoprManagementModule}
+                {
+                  info?.hoprManagementModule &&
+                  <>
+                    <SmallActionButton
+                      onClick={() => navigator.clipboard.writeText(info.hoprManagementModule as string)}
+                      tooltip={'Copy'}
+                    >
+                      <CopyIcon />
+                    </SmallActionButton>
+                    <SmallActionButton
+                      tooltip={'Open on gnosisscan.io'}
+                    >
+                      <Link to={`https://gnosisscan.io/address/${info.hoprManagementModule}`} target='_blank'>
+                        <LaunchIcon />
+                      </Link>
+                    </SmallActionButton>
+                  </>
+                }
+              </TdActionIcons>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The contract address of the hoprChannels smart contract"
                   notWide
                 >
                   <span>Hopr Channels Address</span>
@@ -491,14 +521,14 @@ function InfoPage() {
         </TableExtended>
 
         <TableExtended
-          title="Software"
+          title="Node"
           style={{ marginBottom: '42px' }}
         >
           <tbody>
             <tr>
               <th>
                 <Tooltip
-                  title="The version of HOPR your node is running."
+                  title="The version of HOPR your node is running"
                   notWide
                 >
                   <span>Version</span>
@@ -509,7 +539,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The environment your node is running in."
+                  title="The environment your node is running in"
                   notWide
                 >
                   <span>Environment</span>
@@ -517,6 +547,20 @@ function InfoPage() {
               </th>
               <td>{info?.network}</td>
             </tr>
+            <tr
+              key='node-startdate'
+            >
+              <th>
+                <Tooltip
+                  title="Date when you node was started"
+                  notWide
+                >
+                  <span>Start date</span>
+                </Tooltip>
+              </th>
+              <td>{nodeStartedTime}</td>
+            </tr>
+            <NodeUptime />
           </tbody>
         </TableExtended>
 
@@ -528,7 +572,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The number of incoming channels connected to your node."
+                  title="The number of incoming channels connected to your node"
                   notWide
                 >
                   <span>Incoming</span>
@@ -539,7 +583,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The number of outgoing channels connected to your node."
+                  title="The number of outgoing channels connected to your node"
                   notWide
                 >
                   <span>Outgoing</span>
@@ -558,7 +602,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The number of announced nodes on the network visible to your node."
+                  title="The number of announced nodes on the network visible to your node"
                   notWide
                 >
                   <span>Announced</span>
@@ -569,7 +613,7 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The number of nodes on the network your node can reach."
+                  title="The number of nodes on the network your node can reach"
                   notWide
                 >
                   <span>Connected</span>

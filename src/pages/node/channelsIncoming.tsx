@@ -14,7 +14,8 @@ import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 
 // Modals
 import { PingModal } from '../../components/Modal/node/PingModal';
-import { OpenOrFundChannelModal } from '../../components/Modal/node/OpenOrFundChannelModal';
+import { OpenChannelModal } from '../../components/Modal/node/OpenChannelModal';
+import { FundChannelModal } from '../../components/Modal/node/FundChannelModal';
 import { CreateAliasModal } from '../../components/Modal/node//AddAliasModal';
 import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 
@@ -25,11 +26,14 @@ import GetAppIcon from '@mui/icons-material/GetApp';
 function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((store) => store.node.channels.data);
+  const channelsIncomingObject = useAppSelector((store) => store.node.channels.parsed.incoming);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
   const aliases = useAppSelector((store) => store.node.aliases.data)
   const peers = useAppSelector((store) => store.node.peers.data)
   const loginData = useAppSelector((store) => store.auth.loginData);
-
+  const nodeAddressToPeerIdLink = useAppSelector((store) => store.node.links.nodeAddressToPeerId);
+  const nodeAddressToOutgoingChannelLink = useAppSelector((store) => store.node.links.nodeAddressToOutgoingChannel);
+  const peerIdToAliasLink = useAppSelector((store) => store.node.links.peerIdToAlias);
   const tabLabel = 'incoming';
   const channelsData = channels?.incoming;
 
@@ -57,6 +61,8 @@ function ChannelsPage() {
   }, [queryParams]);
 
   const handleRefresh = () => {
+    if(!loginData.apiEndpoint || !loginData.apiToken) return;
+
     dispatch(
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
@@ -81,31 +87,21 @@ function ChannelsPage() {
         apiToken: loginData.apiToken!,
       })
     );
+
   };
 
-  const getAliasByPeerAddress = (peerAddress: string): string => {
-
-    const peerId = peers?.announced.find(peer => peer.peerAddress === peerAddress)?.peerId;
-
-    if (!peerId) {
-      return peerAddress;
-    }
-
-    if (aliases) {
-      for (const [alias, id] of Object.entries(aliases)) {
-        if (id === peerId) {
-          return alias;
-        }
-      }
-    }
-
-    return peerAddress
+  const getPeerIdFromPeerAddress = (nodeAddress: string): string => {
+    const peerId = nodeAddressToPeerIdLink[nodeAddress];
+    return peerId!;
   }
 
-
-  const getPeerIdFromPeerAddress = (peerAddress: string): string | undefined => {
-    const peerId = peers?.announced.find(peer => peer.peerAddress === peerAddress)?.peerId;
-    return peerId;
+  const getAliasByPeerAddress = (nodeAddress: string): string => {
+    const peerId = getPeerIdFromPeerAddress(nodeAddress);
+    if (nodeAddress === '0x6f9b56d7e8d4efaf0b9364f52972a1984a76e68b') {
+      console.log('getPeerIdFromPeerAddress' , peerId)
+    }
+    if(aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${nodeAddress})`
+    return nodeAddress;
   }
 
   const handleExport = () => {
@@ -124,7 +120,7 @@ function ChannelsPage() {
 
   const headerIncoming = [
     {
-      key: 'key',
+      key: 'id',
       name: '#',
     },
     {
@@ -138,6 +134,7 @@ function ChannelsPage() {
     {
       key: 'status',
       name: 'Status',
+      search: true,
       maxWidth: '368px',
       tooltip: true,
     },
@@ -148,6 +145,12 @@ function ChannelsPage() {
       tooltip: true,
     },
     {
+      key: 'tickets',
+      name: 'Unredeemed',
+      maxWidth: '60px',
+      tooltipHeader: <>Unredeemed tickets<br/>per channel</>
+    },
+    {
       key: 'actions',
       name: 'Actions',
       search: false,
@@ -156,37 +159,59 @@ function ChannelsPage() {
     },
   ];
 
-  const parsedTableDataIncoming = Object.entries(channels?.incoming ?? []).map(([, channel], key) => {
+  const parsedTableData = Object.keys(channelsIncomingObject).map((id, index) => {
+    if(!channelsIncomingObject[id].peerAddress || !channelsIncomingObject[id].balance || !channelsIncomingObject[id].status) return;
+    // @ts-ignore: check was done in line above
+    const outgoingChannelOpened = !!(channelsIncomingObject[id].peerAddress && !!nodeAddressToOutgoingChannelLink[channelsIncomingObject[id].peerAddress]);
+    const peerId = getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string);
+
     return {
-      id: channel.id,
-      key: key.toString(),
-      peerAddress: getAliasByPeerAddress(channel.peerAddress),
-      status: channel.status,
-      funds: `${utils.formatEther(channel.balance)} ${HOPR_TOKEN_USED}`,
+      id: (index+1).toString(),
+      key: id,
+      peerAddress: getAliasByPeerAddress(channelsIncomingObject[id].peerAddress as string),
+      status: channelsIncomingObject[id].status,
+      funds: `${utils.formatEther(channelsIncomingObject[id].balance as string)} ${HOPR_TOKEN_USED}`,
+      tickets: channelsIncomingObject[id].tickets.toString(),
       actions: (
         <>
-          <PingModal 
-            peerId={getPeerIdFromPeerAddress(channel.peerAddress)} 
-            disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
+          <PingModal
+            peerId={peerId}
+            disabled={!peerId}
+            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
           />
           <CreateAliasModal
             handleRefresh={handleRefresh}
-            peerId={getPeerIdFromPeerAddress(channel.peerAddress)}
-            disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
+            peerId={peerId}
+            disabled={!peerId}
+            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
           />
-          <OpenOrFundChannelModal
-            peerAddress={channel.peerAddress}
-            title="Open outgoing channel"
-            type={'open'}
-          />
-          <SendMessageModal 
-            peerId={getPeerIdFromPeerAddress(channel.peerAddress)}
-            disabled={!getPeerIdFromPeerAddress(channel.peerAddress)}
+          {
+            outgoingChannelOpened ?
+            <FundChannelModal
+              channelId={id}
+            />
+            :
+            <OpenChannelModal
+              peerAddress={channelsIncomingObject[id].peerAddress}
+            />
+          }
+          <SendMessageModal
+            peerId={peerId}
+            disabled={!peerId}
+            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
           />
         </>
       ),
     };
-  });
+  }).filter(elem => elem !== undefined) as {
+    id: string;
+    key: string;
+    peerAddress: string;
+    status: "Open" | "PendingToClose" | "Closed" ;
+    tickets: string;
+    funds: string;
+    actions: JSX.Element;
+  }[];
 
   return (
     <Section
@@ -196,7 +221,7 @@ function ChannelsPage() {
       yellow
     >
       <SubpageTitle
-        title={`INCOMING CHANNELS`}
+        title={`INCOMING CHANNELS (${channelsData ? channelsData.length : '-'})`}
         refreshFunction={handleRefresh}
         reloading={channelsFetching}
         actions={
@@ -217,10 +242,11 @@ function ChannelsPage() {
         }
       />
       <TablePro
-        data={parsedTableDataIncoming}
+        data={parsedTableData}
+        id={'node-channels-in-table'}
         header={headerIncoming}
         search
-        loading={parsedTableDataIncoming.length === 0 && channelsFetching}
+        loading={parsedTableData.length === 0 && channelsFetching}
       />
     </Section>
   );

@@ -1,12 +1,12 @@
 {
   "name": "hopr-admin",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.0",
-    "@hoprnet/hopr-sdk": "2.0.1",
+    "@hoprnet/hopr-sdk": "2.1.0-beta.18",
     "@metamask/jazzicon": "^2.0.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.0",
@@ -40,6 +40,7 @@
     "react-toastify": "^9.1.3",
     "redux": "^4.2.1",
     "typescript": "^5.1.6",
+    "uuid": "^9.0.1",
     "viem": "1.21.4",
     "wagmi": "1.4.13",
     "web-vitals": "^2.1.0"
@@ -83,6 +84,7 @@
     "@types/lodash": "^4.14.197",
     "@types/md5": "^2.3.2",
     "@types/react-timeago": "^4.1.4",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",
     "@vitejs/plugin-react": "^4.0.0",
