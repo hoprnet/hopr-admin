@@ -172,7 +172,9 @@ const Footer = (props) => {
               src="https://hopr.substack.com/embed"
               width={'100%'}
               style={{
-                border: 'none', marginTop: 0, paddingTop: 0, 
+                border: 'none',
+                marginTop: 0,
+                paddingTop: 0,
               }}
               loading="lazy"
             ></iframe>

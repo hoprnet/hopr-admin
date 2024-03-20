@@ -78,7 +78,8 @@ export default function AddNode(props?: { onDone?: Function; onBack?: Function; 
                 timeout: null,
               },
               toastPayload: {
-                message: errMsg, type: 'error', 
+                message: errMsg,
+                type: 'error',
               },
               dispatch,
             });
@@ -104,7 +105,8 @@ export default function AddNode(props?: { onDone?: Function; onBack?: Function; 
             target="_blank"
             rel="noreferrer"
             style={{
-              color: '#007bff', textDecoration: 'underline', 
+              color: '#007bff',
+              textDecoration: 'underline',
             }}
           >
             Dappnode
@@ -115,7 +117,8 @@ export default function AddNode(props?: { onDone?: Function; onBack?: Function; 
             target="_blank"
             rel="noreferrer"
             style={{
-              color: '#007bff', textDecoration: 'underline', 
+              color: '#007bff',
+              textDecoration: 'underline',
             }}
           >
             Docker

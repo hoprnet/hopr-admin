@@ -133,7 +133,8 @@ export default function ConnectSafe() {
   // If no selected safeAddress, choose 1st one
   useEffect(() => {
     console.log({
-      safeFromUrl, moduleFromUrl, 
+      safeFromUrl,
+      moduleFromUrl,
     });
     if (safeFromUrl && moduleFromUrl && !safeAddress) {
       console.log('useSelectedSafe from url', safeFromUrl, moduleFromUrl);
@@ -200,9 +201,7 @@ export default function ConnectSafe() {
           dispatch(appActions.setPrevPendingSafeTransaction(newData));
         },
       });
-      dispatch(
-        safeActionsAsync.getSafesByOwnerThunk({ signer: signer }),
-      );
+      dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer: signer }));
       dispatch(
         safeActionsAsync.getSafeInfoThunk({
           signer: signer,

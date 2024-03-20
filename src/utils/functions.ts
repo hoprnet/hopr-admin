@@ -23,7 +23,8 @@ export function copyStringToClipboard(input: string) {
   el.setAttribute('readonly', '');
   //@ts-ignore
   el.style = {
-    position: 'absolute', left: '-9999px', 
+    position: 'absolute',
+    left: '-9999px',
   };
   document.body.appendChild(el);
   el.select();

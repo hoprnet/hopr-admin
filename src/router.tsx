@@ -407,9 +407,7 @@ const LayoutEnhanced = () => {
         apiToken: apiToken ? apiToken : '',
       }),
     );
-    dispatch(
-      nodeActions.setApiEndpoint({ apiEndpoint: formattedApiEndpoint }),
-    );
+    dispatch(nodeActions.setApiEndpoint({ apiEndpoint: formattedApiEndpoint }));
     if (!apiToken) return;
     const useNode = async () => {
       try {

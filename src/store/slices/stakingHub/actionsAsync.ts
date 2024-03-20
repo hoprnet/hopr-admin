@@ -282,9 +282,12 @@ const getSubgraphDataThunk = createAsyncThunk<
       console.log('allNodes found', allNodes);
       allNodes.forEach((safeRegNode: { node: { id: string } }) => {
         const nodeAddress = safeRegNode.node.id;
-        dispatch(getNodeDataThunk({
-          nodeAddress, browserClient, 
-        }));
+        dispatch(
+          getNodeDataThunk({
+            nodeAddress,
+            browserClient,
+          }),
+        );
       });
 
       console.log('SubgraphParsedOutput', output);
@@ -346,7 +349,9 @@ const getModuleTargetsThunk = createAsyncThunk<
     })) as [boolean, bigint];
 
     console.log('targets', {
-      wxHOPRTarget, channelsTarget, announcmentTarget, 
+      wxHOPRTarget,
+      channelsTarget,
+      announcmentTarget,
     });
 
     const targets = {

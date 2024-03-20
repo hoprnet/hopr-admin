@@ -91,7 +91,8 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
               timeout: null,
             },
             toastPayload: {
-              message: `Alias ${alias} failed to add.`, type: 'error', 
+              message: `Alias ${alias} failed to add.`,
+              type: 'error',
             },
             dispatch,
           });

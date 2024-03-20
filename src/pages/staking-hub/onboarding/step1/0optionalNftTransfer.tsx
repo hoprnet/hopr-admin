@@ -132,7 +132,8 @@ export default function optionalNftTtransfer() {
             target="_blank"
             rel="noreferrer"
             style={{
-              color: '#007bff', textDecoration: 'underline', 
+              color: '#007bff',
+              textDecoration: 'underline',
             }}
           >
             here

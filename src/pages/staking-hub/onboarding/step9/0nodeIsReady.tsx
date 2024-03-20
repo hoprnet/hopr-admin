@@ -22,9 +22,7 @@ export default function NodeIsReady() {
     const defaults = { origin: { y: 0.5 } };
 
     function fire(particleRatio: number, opts: object) {
-      confetti(
-        Object.assign({}, defaults, opts, { particleCount: Math.floor(count * particleRatio) }),
-      );
+      confetti(Object.assign({}, defaults, opts, { particleCount: Math.floor(count * particleRatio) }));
     }
 
     fire(0.25, {

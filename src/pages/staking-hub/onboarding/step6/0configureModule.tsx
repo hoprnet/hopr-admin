@@ -270,7 +270,8 @@ export default function ConfigureModule(props?: {
               timeout: null,
             },
             toastPayload: {
-              message: `Multisig transaction not executed. ${JSON.stringify(e)}`, type: 'error', 
+              message: `Multisig transaction not executed. ${JSON.stringify(e)}`,
+              type: 'error',
             },
             dispatch,
           });

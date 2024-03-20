@@ -118,7 +118,8 @@ export default function JoinWaitListStep() {
             target="_blank"
             rel="noreferrer"
             style={{
-              color: '#007bff', textDecoration: 'underline', 
+              color: '#007bff',
+              textDecoration: 'underline',
             }}
           >
             FAQ
