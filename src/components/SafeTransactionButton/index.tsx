@@ -37,6 +37,7 @@ export default function SafeTransactionButton(props: SafeButtonProps) {
 
   useEffect(() => {
     if (props.safeInfo) {
+      set_indexerDidNotWork(false)
       set_userCanSkipProposal(getUserCanSkipProposal(props.safeInfo));
     } else {
       set_indexerDidNotWork(true)

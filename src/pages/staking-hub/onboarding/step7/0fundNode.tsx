@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Address, parseUnits } from 'viem';
+import { Address, parseUnits, getAddress } from 'viem';
 import { MINIMUM_XDAI_TO_FUND_NODE } from '../../../../../config';
 import GrayButton from '../../../../future-hopr-lib-components/Button/gray';
 import { useEthersSigner } from '../../../../hooks';
@@ -91,8 +91,8 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
 
   // local states
   const [xdaiValue, set_xdaiValue] = useState<string>('');
-  const [error, set_error] = useState<boolean>(false);
-  const [errorMessage, set_errorMessage] = useState<string | null>(null);
+  const [lowBalanceError, set_lowBalanceError] = useState<boolean>(false);
+  const [txError, set_txError] = useState<string | null>(null);
   const [transactionHash, set_transactionHash] = useState<Address>();
   const [isWalletLoading, set_isWalletLoading] = useState(false);
   const signer = useEthersSigner();
@@ -100,14 +100,15 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
   const nodeAddress:string = props?.nodeAddress ? props.nodeAddress : nodeAddressFromStore;
 
   const createAndExecuteTx = () => {
+    if(txError) set_txError(null);
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
     set_isWalletLoading(true);
     dispatch(
       safeActionsAsync.createAndExecuteSafeTransactionThunk({
         signer,
-        safeAddress: selectedSafeAddress,
+        safeAddress: getAddress(selectedSafeAddress),
         safeTransactionData: {
-          to: nodeAddress,
+          to: getAddress(nodeAddress),
           value: parseUnits(xdaiValue as `${number}`, 18).toString(),
           data: '0x',
         },
@@ -122,33 +123,35 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
           dispatch(stakingHubActions.setOnboardingStep(15));
         }
       })
-      .catch(() => {
-        set_error(true);
+      .catch((e) => {
+        if(e.message) set_txError(`ERROR: ${JSON.stringify(e.message)}`)
+        else set_txError(`ERROR: ${JSON.stringify(e)}`)
       })
       .finally(() => set_isWalletLoading(false));
   };
 
   const signTx = () => {
+    if(txError) set_txError(null);
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
     set_isWalletLoading(true);
     dispatch(
       safeActionsAsync.createSafeTransactionThunk({
         signer,
-        safeAddress: selectedSafeAddress,
+        safeAddress: getAddress(selectedSafeAddress),
         safeTransactionData: {
-          to: nodeAddress,
+          to: getAddress(nodeAddress),
           value: parseUnits(xdaiValue as `${number}`, 18).toString(),
           data: '0x',
         },
       }),
     )
       .unwrap()
-      .catch((error) => {
-        console.warn(error);
-        if(JSON.stringify(error).includes('user rejected transaction')){
-          set_errorMessage('User rejected transaction');
-        }
-        set_error(true);
+      .catch((e) => {
+        console.warn(e);
+        if(JSON.stringify(e).includes('user rejected transaction')){
+          set_txError('User rejected transaction');
+        } else if(e.message) set_txError(`ERROR: ${JSON.stringify(e.message)}`)
+        else set_txError(`ERROR: ${JSON.stringify(e)}`);
       })
       .finally(() => {
         set_isWalletLoading(false);
@@ -158,10 +161,9 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
 
   useEffect(() => {
     if (safeXDaiBalance !== null && parseUnits(xdaiValue, 18) > parseUnits(safeXDaiBalance, 18)) {
-      set_error(true);
-      set_errorMessage('You do not have enough xDai in Safe');
+      set_lowBalanceError(true);
     } else {
-      set_error(false);
+      set_lowBalanceError(false);
     }
   }, [xdaiValue]);
 
@@ -179,7 +181,7 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
             onClick: createAndExecuteTx,
             pending: isExecutionLoading || isWalletLoading,
             disabled:
-              error ||
+              lowBalanceError ||
               xdaiValue === '' ||
               parseUnits(xdaiValue, 18) === parseUnits('0', 18) ||
               xdaiValue.includes('-') ||
@@ -190,7 +192,7 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
             onClick: signTx,
             pending: isWalletLoading,
             disabled:
-              error ||
+              lowBalanceError ||
               xdaiValue === '' ||
               parseUnits(xdaiValue, 18) === parseUnits('0', 18) ||
               xdaiValue.includes('-') ||
@@ -238,8 +240,8 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
                 pattern: '[0-9]*',
               }}
               InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
-              helperText={error ? errorMessage : `min. ${MINIMUM_XDAI_TO_FUND_NODE}`}
-              error={!!xdaiValue && error}
+              helperText={lowBalanceError ? 'You do not have enough xDai in Safe.' : `min. ${MINIMUM_XDAI_TO_FUND_NODE}`}
+              error={!!xdaiValue && lowBalanceError}
             />
             <StyledCoinLabel>xDAI</StyledCoinLabel>
             <StyledGrayButton onClick={() => set_xdaiValue('1')}>MIN</StyledGrayButton>
@@ -250,6 +252,7 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
           confirmations={1}
           transactionHash={transactionHash}
           feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
+          errorMessage={txError}
         />
       </div>
     </StepContainer>
