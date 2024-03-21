@@ -76,7 +76,7 @@ export default function FundNode() {
   // local states
   const [xdaiValue, set_xdaiValue] = useState<string>('');
   const [isWalletLoading, set_isWalletLoading] = useState<boolean>();
-  const [error, set_error] = useState<boolean>(false);
+  const [lowBalanceError, set_lowBalanceError] = useState<boolean>(false);
   const [txError, set_txError] = useState<string | null>(null);
   const [transactionHash, set_transactionHash] = useState<Address>()
   const signer = useEthersSigner();
@@ -84,7 +84,7 @@ export default function FundNode() {
   const nodeAddress = nodeAddressFromParams ? nodeAddressFromParams : nodeAddressFromTheStore;
 
   const createAndExecuteTx = async () => {
-    if(txError) set_txError(null)
+    if(txError) set_txError(null);
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
     set_isWalletLoading(true);
 
@@ -146,9 +146,9 @@ export default function FundNode() {
     if (safeXDaiBalance !== null &&
       parseUnits(xdaiValue, 18) > parseUnits(safeXDaiBalance, 18)
     ) {
-      set_error(true);
+      set_lowBalanceError(true);
     } else {
-      set_error(false);
+      set_lowBalanceError(false);
     }
   }, [xdaiValue]);
 
@@ -170,13 +170,13 @@ export default function FundNode() {
             executeOptions={{
               onClick: createAndExecuteTx,
               pending: isWalletLoading,
-              disabled: error || xdaiValue === '' || parseUnits(xdaiValue, 18) === parseUnits('0', 18) || xdaiValue.includes('-') || xdaiValue.includes('+'),
+              disabled: lowBalanceError || xdaiValue === '' || parseUnits(xdaiValue, 18) === parseUnits('0', 18) || xdaiValue.includes('-') || xdaiValue.includes('+'),
               buttonText: 'FUND',
             }}
             signOptions={{
               onClick: signTx,
               pending: isWalletLoading,
-              disabled: error || xdaiValue === '' || parseUnits(xdaiValue, 18) === parseUnits('0', 18) || xdaiValue.includes('-') || xdaiValue.includes('+'),
+              disabled: lowBalanceError || xdaiValue === '' || parseUnits(xdaiValue, 18) === parseUnits('0', 18) || xdaiValue.includes('-') || xdaiValue.includes('+'),
               buttonText: 'SIGN FUND',
             }}
             safeInfo={safeInfo}
@@ -221,8 +221,8 @@ export default function FundNode() {
                   pattern: '[0-9]*',
                 }}
                 InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
-                helperText={error ? 'You do not have enough xDai in Safe.' : `min. ${MINIMUM_XDAI_TO_FUND_NODE}`}
-                error={!!xdaiValue && error}
+                helperText={lowBalanceError ? 'You do not have enough xDai in Safe.' : `min. ${MINIMUM_XDAI_TO_FUND_NODE}`}
+                error={!!xdaiValue && lowBalanceError}
               />
               <StyledCoinLabel>xDAI</StyledCoinLabel>
             </StyledInputGroup>
