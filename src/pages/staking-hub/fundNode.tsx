@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Address, parseUnits } from 'viem';
+import { Address, parseUnits, getAddress } from 'viem';
 import { MINIMUM_XDAI_TO_FUND_NODE } from '../../../config';
 import Section from '../../future-hopr-lib-components/Section';
 import { useEthersSigner } from '../../hooks';
@@ -77,54 +77,67 @@ export default function FundNode() {
   const [xdaiValue, set_xdaiValue] = useState<string>('');
   const [isWalletLoading, set_isWalletLoading] = useState<boolean>();
   const [error, set_error] = useState<boolean>(false);
+  const [txError, set_txError] = useState<string | null>(null);
   const [transactionHash, set_transactionHash] = useState<Address>()
   const signer = useEthersSigner();
 
   const nodeAddress = nodeAddressFromParams ? nodeAddressFromParams : nodeAddressFromTheStore;
 
   const createAndExecuteTx = async () => {
+    if(txError) set_txError(null)
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
     set_isWalletLoading(true);
 
     await dispatch(
       safeActionsAsync.createAndExecuteSafeTransactionThunk({
         signer,
-        safeAddress: selectedSafeAddress,
+        safeAddress: getAddress(selectedSafeAddress),
         safeTransactionData: {
-          to: nodeAddress,
+          to: getAddress(nodeAddress),
           value: parseUnits(xdaiValue as `${number}`, 18).toString(),
           data: '0x',
         },
       }),
-    ).unwrap().then(res => {
+    ).unwrap()
+    .then(res => {
       set_transactionHash(res as Address)
       setTimeout(() => {
         navigate('/staking/dashboard#node');
       }, 3000)
+    })
+    .catch((e) => {
+      if(e.message) set_txError(`ERROR: ${JSON.stringify(e.message)}`)
+      else set_txError(`ERROR: ${JSON.stringify(e)}`)
     });
     set_isWalletLoading(false);
   };
 
 
   const signTx = async () => {
+    if(txError) set_txError(null)
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
     set_isWalletLoading(true);
 
     await dispatch(
       safeActionsAsync.createSafeTransactionThunk({
         signer,
-        safeAddress: selectedSafeAddress,
+        safeAddress: getAddress(selectedSafeAddress),
         safeTransactionData: {
-          to: nodeAddress,
+          to: getAddress(nodeAddress),
           value: parseUnits(xdaiValue as `${number}`, 18).toString(),
           data: '0x',
         },
       }),
-    ).unwrap().then(res => {
+    ).unwrap()
+    .then(res => {
       set_transactionHash(res as Address)
       setTimeout(() => {
         navigate('/staking/dashboard#node');
       }, 3000)
+    })
+    .catch((e) => {
+      if(e.message) set_txError(`ERROR: ${JSON.stringify(e.message)}`)
+      else set_txError(`ERROR: ${JSON.stringify(e)}`)
     });
     set_isWalletLoading(false);
   };
@@ -198,7 +211,10 @@ export default function FundNode() {
                 size="small"
                 style={{ width: '300px' }}
                 value={xdaiValue}
-                onChange={(e) => set_xdaiValue(e.target.value)}
+                onChange={(e) => {
+                  if(txError) set_txError(null)
+                  set_xdaiValue(e.target.value);
+                }}
                 type="number"
                 inputProps={{
                   inputMode: 'numeric',
@@ -216,6 +232,7 @@ export default function FundNode() {
             isWalletLoading={isWalletLoading}
             transactionHash={transactionHash}
             feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
+            errorMessage={txError}
           />
         </div>
       </StepContainer>

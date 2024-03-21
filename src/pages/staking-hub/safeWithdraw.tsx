@@ -197,6 +197,10 @@ function SafeWithdraw() {
             set_proposedTxHash(transactionResponse);
             navigate('/staking/dashboard#transactions');
           })
+          .catch((e) => {
+            if(e.message) set_error(`ERROR: ${JSON.stringify(e.message)}`)
+            else set_error(`ERROR: ${JSON.stringify(e)}`)
+          })
           .finally(() => {
             set_isWalletLoading(false);
           });
@@ -216,6 +220,10 @@ function SafeWithdraw() {
             set_proposedTxHash(safeTxHash);
             navigate('/staking/dashboard#transactions');
           })
+          .catch((e) => {
+            if(e.message) set_error(`ERROR: ${JSON.stringify(e.message)}`)
+            else set_error(`ERROR: ${JSON.stringify(e)}`)
+          })
           .finally(() => {
             set_isWalletLoading(false);
           });
@@ -234,7 +242,7 @@ function SafeWithdraw() {
             signer,
             safeAddress: selectedSafeAddress,
             safeTransactionData: {
-              to: receiver,
+              to: getAddress(receiver),
               value: parsedValue as string,
               data: '0x',
             },
@@ -253,9 +261,9 @@ function SafeWithdraw() {
 
         await dispatch(
           safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
-            data: createSendNftTransactionData(selectedSafeAddress as Address, receiver as Address, Number(nftId)),
+            data: createSendNftTransactionData(getAddress(selectedSafeAddress) as Address, getAddress(receiver) as Address, Number(nftId)),
             signer,
-            safeAddress: selectedSafeAddress,
+            safeAddress: getAddress(selectedSafeAddress),
             smartContractAddress,
           }),
         )
@@ -274,9 +282,9 @@ function SafeWithdraw() {
         const parsedValue = Number(ethValue) ? parseUnits(ethValue as `${number}`, 18).toString() : BigInt(0);
         return dispatch(
           safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
-            data: createSendTokensTransactionData(receiver as `0x${string}`, parsedValue as bigint),
+            data: createSendTokensTransactionData(getAddress(receiver) as `0x${string}`, parsedValue as bigint),
             signer,
-            safeAddress: selectedSafeAddress,
+            safeAddress: getAddress(selectedSafeAddress),
             smartContractAddress,
           }),
         )

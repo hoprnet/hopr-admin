@@ -420,7 +420,6 @@ const createSafeTransactionThunk = createAsyncThunk<
           "credentials": "omit"
         });
         const checkRezJson = await checkRez.json();
-        console.log('checkRezJson', checkRezJson);
         if (checkRezJson) {
           throw {
             error: e,
