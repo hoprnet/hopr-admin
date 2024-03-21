@@ -373,7 +373,7 @@ const createSafeTransactionThunk = createAsyncThunk<
       // gets next nonce considering pending txs
       const nextSafeNonce = await safeApi.getNextNonce(payload.safeAddress);
       // create safe transaction
-      console.log('WithQ payload.safeTransactionData', payload.safeTransactionData)
+      console.log('safeTransactionData', payload.safeTransactionData)
       const safeTransaction = await safeSDK.createTransaction({ safeTransactionData: {
         ...payload.safeTransactionData,
         nonce: nextSafeNonce,
@@ -389,13 +389,48 @@ const createSafeTransactionThunk = createAsyncThunk<
         senderSignature: signature.data,
       })
       // propose safe transaction
-      await safeApi.proposeTransaction({
-        safeAddress: payload.safeAddress,
-        safeTransactionData: safeTransaction.data,
-        safeTxHash,
-        senderAddress,
-        senderSignature: signature.data,
-      });
+      try {
+        await safeApi.proposeTransaction({
+          safeAddress: payload.safeAddress,
+          safeTransactionData: safeTransaction.data,
+          safeTxHash,
+          senderAddress,
+          senderSignature: signature.data,
+        })
+      } catch (e) {
+        // safeApi doesn't return error message from the HTTP request
+        // Check what went wrong
+
+        const body = {
+          ...safeTransaction.data,
+          contractTransactionHash: safeTxHash,
+          sender: senderAddress,
+          signature: signature.data,
+        }
+
+        const checkRez = await fetch(`${SAFE_SERVICE_URL}/api/v1/safes/${payload.safeAddress}/multisig-transactions/`, {
+          "headers": {
+            "accept": "application/json",
+            "accept-language": "en-US,en;q=0.9,pl;q=0.8",
+            "content-type": "application/json",
+          },
+          "body": JSON.stringify(body),
+          "method": "POST",
+          "mode": "cors",
+          "credentials": "omit"
+        });
+        const checkRezJson = await checkRez.json();
+        console.log('checkRezJson', checkRezJson);
+        if (checkRezJson) {
+          throw {
+            error: e,
+            message: checkRezJson
+          }
+        } else {
+          throw e;
+        }
+      }
+
       // re fetch all txs
       dispatch(
         getPendingSafeTransactionsThunk({
@@ -405,6 +440,9 @@ const createSafeTransactionThunk = createAsyncThunk<
       );
       return safeTxHash;
     } catch (e) {
+
+
+      console.log('e', e)
       if (e instanceof Error) {
         return rejectWithValue(e.message);
       }
@@ -460,7 +498,7 @@ const createSafeContractTransactionThunk = createAsyncThunk<
         operation: payload.operation ?? OperationType.Call,
         value: '0',
       };
-      console.log('WithQ safeTransactionData', safeTransactionData)
+      console.log('safeTransactionData', safeTransactionData)
       const safeTxHash = await dispatch(
         createSafeTransactionThunk({
           signer,

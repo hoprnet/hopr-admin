@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Address, parseUnits } from 'viem';
+import { Address, parseUnits, getAddress } from 'viem';
 import { GNOSIS_CHAIN_HOPR_BOOST_NFT, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config'
 import { useEthersSigner } from '../../hooks';
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -134,6 +134,7 @@ function SafeWithdraw() {
   const [receiver, set_receiver] = useState<string>('');
   const [isWalletLoading, set_isWalletLoading] = useState<boolean>();
   const [transactionHash, set_transactionHash] = useState<Address>();
+  const [error, set_error] = useState<string | null>(null);
   const [token, set_token] = useState<keyof typeof SUPPORTED_TOKENS>(
     tokenParam && tokenParam in SUPPORTED_TOKENS ? (tokenParam as keyof typeof SUPPORTED_TOKENS) : 'xdai',
   );
@@ -151,6 +152,7 @@ function SafeWithdraw() {
   }, [pendingTransactions, proposedTxHash, address]);
 
   const proposeTx = () => {
+    set_error(null);
     if (signer && selectedSafeAddress) {
       set_isWalletLoading(true);
 
@@ -161,7 +163,7 @@ function SafeWithdraw() {
             signer,
             safeAddress: selectedSafeAddress,
             safeTransactionData: {
-              to: receiver,
+              to: getAddress(receiver),
               value: parsedValue as string,
               data: '0x',
             },
@@ -172,6 +174,10 @@ function SafeWithdraw() {
             set_proposedTxHash(safeTxHash);
             navigate('/staking/dashboard#transactions');
           })
+          .catch((e) => {
+            if(e.message) set_error(`ERROR: ${JSON.stringify(e.message)}`)
+            else set_error(`ERROR: ${JSON.stringify(e)}`)
+          })
           .finally(() => {
             set_isWalletLoading(false);
           });
@@ -180,9 +186,9 @@ function SafeWithdraw() {
         const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
         return dispatch(
           safeActionsAsync.createSafeContractTransactionThunk({
-            data: createSendNftTransactionData(selectedSafeAddress as Address, receiver as Address, Number(nftId)),
+            data: createSendNftTransactionData(getAddress(selectedSafeAddress) as Address, getAddress(receiver) as Address, Number(nftId)),
             signer,
-            safeAddress: selectedSafeAddress,
+            safeAddress: getAddress(selectedSafeAddress),
             smartContractAddress,
           }),
         )
@@ -199,9 +205,9 @@ function SafeWithdraw() {
         const parsedValue = Number(ethValue) ? parseUnits(ethValue as `${number}`, 18).toString() : BigInt(0);
         return dispatch(
           safeActionsAsync.createSafeContractTransactionThunk({
-            data: createSendTokensTransactionData(receiver as `0x${string}`, parsedValue as bigint),
+            data: createSendTokensTransactionData(getAddress(receiver) as `0x${string}`, parsedValue as bigint),
             signer,
-            safeAddress: selectedSafeAddress,
+            safeAddress: getAddress(selectedSafeAddress),
             smartContractAddress,
           }),
         )
@@ -218,6 +224,7 @@ function SafeWithdraw() {
   };
 
   const createAndExecuteTx = async () => {
+    set_error(null);
     if (signer && selectedSafeAddress) {
       set_isWalletLoading(true);
       if (token === 'xdai') {
@@ -337,6 +344,7 @@ function SafeWithdraw() {
   };
 
   const handleChangeNftId = (event: SelectChangeEvent<unknown>) => {
+    if(error) set_error(null);
     const value = event.target.value as string;
     if (value) {
       set_nftId(value);
@@ -401,7 +409,10 @@ function SafeWithdraw() {
                   placeholder="-"
                   size="small"
                   value={receiver}
-                  onChange={(e) => set_receiver(e.target.value)}
+                  onChange={(e) => {
+                    if(error) set_error(null);
+                    set_receiver(e.target.value);
+                  }}
                   InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
                 />
                 <StyledCoinLabel>Receiver</StyledCoinLabel>
@@ -430,7 +441,10 @@ function SafeWithdraw() {
                     placeholder="-"
                     size="small"
                     value={ethValue}
-                    onChange={(e) => set_ethValue(e.target.value)}
+                    onChange={(e) => {
+                      if(error) set_error(null);
+                      set_ethValue(e.target.value)
+                    }}
                     inputProps={{
                       inputMode: 'numeric',
                       pattern: '[0-9]*',
@@ -458,6 +472,7 @@ function SafeWithdraw() {
             isWalletLoading={isWalletLoading}
             transactionHash={transactionHash}
             feedbackTexts={{ loading: 'Please wait while we confirm the transaction...' }}
+            errorMessage={error}
           />
           <StyledButtonGroup>
             <SafeTransactionButton

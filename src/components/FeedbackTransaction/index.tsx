@@ -13,17 +13,22 @@ const FeedbackContainer = styled.div`
   align-items: center;
   color: #000050;
   gap: 1rem;
+  &.error {
+    color: #9b0000;
+  }
 `;
 
 export const FeedbackTransaction = ({
   isWalletLoading,
   transactionHash,
   confirmations,
+  errorMessage,
   feedbackTexts,
 }: {
   isWalletLoading?: boolean;
   transactionHash?: Address;
   confirmations: number;
+  errorMessage?: string | null;
   feedbackTexts: {
     loading: string;
     idle?: string;
@@ -31,10 +36,15 @@ export const FeedbackTransaction = ({
     error?: string;
   };
 }) => {
-  const { status } = useWaitForTransaction({
+  let { status } = useWaitForTransaction({
     confirmations,
     hash: transactionHash,
   });
+
+  if(errorMessage) {
+    status = 'error';
+    feedbackTexts.error = errorMessage;
+  }
 
   if (isWalletLoading) {
     return <WalletFeedback />
@@ -85,7 +95,7 @@ const TransactionFeedbackText = ({
       {feedbackTexts.success}
     </FeedbackContainer>;
   } else if (status === 'error' &&  feedbackTexts.error) {
-    return <FeedbackContainer>
+    return <FeedbackContainer className='error'>
       {feedbackTexts.error}
     </FeedbackContainer>;
   }
