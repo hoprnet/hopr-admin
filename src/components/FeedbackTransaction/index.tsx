@@ -16,6 +16,9 @@ const FeedbackContainer = styled.div`
   &.error {
     color: #9b0000;
   }
+  p {
+    overflow-wrap: anywhere;
+  }
 `;
 
 export const FeedbackTransaction = ({
@@ -92,11 +95,11 @@ const TransactionFeedbackText = ({
     );
   } else if (status === 'success' && feedbackTexts.success) {
     return <FeedbackContainer>
-      {feedbackTexts.success}
+      <p>{feedbackTexts.success}</p>
     </FeedbackContainer>;
   } else if (status === 'error' &&  feedbackTexts.error) {
     return <FeedbackContainer className='error'>
-      {feedbackTexts.error}
+      <p>{feedbackTexts.error}</p>
     </FeedbackContainer>;
   }
 
