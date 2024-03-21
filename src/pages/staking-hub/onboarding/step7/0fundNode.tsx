@@ -240,8 +240,8 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
                 pattern: '[0-9]*',
               }}
               InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
-              helperText={error && `min. ${MINIMUM_XDAI_TO_FUND_NODE}`}
-              error={!!xdaiValue && error}
+              helperText={lowBalanceError ? 'You do not have enough xDai in Safe.' : `min. ${MINIMUM_XDAI_TO_FUND_NODE}`}
+              error={!!xdaiValue && lowBalanceError}
             />
             <StyledCoinLabel>xDAI</StyledCoinLabel>
             <StyledGrayButton onClick={() => set_xdaiValue('1')}>MIN</StyledGrayButton>
