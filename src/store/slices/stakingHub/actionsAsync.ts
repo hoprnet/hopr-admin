@@ -423,7 +423,7 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
                 return 16;
               }
               console.log('[Onboarding check] step: 15');
-              return 14;
+              return 15;
             }
             console.log('[Onboarding check] step: 14');
             return 14;
