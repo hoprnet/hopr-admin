@@ -151,7 +151,7 @@ function SafeWithdraw() {
     }
   }, [pendingTransactions, proposedTxHash, address]);
 
-  const proposeTx = () => {
+  const signTx = () => {
     set_error(null);
     if (signer && selectedSafeAddress) {
       set_isWalletLoading(true);
@@ -486,7 +486,7 @@ function SafeWithdraw() {
             <SafeTransactionButton
               safeInfo={safeInfo}
               signOptions={{
-                onClick: proposeTx,
+                onClick: signTx,
                 disabled: !!getErrorsForApproveButton().length || isWalletLoading,
                 pending: isWalletLoading,
                 tooltipText: isWalletLoading ? 'Signing transaction' : getErrorsForApproveButton().at(0),
