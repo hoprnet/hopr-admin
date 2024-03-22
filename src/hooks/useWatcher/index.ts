@@ -62,6 +62,15 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
       });
     }, intervalDuration);
 
+    const watchMetricsInterval = setInterval(() => {
+      if (!apiEndpoint || !apiToken) return;
+      return dispatch(
+        nodeActionsAsync.getPrometheusMetricsThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+    }, intervalDuration);
 
     const watchMessagesInterval = setInterval(() => {
       if (!apiEndpoint || !apiToken) return;
@@ -98,6 +107,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
       clearInterval(watchNodeInfoInterval);
       clearInterval(watchNodeBalancesInterval);
       clearInterval(watchMessagesInterval);
+      clearInterval(watchMetricsInterval);
     };
   }, [connected, apiEndpoint, apiToken, prevNodeBalances, prevNodeInfo, prevChannels]);
 

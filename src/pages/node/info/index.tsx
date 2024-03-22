@@ -112,7 +112,12 @@ function InfoPage() {
         apiToken,
       })
     );
-
+    dispatch(
+      actionsAsync.getPrometheusMetricsThunk({
+        apiEndpoint,
+        apiToken,
+      })
+    );
   };
 
   // This will allow us to improve readability on the reloading prop for SubpageTitle
