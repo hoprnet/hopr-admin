@@ -603,9 +603,10 @@ const closeChannelThunk = createAsyncThunk<
   }) => {
     try {
       const res = await closeChannel(payload);
-      dispatch(getChannelsThunk(payload))
+      dispatch(getChannelsThunk(payload));
       return res;
     } catch (e) {
+      console.error(e)
       if (e instanceof APIError) {
         return rejectWithValue({
           status: e.status,
@@ -616,7 +617,12 @@ const closeChannelThunk = createAsyncThunk<
   },
   { condition: (_payload, { getState }) => {
     const channelId = _payload.channelId;
-    const isClosing = !!getState().node.channels.parsed.outgoing[channelId].isClosing;
+    let isClosing = false;
+    if(!!getState().node.channels.parsed.outgoing[channelId]) {
+      isClosing = !!getState().node.channels.parsed.outgoing[channelId].isClosing
+    } else if (!!getState().node.channels.parsed.incoming[channelId]) {
+      isClosing = !!getState().node.channels.parsed.incoming[channelId].isClosing
+    }
       if (isClosing) {
         return false;
       }
@@ -1070,12 +1076,20 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       // Parse the data
 
       // Save isClosing status
-      let areClosing = [];
+      let areClosingOutgoing = [];
+      let areClosingIncoming = [];
       let outgoingIds = Object.keys(state.channels.parsed.outgoing);
+      let incomingIds = Object.keys(state.channels.parsed.incoming);
       for(let i = 0; i < outgoingIds.length; i++) {
         let channelId = outgoingIds[i];
         if(state.channels.parsed.outgoing[channelId].isClosing) {
-          areClosing.push(channelId);
+          areClosingOutgoing.push(channelId);
+        }
+      }
+      for(let i = 0; i < incomingIds.length; i++) {
+        let channelId = incomingIds[i];
+        if(state.channels.parsed.incoming[channelId].isClosing) {
+          areClosingIncoming.push(channelId);
         }
       }
 
@@ -1094,13 +1108,13 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
             balance: action.payload.outgoing[i].balance,
             peerAddress: nodeAddress,
             status: action.payload.outgoing[i].status,
-            isClosing: areClosing.includes(channelId)
+            isClosing: areClosingOutgoing.includes(channelId)
           };
         } else {
           state.channels.parsed.outgoing[channelId].balance = action.payload.outgoing[i].balance;
           state.channels.parsed.outgoing[channelId].peerAddress = nodeAddress;
           state.channels.parsed.outgoing[channelId].status = action.payload.outgoing[i].status;
-          state.channels.parsed.outgoing[channelId].isClosing = areClosing.includes(channelId)
+          state.channels.parsed.outgoing[channelId].isClosing = areClosingOutgoing.includes(channelId)
         }
       }
 
@@ -1117,11 +1131,13 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
             status: action.payload.incoming[i].status,
             tickets: 0,
             ticketBalance: '0',
+            isClosing: areClosingIncoming.includes(channelId)
           };
         } else {
           state.channels.parsed.incoming[channelId].balance = action.payload.incoming[i].balance;
           state.channels.parsed.incoming[channelId].peerAddress = nodeAddress;
           state.channels.parsed.incoming[channelId].status = action.payload.incoming[i].status;
+          state.channels.parsed.incoming[channelId].isClosing = areClosingIncoming.includes(channelId)
         }
       }
 
@@ -1135,17 +1151,20 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   //closeChannel
   builder.addCase(closeChannelThunk.pending, (state, action) => {
     const channelId = action.meta.arg.channelId;
-    state.channels.parsed.outgoing[channelId].isClosing = true;
+    if(state.channels.parsed.outgoing[channelId]) state.channels.parsed.outgoing[channelId].isClosing = true;
+    if(state.channels.parsed.incoming[channelId]) state.channels.parsed.incoming[channelId].isClosing = true;
   });
   builder.addCase(closeChannelThunk.fulfilled, (state, action) => {
     if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     const channelId = action.meta.arg.channelId;
-    state.channels.parsed.outgoing[channelId].isClosing = false;
+    if(state.channels.parsed.outgoing[channelId]) state.channels.parsed.outgoing[channelId].isClosing = false;
+    if(state.channels.parsed.incoming[channelId]) state.channels.parsed.incoming[channelId].isClosing = false;
   });
   builder.addCase(closeChannelThunk.rejected, (state, action) => {
     if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
     const channelId = action.meta.arg.channelId;
-    state.channels.parsed.outgoing[channelId].isClosing = false;
+    if(state.channels.parsed.outgoing[channelId]) state.channels.parsed.outgoing[channelId].isClosing = false;
+    if(state.channels.parsed.incoming[channelId]) state.channels.parsed.incoming[channelId].isClosing = false;
   });
   // getPeers
   builder.addCase(getPeersThunk.fulfilled, (state, action) => {

@@ -5,12 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import { exportToCsv } from '../../utils/helpers';
 import { utils } from 'ethers';
 import { HOPR_TOKEN_USED } from '../../../config';
+import { sendNotification } from '../../hooks/useWatcher/notifications';
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
 import { SubpageTitle } from '../../components/SubpageTitle';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
+import CloseChannelIcon from '../../future-hopr-lib-components/Icons/CloseChannel';
 
 // Modals
 import { PingModal } from '../../components/Modal/node/PingModal';
@@ -29,7 +31,7 @@ function ChannelsPage() {
   const channelsIncomingObject = useAppSelector((store) => store.node.channels.parsed.incoming);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
   const aliases = useAppSelector((store) => store.node.aliases.data)
-  const peers = useAppSelector((store) => store.node.peers.data)
+  const currentApiEndpoint = useAppSelector((store) => store.node.apiEndpoint);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const nodeAddressToPeerIdLink = useAppSelector((store) => store.node.links.nodeAddressToPeerId);
   const nodeAddressToOutgoingChannelLink = useAppSelector((store) => store.node.links.nodeAddressToOutgoingChannel);
@@ -154,10 +156,42 @@ function ChannelsPage() {
       key: 'actions',
       name: 'Actions',
       search: false,
-      width: '168px',
-      maxWidth: '168px',
+      width: '188px',
+      maxWidth: '188px',
     },
   ];
+
+  const handleCloseChannel = (channelId: string) => {
+    const usedApiEndpoint = loginData.apiEndpoint;
+    console.log('handleCloseChannel', channelId)
+    dispatch(
+      actionsAsync.closeChannelThunk({
+        apiEndpoint: loginData.apiEndpoint!,
+        apiToken: loginData.apiToken!,
+        channelId: channelId,
+      })
+    )
+      .unwrap()
+      .then(() => {
+        handleRefresh();
+      })
+      .catch((e) => {
+        console.error('handleCloseChannel', e)
+        if(usedApiEndpoint === currentApiEndpoint) {
+          const msg = `Closing of incomming channel ${channelId} failed`;
+          sendNotification({
+            notificationPayload: {
+              source: 'node',
+              name: msg,
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: msg },
+            dispatch,
+          });
+        }
+      });
+  };
 
   const parsedTableData = Object.keys(channelsIncomingObject).map((id, index) => {
     if(!channelsIncomingObject[id].peerAddress || !channelsIncomingObject[id].balance || !channelsIncomingObject[id].status) return;
@@ -195,6 +229,18 @@ function ChannelsPage() {
               peerAddress={channelsIncomingObject[id].peerAddress}
             />
           }
+          <IconButton
+            iconComponent={<CloseChannelIcon />}
+            pending={channelsIncomingObject[id]?.isClosing}
+            tooltipText={
+              <span>
+                CLOSE
+                <br />
+                incoming channel
+              </span>
+            }
+            onClick={() => handleCloseChannel(id)}
+          />
           <SendMessageModal
             peerId={peerId}
             disabled={!peerId}

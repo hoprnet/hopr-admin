@@ -31,18 +31,21 @@ export type ChannelOutgoingType = {
   isClosing?: boolean;
 }
 
+export type ChannelIncomingType = {
+  status?: "Open" | "PendingToClose" | "Closed";
+  balance?: string;
+  peerAddress?: string;
+  tickets: number;
+  ticketBalance: string;
+  isClosing?: boolean;
+}
+
 export type ChannelsParsed = {
   outgoing:  {
     [channelId: string]: ChannelOutgoingType
   },
   incoming: {
-    [channelId: string]: {
-      status?: "Open" | "PendingToClose" | "Closed";
-      balance?: string;
-      peerAddress?: string;
-      tickets: number;
-      ticketBalance: string;
-    }
+    [channelId: string]: ChannelIncomingType
   };
 }
 
