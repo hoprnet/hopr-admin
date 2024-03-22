@@ -124,12 +124,12 @@ function AliasesPage() {
           <PingModal
             peerId={peerId}
             disabled={peerId === hoprAddress}
-            tooltip={`You can't ping yourself`}
+            tooltip={peerId === hoprAddress ? `You can't ping yourself` : undefined }
           />
           <OpenChannelModal
             peerAddress={getNodeAddressByPeerId(peerId)}
             disabled={peerId === hoprAddress}
-            tooltip={`You can't open a channel to yourself`}
+            tooltip={peerId === hoprAddress ? `You can't ping yourself` : undefined }
           />
           <SendMessageModal
             peerId={peerId}
