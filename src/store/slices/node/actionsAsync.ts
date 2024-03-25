@@ -623,9 +623,9 @@ const closeChannelThunk = createAsyncThunk<
     } else if (!!getState().node.channels.parsed.incoming[channelId]) {
       isClosing = !!getState().node.channels.parsed.incoming[channelId].isClosing
     }
-      if (isClosing) {
-        return false;
-      }
+    if (isClosing) {
+      return false;
+    }
   } },
 );
 

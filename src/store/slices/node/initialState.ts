@@ -40,13 +40,18 @@ export type ChannelIncomingType = {
   isClosing?: boolean;
 }
 
+export type ChannelsOutgoingType = {
+  [channelId: string]: ChannelOutgoingType
+}
+
+
+export type ChannelsIncomingType = {
+  [channelId: string]: ChannelIncomingType
+}
+
 export type ChannelsParsed = {
-  outgoing:  {
-    [channelId: string]: ChannelOutgoingType
-  },
-  incoming: {
-    [channelId: string]: ChannelIncomingType
-  };
+  outgoing:  ChannelsOutgoingType,
+  incoming: ChannelsIncomingType;
 }
 
 type WebsocketConnectionStatus = 'connecting' | 'connected' | 'error' | null;

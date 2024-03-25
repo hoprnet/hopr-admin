@@ -30,7 +30,8 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   const activeNodeInfo = useAppSelector(store => store.app.configuration.notifications.nodeInfo)
   const activePendingSafeTransaction = useAppSelector(store => store.app.configuration.notifications.pendingSafeTransaction)
   // redux previous states, this can be updated from anywhere in the app
-  const prevChannels = useAppSelector((store) => store.app.previousStates.prevChannels);
+  const prevOutgoingChannels = useAppSelector((store) => store.app.previousStates.prevOutgoingChannels);
+  const prevIncomingChannels = useAppSelector((store) => store.app.previousStates.prevIncomingChannels);
   const prevNodeBalances = useAppSelector((store) => store.app.previousStates.prevNodeBalances);
   const prevNodeInfo = useAppSelector((store) => store.app.previousStates.prevNodeInfo);
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
@@ -109,7 +110,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
       clearInterval(watchMessagesInterval);
       clearInterval(watchMetricsInterval);
     };
-  }, [connected, apiEndpoint, apiToken, prevNodeBalances, prevNodeInfo, prevChannels]);
+  }, [connected, apiEndpoint, apiToken, prevNodeBalances, prevNodeInfo, prevOutgoingChannels]);
 
   // safe watchers
   const safeIndexed = useAppSelector((store) => store.safe.info.safeIndexed);
@@ -171,29 +172,30 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   useEffect(() => {
     if(!firstChannelsCallWasSuccesfull) return;
 
-    if(!prevChannels) {
+    if(!prevOutgoingChannels) {
       const channelsOutgoingIds = Object.keys(channels.outgoing);
       if(
         channelsOutgoingIds.length !==0 && //true
         Object.keys(channels.outgoing[channelsOutgoingIds[0]]).includes('status') // If the channels are populated more than with tickets data
       ) {
-        dispatch(appActions.setPrevChannels(channels));
+        dispatch(appActions.setPrevOutgoingChannels(channels.outgoing));
       };
-      return
+      return;
     };
 
     if(activeChannels) {
-      const changes = checkHowChannelsHaveChanged(prevChannels, channels);
-      if(changes.length !== 0) {
-        console.log('changes channels', changes)
-        for(let i = 0; i < changes.length; i++){
+
+      const changesOutgoing = checkHowChannelsHaveChanged(prevOutgoingChannels, channels.outgoing);
+      if(changesOutgoing.length !== 0) {
+        console.log('changes channels', changesOutgoing)
+        for(let i = 0; i < changesOutgoing.length; i++){
           let notificationText: null | string = null;
-          if(changes[i].status === "Open") {
-            notificationText = `Channel to ${changes[i].peerAddress} opened.`
-          } else if(changes[i].status === "PendingToClose") {
-            notificationText = `Channel to ${changes[i].peerAddress} is pending to close.`
-          } else if(changes[i].status === "Closed") {
-            notificationText = `Channel to ${changes[i].peerAddress} closed.`
+          if(changesOutgoing[i].status === "Open") {
+            notificationText = `Channel to ${changesOutgoing[i].peerAddress} opened.`
+          } else if(changesOutgoing[i].status === "PendingToClose") {
+            notificationText = `Channel to ${changesOutgoing[i].peerAddress} is pending to close.`
+          } else if(changesOutgoing[i].status === "Closed") {
+            notificationText = `Channel to ${changesOutgoing[i].peerAddress} closed.`
           }
           if (notificationText) {
             sendNotification({
@@ -208,9 +210,86 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
             });
           }
         }
-        dispatch(appActions.setPrevChannels(channels));
+        dispatch(appActions.setPrevOutgoingChannels(channels.outgoing));
       }
+
     }
-  }, [activeChannels, firstChannelsCallWasSuccesfull, channels, prevChannels]);
+  }, [activeChannels, firstChannelsCallWasSuccesfull, channels, prevOutgoingChannels]);
+
+  // useEffect(() => {
+  //   if(!firstChannelsCallWasSuccesfull) return;
+
+  //   if(!prevOutgoingChannels) {
+  //     const channelsOutgoingIds = Object.keys(channels.outgoing);
+  //     if(
+  //       channelsOutgoingIds.length !==0 && //true
+  //       Object.keys(channels.outgoing[channelsOutgoingIds[0]]).includes('status') // If the channels are populated more than with tickets data
+  //     ) {
+  //       dispatch(appActions.setPrevOutgoingChannels(channels));
+  //     };
+  //     return
+  //   };
+
+  //   if(activeChannels) {
+
+  //     const changesOutgoing = checkHowChannelsHaveChanged(prevOutgoingChannels, channels.outgoing);
+  //     if(changesOutgoing.length !== 0) {
+  //       console.log('changes channels', changesOutgoing)
+  //       for(let i = 0; i < changesOutgoing.length; i++){
+  //         let notificationText: null | string = null;
+  //         if(changesOutgoing[i].status === "Open") {
+  //           notificationText = `Channel to ${changesOutgoing[i].peerAddress} opened.`
+  //         } else if(changesOutgoing[i].status === "PendingToClose") {
+  //           notificationText = `Channel to ${changesOutgoing[i].peerAddress} is pending to close.`
+  //         } else if(changesOutgoing[i].status === "Closed") {
+  //           notificationText = `Channel to ${changesOutgoing[i].peerAddress} closed.`
+  //         }
+  //         if (notificationText) {
+  //           sendNotification({
+  //             notificationPayload: {
+  //               source: 'node',
+  //               name: notificationText,
+  //               url: null,
+  //               timeout: null,
+  //             },
+  //             toastPayload: { message: notificationText },
+  //             dispatch,
+  //           });
+  //         }
+  //       }
+  //       dispatch(appActions.setPrevOutgoingChannels(channels));
+  //     }
+
+
+  //     const changesIncoming = checkHowChannelsHaveChanged(prevIncomingChannels, channels);
+  //     if(changesOutgoing.length !== 0) {
+  //       console.log('changes channels', changesOutgoing)
+  //       for(let i = 0; i < changesOutgoing.length; i++){
+  //         let notificationText: null | string = null;
+  //         if(changesOutgoing[i].status === "Open") {
+  //           notificationText = `Channel to ${changesOutgoing[i].peerAddress} opened.`
+  //         } else if(changesOutgoing[i].status === "PendingToClose") {
+  //           notificationText = `Channel to ${changesOutgoing[i].peerAddress} is pending to close.`
+  //         } else if(changesOutgoing[i].status === "Closed") {
+  //           notificationText = `Channel to ${changesOutgoing[i].peerAddress} closed.`
+  //         }
+  //         if (notificationText) {
+  //           sendNotification({
+  //             notificationPayload: {
+  //               source: 'node',
+  //               name: notificationText,
+  //               url: null,
+  //               timeout: null,
+  //             },
+  //             toastPayload: { message: notificationText },
+  //             dispatch,
+  //           });
+  //         }
+  //       }
+  //       dispatch(appActions.setPrevOutgoingChannels(channels));
+  //     }
+
+  //   }
+  // }, [activeChannels, firstChannelsCallWasSuccesfull, channels, prevIncomingChannels]);
 
 };
