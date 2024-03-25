@@ -25,15 +25,11 @@ type WindowWithEthereum = { ethereum: EthereumProvider };
 const {
   chains,
   publicClient,
-} = configureChains(
-  [gnosis],
-  [publicProvider()],
-  {
-    pollingInterval: 30_000,
-    stallTimeout: 5_000,
-    rank: true,
-  },
-);
+} = configureChains([gnosis], [publicProvider()], {
+  pollingInterval: 30_000,
+  stallTimeout: 5_000,
+  rank: true,
+});
 
 const walletIsInBrowser =
   typeof window !== 'undefined' && typeof (window as unknown as WindowWithEthereum).ethereum !== 'undefined';

@@ -7,7 +7,10 @@ type CodeCopyBoxProps = {
   copy?: string;
 };
 
-const CodeCopyBox = ({ code, copy: copyText }: CodeCopyBoxProps) => {
+const CodeCopyBox = ({
+  code,
+  copy: copyText,
+}: CodeCopyBoxProps) => {
   const [copied, setCopied] = useState(false);
 
   const copy = (copyText: string) => {

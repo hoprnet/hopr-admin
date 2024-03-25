@@ -175,8 +175,8 @@ function SafeWithdraw() {
             navigate('/staking/dashboard#transactions');
           })
           .catch((e) => {
-            if(e.message) set_error(`ERROR: ${JSON.stringify(e.message)}`)
-            else set_error(`ERROR: ${JSON.stringify(e)}`)
+            if (e.message) set_error(`ERROR: ${JSON.stringify(e.message)}`);
+            else set_error(`ERROR: ${JSON.stringify(e)}`);
           })
           .finally(() => {
             set_isWalletLoading(false);
@@ -186,7 +186,11 @@ function SafeWithdraw() {
         const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
         return dispatch(
           safeActionsAsync.createSafeContractTransactionThunk({
-            data: createSendNftTransactionData(getAddress(selectedSafeAddress) as Address, getAddress(receiver) as Address, Number(nftId)),
+            data: createSendNftTransactionData(
+              getAddress(selectedSafeAddress) as Address,
+              getAddress(receiver) as Address,
+              Number(nftId),
+            ),
             signer,
             safeAddress: getAddress(selectedSafeAddress),
             smartContractAddress,
@@ -198,8 +202,8 @@ function SafeWithdraw() {
             navigate('/staking/dashboard#transactions');
           })
           .catch((e) => {
-            if(e.message) set_error(`ERROR: ${JSON.stringify(e.message)}`)
-            else set_error(`ERROR: ${JSON.stringify(e)}`)
+            if (e.message) set_error(`ERROR: ${JSON.stringify(e.message)}`);
+            else set_error(`ERROR: ${JSON.stringify(e)}`);
           })
           .finally(() => {
             set_isWalletLoading(false);
@@ -221,8 +225,8 @@ function SafeWithdraw() {
             navigate('/staking/dashboard#transactions');
           })
           .catch((e) => {
-            if(e.message) set_error(`ERROR: ${JSON.stringify(e.message)}`)
-            else set_error(`ERROR: ${JSON.stringify(e)}`)
+            if (e.message) set_error(`ERROR: ${JSON.stringify(e.message)}`);
+            else set_error(`ERROR: ${JSON.stringify(e)}`);
           })
           .finally(() => {
             set_isWalletLoading(false);
@@ -261,7 +265,11 @@ function SafeWithdraw() {
 
         await dispatch(
           safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
-            data: createSendNftTransactionData(getAddress(selectedSafeAddress) as Address, getAddress(receiver) as Address, Number(nftId)),
+            data: createSendNftTransactionData(
+              getAddress(selectedSafeAddress) as Address,
+              getAddress(receiver) as Address,
+              Number(nftId),
+            ),
             signer,
             safeAddress: getAddress(selectedSafeAddress),
             smartContractAddress,
@@ -352,7 +360,7 @@ function SafeWithdraw() {
   };
 
   const handleChangeNftId = (event: SelectChangeEvent<unknown>) => {
-    if(error) set_error(null);
+    if (error) set_error(null);
     const value = event.target.value as string;
     if (value) {
       set_nftId(value);
@@ -379,7 +387,7 @@ function SafeWithdraw() {
       center
       fullHeightMin
     >
-      <StartOnboarding/>
+      <StartOnboarding />
       <Card
         image={{
           src: '/assets/funds-safe-withdraw.svg',
@@ -418,7 +426,7 @@ function SafeWithdraw() {
                   size="small"
                   value={receiver}
                   onChange={(e) => {
-                    if(error) set_error(null);
+                    if (error) set_error(null);
                     set_receiver(e.target.value);
                   }}
                   InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
@@ -450,8 +458,8 @@ function SafeWithdraw() {
                     size="small"
                     value={ethValue}
                     onChange={(e) => {
-                      if(error) set_error(null);
-                      set_ethValue(e.target.value)
+                      if (error) set_error(null);
+                      set_ethValue(e.target.value);
                     }}
                     inputProps={{
                       inputMode: 'numeric',

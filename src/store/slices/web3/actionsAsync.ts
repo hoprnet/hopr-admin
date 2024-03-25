@@ -29,7 +29,7 @@ const getCommunityNftsOwnedByWallet = createAsyncThunk(
 
       const response = await fetch(STAKE_SUBGRAPH, {
         method: 'POST',
-        body: GET_THEGRAPH_QUERY
+        body: GET_THEGRAPH_QUERY,
       });
       const responseJson: {
         boosts: { id: string }[];

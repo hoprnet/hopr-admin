@@ -34,7 +34,7 @@ interface Props extends SelectMuiProps {
   values?: {
     value: string | number;
     name: string | number | null;
-    disabled?: boolean 
+    disabled?: boolean;
   }[];
   native?: boolean;
 }

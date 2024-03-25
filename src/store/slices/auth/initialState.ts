@@ -1,7 +1,8 @@
-import { loadStateFromLocalStorage } from "../../../utils/localStorage";
+import { loadStateFromLocalStorage } from '../../../utils/localStorage';
 
-const ADMIN_UI_NODE_LIST = loadStateFromLocalStorage("admin-ui-node-list") as {apiEndpoint: string|null, apiToken:string|null, localName:string|null}[] | null;
-
+const ADMIN_UI_NODE_LIST = loadStateFromLocalStorage('admin-ui-node-list') as
+  | { apiEndpoint: string | null; apiToken: string | null; localName: string | null }[]
+  | null;
 
 type InitialState = {
   status: {
@@ -9,7 +10,7 @@ type InitialState = {
     connected: boolean;
     error: {
       data: string | null;
-      type: 'API_ERROR'  | 'NOT_ELIGIBLE_ERROR' | 'FETCH_ERROR'
+      type: 'API_ERROR' | 'NOT_ELIGIBLE_ERROR' | 'FETCH_ERROR';
     } | null;
   };
   loginData: {

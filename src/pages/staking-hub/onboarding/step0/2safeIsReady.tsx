@@ -31,8 +31,6 @@ export default function safeIsReady() {
           CONTINUE
         </ConfirmButton>
       }
-    >
-
-    </StepContainer>
+    ></StepContainer>
   );
 }

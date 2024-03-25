@@ -22,15 +22,17 @@ const BlueTooltip = styled(({
   className,
   ...props
 }: TooltipProps) => (
-  <Tooltip {...props} classes={{ popper: className }} />
+  <Tooltip
+    {...props}
+    classes={{ popper: className }}
+  />
 ))(() => ({ [`& .${tooltipClasses.tooltip}`]: {
-  backgroundColor: "#DAF8FF",
+  backgroundColor: '#DAF8FF',
   color: '#414141',
-  borderRadius: "10px",
-  fontSize: "12px",
-  boxShadow: "0px 4px 4px #00000040",
+  borderRadius: '10px',
+  fontSize: '12px',
+  boxShadow: '0px 4px 4px #00000040',
 } }));
-
 
 const StyledForm = styled.div`
   width: 100%;
@@ -79,7 +81,7 @@ export const SSafeTransactionButton = styled(SafeTransactionButton)`
   align-self: center;
 `;
 
-export default function FundNode(props?: { onDone?: Function, nodeAddress?: string | null}) {
+export default function FundNode(props?: { onDone?: Function; nodeAddress?: string | null }) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   // injected states
@@ -97,10 +99,10 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
   const [isWalletLoading, set_isWalletLoading] = useState(false);
   const signer = useEthersSigner();
 
-  const nodeAddress:string = props?.nodeAddress ? props.nodeAddress : nodeAddressFromStore;
+  const nodeAddress: string = props?.nodeAddress ? props.nodeAddress : nodeAddressFromStore;
 
   const createAndExecuteTx = () => {
-    if(txError) set_txError(null);
+    if (txError) set_txError(null);
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
     set_isWalletLoading(true);
     dispatch(
@@ -117,21 +119,21 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
       .unwrap()
       .then((hash) => {
         set_transactionHash(hash as Address);
-        if (props?.onDone){
+        if (props?.onDone) {
           props.onDone();
         } else {
           dispatch(stakingHubActions.setOnboardingStep(15));
         }
       })
       .catch((e) => {
-        if(e.message) set_txError(`ERROR: ${JSON.stringify(e.message)}`)
-        else set_txError(`ERROR: ${JSON.stringify(e)}`)
+        if (e.message) set_txError(`ERROR: ${JSON.stringify(e.message)}`);
+        else set_txError(`ERROR: ${JSON.stringify(e)}`);
       })
       .finally(() => set_isWalletLoading(false));
   };
 
   const signTx = () => {
-    if(txError) set_txError(null);
+    if (txError) set_txError(null);
     if (!signer || !Number(xdaiValue) || !selectedSafeAddress || !nodeAddress) return;
     set_isWalletLoading(true);
     dispatch(
@@ -148,9 +150,9 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
       .unwrap()
       .catch((e) => {
         console.warn(e);
-        if(JSON.stringify(e).includes('user rejected transaction')){
+        if (JSON.stringify(e).includes('user rejected transaction')) {
           set_txError('User rejected transaction');
-        } else if(e.message) set_txError(`ERROR: ${JSON.stringify(e.message)}`)
+        } else if (e.message) set_txError(`ERROR: ${JSON.stringify(e.message)}`);
         else set_txError(`ERROR: ${JSON.stringify(e)}`);
       })
       .finally(() => {
@@ -221,10 +223,15 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
         </StyledForm>
         <StyledForm>
           <StyledInstructions>
-            <StyledText>SEND xDAI TO NODE {' '}
-              <BlueTooltip title="Enter the amount of xDAI you would like to transfer from your Safe to your node." >
-                <img src='/assets/question-icon.svg' style={{ height: "100%" }} />
-              </BlueTooltip></StyledText>
+            <StyledText>
+              SEND xDAI TO NODE{' '}
+              <BlueTooltip title="Enter the amount of xDAI you would like to transfer from your Safe to your node.">
+                <img
+                  src="/assets/question-icon.svg"
+                  style={{ height: '100%' }}
+                />
+              </BlueTooltip>
+            </StyledText>
           </StyledInstructions>
           <StyledInputGroup>
             <StyledTextField
@@ -240,7 +247,9 @@ export default function FundNode(props?: { onDone?: Function, nodeAddress?: stri
                 pattern: '[0-9]*',
               }}
               InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
-              helperText={lowBalanceError ? 'You do not have enough xDai in Safe.' : `min. ${MINIMUM_XDAI_TO_FUND_NODE}`}
+              helperText={
+                lowBalanceError ? 'You do not have enough xDai in Safe.' : `min. ${MINIMUM_XDAI_TO_FUND_NODE}`
+              }
               error={!!xdaiValue && lowBalanceError}
             />
             <StyledCoinLabel>xDAI</StyledCoinLabel>

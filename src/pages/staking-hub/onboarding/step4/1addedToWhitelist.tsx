@@ -4,7 +4,6 @@ import { StepContainer, ConfirmButton } from '../components';
 import { useAppDispatch } from '../../../../store';
 import { stakingHubActions } from '../../../../store/slices/stakingHub';
 
-
 export default function AddedToWhitelist() {
   const dispatch = useAppDispatch();
   return (

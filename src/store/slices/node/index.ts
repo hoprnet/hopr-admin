@@ -50,7 +50,7 @@ const nodeSlice = createSlice({
     },
     setMessageNotified(state, action: PayloadAction<number>) {
       const index = action.payload;
-      if(state.messages && state.messages.data[index]) {
+      if (state.messages && state.messages.data[index]) {
         state.messages.data[index].notified = true;
       }
     },

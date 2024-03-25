@@ -16,7 +16,13 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { web3Actions } from '../../store/slices/web3';
 
 // Mui
-import { Accordion, AccordionDetails, AccordionSummary, Card, Chip } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Card,
+  Chip
+} from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const StyledContainer = styled.div`
@@ -58,7 +64,6 @@ const ImageContainer = styled.div`
       top: 20px;
     }
   }
-
 `;
 
 const Image = styled.img`
@@ -204,14 +209,14 @@ const BrandsSection = styled.div`
   width: 100%;
   justify-content: space-evenly;
   flex-wrap: wrap;
-  margin: 45px 0 65px 0 ;
+  margin: 45px 0 65px 0;
 
   @media screen and (max-height: 768px) {
-    margin: -20px 0 -40px 0 ;
+    margin: -20px 0 -40px 0;
   }
 
   @media screen and (min-height: 769px) and (max-height: 1080px) {
-  margin: 20px 0 65px 0;
+    margin: 20px 0 65px 0;
   }
 `;
 
@@ -350,10 +355,13 @@ const StakingLandingPage = () => {
         <StyledContainer>
           <ImageContainer>
             <Image
-              className='staking-landing'
+              className="staking-landing"
               src="/assets/staking-landing.svg"
             />
-            <Image className="yellow-ellipse" src="/assets/yellow-ellipse.svg" />
+            <Image
+              className="yellow-ellipse"
+              src="/assets/yellow-ellipse.svg"
+            />
           </ImageContainer>
           <Title>HOPR STAKING HUB</Title>
           <Description>
@@ -735,6 +743,5 @@ const faq: FaqData = [
     ),
   },
 ];
-
 
 export default StakingLandingPage;

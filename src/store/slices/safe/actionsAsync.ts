@@ -32,7 +32,7 @@ import {
   publicActions,
   toBytes,
   toHex,
-  getAddress,
+  getAddress
 } from 'viem'
 import { RootState } from '../..';
 import {
@@ -197,31 +197,28 @@ const createAddOwnerToSafeTransactionDataThunk = createAsyncThunk<
     threshold?: number;
   },
   { state: RootState }
->(
-  'safe/addOwnerToSafe',
-  async (payload, { rejectWithValue }) => {
-    try {
-      const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
-      const addOwnerTx = await safeSDK.createAddOwnerTx({
-        ownerAddress: payload.ownerAddress,
-        threshold: payload.threshold,
-      });
-      return addOwnerTx.data;
-    } catch (e) {
-      if (e instanceof Error) {
-        return rejectWithValue(e.message);
-      }
-
-      // value is serializable
-      if (isPlain(e)) {
-        return rejectWithValue(e);
-      }
-
-      // error is not serializable
-      return rejectWithValue(JSON.stringify(e));
+>('safe/addOwnerToSafe', async (payload, { rejectWithValue }) => {
+  try {
+    const safeSDK = await createSafeSDK(payload.signer, payload.safeAddress);
+    const addOwnerTx = await safeSDK.createAddOwnerTx({
+      ownerAddress: payload.ownerAddress,
+      threshold: payload.threshold,
+    });
+    return addOwnerTx.data;
+  } catch (e) {
+    if (e instanceof Error) {
+      return rejectWithValue(e.message);
     }
-  },
-);
+
+    // value is serializable
+    if (isPlain(e)) {
+      return rejectWithValue(e);
+    }
+
+    // error is not serializable
+    return rejectWithValue(JSON.stringify(e));
+  }
+});
 
 const createRemoveOwnerFromSafeTransactionDataThunk = createAsyncThunk<
   SafeTransactionData | undefined,
@@ -357,7 +354,7 @@ const createSafeTransactionThunk = createAsyncThunk<
   {
     signer: ethers.providers.JsonRpcSigner;
     safeAddress: string;
-    safeTransactionData: SafeTransactionDataPartial
+    safeTransactionData: SafeTransactionDataPartial;
   },
   { state: RootState }
 >(
@@ -373,7 +370,7 @@ const createSafeTransactionThunk = createAsyncThunk<
       // gets next nonce considering pending txs
       const nextSafeNonce = await safeApi.getNextNonce(payload.safeAddress);
       // create safe transaction
-      console.log('safeTransactionData', payload.safeTransactionData)
+      console.log('safeTransactionData', payload.safeTransactionData);
       const safeTransaction = await safeSDK.createTransaction({ safeTransactionData: {
         ...payload.safeTransactionData,
         nonce: nextSafeNonce,
@@ -387,7 +384,7 @@ const createSafeTransactionThunk = createAsyncThunk<
         safeTxHash,
         senderAddress,
         senderSignature: signature.data,
-      })
+      });
       // propose safe transaction
       try {
         await safeApi.proposeTransaction({
@@ -396,7 +393,7 @@ const createSafeTransactionThunk = createAsyncThunk<
           safeTxHash,
           senderAddress,
           senderSignature: signature.data,
-        })
+        });
       } catch (e) {
         // safeApi doesn't return error message from the HTTP request
         // Check what went wrong
@@ -406,25 +403,25 @@ const createSafeTransactionThunk = createAsyncThunk<
           contractTransactionHash: safeTxHash,
           sender: senderAddress,
           signature: signature.data,
-        }
+        };
 
         const checkRez = await fetch(`${SAFE_SERVICE_URL}/api/v1/safes/${payload.safeAddress}/multisig-transactions/`, {
-          "headers": {
-            "accept": "application/json",
-            "accept-language": "en-US,en;q=0.9,pl;q=0.8",
-            "content-type": "application/json",
+          headers: {
+            accept: 'application/json',
+            'accept-language': 'en-US,en;q=0.9,pl;q=0.8',
+            'content-type': 'application/json',
           },
-          "body": JSON.stringify(body),
-          "method": "POST",
-          "mode": "cors",
-          "credentials": "omit"
+          body: JSON.stringify(body),
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'omit',
         });
         const checkRezJson = await checkRez.json();
         if (checkRezJson) {
           throw {
             error: e,
-            message: checkRezJson
-          }
+            message: checkRezJson,
+          };
         } else {
           throw e;
         }
@@ -439,9 +436,7 @@ const createSafeTransactionThunk = createAsyncThunk<
       );
       return safeTxHash;
     } catch (e) {
-
-
-      console.log('e', e)
+      console.log('e', e);
       if (e instanceof Error) {
         return rejectWithValue(e.message);
       }
@@ -497,7 +492,7 @@ const createSafeContractTransactionThunk = createAsyncThunk<
         operation: payload.operation ?? OperationType.Call,
         value: '0',
       };
-      console.log('safeTransactionData', safeTransactionData)
+      console.log('safeTransactionData', safeTransactionData);
       const safeTxHash = await dispatch(
         createSafeTransactionThunk({
           signer,
@@ -655,7 +650,7 @@ const executePendingTransactionThunk = createAsyncThunk<
       console.log('payload.signer', payload.signer);
       await safeSDK.executeTransaction(payload.safeTransaction);
       // re fetch all txs
-      setTimeout(()=> {
+      setTimeout(() => {
         dispatch(
           getPendingSafeTransactionsThunk({
             safeAddress: payload.safeAddress,
@@ -733,7 +728,7 @@ const createAndExecuteSafeTransactionThunk = createAsyncThunk<
       );
       return safeTxResponse.hash;
     } catch (e) {
-      console.log({ e })
+      console.log({ e });
       if (e instanceof Error) {
         return rejectWithValue(e.message);
       }
@@ -772,7 +767,6 @@ const createAndExecuteSafeContractTransactionThunk = createAsyncThunk<
   dispatch,
 }) => {
   try {
-
     const {
       smartContractAddress,
       data,
@@ -830,7 +824,7 @@ const getAllSafeTransactionsThunk = createAsyncThunk<
       const safeApi = await createSafeApiService(payload.signer);
       const transactions = await safeApi.getAllTransactions(payload.safeAddress, {
         ...payload.options,
-        executed: true
+        executed: true,
       });
       return transactions;
     } catch (e) {
@@ -1433,7 +1427,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     if (action.payload) {
       if (action.payload.boosts && action.payload.boosts.length > 0 && action.payload.boosts[0].id) {
         state.communityNftIds.data = action.payload?.boosts;
-        state.communityNftIds.isFetching = false
+        state.communityNftIds.isFetching = false;
       }
     }
   });

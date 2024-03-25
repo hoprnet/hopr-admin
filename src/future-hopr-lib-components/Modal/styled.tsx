@@ -8,7 +8,8 @@ export const SDialog = styled(({
   .MuiPaper-root {
     width: 100%;
     ${(props) =>
-      props.maxWidth && `
+    props.maxWidth &&
+      `
       max-width: ${props.maxWidth};
     `}
   }

@@ -21,9 +21,7 @@ type OpenChannelModalProps = {
   tooltip?: JSX.Element | string;
 };
 
-export const OpenChannelModal = ({
-  ...props
-}: OpenChannelModalProps) => {
+export const OpenChannelModal = ({ ...props }: OpenChannelModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [openChannelModal, set_openChannelModal] = useState(false);
@@ -49,7 +47,7 @@ export const OpenChannelModal = ({
           amount: weiValue,
           peerAddress: peerAddress,
           timeout: 60e3,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -84,12 +82,12 @@ export const OpenChannelModal = ({
     handleCloseModal();
     const parsedOutgoing = parseFloat(amount ?? '0') >= 0 ? amount ?? '0' : '0';
     const weiValue = ethers.utils.parseEther(parsedOutgoing).toString();
-    await handleOpenChannel(weiValue, peerAddress)
+    await handleOpenChannel(weiValue, peerAddress);
     dispatch(
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
   };
 
@@ -99,14 +97,15 @@ export const OpenChannelModal = ({
         iconComponent={<AddChannelIcon />}
         disabled={props.disabled}
         tooltipText={
-          props.tooltip ?
-          props.tooltip
-          :
-          <span>
-            OPEN
-            <br />
-            outgoing channel
-          </span>
+          props.tooltip ? (
+            props.tooltip
+          ) : (
+            <span>
+              OPEN
+              <br />
+              outgoing channel
+            </span>
+          )
         }
         onClick={handleOpenChannelDialog}
       />

@@ -58,10 +58,9 @@ export const handleBalanceNotification = ({
 
   const hoprSafeBalanceIsLarger = balanceHasIncreased(prevNodeBalances.safeHopr, newNodeBalances.safeHopr);
   if (hoprSafeBalanceIsLarger) {
-    const hoprSafeBalanceDifference = BigInt(newNodeBalances.safeHopr) - BigInt(prevNodeBalances.safeHopr)
+    const hoprSafeBalanceDifference = BigInt(newNodeBalances.safeHopr) - BigInt(prevNodeBalances.safeHopr);
     sendNewHoprSafeBalanceNotification(hoprSafeBalanceDifference);
   }
-
 };
 
 /**

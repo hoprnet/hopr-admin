@@ -31,7 +31,7 @@ interface TablePaginationActionsProps {
 }
 
 const STable = styled(Table)`
-  tr.onRowClick{
+  tr.onRowClick {
     cursor: pointer;
   }
 `;
@@ -133,32 +133,34 @@ const STextField = styled(TextField)`
 
 interface Props {
   data: {
-    [key: string]: string | JSX.Element,
-    id: string,
-    actions: JSX.Element
+    [key: string]: string | JSX.Element;
+    id: string;
+    actions: JSX.Element;
   }[];
-  id?: string,
+  id?: string;
   header: {
-    key: string,
-    name: string,
-    search?: boolean,
-    tooltip?: boolean,
-    width?: string,
-    wrap?: boolean,
-    maxWidth?: string,
-    copy?: boolean,
-    hidden?: boolean,
-    tooltipHeader?: string | JSX.Element,
+    key: string;
+    name: string;
+    search?: boolean;
+    tooltip?: boolean;
+    width?: string;
+    wrap?: boolean;
+    maxWidth?: string;
+    copy?: boolean;
+    hidden?: boolean;
+    tooltipHeader?: string | JSX.Element;
   }[];
   search?: boolean;
   loading?: boolean;
-  onRowClick?: Function
+  onRowClick?: Function;
 }
 
 export default function CustomPaginationActionsTable(props: Props) {
   const rowsPerPageFromLocalStorage = loadStateFromLocalStorage(`pro-table_rows-per-page_${props.id}`) as number | null;
   const [page, set_Page] = React.useState(0);
-  const [rowsPerPage, set_RowsPerPage] = React.useState(props.id && rowsPerPageFromLocalStorage ? rowsPerPageFromLocalStorage : 10);
+  const [rowsPerPage, set_RowsPerPage] = React.useState(
+    props.id && rowsPerPageFromLocalStorage ? rowsPerPageFromLocalStorage : 10,
+  );
   const [searchPhrase, set_searchPhrase] = React.useState('');
   const [filteredData, set_filteredData] = React.useState<typeof props.data>([]);
 
@@ -178,7 +180,7 @@ export default function CustomPaginationActionsTable(props: Props) {
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const newRowsPerPage = parseInt(event.target.value, 10);
     set_RowsPerPage(newRowsPerPage);
-    if(props.id) saveStateToLocalStorage(`pro-table_rows-per-page_${props.id}`, newRowsPerPage)
+    if (props.id) saveStateToLocalStorage(`pro-table_rows-per-page_${props.id}`, newRowsPerPage);
     set_Page(0);
   };
 
@@ -186,7 +188,7 @@ export default function CustomPaginationActionsTable(props: Props) {
 
   function handleSearchChange(event: { target: { value: string } }) {
     const search: string = event.target.value;
-    if(search !== searchPhrase) {
+    if (search !== searchPhrase) {
       set_Page(0);
     }
     set_searchPhrase(search);
@@ -195,7 +197,7 @@ export default function CustomPaginationActionsTable(props: Props) {
 
   function filterData(searchPhrase: string) {
     const data = props.data;
-    const filterBy = props.header.filter((elem) => elem.search === true).map(header => header.key);
+    const filterBy = props.header.filter((elem) => elem.search === true).map((header) => header.key);
 
     // SearchPhrase filter
     if (!searchPhrase || searchPhrase === '') {
@@ -204,7 +206,11 @@ export default function CustomPaginationActionsTable(props: Props) {
     }
     const filtered = data.filter((elem) => {
       for (let i = 0; i < filterBy.length; i++) {
-        if (typeof elem[filterBy[i]] === 'string' && (elem[filterBy[i]] as string).toLowerCase().includes(searchPhrase.toLowerCase())) return true;
+        if (
+          typeof elem[filterBy[i]] === 'string' &&
+          (elem[filterBy[i]] as string).toLowerCase().includes(searchPhrase.toLowerCase())
+        )
+          return true;
       }
     });
     set_filteredData(filtered);
@@ -251,21 +257,23 @@ export default function CustomPaginationActionsTable(props: Props) {
       <STable aria-label="custom pagination table">
         <thead>
           <TableRow>
-            {props.header.map((headElem, idx) => (
-                !headElem.hidden &&
-                <STableCell
-                  key={idx}
-                  className={`TableCell TableCellHeader`}
-                  width={headElem?.width ?? ''}
-                >
-                  <Tooltip
-                    title={headElem.tooltipHeader}
-                    notWide
+            {props.header.map(
+              (headElem, idx) =>
+                !headElem.hidden && (
+                  <STableCell
+                    key={idx}
+                    className={`TableCell TableCellHeader`}
+                    width={headElem?.width ?? ''}
                   >
-                    <span>{headElem.name}</span>
-                  </Tooltip>
-                </STableCell>
-            ))}
+                    <Tooltip
+                      title={headElem.tooltipHeader}
+                      notWide
+                    >
+                      <span>{headElem.name}</span>
+                    </Tooltip>
+                  </STableCell>
+                ),
+            )}
           </TableRow>
         </thead>
         <TableBody>
@@ -273,7 +281,12 @@ export default function CustomPaginationActionsTable(props: Props) {
             ? filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : filteredData
           ).map((row) => (
-            <CustomTableRow row={row} header={props.header} key={row.id} onRowClick={props.onRowClick}/>
+            <CustomTableRow
+              row={row}
+              header={props.header}
+              key={row.id}
+              onRowClick={props.onRowClick}
+            />
           ))}
           {!props.data ||
             (props.data.length === 0 && (
@@ -297,51 +310,60 @@ export default function CustomPaginationActionsTable(props: Props) {
   );
 }
 
-
 const CustomTableRow = ({
   row,
   header,
-  onRowClick
+  onRowClick,
 }: {
-  row: Props['data'][0],
-  header: Props['header'],
-  onRowClick?: Function
+  row: Props['data'][0];
+  header: Props['header'];
+  onRowClick?: Function;
 }) => {
-  const [tooltip, set_tooltip] = useState<string>()
+  const [tooltip, set_tooltip] = useState<string>();
 
   const onDoubleClick = (event: React.MouseEvent<HTMLTableCellElement, MouseEvent>, value: string) => {
     // if row is clicked twice
     if (event.detail === 2) {
       navigator.clipboard.writeText(value);
-      set_tooltip('Copied')
+      set_tooltip('Copied');
       setTimeout(() => {
-        set_tooltip(undefined)
+        set_tooltip(undefined);
       }, 3000);
     }
-  }
+  };
 
   return (
     <TableRow
       key={row.id}
-      onClick={()=>{onRowClick && onRowClick(row)}}
+      onClick={() => {
+        onRowClick && onRowClick(row);
+      }}
       className={`${onRowClick ? 'onRowClick' : ''}`}
     >
-      {header.map((headElem) => (
-        !headElem.hidden &&
-        <STableCell
-          key={headElem.key}
-          className={`TableCell ${headElem.key} ${headElem.wrap ? 'wrap' : ''}`}
-          width={headElem.width}
-          style={{ maxWidth: headElem.maxWidth }}
-          onClick={(event) => headElem.copy && typeof row[headElem.key] === 'string' ? onDoubleClick(event, row[headElem.key] as string) : undefined}
-        >
-          {headElem.tooltip ? (
-            <Tooltip title={tooltip ?? row[headElem.key]}><span>{row[headElem.key]}</span></Tooltip>
-          ) : (
-            row[headElem.key]
-          )}
-        </STableCell>
-      ))}
+      {header.map(
+        (headElem) =>
+          !headElem.hidden && (
+            <STableCell
+              key={headElem.key}
+              className={`TableCell ${headElem.key} ${headElem.wrap ? 'wrap' : ''}`}
+              width={headElem.width}
+              style={{ maxWidth: headElem.maxWidth }}
+              onClick={(event) =>
+                headElem.copy && typeof row[headElem.key] === 'string'
+                  ? onDoubleClick(event, row[headElem.key] as string)
+                  : undefined
+              }
+            >
+              {headElem.tooltip ? (
+                <Tooltip title={tooltip ?? row[headElem.key]}>
+                  <span>{row[headElem.key]}</span>
+                </Tooltip>
+              ) : (
+                row[headElem.key]
+              )}
+            </STableCell>
+          ),
+      )}
     </TableRow>
-  )
-}
+  );
+};

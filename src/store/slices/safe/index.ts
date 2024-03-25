@@ -15,10 +15,13 @@ const safeSlice = createSlice({
       if (selectedSafeAddress) initialStateCopy.selectedSafeAddress = selectedSafeAddress;
       return initialStateCopy;
     },
-    setSelectedSafe(state, action: PayloadAction<{
-      safeAddress: string,
-      moduleAddress: string
-    }>) {
+    setSelectedSafe(
+      state,
+      action: PayloadAction<{
+        safeAddress: string;
+        moduleAddress: string;
+      }>,
+    ) {
       state.selectedSafe.data.safeAddress = getAddress(action.payload.safeAddress);
       state.selectedSafe.data.moduleAddress = getAddress(action.payload.moduleAddress);
     },
@@ -40,18 +43,20 @@ const safeSlice = createSlice({
     removeCommunityNftsOwnedBySafe(state, action: PayloadAction<string>) {
       const NftId = action.payload;
       let communityNftIds = state.communityNftIds.data;
-      communityNftIds = communityNftIds.filter(elem => { elem.id !== NftId});
+      communityNftIds = communityNftIds.filter((elem) => {
+        elem.id !== NftId;
+      });
       state.communityNftIds.data = communityNftIds;
     },
     addOwnerToSafe: (state, action) => {
       state.info.data?.owners.push(action.payload);
     },
     updateThreshold: (state, action) => {
-      if(action.payload && state.info.data?.threshold) state.info.data.threshold = parseInt(action.payload);
+      if (action.payload && state.info.data?.threshold) state.info.data.threshold = parseInt(action.payload);
     },
     removeOwnerFromSafe: (state, action) => {
-      if(state.info.data?.owners){
-        state.info.data.owners = state.info.data.owners.filter(owner => owner !== action.payload);
+      if (state.info.data?.owners) {
+        state.info.data.owners = state.info.data.owners.filter((owner) => owner !== action.payload);
       }
     },
   },

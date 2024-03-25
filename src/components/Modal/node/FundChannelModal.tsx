@@ -20,9 +20,7 @@ type FundChannelModalModalProps = {
   disabled?: boolean;
 };
 
-export const FundChannelModal = ({
-  ...props
-}: FundChannelModalModalProps) => {
+export const FundChannelModal = ({ ...props }: FundChannelModalModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [openChannelModal, set_openChannelModal] = useState(false);
@@ -40,7 +38,6 @@ export const FundChannelModal = ({
   };
 
   const handleAction = async () => {
-
     const handleFundChannel = async (weiValue: string, channelId: string) => {
       await dispatch(
         actionsAsync.fundChannelThunk({
@@ -49,7 +46,7 @@ export const FundChannelModal = ({
           amount: weiValue,
           channelId: channelId,
           timeout: 60e3,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -84,12 +81,12 @@ export const FundChannelModal = ({
     handleCloseModal();
     const parsedOutgoing = parseFloat(amount ?? '0') >= 0 ? amount ?? '0' : '0';
     const weiValue = ethers.utils.parseEther(parsedOutgoing).toString();
-    await handleFundChannel(weiValue, channelId)
+    await handleFundChannel(weiValue, channelId);
     dispatch(
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
   };
 

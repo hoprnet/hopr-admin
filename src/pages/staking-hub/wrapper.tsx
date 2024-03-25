@@ -249,7 +249,14 @@ function WrapperPage() {
     >
       <StepContainer
         title="Wrapper"
-        description={<p>Utility to wrap (xHOPR &#8594; wxHOPR) and unwrap (wxHOPR &#8594; xHOPR) xHOPR tokens.<br/><br/>Funds source: Your wallet</p>}
+        description={
+          <p>
+            Utility to wrap (xHOPR &#8594; wxHOPR) and unwrap (wxHOPR &#8594; xHOPR) xHOPR tokens.
+            <br />
+            <br />
+            Funds source: Your wallet
+          </p>
+        }
         image={{
           src: '/assets/wrapper-wallet-wallet.png',
           alt: 'Funds to safe image',
@@ -264,11 +271,13 @@ function WrapperPage() {
             }
             onClick={handleClick}
           >
-          SWAP
-        </Button>
+            SWAP
+          </Button>
         }
       >
-        <br/><br/><br/>
+        <br />
+        <br />
+        <br />
         <WrapperContainer>
           <StyledTextField
             label="xHOPR"

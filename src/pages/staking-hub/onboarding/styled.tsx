@@ -50,7 +50,7 @@ export const StyledForm = styled.div`
   display: flex;
   align-items: baseline;
   gap: 1rem;
-  &.underline{
+  &.underline {
     border-bottom: 1px solid #414141;
   }
 `;

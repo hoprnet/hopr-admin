@@ -11,7 +11,7 @@ import {
   StyledError,
   StyledGrayButton,
   Text
-} from '../styled';
+} from '../styled'
 
 // Icons
 import CopyIcon from '@mui/icons-material/ContentCopy';

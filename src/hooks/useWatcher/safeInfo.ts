@@ -30,11 +30,17 @@ export const observeSafeInfo = ({
         safeActionsAsync.getSafeInfoThunk({
           signer: signer,
           safeAddress: selectedSafeAddress,
-        })
+        }),
       ).unwrap();
     },
     previousData: null,
-    isDataDifferent: () => {return false},
-    notificationHandler: () => { return },
-    updatePreviousData: () => { return },
+    isDataDifferent: () => {
+      return false;
+    },
+    notificationHandler: () => {
+      return;
+    },
+    updatePreviousData: () => {
+      return;
+    },
   });

@@ -125,7 +125,6 @@ export default function ConnectWeb3({
   const [localError, set_localError] = useState<false | string>(false);
   const containerRef = useRef<HTMLButtonElement>(null);
 
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -157,17 +156,17 @@ export default function ConnectWeb3({
     if (error) {
       if (error instanceof UserRejectedRequestError) {
         let parsedError = error.shortMessage;
-        if(error.details && error.details !== error.shortMessage && error.details.length > 10) {
+        if (error.details && error.details !== error.shortMessage && error.details.length > 10) {
           parsedError = parsedError + '\n\n' + error.details;
         }
         set_localError(parsedError);
       } else {
-        set_localError( JSON.stringify(error))
+        set_localError(JSON.stringify(error));
       }
       // wallet connect modal can
       // cause errors if it is closed without connecting
       if (pendingConnector?.id === 'walletConnect') {
-        reset()
+        reset();
       }
     } else set_localError(false);
   }, [error]);
@@ -195,7 +194,7 @@ export default function ConnectWeb3({
   };
 
   const handleDisconnectMM = () => {
-    console.log('handleDisconnectMM')
+    console.log('handleDisconnectMM');
     disconnect();
     dispatch(appActions.resetState());
     dispatch(web3Actions.resetState());

@@ -22,7 +22,7 @@ import StakingScreen from './staking';
 import SafeActions from './transactions';
 import SafeDashboard from './safe';
 import NoNodeAdded from './noNodeAdded';
-import NodeAdded from './node'
+import NodeAdded from './node';
 
 import { browserClient } from '../../../providers/wagmi';
 
@@ -31,26 +31,26 @@ export const DASHBOARD = {
   node: 1,
   safe: 2,
   transactions: 3,
-} as { [key: string]: number};
+} as { [key: string]: number };
 
 const getTabIndexFromUrl = () => {
   let currentHash = window.location.hash.replace('#', '');
-  if (currentHash == "") currentHash = "staking";
+  if (currentHash == '') currentHash = 'staking';
   switch (currentHash) {
-    case 'node':
-      return DASHBOARD.node;
-    case 'safe':
-      return DASHBOARD.safe;
-    case 'transactions':
-      return DASHBOARD.transactions;
-    default:
-      window.location.hash = `#${currentHash}`;
-      return DASHBOARD.staking;
+  case 'node':
+    return DASHBOARD.node;
+  case 'safe':
+    return DASHBOARD.safe;
+  case 'transactions':
+    return DASHBOARD.transactions;
+  default:
+    window.location.hash = `#${currentHash}`;
+    return DASHBOARD.staking;
   }
 };
 
 const getTabName = (index: number) => {
-  const tmp = Object.keys(DASHBOARD).filter(key=> DASHBOARD[key] === index );
+  const tmp = Object.keys(DASHBOARD).filter((key) => DASHBOARD[key] === index);
   return tmp[0];
 };
 
@@ -70,7 +70,7 @@ const DashboardContainer = styled.div`
 
 const SPaper = styled(Paper)`
   width: 100%;
-  min-height: calc( 100vh - 124px - 64px );
+  min-height: calc(100vh - 124px - 64px);
   overflow: auto;
   padding: 0;
   display: flex;
@@ -89,25 +89,24 @@ const STabs = styled(Tabs)`
   }
 `;
 
-
 function Dashboard() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [tabIndex, set_tabIndex] = useState(getTabIndexFromUrl());
   const safeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress) as string;
-  const moduleAddress =  useAppSelector((store) => store.safe.selectedSafe.data.moduleAddress);
+  const moduleAddress = useAppSelector((store) => store.safe.selectedSafe.data.moduleAddress);
 
-  useEffect(()=>{
-    if(safeAddress && moduleAddress && browserClient) {
+  useEffect(() => {
+    if (safeAddress && moduleAddress && browserClient) {
       dispatch(
         stakingHubActionsAsync.getSubgraphDataThunk({
           safeAddress,
           moduleAddress,
-          browserClient
+          browserClient,
         }),
       );
     }
-  },[]);
+  }, []);
 
   const handleTabChange = (event: React.SyntheticEvent<Element, Event>, newTabIndex: number) => {
     set_tabIndex(newTabIndex);
@@ -126,28 +125,41 @@ function Dashboard() {
     };
   }
 
-
-
   return (
     <DashboardContainer className="DashboardContainer">
       <SPaper>
-        <STabs value={tabIndex} onChange={handleTabChange} aria-label="basic tabs example">
-          <Tab label="STAKING" {...a11yProps(0)} />
-          <Tab label="NODES" {...a11yProps(1)} />
-          <Tab label="SAFE" {...a11yProps(2)} />
-          <Tab label="TRANSACTIONS" {...a11yProps(3)} />
+        <STabs
+          value={tabIndex}
+          onChange={handleTabChange}
+          aria-label="basic tabs example"
+        >
+          <Tab
+            label="STAKING"
+            {...a11yProps(0)}
+          />
+          <Tab
+            label="NODES"
+            {...a11yProps(1)}
+          />
+          <Tab
+            label="SAFE"
+            {...a11yProps(2)}
+          />
+          <Tab
+            label="TRANSACTIONS"
+            {...a11yProps(3)}
+          />
         </STabs>
-        <div className='Content'>
-          { tabIndex === DASHBOARD.staking && <StakingScreen/>}
-          { tabIndex === DASHBOARD.node && <NodeAdded/>}
-          { tabIndex === DASHBOARD.safe && <SafeDashboard/>}
-          { tabIndex === DASHBOARD.transactions && <SafeActions/>}
+        <div className="Content">
+          {tabIndex === DASHBOARD.staking && <StakingScreen />}
+          {tabIndex === DASHBOARD.node && <NodeAdded />}
+          {tabIndex === DASHBOARD.safe && <SafeDashboard />}
+          {tabIndex === DASHBOARD.transactions && <SafeActions />}
         </div>
       </SPaper>
 
-      <NetworkOverlay/>
+      <NetworkOverlay />
       <StartOnboarding />
-
     </DashboardContainer>
   );
 }
