@@ -18,7 +18,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
     apiToken,
   } = useAppSelector((store) => store.auth.loginData);
   const messages = useAppSelector((store) => store.node.messages.data);
-  const channels = useAppSelector((store) => store.node.channels.parsed);
+  const channelsParsed = useAppSelector((store) => store.node.channels.parsed);
   const firstChannelsCallWasSuccesfull = useAppSelector((store) => !!store.node.channels.data);
   const connected = useAppSelector((store) => store.auth.status.connected);
 
@@ -172,124 +172,85 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   useEffect(() => {
     if(!firstChannelsCallWasSuccesfull) return;
 
-    if(!prevOutgoingChannels) {
-      const channelsOutgoingIds = Object.keys(channels.outgoing);
+    if(prevOutgoingChannels === null && prevIncomingChannels === null) {
+      const channelsOutgoingIds = Object.keys(channelsParsed.outgoing);
       if(
         channelsOutgoingIds.length !==0 && //true
-        Object.keys(channels.outgoing[channelsOutgoingIds[0]]).includes('status') // If the channels are populated more than with tickets data
+        Object.keys(channelsParsed.outgoing[channelsOutgoingIds[0]]).includes('status') // If the channels are populated more than with tickets data
       ) {
-        dispatch(appActions.setPrevOutgoingChannels(channels.outgoing));
-      };
+        dispatch(appActions.setPrevOutgoingChannels(channelsParsed.outgoing));
+      } else {
+        dispatch(appActions.setPrevOutgoingChannels({}));
+      }
+
+      const channelsIncomingIds = Object.keys(channelsParsed.incoming);
+      if(channelsIncomingIds.length !==0) {
+        dispatch(appActions.setPrevIncomingChannels(channelsParsed.incoming));
+      } else {
+        dispatch(appActions.setPrevIncomingChannels({}));
+      }
+
       return;
     };
 
-    if(activeChannels) {
+    if(!prevOutgoingChannels || !prevIncomingChannels || !activeChannels) return;
 
-      const changesOutgoing = checkHowChannelsHaveChanged(prevOutgoingChannels, channels.outgoing);
-      if(changesOutgoing.length !== 0) {
-        console.log('changes channels', changesOutgoing)
-        for(let i = 0; i < changesOutgoing.length; i++){
-          let notificationText: null | string = null;
-          if(changesOutgoing[i].status === "Open") {
-            notificationText = `Channel to ${changesOutgoing[i].peerAddress} opened.`
-          } else if(changesOutgoing[i].status === "PendingToClose") {
-            notificationText = `Channel to ${changesOutgoing[i].peerAddress} is pending to close.`
-          } else if(changesOutgoing[i].status === "Closed") {
-            notificationText = `Channel to ${changesOutgoing[i].peerAddress} closed.`
-          }
-          if (notificationText) {
-            sendNotification({
-              notificationPayload: {
-                source: 'node',
-                name: notificationText,
-                url: null,
-                timeout: null,
-              },
-              toastPayload: { message: notificationText },
-              dispatch,
-            });
-          }
+    const changesOutgoing = checkHowChannelsHaveChanged(prevOutgoingChannels, channelsParsed.outgoing);
+    if(changesOutgoing.length !== 0) {
+      console.log('changes channels outgoing', changesOutgoing)
+      for(let i = 0; i < changesOutgoing.length; i++){
+        let notificationText: null | string = null;
+        if(changesOutgoing[i].status === "Open") {
+          notificationText = `Channel to ${changesOutgoing[i].peerAddress} opened.`
+        } else if(changesOutgoing[i].status === "PendingToClose") {
+          notificationText = `Channel to ${changesOutgoing[i].peerAddress} is pending to close.`
+        } else if(changesOutgoing[i].status === "Closed") {
+          notificationText = `Channel to ${changesOutgoing[i].peerAddress} closed.`
         }
-        dispatch(appActions.setPrevOutgoingChannels(channels.outgoing));
+        if (notificationText) {
+          sendNotification({
+            notificationPayload: {
+              source: 'node',
+              name: notificationText,
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: notificationText },
+            dispatch,
+          });
+        }
       }
-
+      dispatch(appActions.setPrevOutgoingChannels(channelsParsed.outgoing));
     }
-  }, [activeChannels, firstChannelsCallWasSuccesfull, channels, prevOutgoingChannels]);
 
-  // useEffect(() => {
-  //   if(!firstChannelsCallWasSuccesfull) return;
+    const changesIncoming = checkHowChannelsHaveChanged(prevIncomingChannels, channelsParsed.incoming);
+    if(changesIncoming.length !== 0) {
+      console.log('changes channels incoming', changesIncoming)
+      for(let i = 0; i < changesIncoming.length; i++){
+        let notificationText: null | string = null;
+        if(changesIncoming[i].status === "Open") {
+          notificationText = `Channel from ${changesIncoming[i].peerAddress} opened.`
+        } else if(changesIncoming[i].status === "PendingToClose") {
+          notificationText = `Channel from ${changesIncoming[i].peerAddress} is pending to close.`
+        } else if(changesIncoming[i].status === "Closed") {
+          notificationText = `Channel from ${changesIncoming[i].peerAddress} closed.`
+        }
+        if (notificationText) {
+          sendNotification({
+            notificationPayload: {
+              source: 'node',
+              name: notificationText,
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: notificationText },
+            dispatch,
+          });
+        }
+      }
+      dispatch(appActions.setPrevIncomingChannels(channelsParsed.incoming));
+    }
 
-  //   if(!prevOutgoingChannels) {
-  //     const channelsOutgoingIds = Object.keys(channels.outgoing);
-  //     if(
-  //       channelsOutgoingIds.length !==0 && //true
-  //       Object.keys(channels.outgoing[channelsOutgoingIds[0]]).includes('status') // If the channels are populated more than with tickets data
-  //     ) {
-  //       dispatch(appActions.setPrevOutgoingChannels(channels));
-  //     };
-  //     return
-  //   };
-
-  //   if(activeChannels) {
-
-  //     const changesOutgoing = checkHowChannelsHaveChanged(prevOutgoingChannels, channels.outgoing);
-  //     if(changesOutgoing.length !== 0) {
-  //       console.log('changes channels', changesOutgoing)
-  //       for(let i = 0; i < changesOutgoing.length; i++){
-  //         let notificationText: null | string = null;
-  //         if(changesOutgoing[i].status === "Open") {
-  //           notificationText = `Channel to ${changesOutgoing[i].peerAddress} opened.`
-  //         } else if(changesOutgoing[i].status === "PendingToClose") {
-  //           notificationText = `Channel to ${changesOutgoing[i].peerAddress} is pending to close.`
-  //         } else if(changesOutgoing[i].status === "Closed") {
-  //           notificationText = `Channel to ${changesOutgoing[i].peerAddress} closed.`
-  //         }
-  //         if (notificationText) {
-  //           sendNotification({
-  //             notificationPayload: {
-  //               source: 'node',
-  //               name: notificationText,
-  //               url: null,
-  //               timeout: null,
-  //             },
-  //             toastPayload: { message: notificationText },
-  //             dispatch,
-  //           });
-  //         }
-  //       }
-  //       dispatch(appActions.setPrevOutgoingChannels(channels));
-  //     }
-
-
-  //     const changesIncoming = checkHowChannelsHaveChanged(prevIncomingChannels, channels);
-  //     if(changesOutgoing.length !== 0) {
-  //       console.log('changes channels', changesOutgoing)
-  //       for(let i = 0; i < changesOutgoing.length; i++){
-  //         let notificationText: null | string = null;
-  //         if(changesOutgoing[i].status === "Open") {
-  //           notificationText = `Channel to ${changesOutgoing[i].peerAddress} opened.`
-  //         } else if(changesOutgoing[i].status === "PendingToClose") {
-  //           notificationText = `Channel to ${changesOutgoing[i].peerAddress} is pending to close.`
-  //         } else if(changesOutgoing[i].status === "Closed") {
-  //           notificationText = `Channel to ${changesOutgoing[i].peerAddress} closed.`
-  //         }
-  //         if (notificationText) {
-  //           sendNotification({
-  //             notificationPayload: {
-  //               source: 'node',
-  //               name: notificationText,
-  //               url: null,
-  //               timeout: null,
-  //             },
-  //             toastPayload: { message: notificationText },
-  //             dispatch,
-  //           });
-  //         }
-  //       }
-  //       dispatch(appActions.setPrevOutgoingChannels(channels));
-  //     }
-
-  //   }
-  // }, [activeChannels, firstChannelsCallWasSuccesfull, channels, prevIncomingChannels]);
+  }, [activeChannels, firstChannelsCallWasSuccesfull, channelsParsed, prevOutgoingChannels, prevIncomingChannels]);
 
 };
