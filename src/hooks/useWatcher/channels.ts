@@ -1,4 +1,4 @@
-import { ChannelsParsed, ChannelOutgoingType, ChannelsOutgoingType, ChannelsIncomingType } from '../../store/slices/node/initialState';
+import { ChannelOutgoingType, ChannelsOutgoingType, ChannelsIncomingType } from '../../store/slices/node/initialState';
 
 /**
  * Checks how the channels have changed.

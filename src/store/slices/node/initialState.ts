@@ -49,11 +49,6 @@ export type ChannelsIncomingType = {
   [channelId: string]: ChannelIncomingType
 }
 
-export type ChannelsParsed = {
-  outgoing:  ChannelsOutgoingType,
-  incoming: ChannelsIncomingType;
-}
-
 type WebsocketConnectionStatus = 'connecting' | 'connected' | 'error' | null;
 
 type InitialState = {
@@ -101,7 +96,10 @@ type InitialState = {
   };
   channels: {
     data: GetChannelsResponseType | null;
-    parsed: ChannelsParsed,
+    parsed: {
+      outgoing:  ChannelsOutgoingType;
+      incoming: ChannelsIncomingType;
+    },
     isFetching: boolean;
   };
   links: {

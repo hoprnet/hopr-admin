@@ -1,7 +1,7 @@
 import type { GetBalancesResponseType, GetInfoResponseType } from '@hoprnet/hopr-sdk';
 import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { loadStateFromLocalStorage } from '../../../utils/localStorage';
-import { ChannelsParsed, ChannelsOutgoingType, ChannelsIncomingType } from '../node/initialState';
+import { ChannelsOutgoingType, ChannelsIncomingType } from '../node/initialState';
 
 
 type InitialState = {
