@@ -4,7 +4,7 @@ import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS
 
 // wagmi
 import { useAccount, useBalance, useNetwork } from 'wagmi';
-import { watchAccount } from '@wagmi/core'
+import { watchAccount } from '@wagmi/core';
 import { useEthersSigner } from '../../hooks';
 
 // Redux
@@ -23,35 +23,31 @@ export default function WagmiUpdater() {
   const web3Disconnecting = useAppSelector((store) => store.web3.status.disconnecting);
 
   // Wallet Account
-  const {
-    address,
-    isConnected,
-    connector
-  } = useAccount();
+  const { address, isConnected, connector } = useAccount();
 
   const { chain } = useNetwork();
 
   // **********************
   // Leaving for on-going testing of wagmi losing connection with wallet
   useEffect(() => {
-    console.log('Detected wagmi address change', address)
+    console.log('Detected wagmi address change', address);
   }, [address]);
 
   useEffect(() => {
-    console.log('Detected wagmi isConnected change', isConnected)
+    console.log('Detected wagmi isConnected change', isConnected);
   }, [isConnected]);
 
   useEffect(() => {
-    console.log('Detected wagmi connector change', connector)
+    console.log('Detected wagmi connector change', connector);
   }, [connector]);
 
   // If wagmi is not always able to detect address change, add this code:
 
   useEffect(() => {
     function handleAccountsChanged(accounts: string[]) {
-      if(accounts && accounts[0] && typeof(accounts[0]) === 'string') {
+      if (accounts && accounts[0] && typeof accounts[0] === 'string') {
         //set_lastAccountUsed(accounts[0]);
-        console.log('Detected accountsChanged event', accounts[0])
+        console.log('Detected accountsChanged event', accounts[0]);
       }
     }
 
@@ -74,8 +70,8 @@ export default function WagmiUpdater() {
 
   // Account change in Wallet
   useEffect(() => {
-    if(addressInStore === address) return;
-    if(web3Disconnecting) return;
+    if (addressInStore === address) return;
+    if (web3Disconnecting) return;
 
     if (isConnected && address) {
       console.log('isConnected', isConnected);
@@ -92,7 +88,7 @@ export default function WagmiUpdater() {
       dispatch(web3ActionsAsync.getCommunityNftsOwnedByWallet({ account: address }));
       dispatch(stakingHubActionsAsync.getHubSafesByOwnerThunk(address));
     }
-    if(!isConnected) {
+    if (!isConnected) {
       dispatch(web3Actions.setConnected(isConnected));
       dispatch(web3Actions.setAccount(null));
     }
@@ -150,7 +146,7 @@ export default function WagmiUpdater() {
         web3Actions.setWalletBalance_xDai({
           ...xDAI_balance,
           value: xDAI_balance.value.toString(),
-        }),
+        })
       );
   }, [xDAI_balance]);
 
@@ -160,7 +156,7 @@ export default function WagmiUpdater() {
         web3Actions.setWalletBalance_wxHopr({
           ...wxHopr_balance,
           value: wxHopr_balance.value.toString(),
-        }),
+        })
       );
   }, [wxHopr_balance]);
 
@@ -170,7 +166,7 @@ export default function WagmiUpdater() {
         web3Actions.setWalletBalance_xHopr({
           ...xHopr_balance,
           value: xHopr_balance.value.toString(),
-        }),
+        })
       );
   }, [xHopr_balance]);
 
@@ -180,7 +176,7 @@ export default function WagmiUpdater() {
         safeActions.setSafeBalance_xDai({
           ...safe_xDAI_balance,
           value: safe_xDAI_balance.value.toString(),
-        }),
+        })
       );
   }, [safe_xDAI_balance]);
 
@@ -190,7 +186,7 @@ export default function WagmiUpdater() {
         safeActions.setSafeBalance_wxHopr({
           ...safe_wxHopr_balance,
           value: safe_wxHopr_balance.value.toString(),
-        }),
+        })
       );
   }, [safe_wxHopr_balance]);
 
@@ -200,10 +196,9 @@ export default function WagmiUpdater() {
         safeActions.setSafeBalance_xHopr({
           ...safe_xHopr_balance,
           value: safe_xHopr_balance.value.toString(),
-        }),
+        })
       );
   }, [safe_xHopr_balance]);
-
 
   useEffect(() => {
     if (nodeLinkedToSafe_xDai_balance)
@@ -211,7 +206,7 @@ export default function WagmiUpdater() {
         stakingHubActions.setNodeLinkedToSafeBalance_xDai({
           ...nodeLinkedToSafe_xDai_balance,
           value: nodeLinkedToSafe_xDai_balance.value.toString(),
-        }),
+        })
       );
   }, [nodeLinkedToSafe_xDai_balance]);
 

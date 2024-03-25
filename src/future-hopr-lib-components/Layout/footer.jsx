@@ -52,7 +52,7 @@ const SFooter = styled.footer`
 `;
 
 const Content = styled.div`
-  width: calc( 100% - 32px );
+  width: calc(100% - 32px);
   max-width: 1098px;
   margin: auto;
   display: flex;
@@ -62,7 +62,7 @@ const Content = styled.div`
 `;
 
 const Newsletter = styled.div`
-  width: calc( 100% - 32px );
+  width: calc(100% - 32px);
   max-width: 1098px;
   margin: auto;
   display: flex;

@@ -14,13 +14,9 @@ import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import RemoveMessages from '../../future-hopr-lib-components/Icons/RemoveMessages';
 
-
 const messages = () => {
   const messages = useAppSelector((store) => store.node.messages.data);
-  const {
-    apiEndpoint,
-    apiToken,
-  } = useAppSelector((store) => store.auth.loginData);
+  const { apiEndpoint, apiToken } = useAppSelector((store) => store.auth.loginData);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -30,7 +26,7 @@ const messages = () => {
       actionsAsync.getAliasesThunk({
         apiEndpoint,
         apiToken,
-      }),
+      })
     );
   }, []);
 
@@ -92,12 +88,12 @@ const messages = () => {
                 </span>
               }
               onClick={() => {
-                if(!apiEndpoint || !apiToken) return;
+                if (!apiEndpoint || !apiToken) return;
                 dispatch(
                   actionsAsync.deleteMessagesThunk({
                     apiEndpoint,
                     apiToken,
-                  }),
+                  })
                 );
               }}
             />

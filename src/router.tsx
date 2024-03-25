@@ -1,5 +1,12 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouteObject, useSearchParams, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  RouteObject,
+  useSearchParams,
+  Navigate,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import { environment } from '../config';
 import { useDisconnect } from 'wagmi';
 import { parseAndFormatUrl } from './utils/parseAndFormatUrl';
@@ -145,7 +152,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <LanIcon />,
         element: <PeersPage />,
         loginNeeded: 'node',
-        numberKey: 'numberOfPeers'
+        numberKey: 'numberOfPeers',
       },
       {
         name: 'ALIASES',
@@ -153,7 +160,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <ContactPhone />,
         element: <AliasesPage />,
         loginNeeded: 'node',
-        numberKey: 'numberOfAliases'
+        numberKey: 'numberOfAliases',
       },
       {
         name: 'MESSAGES',
@@ -161,7 +168,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <MailIcon />,
         element: <MessagesPage />,
         loginNeeded: 'node',
-        numberKey: 'numberOfMessagesReceived'
+        numberKey: 'numberOfMessagesReceived',
       },
       {
         name: 'CHANNELS: IN',
@@ -169,7 +176,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <IncomingChannelsIcon />,
         element: <ChannelsPageIncoming />,
         loginNeeded: 'node',
-        numberKey: 'numberOfChannelsIn'
+        numberKey: 'numberOfChannelsIn',
       },
       {
         name: 'CHANNELS: OUT',
@@ -177,7 +184,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <OutgoingChannelsIcon />,
         element: <ChannelsPageOutgoing />,
         loginNeeded: 'node',
-        numberKey: 'numberOfChannelsOut'
+        numberKey: 'numberOfChannelsOut',
       },
     ],
   },
@@ -367,7 +374,9 @@ const LayoutEnhanced = () => {
   const HOPRdNodeAddressForOnboarding = searchParams.get('HOPRdNodeAddressForOnboarding'); //Address given in HOPRd: https://hub.hoprnet.org/staking/onboarding?HOPRdNodeAddressForOnboarding={my_address}
 
   const numberOfPeers = useAppSelector((store) => store.node.peers.data?.connected.length);
-  const numberOfAliases = useAppSelector((store) => store.node.aliases?.data && Object.keys(store.node.aliases?.data).length);
+  const numberOfAliases = useAppSelector(
+    (store) => store.node.aliases?.data && Object.keys(store.node.aliases?.data).length
+  );
   const numberOfMessagesReceived = useAppSelector((store) => store.node.messages.data.length);
   const numberOfChannelsIn = useAppSelector((store) => store.node.channels.data?.incoming.length);
   const numberOfChannelsOut = useAppSelector((store) => store.node.channels.data?.outgoing.length);
@@ -377,8 +386,8 @@ const LayoutEnhanced = () => {
     numberOfAliases,
     numberOfMessagesReceived,
     numberOfChannelsIn,
-    numberOfChannelsOut
-  }
+    numberOfChannelsOut,
+  };
 
   useEffect(() => {
     if (environment === 'web3') {
@@ -401,7 +410,7 @@ const LayoutEnhanced = () => {
     dispatch(
       nodeActions.setApiEndpoint({
         apiEndpoint: formattedApiEndpoint,
-      }),
+      })
     );
     if (!apiToken) return;
     const useNode = async () => {
@@ -414,7 +423,7 @@ const LayoutEnhanced = () => {
         ).unwrap();
         if (loginInfo) {
           // We do this after the loginInfo to make sure the login from url was successful
-          trackGoal('Y641EPNA', 1) // LOGIN_TO_NODE_BY_URL
+          trackGoal('Y641EPNA', 1); // LOGIN_TO_NODE_BY_URL
           dispatch(
             nodeActionsAsync.getInfoThunk({
               apiToken,
@@ -473,7 +482,7 @@ const LayoutEnhanced = () => {
           dispatch(nodeActions.initializeMessagesWebsocket());
         }
       } catch (e) {
-        trackGoal('ZUIBL4M8', 1) // FAILED_CONNECT_TO_NODE_BY_URL
+        trackGoal('ZUIBL4M8', 1); // FAILED_CONNECT_TO_NODE_BY_URL
         // error is handled on redux
       }
     };

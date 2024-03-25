@@ -10,7 +10,8 @@ const stakingHubSlice = createSlice({
     resetStateWithoutMagicLinkForOnboarding: (state) => {
       const nodeAddressProvidedByMagicLink = state.onboarding.nodeAddressProvidedByMagicLink;
       const initialStateCopy = JSON.parse(JSON.stringify(initialState));
-      if (nodeAddressProvidedByMagicLink) state.onboarding.nodeAddressProvidedByMagicLink = nodeAddressProvidedByMagicLink;
+      if (nodeAddressProvidedByMagicLink)
+        state.onboarding.nodeAddressProvidedByMagicLink = nodeAddressProvidedByMagicLink;
       return initialStateCopy;
     },
     resetStateWithoutSafeList: (state) => {
@@ -37,7 +38,7 @@ const stakingHubSlice = createSlice({
             value: null,
             formatted: null,
           },
-        }
+        },
       };
     },
     dismissModalToSartOnboarding: (state) => {
@@ -50,16 +51,14 @@ const stakingHubSlice = createSlice({
       state.safes.data = [...state.safes.data, action.payload];
     },
     addOwnerToSafe: (state, action) => {
-      state.safeInfo.data.owners.push(
-        {
-          owner: {
-            id: action.payload
-          }
-        }
-      )
+      state.safeInfo.data.owners.push({
+        owner: {
+          id: action.payload,
+        },
+      });
     },
     removeOwnerFromSafe: (state, action) => {
-      state.safeInfo.data.owners = state.safeInfo.data.owners.filter(elem => elem.owner.id !== action.payload);
+      state.safeInfo.data.owners = state.safeInfo.data.owners.filter((elem) => elem.owner.id !== action.payload);
     },
     addSafeAndUseItForOnboarding: (state, action) => {
       state.safes.data = [...state.safes.data, action.payload];
@@ -88,19 +87,21 @@ const stakingHubSlice = createSlice({
       state.config.needsUpdate.data = false;
       state.config.needsUpdate.strategy = null;
     },
-    setNextOnboarding: (state, action: {
-      payload: {
-        nodeAddress: string,
-        key: 'includedInModule' | 'registeredNodesInNetworkRegistry',
-        value: boolean
-    }}) => {
-      if( typeof(action?.payload?.nodeAddress) === 'string' &&
-          typeof(action?.payload?.value) === 'boolean'
-        ) {
-          const nodeAddress = action.payload.nodeAddress.toLocaleLowerCase();
-          if(state.nodes[nodeAddress]) {
-            state.nodes[nodeAddress][action.payload.key] = action.payload.value;
-          }
+    setNextOnboarding: (
+      state,
+      action: {
+        payload: {
+          nodeAddress: string;
+          key: 'includedInModule' | 'registeredNodesInNetworkRegistry';
+          value: boolean;
+        };
+      }
+    ) => {
+      if (typeof action?.payload?.nodeAddress === 'string' && typeof action?.payload?.value === 'boolean') {
+        const nodeAddress = action.payload.nodeAddress.toLocaleLowerCase();
+        if (state.nodes[nodeAddress]) {
+          state.nodes[nodeAddress][action.payload.key] = action.payload.value;
+        }
       }
     },
     updateThreshold: (state, action) => {

@@ -69,7 +69,7 @@ type StepperProps = {
   steps: { name: string }[];
   currentStep: number;
   lastStepDone: number;
-  style?: object; 
+  style?: object;
 };
 
 type StepState = 'COMPLETED' | 'CURRENT' | 'CURRENT_AND_COMPLETED' | 'PENDING';
@@ -106,7 +106,7 @@ const StepIcon = (props: StepIconProps) => {
   } else {
     return (
       <NumberWithBackground className={props.state === 'CURRENT' ? 'current' : ''}>
-        {props.position+1}
+        {props.position + 1}
       </NumberWithBackground>
     );
   }
@@ -151,10 +151,7 @@ const Step = (props: StepProps) => {
 };
 
 export const Stepper = (props: StepperProps) => {
-  const getStepState = ({
-    index,
-    currentStep,
-  }: { index: number; currentStep: number }): StepState => {
+  const getStepState = ({ index, currentStep }: { index: number; currentStep: number }): StepState => {
     if (index === currentStep && currentStep === props.lastStepDone) return 'CURRENT_AND_COMPLETED';
     if (index < currentStep) return 'COMPLETED';
     if (index === currentStep) return 'CURRENT';
@@ -162,9 +159,7 @@ export const Stepper = (props: StepperProps) => {
   };
 
   return (
-    <StepperContainer
-      style={props.style}
-    >
+    <StepperContainer style={props.style}>
       {props.steps.map((step, idx) => (
         <Step
           key={idx}

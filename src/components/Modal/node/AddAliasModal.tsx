@@ -28,7 +28,6 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
   const [duplicateAlias, set_duplicateAlias] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
-
   const setPropPeerId = () => {
     if (props.peerId) set_peerId(props.peerId);
   };
@@ -106,14 +105,15 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
       <IconButton
         iconComponent={<AddAliasIcon />}
         tooltipText={
-          props.tooltip ?
-          props.tooltip
-          :
-          <span>
-            ADD
-            <br />
-            new alias
-          </span>
+          props.tooltip ? (
+            props.tooltip
+          ) : (
+            <span>
+              ADD
+              <br />
+              new alias
+            </span>
+          )
         }
         onClick={handleOpenModal}
         disabled={props.disabled}

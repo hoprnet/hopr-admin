@@ -25,10 +25,10 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 function AliasesPage() {
   const dispatch = useAppDispatch();
   const aliases = useAppSelector((store) => store.node.aliases.data);
-  const peers = useAppSelector(store => store.node.peers.data)
+  const peers = useAppSelector((store) => store.node.peers.data);
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
-  const hoprAddress = useAppSelector((store) => store.node.addresses.data.hopr)
-  const myNodeAddress = useAppSelector((store) => store.node.addresses.data.native)
+  const hoprAddress = useAppSelector((store) => store.node.addresses.data.hopr);
+  const myNodeAddress = useAppSelector((store) => store.node.addresses.data.native);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const peerIdToNodeAddressLink = useAppSelector((store) => store.node.links.peerIdToNodeAddress);
   const [importSuccess, set_importSuccess] = useState(false);
@@ -63,9 +63,9 @@ function AliasesPage() {
   };
 
   const getNodeAddressByPeerId = (peerId: string): string | undefined => {
-    if(peerId === hoprAddress && typeof(myNodeAddress) === 'string' ) return myNodeAddress;
+    if (peerId === hoprAddress && typeof myNodeAddress === 'string') return myNodeAddress;
     return peerIdToNodeAddressLink[peerId];
-  }
+  };
 
   const handleExport = () => {
     if (aliases) {
@@ -83,7 +83,7 @@ function AliasesPage() {
   const handleCSVUpload = async (parsedData: any[]) => {
     for (const data of parsedData) {
       if (data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken) {
-        console.log('data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken')
+        console.log('data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken');
         await dispatch(
           actionsAsync.setAliasThunk({
             alias: String(data.alias),
@@ -124,16 +124,14 @@ function AliasesPage() {
           <PingModal
             peerId={peerId}
             disabled={peerId === hoprAddress}
-            tooltip={peerId === hoprAddress ? `You can't ping yourself` : undefined }
+            tooltip={peerId === hoprAddress ? `You can't ping yourself` : undefined}
           />
           <OpenChannelModal
             peerAddress={getNodeAddressByPeerId(peerId)}
             disabled={peerId === hoprAddress}
-            tooltip={peerId === hoprAddress ? `You can't ping yourself` : undefined }
+            tooltip={peerId === hoprAddress ? `You can't ping yourself` : undefined}
           />
-          <SendMessageModal
-            peerId={peerId}
-          />
+          <SendMessageModal peerId={peerId} />
           <DeleteAliasButton
             onSuccess={() => {
               set_deleteSuccess(true);

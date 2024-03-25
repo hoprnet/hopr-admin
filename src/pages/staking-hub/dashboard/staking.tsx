@@ -19,12 +19,11 @@ const Container = styled.div`
   gap: 1rem;
   padding: 2rem;
 
-  .safe-and-module-addresses{
+  .safe-and-module-addresses {
     display: flex;
     flex-direction: column;
     gap: 8px;
   }
-
 `;
 
 const FlexContainer = styled.div`
@@ -62,22 +61,21 @@ const Content = styled.div`
     grid-column: 2;
   }
 
-  #redeemed-tickets{
+  #redeemed-tickets {
     grid-column: 1;
   }
 
-  #redeemed-tickets{
+  #redeemed-tickets {
     grid-column: 1;
   }
 
-  #earned-rewards{
+  #earned-rewards {
     grid-column: 2;
   }
 
   #remaining-wxhopr-allowance {
     grid-column: 1;
   }
-
 
   @media screen and (max-width: 1350px) {
     grid-template-columns: repeat(1, 1fr);
@@ -89,7 +87,6 @@ const Content = styled.div`
     }
   }
 `;
-
 
 const ChartContainer = styled.div`
   width: 100%;
@@ -140,15 +137,16 @@ const StakingScreen = () => {
                 <CopyIcon />
               </StyledIconButton>
               <StyledIconButton size="small">
-                <Link to={`https://gnosisscan.io/address/${selectedSafeAddress}`}  target='_blank'>
+                <Link
+                  to={`https://gnosisscan.io/address/${selectedSafeAddress}`}
+                  target="_blank"
+                >
                   <LaunchIcon />
                 </Link>
               </StyledIconButton>
             </div>
           </FlexContainer>
-          <FlexContainer
-            style={{}}
-          >
+          <FlexContainer style={{}}>
             <SafeAddress>Module address: {moduleAddress}</SafeAddress>
             <div>
               <StyledIconButton
@@ -158,7 +156,10 @@ const StakingScreen = () => {
                 <CopyIcon />
               </StyledIconButton>
               <StyledIconButton size="small">
-                <Link to={`https://gnosisscan.io/address/${moduleAddress}`}  target='_blank'>
+                <Link
+                  to={`https://gnosisscan.io/address/${moduleAddress}`}
+                  target="_blank"
+                >
                   <LaunchIcon />
                 </Link>
               </StyledIconButton>

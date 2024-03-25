@@ -6,7 +6,7 @@ import {
   SafeModuleTransactionWithTransfersResponse,
   SafeMultisigTransactionListResponse,
   SafeMultisigTransactionWithTransfersResponse,
-  TokenInfoListResponse
+  TokenInfoListResponse,
 } from '@safe-global/api-kit';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 
@@ -54,16 +54,16 @@ type InitialState = {
     data: {
       safeAddress: string | null;
       moduleAddress: string | null;
-    }
-    isFetching: boolean
+    };
+    isFetching: boolean;
   };
   safesByOwner: { data: string[]; isFetching: boolean };
   allTransactions: { data: CustomAllTransactionsListResponse | null; isFetching: boolean };
   pendingTransactions: { data: CustomSafeMultisigTransactionListResponse | null; isFetching: boolean };
   info: {
     data: SafeInfoResponse | null;
-    safeIndexed: boolean | null,
-    isFetching: boolean
+    safeIndexed: boolean | null;
+    isFetching: boolean;
   };
   delegates: { data: SafeDelegateListResponse | null; isFetching: boolean };
   createTransaction: { isFetching: boolean };
@@ -99,7 +99,7 @@ type InitialState = {
 
 export const initialState: InitialState = {
   selectedSafe: {
-    data:  {
+    data: {
       safeAddress: null,
       moduleAddress: null,
     },

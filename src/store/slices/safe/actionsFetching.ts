@@ -44,37 +44,37 @@ export const createFetchingReducer = (builder: ActionReducerMapBuilder<typeof in
   builder.addCase(setSafeByOwnerFetching, (state, action) => {
     state.safesByOwner.isFetching = action.payload;
   }),
-  builder.addCase(setSafeAllTransactionsFetching, (state, action) => {
-    state.allTransactions.isFetching = action.payload;
-  }),
-  builder.addCase(setSafePendingTransactionsFetching, (state, action) => {
-    state.pendingTransactions.isFetching = action.payload;
-  }),
-  builder.addCase(setSafeDelegatesFetching, (state, action) => {
-    state.delegates.isFetching = action.payload;
-  }),
-  builder.addCase(setCreateTransactionFetching, (state, action) => {
-    state.createTransaction.isFetching = action.payload;
-  }),
-  builder.addCase(setConfirmTransactionFetching, (state, action) => {
-    state.confirmTransaction.isFetching = action.payload;
-  }),
-  builder.addCase(setRejectTransactionFetching, (state, action) => {
-    state.rejectTransaction.isFetching = action.payload;
-  }),
-  builder.addCase(setExecuteTransactionFetching, (state, action) => {
-    state.executeTransaction.isFetching = action.payload;
-  }),
-  builder.addCase(setAddDelegateFetching, (state, action) => {
-    state.addDelegate.isFetching = action.payload;
-  }),
-  builder.addCase(setRemoveDelegateFetching, (state, action) => {
-    state.removeDelegate.isFetching = action.payload;
-  }),
-  builder.addCase(setTokenListFetching, (state, action) => {
-    state.tokenList.isFetching = action.payload;
-  }),
-  builder.addCase(setTokenFetching, (state, action) => {
-    state.token.isFetching = action.payload;
-  });
+    builder.addCase(setSafeAllTransactionsFetching, (state, action) => {
+      state.allTransactions.isFetching = action.payload;
+    }),
+    builder.addCase(setSafePendingTransactionsFetching, (state, action) => {
+      state.pendingTransactions.isFetching = action.payload;
+    }),
+    builder.addCase(setSafeDelegatesFetching, (state, action) => {
+      state.delegates.isFetching = action.payload;
+    }),
+    builder.addCase(setCreateTransactionFetching, (state, action) => {
+      state.createTransaction.isFetching = action.payload;
+    }),
+    builder.addCase(setConfirmTransactionFetching, (state, action) => {
+      state.confirmTransaction.isFetching = action.payload;
+    }),
+    builder.addCase(setRejectTransactionFetching, (state, action) => {
+      state.rejectTransaction.isFetching = action.payload;
+    }),
+    builder.addCase(setExecuteTransactionFetching, (state, action) => {
+      state.executeTransaction.isFetching = action.payload;
+    }),
+    builder.addCase(setAddDelegateFetching, (state, action) => {
+      state.addDelegate.isFetching = action.payload;
+    }),
+    builder.addCase(setRemoveDelegateFetching, (state, action) => {
+      state.removeDelegate.isFetching = action.payload;
+    }),
+    builder.addCase(setTokenListFetching, (state, action) => {
+      state.tokenList.isFetching = action.payload;
+    }),
+    builder.addCase(setTokenFetching, (state, action) => {
+      state.token.isFetching = action.payload;
+    });
 };

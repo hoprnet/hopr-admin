@@ -18,7 +18,7 @@ const store = configureStore({
     web3: web3Slice,
     app: appSlice,
   },
-//  middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(websocketMiddleware),
+  //  middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(websocketMiddleware),
   devTools: process.env.NODE_ENV === 'production' ? false : { maxAge: 5000 },
 });
 

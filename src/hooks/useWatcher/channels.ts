@@ -9,7 +9,7 @@ import { ChannelOutgoingType, ChannelsOutgoingType, ChannelsIncomingType } from 
  */
 export const checkHowChannelsHaveChanged = (
   previousChannels: ChannelsIncomingType | ChannelsOutgoingType,
-  newChannels: ChannelsIncomingType | ChannelsOutgoingType,
+  newChannels: ChannelsIncomingType | ChannelsOutgoingType
 ) => {
   let previousChannelsLocal = JSON.parse(JSON.stringify(previousChannels)) as ChannelsOutgoingType;
   let newChannelsLocal = JSON.parse(JSON.stringify(newChannels)) as ChannelsOutgoingType;
@@ -19,38 +19,36 @@ export const checkHowChannelsHaveChanged = (
   let previousChannelsOutgoing = Object.keys(previousChannelsLocal);
   let newChannelsOutgoing = Object.keys(newChannelsLocal);
 
-  newChannelsOutgoing.forEach(newChannelId => {
+  newChannelsOutgoing.forEach((newChannelId) => {
     const newChannel = newChannelsLocal[newChannelId];
-    if(
+    if (
       previousChannelsOutgoing.includes(newChannelId) &&
-      ( previousChannelsLocal[newChannelId].status === newChannel.status )
+      previousChannelsLocal[newChannelId].status === newChannel.status
     ) {
       delete previousChannelsLocal[newChannelId];
       delete newChannelsLocal[newChannelId];
-    }
-    else if (!previousChannelsOutgoing.includes(newChannelId)) {
+    } else if (!previousChannelsOutgoing.includes(newChannelId)) {
       changes.push({
-        status: "Open",
-        peerAddress: newChannel.peerAddress
+        status: 'Open',
+        peerAddress: newChannel.peerAddress,
       });
-    }
-    else if (newChannel.status === 'PendingToClose') {
+    } else if (newChannel.status === 'PendingToClose') {
       changes.push({
-        status: "PendingToClose",
-        peerAddress: newChannel.peerAddress
+        status: 'PendingToClose',
+        peerAddress: newChannel.peerAddress,
       });
     }
   });
 
-  previousChannelsOutgoing.forEach(prevChannelId => {
+  previousChannelsOutgoing.forEach((prevChannelId) => {
     const prevChannel = previousChannelsLocal[prevChannelId];
-    if(!newChannelsOutgoing.includes(prevChannelId)){
+    if (!newChannelsOutgoing.includes(prevChannelId)) {
       changes.push({
-        status: "Closed",
-        peerAddress: prevChannel.peerAddress
+        status: 'Closed',
+        peerAddress: prevChannel.peerAddress,
       });
     }
   });
 
-  return changes
-}
+  return changes;
+};

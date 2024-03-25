@@ -12,7 +12,7 @@ const Content = styled(SDialogContent)`
     justify-content: center;
     gap: 16px;
     button {
-      margin-top: 16px;;
+      margin-top: 16px;
       padding-inline: 2rem;
       height: 43px;
     }
@@ -20,18 +20,17 @@ const Content = styled(SDialogContent)`
 `;
 
 type ConfirmModalProps = {
-  open?: boolean,
-  confirmButton?: JSX.Element,
-  onConfirm?: Function,
-  onNotConfirm: Function,
-  confirmText?: string,
-  notConfirmText?: string,
-  title?: string,
-  description?: string,
+  open?: boolean;
+  confirmButton?: JSX.Element;
+  onConfirm?: Function;
+  onNotConfirm: Function;
+  confirmText?: string;
+  notConfirmText?: string;
+  title?: string;
+  description?: string;
 };
 
 const ConfirmModal = (props: ConfirmModalProps) => {
-
   const handleNotConfirm = () => {
     props.onNotConfirm();
   };
@@ -64,16 +63,7 @@ const ConfirmModal = (props: ConfirmModalProps) => {
             >
               {props.notConfirmText}
             </Button>
-            {
-              props.confirmButton ?
-              props.confirmButton
-              :
-              <Button
-                onClick={handleConfirm}
-              >
-                {props.confirmText}
-              </Button>
-            }
+            {props.confirmButton ? props.confirmButton : <Button onClick={handleConfirm}>{props.confirmText}</Button>}
           </div>
         </Content>
       </SDialog>

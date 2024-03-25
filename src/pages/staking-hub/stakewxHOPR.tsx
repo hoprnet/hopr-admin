@@ -18,7 +18,7 @@ import {
   StyledInputGroup,
   StyledInstructions,
   StyledTextField,
-  Text
+  Text,
 } from './onboarding/styled';
 
 const StakewxHOPR = () => {
@@ -120,11 +120,13 @@ const StakewxHOPR = () => {
               size="small"
               value={wxhoprValue}
               onChange={(e) => set_wxhoprValue(e.target.value)}
-              InputProps={{ inputProps: {
-                style: { textAlign: 'right' },
-                min: 0,
-                pattern: '[0-9]*',
-              } }}
+              InputProps={{
+                inputProps: {
+                  style: { textAlign: 'right' },
+                  min: 0,
+                  pattern: '[0-9]*',
+                },
+              }}
             />
             <StyledCoinLabel>wxHOPR</StyledCoinLabel>
             <StyledGrayButton onClick={setMax_wxHOPR}>Max</StyledGrayButton>

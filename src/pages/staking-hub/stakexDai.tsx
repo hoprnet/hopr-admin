@@ -6,9 +6,9 @@ import {
   useContractWrite,
   usePrepareContractWrite,
   usePrepareSendTransaction,
-  useSendTransaction
+  useSendTransaction,
 } from 'wagmi';
-import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, MINIMUM_XDAI_TO_FUND, MINIMUM_WXHOPR_TO_FUND } from '../../../config'
+import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, MINIMUM_XDAI_TO_FUND, MINIMUM_WXHOPR_TO_FUND } from '../../../config';
 
 //Store
 import { useAppSelector, useAppDispatch } from '../../store';
@@ -25,7 +25,7 @@ import {
   StyledInputGroup,
   StyledInstructions,
   StyledTextField,
-  Text
+  Text,
 } from './onboarding/styled';
 import { StepContainer, ConfirmButton } from './onboarding/components';
 import styled from '@emotion/styled';
@@ -37,10 +37,7 @@ const StakexDai = () => {
   const walletBalance = useAppSelector((store) => store.web3.balance);
   const [xdaiValue, set_xdaiValue] = useState('');
 
-  const {
-    refetch: refetchXDaiSafeBalance,
-    data: xDaiSafeBalance,
-  } = useBalance({
+  const { refetch: refetchXDaiSafeBalance, data: xDaiSafeBalance } = useBalance({
     address: selectedSafeAddress as `0x${string}`,
     watch: true,
     enabled: !!selectedSafeAddress,
@@ -62,7 +59,8 @@ const StakexDai = () => {
     isLoading: is_xDAI_to_safe_loading,
     sendTransaction: send_xDAI_to_safe,
   } = useSendTransaction({
-    ...xDAI_to_safe_config, onSuccess: () => refetchXDaiSafeBalance(),
+    ...xDAI_to_safe_config,
+    onSuccess: () => refetchXDaiSafeBalance(),
   });
 
   useEffect(() => {
@@ -81,52 +79,52 @@ const StakexDai = () => {
       fullHeightMin
       lightBlue
     >
-    <StepContainer
-      image={{
-        src: '/assets/funds-to-safe.svg',
-        alt: 'Funds to safe image',
-        height: 134,
-      }}
-      title="MOVE xDai TO SAFE"
-      description="You're about to fund a safe with xDAI."
-      buttons={
-        <ConfirmButton
-          onClick={handleFundxDai}
-          disabled={!xdaiValue || xdaiValue === '' || xdaiValue === '0'}
-          pending={is_xDAI_to_safe_loading}
-        >
-          FUND
-        </ConfirmButton>
-      }
-    >
-      <StyledForm>
-        <StyledInstructions>
-          <Text>
-            Move <Lowercase>x</Lowercase>DAI into safe
-          </Text>
-        </StyledInstructions>
-        <StyledInputGroup>
-          <StyledTextField
-            type="number"
-            variant="outlined"
-            placeholder="-"
-            size="small"
-            value={xdaiValue}
-            onChange={(e) => set_xdaiValue(e.target.value)}
-            InputProps={{ inputProps: {
-              style: { textAlign: 'right' },
-              min: 0,
-              pattern: '[0-9]*',
-            } }}
-          />
-          <StyledCoinLabel>
-           xDAI
-          </StyledCoinLabel>
-          <StyledGrayButton onClick={setMax_xDAI}>Max</StyledGrayButton>
-        </StyledInputGroup>
-      </StyledForm>
-      {is_xDAI_to_safe_loading && <span>Check your Wallet...</span>}
-    </StepContainer>
+      <StepContainer
+        image={{
+          src: '/assets/funds-to-safe.svg',
+          alt: 'Funds to safe image',
+          height: 134,
+        }}
+        title="MOVE xDai TO SAFE"
+        description="You're about to fund a safe with xDAI."
+        buttons={
+          <ConfirmButton
+            onClick={handleFundxDai}
+            disabled={!xdaiValue || xdaiValue === '' || xdaiValue === '0'}
+            pending={is_xDAI_to_safe_loading}
+          >
+            FUND
+          </ConfirmButton>
+        }
+      >
+        <StyledForm>
+          <StyledInstructions>
+            <Text>
+              Move <Lowercase>x</Lowercase>DAI into safe
+            </Text>
+          </StyledInstructions>
+          <StyledInputGroup>
+            <StyledTextField
+              type="number"
+              variant="outlined"
+              placeholder="-"
+              size="small"
+              value={xdaiValue}
+              onChange={(e) => set_xdaiValue(e.target.value)}
+              InputProps={{
+                inputProps: {
+                  style: { textAlign: 'right' },
+                  min: 0,
+                  pattern: '[0-9]*',
+                },
+              }}
+            />
+            <StyledCoinLabel>xDAI</StyledCoinLabel>
+            <StyledGrayButton onClick={setMax_xDAI}>Max</StyledGrayButton>
+          </StyledInputGroup>
+        </StyledForm>
+        {is_xDAI_to_safe_loading && <span>Check your Wallet...</span>}
+      </StepContainer>
     </Section>
   );
 };

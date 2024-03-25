@@ -19,7 +19,7 @@ const ImageContainer = styled.div`
   min-height: 256px;
   min-width: 512px;
   padding: 1rem;
-  @media screen and (max-height: 1025px){
+  @media screen and (max-height: 1025px) {
     height: 128px;
     width: 256;
   }

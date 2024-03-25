@@ -142,7 +142,9 @@ export const OpenMultipleChannelsModal = () => {
     const expectedObjectKeys = header.map((key) => key.trim());
 
     // find the index of the "nodeAddress" header
-    let peerIdIndex = expectedObjectKeys.findIndex((key) => key === 'node' || key === 'peer' || key === 'nodeAddress' || key === 'peerAddress' );
+    let peerIdIndex = expectedObjectKeys.findIndex(
+      (key) => key === 'node' || key === 'peer' || key === 'nodeAddress' || key === 'peerAddress'
+    );
 
     if (peerIdIndex === -1) {
       peerIdIndex = expectedObjectKeys.findIndex((key) => key.length === 53 && key.substr(0, 2) === '0x');

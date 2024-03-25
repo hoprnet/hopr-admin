@@ -62,25 +62,22 @@ const css = `
     }
   }
 
-`
+`;
 
 export default function LoadingOverlay() {
   const isFetching1 = useAppSelector((store) => store.stakingHub.safes.isFetching);
- // const isFetching2 = useAppSelector((store) => store.stakingHub.onboarding.isFetching);
+  // const isFetching2 = useAppSelector((store) => store.stakingHub.onboarding.isFetching);
 
-  const loading = isFetching1 //|| isFetching2;
+  const loading = isFetching1; //|| isFetching2;
 
   return (
     <>
-      { loading &&
-        <Overlay
-          className={'OverlayWrongNetwork'}
-        >
+      {loading && (
+        <Overlay className={'OverlayWrongNetwork'}>
           <style>{css}</style>
-          <CircularProgress/>
+          <CircularProgress />
         </Overlay>
-      }
+      )}
     </>
-  )
-
+  );
 }

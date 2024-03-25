@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import TimeAgo from 'react-timeago'
+import TimeAgo from 'react-timeago';
 import { default as utc } from 'dayjs/plugin/utc';
 import { default as timezone } from 'dayjs/plugin/timezone';
 
@@ -28,21 +28,44 @@ export const calculateTimeInGMT = (date: string) => {
 };
 
 export const formatDate = (epoch: number, twoRows = true, now?: number) => {
-  if(!epoch) return <>-<br/>&nbsp;</>;
+  if (!epoch)
+    return (
+      <>
+        -<br />
+        &nbsp;
+      </>
+    );
   let differenceMs = Date.now() - new Date(epoch).getTime();
   // @ts-ignore
-  if (differenceMs < 0) return <TimeAgo date={new Date(epoch).getTime()-(2*60*60*1000)} now={now} />
-  if (differenceMs < 24*60*60*1000) {
-  // @ts-ignore
-    return <TimeAgo date={epoch} now={now} />
+  if (differenceMs < 0)
+    return (
+      <TimeAgo
+        date={new Date(epoch).getTime() - 2 * 60 * 60 * 1000}
+        now={now}
+      />
+    );
+  if (differenceMs < 24 * 60 * 60 * 1000) {
+    // @ts-ignore
+    return (
+      <TimeAgo
+        date={epoch}
+        now={now}
+      />
+    );
   } else {
     const d = new Date(epoch);
     const year = d.getFullYear();
-    const month = d.getMonth()+1 < 10 ? `0${d.getMonth()+1}` : d.getMonth()+1;
+    const month = d.getMonth() + 1 < 10 ? `0${d.getMonth() + 1}` : d.getMonth() + 1;
     const day = d.getDate() < 10 ? `0${d.getDate()}` : d.getDate();
     const hours = d.getUTCHours() < 10 ? `0${d.getUTCHours()}` : d.getUTCHours();
     const minutes = d.getUTCMinutes() < 10 ? `0${d.getUTCMinutes()}` : d.getUTCMinutes();
-    const formatted = <>{`${year}-${month}-${day}`}{twoRows ? <br/> : ' '}{`${hours}:${minutes}`}</>
+    const formatted = (
+      <>
+        {`${year}-${month}-${day}`}
+        {twoRows ? <br /> : ' '}
+        {`${hours}:${minutes}`}
+      </>
+    );
     return <>{formatted}</>;
   }
-}
+};

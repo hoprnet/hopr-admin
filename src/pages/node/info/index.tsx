@@ -26,7 +26,6 @@ import LaunchIcon from '@mui/icons-material/Launch';
 //Info Components
 import NodeUptime from './node-uptime';
 
-
 const TdActionIcons = styled.td`
   display: flex;
   gap: 8px;
@@ -53,9 +52,11 @@ function InfoPage() {
   const statistics = useAppSelector((store) => store.node.statistics.data);
   const statisticsFetching = useAppSelector((store) => store.node.statistics.isFetching);
   const nodeStartedEpoch = useAppSelector((store) => store.node.metrics.data.parsed?.hopr_up?.data[0]);
-  const nodeStartedTime = nodeStartedEpoch && typeof(nodeStartedEpoch) === 'number'? new Date(nodeStartedEpoch*1000).toJSON().replace('T', ' ').replace('Z', ' UTC') : '-';
+  const nodeStartedTime =
+    nodeStartedEpoch && typeof nodeStartedEpoch === 'number'
+      ? new Date(nodeStartedEpoch * 1000).toJSON().replace('T', ' ').replace('Z', ' UTC')
+      : '-';
   const nodeSync = useAppSelector((store) => store.node.metrics.data.parsed?.hopr_indexer_sync_progress?.data[0]);
-
 
   useEffect(() => {
     fetchInfoData();
@@ -190,16 +191,7 @@ function InfoPage() {
                   <span>Sync process</span>
                 </Tooltip>
               </th>
-              <td>
-                {
-               nodeSync && typeof(nodeSync)==='number'?
-                  <ProgressBar
-                    value={nodeSync}
-                  />
-                :
-                '-'
-                }
-              </td>
+              <td>{nodeSync && typeof nodeSync === 'number' ? <ProgressBar value={nodeSync} /> : '-'}</td>
             </tr>
             <tr>
               <th>
@@ -233,7 +225,9 @@ function InfoPage() {
                   <span>Connectivity status</span>
                 </Tooltip>
               </th>
-              <td><ColorStatus className={`status-${info?.connectivityStatus}`}>{info?.connectivityStatus}</ColorStatus></td>
+              <td>
+                <ColorStatus className={`status-${info?.connectivityStatus}`}>{info?.connectivityStatus}</ColorStatus>
+              </td>
             </tr>
             <tr>
               <th>
@@ -330,11 +324,10 @@ function InfoPage() {
                 </Tooltip>
               </th>
               <td>
-                {
-                  balances.channels?.value &&
-                  balances.safeHopr?.value ?
-                  formatEther(BigInt(balances.channels?.value) + BigInt(balances.safeHopr?.value)) : '-'
-                } wxHOPR
+                {balances.channels?.value && balances.safeHopr?.value
+                  ? formatEther(BigInt(balances.channels?.value) + BigInt(balances.safeHopr?.value))
+                  : '-'}{' '}
+                wxHOPR
               </td>
             </tr>
           </tbody>
@@ -356,15 +349,14 @@ function InfoPage() {
               </th>
               <TdActionIcons>
                 {addresses?.hopr}
-                {
-                  addresses?.hopr &&
+                {addresses?.hopr && (
                   <SmallActionButton
                     onClick={() => navigator.clipboard.writeText(addresses?.hopr as string)}
                     tooltip={'Copy'}
                   >
                     <CopyIcon />
                   </SmallActionButton>
-                }
+                )}
               </TdActionIcons>
             </tr>
             <tr>
@@ -378,8 +370,7 @@ function InfoPage() {
               </th>
               <TdActionIcons>
                 {addresses?.native}
-                {
-                  addresses?.native &&
+                {addresses?.native && (
                   <>
                     <SmallActionButton
                       onClick={() => navigator.clipboard.writeText(addresses?.native as string)}
@@ -387,15 +378,16 @@ function InfoPage() {
                     >
                       <CopyIcon />
                     </SmallActionButton>
-                    <SmallActionButton
-                      tooltip={'Open in gnosisscan.io'}
-                    >
-                      <Link to={`https://gnosisscan.io/address/${addresses?.native}`} target='_blank'>
+                    <SmallActionButton tooltip={'Open in gnosisscan.io'}>
+                      <Link
+                        to={`https://gnosisscan.io/address/${addresses?.native}`}
+                        target="_blank"
+                      >
                         <LaunchIcon />
                       </Link>
                     </SmallActionButton>
                   </>
-                }
+                )}
               </TdActionIcons>
             </tr>
             <tr>
@@ -409,8 +401,7 @@ function InfoPage() {
               </th>
               <TdActionIcons>
                 {info?.hoprNodeSafe}
-                {
-                  info?.hoprNodeSafe &&
+                {info?.hoprNodeSafe && (
                   <>
                     <SmallActionButton
                       onClick={() => navigator.clipboard.writeText(info.hoprNodeSafe as string)}
@@ -418,15 +409,16 @@ function InfoPage() {
                     >
                       <CopyIcon />
                     </SmallActionButton>
-                    <SmallActionButton
-                      tooltip={'Open in gnosisscan.io'}
-                    >
-                      <Link to={`https://gnosisscan.io/address/${info.hoprNodeSafe}`} target='_blank'>
+                    <SmallActionButton tooltip={'Open in gnosisscan.io'}>
+                      <Link
+                        to={`https://gnosisscan.io/address/${info.hoprNodeSafe}`}
+                        target="_blank"
+                      >
                         <LaunchIcon />
                       </Link>
                     </SmallActionButton>
                   </>
-                }
+                )}
               </TdActionIcons>
             </tr>
             <tr>
@@ -440,8 +432,7 @@ function InfoPage() {
               </th>
               <TdActionIcons>
                 {info?.hoprToken}
-                {
-                  info?.hoprToken &&
+                {info?.hoprToken && (
                   <>
                     <SmallActionButton
                       onClick={() => navigator.clipboard.writeText(info?.hoprToken as string)}
@@ -449,15 +440,16 @@ function InfoPage() {
                     >
                       <CopyIcon />
                     </SmallActionButton>
-                    <SmallActionButton
-                      tooltip={'Open in gnosisscan.io'}
-                    >
-                      <Link to={`https://gnosisscan.io/address/${info?.hoprToken}`} target='_blank'>
+                    <SmallActionButton tooltip={'Open in gnosisscan.io'}>
+                      <Link
+                        to={`https://gnosisscan.io/address/${info?.hoprToken}`}
+                        target="_blank"
+                      >
                         <LaunchIcon />
                       </Link>
                     </SmallActionButton>
                   </>
-                }
+                )}
               </TdActionIcons>
             </tr>
             <tr>
@@ -471,8 +463,7 @@ function InfoPage() {
               </th>
               <TdActionIcons>
                 {info?.hoprManagementModule}
-                {
-                  info?.hoprManagementModule &&
+                {info?.hoprManagementModule && (
                   <>
                     <SmallActionButton
                       onClick={() => navigator.clipboard.writeText(info.hoprManagementModule as string)}
@@ -480,15 +471,16 @@ function InfoPage() {
                     >
                       <CopyIcon />
                     </SmallActionButton>
-                    <SmallActionButton
-                      tooltip={'Open on gnosisscan.io'}
-                    >
-                      <Link to={`https://gnosisscan.io/address/${info.hoprManagementModule}`} target='_blank'>
+                    <SmallActionButton tooltip={'Open on gnosisscan.io'}>
+                      <Link
+                        to={`https://gnosisscan.io/address/${info.hoprManagementModule}`}
+                        target="_blank"
+                      >
                         <LaunchIcon />
                       </Link>
                     </SmallActionButton>
                   </>
-                }
+                )}
               </TdActionIcons>
             </tr>
             <tr>
@@ -502,8 +494,7 @@ function InfoPage() {
               </th>
               <TdActionIcons>
                 {info?.hoprChannels}
-                {
-                  info?.hoprChannels &&
+                {info?.hoprChannels && (
                   <>
                     <SmallActionButton
                       onClick={() => navigator.clipboard.writeText(info?.hoprChannels as string)}
@@ -511,15 +502,16 @@ function InfoPage() {
                     >
                       <CopyIcon />
                     </SmallActionButton>
-                    <SmallActionButton
-                      tooltip={'Open in gnosisscan.io'}
-                    >
-                      <Link to={`https://gnosisscan.io/address/${info?.hoprChannels}`} target='_blank'>
+                    <SmallActionButton tooltip={'Open in gnosisscan.io'}>
+                      <Link
+                        to={`https://gnosisscan.io/address/${info?.hoprChannels}`}
+                        target="_blank"
+                      >
                         <LaunchIcon />
                       </Link>
                     </SmallActionButton>
                   </>
-                }
+                )}
               </TdActionIcons>
             </tr>
           </tbody>
@@ -552,9 +544,7 @@ function InfoPage() {
               </th>
               <td>{info?.network}</td>
             </tr>
-            <tr
-              key='node-startdate'
-            >
+            <tr key="node-startdate">
               <th>
                 <Tooltip
                   title="Date when you node was started"

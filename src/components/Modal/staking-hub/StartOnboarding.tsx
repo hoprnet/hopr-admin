@@ -17,7 +17,7 @@ const Content = styled(SDialogContent)`
     justify-content: center;
     gap: 16px;
     button {
-      margin-top: 16px;;
+      margin-top: 16px;
       padding-inline: 2rem;
     }
   }
@@ -28,13 +28,15 @@ type WithdrawModalProps = {
 };
 
 const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
-//  console.log('StartOnboarding')
+  //  console.log('StartOnboarding')
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const notFinished = useAppSelector((state) => state.stakingHub.onboarding.notFinished);
   const notStarted = useAppSelector((state) => state.stakingHub.onboarding.notStarted);
-  const modalToSartOnboardingDismissed = useAppSelector((state) => state.stakingHub.onboarding.modalToSartOnboardingDismissed);
+  const modalToSartOnboardingDismissed = useAppSelector(
+    (state) => state.stakingHub.onboarding.modalToSartOnboardingDismissed
+  );
   const web3connected = useAppSelector((state) => state.web3.status.connected);
   const [openModal, set_openModal] = useState(false);
   const moduleAddress = useAppSelector((store) => store.safe.selectedSafe.data.moduleAddress);
@@ -49,27 +51,25 @@ const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
       set_openModal(false);
       return;
     }
-    if ((!modalToSartOnboardingDismissed && web3connected && notStarted && !notFinished) || (!moduleAddress)) handleOpenModal();
+    if ((!modalToSartOnboardingDismissed && web3connected && notStarted && !notFinished) || !moduleAddress)
+      handleOpenModal();
     else set_openModal(false);
   }, [web3connected, notFinished, notStarted, modalToSartOnboardingDismissed, moduleAddress]);
 
-
   const handleOpenModal = () => {
-   // console.log('handleOpenModal')
+    // console.log('handleOpenModal')
     set_openModal(true);
   };
 
   const handleCloseModal = () => {
-    console.log('handleCloseModal')
+    console.log('handleCloseModal');
     set_openModal(false);
     dispatch(stakingHubActions.dismissModalToSartOnboarding());
-    if(location.pathname !== '/') navigate('/');
+    if (location.pathname !== '/') navigate('/');
   };
 
-  if(isFetching) {
-    return (
-     <LoadingOverlay/>
-    );
+  if (isFetching) {
+    return <LoadingOverlay />;
   }
 
   return (
@@ -82,7 +82,9 @@ const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
           <DialogTitle>SET UP YOUR HOPR SAFE</DialogTitle>
           <SIconButton
             aria-label="close modal"
-            onClick={()=>{handleCloseModal()}}
+            onClick={() => {
+              handleCloseModal();
+            }}
           >
             <CloseIcon />
           </SIconButton>
@@ -91,7 +93,9 @@ const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
           <p>Are you ready to create your HOPR Safe?</p>
           <div>
             <Button
-              onClick={()=>{handleCloseModal()}}
+              onClick={() => {
+                handleCloseModal();
+              }}
               outlined
             >
               NOT NOW

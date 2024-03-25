@@ -149,28 +149,27 @@ function Onboarding() {
         ]}
       />
 
-      {
-        onboardingIsFetching && onboardingStep === 0 ? (
-          <OnboardingIsFetching />
-        ) : (
-          <>
-            {onboardingStep === ONBOARDING_PAGES.WHAT_YOU_WILL_NEED && <WhatYouWillNeedPage />}
-            {onboardingStep === ONBOARDING_PAGES.CREATE_SAFE && <CreateSafe />}
-            {onboardingStep === ONBOARDING_PAGES.SAFE_IS_READY && <SafeIsReady />}
-            {onboardingStep === ONBOARDING_PAGES.OPTIONAL_NFT_TRANSFER && <OptionalNftTransfer />}
-            {onboardingStep === ONBOARDING_PAGES.XDAI_TO_SAFE && <XdaiToSafe />}
-            {onboardingStep === ONBOARDING_PAGES.SAFE_IS_FUNDED && <SafeIsFunded />}
-            {onboardingStep === ONBOARDING_PAGES.SELECT_NODE_TYPE && <SelectNodeType />}
-            {onboardingStep === ONBOARDING_PAGES.SETUP_NODE && <SetupNodeStep />}
-            {onboardingStep === ONBOARDING_PAGES.SETUP_DAPP_NODE && <SetupYourDappNode />}
-            {onboardingStep === ONBOARDING_PAGES.JOIN_WAITLIST && <JoinWaitListStep />}
-            {onboardingStep === ONBOARDING_PAGES.ADDED_TO_WHITELIST && <AddedToWhitelist />}
-            {onboardingStep === ONBOARDING_PAGES.ADD_NODE && <AddNode />}
-            {onboardingStep === ONBOARDING_PAGES.CONFIGURE_NODE && <ConfigureModule onboardingType={'main'}/>}
-            {onboardingStep === ONBOARDING_PAGES.FUND_NODE && <FundNode />}
-            {onboardingStep === ONBOARDING_PAGES.SET_ALLOWANCE && <SetAllowance />}
-            {onboardingStep === ONBOARDING_PAGES.NODE_IS_READY && <NodeIsReady />}
-          </>
+      {onboardingIsFetching && onboardingStep === 0 ? (
+        <OnboardingIsFetching />
+      ) : (
+        <>
+          {onboardingStep === ONBOARDING_PAGES.WHAT_YOU_WILL_NEED && <WhatYouWillNeedPage />}
+          {onboardingStep === ONBOARDING_PAGES.CREATE_SAFE && <CreateSafe />}
+          {onboardingStep === ONBOARDING_PAGES.SAFE_IS_READY && <SafeIsReady />}
+          {onboardingStep === ONBOARDING_PAGES.OPTIONAL_NFT_TRANSFER && <OptionalNftTransfer />}
+          {onboardingStep === ONBOARDING_PAGES.XDAI_TO_SAFE && <XdaiToSafe />}
+          {onboardingStep === ONBOARDING_PAGES.SAFE_IS_FUNDED && <SafeIsFunded />}
+          {onboardingStep === ONBOARDING_PAGES.SELECT_NODE_TYPE && <SelectNodeType />}
+          {onboardingStep === ONBOARDING_PAGES.SETUP_NODE && <SetupNodeStep />}
+          {onboardingStep === ONBOARDING_PAGES.SETUP_DAPP_NODE && <SetupYourDappNode />}
+          {onboardingStep === ONBOARDING_PAGES.JOIN_WAITLIST && <JoinWaitListStep />}
+          {onboardingStep === ONBOARDING_PAGES.ADDED_TO_WHITELIST && <AddedToWhitelist />}
+          {onboardingStep === ONBOARDING_PAGES.ADD_NODE && <AddNode />}
+          {onboardingStep === ONBOARDING_PAGES.CONFIGURE_NODE && <ConfigureModule onboardingType={'main'} />}
+          {onboardingStep === ONBOARDING_PAGES.FUND_NODE && <FundNode />}
+          {onboardingStep === ONBOARDING_PAGES.SET_ALLOWANCE && <SetAllowance />}
+          {onboardingStep === ONBOARDING_PAGES.NODE_IS_READY && <NodeIsReady />}
+        </>
       )}
       <div style={{ flex: 1 }} />
       <NetworkOverlay />

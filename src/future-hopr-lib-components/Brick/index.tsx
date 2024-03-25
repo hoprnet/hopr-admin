@@ -20,9 +20,8 @@ const SBrick = styled.div`
 `;
 
 type TextContainerProps = {
-  centerText?: boolean
-}
-
+  centerText?: boolean;
+};
 
 const TextContainer = styled.div<TextContainerProps>`
   flex: 6;
@@ -45,8 +44,8 @@ const ImageContainer = styled.div`
 `;
 
 type ImageProps = {
-  noShadow?: boolean
-}
+  noShadow?: boolean;
+};
 
 const Image = styled.img<ImageProps>`
   height: auto;

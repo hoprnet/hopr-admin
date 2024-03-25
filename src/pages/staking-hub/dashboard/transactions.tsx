@@ -12,7 +12,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 
 // MUI ICONS
@@ -44,7 +44,7 @@ import {
   CustomSafeModuleTransactionWithTransfersResponse,
   CustomSafeMultisigTransactionListResponse,
   CustomSafeMultisigTransactionResponse,
-  CustomSafeMultisigTransactionWithTransfersResponse
+  CustomSafeMultisigTransactionWithTransfersResponse,
 } from '../../../store/slices/safe/initialState';
 import { calculateTimeInGMT, formatDateToUserTimezone, formatTimeToUserTimezone } from '../../../utils/date';
 import { truncateEthereumAddress } from '../../../utils/blockchain';
@@ -170,14 +170,13 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
   const dispatch = useAppDispatch();
   const address = useAppSelector((store) => store.web3.account);
   const safeNonce = useAppSelector((store) => store.safe.info.data?.nonce);
-  const safeThresholdFromSafe = useAppSelector((store)=>store.safe.info.data?.threshold);
+  const safeThresholdFromSafe = useAppSelector((store) => store.safe.info.data?.threshold);
   const possibleThresholdProblem = safeThresholdFromSafe !== transaction.confirmationsRequired;
   const transactionAfterSafeNonce = safeNonce !== transaction.nonce;
   const [userAction, set_userAction] = useState<'EXECUTE' | 'SIGN' | null>(null);
   const [isLoadingApproving, set_isLoadingApproving] = useState<boolean>(false);
   const [isLoadingExecuting, set_isLoadingExecuting] = useState<boolean>(false);
   const [isLoadingRejecting, set_isLoadingRejecting] = useState<boolean>(false);
-
 
   useEffect(() => {
     if (address) {
@@ -187,7 +186,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
 
   // TODO: remove this isLoading functions when isLoading is moved to redux
   const executeTx = (transaction: SafeMultisigTransactionResponse) => {
-    console.log('executeTx transaction' , transaction)
+    console.log('executeTx transaction', transaction);
     if (signer) {
       set_isLoadingExecuting(true);
       dispatch(
@@ -195,7 +194,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           safeAddress: transaction.safe,
           signer,
           safeTransaction: transaction,
-        }),
+        })
       )
         .unwrap()
         .then(() => {
@@ -226,7 +225,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           signer,
           safeAddress: transaction.safe,
           safeTransactionHash: transaction.safeTxHash,
-        }),
+        })
       )
         .unwrap()
         .then(() => {
@@ -246,7 +245,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           signer,
           safeAddress: transaction.safe,
           nonce: transaction.nonce,
-        }),
+        })
       )
         .unwrap()
         .then(() => {
@@ -258,8 +257,6 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
     }
   };
 
-
-
   // <Tooltip
   //   title={`It apears that your safe threshold is not the same as the number of confirmations required for the transaction. It could be the indexer fault. Please wait about 1h untill the data is indexed.`}
   // >
@@ -268,7 +265,13 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
     return (
       <>
         <StyledButtonGroup>
-          <Tooltip title={possibleThresholdProblem ? `WARNING: It apears that your safe threshold is not the same as the number of confirmations required for this transaction. It could be the indexer fault. Please wait about 1h untill the data is indexed.` : transactionAfterSafeNonce && `Earlier actions should be handled first`}>
+          <Tooltip
+            title={
+              possibleThresholdProblem
+                ? `WARNING: It apears that your safe threshold is not the same as the number of confirmations required for this transaction. It could be the indexer fault. Please wait about 1h untill the data is indexed.`
+                : transactionAfterSafeNonce && `Earlier actions should be handled first`
+            }
+          >
             <span>
               <StyledBlueButton
                 disabled={transactionAfterSafeNonce}
@@ -278,10 +281,16 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
               </StyledBlueButton>
             </span>
           </Tooltip>
-          <Tooltip title={possibleThresholdProblem ? `WARNING: It apears that your safe threshold is not the same as the number of confirmations required for this transaction. It could be the indexer fault. Please wait about 1h untill the data is indexed.` : transactionAfterSafeNonce && `Earlier actions should be handled first`}>
+          <Tooltip
+            title={
+              possibleThresholdProblem
+                ? `WARNING: It apears that your safe threshold is not the same as the number of confirmations required for this transaction. It could be the indexer fault. Please wait about 1h untill the data is indexed.`
+                : transactionAfterSafeNonce && `Earlier actions should be handled first`
+            }
+          >
             <span>
               <StyledBlueButton
-                className='positive-action'
+                className="positive-action"
                 disabled={transactionAfterSafeNonce}
                 onClick={() => executeTx(transaction)}
                 pending={isLoadingExecuting}
@@ -313,7 +322,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           <Tooltip title={!userAction && 'You have already approved'}>
             <span>
               <StyledBlueButton
-                className='positive-action'
+                className="positive-action"
                 onClick={() => approveTx(transaction)}
                 disabled={!userAction}
               >
@@ -342,13 +351,12 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
   const [dateInGMT, set_dateInGMT] = useState<string>();
   const [transactionStatus, set_transactionStatus] = useState<string>();
 
-
   useEffect(() => {
     if (signer && transaction) {
       getValueFromTransaction(transaction, signer).then((value) => {
-        console.log('gotValueFromTransaction', value)
+        console.log('gotValueFromTransaction', value);
         const valueString = value?.toString();
-        set_value(valueString)
+        set_value(valueString);
       });
       set_dateInGMT(calculateTimeInGMT(transaction.submissionDate));
       set_dateInUserTimezone(formatDateToUserTimezone(transaction.submissionDate));
@@ -378,7 +386,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
 
   const getCurrencyFromTransaction = async (
     transaction: SafeMultisigTransactionResponse,
-    signer: ethers.providers.JsonRpcSigner,
+    signer: ethers.providers.JsonRpcSigner
   ) => {
     const isNativeTransaction = !transaction.data;
     if (isNativeTransaction) {
@@ -388,7 +396,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
       safeActionsAsync.getToken({
         signer,
         tokenAddress: transaction.to,
-      }),
+      })
     ).unwrap();
 
     if (!token || (!token.name && !token.symbol)) {
@@ -399,17 +407,16 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
     return token.symbol;
   };
 
-
   const getValueFromTransaction = async (
     transaction: SafeMultisigTransactionResponse,
-    signer: ethers.providers.JsonRpcSigner,
+    signer: ethers.providers.JsonRpcSigner
   ) => {
     const isNativeTransaction = !transaction.data;
-    console.log('getValueFromTransaction', transaction)
+    console.log('getValueFromTransaction', transaction);
 
     // Rejection
-    if (transaction.safe === transaction.to && !BigInt(transaction.value)){
-      return ''
+    if (transaction.safe === transaction.to && !BigInt(transaction.value)) {
+      return '';
     }
     const currency = getCurrencyFromTransaction(transaction, signer);
     if (isNativeTransaction) {
@@ -421,11 +428,11 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
     // data: { "method": "approve", "parameters": [ { "name": "spender", "type": "address", "value": "0x693Bac5ce61c720dDC68533991Ceb41199D8F8ae" }, { "name": "value", "type": "uint256", "value": "1000000000000000000000" } ] }
 
     try {
-      if(
+      if (
         transaction.dataDecoded &&
         typeof transaction.dataDecoded === 'object' &&
         !Array.isArray(transaction.dataDecoded)
-      ){
+      ) {
         // @ts-ignore
         if (transaction?.dataDecoded?.method === 'addOwnerWithThreshold') {
           // @ts-ignore
@@ -440,7 +447,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
       safeActionsAsync.getToken({
         signer,
         tokenAddress: transaction.to,
-      }),
+      })
     ).unwrap();
 
     if (!token || (!token.name && !token.symbol)) {
@@ -459,7 +466,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
 
       return value;
     } catch (e) {
-      console.log('the data may not decode', e)
+      console.log('the data may not decode', e);
       // if the function is not from an abi stated above
       // the data may not decode
       return null;
@@ -467,7 +474,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
   };
 
   const getValueFromERC20Functions = (
-    decodedData: ReturnType<typeof decodeFunctionData<typeof erc20ABI>>,
+    decodedData: ReturnType<typeof decodeFunctionData<typeof erc20ABI>>
   ): string | null => {
     if (decodedData.functionName === 'transfer') {
       return formatEther(decodedData.args[1]);
@@ -504,9 +511,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
         </TableCell>
         <TableCell align="left">{transaction.source}</TableCell>
         <TableCell align="left">{transaction.request}</TableCell>
-        <TableCell align="left">
-          {value}
-        </TableCell>
+        <TableCell align="left">{value}</TableCell>
         <TableCell align="left">
           <ActionButtons transaction={transaction} />
         </TableCell>
@@ -608,13 +613,11 @@ function EthereumTransactionRow(props: { transaction: CustomEthereumTxWithTransf
           <TruncatedEthereumAddressWithTooltip address={transaction.source} />
         </TableCell>
         <TableCell align="right">{transaction.request}</TableCell>
-        <TableCell
-          align="right"
-        >{`${
-            transaction.value && transaction.value.length > 18
-              ? transaction.value.slice(0, 18).concat('...')
-              : transaction.value
-          } ${transaction.currency}`}</TableCell>
+        <TableCell align="right">{`${
+          transaction.value && transaction.value.length > 18
+            ? transaction.value.slice(0, 18).concat('...')
+            : transaction.value
+        } ${transaction.currency}`}</TableCell>
       </StyledHistoryTableRow>
       <StyledHistoryTableRow>
         <StyledCollapsibleCell colSpan={6}>
@@ -697,13 +700,11 @@ function MultisigTransactionRow(props: { transaction: CustomSafeMultisigTransact
           <TruncatedEthereumAddressWithTooltip address={transaction.source} />
         </TableCell>
         <TableCell align="right">{transaction.request}</TableCell>
-        <TableCell
-          align="right"
-        >{`${
-            transaction.value && transaction.value.length > 10
-              ? transaction.value.slice(0, 10).concat('...')
-              : transaction.value
-          } ${transaction.currency}`}</TableCell>
+        <TableCell align="right">{`${
+          transaction.value && transaction.value.length > 10
+            ? transaction.value.slice(0, 10).concat('...')
+            : transaction.value
+        } ${transaction.currency}`}</TableCell>
       </StyledHistoryTableRow>
       <StyledHistoryTableRow className={!transaction.isExecuted ? 'rejected' : ''}>
         <StyledCollapsibleCell colSpan={6}>
@@ -872,7 +873,7 @@ function TransactionHistoryTable() {
         safeActionsAsync.getAllSafeTransactionsThunk({
           signer,
           safeAddress: selectedSafeAddress,
-        }),
+        })
       );
     }
   };
@@ -925,7 +926,7 @@ const PendingTransactionsTable = () => {
         safeActionsAsync.getPendingSafeTransactionsThunk({
           safeAddress: selectedSafeAddress,
           signer,
-        }),
+        })
       );
     }
 
@@ -936,7 +937,7 @@ const PendingTransactionsTable = () => {
         safeActionsAsync.getSafeInfoThunk({
           signer: signer,
           safeAddress: selectedSafeAddress,
-        }),
+        })
       );
     }, 10000);
 
@@ -951,7 +952,7 @@ const PendingTransactionsTable = () => {
 
     // sort from oldest date to newest
     return sortedCopy?.results.sort(
-      (prevDay, nextDay) => prevDay.nonce - nextDay.nonce,
+      (prevDay, nextDay) => prevDay.nonce - nextDay.nonce
     ) as CustomSafeMultisigTransactionResponse[];
   };
 
@@ -979,7 +980,7 @@ const PendingTransactionsTable = () => {
                 key={key}
               />
             ))}
-          {pendingTransactions && !pendingTransactions?.count && <div style={{margin: '16px'}}>No entries</div>}
+          {pendingTransactions && !pendingTransactions?.count && <div style={{ margin: '16px' }}>No entries</div>}
         </TableBody>
       </Table>
     </TableContainer>

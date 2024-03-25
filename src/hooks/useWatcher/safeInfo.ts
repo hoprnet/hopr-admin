@@ -34,7 +34,13 @@ export const observeSafeInfo = ({
       ).unwrap();
     },
     previousData: null,
-    isDataDifferent: () => {return false},
-    notificationHandler: () => { return },
-    updatePreviousData: () => { return },
+    isDataDifferent: () => {
+      return false;
+    },
+    notificationHandler: () => {
+      return;
+    },
+    updatePreviousData: () => {
+      return;
+    },
   });

@@ -37,10 +37,10 @@ export default function SafeTransactionButton(props: SafeButtonProps) {
 
   useEffect(() => {
     if (props.safeInfo) {
-      set_indexerDidNotWork(false)
+      set_indexerDidNotWork(false);
       set_userCanSkipProposal(getUserCanSkipProposal(props.safeInfo));
     } else {
-      set_indexerDidNotWork(true)
+      set_indexerDidNotWork(true);
     }
   }, [props.safeInfo]);
 
@@ -62,11 +62,7 @@ export default function SafeTransactionButton(props: SafeButtonProps) {
     return (
       <Tooltip title={`Your safe wasn\'t indexed yet by HOPR Safe Infrastructure. Please try in 1 hour`}>
         <span>
-          <Button
-            disabled={true}
-          >
-            {props.signOptions.buttonText ?? 'SIGN'}
-          </Button>
+          <Button disabled={true}>{props.signOptions.buttonText ?? 'SIGN'}</Button>
         </span>
       </Tooltip>
     );

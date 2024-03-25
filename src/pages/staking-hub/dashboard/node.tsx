@@ -6,7 +6,6 @@ import { safeActionsAsync } from '../../../store/slices/safe';
 import { useEthersSigner } from '../../../hooks';
 import { rounder } from '../../../utils/functions';
 
-
 import { Card, Chip, IconButton as MuiIconButton } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -20,8 +19,8 @@ import TooltipMui from '@mui/material/Tooltip';
 
 // HOPR components
 import Button from '../../../future-hopr-lib-components/Button';
-import { Table } from '../../../future-hopr-lib-components/Table/columed-data'
-import ProgressBar from '../../../future-hopr-lib-components/Progressbar'
+import { Table } from '../../../future-hopr-lib-components/Table/columed-data';
+import ProgressBar from '../../../future-hopr-lib-components/Progressbar';
 import { formatDate } from '../../../utils/date';
 import TablePro from '../../../future-hopr-lib-components/Table/table-pro';
 import Tooltip from '../../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
@@ -34,19 +33,18 @@ import { Address } from 'viem';
 import { browserClient } from '../../../providers/wagmi';
 import { Dock } from '@mui/icons-material';
 
-
 const Container = styled.section`
-    padding: 1rem;
+  padding: 1rem;
 
-    h4.title {
-      font-weight: 700;
-      margin: 0;
-    }
+  h4.title {
+    font-weight: 700;
+    margin: 0;
+  }
 
-    h5.subtitle {
-      font-weight: 600;
-      margin: 0;
-    }
+  h5.subtitle {
+    font-weight: 600;
+    margin: 0;
+  }
 `;
 
 const Grid = styled.div`
@@ -69,7 +67,6 @@ const Grid = styled.div`
       grid-column: 1;
     }
   }
-
 `;
 
 const StyledGrayCard = styled(Card)`
@@ -112,7 +109,7 @@ const ButtonGroup = styled.div`
   gap: 0.5rem;
 `;
 
-const StyledChip = styled(Chip) <{ color: string }>`
+const StyledChip = styled(Chip)<{ color: string }>`
   align-self: flex-start;
   background-color: ${(props) => props.color === 'error' && '#ffcbcb'};
   background-color: ${(props) => props.color === 'success' && '#cbffd0'};
@@ -184,39 +181,27 @@ type GrayCardProps = {
   children?: ReactNode;
 };
 
-const GrayCard = ({
-  id,
-  title,
-  subtitle,
-  value,
-  valueTooltip,
-  currency,
-  chip,
-  buttons,
-  children,
-}: GrayCardProps) => {
+const GrayCard = ({ id, title, subtitle, value, valueTooltip, currency, chip, buttons, children }: GrayCardProps) => {
   return (
     <StyledGrayCard id={id}>
       {(title || value) && (
         <CardContent>
-          {title && <h4 className='title'>{title}</h4>}
-          {subtitle && <h5 className='subtitle'>{subtitle}</h5>}
-          {value && (
-            valueTooltip ?
-            <Tooltip
-              title={valueTooltip}
-            >
+          {title && <h4 className="title">{title}</h4>}
+          {subtitle && <h5 className="subtitle">{subtitle}</h5>}
+          {value &&
+            (valueTooltip ? (
+              <Tooltip title={valueTooltip}>
+                <ValueAndCurrency>
+                  <CardValue>{value}</CardValue>
+                  {currency && <CardCurrency>{currency}</CardCurrency>}
+                </ValueAndCurrency>
+              </Tooltip>
+            ) : (
               <ValueAndCurrency>
                 <CardValue>{value}</CardValue>
                 {currency && <CardCurrency>{currency}</CardCurrency>}
               </ValueAndCurrency>
-            </Tooltip>
-            :
-            <ValueAndCurrency>
-              <CardValue>{value}</CardValue>
-              {currency && <CardCurrency>{currency}</CardCurrency>}
-            </ValueAndCurrency>
-          )}
+            ))}
         </CardContent>
       )}
       {chip && (
@@ -267,14 +252,14 @@ const header = [
     name: 'Delegate',
     search: true,
     maxWidth: '160px',
-    tooltipHeader: 'Is this node a delegate? (allowed to propose transactions to the safe owner)'
+    tooltipHeader: 'Is this node a delegate? (allowed to propose transactions to the safe owner)',
   },
   {
     key: 'includedInModule',
     name: 'Config',
     search: true,
     maxWidth: '160px',
-    tooltipHeader: 'Is this node included & configured in the Node Management Module?'
+    tooltipHeader: 'Is this node included & configured in the Node Management Module?',
   },
   {
     key: 'balance',
@@ -286,7 +271,7 @@ const header = [
     key: 'search',
     name: '',
     search: true,
-    hidden: true
+    hidden: true,
   },
   {
     key: 'actions',
@@ -303,47 +288,27 @@ const getOnboardingTooltip = (
   isDelegate?: boolean,
   includedInModule?: boolean,
   balanceFormatted?: string,
-  finishMainOnboardingForThisNode?: boolean,
+  finishMainOnboardingForThisNode?: boolean
 ) => {
-  if(finishMainOnboardingForThisNode) {
+  if (finishMainOnboardingForThisNode) {
+    return <span>Finish ONBOARDING for this node first</span>;
+  } else if (onboardingNotFinished) {
     return (
       <span>
-        Finish ONBOARDING for this node first
+        Please finish the main
+        <br /> ONBOARDING first
       </span>
-    )
-  } else if(onboardingNotFinished) {
-    return (
-      <span>
-        Please finish the main<br/> ONBOARDING first
-      </span>
-    )
+    );
   } else if (!inNetworkRegistry) {
-    return (
-      <span>
-        Node not registered on the network
-      </span>
-    )
-  }
-  else if (includedInModule && isDelegate && balanceFormatted === '0') {
-    return (
-      <span>
-        You need to fund this node
-      </span>
-    )
+    return <span>Node not registered on the network</span>;
+  } else if (includedInModule && isDelegate && balanceFormatted === '0') {
+    return <span>You need to fund this node</span>;
   } else if (!includedInModule || !isDelegate) {
-    return (
-      <span>
-        Finish ONBOARDING for this node
-      </span>
-    )
+    return <span>Finish ONBOARDING for this node</span>;
   } else {
-    return (
-      <span>
-        Onboarding is DONE for this node
-      </span>
-    )
+    return <span>Onboarding is DONE for this node</span>;
   }
-}
+};
 
 const NodeAdded = () => {
   const navigate = useNavigate();
@@ -353,101 +318,108 @@ const NodeAdded = () => {
   const nodeBalance = useAppSelector((store) => store.stakingHub.onboarding.nodeBalance.xDai.formatted);
   const nodes = useAppSelector((store) => store.stakingHub.nodes);
   const delegates = useAppSelector((store) => store.safe.delegates.data);
-  const [chosenNode, set_chosenNode] = useState< string | null>(nodeHoprAddress);
+  const [chosenNode, set_chosenNode] = useState<string | null>(nodeHoprAddress);
 
-  useEffect(()=>{
+  useEffect(() => {
     set_chosenNode((prev) => {
-      if(!prev) return nodeHoprAddress
-      else return prev
-    })
+      if (!prev) return nodeHoprAddress;
+      else return prev;
+    });
   }, [nodeHoprAddress]);
 
-  useEffect(()=>{
-    console.log('chosenNode', chosenNode)
+  useEffect(() => {
+    console.log('chosenNode', chosenNode);
   }, [chosenNode]);
 
-  const delegatesArray = delegates?.results?.map(elem => elem.delegate.toLocaleLowerCase()) || [];
+  const delegatesArray = delegates?.results?.map((elem) => elem.delegate.toLocaleLowerCase()) || [];
   const nodesPeerIdArr = Object.keys(nodes);
-  const parsedTableData = nodesPeerIdArr.map((node, index) => {
-    const inNetworkRegistry = nodes[node].registeredNodesInNetworkRegistry;
-    const inSafeRegistry = nodes[node].registeredNodesInSafeRegistry
-    const isDelegate = delegatesArray.includes(node);
-    const includedInModule = nodes[node].includedInModule;
+  const parsedTableData =
+    nodesPeerIdArr
+      .map((node, index) => {
+        const inNetworkRegistry = nodes[node].registeredNodesInNetworkRegistry;
+        const inSafeRegistry = nodes[node].registeredNodesInSafeRegistry;
+        const isDelegate = delegatesArray.includes(node);
+        const includedInModule = nodes[node].includedInModule;
 
-    const finishMainOnboardingForThisNode = onboardingNotFinished && onboardingNodeAddress?.toLowerCase() === node?.toLowerCase();
+        const finishMainOnboardingForThisNode =
+          onboardingNotFinished && onboardingNodeAddress?.toLowerCase() === node?.toLowerCase();
 
-    return {
-      peerId: <>
-                {node}
-                <SquaredIconButton
-                  onClick={() => nodeHoprAddress && navigator.clipboard.writeText(node)}
-                >
-                  <CopyIcon />
+        return {
+          peerId: (
+            <>
+              {node}
+              <SquaredIconButton onClick={() => nodeHoprAddress && navigator.clipboard.writeText(node)}>
+                <CopyIcon />
+              </SquaredIconButton>
+              <Link
+                to={`https://gnosisscan.io/address/${node}`}
+                target="_blank"
+              >
+                <SquaredIconButton>
+                  <LaunchIcon />
                 </SquaredIconButton>
-                <Link to={`https://gnosisscan.io/address/${node}`} target='_blank'>
-                  <SquaredIconButton>
-                    <LaunchIcon />
-                  </SquaredIconButton>
-                </Link>
-              </>,
-      inNetworkRegistry: inNetworkRegistry ? 'Yes' : 'No',
-      inSafeRegistry: inSafeRegistry ? 'Yes' : 'No',
-      isDelegate: isDelegate ? 'Yes' : 'No',
-      includedInModule: includedInModule ? 'Yes' : 'No',
-      id: node,
-      balance: <Tooltip
-                  title={nodes[node].balanceFormatted}
-                >
-                  <span>{nodes[node]?.balanceFormatted ? `${rounder(nodes[node].balanceFormatted)} xDAI` : '-'}</span>
-                </Tooltip>,
-      search: node,
-      actions: <>
-        <IconButton
-          iconComponent={<TrainIcon />}
-          tooltipText={getOnboardingTooltip(
-            onboardingNotFinished,
-            inNetworkRegistry,
-            isDelegate,
-            includedInModule,
-            nodes[node].balanceFormatted,
-            finishMainOnboardingForThisNode,
-          )}
-          onClick={()=>{
-            if(finishMainOnboardingForThisNode) {navigate(`/staking/onboarding/`)}
-            else {navigate(`/staking/onboarding/nextNode?nodeAddress=${node}`);}
-          }}
-          disabled={(onboardingNotFinished || (includedInModule && isDelegate && nodes[node].balanceFormatted !== '0')) && !finishMainOnboardingForThisNode}
-        />
-        <IconButton
-          iconComponent={<VisibilityIcon />}
-          tooltipText={
-            <span>
-              Display node DETAILS at the top of page
-            </span>
-          }
-          onClick={()=>{
-            window.scrollTo({
-              top: 0,
-              left: 0,
-              behavior: "smooth",
-            });
-            set_chosenNode(node);
-          }}
-        />
-        <IconButton
-          iconComponent={<WalletIcon />}
-          tooltipText={
-            <span>
-              FUND node
-            </span>
-          }
-          onClick={()=>{
-            navigate(`/staking/fund-node?nodeAddress=${node}`);
-          }}
-        />
-      </>
-    }
-  }).filter(node => node.inNetworkRegistry === 'Yes' ) || [];
+              </Link>
+            </>
+          ),
+          inNetworkRegistry: inNetworkRegistry ? 'Yes' : 'No',
+          inSafeRegistry: inSafeRegistry ? 'Yes' : 'No',
+          isDelegate: isDelegate ? 'Yes' : 'No',
+          includedInModule: includedInModule ? 'Yes' : 'No',
+          id: node,
+          balance: (
+            <Tooltip title={nodes[node].balanceFormatted}>
+              <span>{nodes[node]?.balanceFormatted ? `${rounder(nodes[node].balanceFormatted)} xDAI` : '-'}</span>
+            </Tooltip>
+          ),
+          search: node,
+          actions: (
+            <>
+              <IconButton
+                iconComponent={<TrainIcon />}
+                tooltipText={getOnboardingTooltip(
+                  onboardingNotFinished,
+                  inNetworkRegistry,
+                  isDelegate,
+                  includedInModule,
+                  nodes[node].balanceFormatted,
+                  finishMainOnboardingForThisNode
+                )}
+                onClick={() => {
+                  if (finishMainOnboardingForThisNode) {
+                    navigate(`/staking/onboarding/`);
+                  } else {
+                    navigate(`/staking/onboarding/nextNode?nodeAddress=${node}`);
+                  }
+                }}
+                disabled={
+                  (onboardingNotFinished || (includedInModule && isDelegate && nodes[node].balanceFormatted !== '0')) &&
+                  !finishMainOnboardingForThisNode
+                }
+              />
+              <IconButton
+                iconComponent={<VisibilityIcon />}
+                tooltipText={<span>Display node DETAILS at the top of page</span>}
+                onClick={() => {
+                  window.scrollTo({
+                    top: 0,
+                    left: 0,
+                    behavior: 'smooth',
+                  });
+                  set_chosenNode(node);
+                }}
+              />
+              <IconButton
+                iconComponent={<WalletIcon />}
+                tooltipText={<span>FUND node</span>}
+                onClick={() => {
+                  navigate(`/staking/fund-node?nodeAddress=${node}`);
+                }}
+              />
+            </>
+          ),
+        };
+      })
+      .filter((node) => node.inNetworkRegistry === 'Yes') || [];
   const chosenNodeData = chosenNode && nodes[chosenNode] ? nodes[chosenNode] : null;
 
   return (
@@ -464,14 +436,16 @@ const NodeAdded = () => {
             <Table>
               <tbody>
                 <tr>
-                  <th>Node Address
+                  <th>
+                    Node Address
                     <div>
-                      <SquaredIconButton
-                        onClick={() => chosenNode && navigator.clipboard.writeText(chosenNode)}
-                      >
+                      <SquaredIconButton onClick={() => chosenNode && navigator.clipboard.writeText(chosenNode)}>
                         <CopyIcon />
                       </SquaredIconButton>
-                      <Link to={`https://gnosisscan.io/address/${chosenNode}`} target='_blank'>
+                      <Link
+                        to={`https://gnosisscan.io/address/${chosenNode}`}
+                        target="_blank"
+                      >
                         <SquaredIconButton>
                           <LaunchIcon />
                         </SquaredIconButton>
@@ -501,39 +475,24 @@ const NodeAdded = () => {
                         overflow: 'hidden',
                         margin: '0',
                       }}
-                    >{chosenNodeData?.lastSeen ? formatDate(chosenNodeData.lastSeen) : '-'}
+                    >
+                      {chosenNodeData?.lastSeen ? formatDate(chosenNodeData.lastSeen) : '-'}
                     </p>
                   </td>
                 </tr>
                 <tr>
                   <th>Ping count</th>
-                  <td>{chosenNode && nodes[chosenNode]?.count || '-'}</td>
+                  <td>{(chosenNode && nodes[chosenNode]?.count) || '-'}</td>
                 </tr>
                 <tr>
                   <th>24h Availability</th>
                   <td>
-                    {
-                      chosenNodeData?.availability24h ?
-                        <ProgressBar
-                          value={chosenNodeData.availability24h}
-                        />
-                        :
-                        '-'
-                    }
+                    {chosenNodeData?.availability24h ? <ProgressBar value={chosenNodeData.availability24h} /> : '-'}
                   </td>
                 </tr>
                 <tr>
                   <th>Availability</th>
-                  <td>
-                    {
-                      chosenNodeData?.availability ?
-                        <ProgressBar
-                          value={chosenNodeData.availability}
-                        />
-                        :
-                        '-'
-                    }
-                  </td>
+                  <td>{chosenNodeData?.availability ? <ProgressBar value={chosenNodeData.availability} /> : '-'}</td>
                 </tr>
                 <tr>
                   <th>Last seen version</th>
@@ -547,7 +506,7 @@ const NodeAdded = () => {
           id="node-balance"
           title="xDAI"
           value={chosenNodeData?.balanceFormatted ? rounder(chosenNodeData?.balanceFormatted, 5) : '-'}
-          valueTooltip={chosenNodeData?.balanceFormatted && chosenNodeData.balanceFormatted || '-'}
+          valueTooltip={(chosenNodeData?.balanceFormatted && chosenNodeData.balanceFormatted) || '-'}
         />
         {/* <GrayCard
           id="earned-rewards"
@@ -560,9 +519,7 @@ const NodeAdded = () => {
           title="Docker run command"
           subtitle="The command needed to start a Node on your machine of choice such as PC or VPS"
         >
-          <DockerRunCommandModal
-            normalButton
-          />
+          <DockerRunCommandModal normalButton />
         </GrayCard>
         <GrayCard
           id="add-new-node"
@@ -570,7 +527,7 @@ const NodeAdded = () => {
           subtitle="Node will be added to the waitlist and once its is accepted, it will show up below"
         >
           <Button
-            title='add'
+            title="add"
             href={`https://cryptpad.fr/form/#/2/form/view/7TwSgsF+CnW-aw24uyPlE4Gej3DX-jjeYmyk9-Q-6RQ/`}
             target="_blank"
             rel="noopener noreferrer"
@@ -579,7 +536,7 @@ const NodeAdded = () => {
           </Button>
         </GrayCard>
       </Grid>
-      <br/>
+      <br />
       <TablePro
         data={parsedTableData}
         id={'nodes-in-safe-table'}

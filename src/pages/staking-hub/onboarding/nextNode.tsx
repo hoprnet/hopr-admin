@@ -45,11 +45,11 @@ function Onboarding() {
   const [onboardingIsFetching, set_onboardingIsFetching] = useState(true);
   const nodesData = useAppSelector((store) => store.stakingHub.nodes);
   const delegates = useAppSelector((store) => store.safe.delegates.data);
-  const delegatesArray = delegates?.results?.map(elem => elem.delegate.toLocaleLowerCase()) || [];
+  const delegatesArray = delegates?.results?.map((elem) => elem.delegate.toLocaleLowerCase()) || [];
 
   useEffect(() => {
     console.log('[Next Onboarding] nodeAddress', nodeAddress);
-    if(nodeAddress) {
+    if (nodeAddress) {
       const nodeData = nodesData[nodeAddress];
       const isDelegate = delegatesArray.includes(nodeAddress);
       const isFunded = nodeData?.balanceFormatted ? parseFloat(nodeData.balanceFormatted) > 0.5 : false;
@@ -59,14 +59,14 @@ function Onboarding() {
         nodeAddress,
         isDelegate,
         isFunded,
-        includedInModule
-      })
+        includedInModule,
+      });
       let step = 1;
-      if(isDelegate) {
+      if (isDelegate) {
         step = 2;
-        if(includedInModule) {
+        if (includedInModule) {
           step = 3;
-          if(isFunded) {
+          if (isFunded) {
             step = 4;
           }
         }
@@ -86,7 +86,7 @@ function Onboarding() {
         return 2;
       default:
         return -1;
-      }
+    }
   }
 
   function whatIsCurrentStep(page: number) {
@@ -110,43 +110,46 @@ function Onboarding() {
         lastStepDone={whatIsCompletedStep(onboardingStep)}
         currentStep={whatIsCurrentStep(onboardingStep)}
         style={{ flex: '1 1 10%' }}
-        steps={[
-          { name: 'ADD NODE AS A DELEGATE' },
-          { name: 'CONFIGURE MODULE' },
-          { name: 'FUND NODE' },
-        ]}
+        steps={[{ name: 'ADD NODE AS A DELEGATE' }, { name: 'CONFIGURE MODULE' }, { name: 'FUND NODE' }]}
       />
 
-      {
-        onboardingIsFetching && onboardingStep === 0 ?
-          <OnboardingIsFetching />
-          :
-          <>
-            {onboardingStep === ONBOARDING_PAGES.ADD_NODE &&
-              <AddNode
-                onDone={()=>{set_onboardingStep(2)}}
-                onBack={()=>{navigate('/staking/dashboard#node');}}
-                nodeAddress={nodeAddress}
-              />
-            }
-            {onboardingStep === ONBOARDING_PAGES.CONFIGURE_NODE &&
-              <ConfigureModule
-                onDone={()=>{set_onboardingStep(3)}}
-                nodeAddress={nodeAddress}
-                onboardingType={'nextNode'}
-              />
-            }
-            {onboardingStep === ONBOARDING_PAGES.FUND_NODE &&
-              <FundNode
-                onDone={()=>{set_onboardingStep(4)}}
-                nodeAddress={nodeAddress}
-              />
-            }
-            {onboardingStep === ONBOARDING_PAGES.NODE_IS_READY && <NodeIsReady />}
-          </>
-      }
+      {onboardingIsFetching && onboardingStep === 0 ? (
+        <OnboardingIsFetching />
+      ) : (
+        <>
+          {onboardingStep === ONBOARDING_PAGES.ADD_NODE && (
+            <AddNode
+              onDone={() => {
+                set_onboardingStep(2);
+              }}
+              onBack={() => {
+                navigate('/staking/dashboard#node');
+              }}
+              nodeAddress={nodeAddress}
+            />
+          )}
+          {onboardingStep === ONBOARDING_PAGES.CONFIGURE_NODE && (
+            <ConfigureModule
+              onDone={() => {
+                set_onboardingStep(3);
+              }}
+              nodeAddress={nodeAddress}
+              onboardingType={'nextNode'}
+            />
+          )}
+          {onboardingStep === ONBOARDING_PAGES.FUND_NODE && (
+            <FundNode
+              onDone={() => {
+                set_onboardingStep(4);
+              }}
+              nodeAddress={nodeAddress}
+            />
+          )}
+          {onboardingStep === ONBOARDING_PAGES.NODE_IS_READY && <NodeIsReady />}
+        </>
+      )}
       <div style={{ flex: 1 }} />
-      <NetworkOverlay/>
+      <NetworkOverlay />
     </OnboardingContainer>
   );
 }

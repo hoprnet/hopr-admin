@@ -25,29 +25,28 @@ export type Message = {
 };
 
 export type ChannelOutgoingType = {
-  status?: "Open" | "PendingToClose" | "Closed";
+  status?: 'Open' | 'PendingToClose' | 'Closed';
   balance?: string;
   peerAddress?: string;
   isClosing?: boolean;
-}
+};
 
 export type ChannelIncomingType = {
-  status?: "Open" | "PendingToClose" | "Closed";
+  status?: 'Open' | 'PendingToClose' | 'Closed';
   balance?: string;
   peerAddress?: string;
   tickets: number;
   ticketBalance: string;
   isClosing?: boolean;
-}
+};
 
 export type ChannelsOutgoingType = {
-  [channelId: string]: ChannelOutgoingType
-}
-
+  [channelId: string]: ChannelOutgoingType;
+};
 
 export type ChannelsIncomingType = {
-  [channelId: string]: ChannelIncomingType
-}
+  [channelId: string]: ChannelIncomingType;
+};
 
 type WebsocketConnectionStatus = 'connecting' | 'connected' | 'error' | null;
 
@@ -78,49 +77,49 @@ type InitialState = {
       safeHopr: {
         value: string | null;
         formatted: string | null;
-      },
+      };
       safeNative: {
         value: string | null;
         formatted: string | null;
-      },
+      };
       safeHoprAllowance: {
         value: string | null;
         formatted: string | null;
-      },
+      };
       channels: {
         value: string | null;
         formatted: string | null;
-      },
+      };
     };
     isFetching: boolean;
   };
   channels: {
     data: GetChannelsResponseType | null;
     parsed: {
-      outgoing:  ChannelsOutgoingType;
+      outgoing: ChannelsOutgoingType;
       incoming: ChannelsIncomingType;
-    },
+    };
     isFetching: boolean;
   };
   links: {
     nodeAddressToOutgoingChannel: {
-      [nodeAddress: string]: string
-    },
+      [nodeAddress: string]: string;
+    };
     nodeAddressToIncomingChannel: {
-      [nodeAddress: string]: string
-    },
+      [nodeAddress: string]: string;
+    };
     nodeAddressToPeerId: {
-      [nodeAddress: string]: string
-    },
+      [nodeAddress: string]: string;
+    };
     peerIdToNodeAddress: {
-      [peerId: string]: string
-    },
+      [peerId: string]: string;
+    };
     peerIdToAlias: {
-      [peerId: string]: string
-    },
+      [peerId: string]: string;
+    };
   };
   messages: {
-    data: Message[],
+    data: Message[];
     isFetching: boolean;
     isDeleting: boolean;
   };
@@ -144,7 +143,7 @@ type InitialState = {
     //     reportedVersion: string;
     //   }
     // }
-    isFetching: boolean
+    isFetching: boolean;
   };
   entryNodes: { data: GetEntryNodesResponseType | null; isFetching: boolean };
   peerInfo: {
@@ -157,7 +156,7 @@ type InitialState = {
   statistics: { data: GetTicketStatisticsResponseType | null; isFetching: boolean };
   tickets: {
     data: GetTicketsResponseType | null;
-    isFetching: boolean
+    isFetching: boolean;
   };
   tokens: { data: GetTokenResponseType[]; isFetching: boolean };
   version: { data: string | null; isFetching: boolean };
@@ -184,7 +183,7 @@ type InitialState = {
     isFetching: boolean;
     error: string | undefined;
   };
-  apiEndpoint: string | null
+  apiEndpoint: string | null;
 };
 
 export const initialState: InitialState = {
@@ -240,7 +239,7 @@ export const initialState: InitialState = {
     data: null,
     parsed: {
       outgoing: {},
-      incoming: {}
+      incoming: {},
     },
     isFetching: false,
   },

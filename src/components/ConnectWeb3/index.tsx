@@ -98,22 +98,12 @@ type ConnectWeb3Props = {
   onClose?: () => void;
 };
 
-export default function ConnectWeb3({
-  inTheAppBar,
-  open,
-  onClose,
-}: ConnectWeb3Props) {
+export default function ConnectWeb3({ inTheAppBar, open, onClose }: ConnectWeb3Props) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
-  const {
-    connectors,
-    connect,
-    error,
-    reset,
-    pendingConnector,
-  } = useConnect();
+  const { connectors, connect, error, reset, pendingConnector } = useConnect();
   const { connector } = useAccount();
   const { disconnect } = useDisconnect();
 
@@ -124,7 +114,6 @@ export default function ConnectWeb3({
   const walletPresent = useAppSelector((store) => store.web3.status.walletPresent);
   const [localError, set_localError] = useState<false | string>(false);
   const containerRef = useRef<HTMLButtonElement>(null);
-
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -157,17 +146,17 @@ export default function ConnectWeb3({
     if (error) {
       if (error instanceof UserRejectedRequestError) {
         let parsedError = error.shortMessage;
-        if(error.details && error.details !== error.shortMessage && error.details.length > 10) {
+        if (error.details && error.details !== error.shortMessage && error.details.length > 10) {
           parsedError = parsedError + '\n\n' + error.details;
         }
         set_localError(parsedError);
       } else {
-        set_localError( JSON.stringify(error))
+        set_localError(JSON.stringify(error));
       }
       // wallet connect modal can
       // cause errors if it is closed without connecting
       if (pendingConnector?.id === 'walletConnect') {
-        reset()
+        reset();
       }
     } else set_localError(false);
   }, [error]);
@@ -195,7 +184,7 @@ export default function ConnectWeb3({
   };
 
   const handleDisconnectMM = () => {
-    console.log('handleDisconnectMM')
+    console.log('handleDisconnectMM');
     disconnect();
     dispatch(appActions.resetState());
     dispatch(web3Actions.resetState());

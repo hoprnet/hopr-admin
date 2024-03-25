@@ -22,27 +22,20 @@ import { VITE_WALLET_CONNECT_PROJECT_ID } from '../../../config';
 type EthereumProvider = { request(...args: any): Promise<any> };
 type WindowWithEthereum = { ethereum: EthereumProvider };
 
-const {
-  chains,
-  publicClient,
-} = configureChains(
-  [gnosis],
-  [publicProvider()],
-  {
-    pollingInterval: 30_000,
-    stallTimeout: 5_000,
-    rank: true,
-  },
-);
+const { chains, publicClient } = configureChains([gnosis], [publicProvider()], {
+  pollingInterval: 30_000,
+  stallTimeout: 5_000,
+  rank: true,
+});
 
 const walletIsInBrowser =
   typeof window !== 'undefined' && typeof (window as unknown as WindowWithEthereum).ethereum !== 'undefined';
 
 export const browserClient = walletIsInBrowser
   ? createWalletClient({
-    chain: gnosis,
-    transport: custom((window as unknown as WindowWithEthereum).ethereum),
-  }).extend(publicActions)
+      chain: gnosis,
+      transport: custom((window as unknown as WindowWithEthereum).ethereum),
+    }).extend(publicActions)
   : null;
 
 const config = createConfig({

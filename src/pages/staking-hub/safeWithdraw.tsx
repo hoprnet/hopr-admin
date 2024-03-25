@@ -3,7 +3,11 @@ import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-type
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Address, parseUnits, getAddress } from 'viem';
-import { GNOSIS_CHAIN_HOPR_BOOST_NFT, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config'
+import {
+  GNOSIS_CHAIN_HOPR_BOOST_NFT,
+  wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
+  xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
+} from '../../../config';
 import { useEthersSigner } from '../../hooks';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActions, safeActionsAsync } from '../../store/slices/safe';
@@ -136,7 +140,7 @@ function SafeWithdraw() {
   const [transactionHash, set_transactionHash] = useState<Address>();
   const [error, set_error] = useState<string | null>(null);
   const [token, set_token] = useState<keyof typeof SUPPORTED_TOKENS>(
-    tokenParam && tokenParam in SUPPORTED_TOKENS ? (tokenParam as keyof typeof SUPPORTED_TOKENS) : 'xdai',
+    tokenParam && tokenParam in SUPPORTED_TOKENS ? (tokenParam as keyof typeof SUPPORTED_TOKENS) : 'xdai'
   );
   const [proposedTxHash, set_proposedTxHash] = useState<string>();
   const [proposedTx, set_proposedTx] = useState<SafeMultisigTransactionResponse>();
@@ -167,7 +171,7 @@ function SafeWithdraw() {
               value: parsedValue as string,
               data: '0x',
             },
-          }),
+          })
         )
           .unwrap()
           .then((safeTxHash) => {
@@ -175,8 +179,8 @@ function SafeWithdraw() {
             navigate('/staking/dashboard#transactions');
           })
           .catch((e) => {
-            if(e.message) set_error(`ERROR: ${JSON.stringify(e.message)}`)
-            else set_error(`ERROR: ${JSON.stringify(e)}`)
+            if (e.message) set_error(`ERROR: ${JSON.stringify(e.message)}`);
+            else set_error(`ERROR: ${JSON.stringify(e)}`);
           })
           .finally(() => {
             set_isWalletLoading(false);
@@ -186,11 +190,15 @@ function SafeWithdraw() {
         const smartContractAddress = SUPPORTED_TOKENS[token].smartContract;
         return dispatch(
           safeActionsAsync.createSafeContractTransactionThunk({
-            data: createSendNftTransactionData(getAddress(selectedSafeAddress) as Address, getAddress(receiver) as Address, Number(nftId)),
+            data: createSendNftTransactionData(
+              getAddress(selectedSafeAddress) as Address,
+              getAddress(receiver) as Address,
+              Number(nftId)
+            ),
             signer,
             safeAddress: getAddress(selectedSafeAddress),
             smartContractAddress,
-          }),
+          })
         )
           .unwrap()
           .then((transactionResponse) => {
@@ -198,8 +206,8 @@ function SafeWithdraw() {
             navigate('/staking/dashboard#transactions');
           })
           .catch((e) => {
-            if(e.message) set_error(`ERROR: ${JSON.stringify(e.message)}`)
-            else set_error(`ERROR: ${JSON.stringify(e)}`)
+            if (e.message) set_error(`ERROR: ${JSON.stringify(e.message)}`);
+            else set_error(`ERROR: ${JSON.stringify(e)}`);
           })
           .finally(() => {
             set_isWalletLoading(false);
@@ -213,7 +221,7 @@ function SafeWithdraw() {
             signer,
             safeAddress: getAddress(selectedSafeAddress),
             smartContractAddress,
-          }),
+          })
         )
           .unwrap()
           .then((safeTxHash) => {
@@ -221,8 +229,8 @@ function SafeWithdraw() {
             navigate('/staking/dashboard#transactions');
           })
           .catch((e) => {
-            if(e.message) set_error(`ERROR: ${JSON.stringify(e.message)}`)
-            else set_error(`ERROR: ${JSON.stringify(e)}`)
+            if (e.message) set_error(`ERROR: ${JSON.stringify(e.message)}`);
+            else set_error(`ERROR: ${JSON.stringify(e)}`);
           })
           .finally(() => {
             set_isWalletLoading(false);
@@ -246,7 +254,7 @@ function SafeWithdraw() {
               value: parsedValue as string,
               data: '0x',
             },
-          }),
+          })
         )
           .unwrap()
           .then((transactionResponse) => {
@@ -261,11 +269,15 @@ function SafeWithdraw() {
 
         await dispatch(
           safeActionsAsync.createAndExecuteSafeContractTransactionThunk({
-            data: createSendNftTransactionData(getAddress(selectedSafeAddress) as Address, getAddress(receiver) as Address, Number(nftId)),
+            data: createSendNftTransactionData(
+              getAddress(selectedSafeAddress) as Address,
+              getAddress(receiver) as Address,
+              Number(nftId)
+            ),
             signer,
             safeAddress: getAddress(selectedSafeAddress),
             smartContractAddress,
-          }),
+          })
         )
           .unwrap()
           .then((transactionResponse) => {
@@ -286,7 +298,7 @@ function SafeWithdraw() {
             signer,
             safeAddress: getAddress(selectedSafeAddress),
             smartContractAddress,
-          }),
+          })
         )
           .unwrap()
           .then((transactionResponse) => {
@@ -333,15 +345,19 @@ function SafeWithdraw() {
   };
 
   const getErrorsForApproveButton = () =>
-    getErrorsForSafeTx({ customValidator: () => {
-      return Number(ethValue) ? { errors: [] } : { errors: ['xdai value is required'] };
-    } });
+    getErrorsForSafeTx({
+      customValidator: () => {
+        return Number(ethValue) ? { errors: [] } : { errors: ['xdai value is required'] };
+      },
+    });
 
   const getErrorsForExecuteButton = () =>
-    getErrorsForSafeTx({ customValidator: () => {
-      // no user action means the user can not do anything
-      return !userAction ? { errors: [] } : { errors: ['transaction requires more approvals'] };
-    } });
+    getErrorsForSafeTx({
+      customValidator: () => {
+        // no user action means the user can not do anything
+        return !userAction ? { errors: [] } : { errors: ['transaction requires more approvals'] };
+      },
+    });
 
   const handleChangeToken = (event: SelectChangeEvent<unknown>) => {
     const value = event.target.value as string;
@@ -352,7 +368,7 @@ function SafeWithdraw() {
   };
 
   const handleChangeNftId = (event: SelectChangeEvent<unknown>) => {
-    if(error) set_error(null);
+    if (error) set_error(null);
     const value = event.target.value as string;
     if (value) {
       set_nftId(value);
@@ -379,7 +395,7 @@ function SafeWithdraw() {
       center
       fullHeightMin
     >
-      <StartOnboarding/>
+      <StartOnboarding />
       <Card
         image={{
           src: '/assets/funds-safe-withdraw.svg',
@@ -418,7 +434,7 @@ function SafeWithdraw() {
                   size="small"
                   value={receiver}
                   onChange={(e) => {
-                    if(error) set_error(null);
+                    if (error) set_error(null);
                     set_receiver(e.target.value);
                   }}
                   InputProps={{ inputProps: { style: { textAlign: 'right' } } }}
@@ -450,8 +466,8 @@ function SafeWithdraw() {
                     size="small"
                     value={ethValue}
                     onChange={(e) => {
-                      if(error) set_error(null);
-                      set_ethValue(e.target.value)
+                      if (error) set_error(null);
+                      set_ethValue(e.target.value);
                     }}
                     inputProps={{
                       inputMode: 'numeric',
@@ -470,8 +486,8 @@ function SafeWithdraw() {
                 {userAction === 'EXECUTE'
                   ? 'transaction has been approved by required owners, now can be executed'
                   : `transaction is pending ${
-                    (proposedTx?.confirmationsRequired ?? 0) - (proposedTx?.confirmations?.length ?? 0)
-                  } approvals`}
+                      (proposedTx?.confirmationsRequired ?? 0) - (proposedTx?.confirmations?.length ?? 0)
+                    } approvals`}
               </StyledDescription>
             </StyledPendingSafeTransactions>
           )}

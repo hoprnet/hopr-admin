@@ -73,18 +73,21 @@ const SafeAddress = styled.div`
   text-transform: none;
 `;
 
-function handleSaveSelectedSafeInLocalStorage (safeObject: {safeAddress?: string | null, moduleAddress?: string | null}, owner?: string | null) {
+function handleSaveSelectedSafeInLocalStorage(
+  safeObject: { safeAddress?: string | null; moduleAddress?: string | null },
+  owner?: string | null
+) {
   const safeAddress = safeObject.safeAddress;
   const moduleAddress = safeObject.moduleAddress;
-  if(safeAddress && moduleAddress && owner){
+  if (safeAddress && moduleAddress && owner) {
     let json = loadStateFromLocalStorage(`staking-hub-chosen-safe`);
-    if(json) {
+    if (json) {
       // @ts-ignore
       json[owner] = safeObject;
     } else {
-      json = {[owner]: safeObject}
+      json = { [owner]: safeObject };
     }
-    saveStateToLocalStorage(`staking-hub-chosen-safe`, json)
+    saveStateToLocalStorage(`staking-hub-chosen-safe`, json);
   }
 }
 
@@ -129,26 +132,30 @@ export default function ConnectSafe() {
 
   // If no selected safeAddress, choose 1st one
   useEffect(() => {
-    console.log({safeFromUrl, moduleFromUrl})
-    if(safeFromUrl && moduleFromUrl && !safeAddress) {
-      console.log('useSelectedSafe from url', safeFromUrl, moduleFromUrl)
+    console.log({ safeFromUrl, moduleFromUrl });
+    if (safeFromUrl && moduleFromUrl && !safeAddress) {
+      console.log('useSelectedSafe from url', safeFromUrl, moduleFromUrl);
       useSelectedSafe({
         safeAddress: getAddress(safeFromUrl),
-        moduleAddress: getAddress(moduleFromUrl)
+        moduleAddress: getAddress(moduleFromUrl),
       });
-    }
-    else if (safes.length > 0 && !safeAddress && signer && ownerAddress) {
-      try{
+    } else if (safes.length > 0 && !safeAddress && signer && ownerAddress) {
+      try {
         //@ts-ignore
-        let localStorage: {[key: string]:{safeAddress: string, moduleAddress: string}} = loadStateFromLocalStorage(`staking-hub-chosen-safe`);
-        if(localStorage && localStorage[ownerAddress] && safes.filter(safe=>safe?.safeAddress === localStorage[ownerAddress]?.safeAddress).length > 0){
+        let localStorage: { [key: string]: { safeAddress: string; moduleAddress: string } } =
+          loadStateFromLocalStorage(`staking-hub-chosen-safe`);
+        if (
+          localStorage &&
+          localStorage[ownerAddress] &&
+          safes.filter((safe) => safe?.safeAddress === localStorage[ownerAddress]?.safeAddress).length > 0
+        ) {
           useSelectedSafe(localStorage[ownerAddress]);
-          console.log('useSelectedSafe from ls', localStorage[ownerAddress])
+          console.log('useSelectedSafe from ls', localStorage[ownerAddress]);
         } else {
           useSelectedSafe(safes[0]);
-          console.log('useSelectedSafe [0]', safes[0])
+          console.log('useSelectedSafe [0]', safes[0]);
         }
-      } catch(e){}
+      } catch (e) {}
     }
   }, [safes, safeAddress, signer, ownerAddress, safeFromUrl, moduleFromUrl]);
 
@@ -165,9 +172,9 @@ export default function ConnectSafe() {
     }
   }, [selectedSafe, browserClient]);
 
-  const useSelectedSafe = async (safeObject: {safeAddress?: string | null, moduleAddress?: string| null}) => {
-    if(!safeObject.safeAddress || !safeObject.moduleAddress) return;
-    console.log('useSelectedSafe in', safeObject, signer)
+  const useSelectedSafe = async (safeObject: { safeAddress?: string | null; moduleAddress?: string | null }) => {
+    if (!safeObject.safeAddress || !safeObject.moduleAddress) return;
+    console.log('useSelectedSafe in', safeObject, signer);
     const safeAddress = safeObject.safeAddress;
     const moduleAddress = safeObject.moduleAddress;
     if (signer) {
@@ -175,10 +182,12 @@ export default function ConnectSafe() {
       dispatch(safeActions.resetStateWithoutSelectedSafe());
       dispatch(stakingHubActions.resetStateWithoutSafeList());
       handleSaveSelectedSafeInLocalStorage(safeObject, ownerAddress);
-      dispatch(safeActions.setSelectedSafe({
-        safeAddress,
-        moduleAddress
-      }));
+      dispatch(
+        safeActions.setSelectedSafe({
+          safeAddress,
+          moduleAddress,
+        })
+      );
       observePendingSafeTransactions({
         dispatch,
         active: activePendingSafeTransaction,
@@ -215,7 +224,6 @@ export default function ConnectSafe() {
     }
   };
 
-
   // New function to handle opening the menu
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -237,8 +245,9 @@ export default function ConnectSafe() {
       onClick={handleSafeButtonClick}
       ref={menuRef}
       disabled={!isConnected}
-      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${safes.length > 1 ? 'display' : 'display-none'
-        }`}
+      className={`safe-connect-btn ${safeAddress ? 'safe-connected' : 'safe-not-connected'} ${
+        safes.length > 1 ? 'display' : 'display-none'
+      }`}
     >
       <div className="image-container">
         <img
@@ -278,10 +287,11 @@ export default function ConnectSafe() {
                   useSelectedSafe(safe);
                 }}
               >
-                  0x{`${safe.safeAddress.substring(2, 6)}...${safe.safeAddress.substring(
-                    safe.safeAddress.length - 8,
-                    safe.safeAddress.length
-                  )}`.toUpperCase()}
+                0x
+                {`${safe.safeAddress.substring(2, 6)}...${safe.safeAddress.substring(
+                  safe.safeAddress.length - 8,
+                  safe.safeAddress.length
+                )}`.toUpperCase()}
               </MenuItem>
             ))}
           </Menu>
