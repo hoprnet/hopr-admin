@@ -36,19 +36,19 @@ export const formatDate = (epoch: number, twoRows = true, now?: number) => {
       </>
     );
   const differenceMs = Date.now() - new Date(epoch).getTime();
-  // @ts-ignore
   if (differenceMs < 0)
     return (
       <TimeAgo
         date={new Date(epoch).getTime() - 2 * 60 * 60 * 1000}
+        // @ts-ignore
         now={now}
       />
     );
   if (differenceMs < 24 * 60 * 60 * 1000) {
-    // @ts-ignore
     return (
       <TimeAgo
         date={epoch}
+        // @ts-ignore
         now={now}
       />
     );

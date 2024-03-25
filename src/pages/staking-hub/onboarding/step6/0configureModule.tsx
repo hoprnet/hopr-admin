@@ -60,7 +60,9 @@ export default function ConfigureModule(props?: {
               typeof pendingTransations[i].data === 'string' &&
               // @ts-ignore
               pendingTransations[i].data.slice(0, 10) === '0x8d80ff0a' &&
+              // @ts-ignore
               pendingTransations[i].data.slice(356, 379) === '01020100000000000000000' &&
+              // @ts-ignore
               pendingTransations[i].data.slice(316, 356).toLowerCase() === nodeAddress.toLowerCase().slice(2, 42) &&
               pendingTransations[i].confirmations!.length > 0
             ) {
@@ -95,7 +97,9 @@ export default function ConfigureModule(props?: {
               typeof pendingTransations[i].data === 'string' &&
               // @ts-ignore
               pendingTransations[i].data.slice(0, 10) === '0xb5736962' &&
+              // @ts-ignore
               pendingTransations[i].data.slice(50, 73) === '01020100000000000000000' &&
+              // @ts-ignore
               pendingTransations[i].data.slice(10, 50).toLowerCase() === nodeAddress.toLowerCase().slice(2, 42) &&
               pendingTransations[i].confirmations!.length > 0
             ) {
