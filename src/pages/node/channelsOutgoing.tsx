@@ -123,12 +123,11 @@ function ChannelsPage() {
     )
       .unwrap()
       .then(() => {
-
         handleRefresh();
       })
       .catch((e) => {
         if(usedApiEndpoint === currentApiEndpoint) {
-          const msg = `Closing of ${channelId} failed`;
+          const msg = `Closing of outgoing channel ${channelId} failed`;
           sendNotification({
             notificationPayload: {
               source: 'node',

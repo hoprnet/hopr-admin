@@ -137,7 +137,11 @@ export default function NotificationBar() {
         }}
       >
         {notifications.length > 0 && (
-          <SMenuItem className={'informational'}>
+          <SMenuItem
+            className={'informational'}
+//            style={{ maxWidth: 'calc(100% - 17px)'}} //TODO: Fix notification drodown styling if we have more notifications than fit can on the screen
+// https://github.com/hoprnet/hopr-admin/issues/567
+          >
             Notifications are stored locally.
             <br />
             They will delete on refresh.
@@ -155,6 +159,7 @@ export default function NotificationBar() {
             <SMenuItem
               className={!notification.interacted ? 'unreadMenuItem' : ''}
               key={notification.id}
+//              style={{ maxWidth: 'calc(100% - 17px)'}}
               onClick={() => {
                 dispatch(appActions.interactedWithNotification(notification.id));
                 if (notification.url) {

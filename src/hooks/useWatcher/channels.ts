@@ -1,4 +1,4 @@
-import { ChannelsParsed, ChannelOutgoingType } from '../../store/slices/node/initialState';
+import { ChannelOutgoingType, ChannelsOutgoingType, ChannelsIncomingType } from '../../store/slices/node/initialState';
 
 /**
  * Checks how the channels have changed.
@@ -8,25 +8,25 @@ import { ChannelsParsed, ChannelOutgoingType } from '../../store/slices/node/ini
  * @returns A boolean indicating whether the channels have changed.
  */
 export const checkHowChannelsHaveChanged = (
-  previousChannels: ChannelsParsed,
-  newChannels: ChannelsParsed,
+  previousChannels: ChannelsIncomingType | ChannelsOutgoingType,
+  newChannels: ChannelsIncomingType | ChannelsOutgoingType,
 ) => {
-  let previousChannelsLocal = JSON.parse(JSON.stringify(previousChannels)) as ChannelsParsed;
-  let newChannelsLocal = JSON.parse(JSON.stringify(newChannels)) as ChannelsParsed;
+  let previousChannelsLocal = JSON.parse(JSON.stringify(previousChannels)) as ChannelsOutgoingType;
+  let newChannelsLocal = JSON.parse(JSON.stringify(newChannels)) as ChannelsOutgoingType;
 
   let changes: ChannelOutgoingType[] = [];
 
-  let previousChannelsOutgoing = Object.keys(previousChannelsLocal.outgoing);
-  let newChannelsOutgoing = Object.keys(newChannelsLocal.outgoing);
+  let previousChannelsOutgoing = Object.keys(previousChannelsLocal);
+  let newChannelsOutgoing = Object.keys(newChannelsLocal);
 
   newChannelsOutgoing.forEach(newChannelId => {
-    const newChannel = newChannelsLocal.outgoing[newChannelId];
+    const newChannel = newChannelsLocal[newChannelId];
     if(
       previousChannelsOutgoing.includes(newChannelId) &&
-      ( previousChannelsLocal.outgoing[newChannelId].status === newChannel.status )
+      ( previousChannelsLocal[newChannelId].status === newChannel.status )
     ) {
-      delete previousChannelsLocal.outgoing[newChannelId];
-      delete newChannelsLocal.outgoing[newChannelId];
+      delete previousChannelsLocal[newChannelId];
+      delete newChannelsLocal[newChannelId];
     }
     else if (!previousChannelsOutgoing.includes(newChannelId)) {
       changes.push({
@@ -42,9 +42,8 @@ export const checkHowChannelsHaveChanged = (
     }
   });
 
-
   previousChannelsOutgoing.forEach(prevChannelId => {
-    const prevChannel = previousChannelsLocal.outgoing[prevChannelId];
+    const prevChannel = previousChannelsLocal[prevChannelId];
     if(!newChannelsOutgoing.includes(prevChannelId)){
       changes.push({
         status: "Closed",

@@ -3,7 +3,7 @@ import { initialState } from './initialState';
 import { GetBalancesResponseType, GetChannelsResponseType, GetInfoResponseType } from '@hoprnet/hopr-sdk';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { saveStateToLocalStorage } from '../../../utils/localStorage';
-import { ChannelsParsed, ChannelOutgoingType } from '../../../store/slices/node/initialState';
+import { ChannelsOutgoingType, ChannelsIncomingType } from '../../../store/slices/node/initialState';
 
 const appSlice = createSlice({
   name: 'app',
@@ -14,7 +14,8 @@ const appSlice = createSlice({
       ...state,
       previousStates: {
         ...state.previousStates,
-        prevChannels: null,
+        prevOutgoingChannels: null,
+        prevIncomingChannels: null,
         prevMessage: null,
         prevNodeBalances: null,
         prevNodeInfo: null,
@@ -96,8 +97,11 @@ const appSlice = createSlice({
         seen: true,
       }));
     },
-    setPrevChannels: (state, action: PayloadAction<ChannelsParsed | null>) => {
-      state.previousStates.prevChannels = action.payload;
+    setPrevOutgoingChannels: (state, action: PayloadAction<ChannelsOutgoingType | null>) => {
+      state.previousStates.prevOutgoingChannels = action.payload;
+    },
+    setPrevIncomingChannels: (state, action: PayloadAction<ChannelsIncomingType | null>) => {
+      state.previousStates.prevIncomingChannels = action.payload;
     },
     setPrevNodeInfo: (state, action: PayloadAction<GetInfoResponseType | null>) => {
       state.previousStates.prevNodeInfo = action.payload;
