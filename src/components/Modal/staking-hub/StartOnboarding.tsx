@@ -35,7 +35,7 @@ const StartOnboarding = ({ initialCurrency }: WithdrawModalProps) => {
   const notFinished = useAppSelector((state) => state.stakingHub.onboarding.notFinished);
   const notStarted = useAppSelector((state) => state.stakingHub.onboarding.notStarted);
   const modalToSartOnboardingDismissed = useAppSelector(
-    (state) => state.stakingHub.onboarding.modalToSartOnboardingDismissed
+    (state) => state.stakingHub.onboarding.modalToSartOnboardingDismissed,
   );
   const web3connected = useAppSelector((state) => state.web3.status.connected);
   const [openModal, set_openModal] = useState(false);

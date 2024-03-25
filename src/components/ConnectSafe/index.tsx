@@ -75,7 +75,7 @@ const SafeAddress = styled.div`
 
 function handleSaveSelectedSafeInLocalStorage(
   safeObject: { safeAddress?: string | null; moduleAddress?: string | null },
-  owner?: string | null
+  owner?: string | null,
 ) {
   const safeAddress = safeObject.safeAddress;
   const moduleAddress = safeObject.moduleAddress;
@@ -104,7 +104,7 @@ export default function ConnectSafe() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
   const activePendingSafeTransaction = useAppSelector(
-    (store) => store.app.configuration.notifications.pendingSafeTransaction
+    (store) => store.app.configuration.notifications.pendingSafeTransaction,
   );
 
   const safeFromUrl = searchParams.get('safe');
@@ -132,7 +132,10 @@ export default function ConnectSafe() {
 
   // If no selected safeAddress, choose 1st one
   useEffect(() => {
-    console.log({ safeFromUrl, moduleFromUrl });
+    console.log({
+      safeFromUrl,
+      moduleFromUrl,
+    });
     if (safeFromUrl && moduleFromUrl && !safeAddress) {
       console.log('useSelectedSafe from url', safeFromUrl, moduleFromUrl);
       useSelectedSafe({
@@ -142,7 +145,7 @@ export default function ConnectSafe() {
     } else if (safes.length > 0 && !safeAddress && signer && ownerAddress) {
       try {
         //@ts-ignore
-        let localStorage: { [key: string]: { safeAddress: string; moduleAddress: string } } =
+        const localStorage: { [key: string]: { safeAddress: string; moduleAddress: string } } =
           loadStateFromLocalStorage(`staking-hub-chosen-safe`);
         if (
           localStorage &&
@@ -167,7 +170,7 @@ export default function ConnectSafe() {
           browserClient,
           safeAddress: selectedSafe.safeAddress as string,
           moduleAddress: selectedSafe.moduleAddress as string,
-        })
+        }),
       );
     }
   }, [selectedSafe, browserClient]);
@@ -186,7 +189,7 @@ export default function ConnectSafe() {
         safeActions.setSelectedSafe({
           safeAddress,
           moduleAddress,
-        })
+        }),
       );
       observePendingSafeTransactions({
         dispatch,
@@ -198,28 +201,24 @@ export default function ConnectSafe() {
           dispatch(appActions.setPrevPendingSafeTransaction(newData));
         },
       });
-      dispatch(
-        safeActionsAsync.getSafesByOwnerThunk({
-          signer: signer,
-        })
-      );
+      dispatch(safeActionsAsync.getSafesByOwnerThunk({ signer: signer }));
       dispatch(
         safeActionsAsync.getSafeInfoThunk({
           signer: signer,
           safeAddress,
-        })
+        }),
       );
       dispatch(
         safeActionsAsync.getAllSafeTransactionsThunk({
           signer,
           safeAddress,
-        })
+        }),
       );
       dispatch(
         safeActionsAsync.getSafeDelegatesThunk({
           signer,
           options: { safeAddress },
-        })
+        }),
       );
     }
   };
@@ -290,7 +289,7 @@ export default function ConnectSafe() {
                 0x
                 {`${safe.safeAddress.substring(2, 6)}...${safe.safeAddress.substring(
                   safe.safeAddress.length - 8,
-                  safe.safeAddress.length
+                  safe.safeAddress.length,
                 )}`.toUpperCase()}
               </MenuItem>
             ))}

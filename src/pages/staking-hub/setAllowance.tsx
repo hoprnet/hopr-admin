@@ -1,11 +1,7 @@
 // UI
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
-import {
-  DEFAULT_ALLOWANCE,
-  HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,
-  HOPR_TOKEN_USED_CONTRACT_ADDRESS,
-} from '../../../config';
+import { DEFAULT_ALLOWANCE, HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config'
 import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';
 import { useEthersSigner } from '../../hooks';
@@ -57,7 +53,7 @@ export default function SetAllowance() {
           signer,
           safeAddress: selectedSafeAddress,
           smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
-        })
+        }),
       ).unwrap();
       navigate('/staking/dashboard');
       set_loading(false);
@@ -73,7 +69,7 @@ export default function SetAllowance() {
           signer,
           safeAddress: selectedSafeAddress,
           smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
-        })
+        }),
       ).unwrap();
       navigate('/staking/dashboard');
       set_loading(false);
@@ -116,13 +112,11 @@ export default function SetAllowance() {
             size="small"
             value={wxHoprValue}
             onChange={(e) => set_wxHoprValue(e.target.value)}
-            InputProps={{
-              inputProps: {
-                style: { textAlign: 'right' },
-                min: 0,
-                pattern: '[0-9]*',
-              },
-            }}
+            InputProps={{ inputProps: {
+              style: { textAlign: 'right' },
+              min: 0,
+              pattern: '[0-9]*',
+            } }}
             helperText={`Suggested value is ${DEFAULT_ALLOWANCE} wxHopr`}
           />
           <StyledCoinLabel style={{ lineHeight: '40px' }}>

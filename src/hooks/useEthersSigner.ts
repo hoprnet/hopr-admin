@@ -3,7 +3,11 @@ import { type WalletClient, useWalletClient } from 'wagmi';
 import { providers } from 'ethers';
 
 function walletClientToSigner(walletClient: WalletClient) {
-  const { account, chain, transport } = walletClient;
+  const {
+    account,
+    chain,
+    transport,
+  } = walletClient;
 
   const network = {
     chainId: chain.id,
@@ -13,7 +17,7 @@ function walletClientToSigner(walletClient: WalletClient) {
 
   const provider = new providers.Web3Provider(
     transport as providers.ExternalProvider | providers.JsonRpcFetchFunc,
-    network
+    network,
   );
   const signer = provider.getSigner(account.address);
   return signer;

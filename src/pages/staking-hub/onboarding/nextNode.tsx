@@ -78,29 +78,29 @@ function Onboarding() {
 
   function whatIsCompletedStep(page: number) {
     switch (page) {
-      case ONBOARDING_PAGES.CONFIGURE_NODE:
-        return 0;
-      case ONBOARDING_PAGES.FUND_NODE:
-        return 1;
-      case ONBOARDING_PAGES.NODE_IS_READY:
-        return 2;
-      default:
-        return -1;
+    case ONBOARDING_PAGES.CONFIGURE_NODE:
+      return 0;
+    case ONBOARDING_PAGES.FUND_NODE:
+      return 1;
+    case ONBOARDING_PAGES.NODE_IS_READY:
+      return 2;
+    default:
+      return -1;
     }
   }
 
   function whatIsCurrentStep(page: number) {
     switch (page) {
-      case ONBOARDING_PAGES.ADD_NODE:
-        return 0;
-      case ONBOARDING_PAGES.CONFIGURE_NODE:
-        return 1;
-      case ONBOARDING_PAGES.FUND_NODE:
-        return 2;
-      case ONBOARDING_PAGES.NODE_IS_READY:
-        return 3;
-      default:
-        return 0;
+    case ONBOARDING_PAGES.ADD_NODE:
+      return 0;
+    case ONBOARDING_PAGES.CONFIGURE_NODE:
+      return 1;
+    case ONBOARDING_PAGES.FUND_NODE:
+      return 2;
+    case ONBOARDING_PAGES.NODE_IS_READY:
+      return 3;
+    default:
+      return 0;
     }
   }
 

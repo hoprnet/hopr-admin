@@ -39,7 +39,7 @@ const getCommunityNftsOwnedByWallet = createAsyncThunk(
     } catch (e) {
       return rejectWithValue(e);
     }
-  }
+  },
 );
 
 const sendNftToSafeThunk = createAsyncThunk<
@@ -56,7 +56,10 @@ const sendNftToSafeThunk = createAsyncThunk<
   { state: RootState }
 >(
   'safe/sendNftToSafe',
-  async (payload, { rejectWithValue, dispatch }) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(web3Actions.setCommunityNftTransferring(true));
     const success = false;
     try {
@@ -83,14 +86,12 @@ const sendNftToSafeThunk = createAsyncThunk<
       return rejectWithValue(e);
     }
   },
-  {
-    condition: (_payload, { getState }) => {
-      const isFetching = getState().web3.communityNftTransferring;
-      if (isFetching) {
-        return false;
-      }
-    },
-  }
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().web3.communityNftTransferring;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
 export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {

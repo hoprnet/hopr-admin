@@ -3,11 +3,7 @@ import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-type
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Address, parseUnits, getAddress } from 'viem';
-import {
-  GNOSIS_CHAIN_HOPR_BOOST_NFT,
-  wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
-  xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
-} from '../../../config';
+import { GNOSIS_CHAIN_HOPR_BOOST_NFT, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, xHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../config'
 import { useEthersSigner } from '../../hooks';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { safeActions, safeActionsAsync } from '../../store/slices/safe';
@@ -140,7 +136,7 @@ function SafeWithdraw() {
   const [transactionHash, set_transactionHash] = useState<Address>();
   const [error, set_error] = useState<string | null>(null);
   const [token, set_token] = useState<keyof typeof SUPPORTED_TOKENS>(
-    tokenParam && tokenParam in SUPPORTED_TOKENS ? (tokenParam as keyof typeof SUPPORTED_TOKENS) : 'xdai'
+    tokenParam && tokenParam in SUPPORTED_TOKENS ? (tokenParam as keyof typeof SUPPORTED_TOKENS) : 'xdai',
   );
   const [proposedTxHash, set_proposedTxHash] = useState<string>();
   const [proposedTx, set_proposedTx] = useState<SafeMultisigTransactionResponse>();
@@ -171,7 +167,7 @@ function SafeWithdraw() {
               value: parsedValue as string,
               data: '0x',
             },
-          })
+          }),
         )
           .unwrap()
           .then((safeTxHash) => {
@@ -193,12 +189,12 @@ function SafeWithdraw() {
             data: createSendNftTransactionData(
               getAddress(selectedSafeAddress) as Address,
               getAddress(receiver) as Address,
-              Number(nftId)
+              Number(nftId),
             ),
             signer,
             safeAddress: getAddress(selectedSafeAddress),
             smartContractAddress,
-          })
+          }),
         )
           .unwrap()
           .then((transactionResponse) => {
@@ -221,7 +217,7 @@ function SafeWithdraw() {
             signer,
             safeAddress: getAddress(selectedSafeAddress),
             smartContractAddress,
-          })
+          }),
         )
           .unwrap()
           .then((safeTxHash) => {
@@ -254,7 +250,7 @@ function SafeWithdraw() {
               value: parsedValue as string,
               data: '0x',
             },
-          })
+          }),
         )
           .unwrap()
           .then((transactionResponse) => {
@@ -272,12 +268,12 @@ function SafeWithdraw() {
             data: createSendNftTransactionData(
               getAddress(selectedSafeAddress) as Address,
               getAddress(receiver) as Address,
-              Number(nftId)
+              Number(nftId),
             ),
             signer,
             safeAddress: getAddress(selectedSafeAddress),
             smartContractAddress,
-          })
+          }),
         )
           .unwrap()
           .then((transactionResponse) => {
@@ -298,7 +294,7 @@ function SafeWithdraw() {
             signer,
             safeAddress: getAddress(selectedSafeAddress),
             smartContractAddress,
-          })
+          }),
         )
           .unwrap()
           .then((transactionResponse) => {
@@ -345,19 +341,15 @@ function SafeWithdraw() {
   };
 
   const getErrorsForApproveButton = () =>
-    getErrorsForSafeTx({
-      customValidator: () => {
-        return Number(ethValue) ? { errors: [] } : { errors: ['xdai value is required'] };
-      },
-    });
+    getErrorsForSafeTx({ customValidator: () => {
+      return Number(ethValue) ? { errors: [] } : { errors: ['xdai value is required'] };
+    } });
 
   const getErrorsForExecuteButton = () =>
-    getErrorsForSafeTx({
-      customValidator: () => {
-        // no user action means the user can not do anything
-        return !userAction ? { errors: [] } : { errors: ['transaction requires more approvals'] };
-      },
-    });
+    getErrorsForSafeTx({ customValidator: () => {
+      // no user action means the user can not do anything
+      return !userAction ? { errors: [] } : { errors: ['transaction requires more approvals'] };
+    } });
 
   const handleChangeToken = (event: SelectChangeEvent<unknown>) => {
     const value = event.target.value as string;
@@ -486,8 +478,8 @@ function SafeWithdraw() {
                 {userAction === 'EXECUTE'
                   ? 'transaction has been approved by required owners, now can be executed'
                   : `transaction is pending ${
-                      (proposedTx?.confirmationsRequired ?? 0) - (proposedTx?.confirmations?.length ?? 0)
-                    } approvals`}
+                    (proposedTx?.confirmationsRequired ?? 0) - (proposedTx?.confirmations?.length ?? 0)
+                  } approvals`}
               </StyledDescription>
             </StyledPendingSafeTransactions>
           )}

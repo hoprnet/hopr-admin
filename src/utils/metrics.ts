@@ -25,7 +25,7 @@ export const parseMetrics = (data: string) => {
       type = tmp[i].replace(`# TYPE ${key} `, '');
       parsed[key].type = type;
     } else {
-      let parsedData = parseFloat(string[1]);
+      const parsedData = parseFloat(string[1]);
       if (parsedData) parsed[lastKey].data.push(parsedData);
       const category = string[0].replace(lastKey, '');
       if (category[0] === '_') category.replace('_', '');

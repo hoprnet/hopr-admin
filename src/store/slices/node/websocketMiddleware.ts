@@ -4,7 +4,12 @@ import { initialState as nodeInitialState } from '../node/initialState';
 import { initialState } from '../auth/initialState';
 import { nodeActions } from './index';
 
-const { messageReceived, initializeMessagesWebsocket, closeMessagesWebsocket, updateMessagesWebsocketStatus } =
+const {
+  messageReceived,
+  initializeMessagesWebsocket,
+  closeMessagesWebsocket,
+  updateMessagesWebsocketStatus,
+} =
   nodeActions;
 
 const { WebsocketHelper } = utils;
@@ -14,13 +19,19 @@ type LocalRootState = {
   node: typeof nodeInitialState;
 };
 
-const websocketMiddleware: Middleware<object, LocalRootState> = ({ dispatch, getState }) => {
+const websocketMiddleware: Middleware<object, LocalRootState> = ({
+  dispatch,
+  getState,
+}) => {
   let messagesWebsocket: typeof WebsocketHelper.prototype | null = null;
 
   return (next) => (action: PayloadAction) => {
     if (action.type === initializeMessagesWebsocket.type) {
       // start websocket connection
-      const { apiEndpoint, apiToken } = getState().auth.loginData;
+      const {
+        apiEndpoint,
+        apiToken,
+      } = getState().auth.loginData;
       const connectedToNode = getState().auth.status.connected;
       if (!connectedToNode) return;
       const messagesWebsocketStatus = getState().node.messagesWebsocketStatus;
@@ -58,7 +69,7 @@ const websocketMiddleware: Middleware<object, LocalRootState> = ({ dispatch, get
                       body: messageJSON.body,
                       timestamp: Date.now(),
                       seen: false,
-                    })
+                    }),
                   );
                 }
               } catch (e) {

@@ -3,20 +3,11 @@ import { useEffect, useState } from 'react';
 import { Address, formatEther } from 'viem';
 import { erc20ABI, useContractRead, useWalletClient } from 'wagmi';
 import { web3 } from '@hoprnet/hopr-sdk';
-import {
-  HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,
-  HOPR_NODE_SAFE_REGISTRY,
-  HOPR_TOKEN_USED_CONTRACT_ADDRESS,
-} from '../../../config';
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, HOPR_NODE_SAFE_REGISTRY, HOPR_TOKEN_USED_CONTRACT_ADDRESS } from '../../../config'
 import { useEthersSigner } from '../../hooks';
 import { observePendingSafeTransactions } from '../../hooks/useWatcher/safeTransactions';
 import { appActions } from '../../store/slices/app';
-import {
-  MAX_UINT256,
-  createApproveTransactionData,
-  createIncludeNodeTransactionData,
-  encodeDefaultPermissions,
-} from '../../utils/blockchain';
+import { MAX_UINT256, createApproveTransactionData, createIncludeNodeTransactionData, encodeDefaultPermissions } from '../../utils/blockchain'
 import { Container, FlexContainer, Text } from './onboarding/styled';
 
 //Stores
@@ -57,7 +48,7 @@ function SafeSection() {
   const [newOwner, set_newOwner] = useState('');
 
   const activePendingSafeTransaction = useAppSelector(
-    (store) => store.app.configuration.notifications.pendingSafeTransaction
+    (store) => store.app.configuration.notifications.pendingSafeTransaction,
   );
 
   const { data: allowanceData } = useContractRead({
@@ -108,7 +99,7 @@ function SafeSection() {
           signer: signer,
           newThreshold: newThreshold,
           safeAddress: safeAddress,
-        })
+        }),
       ).unwrap();
 
       if (removeTransactionData) {
@@ -117,7 +108,7 @@ function SafeSection() {
             signer: signer,
             safeAddress: safeAddress,
             safeTransactionData: removeTransactionData,
-          })
+          }),
         );
       }
     }
@@ -136,7 +127,7 @@ function SafeSection() {
           safeAddress: safeAddress,
           signer,
           threshold: threshold,
-        })
+        }),
       ).unwrap();
 
       if (!transactionData) return;
@@ -146,7 +137,7 @@ function SafeSection() {
           safeAddress: safeAddress,
           signer,
           safeTransactionData: transactionData,
-        })
+        }),
       ).unwrap();
 
       return transactionHash;
@@ -160,7 +151,7 @@ function SafeSection() {
           ownerAddress: newOwner,
           safeAddress: safeAddress,
           signer: signer,
-        })
+        }),
       ).unwrap();
 
       if (transactionData) {
@@ -169,7 +160,7 @@ function SafeSection() {
             safeAddress: safeAddress,
             signer,
             safeTransactionData: transactionData,
-          })
+          }),
         ).unwrap();
 
         await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
@@ -227,19 +218,19 @@ function SafeSection() {
                 safeActionsAsync.getSafeInfoThunk({
                   signer,
                   safeAddress,
-                })
+                }),
               );
               dispatch(
                 safeActionsAsync.getAllSafeTransactionsThunk({
                   signer,
                   safeAddress,
-                })
+                }),
               );
               dispatch(
                 safeActionsAsync.getSafeDelegatesThunk({
                   signer,
                   options: { safeAddress },
-                })
+                }),
               );
             }
           }}
@@ -277,7 +268,7 @@ function SafeSection() {
                   threshold: createSafeThreshold,
                 },
                 signer,
-              })
+              }),
             );
           }
         }}
@@ -294,7 +285,7 @@ function SafeSection() {
                   threshold: createSafeThreshold,
                 },
                 walletClient,
-              })
+              }),
             );
           }
         }}
@@ -319,7 +310,7 @@ function SafeSection() {
               safeActionsAsync.getSafeInfoThunk({
                 safeAddress: selectedSafeAddress,
                 signer,
-              })
+              }),
             );
           }
         }}
@@ -336,7 +327,7 @@ function SafeSection() {
                 data: createIncludeNodeTransactionData(nodeAddress),
                 safeAddress: selectedSafeAddress,
                 signer,
-              })
+              }),
             )
               .unwrap()
               .then((transactionResult) => {
@@ -376,7 +367,7 @@ function SafeSection() {
                 safeAddress: safeAddressForRegistry,
                 nodeAddress: nodeAddressForRegistry,
                 walletClient,
-              })
+              }),
             );
           }
         }}
@@ -398,7 +389,7 @@ function SafeSection() {
                   to: signerAddress,
                   data: '0x',
                 },
-              })
+              }),
             );
           }
         }}
@@ -496,7 +487,7 @@ function SafeSection() {
                         signer,
                         safeAddress: transaction.safe,
                         safeTransaction: transaction,
-                      })
+                      }),
                     );
                   }
                 }}
@@ -512,7 +503,7 @@ function SafeSection() {
                         signer,
                         safeAddress: transaction.safe,
                         safeTransactionHash: transaction.safeTxHash,
-                      })
+                      }),
                     );
                   }
                 }}
@@ -535,7 +526,7 @@ function SafeSection() {
                 signer,
                 safeAddress: selectedSafeAddress,
                 smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
-              })
+              }),
             );
           }
         }}

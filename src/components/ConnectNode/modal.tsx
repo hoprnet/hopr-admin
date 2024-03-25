@@ -189,7 +189,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     }
     // If have have saved the node with the same apiToken, we check the saveApiToken checkbox
     const existingItemIndex = nodesSavedLocally.findIndex(
-      (item) => item.apiEndpoint === loginData.apiEndpoint && item.apiToken === loginData.apiToken
+      (item) => item.apiEndpoint === loginData.apiEndpoint && item.apiToken === loginData.apiToken,
     );
 
     if (
@@ -218,7 +218,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         apiEndpoint: formattedApiEndpoint,
         apiToken: saveApiToken ? apiToken : '',
         localName: localName ? localName : '',
-      })
+      }),
     );
   };
 
@@ -244,45 +244,41 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           apiEndpoint: formattedApiEndpoint,
           apiToken,
           force,
-        })
+        }),
       ).unwrap();
-      dispatch(
-        nodeActions.setApiEndpoint({
-          apiEndpoint: formattedApiEndpoint,
-        })
-      );
+      dispatch(nodeActions.setApiEndpoint({ apiEndpoint: formattedApiEndpoint }));
       if (loginInfo) {
         dispatch(
           authActions.useNodeData({
             apiEndpoint: formattedApiEndpoint,
             apiToken,
             localName,
-          })
+          }),
         );
         dispatch(
           nodeActionsAsync.getAddressesThunk({
             apiToken,
             apiEndpoint: formattedApiEndpoint,
-          })
+          }),
         );
         dispatch(
           nodeActionsAsync.getAliasesThunk({
             apiToken,
             apiEndpoint: formattedApiEndpoint,
-          })
+          }),
         );
         dispatch(
           nodeActionsAsync.getMessagesThunk({
             apiToken,
             apiEndpoint: formattedApiEndpoint,
             firstLoad: true,
-          })
+          }),
         );
         dispatch(
           nodeActionsAsync.getPrometheusMetricsThunk({
             apiToken,
             apiEndpoint,
-          })
+          }),
         );
         dispatch(nodeActions.setInfo(loginInfo));
         //  dispatch(nodeActions.initializeMessagesWebsocket());

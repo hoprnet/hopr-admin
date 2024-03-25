@@ -13,7 +13,10 @@ import { checkHowChannelsHaveChanged } from './channels';
 
 export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: number }) => {
   const dispatch = useAppDispatch();
-  const { apiEndpoint, apiToken } = useAppSelector((store) => store.auth.loginData);
+  const {
+    apiEndpoint,
+    apiToken,
+  } = useAppSelector((store) => store.auth.loginData);
   const messages = useAppSelector((store) => store.node.messages.data);
   const channelsParsed = useAppSelector((store) => store.node.channels.parsed);
   const firstChannelsCallWasSuccesfull = useAppSelector((store) => !!store.node.channels.data);
@@ -26,7 +29,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   const activeNodeBalances = useAppSelector((store) => store.app.configuration.notifications.nodeBalances);
   const activeNodeInfo = useAppSelector((store) => store.app.configuration.notifications.nodeInfo);
   const activePendingSafeTransaction = useAppSelector(
-    (store) => store.app.configuration.notifications.pendingSafeTransaction
+    (store) => store.app.configuration.notifications.pendingSafeTransaction,
   );
   // redux previous states, this can be updated from anywhere in the app
   const prevOutgoingChannels = useAppSelector((store) => store.app.previousStates.prevOutgoingChannels);
@@ -45,7 +48,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
         nodeActionsAsync.getChannelsThunk({
           apiEndpoint,
           apiToken,
-        })
+        }),
       );
     }, intervalDuration);
 
@@ -68,7 +71,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
         nodeActionsAsync.getPrometheusMetricsThunk({
           apiEndpoint,
           apiToken,
-        })
+        }),
       );
     }, intervalDuration);
 
@@ -78,7 +81,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
         nodeActionsAsync.getMessagesThunk({
           apiEndpoint,
           apiToken,
-        })
+        }),
       );
     }, 5_000);
 
@@ -148,7 +151,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   useEffect(() => {
     if (activeMessage && messages && messages.length > 0) {
       messages.forEach((msgReceived, index) => {
-        let hasToNotify = !msgReceived.notified;
+        const hasToNotify = !msgReceived.notified;
         if (hasToNotify) {
           const notification = `Message received: ${msgReceived.body}`;
           sendNotification({

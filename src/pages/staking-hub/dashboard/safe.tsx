@@ -129,7 +129,7 @@ function SafeDashboard() {
           signer,
           safeAddress: selectedSafeAddress,
           smartContractAddress: moduleAddress,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -156,7 +156,7 @@ function SafeDashboard() {
           safeAddress: selectedSafeAddress,
           operation: OperationType.DelegateCall,
           smartContractAddress: MULTISEND_CONTRACT_GNOSIS,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -183,7 +183,7 @@ function SafeDashboard() {
           signer,
           safeAddress: selectedSafeAddress,
           smartContractAddress: moduleAddress,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -217,7 +217,7 @@ function SafeDashboard() {
           signer,
           safeAddress: selectedSafeAddress,
           smartContractAddress: moduleAddress,
-        })
+        }),
       )
         .unwrap()
         .finally(() => {
@@ -237,7 +237,7 @@ function SafeDashboard() {
           safeAddress: selectedSafeAddress,
           operation: OperationType.DelegateCall,
           smartContractAddress: MULTISEND_CONTRACT_GNOSIS,
-        })
+        }),
       )
         .unwrap()
         .finally(() => {
@@ -261,7 +261,7 @@ function SafeDashboard() {
           signer,
           safeAddress: selectedSafeAddress,
           smartContractAddress: moduleAddress,
-        })
+        }),
       )
         .unwrap()
         .finally(() => {
@@ -332,31 +332,31 @@ function SafeDashboard() {
         buttons={
           communityNftIdInSafe
             ? [
-                {
-                  text: 'Withdraw NFT from Safe',
-                  link: '/staking/withdraw?token=nft',
-                },
-              ]
+              {
+                text: 'Withdraw NFT from Safe',
+                link: '/staking/withdraw?token=nft',
+              },
+            ]
             : [
-                {
-                  disabled: communityNftIdInWallet === null || !!communityNftIdInSafe,
-                  pending: sendingNFT,
-                  text: 'Transfer NFT to Safe',
-                  onClick: () => {
-                    if (!walletClient) return;
-                    if (walletAddress && selectedSafeAddress && communityNftIdInWallet !== null) {
-                      dispatch(
-                        web3ActionsAsync.sendNftToSafeThunk({
-                          walletAddress,
-                          safeAddress: selectedSafeAddress,
-                          walletClient,
-                          communityNftId: communityNftIdInWallet,
-                        })
-                      );
-                    }
-                  },
+              {
+                disabled: communityNftIdInWallet === null || !!communityNftIdInSafe,
+                pending: sendingNFT,
+                text: 'Transfer NFT to Safe',
+                onClick: () => {
+                  if (!walletClient) return;
+                  if (walletAddress && selectedSafeAddress && communityNftIdInWallet !== null) {
+                    dispatch(
+                      web3ActionsAsync.sendNftToSafeThunk({
+                        walletAddress,
+                        safeAddress: selectedSafeAddress,
+                        walletClient,
+                        communityNftId: communityNftIdInWallet,
+                      }),
+                    );
+                  }
                 },
-              ]
+              },
+            ]
         }
       >
         <TransferNFT>

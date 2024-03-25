@@ -10,12 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 // Web3
 import { Address, parseUnits } from 'viem';
-import {
-  HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,
-  DEFAULT_ALLOWANCE,
-  HOPR_TOKEN_USED_CONTRACT_ADDRESS,
-  wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
-} from '../../../../../config';
+import { HOPR_CHANNELS_SMART_CONTRACT_ADDRESS, DEFAULT_ALLOWANCE, HOPR_TOKEN_USED_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS } from '../../../../../config'
 import { createApproveTransactionData } from '../../../../utils/blockchain';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { formatEther } from 'viem';
@@ -81,7 +76,7 @@ export default function SetAllowance() {
             ) {
               console.log(
                 '[Onboarding check] We have an onboarding TX created for that ALLOWANCE',
-                pendingTransations[i]
+                pendingTransations[i],
               );
               const confirmationsDone = pendingTransations[i].confirmations!.length | 0;
               const confirmations = pendingTransations[i].confirmations;
@@ -126,7 +121,7 @@ export default function SetAllowance() {
           signer,
           safeAddress: selectedSafeAddress,
           smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
-        })
+        }),
       )
         .unwrap()
         .then((hash) => {
@@ -148,7 +143,7 @@ export default function SetAllowance() {
           signer,
           safeAddress: selectedSafeAddress,
           smartContractAddress: HOPR_TOKEN_USED_CONTRACT_ADDRESS,
-        })
+        }),
       )
         .unwrap()
         .finally(() => {
@@ -165,7 +160,7 @@ export default function SetAllowance() {
           safeAddress: transaction.safe,
           signer,
           safeTransaction: transaction,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -224,13 +219,11 @@ export default function SetAllowance() {
           size="small"
           value={wxHoprValue}
           onChange={(e) => set_wxHoprValue(e.target.value)}
-          InputProps={{
-            inputProps: {
-              style: { textAlign: 'right' },
-              min: 0,
-              pattern: '[0-9]*',
-            },
-          }}
+          InputProps={{ inputProps: {
+            style: { textAlign: 'right' },
+            min: 0,
+            pattern: '[0-9]*',
+          } }}
           helperText={`Suggested value is ${DEFAULT_ALLOWANCE} wxHopr`}
           disabled={!!thisTransactionHasSignaturesIsWaitingToExecute}
         />

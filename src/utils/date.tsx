@@ -35,7 +35,7 @@ export const formatDate = (epoch: number, twoRows = true, now?: number) => {
         &nbsp;
       </>
     );
-  let differenceMs = Date.now() - new Date(epoch).getTime();
+  const differenceMs = Date.now() - new Date(epoch).getTime();
   // @ts-ignore
   if (differenceMs < 0)
     return (

@@ -25,16 +25,16 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
 export default function Button(props: ButtonProps) {
   function src() {
     switch (props.wallet) {
-      case 'metaMask':
-        return '/assets/wallets/MetaMask-Emblem.svg';
-      case 'walletConnect':
-        return '/assets/wallets/WalletConnect-Login.png';
-      case 'injected':
-        return '';
-      case 'viewMode':
-        return '/assets/wallets/Eye_open_font_awesome.svg';
-      default:
-        return '';
+    case 'metaMask':
+      return '/assets/wallets/MetaMask-Emblem.svg';
+    case 'walletConnect':
+      return '/assets/wallets/WalletConnect-Login.png';
+    case 'injected':
+      return '';
+    case 'viewMode':
+      return '/assets/wallets/Eye_open_font_awesome.svg';
+    default:
+      return '';
     }
   }
 

@@ -33,12 +33,10 @@ const stakingHubSlice = createSlice({
         isFetching: false,
         notStarted: null,
         modalToSartOnboardingDismissed: false,
-        nodeBalance: {
-          xDai: {
-            value: null,
-            formatted: null,
-          },
-        },
+        nodeBalance: { xDai: {
+          value: null,
+          formatted: null,
+        } },
       };
     },
     dismissModalToSartOnboarding: (state) => {
@@ -51,11 +49,7 @@ const stakingHubSlice = createSlice({
       state.safes.data = [...state.safes.data, action.payload];
     },
     addOwnerToSafe: (state, action) => {
-      state.safeInfo.data.owners.push({
-        owner: {
-          id: action.payload,
-        },
-      });
+      state.safeInfo.data.owners.push({ owner: { id: action.payload } });
     },
     removeOwnerFromSafe: (state, action) => {
       state.safeInfo.data.owners = state.safeInfo.data.owners.filter((elem) => elem.owner.id !== action.payload);
@@ -95,7 +89,7 @@ const stakingHubSlice = createSlice({
           key: 'includedInModule' | 'registeredNodesInNetworkRegistry';
           value: boolean;
         };
-      }
+      },
     ) => {
       if (typeof action?.payload?.nodeAddress === 'string' && typeof action?.payload?.value === 'boolean') {
         const nodeAddress = action.payload.nodeAddress.toLocaleLowerCase();

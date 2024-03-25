@@ -181,7 +181,17 @@ type GrayCardProps = {
   children?: ReactNode;
 };
 
-const GrayCard = ({ id, title, subtitle, value, valueTooltip, currency, chip, buttons, children }: GrayCardProps) => {
+const GrayCard = ({
+  id,
+  title,
+  subtitle,
+  value,
+  valueTooltip,
+  currency,
+  chip,
+  buttons,
+  children,
+}: GrayCardProps) => {
   return (
     <StyledGrayCard id={id}>
       {(title || value) && (
@@ -288,7 +298,7 @@ const getOnboardingTooltip = (
   isDelegate?: boolean,
   includedInModule?: boolean,
   balanceFormatted?: string,
-  finishMainOnboardingForThisNode?: boolean
+  finishMainOnboardingForThisNode?: boolean,
 ) => {
   if (finishMainOnboardingForThisNode) {
     return <span>Finish ONBOARDING for this node first</span>;
@@ -382,7 +392,7 @@ const NodeAdded = () => {
                   isDelegate,
                   includedInModule,
                   nodes[node].balanceFormatted,
-                  finishMainOnboardingForThisNode
+                  finishMainOnboardingForThisNode,
                 )}
                 onClick={() => {
                   if (finishMainOnboardingForThisNode) {

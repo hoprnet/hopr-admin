@@ -89,7 +89,7 @@ export default function EditOwners() {
           ownerAddress: newOwner,
           safeAddress: selectedSafeAddress,
           signer: signer,
-        })
+        }),
       ).unwrap();
 
       if (transactionData) {
@@ -98,7 +98,7 @@ export default function EditOwners() {
             safeAddress: selectedSafeAddress,
             signer,
             safeTransactionData: transactionData,
-          })
+          }),
         )
           .unwrap()
           .then(async (transactionHash) => {
@@ -134,7 +134,7 @@ export default function EditOwners() {
           ownerAddress: newOwner,
           safeAddress: selectedSafeAddress,
           signer: signer,
-        })
+        }),
       ).unwrap();
 
       if (transactionData) {
@@ -143,7 +143,7 @@ export default function EditOwners() {
             safeAddress: selectedSafeAddress,
             signer,
             safeTransactionData: transactionData,
-          })
+          }),
         )
           .unwrap()
           .finally(() => {
@@ -163,7 +163,7 @@ export default function EditOwners() {
           signer: signer,
           newThreshold: Number(newThreshold),
           safeAddress: selectedSafeAddress,
-        })
+        }),
       ).unwrap();
 
       if (removeTransactionData) {
@@ -172,7 +172,7 @@ export default function EditOwners() {
             signer,
             safeAddress: selectedSafeAddress,
             safeTransactionData: removeTransactionData,
-          })
+          }),
         )
           .unwrap()
           .then(async (transactionHash) => {
@@ -197,7 +197,7 @@ export default function EditOwners() {
           signer: signer,
           newThreshold: Number(newThreshold),
           safeAddress: selectedSafeAddress,
-        })
+        }),
       ).unwrap();
 
       if (removeTransactionData) {
@@ -206,7 +206,7 @@ export default function EditOwners() {
             signer: signer,
             safeAddress: selectedSafeAddress,
             safeTransactionData: removeTransactionData,
-          })
+          }),
         )
           .unwrap()
           .then((res) => {
@@ -228,7 +228,7 @@ export default function EditOwners() {
           safeAddress: selectedSafeAddress,
           signer,
           threshold: parseInt(safeThreshold),
-        })
+        }),
       ).unwrap();
 
       if (!transactionData) return;
@@ -238,7 +238,7 @@ export default function EditOwners() {
           safeAddress: selectedSafeAddress,
           signer,
           safeTransactionData: transactionData,
-        })
+        }),
       )
         .unwrap()
         .then(async (transactionHash) => {
@@ -266,7 +266,7 @@ export default function EditOwners() {
           safeAddress: selectedSafeAddress,
           signer,
           threshold: parseInt(safeThreshold),
-        })
+        }),
       ).unwrap();
 
       if (transactionData) {
@@ -275,7 +275,7 @@ export default function EditOwners() {
             safeAddress: selectedSafeAddress,
             signer,
             safeTransactionData: transactionData,
-          })
+          }),
         )
           .unwrap()
           .finally(() => {
@@ -335,9 +335,7 @@ export default function EditOwners() {
             placeholder="0x..."
             size="small"
             value={newOwner}
-            style={{
-              width: '500px',
-            }}
+            style={{ width: '500px' }}
             onChange={(e) => set_newOwner(e.target.value)}
           />
           <Button
@@ -358,9 +356,7 @@ export default function EditOwners() {
             value={newThreshold}
             onChange={(e) => set_newThreshold(e.target.value)}
             MenuProps={{ disableScrollLock: true }}
-            style={{
-              width: '80px',
-            }}
+            style={{ width: '80px' }}
           >
             {safeOwners?.map((_, index) => (
               <MenuItem

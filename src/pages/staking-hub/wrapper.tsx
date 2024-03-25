@@ -2,11 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { parseUnits } from 'viem';
-import {
-  xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
-  wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
-  wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS,
-} from '../../../config';
+import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS } from '../../../config'
 
 // Redux
 import { useAppSelector } from '../../store';
@@ -24,14 +20,20 @@ import {
   StyledGrayButton,
   StyledInputGroup,
   StyledInstructions,
-  Text,
+  Text
 } from './onboarding/styled';
 
 // Mui
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { web3 } from '@hoprnet/hopr-sdk';
-import { IconButton, Paper, TextField, InputAdornment, Button as MuiButton } from '@mui/material';
+import {
+  IconButton,
+  Paper,
+  TextField,
+  InputAdornment,
+  Button as MuiButton
+} from '@mui/material'
 
 const StyledPaper = styled(Paper)`
   padding: 2rem;
@@ -129,7 +131,11 @@ type TransactionLinkProps = {
   swapDirection: 'xHOPR_to_wxHOPR' | 'wxHOPR_to_xHOPR';
 };
 
-function TransactionLink({ isSuccess, hash, swapDirection }: TransactionLinkProps) {
+function TransactionLink({
+  isSuccess,
+  hash,
+  swapDirection,
+}: TransactionLinkProps) {
   if (!isSuccess) return null;
 
   return (

@@ -27,10 +27,10 @@ export default function AddNode(props?: { onDone?: Function; onBack?: Function; 
 
   //http://localhost:5173/staking/onboarding?HOPRdNodeAddressForOnboarding=helloMyfield
   const HOPRdNodeAddressForOnboarding = useAppSelector(
-    (store) => store.stakingHub.onboarding.nodeAddressProvidedByMagicLink
+    (store) => store.stakingHub.onboarding.nodeAddressProvidedByMagicLink,
   );
   const nodesAddedToSafe = useAppSelector(
-    (store) => store.stakingHub.safeInfo.data.registeredNodesInNetworkRegistryParsed
+    (store) => store.stakingHub.safeInfo.data.registeredNodesInNetworkRegistryParsed,
   );
   const ownerAddress = useAppSelector((store) => store.stakingHub.safeInfo.data.owners[0].owner.id);
   const account = useAppSelector((store) => store.web3.account);
@@ -38,7 +38,7 @@ export default function AddNode(props?: { onDone?: Function; onBack?: Function; 
   const signer = useEthersSigner();
   const [isLoading, set_isLoading] = useState(false);
   const [address, set_address] = useState(
-    HOPRdNodeAddressForOnboarding ? HOPRdNodeAddressForOnboarding : props?.nodeAddress ? props.nodeAddress : ''
+    HOPRdNodeAddressForOnboarding ? HOPRdNodeAddressForOnboarding : props?.nodeAddress ? props.nodeAddress : '',
   );
   const nodeInNetworkRegistry =
     nodesAddedToSafe && nodesAddedToSafe.length > 0 && nodesAddedToSafe.includes(address.toLocaleLowerCase());
@@ -55,7 +55,7 @@ export default function AddNode(props?: { onDone?: Function; onBack?: Function; 
             delegatorAddress: account,
             label: 'node',
           },
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -77,7 +77,10 @@ export default function AddNode(props?: { onDone?: Function; onBack?: Function; 
                 url: null,
                 timeout: null,
               },
-              toastPayload: { message: errMsg, type: 'error' },
+              toastPayload: {
+                message: errMsg,
+                type: 'error',
+              },
               dispatch,
             });
           }
@@ -101,7 +104,10 @@ export default function AddNode(props?: { onDone?: Function; onBack?: Function; 
             href="https://docs.hoprnet.org/node/using-dappnode#2-link-your-node-to-your-safe"
             target="_blank"
             rel="noreferrer"
-            style={{ color: '#007bff', textDecoration: 'underline' }}
+            style={{
+              color: '#007bff',
+              textDecoration: 'underline',
+            }}
           >
             Dappnode
           </a>{' '}
@@ -110,7 +116,10 @@ export default function AddNode(props?: { onDone?: Function; onBack?: Function; 
             href="https://docs.hoprnet.org/node/using-docker#4-link-your-node-to-your-safe"
             target="_blank"
             rel="noreferrer"
-            style={{ color: '#007bff', textDecoration: 'underline' }}
+            style={{
+              color: '#007bff',
+              textDecoration: 'underline',
+            }}
           >
             Docker
           </a>
@@ -139,8 +148,8 @@ export default function AddNode(props?: { onDone?: Function; onBack?: Function; 
               !safeIndexed
                 ? `Your safe wasn\'t indexed yet by HOPR Safe Infrastructure. Please try in 1 hour`
                 : address === ''
-                ? 'Please enter and confirm your node address'
-                : !nodeInNetworkRegistry && 'This node is not on the whitelist'
+                  ? 'Please enter and confirm your node address'
+                  : !nodeInNetworkRegistry && 'This node is not on the whitelist'
             }
           >
             <span>

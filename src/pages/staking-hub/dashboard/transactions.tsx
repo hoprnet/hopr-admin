@@ -12,7 +12,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
+  Tooltip
 } from '@mui/material';
 
 // MUI ICONS
@@ -44,7 +44,7 @@ import {
   CustomSafeModuleTransactionWithTransfersResponse,
   CustomSafeMultisigTransactionListResponse,
   CustomSafeMultisigTransactionResponse,
-  CustomSafeMultisigTransactionWithTransfersResponse,
+  CustomSafeMultisigTransactionWithTransfersResponse
 } from '../../../store/slices/safe/initialState';
 import { calculateTimeInGMT, formatDateToUserTimezone, formatTimeToUserTimezone } from '../../../utils/date';
 import { truncateEthereumAddress } from '../../../utils/blockchain';
@@ -194,7 +194,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           safeAddress: transaction.safe,
           signer,
           safeTransaction: transaction,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -210,7 +210,10 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
               url: null,
               timeout: null,
             },
-            toastPayload: { message: `Multisig transaction not executed. ${JSON.stringify(e)}`, type: 'error' },
+            toastPayload: {
+              message: `Multisig transaction not executed. ${JSON.stringify(e)}`,
+              type: 'error',
+            },
             dispatch,
           });
         });
@@ -225,7 +228,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           signer,
           safeAddress: transaction.safe,
           safeTransactionHash: transaction.safeTxHash,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -245,7 +248,7 @@ const ActionButtons = ({ transaction }: { transaction: SafeMultisigTransactionRe
           signer,
           safeAddress: transaction.safe,
           nonce: transaction.nonce,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -386,7 +389,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
 
   const getCurrencyFromTransaction = async (
     transaction: SafeMultisigTransactionResponse,
-    signer: ethers.providers.JsonRpcSigner
+    signer: ethers.providers.JsonRpcSigner,
   ) => {
     const isNativeTransaction = !transaction.data;
     if (isNativeTransaction) {
@@ -396,7 +399,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
       safeActionsAsync.getToken({
         signer,
         tokenAddress: transaction.to,
-      })
+      }),
     ).unwrap();
 
     if (!token || (!token.name && !token.symbol)) {
@@ -409,7 +412,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
 
   const getValueFromTransaction = async (
     transaction: SafeMultisigTransactionResponse,
-    signer: ethers.providers.JsonRpcSigner
+    signer: ethers.providers.JsonRpcSigner,
   ) => {
     const isNativeTransaction = !transaction.data;
     console.log('getValueFromTransaction', transaction);
@@ -447,7 +450,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
       safeActionsAsync.getToken({
         signer,
         tokenAddress: transaction.to,
-      })
+      }),
     ).unwrap();
 
     if (!token || (!token.name && !token.symbol)) {
@@ -474,7 +477,7 @@ const PendingTransactionRow = ({ transaction }: { transaction: CustomSafeMultisi
   };
 
   const getValueFromERC20Functions = (
-    decodedData: ReturnType<typeof decodeFunctionData<typeof erc20ABI>>
+    decodedData: ReturnType<typeof decodeFunctionData<typeof erc20ABI>>,
   ): string | null => {
     if (decodedData.functionName === 'transfer') {
       return formatEther(decodedData.args[1]);
@@ -873,7 +876,7 @@ function TransactionHistoryTable() {
         safeActionsAsync.getAllSafeTransactionsThunk({
           signer,
           safeAddress: selectedSafeAddress,
-        })
+        }),
       );
     }
   };
@@ -926,7 +929,7 @@ const PendingTransactionsTable = () => {
         safeActionsAsync.getPendingSafeTransactionsThunk({
           safeAddress: selectedSafeAddress,
           signer,
-        })
+        }),
       );
     }
 
@@ -937,7 +940,7 @@ const PendingTransactionsTable = () => {
         safeActionsAsync.getSafeInfoThunk({
           signer: signer,
           safeAddress: selectedSafeAddress,
-        })
+        }),
       );
     }, 10000);
 
@@ -952,7 +955,7 @@ const PendingTransactionsTable = () => {
 
     // sort from oldest date to newest
     return sortedCopy?.results.sort(
-      (prevDay, nextDay) => prevDay.nonce - nextDay.nonce
+      (prevDay, nextDay) => prevDay.nonce - nextDay.nonce,
     ) as CustomSafeMultisigTransactionResponse[];
   };
 

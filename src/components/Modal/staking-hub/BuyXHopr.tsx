@@ -232,7 +232,10 @@ const OptionsToBuy = ({
   );
 };
 
-const BuyXHopr = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+const BuyXHopr = ({
+  open,
+  onClose,
+}: { open: boolean; onClose: () => void }) => {
   const [step, set_step] = useState(0);
 
   useEffect(() => {

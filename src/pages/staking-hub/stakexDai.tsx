@@ -6,7 +6,7 @@ import {
   useContractWrite,
   usePrepareContractWrite,
   usePrepareSendTransaction,
-  useSendTransaction,
+  useSendTransaction
 } from 'wagmi';
 import { wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, MINIMUM_XDAI_TO_FUND, MINIMUM_WXHOPR_TO_FUND } from '../../../config';
 
@@ -25,7 +25,7 @@ import {
   StyledInputGroup,
   StyledInstructions,
   StyledTextField,
-  Text,
+  Text
 } from './onboarding/styled';
 import { StepContainer, ConfirmButton } from './onboarding/components';
 import styled from '@emotion/styled';
@@ -37,7 +37,10 @@ const StakexDai = () => {
   const walletBalance = useAppSelector((store) => store.web3.balance);
   const [xdaiValue, set_xdaiValue] = useState('');
 
-  const { refetch: refetchXDaiSafeBalance, data: xDaiSafeBalance } = useBalance({
+  const {
+    refetch: refetchXDaiSafeBalance,
+    data: xDaiSafeBalance,
+  } = useBalance({
     address: selectedSafeAddress as `0x${string}`,
     watch: true,
     enabled: !!selectedSafeAddress,
@@ -111,13 +114,11 @@ const StakexDai = () => {
               size="small"
               value={xdaiValue}
               onChange={(e) => set_xdaiValue(e.target.value)}
-              InputProps={{
-                inputProps: {
-                  style: { textAlign: 'right' },
-                  min: 0,
-                  pattern: '[0-9]*',
-                },
-              }}
+              InputProps={{ inputProps: {
+                style: { textAlign: 'right' },
+                min: 0,
+                pattern: '[0-9]*',
+              } }}
             />
             <StyledCoinLabel>xDAI</StyledCoinLabel>
             <StyledGrayButton onClick={setMax_xDAI}>Max</StyledGrayButton>

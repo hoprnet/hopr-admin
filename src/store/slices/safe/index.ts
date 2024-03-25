@@ -20,7 +20,7 @@ const safeSlice = createSlice({
       action: PayloadAction<{
         safeAddress: string;
         moduleAddress: string;
-      }>
+      }>,
     ) {
       state.selectedSafe.data.safeAddress = getAddress(action.payload.safeAddress);
       state.selectedSafe.data.moduleAddress = getAddress(action.payload.moduleAddress);

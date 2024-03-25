@@ -81,7 +81,10 @@ export const DockerRunCommandModal = (props: DockerRunCommandModalProps) => {
               href="https://docs.hoprnet.org/node/start-here#understanding-rpc-importance-and-setting-up-your-own-custom-rpc-provider"
               target="_blank"
               rel="noreferrer"
-              style={{ color: '#007bff', textDecoration: 'underline' }}
+              style={{
+                color: '#007bff',
+                textDecoration: 'underline',
+              }}
             >
               the guideline in our docs
             </a>

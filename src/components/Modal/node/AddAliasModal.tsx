@@ -65,7 +65,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
           peerId: peerId,
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -90,7 +90,10 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
               url: null,
               timeout: null,
             },
-            toastPayload: { message: `Alias ${alias} failed to add.`, type: 'error' },
+            toastPayload: {
+              message: `Alias ${alias} failed to add.`,
+              type: 'error',
+            },
             dispatch,
           });
         })

@@ -7,7 +7,7 @@ import type {
   GetTicketsResponseType,
   GetTokenResponseType,
   GetEntryNodesResponseType,
-  PingPeerResponseType,
+  PingPeerResponseType
 } from '@hoprnet/hopr-sdk';
 
 export type Message = {

@@ -244,20 +244,20 @@ export default function CardWithAccordionSteps() {
 
   const setImageById = (id: number) => {
     switch (id) {
-      case 0:
-        set_imageSrc('/assets/get-ready.svg');
-        break;
-      case 1:
-        set_imageSrc('/assets/create-safe.svg');
-        break;
-      case 2:
-        set_imageSrc('/assets/move-funds.svg');
-        break;
-      case 3:
-        set_imageSrc('/assets/HOPR_Node_Adming_with_plus.svg');
-        break;
-      default:
-        break;
+    case 0:
+      set_imageSrc('/assets/get-ready.svg');
+      break;
+    case 1:
+      set_imageSrc('/assets/create-safe.svg');
+      break;
+    case 2:
+      set_imageSrc('/assets/move-funds.svg');
+      break;
+    case 3:
+      set_imageSrc('/assets/HOPR_Node_Adming_with_plus.svg');
+      break;
+    default:
+      break;
     }
   };
 

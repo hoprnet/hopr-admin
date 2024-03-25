@@ -5,7 +5,13 @@ import { useWalletClient } from 'wagmi';
 import { IconButton, TextField } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { StepContainer, ConfirmButton } from '../components';
-import { Container, FlexContainer, StyledError, StyledGrayButton, Text } from '../styled';
+import {
+  Container,
+  FlexContainer,
+  StyledError,
+  StyledGrayButton,
+  Text
+} from '../styled'
 
 // Icons
 import CopyIcon from '@mui/icons-material/ContentCopy';
@@ -59,7 +65,7 @@ const CreateSafe = () => {
         safeActionsAsync.createSafeWithConfigThunk({
           config,
           walletClient,
-        })
+        }),
       ).unwrap();
       dispatch(stakingHubActions.setOnboardingStep(2));
     } catch (error) {

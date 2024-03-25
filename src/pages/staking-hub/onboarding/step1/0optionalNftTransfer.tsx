@@ -131,7 +131,10 @@ export default function optionalNftTtransfer() {
             href="https://docs.hoprnet.org/node/waitlist-FAQ"
             target="_blank"
             rel="noreferrer"
-            style={{ color: '#007bff', textDecoration: 'underline' }}
+            style={{
+              color: '#007bff',
+              textDecoration: 'underline',
+            }}
           >
             here
           </a>
@@ -188,7 +191,7 @@ export default function optionalNftTtransfer() {
                         safeAddress,
                         walletClient,
                         communityNftId: communityNftIdInWallet,
-                      })
+                      }),
                     )
                       .unwrap()
                       .finally(() => {

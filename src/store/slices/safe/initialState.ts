@@ -6,7 +6,7 @@ import {
   SafeModuleTransactionWithTransfersResponse,
   SafeMultisigTransactionListResponse,
   SafeMultisigTransactionWithTransfersResponse,
-  TokenInfoListResponse,
+  TokenInfoListResponse
 } from '@safe-global/api-kit';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 

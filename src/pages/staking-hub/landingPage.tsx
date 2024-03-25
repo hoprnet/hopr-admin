@@ -16,7 +16,13 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { web3Actions } from '../../store/slices/web3';
 
 // Mui
-import { Accordion, AccordionDetails, AccordionSummary, Card, Chip } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Card,
+  Chip
+} from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const StyledContainer = styled.div`

@@ -46,7 +46,7 @@ export const FundChannelModal = ({ ...props }: FundChannelModalModalProps) => {
           amount: weiValue,
           channelId: channelId,
           timeout: 60e3,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -86,7 +86,7 @@ export const FundChannelModal = ({ ...props }: FundChannelModalModalProps) => {
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
   };
 

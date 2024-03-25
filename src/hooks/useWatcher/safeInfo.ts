@@ -30,7 +30,7 @@ export const observeSafeInfo = ({
         safeActionsAsync.getSafeInfoThunk({
           signer: signer,
           safeAddress: selectedSafeAddress,
-        })
+        }),
       ).unwrap();
     },
     previousData: null,

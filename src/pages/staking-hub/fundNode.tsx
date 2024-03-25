@@ -96,7 +96,7 @@ export default function FundNode() {
           value: parseUnits(xdaiValue as `${number}`, 18).toString(),
           data: '0x',
         },
-      })
+      }),
     )
       .unwrap()
       .then((res) => {
@@ -126,7 +126,7 @@ export default function FundNode() {
           value: parseUnits(xdaiValue as `${number}`, 18).toString(),
           data: '0x',
         },
-      })
+      }),
     )
       .unwrap()
       .then((res) => {

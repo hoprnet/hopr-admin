@@ -31,7 +31,7 @@ export const OpenMultipleChannelsModal = () => {
         actionsAsync.getChannelsThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
-        })
+        }),
       );
     }
   };
@@ -50,7 +50,7 @@ export const OpenMultipleChannelsModal = () => {
         amount: weiValue,
         peerAddress: peerId,
         timeout: 60e3,
-      })
+      }),
     )
       .unwrap()
       .then(() => {
@@ -143,7 +143,7 @@ export const OpenMultipleChannelsModal = () => {
 
     // find the index of the "nodeAddress" header
     let peerIdIndex = expectedObjectKeys.findIndex(
-      (key) => key === 'node' || key === 'peer' || key === 'nodeAddress' || key === 'peerAddress'
+      (key) => key === 'node' || key === 'peer' || key === 'nodeAddress' || key === 'peerAddress',
     );
 
     if (peerIdIndex === -1) {

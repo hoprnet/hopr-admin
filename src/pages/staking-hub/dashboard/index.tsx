@@ -37,15 +37,15 @@ const getTabIndexFromUrl = () => {
   let currentHash = window.location.hash.replace('#', '');
   if (currentHash == '') currentHash = 'staking';
   switch (currentHash) {
-    case 'node':
-      return DASHBOARD.node;
-    case 'safe':
-      return DASHBOARD.safe;
-    case 'transactions':
-      return DASHBOARD.transactions;
-    default:
-      window.location.hash = `#${currentHash}`;
-      return DASHBOARD.staking;
+  case 'node':
+    return DASHBOARD.node;
+  case 'safe':
+    return DASHBOARD.safe;
+  case 'transactions':
+    return DASHBOARD.transactions;
+  default:
+    window.location.hash = `#${currentHash}`;
+    return DASHBOARD.staking;
   }
 };
 
@@ -103,7 +103,7 @@ function Dashboard() {
           safeAddress,
           moduleAddress,
           browserClient,
-        })
+        }),
       );
     }
   }, []);

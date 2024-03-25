@@ -57,16 +57,17 @@ const Container = styled.div`
   }
 `;
 
-const CustomWidthTooltip = styled(({ className, ...props }) => (
+const CustomWidthTooltip = styled(({
+  className,
+  ...props
+}) => (
   <Tooltip
     {...props}
     classes={{ popper: className }}
   />
-))({
-  [`
+))({ [`
         color: white;
-        & .${tooltipClasses.tooltip}`]: { maxWidth: 200 },
-});
+        & .${tooltipClasses.tooltip}`]: { maxWidth: 200 } });
 
 export default function Nft(props) {
   const [disableButton, set_disableButton] = useState(false);

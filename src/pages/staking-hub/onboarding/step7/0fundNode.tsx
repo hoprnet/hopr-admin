@@ -18,20 +18,21 @@ import { stakingHubActions } from '../../../../store/slices/stakingHub';
 import { Tooltip, TooltipProps, tooltipClasses } from '@mui/material';
 import SafeTransactionButton from '../../../../components/SafeTransactionButton';
 
-const BlueTooltip = styled(({ className, ...props }: TooltipProps) => (
+const BlueTooltip = styled(({
+  className,
+  ...props
+}: TooltipProps) => (
   <Tooltip
     {...props}
     classes={{ popper: className }}
   />
-))(() => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: '#DAF8FF',
-    color: '#414141',
-    borderRadius: '10px',
-    fontSize: '12px',
-    boxShadow: '0px 4px 4px #00000040',
-  },
-}));
+))(() => ({ [`& .${tooltipClasses.tooltip}`]: {
+  backgroundColor: '#DAF8FF',
+  color: '#414141',
+  borderRadius: '10px',
+  fontSize: '12px',
+  boxShadow: '0px 4px 4px #00000040',
+} }));
 
 const StyledForm = styled.div`
   width: 100%;
@@ -113,7 +114,7 @@ export default function FundNode(props?: { onDone?: Function; nodeAddress?: stri
           value: parseUnits(xdaiValue as `${number}`, 18).toString(),
           data: '0x',
         },
-      })
+      }),
     )
       .unwrap()
       .then((hash) => {
@@ -144,7 +145,7 @@ export default function FundNode(props?: { onDone?: Function; nodeAddress?: stri
           value: parseUnits(xdaiValue as `${number}`, 18).toString(),
           data: '0x',
         },
-      })
+      }),
     )
       .unwrap()
       .catch((e) => {

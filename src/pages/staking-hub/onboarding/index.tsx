@@ -72,61 +72,61 @@ function Onboarding() {
 
   function whatIsCompletedStep(page: number) {
     switch (page) {
-      case ONBOARDING_PAGES.SAFE_IS_READY:
-      case ONBOARDING_PAGES.OPTIONAL_NFT_TRANSFER:
-        return 0;
-      case ONBOARDING_PAGES.XDAI_TO_SAFE:
-        return 1;
-      case ONBOARDING_PAGES.SAFE_IS_FUNDED:
-      case ONBOARDING_PAGES.SELECT_NODE_TYPE:
-      case ONBOARDING_PAGES.SETUP_NODE:
-      case ONBOARDING_PAGES.SETUP_DAPP_NODE:
-        return 2;
-      case ONBOARDING_PAGES.JOIN_WAITLIST:
-        return 3;
-      case ONBOARDING_PAGES.ADDED_TO_WHITELIST:
-      case ONBOARDING_PAGES.ADD_NODE:
-        return 4;
-      case ONBOARDING_PAGES.CONFIGURE_NODE:
-        return 5;
-      case ONBOARDING_PAGES.FUND_NODE:
-        return 6;
-      case ONBOARDING_PAGES.SET_ALLOWANCE:
-        return 7;
-      case ONBOARDING_PAGES.NODE_IS_READY:
-        return 8;
+    case ONBOARDING_PAGES.SAFE_IS_READY:
+    case ONBOARDING_PAGES.OPTIONAL_NFT_TRANSFER:
+      return 0;
+    case ONBOARDING_PAGES.XDAI_TO_SAFE:
+      return 1;
+    case ONBOARDING_PAGES.SAFE_IS_FUNDED:
+    case ONBOARDING_PAGES.SELECT_NODE_TYPE:
+    case ONBOARDING_PAGES.SETUP_NODE:
+    case ONBOARDING_PAGES.SETUP_DAPP_NODE:
+      return 2;
+    case ONBOARDING_PAGES.JOIN_WAITLIST:
+      return 3;
+    case ONBOARDING_PAGES.ADDED_TO_WHITELIST:
+    case ONBOARDING_PAGES.ADD_NODE:
+      return 4;
+    case ONBOARDING_PAGES.CONFIGURE_NODE:
+      return 5;
+    case ONBOARDING_PAGES.FUND_NODE:
+      return 6;
+    case ONBOARDING_PAGES.SET_ALLOWANCE:
+      return 7;
+    case ONBOARDING_PAGES.NODE_IS_READY:
+      return 8;
 
-      default:
-        return -1;
+    default:
+      return -1;
     }
   }
 
   function whatIsCurrentStep(page: number) {
     switch (page) {
-      case ONBOARDING_PAGES.OPTIONAL_NFT_TRANSFER:
-        return 1;
-      case ONBOARDING_PAGES.XDAI_TO_SAFE:
-      case ONBOARDING_PAGES.SAFE_IS_FUNDED:
-        return 2;
-      case ONBOARDING_PAGES.SELECT_NODE_TYPE:
-      case ONBOARDING_PAGES.SETUP_NODE:
-      case ONBOARDING_PAGES.SETUP_DAPP_NODE:
-        return 3;
-      case ONBOARDING_PAGES.JOIN_WAITLIST:
-      case ONBOARDING_PAGES.ADDED_TO_WHITELIST:
-        return 4;
-      case ONBOARDING_PAGES.ADD_NODE:
-        return 5;
-      case ONBOARDING_PAGES.CONFIGURE_NODE:
-        return 6;
-      case ONBOARDING_PAGES.FUND_NODE:
-        return 7;
-      case ONBOARDING_PAGES.SET_ALLOWANCE:
-      case ONBOARDING_PAGES.NODE_IS_READY:
-        return 8;
+    case ONBOARDING_PAGES.OPTIONAL_NFT_TRANSFER:
+      return 1;
+    case ONBOARDING_PAGES.XDAI_TO_SAFE:
+    case ONBOARDING_PAGES.SAFE_IS_FUNDED:
+      return 2;
+    case ONBOARDING_PAGES.SELECT_NODE_TYPE:
+    case ONBOARDING_PAGES.SETUP_NODE:
+    case ONBOARDING_PAGES.SETUP_DAPP_NODE:
+      return 3;
+    case ONBOARDING_PAGES.JOIN_WAITLIST:
+    case ONBOARDING_PAGES.ADDED_TO_WHITELIST:
+      return 4;
+    case ONBOARDING_PAGES.ADD_NODE:
+      return 5;
+    case ONBOARDING_PAGES.CONFIGURE_NODE:
+      return 6;
+    case ONBOARDING_PAGES.FUND_NODE:
+      return 7;
+    case ONBOARDING_PAGES.SET_ALLOWANCE:
+    case ONBOARDING_PAGES.NODE_IS_READY:
+      return 8;
 
-      default:
-        return 0;
+    default:
+      return 0;
     }
   }
 

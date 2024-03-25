@@ -16,7 +16,10 @@ import RemoveMessages from '../../future-hopr-lib-components/Icons/RemoveMessage
 
 const messages = () => {
   const messages = useAppSelector((store) => store.node.messages.data);
-  const { apiEndpoint, apiToken } = useAppSelector((store) => store.auth.loginData);
+  const {
+    apiEndpoint,
+    apiToken,
+  } = useAppSelector((store) => store.auth.loginData);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -26,7 +29,7 @@ const messages = () => {
       actionsAsync.getAliasesThunk({
         apiEndpoint,
         apiToken,
-      })
+      }),
     );
   }, []);
 
@@ -93,7 +96,7 @@ const messages = () => {
                   actionsAsync.deleteMessagesThunk({
                     apiEndpoint,
                     apiToken,
-                  })
+                  }),
                 );
               }}
             />

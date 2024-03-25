@@ -19,25 +19,17 @@ export default function NodeIsReady() {
 
   const doConfetti = () => {
     const count = 200;
-    const defaults = {
-      origin: { y: 0.5 },
-    };
+    const defaults = { origin: { y: 0.5 } };
 
     function fire(particleRatio: number, opts: object) {
-      confetti(
-        Object.assign({}, defaults, opts, {
-          particleCount: Math.floor(count * particleRatio),
-        })
-      );
+      confetti(Object.assign({}, defaults, opts, { particleCount: Math.floor(count * particleRatio) }));
     }
 
     fire(0.25, {
       spread: 26,
       startVelocity: 55,
     });
-    fire(0.2, {
-      spread: 60,
-    });
+    fire(0.2, { spread: 60 });
     fire(0.35, {
       spread: 100,
       decay: 0.91,

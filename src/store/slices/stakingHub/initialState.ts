@@ -146,12 +146,10 @@ export const initialState: InitialState = {
     notStarted: null,
     modalToSartOnboardingDismissed: false,
     nodeAddressProvidedByMagicLink: null,
-    nodeBalance: {
-      xDai: {
-        value: null,
-        formatted: null,
-      },
-    },
+    nodeBalance: { xDai: {
+      value: null,
+      formatted: null,
+    } },
   },
   safeInfo: {
     data: {
@@ -191,12 +189,10 @@ export const initialState: InitialState = {
     },
     isFetching: false,
   },
-  config: {
-    needsUpdate: {
-      data: false,
-      strategy: null,
-      isFetching: false,
-    },
-  },
+  config: { needsUpdate: {
+    data: false,
+    strategy: null,
+    isFetching: false,
+  } },
   nodes: {},
 };

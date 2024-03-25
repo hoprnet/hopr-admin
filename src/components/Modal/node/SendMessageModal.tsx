@@ -15,7 +15,7 @@ import {
   SelectChangeEvent,
   Select,
   MenuItem,
-  Autocomplete,
+  Autocomplete
 } from '@mui/material';
 
 import { SendMessagePayloadType } from '@hoprnet/hopr-sdk';
@@ -73,7 +73,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const [error, set_error] = useState<string | null>(null);
   const [numberOfHops, set_numberOfHops] = useState<number>(0);
   const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops' | 'directMessage'>(
-    'directMessage'
+    'directMessage',
   );
   const [message, set_message] = useState<string>('');
   const [openModal, set_openModal] = useState<boolean>(false);
@@ -95,18 +95,18 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
 
   useEffect(() => {
     switch (sendMode) {
-      case 'automaticPath':
-        set_numberOfHops(1);
-        break;
-      case 'path':
-        set_numberOfHops(0);
-        break;
-      case 'numberOfHops':
-        set_path('');
-        break;
-      default: //anything that is not a custom route
-        set_numberOfHops(0);
-        set_path('');
+    case 'automaticPath':
+      set_numberOfHops(1);
+      break;
+    case 'path':
+      set_numberOfHops(0);
+      break;
+    case 'numberOfHops':
+      set_path('');
+      break;
+    default: //anything that is not a custom route
+      set_numberOfHops(0);
+      set_path('');
     }
   }, [sendMode]);
 
@@ -177,7 +177,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
 
   const handleNumberOfHops = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_numberOfHops(
-      parseInt(event.target.value) || parseInt(event.target.value) === 0 ? parseInt(event.target.value) : 0
+      parseInt(event.target.value) || parseInt(event.target.value) === 0 ? parseInt(event.target.value) : 0,
     );
   };
 

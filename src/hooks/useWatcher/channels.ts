@@ -9,15 +9,15 @@ import { ChannelOutgoingType, ChannelsOutgoingType, ChannelsIncomingType } from 
  */
 export const checkHowChannelsHaveChanged = (
   previousChannels: ChannelsIncomingType | ChannelsOutgoingType,
-  newChannels: ChannelsIncomingType | ChannelsOutgoingType
+  newChannels: ChannelsIncomingType | ChannelsOutgoingType,
 ) => {
-  let previousChannelsLocal = JSON.parse(JSON.stringify(previousChannels)) as ChannelsOutgoingType;
-  let newChannelsLocal = JSON.parse(JSON.stringify(newChannels)) as ChannelsOutgoingType;
+  const previousChannelsLocal = JSON.parse(JSON.stringify(previousChannels)) as ChannelsOutgoingType;
+  const newChannelsLocal = JSON.parse(JSON.stringify(newChannels)) as ChannelsOutgoingType;
 
-  let changes: ChannelOutgoingType[] = [];
+  const changes: ChannelOutgoingType[] = [];
 
-  let previousChannelsOutgoing = Object.keys(previousChannelsLocal);
-  let newChannelsOutgoing = Object.keys(newChannelsLocal);
+  const previousChannelsOutgoing = Object.keys(previousChannelsLocal);
+  const newChannelsOutgoing = Object.keys(newChannelsLocal);
 
   newChannelsOutgoing.forEach((newChannelId) => {
     const newChannel = newChannelsLocal[newChannelId];

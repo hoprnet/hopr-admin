@@ -98,12 +98,22 @@ type ConnectWeb3Props = {
   onClose?: () => void;
 };
 
-export default function ConnectWeb3({ inTheAppBar, open, onClose }: ConnectWeb3Props) {
+export default function ConnectWeb3({
+  inTheAppBar,
+  open,
+  onClose,
+}: ConnectWeb3Props) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
-  const { connectors, connect, error, reset, pendingConnector } = useConnect();
+  const {
+    connectors,
+    connect,
+    error,
+    reset,
+    pendingConnector,
+  } = useConnect();
   const { connector } = useAccount();
   const { disconnect } = useDisconnect();
 

@@ -117,7 +117,10 @@ export default function JoinWaitListStep() {
             href="https://docs.hoprnet.org/node/waitlist-FAQ"
             target="_blank"
             rel="noreferrer"
-            style={{ color: '#007bff', textDecoration: 'underline' }}
+            style={{
+              color: '#007bff',
+              textDecoration: 'underline',
+            }}
           >
             FAQ
           </a>

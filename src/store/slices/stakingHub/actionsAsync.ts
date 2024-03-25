@@ -9,10 +9,16 @@ import {
   MINIMUM_XDAI_TO_FUND_NODE,
   HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS,
   HOPR_CHANNELS_SMART_CONTRACT_ADDRESS,
-  wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
+  wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS
 } from '../../../../config';
 import { web3 } from '@hoprnet/hopr-sdk';
-import { Address, PublicClient, WalletClient, parseEther, publicActions } from 'viem';
+import {
+  Address,
+  PublicClient,
+  WalletClient,
+  parseEther,
+  publicActions
+} from 'viem'
 import { gql } from 'graphql-request';
 import { stakingHubActions } from '.';
 import { safeActionsAsync } from '../safe';
@@ -28,7 +34,10 @@ const getHubSafesByOwnerThunk = createAsyncThunk<
   { state: RootState }
 >(
   'stakingHub/getHubSafesByOwner',
-  async (payload, { rejectWithValue, dispatch }) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(setHubSafesByOwnerFetching(true));
     try {
       const ownerAddress = payload.toLocaleLowerCase();
@@ -102,14 +111,12 @@ const getHubSafesByOwnerThunk = createAsyncThunk<
       return rejectWithValue(e);
     }
   },
-  {
-    condition: (_payload, { getState }) => {
-      const isFetching = getState().stakingHub.safes.isFetching;
-      if (isFetching) {
-        return false;
-      }
-    },
-  }
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().stakingHub.safes.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
 const registerNodeAndSafeToNRThunk = createAsyncThunk<
@@ -156,7 +163,14 @@ const getSubgraphDataThunk = createAsyncThunk<
   { state: RootState }
 >(
   'stakingHub/getSubgraphData',
-  async ({ safeAddress, moduleAddress, browserClient }, { rejectWithValue, dispatch }) => {
+  async ({
+    safeAddress,
+    moduleAddress,
+    browserClient,
+  }, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     safeAddress = safeAddress.toLocaleLowerCase();
     moduleAddress = moduleAddress.toLocaleLowerCase();
 
@@ -267,8 +281,13 @@ const getSubgraphDataThunk = createAsyncThunk<
 
       console.log('allNodes found', allNodes);
       allNodes.forEach((safeRegNode: { node: { id: string } }) => {
-        let nodeAddress = safeRegNode.node.id;
-        dispatch(getNodeDataThunk({ nodeAddress, browserClient }));
+        const nodeAddress = safeRegNode.node.id;
+        dispatch(
+          getNodeDataThunk({
+            nodeAddress,
+            browserClient,
+          }),
+        );
       });
 
       console.log('SubgraphParsedOutput', output);
@@ -281,14 +300,12 @@ const getSubgraphDataThunk = createAsyncThunk<
       return rejectWithValue(JSON.stringify(e));
     }
   },
-  {
-    condition: (_payload, { getState }) => {
-      const isFetching = getState().stakingHub.safeInfo.isFetching;
-      if (isFetching) {
-        return false;
-      }
-    },
-  }
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().stakingHub.safeInfo.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
 );
 
 type ParsedTargets = {
@@ -301,7 +318,11 @@ const getModuleTargetsThunk = createAsyncThunk<
   ParsedTargets,
   { safeAddress: string; moduleAddress: string; walletClient: PublicClient },
   { state: RootState }
->('stakingHub/getNodeConfiguration', async ({ safeAddress, moduleAddress, walletClient }, { rejectWithValue }) => {
+>('stakingHub/getNodeConfiguration', async ({
+  safeAddress,
+  moduleAddress,
+  walletClient,
+}, { rejectWithValue }) => {
   console.log('stakingHub/getNodeConfiguration', safeAddress, moduleAddress);
   try {
     const superWalletClient = walletClient.extend(publicActions);
@@ -311,23 +332,27 @@ const getModuleTargetsThunk = createAsyncThunk<
       abi: web3.hoprNodeManagementModuleABI,
       functionName: 'tryGetTarget',
       args: [HOPR_CHANNELS_SMART_CONTRACT_ADDRESS],
-    })) as [boolean, BigInt];
+    })) as [boolean, bigint];
 
     const wxHOPRTarget = (await superWalletClient.readContract({
       address: moduleAddress as `0x${string}`,
       abi: web3.hoprNodeManagementModuleABI,
       functionName: 'tryGetTarget',
       args: [wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS],
-    })) as [boolean, BigInt];
+    })) as [boolean, bigint];
 
     const announcmentTarget = (await superWalletClient.readContract({
       address: moduleAddress as `0x${string}`,
       abi: web3.hoprNodeManagementModuleABI,
       functionName: 'tryGetTarget',
       args: [HOPR_ANNOUNCEMENT_SMART_CONTRACT_ADDRESS],
-    })) as [boolean, BigInt];
+    })) as [boolean, bigint];
 
-    console.log('targets', { wxHOPRTarget, channelsTarget, announcmentTarget });
+    console.log('targets', {
+      wxHOPRTarget,
+      channelsTarget,
+      announcmentTarget,
+    });
 
     const targets = {
       channels: channelsTarget[0] === true ? channelsTarget[1].toString() : false,
@@ -368,7 +393,10 @@ const getModuleTargetsThunk = createAsyncThunk<
 
 const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: RootState }>(
   'stakingHub/goToStepWeShouldBeOn',
-  async (_payload, { getState, rejectWithValue }) => {
+  async (_payload, {
+    getState,
+    rejectWithValue,
+  }) => {
     try {
       const state = getState();
 
@@ -379,18 +407,18 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
         if (state.safe.delegates.data?.count) {
           console.log(
             '[Onboarding check] state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
-            state.stakingHub.safeInfo.data?.module?.includedNodes
+            state.stakingHub.safeInfo.data?.module?.includedNodes,
           );
           console.log(
             '[Onboarding check] state.stakingHub.safeInfo.data.module.includedNodes.length > 0',
             state.stakingHub.safeInfo.data?.module?.includedNodes &&
-              state.stakingHub.safeInfo.data.module.includedNodes.length > 0
+              state.stakingHub.safeInfo.data.module.includedNodes.length > 0,
           );
           console.log(
             '[Onboarding check] Node configured (includeNode()): ',
             state.stakingHub.safeInfo.data?.module?.includedNodes &&
               state.stakingHub.safeInfo.data.module.includedNodes.length > 0 &&
-              state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null
+              state.stakingHub.safeInfo.data.module.includedNodes[0]?.node.id !== null,
           );
           if (
             state.stakingHub.safeInfo.data?.module?.includedNodes &&
@@ -403,7 +431,7 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
             console.log(
               '[Onboarding check] Node balance (xDai): ',
               state.stakingHub.onboarding.nodeXDaiBalance,
-              nodeXDaiBalanceCheck
+              nodeXDaiBalanceCheck,
             );
             if (nodeXDaiBalanceCheck) {
               const wxHoprAllowanceCheck =
@@ -412,7 +440,7 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
               console.log(
                 '[Onboarding check] Allowance set: ',
                 state.stakingHub.safeInfo.data.allowance.wxHoprAllowance,
-                wxHoprAllowanceCheck
+                wxHoprAllowanceCheck,
               );
               if (wxHoprAllowanceCheck) {
                 console.log('[Onboarding check] step: 16');
@@ -448,7 +476,7 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
       console.log(
         '[Onboarding check] CommunityNftId in Safe',
         state.safe.communityNftIds.data.length,
-        state.safe.communityNftIds.data.length !== 0
+        state.safe.communityNftIds.data.length !== 0,
       );
       if (state.safe.communityNftIds.data.length !== 0) {
         console.log('[Onboarding check] step: 4');
@@ -471,14 +499,17 @@ const goToStepWeShouldBeOnThunk = createAsyncThunk<number, undefined, { state: R
 
       return rejectWithValue(JSON.stringify(e));
     }
-  }
+  },
 );
 
 const getOnboardingDataThunk = createAsyncThunk<
   void,
   { browserClient: PublicClient; safeAddress: string; moduleAddress: string },
   { state: RootState }
->('stakingHub/getOnboardingData', async (payload, { rejectWithValue, dispatch }) => {
+>('stakingHub/getOnboardingData', async (payload, {
+  rejectWithValue,
+  dispatch,
+}) => {
   dispatch(stakingHubActions.onboardingIsFetching(true));
   await dispatch(safeActionsAsync.getCommunityNftsOwnedBySafeThunk(payload.safeAddress)).unwrap();
   const moduleAddress = payload.moduleAddress;
@@ -492,7 +523,7 @@ const getOnboardingDataThunk = createAsyncThunk<
       safeAddress: payload.safeAddress,
       moduleAddress,
       walletClient: payload.browserClient,
-    })
+    }),
   );
 
   const subgraphResponse = await dispatch(
@@ -500,7 +531,7 @@ const getOnboardingDataThunk = createAsyncThunk<
       safeAddress: payload.safeAddress,
       moduleAddress,
       browserClient: payload.browserClient,
-    })
+    }),
   ).unwrap();
 
   let nodeXDaiBalance = '0';
@@ -509,9 +540,7 @@ const getOnboardingDataThunk = createAsyncThunk<
     subgraphResponse.registeredNodesInNetworkRegistryParsed?.length > 0 &&
     subgraphResponse.registeredNodesInNetworkRegistryParsed[0] !== null
   ) {
-    const nodeBalanceInBigInt = await payload.browserClient?.getBalance({
-      address: subgraphResponse.registeredNodesInNetworkRegistryParsed[0] as Address,
-    });
+    const nodeBalanceInBigInt = await payload.browserClient?.getBalance({ address: subgraphResponse.registeredNodesInNetworkRegistryParsed[0] as Address });
     nodeXDaiBalance = nodeBalanceInBigInt?.toString() ?? '0';
   }
 
@@ -520,7 +549,7 @@ const getOnboardingDataThunk = createAsyncThunk<
       safeAddress: payload.safeAddress,
       moduleAddress,
       nodeXDaiBalance,
-    })
+    }),
   );
   dispatch(goToStepWeShouldBeOnThunk());
   dispatch(stakingHubActions.onboardingIsFetching(false));
@@ -532,7 +561,10 @@ const getNodeDataThunk = createAsyncThunk<
   { state: RootState }
 >(
   'stakingHub/getNodeData',
-  async (payload, { rejectWithValue, dispatch }) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     dispatch(getNodeBalanceThunk(payload));
     const rez = await fetch(`https://network.hoprnet.org/api/getNode?env=37&nodeAddress=${payload.nodeAddress}`);
     const json = await rez.json();
@@ -548,11 +580,9 @@ const getNodeDataThunk = createAsyncThunk<
     }
     return nodeData;
   },
-  {
-    condition: (_payload, { getState }) => {
-      return true;
-    },
-  }
+  { condition: (_payload, { getState }) => {
+    return true;
+  } },
 );
 
 const getNodeBalanceThunk = createAsyncThunk<
@@ -561,12 +591,15 @@ const getNodeBalanceThunk = createAsyncThunk<
   { state: RootState }
 >(
   'stakingHub/getNodeBalance',
-  async (payload, { rejectWithValue, dispatch }) => {
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
     const nodeBalanceInBigInt = await payload.browserClient?.getBalance({ address: payload.nodeAddress as Address });
     console.log('nodeBalanceInBigInt', payload.nodeAddress, nodeBalanceInBigInt);
     const nodeXDaiBalance = nodeBalanceInBigInt?.toString() ?? '0';
     const nodeXDaiBalanceFormatted = formatEther(nodeBalanceInBigInt);
-    let nodeBalance = {
+    const nodeBalance = {
       nodeAddress: payload.nodeAddress,
       balance: nodeXDaiBalance,
       balanceFormatted: nodeXDaiBalanceFormatted,
@@ -574,11 +607,9 @@ const getNodeBalanceThunk = createAsyncThunk<
     };
     return nodeBalance;
   },
-  {
-    condition: (_payload, { getState }) => {
-      return true;
-    },
-  }
+  { condition: (_payload, { getState }) => {
+    return true;
+  } },
 );
 
 // Helper actions to update the isFetching state

@@ -5,7 +5,7 @@ import {
   useSearchParams,
   Navigate,
   useLocation,
-  useNavigate,
+  useNavigate
 } from 'react-router-dom';
 import { environment } from '../config';
 import { useDisconnect } from 'wagmi';
@@ -375,7 +375,7 @@ const LayoutEnhanced = () => {
 
   const numberOfPeers = useAppSelector((store) => store.node.peers.data?.connected.length);
   const numberOfAliases = useAppSelector(
-    (store) => store.node.aliases?.data && Object.keys(store.node.aliases?.data).length
+    (store) => store.node.aliases?.data && Object.keys(store.node.aliases?.data).length,
   );
   const numberOfMessagesReceived = useAppSelector((store) => store.node.messages.data.length);
   const numberOfChannelsIn = useAppSelector((store) => store.node.channels.data?.incoming.length);
@@ -405,13 +405,9 @@ const LayoutEnhanced = () => {
       authActions.useNodeData({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
-    dispatch(
-      nodeActions.setApiEndpoint({
-        apiEndpoint: formattedApiEndpoint,
-      })
-    );
+    dispatch(nodeActions.setApiEndpoint({ apiEndpoint: formattedApiEndpoint }));
     if (!apiToken) return;
     const useNode = async () => {
       try {
@@ -419,7 +415,7 @@ const LayoutEnhanced = () => {
           authActionsAsync.loginThunk({
             apiEndpoint,
             apiToken,
-          })
+          }),
         ).unwrap();
         if (loginInfo) {
           // We do this after the loginInfo to make sure the login from url was successful
@@ -428,56 +424,56 @@ const LayoutEnhanced = () => {
             nodeActionsAsync.getInfoThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getAddressesThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getAliasesThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getPeersThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getBalancesThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getMessagesThunk({
               apiToken,
               apiEndpoint,
               firstLoad: true,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getChannelsThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getTicketStatisticsThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getPrometheusMetricsThunk({
               apiToken,
               apiEndpoint,
-            })
+            }),
           );
           dispatch(nodeActions.initializeMessagesWebsocket());
         }

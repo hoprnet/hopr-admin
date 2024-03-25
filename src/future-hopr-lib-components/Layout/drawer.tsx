@@ -10,7 +10,7 @@ import {
   ListSubheader,
   Drawer as MuiDrawer,
   Tooltip,
-  useMediaQuery,
+  useMediaQuery
 } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { ApplicationMapType } from '../../router';
@@ -34,7 +34,7 @@ const StyledDrawer = styled(MuiDrawer)`
     width: ${(props) => (props.open ? `${drawerWidth}px` : `${minDrawerWidth}px`)};
 
     ${(props) =>
-      props.variant === 'temporary' &&
+    props.variant === 'temporary' &&
       css`
         width: ${drawerWidth}px;
       `}
@@ -229,8 +229,8 @@ const Drawer = ({
                               ? item.path.includes('http')
                                 ? item.path
                                 : item.overwritePath
-                                ? item.overwritePath
-                                : `${group.path}/${item.path}${searchParams ?? ''}`
+                                  ? item.overwritePath
+                                  : `${group.path}/${item.path}${searchParams ?? ''}`
                               : undefined
                           }
                           target={item.path.includes('http') ? '_blank' : undefined}
@@ -252,15 +252,15 @@ const Drawer = ({
                             openedNavigationDrawer &&
                             item.loginNeeded &&
                             drawerLoginState?.[item.loginNeeded] && (
-                              <Numbers>{rounder2(drawerNumbers[item.numberKey])}</Numbers>
-                            )}
+                            <Numbers>{rounder2(drawerNumbers[item.numberKey])}</Numbers>
+                          )}
                         </StyledListItemButton>
                       </Tooltip>
-                    )
+                    ),
                 )}
               </List>
             </div>
-          )
+          ),
       )}
       {drawerVariant === 'temporary' && <Details style={{ margin: '0 auto 16px' }} />}
     </StyledDrawer>

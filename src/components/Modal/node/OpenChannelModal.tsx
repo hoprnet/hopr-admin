@@ -47,7 +47,7 @@ export const OpenChannelModal = ({ ...props }: OpenChannelModalProps) => {
           amount: weiValue,
           peerAddress: peerAddress,
           timeout: 60e3,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -87,7 +87,7 @@ export const OpenChannelModal = ({ ...props }: OpenChannelModalProps) => {
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
-      })
+      }),
     );
   };
 

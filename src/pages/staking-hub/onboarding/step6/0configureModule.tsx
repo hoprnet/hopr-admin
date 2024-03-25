@@ -161,7 +161,7 @@ export default function ConfigureModule(props?: {
           safeAddress: selectedSafeAddress,
           operation: OperationType.DelegateCall,
           smartContractAddress: MULTISEND_CONTRACT_GNOSIS,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -172,7 +172,7 @@ export default function ConfigureModule(props?: {
                 key: 'includedInModule',
                 nodeAddress: nodeAddress,
                 value: true,
-              })
+              }),
             );
           } else {
             dispatch(stakingHubActions.setOnboardingStep(14));
@@ -190,7 +190,7 @@ export default function ConfigureModule(props?: {
           data: includeNodeTransactionData,
           safeAddress: selectedSafeAddress,
           signer,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -201,7 +201,7 @@ export default function ConfigureModule(props?: {
                 key: 'includedInModule',
                 nodeAddress: nodeAddress,
                 value: true,
-              })
+              }),
             );
           } else {
             dispatch(stakingHubActions.setOnboardingStep(14));
@@ -221,7 +221,7 @@ export default function ConfigureModule(props?: {
           safeAddress: selectedSafeAddress,
           operation: OperationType.DelegateCall,
           smartContractAddress: MULTISEND_CONTRACT_GNOSIS,
-        })
+        }),
       ).unwrap();
     } else if (props?.onboardingType === 'nextNode') {
       await dispatch(
@@ -230,7 +230,7 @@ export default function ConfigureModule(props?: {
           data: createIncludeNodeTransactionData(nodeAddress),
           safeAddress: selectedSafeAddress,
           signer,
-        })
+        }),
       ).unwrap();
     }
 
@@ -244,7 +244,7 @@ export default function ConfigureModule(props?: {
           safeAddress: transaction.safe,
           signer,
           safeTransaction: transaction,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -255,7 +255,7 @@ export default function ConfigureModule(props?: {
                 key: 'includedInModule',
                 nodeAddress: nodeAddress,
                 value: true,
-              })
+              }),
             );
           } else {
             dispatch(stakingHubActions.setOnboardingStep(14));
@@ -269,7 +269,10 @@ export default function ConfigureModule(props?: {
               url: null,
               timeout: null,
             },
-            toastPayload: { message: `Multisig transaction not executed. ${JSON.stringify(e)}`, type: 'error' },
+            toastPayload: {
+              message: `Multisig transaction not executed. ${JSON.stringify(e)}`,
+              type: 'error',
+            },
             dispatch,
           });
         });
