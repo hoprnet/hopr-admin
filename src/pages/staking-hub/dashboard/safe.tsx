@@ -107,6 +107,8 @@ function SafeDashboard() {
   const onboardingIsNotFinished = useAppSelector((store) => store.stakingHub.onboarding.notFinished);
   const onboardingIsFetching = useAppSelector((store) => store.stakingHub.onboarding.notFinished);
   const [updating, set_updating] = useState(false);
+  const [deployLoading, set_deployLoading] = useState(false);
+  const [deployError, set_deployError] = useState<unknown>('');
 
   const onboardingIsFinished = !onboardingIsFetching && !onboardingIsNotFinished;
 
@@ -285,6 +287,35 @@ function SafeDashboard() {
     }
   };
 
+  const handleCreateSafe = async () => {
+    if (!walletClient) return;
+
+    const config = {
+      owners: [walletAddress as string],
+      threshold: 1,
+    };
+
+    try {
+      set_deployError('');
+      set_deployLoading(true);
+      const safe = await dispatch(
+        safeActionsAsync.createSafeWithConfigThunk({
+          config,
+          walletClient,
+        }),
+      ).unwrap();
+    } catch (error) {
+      if (error instanceof Error) {
+        set_deployError(error.message);
+      } else {
+        set_deployError(JSON.stringify(error, null, 2));
+      }
+    } finally {
+      set_deployLoading(false);
+
+    }
+  };
+
   function whichNFTimage() {
     if (communityNftIdInSafe !== false) return '/assets/nft-in-safe.png';
     if (communityNftIdInWallet === null) return '/assets/nft-NOT-detected-in-wallet.png';
@@ -369,6 +400,34 @@ function SafeDashboard() {
           <TransferNFT>
             <img src={whichNFTimage()} />
           </TransferNFT>
+        </GrayCard>
+        <GrayCard
+          id="safe-owners"
+          title="Safe Owners:"
+          buttons={[
+              {
+                text: 'Edit',
+                link: '/staking/edit-owners',
+              },
+            ]
+          }
+        >
+          <ul>
+            {safeOwners?.map(owner => <li key={`safe_owner_${owner}`}>{owner}</li>)}
+          </ul>
+          <div className="inline"><h4 className="inline">Required confirmations:</h4> {safeThreshold} out of {safeOwners && safeOwners.length} owners.</div>
+        </GrayCard>
+        <GrayCard
+          id="deploy-safe"
+          title="Deploy a new Safe"
+        >
+            <Button
+              onClick={handleCreateSafe}
+              disabled={deployLoading}
+              pending={deployLoading}
+            >
+              DEPLOY
+            </Button>
         </GrayCard>
       <div id="extra-info">
         <p className="center">
