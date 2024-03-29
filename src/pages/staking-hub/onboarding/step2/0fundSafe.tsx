@@ -319,7 +319,7 @@ const FundsToSafe = () => {
           {
             notEnoughwxHoprInWallet ?
             <Tooltip
-              title='You do not have enough xDai in your wallet'
+              title='You do not have enough wxHopr in your wallet'
             >
               <span>
                 <Button
