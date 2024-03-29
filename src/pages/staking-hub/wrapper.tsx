@@ -163,7 +163,7 @@ function WrapperPage() {
   useEffect(() => {
     refecth1();
     refecth2();
-  }, []);
+  }, [address]);
 
   // Prepare contract write configurations
   const { config: xHOPR_to_wxHOPR_config, refetch: refecth1 } = usePrepareContractWrite({
@@ -227,11 +227,18 @@ function WrapperPage() {
   useEffect(() => {
     if (address) {
       updateBalances();
+      if (walletBalance.xHopr.formatted === '0') {
+        set_swapDirection('wxHOPR_to_xHOPR');
+      }
     } else {
       set_xhoprValue('');
       set_wxhoprValue('');
     }
-  }, [address, walletBalance.xHopr.formatted, walletBalance.wxHopr.formatted]);
+  }, [
+    address,
+    walletBalance.xHopr.formatted,
+    walletBalance.wxHopr.formatted,
+  ]);
 
   // Set the maximum value for xHOPR on input field.
   const setMax_xHOPR = () => {
@@ -306,7 +313,6 @@ function WrapperPage() {
           <StyledIconButton
             className={`${swapDirection === 'wxHOPR_to_xHOPR' ? 'swapDirection' : ''}`}
             onClick={handleSwap}
-            disabled={!write_xHOPR_to_wxHOPR || !write_wxHOPR_to_xHOPR}
           >
             <ArrowDownwardIcon />
           </StyledIconButton>
