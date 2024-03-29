@@ -160,15 +160,20 @@ function WrapperPage() {
   const address = useAppSelector((store) => store.web3.account);
   const walletBalance = useAppSelector((store) => store.web3.balance);
 
+  useEffect(() => {
+    refecth1();
+    refecth2();
+  }, []);
+
   // Prepare contract write configurations
-  const { config: xHOPR_to_wxHOPR_config } = usePrepareContractWrite({
+  const { config: xHOPR_to_wxHOPR_config, refetch: refecth1 } = usePrepareContractWrite({
     address: xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     abi: web3.wrapperABI,
     functionName: 'transferAndCall',
     args: [wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS, parseUnits(xhoprValue as NumberLiteral, 18), '0x'],
   });
 
-  const { config: wxHOPR_to_xHOPR_config } = usePrepareContractWrite({
+  const { config: wxHOPR_to_xHOPR_config, refetch: refecth2 } = usePrepareContractWrite({
     address: wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     abi: web3.wrapperABI,
     functionName: 'transfer',
