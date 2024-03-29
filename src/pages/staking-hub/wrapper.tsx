@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { useContractWrite, usePrepareContractWrite } from 'wagmi';
-import { parseUnits } from 'viem';
+import { erc20ABI, useContractRead, useWalletClient } from 'wagmi';
+import { parseUnits, publicActions } from 'viem';
 import { xHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_TOKEN_SMART_CONTRACT_ADDRESS, wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS } from '../../../config'
 
 // Redux
@@ -159,14 +160,43 @@ function WrapperPage() {
   const [swapDirection, set_swapDirection] = useState<'xHOPR_to_wxHOPR' | 'wxHOPR_to_xHOPR'>('xHOPR_to_wxHOPR');
   const address = useAppSelector((store) => store.web3.account);
   const walletBalance = useAppSelector((store) => store.web3.balance);
+  const { data: walletClient } = useWalletClient();
 
   useEffect(() => {
-    refecth1();
+  //  refecth1();
     refecth2();
   }, [address]);
 
+  useEffect(() => {
+//    refecth1();
+  }, [swapDirection]);
+
+  useEffect(() => {
+    if(!walletClient) return;
+    else {
+      aa(walletClient);
+    }
+    // @ts-ignore
+    async function aa(walletClient){
+      const superWalletClient = await walletClient.extend(publicActions);
+      const vv = superWalletClient.simulateContract({
+        account: walletClient.account,
+        address: xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
+        abi: web3.wrapperABI,
+        functionName: 'transferAndCall',
+        args: [wxHOPR_WRAPPER_SMART_CONTRACT_ADDRESS, parseUnits('0.1' as NumberLiteral, 18), '0x'],
+      });
+      console.log(vv)
+    }
+  }, [walletClient, swapDirection]);
+
+
+
+
+
   // Prepare contract write configurations
   const { config: xHOPR_to_wxHOPR_config, refetch: refecth1 } = usePrepareContractWrite({
+  //  account: address as `0x${string}`,
     address: xHOPR_TOKEN_SMART_CONTRACT_ADDRESS,
     abi: web3.wrapperABI,
     functionName: 'transferAndCall',
@@ -252,6 +282,15 @@ function WrapperPage() {
       set_wxhoprValue(walletBalance.wxHopr.formatted);
     }
   };
+
+  console.log({
+    wxhoprValue,
+    xhoprValue,
+    xHOPR_to_wxHOPR_config,
+    wxHOPR_to_xHOPR_config,
+    write_xHOPR_to_wxHOPR,
+    write_wxHOPR_to_xHOPR
+  })
 
   return (
     <Section
