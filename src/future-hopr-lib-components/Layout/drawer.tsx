@@ -55,7 +55,9 @@ const StyledDrawer = styled(MuiDrawer)`
     .StyledListItemButton {
       color: white;
       &.Mui-selected {
-        text-decoration: underline 2px rgb(255, 255, 255);
+        .MuiListItemText-root {
+          text-decoration: underline 2px rgb(255, 255, 255);
+        }
         background-color: rgba(255, 255, 255, 0.2);
         .MuiSvgIcon-root {
           color: #b4f0ff;
@@ -101,7 +103,7 @@ const StyledListItemButton = styled(ListItemButton)`
     color: #0000b4;
     fill: #0000b4;
     background-color: rgba(255, 255, 255, 0.45);
-    .MuiListItemText-root{// ListItemText css-tlelie-MuiListItemText-root"
+    .MuiListItemText-root {
       text-decoration: underline 2px #0000b4;
       text-underline-offset: 4px;
     }
@@ -123,7 +125,6 @@ const SListItemIcon = styled(ListItemIcon)`
 `;
 
 const Numbers = styled.div`
-
   font-size: 11px;
   background-color: #ddeaff;
   padding: 3px;
