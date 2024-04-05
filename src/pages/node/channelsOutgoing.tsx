@@ -118,7 +118,7 @@ function ChannelsPage() {
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
         channelId: channelId,
-        timeout: 5*60e3,
+        timeout: 5*60_000,
       })
     )
       .unwrap()
