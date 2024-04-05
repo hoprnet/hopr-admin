@@ -1,10 +1,6 @@
 {
   "name": "hopr-admin",
-<<<<<<< HEAD
-  "version": "1.0.8",
-=======
-  "version": "1.0.7-beta.3",
->>>>>>> 98cc32e (show strategies in config)
+  "version": "1.0.7-beta.4",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.0",

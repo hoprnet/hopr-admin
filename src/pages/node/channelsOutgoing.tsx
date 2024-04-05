@@ -113,32 +113,35 @@ function ChannelsPage() {
   };
 
   const handleCloseChannels = (channelId: string) => {
-    const usedApiEndpoint = loginData.apiEndpoint;
     dispatch(
       actionsAsync.closeChannelThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
         channelId: channelId,
+        timeout: 5*60e3,
       })
     )
       .unwrap()
       .then(() => {
         handleRefresh();
       })
-      .catch((e) => {
-        if(usedApiEndpoint === currentApiEndpoint) {
-          const msg = `Closing of outgoing channel ${channelId} failed`;
-          sendNotification({
-            notificationPayload: {
-              source: 'node',
-              name: msg,
-              url: null,
-              timeout: null,
-            },
-            toastPayload: { message: msg },
-            dispatch,
-          });
-        }
+      .catch(async (e) => {
+
+        const isCurrentApiEndpointTheSame = await dispatch(actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)).unwrap();
+        if (!isCurrentApiEndpointTheSame) return;
+
+        const msg = `Closing of outgoing channel ${channelId} failed`;
+        sendNotification({
+          notificationPayload: {
+            source: 'node',
+            name: msg,
+            url: null,
+            timeout: null,
+          },
+          toastPayload: { message: msg },
+          dispatch,
+        });
+
       });
   };
 
