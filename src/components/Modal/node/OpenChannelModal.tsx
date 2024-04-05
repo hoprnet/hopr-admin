@@ -50,7 +50,7 @@ export const OpenChannelModal = ({
           apiToken: loginData.apiToken!,
           amount: weiValue,
           peerAddress: peerAddress,
-          timeout: 60e3,
+          timeout: 2*60e3,
         })
       )
         .unwrap()
