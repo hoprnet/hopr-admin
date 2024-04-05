@@ -470,6 +470,12 @@ const LayoutEnhanced = () => {
               apiEndpoint,
             })
           );
+          dispatch(
+            nodeActionsAsync.getConfigurationThunk({
+              apiToken,
+              apiEndpoint,
+            })
+          );
           dispatch(nodeActions.initializeMessagesWebsocket());
         }
       } catch (e) {

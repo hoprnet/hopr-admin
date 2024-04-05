@@ -72,9 +72,6 @@ export const createFetchingReducer = (builder: ActionReducerMapBuilder<typeof in
   builder.addCase(setTicketStatisticsFetching, (state, action) => {
     state.statistics.isFetching = action.payload;
   }),
-  builder.addCase(setTicketsFetching, (state, action) => {
-    state.tickets.isFetching = action.payload;
-  }),
   builder.addCase(setTokensFetching, (state, action) => {
     state.tokens.isFetching = action.payload;
   }),

@@ -283,6 +283,12 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
             apiEndpoint,
           })
         );
+        dispatch(
+          nodeActionsAsync.getConfigurationThunk({
+            apiToken,
+            apiEndpoint,
+          })
+        );
         dispatch(nodeActions.setInfo(loginInfo));
       //  dispatch(nodeActions.initializeMessagesWebsocket());
         navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${formattedApiEndpoint}`);

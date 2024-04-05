@@ -83,13 +83,6 @@ function ChannelsPage() {
         apiToken: loginData.apiToken!,
       })
     );
-    dispatch(
-      actionsAsync.getTicketsThunk({
-        apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
-      })
-    );
-
   };
 
   const getPeerIdFromPeerAddress = (nodeAddress: string): string => {
@@ -146,12 +139,12 @@ function ChannelsPage() {
       maxWidth: '68px',
       tooltip: true,
     },
-    {
-      key: 'tickets',
-      name: 'Unredeemed',
-      maxWidth: '60px',
-      tooltipHeader: <>Unredeemed tickets<br/>per channel</>
-    },
+    // {
+    //   key: 'tickets',
+    //   name: 'Unredeemed',
+    //   maxWidth: '60px',
+    //   tooltipHeader: <>Unredeemed tickets<br/>per channel</>
+    // },
     {
       key: 'actions',
       name: 'Actions',

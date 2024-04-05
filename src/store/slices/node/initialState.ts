@@ -4,10 +4,10 @@ import type {
   GetChannelsResponseType,
   GetInfoResponseType,
   GetPeersResponseType,
-  GetTicketsResponseType,
   GetTokenResponseType,
   GetEntryNodesResponseType,
   PingPeerResponseType,
+  GetConfigurationResponseType,
 } from '@hoprnet/hopr-sdk';
 
 export type Message = {
@@ -102,6 +102,10 @@ type InitialState = {
     },
     isFetching: boolean;
   };
+  configuration: {
+    data: GetConfigurationResponseType | null,
+    isFetching: boolean,
+  };
   links: {
     nodeAddressToOutgoingChannel: {
       [nodeAddress: string]: string
@@ -155,10 +159,6 @@ type InitialState = {
     isFetching: boolean;
   };
   statistics: { data: GetTicketStatisticsResponseType | null; isFetching: boolean };
-  tickets: {
-    data: GetTicketsResponseType | null;
-    isFetching: boolean
-  };
   tokens: { data: GetTokenResponseType[]; isFetching: boolean };
   version: { data: string | null; isFetching: boolean };
   transactions: { data: string[]; isFetching: boolean };
@@ -178,13 +178,20 @@ type InitialState = {
     };
     isFetching: boolean;
   };
+  metricsParsed: {
+    nodeSync: number | null,
+  },
   messagesWebsocketStatus: WebsocketConnectionStatus;
   closeChannel: { isFetching: boolean };
   redeemTickets: {
     isFetching: boolean;
     error: string | undefined;
   };
-  apiEndpoint: string | null
+  apiEndpoint: string | null,
+  nodeIsReady: {
+    data: boolean | null,
+    isFetching: boolean,
+  },
 };
 
 export const initialState: InitialState = {
@@ -244,6 +251,10 @@ export const initialState: InitialState = {
     },
     isFetching: false,
   },
+  configuration: {
+    data: null,
+    isFetching: false,
+  },
   messages: {
     data: [],
     isFetching: false,
@@ -273,10 +284,6 @@ export const initialState: InitialState = {
     data: null,
     isFetching: false,
   },
-  tickets: {
-    data: [],
-    isFetching: false,
-  },
   tokens: {
     data: [],
     isFetching: false,
@@ -297,6 +304,9 @@ export const initialState: InitialState = {
     },
     isFetching: false,
   },
+  metricsParsed: {
+    nodeSync: null,
+  },
   messagesWebsocketStatus: null,
   closeChannel: { isFetching: false },
   redeemTickets: {
@@ -311,4 +321,8 @@ export const initialState: InitialState = {
     peerIdToAlias: {},
   },
   apiEndpoint: null,
+  nodeIsReady: {
+    data: null,
+    isFetching: false,
+  }
 };
