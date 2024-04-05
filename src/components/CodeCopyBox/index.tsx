@@ -5,9 +5,10 @@ import { Container } from './styled';
 type CodeCopyBoxProps = {
   code: any;
   copy?: string;
+  breakSpaces?: boolean
 };
 
-const CodeCopyBox = ({ code, copy: copyText }: CodeCopyBoxProps) => {
+const CodeCopyBox = ({ code, copy: copyText, breakSpaces }: CodeCopyBoxProps) => {
   const [copied, setCopied] = useState(false);
 
   const copy = (copyText: string) => {
@@ -34,6 +35,7 @@ const CodeCopyBox = ({ code, copy: copyText }: CodeCopyBoxProps) => {
           data-testid="copyPullCommandPullCommand"
           className="styles__darkInput___tirFS styles__copyable___2FDeL"
           role="button"
+          style={breakSpaces ? {whiteSpace: 'break-spaces'} : {}}
         >
           {code}
         </code>

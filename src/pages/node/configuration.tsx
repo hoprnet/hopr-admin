@@ -7,6 +7,7 @@ import { SubpageTitle } from '../../components/SubpageTitle';
 import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
 import Section from '../../future-hopr-lib-components/Section';
 import Button from '../../future-hopr-lib-components/Button';
+import CodeCopyBox from '../../components/CodeCopyBox';
 
 // Mui
 import { Paper, Switch } from '@mui/material';
@@ -22,7 +23,8 @@ const NotificationsContainer = styled.div`
 
 function SettingsPage() {
   const dispatch = useAppDispatch();
-  const prevNotificationSettings = useAppSelector(store => store.app.configuration.notifications)
+  const prevNotificationSettings = useAppSelector(store => store.app.configuration.notifications);
+  const strategies = useAppSelector(store => store.node.configuration.data?.hopr?.strategy?.strategies);
   const [localNotificationSettings, set_localNotificationSettings] = useState<typeof prevNotificationSettings>()
 
   useEffect(() => {
@@ -119,6 +121,17 @@ function SettingsPage() {
                     />{' '}True
                   </div>
                 </NotificationsContainer>
+              </td>
+            </tr>
+            <tr>
+              <th>Strategies</th>
+              <td>
+                { strategies &&
+                  <CodeCopyBox
+                    code={JSON.stringify(strategies, null, 2)}
+                    breakSpaces
+                  />
+                }
               </td>
             </tr>
           </tbody>
