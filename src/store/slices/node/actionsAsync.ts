@@ -971,6 +971,17 @@ const getPrometheusMetricsThunk = createAsyncThunk<string | undefined, BasePaylo
   } },
 );
 
+const isCurrentApiEndpointTheSame = createAsyncThunk<boolean, string, { state: RootState }>(
+  'node/isCurrentApiEndpointTheSame',
+  async (payload, {
+    getState
+  }) => {
+    const apiEndpoint = getState().node.apiEndpoint;
+    console.log('node/isCurrentApiEndpointTheSame', apiEndpoint, payload)
+    return payload === apiEndpoint;
+  }
+);
+
 export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
   // isNodeReady
   builder.addCase(isNodeReadyThunk.pending, (state) => {
@@ -1529,4 +1540,5 @@ export const actionsAsync = {
   createTokenThunk,
   deleteTokenThunk,
   getPrometheusMetricsThunk,
+  isCurrentApiEndpointTheSame
 };

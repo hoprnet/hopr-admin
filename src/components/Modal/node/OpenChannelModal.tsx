@@ -14,6 +14,7 @@ import Button from '../../../future-hopr-lib-components/Button';
 
 // Mui
 import CloseIcon from '@mui/icons-material/Close';
+import { nodeActionsAsync } from '../../../store/slices/node';
 
 type OpenChannelModalProps = {
   peerAddress?: string;
@@ -26,6 +27,7 @@ export const OpenChannelModal = ({
 }: OpenChannelModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((store) => store.auth.loginData);
+  const apiEndpointCurrent = useAppSelector((store) => store.node.apiEndpoint);
   const [openChannelModal, set_openChannelModal] = useState(false);
   const [amount, set_amount] = useState('');
   const [peerAddress, set_peerAddress] = useState(props.peerAddress ? props.peerAddress : '');
@@ -52,32 +54,22 @@ export const OpenChannelModal = ({
         })
       )
         .unwrap()
-        .then(() => {
-          const msg = `Channel to ${peerAddress} is opened`;
-          // sendNotification({
-          //   notificationPayload: {
-          //     source: 'node',
-          //     name: msg,
-          //     url: null,
-          //     timeout: null,
-          //   },
-          //   toastPayload: { message: msg },
-          //   dispatch,
-          // });
-        })
-        .catch((e) => {
+        .catch(async (e) => {
+          const isCurrentApiEndpointTheSame = await dispatch(nodeActionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)).unwrap();
+          if (!isCurrentApiEndpointTheSame) return;
+
           let errMsg = `Channel to ${peerAddress} failed to be opened`;
           if (e.status) errMsg = errMsg + `\n${e.status}`;
-          // sendNotification({
-          //   notificationPayload: {
-          //     source: 'node',
-          //     name: errMsg,
-          //     url: null,
-          //     timeout: null,
-          //   },
-          //   toastPayload: { message: errMsg },
-          //   dispatch,
-          // });
+          sendNotification({
+            notificationPayload: {
+              source: 'node',
+              name: errMsg,
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: errMsg },
+            dispatch,
+          });
         });
     };
 
