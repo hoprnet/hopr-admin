@@ -10,7 +10,7 @@ import { Paper } from '@mui/material';
 
 // HOPR Components
 import Section from '../../../future-hopr-lib-components/Section';
-import { actionsAsync } from '../../../store/slices/node/actionsAsync';
+import { actionsAsync as nodeActionsAsync } from '../../../store/slices/node/actionsAsync';
 import { TableExtended } from '../../../future-hopr-lib-components/Table/columed-data';
 import { SubpageTitle } from '../../../components/SubpageTitle';
 import Tooltip from '../../../future-hopr-lib-components/Tooltip/tooltip-fixed-width';
@@ -54,66 +54,84 @@ function InfoPage() {
   const statisticsFetching = useAppSelector((store) => store.node.statistics.isFetching);
   const nodeStartedEpoch = useAppSelector((store) => store.node.metrics.data.parsed?.hopr_up?.data[0]);
   const nodeStartedTime = nodeStartedEpoch && typeof(nodeStartedEpoch) === 'number'? new Date(nodeStartedEpoch*1000).toJSON().replace('T', ' ').replace('Z', ' UTC') : '-';
-  const nodeSync = useAppSelector((store) => store.node.metrics.data.parsed?.hopr_indexer_sync_progress?.data[0]);
+  const nodeSync = useAppSelector((store) => store.node.metricsParsed.nodeSync);
 
 
   useEffect(() => {
     fetchInfoData();
   }, [apiEndpoint, apiToken]);
 
+  useEffect(() => {
+
+    const watchSync = setInterval(() => {
+      if (!apiEndpoint || !apiToken || (nodeSync && nodeSync === 1)) return;
+      return dispatch(
+        nodeActionsAsync.getPrometheusMetricsThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+    }, 5_000);
+
+    return () => {
+      clearInterval(watchSync);
+    };
+
+  }, [nodeSync, apiEndpoint, apiToken]);
+
   const fetchInfoData = () => {
     if (!apiEndpoint || !apiToken) return;
 
     dispatch(
-      actionsAsync.getBalancesThunk({
+      nodeActionsAsync.getBalancesThunk({
         apiEndpoint,
         apiToken,
       })
     );
     dispatch(
-      actionsAsync.getChannelsThunk({
+      nodeActionsAsync.getChannelsThunk({
         apiEndpoint,
         apiToken,
       })
     );
     dispatch(
-      actionsAsync.getAddressesThunk({
+      nodeActionsAsync.getAddressesThunk({
         apiEndpoint,
         apiToken,
       })
     );
     dispatch(
-      actionsAsync.getVersionThunk({
+      nodeActionsAsync.getVersionThunk({
         apiEndpoint,
         apiToken,
       })
     );
     dispatch(
-      actionsAsync.getInfoThunk({
+      nodeActionsAsync.getInfoThunk({
         apiEndpoint,
         apiToken,
       })
     );
     dispatch(
-      actionsAsync.getPeersThunk({
+      nodeActionsAsync.getPeersThunk({
         apiEndpoint,
         apiToken,
       })
     );
     dispatch(
-      actionsAsync.getAliasesThunk({
+      nodeActionsAsync.getAliasesThunk({
         apiEndpoint,
         apiToken,
       })
     );
     dispatch(
-      actionsAsync.getTicketStatisticsThunk({
+      nodeActionsAsync.getTicketStatisticsThunk({
         apiEndpoint,
         apiToken,
       })
     );
     dispatch(
-      actionsAsync.getPrometheusMetricsThunk({
+      nodeActionsAsync.getPrometheusMetricsThunk({
         apiEndpoint,
         apiToken,
       })

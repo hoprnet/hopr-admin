@@ -18,8 +18,6 @@ import { Paper } from '@mui/material';
 
 function TicketsPage() {
   const dispatch = useAppDispatch();
-  const tickets = useAppSelector((store) => store.node.tickets.data);
-  const ticketsFetching = useAppSelector((store) => store.node.tickets.isFetching);
   const statistics = useAppSelector((store) => store.node.statistics.data);
   const statisticsFetching = useAppSelector((store) => store.node.statistics.isFetching);
   const redeemTicketsFetching = useAppSelector((store) => store.node.redeemTickets.isFetching);
@@ -34,12 +32,6 @@ function TicketsPage() {
     if(loginData.apiEndpoint && loginData.apiToken) {
       dispatch(
         actionsAsync.getTicketStatisticsThunk({
-          apiEndpoint: loginData.apiEndpoint,
-          apiToken: loginData.apiToken,
-        })
-      );
-      dispatch(
-        actionsAsync.getTicketsThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken,
         })
@@ -70,7 +62,7 @@ function TicketsPage() {
       <SubpageTitle
         title="TICKETS"
         refreshFunction={handleRefresh}
-        reloading={ticketsFetching || statisticsFetching}
+        reloading={statisticsFetching}
         actions={
           <>
             {/* <IconButton
@@ -85,21 +77,6 @@ function TicketsPage() {
               reloading={redeemTicketsFetching}
               onClick={handleRedeemAllTickets}
             /> */}
-            <IconButton
-              iconComponent={<GetAppIcon />}
-              tooltipText={
-                <span>
-                  EXPORT
-                  <br />
-                  all tickets as JSON
-                </span>
-              }
-              disabled={tickets?.length === 0}
-              pending={ticketsFetching}
-              onClick={() => {
-                exportToFile(JSON.stringify(tickets), 'tickets.json', 'text/json');
-              }}
-            />
           </>
         }
       />
@@ -117,17 +94,6 @@ function TicketsPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The number of tickets earned by your node that have yet to be redeemed."
-                  notWide
-                >
-                  <span>Unredeemed</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.unredeemed}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
                   title="The value of all your unredeemed tickets in HOPR tokens."
                   notWide
                 >
@@ -139,68 +105,13 @@ function TicketsPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The number of tickets redeemed by your node."
-                  notWide
-                >
-                  <span>Redeemed</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.redeemed}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The value of all your redeemed tickets."
-                  notWide
-                >
-                  <span>Redeemed value</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.redeemedValue ? formatEther(BigInt(statistics?.redeemedValue as string)) : '-'} wxHOPR</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The number of tickets which were empty (do not contain HOPR)."
-                  notWide
-                >
-                  <span>Losing tickets</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.losingTickets}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The percentage of tickets earned by your node that were winning."
-                  notWide
-                >
-                  <span>Win proportion</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.winProportion}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
                   title="The number of tickets lost due to channels closing without ticket redemption."
                   notWide
                 >
-                  <span>Neglected</span>
+                  <span>Neglected value</span>
                 </Tooltip>
               </th>
-              <td>{statistics?.neglected}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The number of tickets which were rejected by the network due to suspicious activity or lack of eligibility."
-                  notWide
-                >
-                  <span>Rejected</span>
-                </Tooltip>
-              </th>
-              <td>{statistics?.rejected}</td>
+              <td>{statistics?.neglectedValue ? formatEther(BigInt(statistics?.neglectedValue as string)) : '-'} wxHOPR</td>
             </tr>
             <tr>
               <th>
@@ -212,6 +123,17 @@ function TicketsPage() {
                 </Tooltip>
               </th>
               <td>{statistics?.rejectedValue ? formatEther(BigInt(statistics?.rejectedValue as string)) : '-'} wxHOPR</td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The value of all your redeemed tickets."
+                  notWide
+                >
+                  <span>Redeemed value</span>
+                </Tooltip>
+              </th>
+              <td>{statistics?.redeemedValue ? formatEther(BigInt(statistics?.redeemedValue as string)) : '-'} wxHOPR</td>
             </tr>
           </tbody>
         </TableExtended>

@@ -58,9 +58,9 @@ function PeersPage() {
   }
 
   const handleExport = () => {
-    if (peers?.announced) {
+    if (peers?.connected) {
       exportToCsv(
-        peers.announced.map((peer) => ({
+        peers.connected.map((peer) => ({
           peerId: peer.peerId,
           nodeAddress: peer.peerAddress,
           quality: peer.quality,
@@ -116,7 +116,7 @@ function PeersPage() {
     },
   ];
 
-  const parsedTableData = Object.entries(peers?.announced ?? {}).map(([id, peer]) => {
+  const parsedTableData = Object.entries(peers?.connected ?? {}).map(([id, peer]) => {
     return {
       id: id,
       number: id,
@@ -163,7 +163,7 @@ function PeersPage() {
       yellow
     >
       <SubpageTitle
-        title={`PEERS (${peers?.announced?.length || '-'})`}
+        title={`PEERS (${peers?.connected?.length || '-'})`}
         refreshFunction={handleRefresh}
         reloading={peersFetching || aliasesFetching}
         actions={
@@ -178,7 +178,7 @@ function PeersPage() {
                   seen peers as a CSV
                 </span>
               }
-              disabled={!peers?.announced || Object.keys(peers.announced).length === 0}
+              disabled={!peers?.connected || Object.keys(peers.connected).length === 0}
               onClick={handleExport}
             />
           </>
