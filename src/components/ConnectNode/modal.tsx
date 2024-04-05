@@ -259,6 +259,12 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           }),
         );
         dispatch(
+          nodeActionsAsync.isNodeReadyThunk({
+            apiToken,
+            apiEndpoint: formattedApiEndpoint,
+          }),
+        );
+        dispatch(
           nodeActionsAsync.getAddressesThunk({
             apiToken,
             apiEndpoint: formattedApiEndpoint,
