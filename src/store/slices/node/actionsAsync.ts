@@ -295,10 +295,13 @@ const getConfigurationThunk = createAsyncThunk<GetConfigurationResponseType | un
     dispatch,
   }) => {
     try {
+      console.log('getConfigurationThunk start');
       const configuration = await getConfiguration(payload);
+      console.log('getConfigurationThunk', configuration);
       return configuration;
     } catch (e) {
       if (e instanceof APIError) {
+        console.log('getConfigurationThunk error', e);
         return rejectWithValue({
           status: e.status,
           error: e.error,
@@ -1193,7 +1196,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   builder.addCase(getConfigurationThunk.fulfilled, (state, action) => {
     if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
-    console.log('getConfigurationThunk', action.payload);
+    console.log('getConfigurationThunk', action);
     if(action.payload) {
       state.configuration.data = action.payload;
     }
