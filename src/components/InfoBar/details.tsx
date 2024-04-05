@@ -243,15 +243,6 @@ export default function Details(props: Props) {
         <IconAndText>
           <IconContainer>
             <Icon
-              src="/assets/xDaiIcon.svg"
-              alt="xDai Icon"
-            />
-          </IconContainer>
-          <Text>xDAI: Safe</Text>
-        </IconAndText>
-        <IconAndText>
-          <IconContainer>
-            <Icon
               src="/assets/wxHoprIcon.svg"
               alt="xDai Icon"
             />
@@ -297,7 +288,6 @@ export default function Details(props: Props) {
           >
             <Tooltip title={balances.native?.formatted && balances.native?.formatted !== '0' ? balances.native?.formatted : null}><p>{balances.native?.formatted ?? '-'}</p></Tooltip>
           </ColorStatus>
-          <Tooltip title={balances.safeNative?.formatted && balances.safeNative?.formatted !== '0' ? balances.safeNative?.formatted : null}><p>{balances.safeNative?.formatted ?? '-'}</p></Tooltip>
           <Tooltip title={balances.safeHopr?.formatted && balances.safeHopr?.formatted !== '0' ? balances.safeHopr?.formatted : null}><p>{balances.safeHopr?.formatted ?? '-'}</p></Tooltip>
           <Tooltip title={balances.channels?.formatted && balances.channels?.formatted !== '0' ? balances.channels?.formatted : null}><p className="double">{balances.channels?.formatted ?? '-'}</p></Tooltip>
           <Tooltip title={totalwxHOPR && totalwxHOPR !== '0' ? totalwxHOPR : null}><p  className="double">{totalwxHOPR ?? '-'}</p></Tooltip>

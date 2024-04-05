@@ -416,6 +416,12 @@ const LayoutEnhanced = () => {
           // We do this after the loginInfo to make sure the login from url was successful
           trackGoal('Y641EPNA', 1) // LOGIN_TO_NODE_BY_URL
           dispatch(
+            nodeActionsAsync.isNodeReadyThunk({
+              apiToken,
+              apiEndpoint,
+            }),
+          );
+          dispatch(
             nodeActionsAsync.getInfoThunk({
               apiToken,
               apiEndpoint,
