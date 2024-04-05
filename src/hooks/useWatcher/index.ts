@@ -17,6 +17,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
     apiEndpoint,
     apiToken,
   } = useAppSelector((store) => store.auth.loginData);
+  const isNodeReady = useAppSelector((store) => store.node.nodeIsReady.data);
   const messages = useAppSelector((store) => store.node.messages.data);
   const channelsParsed = useAppSelector((store) => store.node.channels.parsed);
   const firstChannelsCallWasSuccesfull = useAppSelector((store) => !!store.node.channels.data);
@@ -36,9 +37,21 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   const prevNodeInfo = useAppSelector((store) => store.app.previousStates.prevNodeInfo);
   const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
 
+
+  // ==================================================================================
   // node watchers
   useEffect(() => {
     if (!connected) return;
+
+    const watchIsNodeReadyInterval = setInterval(() => {
+      if (!apiEndpoint || !apiToken || isNodeReady) return;
+      return dispatch(
+        nodeActionsAsync.isNodeReadyThunk({
+          apiEndpoint,
+          apiToken,
+        }),
+      );
+    }, intervalDuration);
 
     const watchChannelsInterval = setInterval(() => {
       if (!apiEndpoint || !apiToken || !activeChannels) return;
@@ -104,50 +117,18 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
     }, intervalDuration);
 
     return () => {
+      clearInterval(watchIsNodeReadyInterval);
       clearInterval(watchChannelsInterval);
       clearInterval(watchNodeInfoInterval);
       clearInterval(watchNodeBalancesInterval);
       clearInterval(watchMessagesInterval);
       clearInterval(watchMetricsInterval);
     };
-  }, [connected, apiEndpoint, apiToken, prevNodeBalances, prevNodeInfo, prevOutgoingChannels]);
+  }, [connected, apiEndpoint, apiToken, isNodeReady, prevNodeBalances, prevNodeInfo, prevOutgoingChannels]);
 
-  // safe watchers
-  const safeIndexed = useAppSelector((store) => store.safe.info.safeIndexed);
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
-
+  // Messages
   useEffect(() => {
-    const watchPendingSafeTransactionsInterval = setInterval(() => {
-      observePendingSafeTransactions({
-        dispatch,
-        previousState: prevPendingSafeTransaction,
-        selectedSafeAddress,
-        active: activePendingSafeTransaction,
-        signer: signer,
-        updatePreviousData: (newSafeTransactions) => {
-          dispatch(appActions.setPrevPendingSafeTransaction(newSafeTransactions));
-        },
-      });
-    }, intervalDuration);
-
-    const watchSafeInfoInterval = setInterval(() => {
-      observeSafeInfo({
-        dispatch,
-        selectedSafeAddress,
-        safeIndexed,
-        active: true,
-        signer,
-      });
-    }, intervalDuration);
-
-    return () => {
-      clearInterval(watchPendingSafeTransactionsInterval);
-      clearInterval(watchSafeInfoInterval);
-    };
-  }, [selectedSafeAddress, signer, prevPendingSafeTransaction, safeIndexed]);
-
-
-  useEffect(() => {
+    if(!connected) return;
     if(activeMessage && messages && messages.length > 0) {
         messages.forEach((msgReceived, index) => {
           let hasToNotify = !msgReceived.notified;
@@ -167,9 +148,13 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
           }
         })
     }
-  }, [activeMessage, messages]);
+  }, [connected, activeMessage, messages]);
 
+  // Channels
   useEffect(() => {
+    if(!connected) return;
+    if(!isNodeReady) return;
+    if(!activeChannels) return;
     if(!firstChannelsCallWasSuccesfull) return;
 
     if(prevOutgoingChannels === null && prevIncomingChannels === null) {
@@ -193,7 +178,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
       return;
     };
 
-    if(!prevOutgoingChannels || !prevIncomingChannels || !activeChannels) return;
+    if(!prevOutgoingChannels || !prevIncomingChannels) return;
 
     const changesOutgoing = checkHowChannelsHaveChanged(prevOutgoingChannels, channelsParsed.outgoing);
     if(changesOutgoing.length !== 0) {
@@ -251,6 +236,43 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
       dispatch(appActions.setPrevIncomingChannels(channelsParsed.incoming));
     }
 
-  }, [activeChannels, firstChannelsCallWasSuccesfull, channelsParsed, prevOutgoingChannels, prevIncomingChannels]);
+  }, [connected, isNodeReady, activeChannels, firstChannelsCallWasSuccesfull, channelsParsed, prevOutgoingChannels, prevIncomingChannels]);
+
+
+  // ==================================================================================
+  // safe watchers
+  const safeIndexed = useAppSelector((store) => store.safe.info.safeIndexed);
+  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
+
+  useEffect(() => {
+    const watchPendingSafeTransactionsInterval = setInterval(() => {
+      observePendingSafeTransactions({
+        dispatch,
+        previousState: prevPendingSafeTransaction,
+        selectedSafeAddress,
+        active: activePendingSafeTransaction,
+        signer: signer,
+        updatePreviousData: (newSafeTransactions) => {
+          dispatch(appActions.setPrevPendingSafeTransaction(newSafeTransactions));
+        },
+      });
+    }, intervalDuration);
+
+    const watchSafeInfoInterval = setInterval(() => {
+      observeSafeInfo({
+        dispatch,
+        selectedSafeAddress,
+        safeIndexed,
+        active: true,
+        signer,
+      });
+    }, intervalDuration);
+
+    return () => {
+      clearInterval(watchPendingSafeTransactionsInterval);
+      clearInterval(watchSafeInfoInterval);
+    };
+  }, [selectedSafeAddress, signer, prevPendingSafeTransaction, safeIndexed]);
+
 
 };

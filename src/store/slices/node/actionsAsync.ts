@@ -31,6 +31,7 @@ import {
   type GetEntryNodesResponseType,
   type GetChannelTicketsResponseType,
   type GetChannelsResponseType,
+  type IsNodeReadyResponseType,
   flows,
   api,
   utils,
@@ -77,8 +78,35 @@ const {
   sendMessage,
   setAlias,
   withdraw,
+  isNodeReady
 } = api;
 const { openMultipleChannels } = flows;
+
+const isNodeReadyThunk = createAsyncThunk<IsNodeReadyResponseType | undefined, BasePayloadType, { state: RootState }>(
+  'node/isNodeReady',
+  async (payload, {
+    rejectWithValue,
+    dispatch,
+  }) => {
+    try {
+      const res = await isNodeReady(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof APIError) {
+        return rejectWithValue({
+          status: e.status,
+          error: e.error,
+        });
+      }
+    }
+  },
+  { condition: (_payload, { getState }) => {
+    const isFetching = getState().node.nodeIsReady.isFetching;
+    if (isFetching) {
+      return false;
+    }
+  } },
+);
 
 const getInfoThunk = createAsyncThunk<GetInfoResponseType | undefined, BasePayloadType, { state: RootState }>(
   'node/getInfo',
@@ -944,6 +972,20 @@ const getPrometheusMetricsThunk = createAsyncThunk<string | undefined, BasePaylo
 );
 
 export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
+  // isNodeReady
+  builder.addCase(isNodeReadyThunk.pending, (state) => {
+    state.nodeIsReady.isFetching = true;
+  });
+  builder.addCase(isNodeReadyThunk.rejected, (state) => {
+    state.nodeIsReady.isFetching = false;
+  });
+  builder.addCase(isNodeReadyThunk.fulfilled, (state, action) => {
+    console.log('isNodeReadyThunk', action.payload)
+    if(action.payload) {
+      state.nodeIsReady.data = action.payload;
+    }
+    state.nodeIsReady.isFetching = true;
+  });
   // getInfo
   builder.addCase(getInfoThunk.fulfilled, (state, action) => {
     if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
@@ -1457,6 +1499,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
 };
 
 export const actionsAsync = {
+  isNodeReadyThunk,
   getInfoThunk,
   getAddressesThunk,
   getAliasesThunk,
