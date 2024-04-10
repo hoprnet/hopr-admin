@@ -24,7 +24,7 @@ const NotificationsContainer = styled.div`
 function SettingsPage() {
   const dispatch = useAppDispatch();
   const prevNotificationSettings = useAppSelector(store => store.app.configuration.notifications);
-  const strategies = useAppSelector(store => store.node.configuration.data?.hopr?.strategy?.strategies);
+  const strategies = useAppSelector(store => store.node.configuration.data?.hopr?.strategy);
   const [localNotificationSettings, set_localNotificationSettings] = useState<typeof prevNotificationSettings>()
 
   useEffect(() => {

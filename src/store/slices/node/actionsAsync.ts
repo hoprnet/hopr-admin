@@ -161,6 +161,9 @@ const getAddressesThunk = createAsyncThunk<
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -190,6 +193,9 @@ const getAliasesThunk = createAsyncThunk<GetAliasesResponseType | undefined, Bas
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -221,6 +227,9 @@ const getBalancesThunk = createAsyncThunk<
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -251,6 +260,9 @@ const getBalanceInAllSafeChannelsThunk = createAsyncThunk<GetChannelsResponseTyp
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -278,6 +290,9 @@ const getChannelsThunk = createAsyncThunk<GetChannelsResponseType | undefined, B
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -301,12 +316,14 @@ const getConfigurationThunk = createAsyncThunk<GetConfigurationResponseType | un
       return configuration;
     } catch (e) {
       if (e instanceof APIError) {
-        console.log('getConfigurationThunk error', e);
         return rejectWithValue({
           status: e.status,
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -335,6 +352,9 @@ const getPeersThunk = createAsyncThunk<GetPeersResponseType | undefined, GetPeer
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -362,6 +382,9 @@ const getPeerInfoThunk = createAsyncThunk<GetPeerResponseType | undefined, GetPe
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -393,6 +416,9 @@ const getTicketStatisticsThunk = createAsyncThunk<
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -420,6 +446,9 @@ const getTokenThunk = createAsyncThunk<GetTokenResponseType | undefined, BasePay
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -451,6 +480,9 @@ const getEntryNodesThunk = createAsyncThunk<
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -478,6 +510,9 @@ const getVersionThunk = createAsyncThunk<string | undefined, BasePayloadType, { 
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -505,6 +540,9 @@ const withdrawThunk = createAsyncThunk<string | undefined, WithdrawPayloadType, 
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -543,6 +581,9 @@ const getAliasThunk = createAsyncThunk<
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -578,6 +619,9 @@ const setAliasThunk = createAsyncThunk<
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -607,6 +651,9 @@ const removeAliasThunk = createAsyncThunk<{ alias: string } | undefined, AliasPa
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -636,13 +683,15 @@ const closeChannelThunk = createAsyncThunk<
       dispatch(getChannelsThunk(payload));
       return res;
     } catch (e) {
-      console.error(e)
       if (e instanceof APIError) {
         return rejectWithValue({
           status: e.status,
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -674,6 +723,9 @@ const openChannelThunk = createAsyncThunk<
         error: e.error,
       });
     }
+    return rejectWithValue({
+      status: JSON.stringify(e)
+    });
   }
 });
 
@@ -692,6 +744,9 @@ const fundChannelThunk = createAsyncThunk<
         error: e.error,
       });
     }
+    return rejectWithValue({
+      status: JSON.stringify(e)
+    });
   }
 });
 
@@ -730,6 +785,9 @@ const openMultipleChannelsThunk = createAsyncThunk(
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
 );
@@ -755,6 +813,9 @@ const redeemChannelTicketsThunk = createAsyncThunk<
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -782,6 +843,9 @@ const getMessagesThunk = createAsyncThunk(
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
 );
@@ -802,6 +866,9 @@ const sendMessageThunk = createAsyncThunk(
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
 );
@@ -819,6 +886,9 @@ const deleteMessagesThunk = createAsyncThunk(
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
 );
@@ -852,6 +922,9 @@ const pingNodeThunk = createAsyncThunk('node/pingNode', async (payload: PingPeer
         error: e.error,
       });
     }
+    return rejectWithValue({
+      status: JSON.stringify(e)
+    });
   }
 });
 
@@ -872,6 +945,9 @@ const redeemTicketsThunk = createAsyncThunk<boolean | undefined, BasePayloadType
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -903,6 +979,9 @@ const createTokenThunk = createAsyncThunk<
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -937,6 +1016,9 @@ const deleteTokenThunk = createAsyncThunk<
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -964,6 +1046,9 @@ const getPrometheusMetricsThunk = createAsyncThunk<string | undefined, BasePaylo
           error: e.error,
         });
       }
+      return rejectWithValue({
+        status: JSON.stringify(e)
+      });
     }
   },
   { condition: (_payload, { getState }) => {
@@ -1147,6 +1232,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         const channelId = action.payload.incoming[i].id;
         const nodeAddress = action.payload.incoming[i].peerAddress;
         state.links.nodeAddressToIncomingChannel[nodeAddress] = channelId;
+        state.links.incomingChannelToNodeAddress[channelId]= nodeAddress;
 
         if(!state.channels.parsed.incoming[channelId]) {
           state.channels.parsed.incoming[channelId] = {
@@ -1497,6 +1583,37 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       const jsonMetrics = parseMetrics(action.payload);
       state.metrics.data.parsed = jsonMetrics;
       state.metricsParsed.nodeSync = jsonMetrics?.hopr_indexer_sync_progress?.data[0] as number || null;
+
+      // count tickets
+      if(jsonMetrics?.hopr_tickets_incoming_statistics?.categories &&
+        jsonMetrics?.hopr_tickets_incoming_statistics?.data
+      ){
+        state.metricsParsed.tickets.incoming = {
+          redeemed: {},
+          unredeemed: {},
+        }
+
+        const categories = jsonMetrics.hopr_tickets_incoming_statistics.categories;
+        const data = jsonMetrics?.hopr_tickets_incoming_statistics?.data;
+        for(let i = 0; i < categories.length; i++) {
+          const channel = categories[i].match(/channel=\"0x[a-f0-9]+"/gi)[0].replace(`channel="`, ``).replace(`"`, ``);
+          const statistic = categories[i].match(/statistic=\"[a-z_]+\"/g)[0].replace(`statistic="`, ``).replace(`"`, ``);
+          const value = data[i];
+
+          if(statistic === "unredeemed") {
+            state.metricsParsed.tickets.incoming.unredeemed[channel] = {
+              value: `${value}`,
+              formatted: formatEther(BigInt(`${value}`)),
+            }
+          } else if (statistic === "redeemed") {
+            state.metricsParsed.tickets.incoming.redeemed[channel] = {
+              value: `${value}`,
+              formatted: formatEther(BigInt(`${value}`)),
+            }
+          }
+        }
+
+      }
     }
     state.metrics.isFetching = false;
   });

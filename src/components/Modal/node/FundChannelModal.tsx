@@ -65,9 +65,12 @@ export const FundChannelModal = ({
             dispatch,
           });
         })
-        .catch((e) => {
+        .catch(async(e) => {
+          const isCurrentApiEndpointTheSame = await dispatch(actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)).unwrap();
+          if (!isCurrentApiEndpointTheSame) return;
+
           let errMsg = `Channel ${channelId} failed to be funded`;
-          if (e.status) errMsg = errMsg + `\n${e.status}`;
+          if (e.status) errMsg = errMsg + `.\n${e.status}`;
           sendNotification({
             notificationPayload: {
               source: 'node',

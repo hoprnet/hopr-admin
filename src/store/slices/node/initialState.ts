@@ -113,6 +113,9 @@ type InitialState = {
     nodeAddressToIncomingChannel: {
       [nodeAddress: string]: string
     },
+    incomingChannelToNodeAddress: {
+      [channelId: string]: string
+    },
     nodeAddressToPeerId: {
       [nodeAddress: string]: string
     },
@@ -180,6 +183,18 @@ type InitialState = {
   };
   metricsParsed: {
     nodeSync: number | null,
+    tickets: {
+      incoming: {
+        redeemed: { [peerId: string ]: {
+          value: string,
+          formatted: string,
+        }},
+        unredeemed: {[peerId: string ]: {
+          value: string,
+          formatted: string,
+        }},
+      }
+    }
   },
   messagesWebsocketStatus: WebsocketConnectionStatus;
   closeChannel: { isFetching: boolean };
@@ -306,6 +321,12 @@ export const initialState: InitialState = {
   },
   metricsParsed: {
     nodeSync: null,
+    tickets: {
+      incoming: {
+        redeemed: {},
+        unredeemed: {},
+      }
+    }
   },
   messagesWebsocketStatus: null,
   closeChannel: { isFetching: false },
@@ -316,6 +337,7 @@ export const initialState: InitialState = {
   links: {
     nodeAddressToOutgoingChannel: {},
     nodeAddressToIncomingChannel: {},
+    incomingChannelToNodeAddress: {},
     nodeAddressToPeerId: {},
     peerIdToNodeAddress: {},
     peerIdToAlias: {},
