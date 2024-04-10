@@ -94,7 +94,7 @@ function TicketsPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The value of all your unredeemed tickets in HOPR tokens."
+                  title="The value of all your unredeemed tickets in HOPR tokens. Value is counted from last DB reset."
                   notWide
                 >
                   <span>Unredeemed value</span>
@@ -105,7 +105,7 @@ function TicketsPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The number of tickets lost due to channels closing without ticket redemption."
+                  title="The number of tickets lost due to channels closing without ticket redemption. Value is counted from last DB reset."
                   notWide
                 >
                   <span>Neglected value</span>
@@ -116,7 +116,7 @@ function TicketsPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The value of your rejected tickets in HOPR tokens."
+                  title="The value of your rejected tickets in HOPR tokens. Value is counted from last DB reset."
                   notWide
                 >
                   <span>Rejected value</span>
@@ -127,7 +127,7 @@ function TicketsPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="The value of all your redeemed tickets."
+                  title="The value of all your redeemed tickets. Value is counted from last DB reset."
                   notWide
                 >
                   <span>Redeemed value</span>
