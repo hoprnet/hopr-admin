@@ -27,7 +27,6 @@ export const OpenChannelModal = ({
 }: OpenChannelModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((store) => store.auth.loginData);
-  const apiEndpointCurrent = useAppSelector((store) => store.node.apiEndpoint);
   const [openChannelModal, set_openChannelModal] = useState(false);
   const [amount, set_amount] = useState('');
   const [peerAddress, set_peerAddress] = useState(props.peerAddress ? props.peerAddress : '');
@@ -59,7 +58,7 @@ export const OpenChannelModal = ({
           if (!isCurrentApiEndpointTheSame) return;
 
           let errMsg = `Channel to ${peerAddress} failed to be opened`;
-          if (e.status) errMsg = errMsg + `\n${e.status}`;
+          if (e.status) errMsg = errMsg + `.\n${e.status}`;
           sendNotification({
             notificationPayload: {
               source: 'node',

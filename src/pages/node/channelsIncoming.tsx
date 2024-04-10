@@ -35,6 +35,7 @@ function ChannelsPage() {
   const loginData = useAppSelector((store) => store.auth.loginData);
   const nodeAddressToPeerIdLink = useAppSelector((store) => store.node.links.nodeAddressToPeerId);
   const nodeAddressToOutgoingChannelLink = useAppSelector((store) => store.node.links.nodeAddressToOutgoingChannel);
+  const tickets = useAppSelector((store) => store.node.metricsParsed.tickets.incoming);
   const peerIdToAliasLink = useAppSelector((store) => store.node.links.peerIdToAlias);
   const tabLabel = 'incoming';
   const channelsData = channels?.incoming;
@@ -79,6 +80,12 @@ function ChannelsPage() {
     );
     dispatch(
       actionsAsync.getPeersThunk({
+        apiEndpoint: loginData.apiEndpoint!,
+        apiToken: loginData.apiToken!,
+      })
+    );
+    dispatch(
+      actionsAsync.getPrometheusMetricsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken!,
       })
@@ -139,12 +146,12 @@ function ChannelsPage() {
       maxWidth: '68px',
       tooltip: true,
     },
-    // {
-    //   key: 'tickets',
-    //   name: 'Unredeemed',
-    //   maxWidth: '60px',
-    //   tooltipHeader: <>Unredeemed tickets<br/>per channel</>
-    // },
+    {
+      key: 'tickets',
+      name: 'Tickets',
+      maxWidth: '140px',
+      tooltipHeader: <>(unredeemed : redeemed)<br/>tickets per channel<br/>in wxHOPR. <br/><br/>Value is reset on node restart.</>
+    },
     {
       key: 'actions',
       name: 'Actions',
@@ -192,13 +199,15 @@ function ChannelsPage() {
     const outgoingChannelOpened = !!(channelsIncomingObject[id].peerAddress && !!nodeAddressToOutgoingChannelLink[channelsIncomingObject[id].peerAddress]);
     const peerId = getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string);
 
+    const ticketsPerChannel = `${tickets?.unredeemed[id]?.formatted ? tickets.unredeemed[id].formatted : '0'} : ${tickets?.redeemed[id]?.formatted ? tickets.redeemed[id].formatted : '0'}`
+
     return {
       id: (index+1).toString(),
       key: id,
       peerAddress: getAliasByPeerAddress(channelsIncomingObject[id].peerAddress as string),
       status: channelsIncomingObject[id].status,
       funds: `${utils.formatEther(channelsIncomingObject[id].balance as string)} ${HOPR_TOKEN_USED}`,
-      tickets: channelsIncomingObject[id].tickets.toString(),
+      tickets: ticketsPerChannel,
       actions: (
         <>
           <PingModal

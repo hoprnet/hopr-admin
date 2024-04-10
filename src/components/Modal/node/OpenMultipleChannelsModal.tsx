@@ -53,32 +53,22 @@ export const OpenMultipleChannelsModal = () => {
       })
     )
       .unwrap()
-      .then(() => {
-        const msg = `Channel to ${peerId} is opened`;
-        // sendNotification({
-        //   notificationPayload: {
-        //     source: 'node',
-        //     name: msg,
-        //     url: null,
-        //     timeout: null,
-        //   },
-        //   toastPayload: { message: msg },
-        //   dispatch,
-        // });
-      })
-      .catch((e) => {
-        let errMsg = `Channel to ${peerId} failed to be opened.`;
-        if (e.status) errMsg = errMsg + `\n${e.status}`;
-        // sendNotification({
-        //   notificationPayload: {
-        //     source: 'node',
-        //     name: errMsg,
-        //     url: null,
-        //     timeout: null,
-        //   },
-        //   toastPayload: { message: errMsg },
-        //   dispatch,
-        // });
+      .catch(async (e) => {
+        const isCurrentApiEndpointTheSame = await dispatch(actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)).unwrap();
+        if (!isCurrentApiEndpointTheSame) return;
+
+        let errMsg = `Channel to ${peerId} failed to be opened`;
+        if (e.status) errMsg = errMsg + `.\n${e.status}`;
+        sendNotification({
+          notificationPayload: {
+            source: 'node',
+            name: errMsg,
+            url: null,
+            timeout: null,
+          },
+          toastPayload: { message: errMsg },
+          dispatch,
+        });
       });
   };
 
