@@ -6,6 +6,7 @@ import { exportToCsv } from '../../utils/helpers';
 import { utils } from 'ethers';
 import { HOPR_TOKEN_USED } from '../../../config';
 import { sendNotification } from '../../hooks/useWatcher/notifications';
+import { formatEther } from 'viem';
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
@@ -148,9 +149,9 @@ function ChannelsPage() {
     },
     {
       key: 'tickets',
-      name: 'Tickets',
+      name: 'Redeemed/All',
       maxWidth: '140px',
-      tooltipHeader: <>(unredeemed : redeemed)<br/>tickets per channel<br/>in wxHOPR. <br/><br/>Value is reset on node restart.</>
+      tooltipHeader: <>(Redeemed value / Total value) of tickets per channel in wxHOPR.<br/><br/>Value is reset on node restart.</>
     },
     {
       key: 'actions',
@@ -199,7 +200,8 @@ function ChannelsPage() {
     const outgoingChannelOpened = !!(channelsIncomingObject[id].peerAddress && !!nodeAddressToOutgoingChannelLink[channelsIncomingObject[id].peerAddress]);
     const peerId = getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string);
 
-    const ticketsPerChannel = `${tickets?.unredeemed[id]?.formatted ? tickets.unredeemed[id].formatted : '0'} : ${tickets?.redeemed[id]?.formatted ? tickets.redeemed[id].formatted : '0'}`
+    const totalTicketsPerChannel = `${formatEther( BigInt(tickets?.redeemed[id]?.value || '0') + BigInt(tickets?.unredeemed[id]?.value || '0') )}`;
+    const ticketsPerChannel = `${formatEther( BigInt(tickets?.redeemed[id]?.value || '0'))}/${totalTicketsPerChannel}`;
 
     return {
       id: (index+1).toString(),

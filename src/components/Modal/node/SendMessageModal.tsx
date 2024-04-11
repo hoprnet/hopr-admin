@@ -326,7 +326,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
               <MenuItem value="directMessage">Direct Message</MenuItem>
               <MenuItem value='automaticPath'>Automatic Path</MenuItem>
               <MenuItem value='numberOfHops'>Number of Hops</MenuItem>
-              <MenuItem value="path">Path (PeerIds)</MenuItem>
+              <MenuItem value="path">Path (PeerIds or Aliases)</MenuItem>
             </Select>
             {sendMode === 'numberOfHops' && (
               <TextField
@@ -347,8 +347,8 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
           </PathOrHops>
           {sendMode === 'path' && (
             <TextField
-              label="Path (PeerIds)"
-              placeholder={"12D3Ko...Z3rz5F,\n12D3Ko...wxd4zv,\n12D3Ko...zF8c7u"}
+              label="Path (PeerIds or Aliases)"
+              placeholder={"12D3Ko...Z3rz5F,\n12D3Ko...wxd4zv,\nAlan,\n12D3Ko...zF8c7u"}
               value={path}
               onChange={handlePath}
               onKeyDown={handlePathKeyDown}

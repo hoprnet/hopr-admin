@@ -64,7 +64,10 @@ type InitialState = {
     data: { hopr: string | null; native: string | null };
     isFetching: boolean;
   };
-  aliases: { data: GetAliasesResponseType | null; isFetching: boolean };
+  aliases: {
+    data: GetAliasesResponseType | null;
+    isFetching: boolean
+  };
   balances: {
     data: {
       hopr: {
@@ -93,6 +96,7 @@ type InitialState = {
       },
     };
     isFetching: boolean;
+    alreadyFetched: boolean;
   };
   channels: {
     data: GetChannelsResponseType | null;
@@ -101,6 +105,7 @@ type InitialState = {
       incoming: ChannelsIncomingType;
     },
     isFetching: boolean;
+    alreadyFetched: boolean;
   };
   configuration: {
     data: GetConfigurationResponseType | null,
@@ -151,7 +156,8 @@ type InitialState = {
     //     reportedVersion: string;
     //   }
     // }
-    isFetching: boolean
+    isFetching: boolean;
+    alreadyFetched: boolean;
   };
   entryNodes: { data: GetEntryNodesResponseType | null; isFetching: boolean };
   peerInfo: {
@@ -197,7 +203,6 @@ type InitialState = {
     }
   },
   messagesWebsocketStatus: WebsocketConnectionStatus;
-  closeChannel: { isFetching: boolean };
   redeemTickets: {
     isFetching: boolean;
     error: string | undefined;
@@ -257,6 +262,7 @@ export const initialState: InitialState = {
       },
     },
     isFetching: false,
+    alreadyFetched: false,
   },
   channels: {
     data: null,
@@ -265,6 +271,7 @@ export const initialState: InitialState = {
       incoming: {}
     },
     isFetching: false,
+    alreadyFetched: false,
   },
   configuration: {
     data: null,
@@ -283,6 +290,7 @@ export const initialState: InitialState = {
       announced: [],
     },
     isFetching: false,
+    alreadyFetched: false,
   },
   peerInfo: {
     data: {
@@ -329,7 +337,6 @@ export const initialState: InitialState = {
     }
   },
   messagesWebsocketStatus: null,
-  closeChannel: { isFetching: false },
   redeemTickets: {
     isFetching: false,
     error: undefined,
