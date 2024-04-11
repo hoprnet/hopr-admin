@@ -129,21 +129,23 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   // Messages
   useEffect(() => {
     if(!connected) return;
-    if(activeMessage && messages && messages.length > 0) {
+    if(messages && messages.length > 0) {
         messages.forEach((msgReceived, index) => {
           let hasToNotify = !msgReceived.notified;
           if(hasToNotify){
-            const notification = `Message received: ${msgReceived.body}`;
-            sendNotification({
-              notificationPayload: {
-                source: 'node',
-                name: notification,
-                url: null,
-                timeout: null,
-              },
-              toastPayload: { message: notification },
-              dispatch,
-            });
+            if(activeMessage){
+              const notification = `Message received: ${msgReceived.body}`;
+              sendNotification({
+                notificationPayload: {
+                  source: 'node',
+                  name: notification,
+                  url: null,
+                  timeout: null,
+                },
+                toastPayload: { message: notification },
+                dispatch,
+              });
+            }
             dispatch(nodeActions.setMessageNotified(index));
           }
         })
