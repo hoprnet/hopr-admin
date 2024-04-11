@@ -33,7 +33,7 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 Builds the Node Admin docker image with the name `node-admin`.
 
-### `docker run -d -p 8080:80 --name hopr-admin --platform linux/amd64 europe-west3-docker.pkg.dev/hoprassociation/docker-images/hopr-admin`
+### `docker run -d -p 4677:80 --name hopr-admin --platform linux/amd64 europe-west3-docker.pkg.dev/hoprassociation/docker-images/hopr-admin`
 
-Runs the Node Admin container exposing the 8080 port.
-To access the Node Admin you should go to `http://localhost:8080/`
+Runs the Node Admin container exposing the 4677 port.
+To access the Node Admin you should go to `http://localhost:4677/`
