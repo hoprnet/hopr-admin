@@ -395,7 +395,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           style={{ width: '100%' }}
         />
         <TextField
-          label={'API token (required)'}
+          label={'API token'}
           value={apiToken}
           onChange={(event) => {
             set_apiToken(event.target.value);
@@ -413,7 +413,6 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           <Tooltip title={'Save node credentials in browser local storage'}>
             <Button
               onClick={saveNode}
-              disabled={apiEndpoint.length === 0}
             >
               Save
             </Button>
@@ -423,7 +422,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         <ConnectContainer>
           <Button
             onClick={() => useNode({})}
-            disabled={apiEndpoint.length === 0 || apiToken.length === 0}
+            disabled={apiEndpoint.length === 0}
           >
             Connect to the node
           </Button>

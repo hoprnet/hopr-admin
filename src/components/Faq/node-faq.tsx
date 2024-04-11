@@ -130,6 +130,11 @@ const nodeFaq: FaqData = {
       title: 'How do I redeem tickets?',
       content: 'Tickets are combined and redeemed automatically by your node to save on gas prices.',
     },
+    {
+      id: 3,
+      title: 'Tickets values are different?',
+      content: 'The table of the Incomming Channels shows the value of tickets counted from last reset of your node, and the Tickets subpage shows the ticket number from the last reset of the node databse.',
+    },
     // {
     //   id: 3,
     //   title: 'When should I redeem my tickets?',
@@ -274,6 +279,11 @@ const nodeFaq: FaqData = {
       title: 'Unredeemed tickets',
       content:
         'The tickets earned by your node that have yet to be redeemed. Those tickets have to reach a specified treshold per channel in order to automaticly get redeemd. Please check the incomming channels page to see the number of unredeemed tickets per channel',
+    },
+    {
+      id: 2,
+      title: 'Tickets values are different?',
+      content: 'The table of the Incomming Channels shows the value of tickets counted from last reset of your node, and the Tickets subpage shows the ticket number from the last reset of the node databse.',
     },
   ],
   '/networking/channels': [
