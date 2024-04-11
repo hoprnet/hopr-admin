@@ -1157,6 +1157,8 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
           formatted: state.balances.data.channels.formatted,
         },
       };
+
+      if(!state.balances.alreadyFetched) state.balances.alreadyFetched = true;
       state.balances.isFetching = false;
     }
   });
@@ -1179,6 +1181,11 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         state.balances.data.channels = {
           value: balance.toString(),
           formatted: formatEther(balance),
+        }
+      } else {
+        state.balances.data.channels = {
+          value: '0',
+          formatted: '0',
         }
       }
 
@@ -1253,6 +1260,8 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
 
 
     }
+
+    if(!state.channels.alreadyFetched) state.channels.alreadyFetched = true;
     state.channels.isFetching = false;
   });
   builder.addCase(getChannelsThunk.rejected, (state) => {
@@ -1315,6 +1324,8 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       }
 
     }
+
+    if(!state.peers.alreadyFetched) state.peers.alreadyFetched = true;
     state.peers.isFetching = false;
   });
   builder.addCase(getPeersThunk.rejected, (state) => {
