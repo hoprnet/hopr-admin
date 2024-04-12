@@ -29,13 +29,13 @@ export const observeNodeInfo = ({
   dispatch: ReturnType<typeof useAppDispatch>;
 }) =>
   observeData<GetInfoResponseType | null>({
-    active: active && !!apiEndpoint && !!apiToken,
+    active: active && !!apiEndpoint,
     fetcher: async () => {
-      if (!apiEndpoint || !apiToken) return;
+      if (!apiEndpoint) return;
       return dispatch(
         nodeActionsAsync.getInfoThunk({
           apiEndpoint,
-          apiToken,
+          apiToken: apiToken ? apiToken : '',
         }),
       ).unwrap();
     },

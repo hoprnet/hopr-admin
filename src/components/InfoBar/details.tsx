@@ -280,7 +280,7 @@ export default function Details(props: Props) {
         <Data className="nodeOnly">
           <p>
             <ColorStatus className={`status-${info?.connectivityStatus}`}>
-              {info?.connectivityStatus}
+              {info?.connectivityStatus ? info?.connectivityStatus : '-'}
             </ColorStatus>
           </p>
           <ColorStatus
