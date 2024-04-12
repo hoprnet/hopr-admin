@@ -389,6 +389,7 @@ const LayoutEnhanced = () => {
   }, []);
 
   useEffect(() => {
+    console.log('useEffect(()', apiEndpoint, apiToken)
     if (!apiEndpoint) return;
     if (loginData.apiEndpoint === apiEndpoint && loginData.apiToken === apiToken) return;
     const formattedApiEndpoint = parseAndFormatUrl(apiEndpoint);
@@ -403,13 +404,12 @@ const LayoutEnhanced = () => {
         apiEndpoint: formattedApiEndpoint,
       }),
     );
-    if (!apiToken) return;
     const useNode = async () => {
       try {
         const loginInfo = await dispatch(
           authActionsAsync.loginThunk({
             apiEndpoint,
-            apiToken,
+            apiToken: apiToken ? apiToken : '',
           })
         ).unwrap();
         if (loginInfo) {
@@ -417,69 +417,69 @@ const LayoutEnhanced = () => {
           trackGoal('Y641EPNA', 1) // LOGIN_TO_NODE_BY_URL
           dispatch(
             nodeActionsAsync.isNodeReadyThunk({
-              apiToken,
               apiEndpoint,
+              apiToken: apiToken ? apiToken : '',
             }),
           );
           dispatch(
             nodeActionsAsync.getInfoThunk({
-              apiToken,
               apiEndpoint,
+              apiToken: apiToken ? apiToken : '',
             })
           );
           dispatch(
             nodeActionsAsync.getAddressesThunk({
-              apiToken,
               apiEndpoint,
+              apiToken: apiToken ? apiToken : '',
             })
           );
           dispatch(
             nodeActionsAsync.getAliasesThunk({
-              apiToken,
               apiEndpoint,
+              apiToken: apiToken ? apiToken : '',
             })
           );
           dispatch(
             nodeActionsAsync.getPeersThunk({
-              apiToken,
               apiEndpoint,
+              apiToken: apiToken ? apiToken : '',
             })
           );
           dispatch(
             nodeActionsAsync.getBalancesThunk({
-              apiToken,
               apiEndpoint,
+              apiToken: apiToken ? apiToken : '',
             })
           );
           dispatch(
             nodeActionsAsync.getMessagesThunk({
-              apiToken,
               apiEndpoint,
+              apiToken: apiToken ? apiToken : '',
               firstLoad: true,
             })
           );
           dispatch(
             nodeActionsAsync.getChannelsThunk({
-              apiToken,
               apiEndpoint,
+              apiToken: apiToken ? apiToken : '',
             })
           );
           dispatch(
             nodeActionsAsync.getTicketStatisticsThunk({
-              apiToken,
               apiEndpoint,
+              apiToken: apiToken ? apiToken : '',
             })
           );
           dispatch(
             nodeActionsAsync.getPrometheusMetricsThunk({
-              apiToken,
               apiEndpoint,
+              apiToken: apiToken ? apiToken : '',
             })
           );
           dispatch(
             nodeActionsAsync.getConfigurationThunk({
-              apiToken,
               apiEndpoint,
+              apiToken: apiToken ? apiToken : '',
             })
           );
           dispatch(nodeActions.initializeMessagesWebsocket());

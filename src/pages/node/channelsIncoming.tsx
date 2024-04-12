@@ -41,28 +41,28 @@ function ChannelsPage() {
   const tabLabel = 'incoming';
   const channelsData = channels?.incoming;
 
-  const [queryParams, set_queryParams] = useState('');
+ // const [queryParams, set_queryParams] = useState('');
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const handleHash = () => {
-    navigate(`?${queryParams}#incoming`, { replace: true });
-  };
+  // const handleHash = () => {
+  //   navigate(`?${queryParams}#incoming`, { replace: true });
+  // };
 
-  useEffect(() => {
-    if (loginData.apiEndpoint && loginData.apiToken) {
-      const queryParams = new URLSearchParams({
-        apiToken: loginData.apiToken,
-        apiEndpoint: loginData.apiEndpoint,
-      }).toString();
-      set_queryParams(queryParams);
-    }
-  }, [loginData.apiToken, loginData.apiEndpoint]);
+  // useEffect(() => {
+  //   if (loginData.apiEndpoint && loginData.apiToken) {
+  //     const queryParams = new URLSearchParams({
+  //       apiToken: loginData.apiToken,
+  //       apiEndpoint: loginData.apiEndpoint,
+  //     }).toString();
+  //     set_queryParams(queryParams);
+  //   }
+  // }, [loginData.apiToken, loginData.apiEndpoint]);
 
-  useEffect(() => {
-    handleHash();
-    handleRefresh();
-  }, [queryParams]);
+  // useEffect(() => {
+  //   handleHash();
+  //   handleRefresh();
+  // }, [queryParams]);
 
   const handleRefresh = () => {
     if(!loginData.apiEndpoint || !loginData.apiToken) return;
@@ -100,9 +100,6 @@ function ChannelsPage() {
 
   const getAliasByPeerAddress = (nodeAddress: string): string => {
     const peerId = getPeerIdFromPeerAddress(nodeAddress);
-    if (nodeAddress === '0x6f9b56d7e8d4efaf0b9364f52972a1984a76e68b') {
-      console.log('getPeerIdFromPeerAddress' , peerId)
-    }
     if(aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${nodeAddress})`
     return nodeAddress;
   }

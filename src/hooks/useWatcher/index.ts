@@ -44,21 +44,21 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
     if (!connected) return;
 
     const watchIsNodeReadyInterval = setInterval(() => {
-      if (!apiEndpoint || !apiToken || isNodeReady) return;
+      if (!apiEndpoint || isNodeReady) return;
       return dispatch(
         nodeActionsAsync.isNodeReadyThunk({
           apiEndpoint,
-          apiToken,
+          apiToken: apiToken ? apiToken : '',
         }),
       );
     }, intervalDuration);
 
     const watchChannelsInterval = setInterval(() => {
-      if (!apiEndpoint || !apiToken || !activeChannels) return;
+      if (!apiEndpoint || !activeChannels) return;
       return dispatch(
         nodeActionsAsync.getChannelsThunk({
           apiEndpoint,
-          apiToken,
+          apiToken: apiToken ? apiToken : '',
         }),
       );
     }, intervalDuration);
@@ -77,21 +77,21 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
     }, intervalDuration);
 
     const watchMetricsInterval = setInterval(() => {
-      if (!apiEndpoint || !apiToken) return;
+      if (!apiEndpoint) return;
       return dispatch(
         nodeActionsAsync.getPrometheusMetricsThunk({
           apiEndpoint,
-          apiToken,
+          apiToken: apiToken ? apiToken : '',
         }),
       );
     }, intervalDuration);
 
     const watchMessagesInterval = setInterval(() => {
-      if (!apiEndpoint || !apiToken) return;
+      if (!apiEndpoint) return;
       return dispatch(
         nodeActionsAsync.getMessagesThunk({
           apiEndpoint,
-          apiToken,
+          apiToken: apiToken ? apiToken : '',
         }),
       );
     }, 5_000);

@@ -452,7 +452,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
                   <Tooltip title={loginAnywaysWarning}>
                     <ForceLoginButton
                       onClick={() => set_forceLogin(true)}
-                      disabled={apiEndpoint.length === 0 || apiToken.length === 0}
+                      disabled={apiEndpoint.length === 0}
                     >
                       Login anyways
                     </ForceLoginButton>
@@ -503,7 +503,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
               set_forceLogin(false);
               useNode({ force: true });
             }}
-            disabled={apiEndpoint.length === 0 || apiToken.length === 0}
+            disabled={apiEndpoint.length === 0}
           >
             Login anyways
           </ForceLoginButton>
