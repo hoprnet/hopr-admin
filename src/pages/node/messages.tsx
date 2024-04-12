@@ -24,12 +24,12 @@ const messages = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!apiEndpoint || !apiToken) return;
+    if (!apiEndpoint) return;
 
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint,
-        apiToken,
+        apiToken: apiToken ? apiToken : '',
       }),
     );
   }, []);
@@ -92,11 +92,11 @@ const messages = () => {
                 </span>
               }
               onClick={() => {
-                if(!apiEndpoint || !apiToken) return;
+                if(!apiEndpoint) return;
                 dispatch(
                   actionsAsync.deleteMessagesThunk({
                     apiEndpoint,
-                    apiToken,
+                    apiToken: apiToken ? apiToken : '',
                   }),
                 );
               }}

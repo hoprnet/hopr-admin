@@ -64,11 +64,11 @@ function InfoPage() {
   useEffect(() => {
 
     const watchSync = setInterval(() => {
-      if (!apiEndpoint || !apiToken || (nodeSync && nodeSync === 1)) return;
+      if (!apiEndpoint || (nodeSync && nodeSync === 1)) return;
       return dispatch(
         nodeActionsAsync.getPrometheusMetricsThunk({
           apiEndpoint,
-          apiToken,
+          apiToken: apiToken ? apiToken : '',
         }),
       );
     }, 5_000);
@@ -80,60 +80,60 @@ function InfoPage() {
   }, [nodeSync, apiEndpoint, apiToken]);
 
   const fetchInfoData = () => {
-    if (!apiEndpoint || !apiToken) return;
+    if (!apiEndpoint) return;
 
     dispatch(
       nodeActionsAsync.getBalancesThunk({
         apiEndpoint,
-        apiToken,
+        apiToken: apiToken ? apiToken : '',
       })
     );
     dispatch(
       nodeActionsAsync.getChannelsThunk({
         apiEndpoint,
-        apiToken,
+        apiToken: apiToken ? apiToken : '',
       })
     );
     dispatch(
       nodeActionsAsync.getAddressesThunk({
         apiEndpoint,
-        apiToken,
+        apiToken: apiToken ? apiToken : '',
       })
     );
     dispatch(
       nodeActionsAsync.getVersionThunk({
         apiEndpoint,
-        apiToken,
+        apiToken: apiToken ? apiToken : '',
       })
     );
     dispatch(
       nodeActionsAsync.getInfoThunk({
         apiEndpoint,
-        apiToken,
+        apiToken: apiToken ? apiToken : '',
       })
     );
     dispatch(
       nodeActionsAsync.getPeersThunk({
         apiEndpoint,
-        apiToken,
+        apiToken: apiToken ? apiToken : '',
       })
     );
     dispatch(
       nodeActionsAsync.getAliasesThunk({
         apiEndpoint,
-        apiToken,
+        apiToken: apiToken ? apiToken : '',
       })
     );
     dispatch(
       nodeActionsAsync.getTicketStatisticsThunk({
         apiEndpoint,
-        apiToken,
+        apiToken: apiToken ? apiToken : '',
       })
     );
     dispatch(
       nodeActionsAsync.getPrometheusMetricsThunk({
         apiEndpoint,
-        apiToken,
+        apiToken: apiToken ? apiToken : '',
       })
     );
   };
@@ -151,7 +151,7 @@ function InfoPage() {
   ].includes(true);
 
   // check if user is logged in
-  if (!apiEndpoint || !apiToken) {
+  if (!apiEndpoint) {
     return (
       <Section
         className="Section--selectNode"

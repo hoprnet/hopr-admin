@@ -165,12 +165,12 @@ function MetricsPage() {
   }, [apiEndpoint, apiToken]);
 
   const handleRefresh = () => {
-    if (!apiEndpoint || !apiToken) return;
+    if (!apiEndpoint) return;
 
     dispatch(
       actionsAsync.getPrometheusMetricsThunk({
         apiEndpoint,
-        apiToken,
+        apiToken: apiToken ? apiToken : '',
       })
     );
 

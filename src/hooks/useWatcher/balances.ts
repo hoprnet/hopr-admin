@@ -91,15 +91,15 @@ export const observeNodeBalances = ({
   dispatch: ReturnType<typeof useAppDispatch>;
 }) =>
   observeData<GetBalancesResponseType | null>({
-    active: active && !!apiToken && !!apiEndpoint,
+    active: active && !!apiEndpoint,
     previousData: previousState,
     fetcher: async () => {
-      if (!apiToken || !apiEndpoint) return;
+      if (!apiEndpoint) return;
 
       return await dispatch(
         nodeActionsAsync.getBalancesThunk({
           apiEndpoint,
-          apiToken,
+          apiToken: apiToken ? apiToken : '',
         }),
       ).unwrap();
     },
