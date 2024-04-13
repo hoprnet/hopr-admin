@@ -201,7 +201,10 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   }, [loginData]);
 
   useEffect(() => {
-    if (errorMessage) navigate(`/?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
+    if (errorMessage) {
+      if(!apiToken || apiToken === '') navigate(`/?apiEndpoint=${apiEndpoint}`);
+      else navigate(`/?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
+    }
   }, [errorMessage]);
 
   const saveNode = () => {
@@ -238,6 +241,8 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     dispatch(appActions.resetNodeState());
     dispatch(nodeActions.closeMessagesWebsocket());
     try {
+
+      console.log('Node Admin login from modal');
       const loginInfo = await dispatch(
         authActionsAsync.loginThunk({
           apiEndpoint: formattedApiEndpoint,
@@ -296,7 +301,6 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           })
         );
         dispatch(nodeActions.setInfo(loginInfo));
-      //  dispatch(nodeActions.initializeMessagesWebsocket());
         navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${formattedApiEndpoint}`);
         trackGoal('IZUWDE9K', 1);
         props.handleClose();
