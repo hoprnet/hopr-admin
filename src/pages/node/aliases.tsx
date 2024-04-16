@@ -41,22 +41,22 @@ function AliasesPage() {
   >([]);
 
   useEffect(() => {
-    if (loginData.apiEndpoint && loginData.apiToken) {
+    if (loginData.apiEndpoint) {
       dispatch(
         actionsAsync.getAliasesThunk({
           apiEndpoint: loginData.apiEndpoint,
-          apiToken: loginData.apiToken,
+          apiToken: loginData.apiToken ? loginData.apiToken : '',
         })
       );
     }
   }, [loginData]);
 
   const handleRefresh = () => {
-    if (loginData.apiEndpoint && loginData.apiToken) {
+    if (loginData.apiEndpoint) {
       dispatch(
         actionsAsync.getAliasesThunk({
           apiEndpoint: loginData.apiEndpoint,
-          apiToken: loginData.apiToken,
+          apiToken: loginData.apiToken ? loginData.apiToken : '',
         })
       );
     }
@@ -254,12 +254,12 @@ function DeleteAliasButton({
         </span>
       }
       onClick={() => {
-        if (loginData.apiEndpoint && loginData.apiToken) {
+        if (loginData.apiEndpoint) {
           dispatch(
             actionsAsync.removeAliasThunk({
               alias,
               apiEndpoint: loginData.apiEndpoint,
-              apiToken: loginData.apiToken,
+              apiToken: loginData.apiToken ? loginData.apiToken : '',
             })
           )
             .unwrap()
@@ -314,13 +314,13 @@ function CreateAliasForm() {
       <button
         disabled={form.alias.length === 0 || form.peerId.length === 0}
         onClick={() => {
-          if (loginData.apiEndpoint && loginData.apiToken) {
+          if (loginData.apiEndpoint) {
             dispatch(
               actionsAsync.setAliasThunk({
                 alias: form.alias,
                 peerId: form.peerId,
                 apiEndpoint: loginData.apiEndpoint,
-                apiToken: loginData.apiToken,
+                apiToken: loginData.apiToken ? loginData.apiToken : '',
               })
             )
               .unwrap()

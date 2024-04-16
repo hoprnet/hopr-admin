@@ -41,54 +41,31 @@ function ChannelsPage() {
   const tabLabel = 'incoming';
   const channelsData = channels?.incoming;
 
- // const [queryParams, set_queryParams] = useState('');
-
-  // const navigate = useNavigate();
-
-  // const handleHash = () => {
-  //   navigate(`?${queryParams}#incoming`, { replace: true });
-  // };
-
-  // useEffect(() => {
-  //   if (loginData.apiEndpoint && loginData.apiToken) {
-  //     const queryParams = new URLSearchParams({
-  //       apiToken: loginData.apiToken,
-  //       apiEndpoint: loginData.apiEndpoint,
-  //     }).toString();
-  //     set_queryParams(queryParams);
-  //   }
-  // }, [loginData.apiToken, loginData.apiEndpoint]);
-
-  // useEffect(() => {
-  //   handleHash();
-  //   handleRefresh();
-  // }, [queryParams]);
-
   const handleRefresh = () => {
-    if(!loginData.apiEndpoint || !loginData.apiToken) return;
+    if(!loginData.apiEndpoint) return;
 
     dispatch(
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
+        apiToken: loginData.apiToken ? loginData.apiToken : '',
       })
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
+        apiToken: loginData.apiToken ? loginData.apiToken : '',
       })
     );
     dispatch(
       actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
+        apiToken: loginData.apiToken ? loginData.apiToken : '',
       })
     );
     dispatch(
       actionsAsync.getPrometheusMetricsThunk({
         apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
+        apiToken: loginData.apiToken ? loginData.apiToken : '',
       })
     );
   };
@@ -165,7 +142,7 @@ function ChannelsPage() {
     dispatch(
       actionsAsync.closeChannelThunk({
         apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
+        apiToken: loginData.apiToken ? loginData.apiToken : '',
         channelId: channelId,
       })
     )
