@@ -59,13 +59,13 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
   };
 
   const handleAddAlias = () => {
-    if (loginData.apiEndpoint && loginData.apiToken) {
+    if (loginData.apiEndpoint) {
       dispatch(
         actionsAsync.setAliasThunk({
           alias: alias,
           peerId: peerId,
           apiEndpoint: loginData.apiEndpoint,
-          apiToken: loginData.apiToken,
+          apiToken: loginData.apiToken ? loginData.apiToken : '',
         })
       )
         .unwrap()

@@ -31,7 +31,7 @@ const authSlice = createSlice({
       }
 
       state.loginData.apiEndpoint = action.payload.apiEndpoint;
-      state.loginData.apiToken = action.payload.apiToken;
+      state.loginData.apiToken = action.payload.apiToken ? action.payload.apiToken : '';
       state.loginData.localName = localName;
     },
     setConnected(state) {

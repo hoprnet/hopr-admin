@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
-import { useAppDispatch } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import { authActions } from '../../store/slices/auth';
 import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';
 import { Link } from 'react-router-dom';
+
 
 const StyledContainer = styled.div`
   align-items: center;
@@ -66,6 +67,7 @@ const StyledLink = styled(Link)`
 
 function LandingPage() {
   const dispatch = useAppDispatch();
+  const nodeConnected = useAppSelector((store) => store.auth.status.connected);
 
   return (
     <Section
@@ -84,16 +86,19 @@ function LandingPage() {
           HOPR Node Admin allows at-a-glance access to the crucial information of a HOPR Node. It provides users with a
           comprehensive overview of the key data, metrics, settings, and messages if required.
         </Description>
-        <StyledButton
-          onClick={() => {
-            dispatch(authActions.setOpenLoginModalToNode(true));
-            setTimeout(() => {
-              dispatch(authActions.setOpenLoginModalToNode(false)), 300;
-            });
-          }}
-        >
-          Connect to Node
-        </StyledButton>
+        {
+          !nodeConnected &&
+          <StyledButton
+            onClick={() => {
+              dispatch(authActions.setOpenLoginModalToNode(true));
+              setTimeout(() => {
+                dispatch(authActions.setOpenLoginModalToNode(false)), 300;
+              });
+            }}
+          >
+            Connect to Node
+          </StyledButton>
+        }
         <Links>
           <StyledLink to="https://docs.hoprnet.org">Docs</StyledLink>
           <StyledLink to="https://t.me/hoprnet">Telegram</StyledLink>

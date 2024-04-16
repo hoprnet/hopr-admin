@@ -39,7 +39,7 @@ export const ONBOARDING_PAGES = {
 
 function Onboarding() {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const nodeAddress = searchParams.get('nodeAddress');
   const [onboardingStep, set_onboardingStep] = useState(0);
   const [onboardingIsFetching, set_onboardingIsFetching] = useState(true);

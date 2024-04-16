@@ -44,13 +44,13 @@ export const PingModal = (props: PingModalProps) => {
   };
 
   const handlePing = () => {
-    if (loginData.apiEndpoint && loginData.apiToken) {
+    if (loginData.apiEndpoint) {
       set_disableButton(true);
       dispatch(
         actionsAsync.pingNodeThunk({
           peerId,
           apiEndpoint: loginData.apiEndpoint,
-          apiToken: loginData.apiToken,
+          apiToken: loginData.apiToken ? loginData.apiToken : '',
         })
       )
         .unwrap()

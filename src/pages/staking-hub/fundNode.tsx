@@ -64,7 +64,7 @@ export default function FundNode() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const nodeAddressFromParams = searchParams.get('nodeAddress');
 
   // injected states
