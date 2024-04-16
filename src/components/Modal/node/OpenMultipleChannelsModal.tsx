@@ -26,11 +26,11 @@ export const OpenMultipleChannelsModal = () => {
   const [peerIds, set_peerIds] = useState<string[]>([]);
 
   const handleRefresh = () => {
-    if (loginData.apiEndpoint && loginData.apiToken) {
+    if (loginData.apiEndpoint) {
       dispatch(
         actionsAsync.getChannelsThunk({
           apiEndpoint: loginData.apiEndpoint,
-          apiToken: loginData.apiToken,
+          apiToken: loginData.apiToken ? loginData.apiToken : '',
         })
       );
     }
@@ -46,7 +46,7 @@ export const OpenMultipleChannelsModal = () => {
     await dispatch(
       actionsAsync.openChannelThunk({
         apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
+        apiToken: loginData.apiToken ? loginData.apiToken : '',
         amount: weiValue,
         peerAddress: peerId,
         timeout: 60e3,
@@ -75,7 +75,7 @@ export const OpenMultipleChannelsModal = () => {
   const handleAction = async () => {
     const parsedOutgoing = parseFloat(amount ?? '0') >= 0 ? amount ?? '0' : '0';
     const weiValue = utils.parseEther(parsedOutgoing).toString();
-    if (peerIds && loginData.apiEndpoint && loginData.apiToken) {
+    if (peerIds && loginData.apiEndpoint) {
       for (let i = 0; i < peerIds.length; i++) {
         handleOpenChannel(weiValue, peerIds[i]);
         await new Promise((r) => setTimeout(r, 50));

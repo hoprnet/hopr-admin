@@ -46,7 +46,7 @@ export const OpenChannelModal = ({
       await dispatch(
         actionsAsync.openChannelThunk({
           apiEndpoint: loginData.apiEndpoint!,
-          apiToken: loginData.apiToken!,
+          apiToken: loginData.apiToken ? loginData.apiToken : '',
           amount: weiValue,
           peerAddress: peerAddress,
           timeout: 2*60_000,
@@ -79,7 +79,7 @@ export const OpenChannelModal = ({
     dispatch(
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
+        apiToken: loginData.apiToken ? loginData.apiToken : '',
       })
     );
   };

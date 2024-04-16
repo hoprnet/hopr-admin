@@ -45,7 +45,7 @@ export const FundChannelModal = ({
       await dispatch(
         actionsAsync.fundChannelThunk({
           apiEndpoint: loginData.apiEndpoint!,
-          apiToken: loginData.apiToken!,
+          apiToken: loginData.apiToken ? loginData.apiToken : '',
           amount: weiValue,
           channelId: channelId,
           timeout: 60e3,
@@ -91,7 +91,7 @@ export const FundChannelModal = ({
     dispatch(
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
+        apiToken: loginData.apiToken ? loginData.apiToken : '';
       })
     );
   };

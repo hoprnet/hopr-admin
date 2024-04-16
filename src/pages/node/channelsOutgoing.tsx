@@ -39,47 +39,24 @@ function ChannelsPage() {
   const tabLabel = 'outgoing';
   const channelsData = channels?.outgoing;
 
-  // const [queryParams, set_queryParams] = useState('');
-
-  // const navigate = useNavigate();
-
-  // const handleHash = () => {
-  //   navigate(`?${queryParams}#outgoing`, { replace: true });
-  // };
-
-  // useEffect(() => {
-  //   if (loginData.apiEndpoint && loginData.apiToken) {
-  //     const queryParams = new URLSearchParams({
-  //       apiToken: loginData.apiToken,
-  //       apiEndpoint: loginData.apiEndpoint,
-  //     }).toString();
-  //     set_queryParams(queryParams);
-  //   }
-  // }, [loginData.apiToken, loginData.apiEndpoint]);
-
-  // useEffect(() => {
-  //   handleHash();
-  //   handleRefresh();
-  // }, [queryParams]);
-
   const handleRefresh = () => {
-    if(!loginData.apiEndpoint || !loginData.apiToken) return;
+    if(!loginData.apiEndpoint) return;
     dispatch(
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
+        apiToken: loginData.apiToken ? loginData.apiToken : '',
       })
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
+        apiToken: loginData.apiToken ? loginData.apiToken : '',
       })
     );
     dispatch(
       actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
+        apiToken: loginData.apiToken ? loginData.apiToken : '',
       })
     )
   };
@@ -113,7 +90,7 @@ function ChannelsPage() {
     dispatch(
       actionsAsync.closeChannelThunk({
         apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
+        apiToken: loginData.apiToken ? loginData.apiToken : '',
         channelId: channelId,
         timeout: 5*60_000,
       })

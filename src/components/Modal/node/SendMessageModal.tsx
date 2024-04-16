@@ -110,13 +110,13 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   }, [sendMode]);
 
   const handleSendMessage = () => {
-    if (!(loginData.apiEndpoint && loginData.apiToken) || !selectedReceiver) return;
+    if (!(loginData.apiEndpoint) || !selectedReceiver) return;
     set_error(null);
     set_loader(true);
     //const validatedReceiver = validatePeerId(selectedReceiver);
 
     const messagePayload: SendMessagePayloadType = {
-      apiToken: loginData.apiToken,
+      apiToken: loginData.apiToken ? loginData.apiToken : '',
       apiEndpoint: loginData.apiEndpoint,
       body: message,
       peerId: selectedReceiver,
