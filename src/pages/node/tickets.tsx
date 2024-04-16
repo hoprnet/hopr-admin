@@ -29,11 +29,11 @@ function TicketsPage() {
   }, [loginData, dispatch]);
 
   const handleRefresh = () => {
-    if(loginData.apiEndpoint && loginData.apiToken) {
+    if(loginData.apiEndpoint) {
       dispatch(
         actionsAsync.getTicketStatisticsThunk({
           apiEndpoint: loginData.apiEndpoint,
-          apiToken: loginData.apiToken,
+          apiToken: loginData.apiToken ? loginData.apiToken : '',
         })
       );
     }
@@ -43,7 +43,7 @@ function TicketsPage() {
     dispatch(
       actionsAsync.redeemTicketsThunk({
         apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
+        apiToken: loginData.apiToken ? loginData.apiToken : '',
       })
     )
       .unwrap()

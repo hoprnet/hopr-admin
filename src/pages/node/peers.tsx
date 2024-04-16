@@ -36,18 +36,18 @@ function PeersPage() {
   }, [loginData, dispatch]);
 
   const handleRefresh = () => {
-    if(!loginData.apiEndpoint || !loginData.apiToken) return;
+    if(!loginData.apiEndpoint) return;
 
     dispatch(
       actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
+        apiToken: loginData.apiToken ? loginData.apiToken : '',
       })
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken!,
+        apiToken: loginData.apiToken ? loginData.apiToken : '',
       })
     );
   };

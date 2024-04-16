@@ -406,6 +406,7 @@ const LayoutEnhanced = () => {
     );
     const useNode = async () => {
       try {
+        console.log('Node Admin login from router');
         const loginInfo = await dispatch(
           authActionsAsync.loginThunk({
             apiEndpoint,
@@ -482,7 +483,6 @@ const LayoutEnhanced = () => {
               apiToken: apiToken ? apiToken : '',
             })
           );
-          dispatch(nodeActions.initializeMessagesWebsocket());
         }
       } catch (e) {
         trackGoal('ZUIBL4M8', 1) // FAILED_CONNECT_TO_NODE_BY_URL
@@ -491,9 +491,6 @@ const LayoutEnhanced = () => {
     };
     useNode();
 
-    return () => {
-      dispatch(nodeActions.closeMessagesWebsocket());
-    };
   }, [apiEndpoint, apiToken]);
 
   useEffect(() => {
