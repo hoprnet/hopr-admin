@@ -91,7 +91,7 @@ export const FundChannelModal = ({
     dispatch(
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
-        apiToken: loginData.apiToken ? loginData.apiToken : '';
+        apiToken: loginData.apiToken ? loginData.apiToken : '',
       })
     );
   };
