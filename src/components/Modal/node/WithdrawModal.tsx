@@ -101,7 +101,7 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
   };
 
   const handleWithdraw = async () => {
-    if (recipient && amount && apiEndpoint && apiToken) {
+    if (recipient && amount && apiEndpoint) {
       set_isLoading(true);
       await dispatch(
         nodeActionsAsync.withdrawThunk({
@@ -109,7 +109,7 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
           currency,
           ethereumAddress: recipient,
           apiEndpoint,
-          apiToken,
+          apiToken: apiToken ? apiToken : '',
         })
       )
         .unwrap()
@@ -182,7 +182,7 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
             />
             <TextField
               type="text"
-              label="recipient"
+              label="Recipient"
               placeholder="0x4f5a...1728"
               value={recipient}
               onChange={(e) => set_recipient(e.target.value)}

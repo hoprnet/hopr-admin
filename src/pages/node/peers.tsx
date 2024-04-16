@@ -125,14 +125,16 @@ function PeersPage() {
       quality: <ProgressBar
         value={peer.quality}
       />,
-      lastSeen: new Date(peer.lastSeen).toLocaleString('en-US', {
+      lastSeen: peer.lastSeen > 0 ? new Date(peer.lastSeen).toLocaleString('en-US', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
         hour: '2-digit',
         minute: '2-digit',
         timeZoneName: 'short',
-      }),
+      })
+      :
+      'Not seen',
       actions: (
         <>
           <PingModal peerId={peer.peerId} />
