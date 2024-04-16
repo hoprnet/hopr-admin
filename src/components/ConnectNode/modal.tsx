@@ -232,16 +232,21 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     } else {
       set_apiEndpointError(null)
     }
-    set_searchParams({
-      apiToken,
-      formattedApiEndpoint,
-    });
+    if(!apiToken || apiToken === '') {
+      set_searchParams({
+        apiEndpoint: formattedApiEndpoint,
+      });
+    } else {
+      set_searchParams({
+        apiToken,
+        apiEndpoint: formattedApiEndpoint,
+      });
+    }
     dispatch(authActions.resetState());
     dispatch(nodeActions.resetState());
     dispatch(appActions.resetNodeState());
     dispatch(nodeActions.closeMessagesWebsocket());
     try {
-
       console.log('Node Admin login from modal');
       const loginInfo = await dispatch(
         authActionsAsync.loginThunk({
@@ -301,7 +306,8 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           })
         );
         dispatch(nodeActions.setInfo(loginInfo));
-        navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${formattedApiEndpoint}`);
+        if(!apiToken || apiToken === '') navigate(`/node/info?apiEndpoint=${formattedApiEndpoint}`);
+        else navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${formattedApiEndpoint}`);
         trackGoal('IZUWDE9K', 1);
         props.handleClose();
       }
