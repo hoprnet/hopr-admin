@@ -81,15 +81,16 @@ function AliasesPage() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleCSVUpload = async (parsedData: any[]) => {
+    if (!loginData.apiEndpoint) return;
     for (const data of parsedData) {
-      if (data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken) {
-        console.log('data.alias && data.peerId && loginData.apiEndpoint && loginData.apiToken')
+      if (data.alias && data.peerId) {
+        console.log('data.alias && data.peerId && loginData.apiEndpoint')
         await dispatch(
           actionsAsync.setAliasThunk({
             alias: String(data.alias),
             peerId: String(data.peerId),
             apiEndpoint: loginData.apiEndpoint,
-            apiToken: loginData.apiToken,
+            apiToken: loginData.apiToken ? loginData.apiToken : '',
           })
         )
           .unwrap()
@@ -110,6 +111,12 @@ function AliasesPage() {
           });
       }
     }
+    dispatch(
+      actionsAsync.getAliasesThunk({
+        apiEndpoint: loginData.apiEndpoint,
+        apiToken: loginData.apiToken ? loginData.apiToken : '',
+      })
+    )
   };
 
   const parsedTableData = Object.entries(aliases ?? {}).map(([alias, peerId], key) => {
