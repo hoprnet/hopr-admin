@@ -45,12 +45,12 @@ export const observeNodeInfo = ({
     notificationHandler: (newNodeInfo) => {
       sendNotification({
         notificationPayload: {
-          name: `node connectivity status is now ${newNodeInfo?.connectivityStatus}`,
+          name: `Node connectivity status is now ${newNodeInfo?.connectivityStatus}`,
           source: 'node',
           url: null,
           timeout: null,
         },
-        toastPayload: { message: `node connectivity status updated from ${previousState?.connectivityStatus} to ${newNodeInfo?.connectivityStatus}` },
+        toastPayload: { message: `Node connectivity status updated from ${previousState?.connectivityStatus} to ${newNodeInfo?.connectivityStatus}` },
         dispatch,
       });
     },

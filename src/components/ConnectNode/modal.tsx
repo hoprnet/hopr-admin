@@ -202,8 +202,8 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
 
   useEffect(() => {
     if (errorMessage) {
-      if(!apiToken || apiToken === '') navigate(`/?apiEndpoint=${apiEndpoint}`);
-      else navigate(`/?apiToken=${apiToken}&apiEndpoint=${apiEndpoint}`);
+      if(!apiToken || apiToken === '') navigate(`/?apiEndpoint=${encodeURIComponent(apiEndpoint)}`);
+      else navigate(`/?apiToken=${encodeURIComponent(apiToken)}&apiEndpoint=${encodeURIComponent(apiEndpoint)}`);
     }
   }, [errorMessage]);
 
@@ -306,8 +306,12 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           })
         );
         dispatch(nodeActions.setInfo(loginInfo));
-        if(!apiToken || apiToken === '') navigate(`/node/info?apiEndpoint=${formattedApiEndpoint}`);
-        else navigate(`/node/info?apiToken=${apiToken}&apiEndpoint=${formattedApiEndpoint}`);
+        if(!apiToken || apiToken === '') {
+          navigate(`/node/info?apiEndpoint=${formattedApiEndpoint}`);
+        }
+        else {
+          navigate(`/node/info?apiToken=${encodeURIComponent(apiToken)}&apiEndpoint=${formattedApiEndpoint}`);
+        }
         trackGoal('IZUWDE9K', 1);
         props.handleClose();
       }

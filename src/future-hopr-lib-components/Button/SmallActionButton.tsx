@@ -22,11 +22,13 @@ function SmallActionButton(props: SmallActionButtonProps) {
         <Tooltip
             title={props.tooltip}
         >
-            <SIconButton
-                {...props}
-            >
-                {props.children}
-            </SIconButton>
+            <span>
+                <SIconButton
+                    {...props}
+                >
+                    {props.children}
+                </SIconButton>
+            </span>
         </Tooltip>
     )
 }
