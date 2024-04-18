@@ -378,7 +378,8 @@ function InfoPage() {
                   addresses?.hopr &&
                   <SmallActionButton
                     onClick={() => navigator.clipboard.writeText(addresses?.hopr as string)}
-                    tooltip={'Copy'}
+                    disabled={window.location.protocol === 'http:'}
+                    tooltip={window.location.protocol === 'http:' ? 'Clipboard not supported on HTTP': 'Copy'}
                   >
                     <CopyIcon />
                   </SmallActionButton>
@@ -401,7 +402,8 @@ function InfoPage() {
                   <>
                     <SmallActionButton
                       onClick={() => navigator.clipboard.writeText(addresses?.native as string)}
-                      tooltip={'Copy'}
+                      disabled={window.location.protocol === 'http:'}
+                      tooltip={window.location.protocol === 'http:' ? 'Clipboard not supported on HTTP': 'Copy'}
                     >
                       <CopyIcon />
                     </SmallActionButton>
@@ -432,7 +434,8 @@ function InfoPage() {
                   <>
                     <SmallActionButton
                       onClick={() => navigator.clipboard.writeText(info.hoprNodeSafe as string)}
-                      tooltip={'Copy'}
+                      disabled={window.location.protocol === 'http:'}
+                      tooltip={window.location.protocol === 'http:' ? 'Clipboard not supported on HTTP': 'Copy'}
                     >
                       <CopyIcon />
                     </SmallActionButton>
@@ -463,7 +466,8 @@ function InfoPage() {
                   <>
                     <SmallActionButton
                       onClick={() => navigator.clipboard.writeText(info?.hoprToken as string)}
-                      tooltip={'Copy'}
+                      disabled={window.location.protocol === 'http:'}
+                      tooltip={window.location.protocol === 'http:' ? 'Clipboard not supported on HTTP': 'Copy'}
                     >
                       <CopyIcon />
                     </SmallActionButton>
@@ -494,7 +498,8 @@ function InfoPage() {
                   <>
                     <SmallActionButton
                       onClick={() => navigator.clipboard.writeText(info.hoprManagementModule as string)}
-                      tooltip={'Copy'}
+                      disabled={window.location.protocol === 'http:'}
+                      tooltip={window.location.protocol === 'http:' ? 'Clipboard not supported on HTTP': 'Copy'}
                     >
                       <CopyIcon />
                     </SmallActionButton>
@@ -525,7 +530,8 @@ function InfoPage() {
                   <>
                     <SmallActionButton
                       onClick={() => navigator.clipboard.writeText(info?.hoprChannels as string)}
-                      tooltip={'Copy'}
+                      disabled={window.location.protocol === 'http:'}
+                      tooltip={window.location.protocol === 'http:' ? 'Clipboard not supported on HTTP': 'Copy'}
                     >
                       <CopyIcon />
                     </SmallActionButton>
