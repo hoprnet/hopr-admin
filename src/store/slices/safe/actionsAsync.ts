@@ -1177,17 +1177,6 @@ const createSafeWithConfigThunk = createAsyncThunk<
 
       const [moduleProxy, safeAddress] = result as [Address, Address];
 
-      await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          transactionHash,
-          safeAddress,
-          moduleAddress: moduleProxy,
-          ownerAddress: payload.walletClient.account?.address,
-        }),
-      });
-
       dispatch(
         stakingHubActions.addSafeAndUseItForOnboarding({
           safeAddress,

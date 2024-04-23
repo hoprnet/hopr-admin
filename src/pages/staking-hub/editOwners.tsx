@@ -108,16 +108,6 @@ export default function EditOwners() {
         }).finally(async()=>{
           set_confirmAddOwner(false);
           set_pending(false);
-          await fetch('https://stake.hoprnet.org/api/hub/generatedSafe', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              transactionHash: transactionHash,
-              safeAddress: selectedSafeAddress,
-              moduleAddress: safeModules?.[0] ?? '',
-              ownerAddress: newOwner,
-            }),
-          });
         });
       }
     }
