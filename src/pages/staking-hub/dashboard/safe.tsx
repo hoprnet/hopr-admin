@@ -377,7 +377,7 @@ function SafeDashboard() {
         </p>
         <div className="center">
           <Button href={`https://app.safe.global/home?safe=gno:${selectedSafeAddress}`}>safe.global</Button>
-          <Button href={`https://app.onchainden.com/safes/gnosis:${selectedSafeAddress}`}>OnChainDen.com</Button>
+          <Button href={`https://app.onchainden.com/safes/gno:${selectedSafeAddress}`}>OnChainDen.com</Button>
         </div>
       </div>
     </Container>
