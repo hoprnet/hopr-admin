@@ -1596,14 +1596,13 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       state.metricsParsed.nodeSync = jsonMetrics?.hopr_indexer_sync_progress?.data[0] as number || null;
 
       // count tickets
+      state.metricsParsed.tickets.incoming = {
+        redeemed: {},
+        unredeemed: {},
+      }
       if(jsonMetrics?.hopr_tickets_incoming_statistics?.categories &&
         jsonMetrics?.hopr_tickets_incoming_statistics?.data
       ){
-        state.metricsParsed.tickets.incoming = {
-          redeemed: {},
-          unredeemed: {},
-        }
-
         const categories = jsonMetrics.hopr_tickets_incoming_statistics.categories;
         const data = jsonMetrics?.hopr_tickets_incoming_statistics?.data;
         for(let i = 0; i < categories.length; i++) {
