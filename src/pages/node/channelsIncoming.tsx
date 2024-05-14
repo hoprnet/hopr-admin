@@ -123,9 +123,9 @@ function ChannelsPage() {
     },
     {
       key: 'tickets',
-      name: 'Redeemed/All',
+      name: 'Unredeemed',
       maxWidth: '140px',
-      tooltipHeader: <>(Redeemed value / Total value) of tickets per channel in wxHOPR.<br/><br/>Value is reset on node restart.</>
+      tooltipHeader: <>Unredeemed value of tickets per channel in wxHOPR.<br/><br/>Value is reset on node restart.</>
     },
     {
       key: 'actions',
@@ -175,6 +175,7 @@ function ChannelsPage() {
     const peerId = getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string);
 
     const totalTicketsPerChannel = `${formatEther( BigInt(tickets?.redeemed[id]?.value || '0') + BigInt(tickets?.unredeemed[id]?.value || '0') )}`;
+    const unredeemedTicketsPerChannel = `${formatEther( BigInt(tickets?.unredeemed[id]?.value || '0') )}`;
     const ticketsPerChannel = `${formatEther( BigInt(tickets?.redeemed[id]?.value || '0'))}/${totalTicketsPerChannel}`;
 
     return {
@@ -183,7 +184,7 @@ function ChannelsPage() {
       peerAddress: getAliasByPeerAddress(channelsIncomingObject[id].peerAddress as string),
       status: channelsIncomingObject[id].status,
       funds: `${utils.formatEther(channelsIncomingObject[id].balance as string)} ${HOPR_TOKEN_USED}`,
-      tickets: ticketsPerChannel,
+      tickets: unredeemedTicketsPerChannel,
       actions: (
         <>
           <PingModal
