@@ -121,19 +121,41 @@ const nodeFaq: FaqData = {
   '/node/tickets': [
     {
       id: 1,
-      title: 'Why do I have rejected tickets?',
+      title: 'What are unredeemed tickets?',
       content:
-        'These are tickets that failed network validation and were deemed suspicious. This could be due to a lack of eligibility or malicious tampering.',
+        'The tickets earned by your node that have yet to be redeemed.',
     },
     {
       id: 2,
-      title: 'How do I redeem tickets?',
-      content: 'Tickets are combined and redeemed automatically by your node to save on gas prices.',
+      title: 'When should my node redeem tickets?',
+      content:
+        <span>
+          Tickets are automatically redeemed. If you`ve set a custom aggregation threshold, tickets are aggregated accordingly before redemption; otherwise, it defaults to aggregating 100 tickets per channel.
+
+          Please check the incoming channels page for the number of unredeemed tickets per channel.
+
+          <b>IMPORTANT:</b> If the unredeemed ticket value per channel exceeds your custom aggregation threshold or the default aggregation value of 100, there may be an issue with your node. Please report this on the HOPR Telegram channel or Discord server.
+        </span>
     },
     {
       id: 3,
-      title: 'Tickets values are different?',
-      content: 'The table of the Incomming Channels shows the value of tickets counted from last reset of your node, and the Tickets subpage shows the ticket number from the last reset of the node databse.',
+      title: 'Why do I have rejected tickets?',
+      content:
+        <span>
+          These are tickets that failed network validation and were deemed suspicious. This issue likely happens when your node didn`t sync properly. Please make sure you are using our recommended RPC providers {' '}
+          <a
+            href="https://docs.hoprnet.org/node/start-here#understanding-rpc-importance-and-setting-up-your-own-custom-rpc-provider"
+            target="_blank"
+            rel="noreferrer"
+          >
+            here
+          </a>.
+        </span>
+    },
+    {
+      id: 4,
+      title: 'How do I redeem neglected tickets?',
+      content: 'Neglected tickets cannot be redeemed. This may occur when closing a payment channel with your node, if your strategy`s "on_close_redeem_single_tickets_value_min" value was higher than your ticket value on the closing channel.',
     },
     // {
     //   id: 3,
@@ -142,27 +164,9 @@ const nodeFaq: FaqData = {
     //     'Ticket redemption costs a small fee in xDAI to complete the on-chain transaction. To lower this cost, the HOPR protocol batches ticket redemption, so it is generally more efficient to redeem multiple tickets at once. For maximum margins, only redeem tickets when you would otherwise lose them due to channel closure.',
     // },
     {
-      id: 4,
+      id: 5,
       title: 'How is ticket value calculated?',
       content: 'Ticket value is the total wxHOPR earned from all your winning tickets redeemed.',
-    },
-    {
-      id: 5,
-      title: 'Why are there losing tickets?',
-      content:
-        'By issuing empty (losing) tickets and higher-value winning tickets at a lower probability, it reduces the amount of tickets you need to redeem on-chain for a similar amount of earned tokens over time. This increases the margin for node runners by reducing on-chain costs.',
-    },
-    {
-      id: 6,
-      title: 'How do I redeem neglected tickets?',
-      content:
-        'Currently, there is no way to redeem neglected tickets. Make sure to redeem tickets before closing channels.',
-    },
-    {
-      id: 7,
-      title: 'Unredeemed tickets',
-      content:
-        'The tickets earned by your node that have yet to be redeemed. Those tickets have to reach a specified treshold per channel in order to automaticly get redeemd. Please check the incomming channels page to see the number of unredeemed tickets per channel.',
     },
   ],
   '/node/metrics': [
