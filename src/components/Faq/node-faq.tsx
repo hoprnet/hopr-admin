@@ -10,7 +10,7 @@ const nodeFaq: FaqData = {
   '/node/info': [
     {
       id: 1,
-      title: 'What version of HOPR should I be running?',
+      title: 'What version of HOPRd should I be running?',
       content: (
         <span>
           You can find the latest version for your device on our docs:
@@ -50,13 +50,17 @@ const nodeFaq: FaqData = {
           being approved by the HOPR association to join the network, as it is currently permissioned. You can join the
           network by creating a safe{' '}
           <a
-            href="/staking/onboarding"
+            href="https://hub.hoprnet.org"
             target="_blank"
             rel="noreferrer"
           >
             here
           </a>
           .
+          <br />
+          If you've already applied to join the network, please wait for approval. Approvals currently occur on a tri-weekly basis.
+          <br />
+          If your node was approved, but your are still seeing your not is not eligible please report this on the HOPR Telegram channel or Discord server.
         </span>
       ),
     },
@@ -84,7 +88,7 @@ const nodeFaq: FaqData = {
       id: 5,
       title: 'How many tokens should I have on my node?',
       content:
-        '0.1 xDAI is plenty to run your node. wxHOPR can be ad-hoc requested from your safe as long as there is a sufficient remaining allowance on your safe, so there is no need to store funds on your safe.',
+        '0.2 xDAI is plenty to run your node. wxHOPR can be ad-hoc requested from your safe as long as there is a sufficient remaining allowance on your safe, so there is no need to store funds on your node.',
     },
     {
       id: 6,
@@ -102,12 +106,6 @@ const nodeFaq: FaqData = {
       title: 'What are tickets?',
       content:
         'You earn tickets for relaying data. Each ticket may or may not contain wxHOPR, by using probabilistic payment and aggregating tickets when you redeem them on-chain, it reduces the on-chain transaction fees and exposes less metadata on-chain in comparison to paying directly in wxHOPR.',
-    },
-    {
-      id: 9,
-      title: 'Why do I have empty tickets?',
-      content:
-        'Not all tickets contain wxHOPR, by having some tickets be empty, it reduces the on-chain costs when you redeem one ticket for 2 wxHOPR  vs redeeming two tickets each worth 1 wxHOPR, in which both require xDAI to redeem on chain. Over a large enough amount of tickets, the amount of wxHOPR you earn will converge to what you would have earned if every ticket was winning.',
     },
   ],
   '/node/logs': [
@@ -231,12 +229,6 @@ const nodeFaq: FaqData = {
     },
     {
       id: 9,
-      title: 'What is a v8 engine?',
-      content:
-        'This is the core technology that translates your JS source code into machine instructions your node can process.',
-    },
-    {
-      id: 10,
       title: 'What is a heap?',
       content: 'A heap is a specific way to allocate a set of data so that it is easy to sort and prioritize.',
     },
@@ -252,21 +244,9 @@ const nodeFaq: FaqData = {
   '/networking/peers': [
     {
       id: 1,
-      title: 'Why would a node not be eligible?',
-      content:
-        'An ineligible node has not been given access to the network and thus cannot properly communicate with other nodes on the network. These are nodes that have not yet been approved through the waitlist.',
-    },
-    {
-      id: 2,
       title: 'Does the number of peers impact my node performance?',
       content:
         'Generally having more visible nodes is better. If nodes on the network are not visible to you, this could be a sign of lower performance or node health. But as long as this number is not zero or very low, you are likely fine.',
-    },
-    {
-      id: 3,
-      title: 'What is a multiaddrs?',
-      content:
-        'It is a format to put all the different protocols used to communicate with a node into a single address. For example, TCP/IP/UDP/HTTP etc...',
     },
   ],
   '/networking/aliases': [
@@ -280,9 +260,9 @@ const nodeFaq: FaqData = {
   '/networking/channels-INCOMING': [
     {
       id: 1,
-      title: 'Unredeemed tickets',
+      title: 'Unredeemed tickets value',
       content:
-        'The tickets earned by your node that have yet to be redeemed. Those tickets have to reach a specified treshold per channel in order to automaticly get redeemd. Please check the incomming channels page to see the number of unredeemed tickets per channel',
+        'On each incoming channel, you can see the amount of unredeemed ticket value received by that specific node. The count of unredeemed ticket value resets at the each restart of the node.',
     },
     {
       id: 2,
