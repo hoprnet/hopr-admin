@@ -153,7 +153,7 @@ function ChannelsPage() {
       .catch((e) => {
         console.error('handleCloseChannel', e)
         if(usedApiEndpoint === currentApiEndpoint) {
-          const msg = `Closing of incomming channel ${channelId} failed`;
+          const msg = `Closing of incoming channel ${channelId} failed`;
           sendNotification({
             notificationPayload: {
               source: 'node',
