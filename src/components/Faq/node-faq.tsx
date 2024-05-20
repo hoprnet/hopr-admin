@@ -57,32 +57,28 @@ const nodeFaq: FaqData = {
             here
           </a>
           .
-          <br />
+          <br /><br />
           If you've already applied to join the network, please wait for approval. Approvals currently occur on a tri-weekly basis.
-          <br />
-          If your node was approved, but your are still seeing your not is not eligible please report this on the HOPR Telegram channel or Discord server.
+          <br /><br />
+          If your node was approved, but your are still seeing your node is not eligible, please report this on the {' '}
+          <a
+            href="https://t.me/hoprnet"
+            target="_blank"
+            rel="noreferrer"
+          >HOPR Telegram channel</a>
+          {' '}or{' '}
+          <a
+            href="https://discord.gg/dEAWC4G"
+            target="_blank"
+            rel="noreferrer"
+          >Discord server</a>.
         </span>
       ),
     },
     {
       id: 4,
       title: 'How is node health calculated?',
-      content: (
-        <span>
-          It is calculated using the network's heartbeat mechanism.
-          <br />
-          <br />
-          You can read what differentiates each category{' '}
-          <a
-            href="https://docs.hoprnet.org/node/hoprd-commands#info"
-            target="_blank"
-            rel="noreferrer"
-          >
-            here
-          </a>
-          .
-        </span>
-      ),
+      content: 'It is calculated using the network`s heartbeat mechanism.'
     },
     {
       id: 5,
@@ -101,12 +97,6 @@ const nodeFaq: FaqData = {
       content:
         'Payment channels are funded connections between two nodes. Without a payment channel open to node X, you cannot use node X to relay data. You want to have a set of well-funded, well-connected channels to and from your node, so it is used for relays and you earn more tickets/wxHOPR.',
     },
-    {
-      id: 8,
-      title: 'What are tickets?',
-      content:
-        'You earn tickets for relaying data. Each ticket may or may not contain wxHOPR, by using probabilistic payment and aggregating tickets when you redeem them on-chain, it reduces the on-chain transaction fees and exposes less metadata on-chain in comparison to paying directly in wxHOPR.',
-    },
   ],
   '/node/logs': [
     {
@@ -119,24 +109,41 @@ const nodeFaq: FaqData = {
   '/node/tickets': [
     {
       id: 1,
+      title: 'What are tickets?',
+      content:
+        'You earn tickets for relaying data. Each ticket may or may not contain wxHOPR, by using probabilistic payment and aggregating tickets when you redeem them on-chain, it reduces the on-chain transaction fees and exposes less metadata on-chain in comparison to paying directly in wxHOPR.',
+    },
+    {
+      id: 2,
       title: 'What are unredeemed tickets?',
       content:
         'The tickets earned by your node that have yet to be redeemed.',
     },
     {
-      id: 2,
+      id: 3,
       title: 'When should my node redeem tickets?',
       content:
         <span>
           Tickets are automatically redeemed. If you`ve set a custom aggregation threshold, tickets are aggregated accordingly before redemption; otherwise, it defaults to aggregating 100 tickets per channel.
 
           Please check the incoming channels page for the number of unredeemed tickets per channel.
-
-          <b>IMPORTANT:</b> If the unredeemed ticket value per channel exceeds your custom aggregation threshold or the default aggregation value of 100, there may be an issue with your node. Please report this on the HOPR Telegram channel or Discord server.
+          <br /><br />
+          <b>IMPORTANT:</b> If the unredeemed ticket value per channel exceeds your custom aggregation threshold or the default aggregation value of 100, there may be an issue with your node. Please report this on the {' '} 
+          <a
+            href="https://t.me/hoprnet"
+            target="_blank"
+            rel="noreferrer"
+          >HOPR Telegram channel</a>
+          {' '}or{' '}
+          <a
+            href="https://discord.gg/dEAWC4G"
+            target="_blank"
+            rel="noreferrer"
+          >Discord server</a>.
         </span>
     },
     {
-      id: 3,
+      id: 4,
       title: 'Why do I have rejected tickets?',
       content:
         <span>
@@ -151,9 +158,12 @@ const nodeFaq: FaqData = {
         </span>
     },
     {
-      id: 4,
+      id: 5,
       title: 'How do I redeem neglected tickets?',
-      content: 'Neglected tickets cannot be redeemed. This may occur when closing a payment channel with your node, if your strategy`s "on_close_redeem_single_tickets_value_min" value was higher than your ticket value on the closing channel.',
+      content: 
+      <span>
+      Neglected tickets cannot be redeemed. This may occur when closing a payment channel with your node, if your strategy`s <b>on_close_redeem_single_tickets_value_min</b> value was higher than your ticket value on the closing channel.
+      </span>
     },
     // {
     //   id: 3,
@@ -162,7 +172,7 @@ const nodeFaq: FaqData = {
     //     'Ticket redemption costs a small fee in xDAI to complete the on-chain transaction. To lower this cost, the HOPR protocol batches ticket redemption, so it is generally more efficient to redeem multiple tickets at once. For maximum margins, only redeem tickets when you would otherwise lose them due to channel closure.',
     // },
     {
-      id: 5,
+      id: 6,
       title: 'How is ticket value calculated?',
       content: 'Ticket value is the total wxHOPR earned from all your winning tickets redeemed.',
     },
