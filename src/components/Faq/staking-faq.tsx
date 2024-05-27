@@ -430,8 +430,7 @@ const stakingFaq: FaqData = {
           There is no lock-up period for funds deposited in the HOPR safe. You can withdraw them at any time.
           <br />
           <br />
-          Although be warned, dropping below the minimum holding of 30,000 wxHOPR may lead to your node being removed
-          from the network
+          Although, be warned that dropping below the minimum holding of 10,000 wxHOPR (holding Network registry NFT)  or 30,000 wxHOPR will cause your node to stop receiving rewards and may result in your node being removed from the network.
         </span>
       ),
     },
@@ -464,8 +463,7 @@ const stakingFaq: FaqData = {
           </a>
           .<br />
           <br />
-          Nodes are onboarded into the HOPR network in a first come, first serve basis. So fill out the form as soon as
-          possible if you haven't already.
+          Nodes are onboarded on a tri-weekly basis into the HOPR network on a first-come, first-served basis. Therefore, please fill out the form as soon as possible if you haven't already.
         </span>
       ),
     },
