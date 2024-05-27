@@ -495,7 +495,7 @@ const stakingFaq: FaqData = {
           <br />
           Then remove the node as a delegate from the safe. You can view how to do this two-step procedure in our docs{' '}
           <a
-            href="https://docs.hoprnet.org/node/using-hopr-admin#remove-your-node"
+            href="https://docs.hoprnet.org/node/using-staking-hub#how-to-remove-nodes"
             target="_blank"
             rel="noreferrer"
           >
