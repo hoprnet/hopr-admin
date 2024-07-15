@@ -26,6 +26,14 @@ import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox';
 import { useAppDispatch, useAppSelector } from '../../../store';
 import { actionsAsync } from '../../../store/slices/node/actionsAsync';
 
+import type {
+  GetPeersResponseType,
+  GetAliasesResponseType
+} from '@hoprnet/hopr-sdk';
+import type {
+  AddressesType
+} from '../../../store/slices/node/initialState';
+
 const PathOrHops = styled.div`
   display: flex;
   flex-direction: row;
@@ -67,6 +75,28 @@ type SendMessageModalProps = {
   tooltip?: JSX.Element | string;
 };
 
+function sortAddresses(
+  peers: GetPeersResponseType | null,
+  me: AddressesType,
+  peerIdToAliasLink: {
+    [peerId: string]: string
+  }
+) : string[] {
+  if(!peers || !me) return [];
+  const connectedPeers = peers.connected;
+  const myAddress = me.hopr as string;
+  const peerIdsWithAliases = Object.keys(peerIdToAliasLink);
+  if(peerIdsWithAliases.length === 0) return [myAddress, ...connectedPeers.map(peer => peer.peerId)];
+  let array = [myAddress];
+  peerIdsWithAliases.forEach(peerId => {
+    if(peerId !== myAddress) array.push(peerId)
+  });
+  connectedPeers.forEach(peer => {
+    if(peer.peerId !== myAddress && !peerIdsWithAliases.includes(peer.peerId) ) array.push(peer.peerId)
+  });
+  return array;
+}
+
 export const SendMessageModal = (props: SendMessageModalProps) => {
   const dispatch = useAppDispatch();
   const [path, set_path] = useState<string>('');
@@ -78,9 +108,10 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const [openModal, set_openModal] = useState<boolean>(false);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const aliases = useAppSelector((store) => store.node.aliases.data);
-  const peers = useAppSelector((store) => store.node.peers.data?.connected);
+  const peerIdToAliasLink = useAppSelector((store) => store.node.links.peerIdToAlias);
+  const peers = useAppSelector((store) => store.node.peers.data);
   const addresses = useAppSelector((store) => store.node.addresses.data);
-  const peersAndOwnNode = peers && addresses.hopr && addresses.native ? [...peers.map(peer => peer.peerId), addresses.hopr] : [];
+  const sendMessageAddressBook = sortAddresses(peers, addresses, peerIdToAliasLink);
   const [selectedReceiver, set_selectedReceiver] = useState<string | null>(props.peerId ? props.peerId : null);
 
   const maxLength = 500;
@@ -287,7 +318,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
             onChange={(event, newValue) => {
               set_selectedReceiver(newValue);
             }}
-            options={peersAndOwnNode}
+            options={sendMessageAddressBook}
             getOptionLabel={(peerId) =>
               hasAlias(peerId)
                 ? `${findAlias(peerId)} (${peerId})`

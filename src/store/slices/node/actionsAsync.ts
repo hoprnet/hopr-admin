@@ -1630,8 +1630,6 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         jsonMetrics?.hopr_indexer_checksum
       ){
         try {
-          //#34975591 0x1ef5efc541d680600ab3ff9c967810c9526b1b7684c94bcbb28090e4 ea39007c
-          //3929604220
           const hopr_indexer_block_number = jsonMetrics.hopr_indexer_block_number?.data[0];
           const hopr_indexer_checksum = jsonMetrics.hopr_indexer_checksum?.data[0];
           const checksum = hopr_indexer_checksum.toString(16);
