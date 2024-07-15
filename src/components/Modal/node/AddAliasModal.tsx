@@ -137,7 +137,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
             type="text"
             name="peerId"
             label="Peer ID"
-            placeholder="16Uiu2HA..."
+            placeholder="12D3Ko...Z3rz5F"
             onChange={handleChangePeerId}
             value={peerId}
           />

@@ -120,7 +120,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       apiEndpoint: loginData.apiEndpoint,
       body: message,
       peerId: selectedReceiver,
-      tag: 1,
+      tag: 4677,
     };
     if (sendMode === 'automaticPath') {
       messagePayload.hops = 1;
