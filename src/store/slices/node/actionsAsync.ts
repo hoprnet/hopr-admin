@@ -1624,6 +1624,35 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         }
 
       }
+
+      // get checksum
+      if(jsonMetrics?.hopr_indexer_block_number &&
+        jsonMetrics?.hopr_indexer_checksum
+      ){
+        try {
+          //#34975591 0x1ef5efc541d680600ab3ff9c967810c9526b1b7684c94bcbb28090e4 ea39007c
+          //3929604220
+          const hopr_indexer_block_number = jsonMetrics.hopr_indexer_block_number?.data[0];
+          const hopr_indexer_checksum = jsonMetrics.hopr_indexer_checksum?.data[0];
+          const checksum = hopr_indexer_checksum.toString(16);
+
+          state.metricsParsed.checksum = checksum;
+          state.metricsParsed.blockNumber = hopr_indexer_block_number;
+        } catch(e) {
+          console.error('Error getting blockNumber and checksum');
+        }
+      }
+
+      // nodeStartEpoch
+      if(jsonMetrics?.hopr_up){
+        try {
+          const nodeStartEpoch = jsonMetrics.hopr_up?.data[0];
+          state.metricsParsed.nodeStartEpoch = nodeStartEpoch;
+        } catch(e) {
+          console.error('Error getting node startup epoch');
+        }
+      }
+
     }
     state.metrics.isFetching = false;
   });

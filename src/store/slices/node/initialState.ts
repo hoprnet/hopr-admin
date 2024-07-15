@@ -200,7 +200,10 @@ type InitialState = {
           formatted: string,
         }},
       }
-    }
+    },
+    nodeStartEpoch: number | null,
+    checksum: string | null,
+    blockNumber: number | null,
   },
   messagesWebsocketStatus: WebsocketConnectionStatus;
   redeemTickets: {
@@ -334,7 +337,10 @@ export const initialState: InitialState = {
         redeemed: {},
         unredeemed: {},
       }
-    }
+    },
+    nodeStartEpoch: null,
+    checksum: null,
+    blockNumber: null,
   },
   messagesWebsocketStatus: null,
   redeemTickets: {
