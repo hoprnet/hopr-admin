@@ -75,7 +75,7 @@ type SendMessageModalProps = {
   tooltip?: JSX.Element | string;
 };
 
-// order of peers: me, aliases, peers
+// order of peers: me, aliases (sorted by aliases), peers (sorted by peersIds)
 function sortAddresses(
   peers: GetPeersResponseType | null,
   me: AddressesType,
@@ -86,17 +86,11 @@ function sortAddresses(
   if(!peers || !me) return [];
   const connectedPeers = peers.connected;
   const myAddress = me.hopr as string;
-  const peerIdsWithAliases = Object.keys(peerIdToAliasLink);
-  if(peerIdsWithAliases.length === 0) return [myAddress, ...connectedPeers.map(peer => peer.peerId)];
-  let array = [myAddress];
-  peerIdsWithAliases.forEach(peerId => {
-    if(peerId !== myAddress) array.push(peerId);
-  });
-  connectedPeers.forEach(peer => {
-    const peerId = peer.peerId;
-    if(peerId !== myAddress && !peerIdToAliasLink[peerId] ) array.push(peerId);
-  });
-  return array;
+  const peerIdsWithAliases = Object.keys(peerIdToAliasLink).sort((a, b) => peerIdToAliasLink[a] < peerIdToAliasLink[b] ? -1 : 1 );
+  if(peerIdsWithAliases.length === 0) return [myAddress, ...connectedPeers.map(peer => peer.peerId).sort()];
+  const peerIdsWithAliasesWithoutMyAddress = peerIdsWithAliases.filter(peerId => peerId !== myAddress);
+  const connectedPeersWithoutAliases = connectedPeers.filter(peer => !peerIdToAliasLink[peer.peerId]).map(peer => peer.peerId).sort();
+  return [myAddress, ...peerIdsWithAliasesWithoutMyAddress, ...connectedPeersWithoutAliases];
 }
 
 export const SendMessageModal = (props: SendMessageModalProps) => {
