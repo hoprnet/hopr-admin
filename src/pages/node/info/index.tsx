@@ -50,12 +50,11 @@ function InfoPage() {
   const peersFetching = useAppSelector((store) => store.node.peers.isFetching);
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
-  const statistics = useAppSelector((store) => store.node.statistics.data);
-  const statisticsFetching = useAppSelector((store) => store.node.statistics.isFetching);
-  const nodeStartedEpoch = useAppSelector((store) => store.node.metrics.data.parsed?.hopr_up?.data[0]);
+  const nodeStartedEpoch = useAppSelector((store) => store.node.metricsParsed.nodeStartEpoch);
   const nodeStartedTime = nodeStartedEpoch && typeof(nodeStartedEpoch) === 'number'? new Date(nodeStartedEpoch*1000).toJSON().replace('T', ' ').replace('Z', ' UTC') : '-';
   const nodeSync = useAppSelector((store) => store.node.metricsParsed.nodeSync);
-
+  const blockNumber = useAppSelector((store) => store.node.metricsParsed.blockNumber);
+  const blockNumberCheckSum = useAppSelector((store) => store.node.metricsParsed.checksum);
 
   useEffect(() => {
     fetchInfoData();
@@ -147,7 +146,6 @@ function InfoPage() {
     infoFetching,
     peersFetching,
     aliasesFetching,
-    statisticsFetching,
   ].includes(true);
 
   const noCopyPaste = !(window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
@@ -227,10 +225,21 @@ function InfoPage() {
                   title="The blockchain network your node is using for on-chain transactions"
                   notWide
                 >
-                  <span>Blockchain Network</span>
+                  <span>Blockchain network</span>
                 </Tooltip>
               </th>
               <td>{info?.chain}</td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The network/environment your node is running in"
+                  notWide
+                >
+                  <span>Hopr network</span>
+                </Tooltip>
+              </th>
+              <td>{info?.network}</td>
             </tr>
             <tr>
               <th>
@@ -276,6 +285,28 @@ function InfoPage() {
                 </Tooltip>
               </th>
               <td>{info?.listeningAddress}</td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title=""
+                  notWide
+                >
+                  <span>Block number</span>
+                </Tooltip>
+              </th>
+              <td>{blockNumber ? blockNumber : '-'}</td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title=""
+                  notWide
+                >
+                  <span>Block checksum</span>
+                </Tooltip>
+              </th>
+              <td>{blockNumberCheckSum ? blockNumberCheckSum : '-'}</td>
             </tr>
           </tbody>
         </TableExtended>
@@ -566,17 +597,6 @@ function InfoPage() {
                 </Tooltip>
               </th>
               <td>{version?.replaceAll('"', '')}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The environment your node is running in"
-                  notWide
-                >
-                  <span>Environment</span>
-                </Tooltip>
-              </th>
-              <td>{info?.network}</td>
             </tr>
             <tr
               key='node-startdate'

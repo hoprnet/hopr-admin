@@ -80,7 +80,7 @@ function PingPage() {
       <TextField
         type="text"
         label="Peer ID"
-        placeholder="16Uiu2HA..."
+        placeholder="12D3Ko...Z3rz5F"
         value={peerId}
         onChange={(e) => set_peerId(e.target.value)}
         fullWidth

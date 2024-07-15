@@ -1,20 +1,15 @@
 import { useEffect } from 'react';
 import { createBrowserRouter, RouteObject, useSearchParams, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { environment } from '../config';
-import { useDisconnect } from 'wagmi';
 import { parseAndFormatUrl } from './utils/parseAndFormatUrl';
 
 // Store
 import { useAppDispatch, useAppSelector } from './store';
 import { authActions, authActionsAsync } from './store/slices/auth';
 import { nodeActions, nodeActionsAsync } from './store/slices/node';
-import { web3Actions } from './store/slices/web3';
-import { appActions } from './store/slices/app';
-import { safeActions } from './store/slices/safe';
 
 // Sections
 import NodeLandingPage from './pages/node/landingPage';
-import StakingLandingPage from './pages/staking-hub/landingPage';
 import SectionWeb3 from './pages/staking-hub/web3';
 import SectionSafe from './pages/staking-hub/safe';
 import AliasesPage from './pages/node/aliases';
@@ -26,26 +21,10 @@ import ChannelsPageIncoming from './pages/node/channelsIncoming';
 import ChannelsPageOutgoing from './pages/node/channelsOutgoing';
 import MetricsPage from './pages/node/metrics';
 import ConfigurationPage from './pages/node/configuration';
-import WrapperPage from './pages/staking-hub/wrapper';
-import StakingScreen from './pages/staking-hub/dashboard/staking';
-import SafeWithdraw from './pages/staking-hub/safeWithdraw';
-import NodeAdded from './pages/staking-hub/dashboard/node';
-import SafeActions from './pages/staking-hub/dashboard/transactions';
-import NoNodeAdded from './pages/staking-hub/dashboard/noNodeAdded';
-import Onboarding from './pages/staking-hub/onboarding';
-import OnboardingNextNode from './pages/staking-hub/onboarding/nextNode';
-import Dashboard from './pages/staking-hub/dashboard';
-import StakewxHOPR from './pages/staking-hub/stakewxHOPR';
-import StakexDAI from './pages/staking-hub/stakexDai';
-import SetAllowance from './pages/staking-hub/setAllowance';
-import FundNode from './pages/staking-hub/fundNode';
-import EditOwners from './pages/staking-hub/editOwners';
 
 // Layout
 import Layout from './future-hopr-lib-components/Layout';
-import ConnectWeb3 from './components/ConnectWeb3';
 import ConnectNode from './components/ConnectNode';
-import ConnectSafe from './components/ConnectSafe';
 import NotificationBar from './components/NotificationBar';
 import InfoBar from './components/InfoBar';
 
@@ -63,20 +42,14 @@ import NodeIcon from '@mui/icons-material/Router';
 import NetworkingIcon from '@mui/icons-material/Diversity3';
 import DevelopIcon from '@mui/icons-material/Code';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
-import PaidIcon from '@mui/icons-material/Paid';
-import WalletIcon from '@mui/icons-material/Wallet';
 import LinkIcon from '@mui/icons-material/Link';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import IncomingChannelsIcon from './future-hopr-lib-components/Icons/channelsIn';
 import OutgoingChannelsIcon from './future-hopr-lib-components/Icons/channelsOut';
-import TrainIcon from './future-hopr-lib-components/Icons/TrainIcon';
-import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import { stakingHubActions } from './store/slices/stakingHub';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyNotice from './pages/PrivacyNotice';
-import MetaMaskFox from './future-hopr-lib-components/Icons/MetaMaskFox';
 import { trackGoal } from 'fathom-client';
 
 export type ApplicationMapType = {
@@ -205,108 +178,6 @@ export const applicationMapNode: ApplicationMapType = [
   },
 ];
 
-export const applicationMapStakingHub: ApplicationMapType = [
-  {
-    groupName: 'STAKING HUB',
-    path: 'staking',
-    icon: <DevelopIcon />,
-    items: [
-      {
-        name: 'Staking Hub',
-        path: 'staking-hub-landing',
-        overwritePath: '/',
-        icon: <SavingsIcon />,
-        element: <StakingLandingPage />,
-      },
-      {
-        name: 'Onboarding',
-        path: 'onboarding',
-        icon: <TrainIcon />,
-        element: <Onboarding />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Onboarding',
-        path: 'onboarding/nextNode',
-        icon: <TrainIcon />,
-        element: <OnboardingNextNode />,
-        loginNeeded: 'web3',
-        inDrawer: false,
-      },
-      {
-        name: 'Dashboard',
-        path: 'dashboard',
-        icon: <SpaceDashboardIcon />,
-        element: <Dashboard />,
-        loginNeeded: 'safe',
-      },
-      {
-        name: 'Withdraw',
-        path: 'withdraw',
-        icon: <WalletIcon />,
-        element: <SafeWithdraw />,
-        loginNeeded: 'safe',
-      },
-      {
-        name: 'Wrapper',
-        path: 'wrapper',
-        icon: <PaidIcon />,
-        element: <WrapperPage />,
-        loginNeeded: 'web3',
-      },
-      {
-        path: 'edit-owners',
-        element: <EditOwners />,
-        loginNeeded: 'safe',
-        inDrawer: false,
-      },
-      {
-        path: 'stake-wxHOPR',
-        element: <StakewxHOPR />,
-        loginNeeded: 'safe',
-        inDrawer: false,
-      },
-      {
-        path: 'stake-xDAI',
-        element: <StakexDAI />,
-        loginNeeded: 'safe',
-        inDrawer: false,
-      },
-      {
-        path: 'set-allowance',
-        element: <SetAllowance />,
-        loginNeeded: 'safe',
-        inDrawer: false,
-      },
-      {
-        path: 'fund-node',
-        element: <FundNode />,
-        loginNeeded: 'safe',
-        inDrawer: false,
-      },
-      {
-        path: 'dev',
-        element: <SectionSafe />,
-        loginNeeded: 'web3',
-        inDrawer: false,
-      },
-    ],
-  },
-  {
-    groupName: 'RESOURCES',
-    path: 'networking',
-    icon: <DevelopIcon />,
-    items: [
-      {
-        name: 'Docs',
-        path: 'https://docs.hoprnet.org/',
-        icon: <DescriptionOutlinedIcon />,
-        // element: <span/>,
-      },
-    ],
-  },
-];
-
 export const applicationMapDevWeb3: ApplicationMapType = [
   {
     groupName: 'Dev Pages',
@@ -343,7 +214,6 @@ export const applicationMapDev: ApplicationMapType = [
 function createApplicationMap() {
   const temp: ApplicationMapType = [];
   if (environment === 'dev' || environment === 'node') applicationMapNode.map((elem) => temp.push(elem));
-  if (environment === 'dev' || environment === 'web3') applicationMapStakingHub.map((elem) => temp.push(elem));
   if (environment === 'dev') applicationMapDevWeb3.map((elem) => temp.push(elem));
   if (environment === 'dev') applicationMapDev.map((elem) => temp.push(elem));
   return temp;
@@ -352,19 +222,14 @@ function createApplicationMap() {
 export const applicationMap: ApplicationMapType = createApplicationMap();
 
 const LayoutEnhanced = () => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const { disconnect } = useDisconnect();
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
-  const web3Connected = useAppSelector((store) => store.web3.status.connected);
-  const safeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
   const isConnected = useAppSelector((store) => store.web3.status.connected);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [searchParams] = useSearchParams();
   const apiEndpoint = searchParams.get('apiEndpoint');
   const apiToken = searchParams.get('apiToken');
-  const HOPRdNodeAddressForOnboarding = searchParams.get('HOPRdNodeAddressForOnboarding'); //Address given in HOPRd: https://hub.hoprnet.org/staking/onboarding?HOPRdNodeAddressForOnboarding={my_address}
 
   const numberOfPeers = useAppSelector((store) => store.node.peers.data?.connected.length);
   const numberOfAliases = useAppSelector((store) => store.node.aliases?.data && Object.keys(store.node.aliases?.data).length);
@@ -378,15 +243,7 @@ const LayoutEnhanced = () => {
     numberOfMessagesReceived,
     numberOfChannelsIn,
     numberOfChannelsOut
-  }
-
-  useEffect(() => {
-    if (environment === 'web3') {
-      document.title = 'HOPR | Staking Hub';
-    } else if (environment === 'node') {
-      document.title = 'HOPR | Node Admin';
-    }
-  }, []);
+  };
 
   useEffect(() => {
     console.log('useEffect(()', apiEndpoint, apiToken)
@@ -493,70 +350,26 @@ const LayoutEnhanced = () => {
 
   }, [apiEndpoint, apiToken]);
 
-  useEffect(() => {
-    if (!HOPRdNodeAddressForOnboarding) return;
-    dispatch(stakingHubActions.setNodeAddressProvidedByMagicLink(HOPRdNodeAddressForOnboarding));
-  }, [HOPRdNodeAddressForOnboarding]);
-
   const showInfoBar = () => {
-    if (
-      environment === 'web3' &&
-      (location.pathname === '/' || location.pathname === '/privacy-notice' || location.pathname === '/tos')
-    )
-      return false;
     if (isConnected || nodeConnected) return true;
     return false;
   };
-
-  const handleDisconnectMM = () => {
-    disconnect();
-    dispatch(appActions.resetState());
-    dispatch(web3Actions.resetState());
-    dispatch(safeActions.resetState());
-    dispatch(stakingHubActions.resetState());
-    navigate('/');
-  };
-
-  const drawerFunctionItems: ApplicationMapType = [
-    {
-      groupName: 'CONNECTION',
-      path: 'function',
-      icon: <DevelopIcon />,
-      mobileOnly: true,
-      items: [
-        {
-          name: web3Connected ? 'Disconnect' : 'Connect Wallet',
-          path: 'function',
-          icon: <MetaMaskFox />,
-          onClick: () => {
-            if (web3Connected) handleDisconnectMM();
-            else dispatch(web3Actions.setModalOpen(true));
-          },
-          mobileOnly: true,
-        },
-      ],
-    },
-  ];
 
   return (
     <Layout
       drawer
       webapp
       drawerItems={applicationMap}
-      drawerFunctionItems={environment === 'web3' ? drawerFunctionItems : undefined}
+      drawerFunctionItems={undefined}
       drawerNumbers={numberForDrawer}
       drawerLoginState={{
         node: nodeConnected,
-        web3: web3Connected,
-        safe: !!safeAddress && web3Connected,
       }}
       className={environment}
-      drawerType={environment === 'web3' ? 'blue' : undefined}
+      drawerType={undefined}
       itemsNavbarRight={
         <>
           {(environment === 'dev' || environment === 'node') && <NotificationBar />}
-          {(environment === 'dev' || environment === 'web3') && <ConnectSafe />}
-          {(environment === 'dev' || environment === 'web3') && <ConnectWeb3 inTheAppBar />}
           {(environment === 'dev' || environment === 'node') && <ConnectNode />}
         </>
       }
@@ -589,11 +402,6 @@ applicationMap.map((groups) => {
       routes[0].children.push({
         path: '/',
         element: <NodeLandingPage />,
-      });
-    } else if (environment === 'web3' || environment === 'dev') {
-      routes[0].children.push({
-        path: '/',
-        element: <StakingLandingPage />,
       });
     }
     if (item.path && item.element) {

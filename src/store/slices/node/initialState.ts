@@ -49,6 +49,8 @@ export type ChannelsIncomingType = {
   [channelId: string]: ChannelIncomingType
 }
 
+export type AddressesType = { hopr: string | null; native: string | null }
+
 type WebsocketConnectionStatus = 'connecting' | 'connected' | 'error' | null;
 
 type InitialState = {
@@ -61,7 +63,7 @@ type InitialState = {
     initiated: boolean;
   };
   addresses: {
-    data: { hopr: string | null; native: string | null };
+    data: AddressesType;
     isFetching: boolean;
   };
   aliases: {
@@ -200,7 +202,10 @@ type InitialState = {
           formatted: string,
         }},
       }
-    }
+    },
+    nodeStartEpoch: number | null,
+    checksum: string | null,
+    blockNumber: number | null,
   },
   messagesWebsocketStatus: WebsocketConnectionStatus;
   redeemTickets: {
@@ -334,7 +339,10 @@ export const initialState: InitialState = {
         redeemed: {},
         unredeemed: {},
       }
-    }
+    },
+    nodeStartEpoch: null,
+    checksum: null,
+    blockNumber: null,
   },
   messagesWebsocketStatus: null,
   redeemTickets: {
