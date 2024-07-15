@@ -94,7 +94,7 @@ function sortAddresses(
   });
   connectedPeers.forEach(peer => {
     const peerId = peer.peerId;
-    if(peerId !== myAddress && !peerIdsWithAliases.includes(peerId) ) array.push(peerId);
+    if(peerId !== myAddress && !peerIdToAliasLink[peerId] ) array.push(peerId);
   });
   return array;
 }
