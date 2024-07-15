@@ -75,6 +75,7 @@ type SendMessageModalProps = {
   tooltip?: JSX.Element | string;
 };
 
+// order of peers: me, aliases, peers
 function sortAddresses(
   peers: GetPeersResponseType | null,
   me: AddressesType,
@@ -89,10 +90,11 @@ function sortAddresses(
   if(peerIdsWithAliases.length === 0) return [myAddress, ...connectedPeers.map(peer => peer.peerId)];
   let array = [myAddress];
   peerIdsWithAliases.forEach(peerId => {
-    if(peerId !== myAddress) array.push(peerId)
+    if(peerId !== myAddress) array.push(peerId);
   });
   connectedPeers.forEach(peer => {
-    if(peer.peerId !== myAddress && !peerIdsWithAliases.includes(peer.peerId) ) array.push(peer.peerId)
+    const peerId = peer.peerId;
+    if(peerId !== myAddress && !peerIdsWithAliases.includes(peerId) ) array.push(peerId);
   });
   return array;
 }
