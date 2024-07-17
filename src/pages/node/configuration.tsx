@@ -7,7 +7,7 @@ import { SubpageTitle } from '../../components/SubpageTitle';
 import { TableExtended } from '../../future-hopr-lib-components/Table/columed-data';
 import Section from '../../future-hopr-lib-components/Section';
 import Button from '../../future-hopr-lib-components/Button';
-import CodeCopyBox from '../../components/CodeCopyBox';
+import CodeCopyBox from '../../components/Code/CodeCopyBox';
 
 // Mui
 import { Paper, Switch } from '@mui/material';

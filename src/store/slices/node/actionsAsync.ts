@@ -46,7 +46,7 @@ import { formatEther } from 'viem';
 import { nodeActionsFetching } from './actionsFetching';
 import { sendNotification } from '../../../hooks/useWatcher/notifications';
 import { useAppDispatch } from '../../../store';
-const { APIError } = utils;
+const { sdkApiError } = utils;
 const {
   closeChannel,
   createToken,
@@ -92,11 +92,8 @@ const isNodeReadyThunk = createAsyncThunk<IsNodeReadyResponseType | undefined, B
       const res = await isNodeReady(payload);
       return res;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
     }
   },
@@ -120,11 +117,8 @@ const getInfoThunk = createAsyncThunk<GetInfoResponseType | undefined, BasePaylo
       return info;
     } catch (e) {
       console.error(e);
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
     }
   },
@@ -155,11 +149,8 @@ const getAddressesThunk = createAsyncThunk<
       const addresses = await getAddresses(payload);
       return addresses;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -187,11 +178,8 @@ const getAliasesThunk = createAsyncThunk<GetAliasesResponseType | undefined, Bas
       const aliases = await getAliases(payload);
       return aliases;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -221,11 +209,8 @@ const getBalancesThunk = createAsyncThunk<
       const balances = await getBalances(payload);
       return balances;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -254,11 +239,8 @@ const getBalanceInAllSafeChannelsThunk = createAsyncThunk<GetChannelsResponseTyp
       const channels = await getChannels(payload);
       return channels;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -284,11 +266,8 @@ const getChannelsThunk = createAsyncThunk<GetChannelsResponseType | undefined, B
       const channels = await getChannels(payload);
       return channels;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -315,11 +294,8 @@ const getConfigurationThunk = createAsyncThunk<GetConfigurationResponseType | un
       console.log('getConfigurationThunk', configuration);
       return configuration;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -346,11 +322,8 @@ const getPeersThunk = createAsyncThunk<GetPeersResponseType | undefined, GetPeer
       return peers;
     } catch (e) {
       console.log('f', e)
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -376,11 +349,8 @@ const getPeerInfoThunk = createAsyncThunk<GetPeerResponseType | undefined, GetPe
       const peerInfo = await getPeer(payload);
       return peerInfo;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -410,11 +380,8 @@ const getTicketStatisticsThunk = createAsyncThunk<
       const statistics = await getTicketStatistics(payload);
       return statistics;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -440,11 +407,8 @@ const getTokenThunk = createAsyncThunk<GetTokenResponseType | undefined, BasePay
       const token = await getToken(payload);
       return token;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -474,11 +438,8 @@ const getEntryNodesThunk = createAsyncThunk<
       const entryNodes = await getEntryNodes(payload);
       return entryNodes;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -504,11 +465,8 @@ const getVersionThunk = createAsyncThunk<string | undefined, BasePayloadType, { 
       const version = await getVersion(payload);
       return version;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -534,11 +492,8 @@ const withdrawThunk = createAsyncThunk<string | undefined, WithdrawPayloadType, 
       const res = await withdraw(payload);
       return res;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -575,11 +530,8 @@ const getAliasThunk = createAsyncThunk<
         alias: payload.alias,
       };
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -613,11 +565,8 @@ const setAliasThunk = createAsyncThunk<
         };
       }
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -645,11 +594,8 @@ const removeAliasThunk = createAsyncThunk<{ alias: string } | undefined, AliasPa
         return { alias: payload.alias };
       }
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -683,11 +629,8 @@ const closeChannelThunk = createAsyncThunk<
       dispatch(getChannelsThunk(payload));
       return res;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -717,11 +660,8 @@ const openChannelThunk = createAsyncThunk<
     const res = await openChannel(payload);
     return res;
   } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+    if (e instanceof sdkApiError) {
+      return rejectWithValue(e);
     }
     return rejectWithValue({
       status: JSON.stringify(e)
@@ -738,11 +678,8 @@ const fundChannelThunk = createAsyncThunk<
     const res = await fundChannel(payload);
     return res;
   } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+    if (e instanceof sdkApiError) {
+      return rejectWithValue(e);
     }
     return rejectWithValue({
       status: JSON.stringify(e)
@@ -773,17 +710,14 @@ const openMultipleChannelsThunk = createAsyncThunk(
         amount: payload.amount,
       });
       if (typeof res === 'undefined')
-        throw new APIError({
-          status: '400',
-          error: 'Node does not have enough balance to fund channels',
+        throw new sdkApiError({
+          status: 400,
+          statusText: 'Node does not have enough balance to fund channels',
         });
       return res;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -807,11 +741,8 @@ const redeemChannelTicketsThunk = createAsyncThunk<
       const res = await redeemChannelTickets(payload);
       return res;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -837,11 +768,8 @@ const getMessagesThunk = createAsyncThunk(
       const res = await peekAllMessages(payload);
       return res.messages;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -860,11 +788,8 @@ const sendMessageThunk = createAsyncThunk(
         body: payload.body,
       };
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -880,11 +805,8 @@ const deleteMessagesThunk = createAsyncThunk(
       const res = await deleteMessages(payload);
       return;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -899,7 +821,7 @@ const deleteMessagesThunk = createAsyncThunk(
 //     const res = await sign(payload);
 //     return res;
 //   } catch (e) {
-//     if (e instanceof APIError) {
+//     if (e instanceof sdkApiError) {
 //       return rejectWithValue({
 //         status: e.status,
 //         error: e.error,
@@ -916,11 +838,8 @@ const pingNodeThunk = createAsyncThunk('node/pingNode', async (payload: PingPeer
       peerId: payload.peerId,
     };
   } catch (e) {
-    if (e instanceof APIError) {
-      return rejectWithValue({
-        status: e.status,
-        error: e.error,
-      });
+    if (e instanceof sdkApiError) {
+      return rejectWithValue(e);
     }
     return rejectWithValue({
       status: JSON.stringify(e)
@@ -939,11 +858,8 @@ const redeemTicketsThunk = createAsyncThunk<boolean | undefined, BasePayloadType
       const res = await redeemTickets(payload);
       return res;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -973,11 +889,8 @@ const createTokenThunk = createAsyncThunk<
       const res = await createToken(payload);
       return res;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -1010,11 +923,8 @@ const deleteTokenThunk = createAsyncThunk<
         id: payload.id,
       };
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)
@@ -1040,11 +950,8 @@ const getPrometheusMetricsThunk = createAsyncThunk<string | undefined, BasePaylo
       const res = await getMetrics(payload);
       return res;
     } catch (e) {
-      if (e instanceof APIError) {
-        return rejectWithValue({
-          status: e.status,
-          error: e.error,
-        });
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
       }
       return rejectWithValue({
         status: JSON.stringify(e)

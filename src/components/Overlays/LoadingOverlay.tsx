@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
-import 'wagmi/window';
 
 // Store
 import { useAppDispatch, useAppSelector } from '../../store';
