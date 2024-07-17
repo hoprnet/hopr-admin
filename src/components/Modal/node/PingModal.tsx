@@ -5,6 +5,8 @@ import { useAppDispatch, useAppSelector } from '../../../store';
 import { actionsAsync } from '../../../store/slices/node/actionsAsync';
 import CloseIcon from '@mui/icons-material/Close';
 import { sendNotification } from '../../../hooks/useWatcher/notifications';
+import { utils as hoprdUlils } from '@hoprnet/hopr-sdk';
+const { sdkApiError } = hoprdUlils;
 
 // HOPR Components
 import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
@@ -69,8 +71,9 @@ export const PingModal = (props: PingModalProps) => {
           });
         })
         .catch((e) => {
-          const errMsg = `Ping of ${peerId} failed`;
-          console.log(errMsg, e.error);
+          let errMsg = `Ping of ${peerId} failed`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+          console.warn(errMsg, e);
           sendNotification({
             notificationPayload: {
               source: 'node',

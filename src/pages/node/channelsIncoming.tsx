@@ -7,6 +7,8 @@ import { utils } from 'ethers';
 import { HOPR_TOKEN_USED } from '../../../config';
 import { sendNotification } from '../../hooks/useWatcher/notifications';
 import { formatEther } from 'viem';
+import { utils as hoprdUtils } from '@hoprnet/hopr-sdk';
+const { sdkApiError } = hoprdUtils;
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
@@ -153,15 +155,17 @@ function ChannelsPage() {
       .catch((e) => {
         console.error('handleCloseChannel', e)
         if(usedApiEndpoint === currentApiEndpoint) {
-          const msg = `Closing of incoming channel ${channelId} failed`;
+          let errMsg = `Closing of incoming channel ${channelId} failed`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+          console.error(errMsg, e);
           sendNotification({
             notificationPayload: {
               source: 'node',
-              name: msg,
+              name: errMsg,
               url: null,
               timeout: null,
             },
-            toastPayload: { message: msg },
+            toastPayload: { message: errMsg },
             dispatch,
           });
         }

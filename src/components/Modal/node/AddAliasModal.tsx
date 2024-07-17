@@ -6,6 +6,8 @@ import { actionsAsync } from '../../../store/slices/node/actionsAsync';
 import { appActions } from '../../../store/slices/app';
 import CloseIcon from '@mui/icons-material/Close';
 import { sendNotification } from '../../../hooks/useWatcher/notifications';
+import { utils as hoprdUlils } from '@hoprnet/hopr-sdk';
+const { sdkApiError } = hoprdUlils;
 
 // HOPR Components
 import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
@@ -83,15 +85,17 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
           });
         })
         .catch((e) => {
-          console.log(`Alias ${alias} failed to add.`, e.error);
+          let errMsg = `Alias ${alias} failed to add`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+          console.error(errMsg, e);
           sendNotification({
             notificationPayload: {
               source: 'node',
-              name: `Alias ${alias} failed to add.`,
+              name: errMsg,
               url: null,
               timeout: null,
             },
-            toastPayload: { message: `Alias ${alias} failed to add.`, type: 'error' },
+            toastPayload: { message: errMsg, type: 'error' },
             dispatch,
           });
         })

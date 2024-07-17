@@ -61,6 +61,7 @@ export const OpenMultipleChannelsModal = () => {
 
         let errMsg = `Channel to ${peerId} failed to be opened`;
         if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+        console.error(errMsg, e);
         sendNotification({
           notificationPayload: {
             source: 'node',
