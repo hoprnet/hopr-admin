@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
+import { utils as hoprdUtils } from '@hoprnet/hopr-sdk';
+const { sdkApiError } = hoprdUtils;
 
 // HOPR Components
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../../future-hopr-lib-components/Modal/styled';
@@ -183,7 +185,10 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       })
       .catch((e) => {
         console.log('@message err:', e);
-        set_error(e.error);
+        let errMsg = `Sending message failed failed`;
+        if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+        if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
+        set_error(errMsg);
       })
       .finally(() => {
         set_loader(false);
@@ -413,7 +418,9 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
                 <CloseIcon />
               </SIconButton>
             </TopBar>
-            <SDialogContent>
+            <SDialogContent
+              className='error-message'
+            >
               {error}
             </SDialogContent>
           </StatusContainer>

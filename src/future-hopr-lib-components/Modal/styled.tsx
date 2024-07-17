@@ -25,6 +25,10 @@ export const SDialogContent = styled(DialogContent)`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  &.error-message{
+    white-space: break-spaces;
+    line-height: 2;
+  }
 `;
 
 export const SIconButton = styled(IconButton)`
