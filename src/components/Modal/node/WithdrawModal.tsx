@@ -6,12 +6,17 @@ import { CircularProgress, DialogTitle, InputAdornment, MenuItem, Button as MuiB
 import Button from '../../../future-hopr-lib-components/Button';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../../future-hopr-lib-components/Modal/styled';
 import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
-
+import { sendNotification } from '../../../hooks/useWatcher/notifications';
 import CloseIcon from '@mui/icons-material/Close';
 import WithdrawIcon from '../../../future-hopr-lib-components/Icons/Withdraw';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { nodeActionsAsync } from '../../../store/slices/node';
 import { parseEther } from 'viem';
+import { utils as hoprdUtils } from '@hoprnet/hopr-sdk';
+const { sdkApiError } = hoprdUtils;
+
+// Store
+import { actionsAsync } from '../../../store/slices/node/actionsAsync';
 
 const Content = styled(SDialogContent)`
   gap: 1rem;
@@ -71,6 +76,7 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
   const dispatch = useAppDispatch();
   const hoprBalance = useAppSelector((state) => state.node.balances.data.hopr);
   const nativeBalance = useAppSelector((state) => state.node.balances.data.native);
+  const loginData = useAppSelector((store) => store.auth.loginData);
   const { apiEndpoint, apiToken } = useAppSelector((state) => state.auth.loginData);
   // local states
   const [openModal, set_openModal] = useState(false);
@@ -115,6 +121,26 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
         .unwrap()
         .then((hash) => {
           set_transactionHash(hash ?? '');
+        })
+        .catch(async (e) => {
+          const isCurrentApiEndpointTheSame = await dispatch(actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)).unwrap();
+          if (!isCurrentApiEndpointTheSame) return;
+
+          let errMsg = `Withdrawing ${currency === 'NATIVE' ? 'xDai' : 'HOPR'} failed`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
+          console.error(errMsg, e);
+          sendNotification({
+            notificationPayload: {
+              source: 'node',
+              name: errMsg,
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: errMsg },
+            dispatch,
+          });
+
         })
         .finally(() => {
           set_isLoading(false);

@@ -87,6 +87,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
         .catch((e) => {
           let errMsg = `Alias ${alias} failed to add`;
           if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
           console.error(errMsg, e);
           sendNotification({
             notificationPayload: {

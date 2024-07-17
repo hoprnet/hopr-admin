@@ -73,6 +73,7 @@ export const FundChannelModal = ({
 
           let errMsg = `Channel ${channelId} failed to be funded`;
           if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
           console.error(errMsg, e);
           sendNotification({
             notificationPayload: {

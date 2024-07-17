@@ -102,12 +102,12 @@ function ChannelsPage() {
         handleRefresh();
       })
       .catch(async (e) => {
-
         const isCurrentApiEndpointTheSame = await dispatch(actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)).unwrap();
         if (!isCurrentApiEndpointTheSame) return;
 
         let errMsg = `Closing of outgoing channel ${channelId} failed`;
         if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+        if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
         console.error(errMsg, e);
         sendNotification({
           notificationPayload: {
