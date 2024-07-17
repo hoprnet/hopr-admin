@@ -7,6 +7,8 @@ import { actionsAsync } from '../../../store/slices/node/actionsAsync';
 import { utils } from 'ethers';
 import { sendNotification } from '../../../hooks/useWatcher/notifications';
 import { HOPR_TOKEN_USED } from '../../../../config';
+import { utils as hoprdUlils } from '@hoprnet/hopr-sdk';
+const { sdkApiError } = hoprdUlils;
 
 //Mui
 import CloseIcon from '@mui/icons-material/Close';
@@ -58,7 +60,7 @@ export const OpenMultipleChannelsModal = () => {
         if (!isCurrentApiEndpointTheSame) return;
 
         let errMsg = `Channel to ${peerId} failed to be opened`;
-        if (e.status) errMsg = errMsg + `.\n${e.status}`;
+        if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
         sendNotification({
           notificationPayload: {
             source: 'node',

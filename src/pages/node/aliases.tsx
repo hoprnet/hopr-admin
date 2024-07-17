@@ -151,8 +151,8 @@ function AliasesPage() {
                 ...deleteErrors,
                 {
                   alias: String(alias),
-                  error: e.error,
-                  status: e.status,
+                  error: e.hoprdErrorPayload?.error,
+                  status: e.hoprdErrorPayload?.status,
                 },
               ]);
             }}
