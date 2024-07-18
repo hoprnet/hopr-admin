@@ -17,6 +17,7 @@ import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 import { PingModal } from '../../components/Modal/node/PingModal';
 import { CreateAliasModal } from '../../components/Modal/node//AddAliasModal';
 import { OpenChannelModal } from '../../components/Modal/node/OpenChannelModal';
+import { FundChannelModal } from '../../components/Modal/node/FundChannelModal';
 
 //Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
@@ -31,6 +32,7 @@ function AliasesPage() {
   const myNodeAddress = useAppSelector((store) => store.node.addresses.data.native)
   const loginData = useAppSelector((store) => store.auth.loginData);
   const peerIdToNodeAddressLink = useAppSelector((store) => store.node.links.peerIdToNodeAddress);
+  const nodeAddressToOutgoingChannelLink = useAppSelector((store) => store.node.links.nodeAddressToOutgoingChannel);
   const [importSuccess, set_importSuccess] = useState(false);
   const [deleteSuccess, set_deleteSuccess] = useState(false);
   const [importErrors, set_importErrors] = useState<
@@ -84,7 +86,6 @@ function AliasesPage() {
     if (!loginData.apiEndpoint) return;
     for (const data of parsedData) {
       if (data.alias && data.peerId) {
-        console.log('data.alias && data.peerId && loginData.apiEndpoint')
         await dispatch(
           actionsAsync.setAliasThunk({
             alias: String(data.alias),
@@ -120,12 +121,13 @@ function AliasesPage() {
   };
 
   const parsedTableData = Object.entries(aliases ?? {}).map(([alias, peerId], key) => {
+    const peerAddress = getNodeAddressByPeerId(peerId);
     return {
       id: peerId,
       key: key.toString(),
       alias,
       peerId,
-      peerAddress: getNodeAddressByPeerId(peerId) ?? '',
+      peerAddress: peerAddress ?? '',
       actions: (
         <>
           <PingModal
@@ -133,11 +135,18 @@ function AliasesPage() {
             disabled={peerId === hoprAddress}
             tooltip={peerId === hoprAddress ? `You can't ping yourself` : undefined }
           />
-          <OpenChannelModal
-            peerAddress={getNodeAddressByPeerId(peerId)}
-            disabled={peerId === hoprAddress}
-            tooltip={peerId === hoprAddress ? `You can't ping yourself` : undefined }
-          />
+          {
+            peerAddress && nodeAddressToOutgoingChannelLink[peerAddress] ?
+            <FundChannelModal
+              channelId={nodeAddressToOutgoingChannelLink[peerAddress]}
+            />
+            :
+            <OpenChannelModal
+              peerAddress={peerAddress}
+              disabled={peerId === hoprAddress}
+              tooltip={peerId === hoprAddress ? `You can't open a channel to yourself` : undefined }
+            />
+          }
           <SendMessageModal
             peerId={peerId}
           />
