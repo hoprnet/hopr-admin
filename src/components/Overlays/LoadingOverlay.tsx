@@ -1,13 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
-import 'wagmi/window';
-
-// Store
-import { useAppDispatch, useAppSelector } from '../../store';
-import { web3Actions } from '../../store/slices/web3';
-
-// HOPR Components
-import Button from '../../future-hopr-lib-components/Button';
 
 // MUI
 import { CircularProgress } from '@mui/material';
@@ -44,37 +35,30 @@ export const Overlay = styled.div`
 `;
 
 const css = `
-
-  .drawerHidden .OverlayWrongNetwork {
+  .drawerHidden .Overlay {
     margin-left: 0px;
     width: calc( 100%  - 16px);
   }
 
   @media screen and (min-width: 500px) {
-    .drawerOpen .OverlayWrongNetwork {
+    .drawerOpen .Overlay {
       margin-left: 240px;
       width: calc( 100% - 240px - 32px);
     }
 
-    .drawerClosed .OverlayWrongNetwork {
+    .drawerClosed .Overlay {
       margin-left: 56px;
       width: calc( 100% - 56px - 32px);
     }
   }
-
 `
 
-export default function LoadingOverlay() {
-  const isFetching1 = useAppSelector((store) => store.stakingHub.safes.isFetching);
- // const isFetching2 = useAppSelector((store) => store.stakingHub.onboarding.isFetching);
-
-  const loading = isFetching1 //|| isFetching2;
-
+export default function LoadingOverlay(props: {loading: boolean}) {
   return (
     <>
-      { loading &&
+      { props.loading &&
         <Overlay
-          className={'OverlayWrongNetwork'}
+          className={'Overlay'}
         >
           <style>{css}</style>
           <CircularProgress/>
@@ -82,5 +66,4 @@ export default function LoadingOverlay() {
       }
     </>
   )
-
 }

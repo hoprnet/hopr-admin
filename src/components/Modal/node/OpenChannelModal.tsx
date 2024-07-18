@@ -6,6 +6,9 @@ import { useAppDispatch, useAppSelector } from '../../../store';
 import { actionsAsync } from '../../../store/slices/node/actionsAsync';
 import { sendNotification } from '../../../hooks/useWatcher/notifications';
 import { HOPR_TOKEN_USED } from '../../../../config';
+import { utils } from '@hoprnet/hopr-sdk';
+const { sdkApiError } = utils;
+
 
 // HOPR Components
 import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
@@ -58,7 +61,9 @@ export const OpenChannelModal = ({
           if (!isCurrentApiEndpointTheSame) return;
 
           let errMsg = `Channel to ${peerAddress} failed to be opened`;
-          if (e.status) errMsg = errMsg + `.\n${e.status}`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
+          console.error(errMsg, e);
           sendNotification({
             notificationPayload: {
               source: 'node',

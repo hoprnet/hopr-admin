@@ -154,11 +154,7 @@ export default function Details(props: Props) {
   const peers = useAppSelector((store) => store.node.peers.data);
   const balances = useAppSelector((store) => store.node.balances.data);
   const info = useAppSelector((store) => store.node.info.data);
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
-  const web3Connected = useAppSelector((store) => store.web3.status.connected);
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
-  const walletBalance = useAppSelector((store) => store.web3.balance);
-  const safeBalance = useAppSelector((store) => store.safe.balance.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const statistics = useAppSelector((store) => store.node.statistics.data);
 
@@ -170,61 +166,7 @@ export default function Details(props: Props) {
     return ''
   }
 
-  const web3Drawer = (
-    <Web3Container style={props.style}>
-      <TitleColumn className="web3">
-        <IconAndText>
-          <IconContainer>
-            <Icon
-              src="/assets/wxHoprIcon.svg"
-              alt="wxHOPR Icon"
-            />
-          </IconContainer>
-          <Text>wxHOPR</Text>
-        </IconAndText>
-        <IconAndText>
-          <IconContainer>
-            <Icon
-              src="/assets/xHoprIcon.svg"
-              alt="xHOPR Icon"
-            />
-          </IconContainer>
-          <Text>xHOPR</Text>
-        </IconAndText>
-        <IconAndText>
-          <IconContainer>
-            <Icon
-              src="/assets/xDaiIcon.svg"
-              alt="xDai Icon"
-            />
-          </IconContainer>
-          <Text>xDAI</Text>
-        </IconAndText>
-      </TitleColumn>
-      <DataColumn show={!!selectedSafeAddress}>
-        {selectedSafeAddress && (
-          <>
-            <DataTitle>Safe</DataTitle>
-            <Data>
-              <Tooltip title={safeBalance.wxHopr.formatted && safeBalance.wxHopr.formatted !== '0' ? safeBalance.wxHopr.formatted : null}><p>{safeBalance.wxHopr.formatted ?? '-'}</p></Tooltip>
-              <Tooltip title={safeBalance.xHopr.formatted && safeBalance.xHopr.formatted !== '0' ? safeBalance.xHopr.formatted : null }><p>{safeBalance.xHopr.formatted ?? '-'}</p></Tooltip>
-              <Tooltip title={safeBalance.xDai.formatted && safeBalance.xDai.formatted !== '0'  ? safeBalance.xDai.formatted : null }><p>{safeBalance.xDai.formatted ?? '-'}</p></Tooltip>
-            </Data>
-          </>
-        )}
-      </DataColumn>
-      <DataColumn>
-        <DataTitle>Wallet</DataTitle>
-        <Data>
-          <Tooltip title={walletBalance.wxHopr.formatted && walletBalance.wxHopr.formatted !== '0' ? walletBalance.wxHopr.formatted : null }><p>{walletBalance.wxHopr.formatted ?? '-'}</p></Tooltip>
-          <Tooltip title={walletBalance.xHopr.formatted && walletBalance.xHopr.formatted !== '0' ? walletBalance.xHopr.formatted: null }><p>{walletBalance.xHopr.formatted ?? '-'}</p></Tooltip>
-          <Tooltip title={walletBalance.xDai.formatted && walletBalance.xDai.formatted !== '0' ? walletBalance.xDai.formatted: null }><p>{walletBalance.xDai.formatted ?? '-'}</p></Tooltip>
-        </Data>
-      </DataColumn>
-    </Web3Container>
-  );
-
-  const nodeDrawer = (
+  return (
     <Web3Container style={props.style}>
       <TitleColumn className="node">
         <IconAndText>
@@ -296,12 +238,5 @@ export default function Details(props: Props) {
         </Data>
       </DataColumn>
     </Web3Container>
-  );
-
-  return (
-    <>
-      {web3Connected && web3Drawer}
-      {nodeConnected && !web3Connected && nodeDrawer}
-    </>
   );
 }

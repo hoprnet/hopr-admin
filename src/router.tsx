@@ -10,8 +10,6 @@ import { nodeActions, nodeActionsAsync } from './store/slices/node';
 
 // Sections
 import NodeLandingPage from './pages/node/landingPage';
-import SectionWeb3 from './pages/staking-hub/web3';
-import SectionSafe from './pages/staking-hub/safe';
 import AliasesPage from './pages/node/aliases';
 import InfoPage from './pages/node/info';
 import MessagesPage from './pages/node/messages';
@@ -47,7 +45,6 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import IncomingChannelsIcon from './future-hopr-lib-components/Icons/channelsIn';
 import OutgoingChannelsIcon from './future-hopr-lib-components/Icons/channelsOut';
-import { stakingHubActions } from './store/slices/stakingHub';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyNotice from './pages/PrivacyNotice';
 import { trackGoal } from 'fathom-client';
@@ -178,30 +175,6 @@ export const applicationMapNode: ApplicationMapType = [
   },
 ];
 
-export const applicationMapDevWeb3: ApplicationMapType = [
-  {
-    groupName: 'Dev Pages',
-    path: 'dev-pages',
-    icon: <DevelopIcon />,
-    items: [
-      {
-        name: 'Web3 Store',
-        path: 'web3',
-        icon: <AccountBalanceWalletIcon />,
-        element: <SectionWeb3 />,
-        loginNeeded: 'web3',
-      },
-      {
-        name: 'Safe Store',
-        path: 'safe',
-        icon: <LockIcon />,
-        element: <SectionSafe />,
-        loginNeeded: 'web3',
-      },
-    ],
-  },
-];
-
 export const applicationMapDev: ApplicationMapType = [
   {
     groupName: 'DEVELOP / Steps',
@@ -214,7 +187,6 @@ export const applicationMapDev: ApplicationMapType = [
 function createApplicationMap() {
   const temp: ApplicationMapType = [];
   if (environment === 'dev' || environment === 'node') applicationMapNode.map((elem) => temp.push(elem));
-  if (environment === 'dev') applicationMapDevWeb3.map((elem) => temp.push(elem));
   if (environment === 'dev') applicationMapDev.map((elem) => temp.push(elem));
   return temp;
 }
@@ -225,7 +197,6 @@ const LayoutEnhanced = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const nodeConnected = useAppSelector((store) => store.auth.status.connected);
-  const isConnected = useAppSelector((store) => store.web3.status.connected);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const [searchParams] = useSearchParams();
   const apiEndpoint = searchParams.get('apiEndpoint');
@@ -351,8 +322,7 @@ const LayoutEnhanced = () => {
   }, [apiEndpoint, apiToken]);
 
   const showInfoBar = () => {
-    if (isConnected || nodeConnected) return true;
-    return false;
+    return nodeConnected;
   };
 
   return (

@@ -6,6 +6,8 @@ import { exportToCsv } from '../../utils/helpers';
 import { utils } from 'ethers';
 import { sendNotification } from '../../hooks/useWatcher/notifications';
 import { HOPR_TOKEN_USED } from '../../../config';
+import { utils as hoprdUtils } from '@hoprnet/hopr-sdk';
+const { sdkApiError } = hoprdUtils;
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
@@ -100,19 +102,21 @@ function ChannelsPage() {
         handleRefresh();
       })
       .catch(async (e) => {
-
         const isCurrentApiEndpointTheSame = await dispatch(actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)).unwrap();
         if (!isCurrentApiEndpointTheSame) return;
 
-        const msg = `Closing of outgoing channel ${channelId} failed`;
+        let errMsg = `Closing of outgoing channel ${channelId} failed`;
+        if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+        if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
+        console.error(errMsg, e);
         sendNotification({
           notificationPayload: {
             source: 'node',
-            name: msg,
+            name: errMsg,
             url: null,
             timeout: null,
           },
-          toastPayload: { message: msg },
+          toastPayload: { message: errMsg },
           dispatch,
         });
 

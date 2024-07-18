@@ -1,12 +1,9 @@
 import { useEffect } from 'react';
 import { parseEther } from 'viem';
-import { useEthersSigner } from '..';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { appActions } from '../../store/slices/app';
 import { observeNodeBalances } from './balances';
 import { observeNodeInfo } from './info';
-import { observePendingSafeTransactions } from './safeTransactions';
-import { observeSafeInfo } from './safeInfo';
 import { sendNotification } from '../../hooks/useWatcher/notifications';
 import { nodeActions, nodeActionsAsync } from '../../store/slices/node';
 import { checkHowChannelsHaveChanged } from './channels';
@@ -23,19 +20,16 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   const firstChannelsCallWasSuccesfull = useAppSelector((store) => !!store.node.channels.data);
   const connected = useAppSelector((store) => store.auth.status.connected);
 
-  const signer = useEthersSigner();
   // flags to activate notifications
   const activeChannels = useAppSelector(store => store.app.configuration.notifications.channels)
   const activeMessage = useAppSelector(store => store.app.configuration.notifications.message)
   const activeNodeBalances = useAppSelector(store => store.app.configuration.notifications.nodeBalances)
   const activeNodeInfo = useAppSelector(store => store.app.configuration.notifications.nodeInfo)
-  const activePendingSafeTransaction = useAppSelector(store => store.app.configuration.notifications.pendingSafeTransaction)
   // redux previous states, this can be updated from anywhere in the app
   const prevOutgoingChannels = useAppSelector((store) => store.app.previousStates.prevOutgoingChannels);
   const prevIncomingChannels = useAppSelector((store) => store.app.previousStates.prevIncomingChannels);
   const prevNodeBalances = useAppSelector((store) => store.app.previousStates.prevNodeBalances);
   const prevNodeInfo = useAppSelector((store) => store.app.previousStates.prevNodeInfo);
-  const prevPendingSafeTransaction = useAppSelector((store) => store.app.previousStates.prevPendingSafeTransaction);
 
 
   // ==================================================================================
@@ -239,42 +233,5 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
     }
 
   }, [connected, isNodeReady, activeChannels, firstChannelsCallWasSuccesfull, channelsParsed, prevOutgoingChannels, prevIncomingChannels]);
-
-
-  // ==================================================================================
-  // safe watchers
-  const safeIndexed = useAppSelector((store) => store.safe.info.safeIndexed);
-  const selectedSafeAddress = useAppSelector((store) => store.safe.selectedSafe.data.safeAddress);
-
-  useEffect(() => {
-    const watchPendingSafeTransactionsInterval = setInterval(() => {
-      observePendingSafeTransactions({
-        dispatch,
-        previousState: prevPendingSafeTransaction,
-        selectedSafeAddress,
-        active: activePendingSafeTransaction,
-        signer: signer,
-        updatePreviousData: (newSafeTransactions) => {
-          dispatch(appActions.setPrevPendingSafeTransaction(newSafeTransactions));
-        },
-      });
-    }, intervalDuration);
-
-    const watchSafeInfoInterval = setInterval(() => {
-      observeSafeInfo({
-        dispatch,
-        selectedSafeAddress,
-        safeIndexed,
-        active: true,
-        signer,
-      });
-    }, intervalDuration);
-
-    return () => {
-      clearInterval(watchPendingSafeTransactionsInterval);
-      clearInterval(watchSafeInfoInterval);
-    };
-  }, [selectedSafeAddress, signer, prevPendingSafeTransaction, safeIndexed]);
-
 
 };

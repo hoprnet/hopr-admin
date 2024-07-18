@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { exportToCsv } from '../../utils/helpers';
 import { utils } from '@hoprnet/hopr-sdk';
-const { APIError } = utils;
+const { sdkApiError } = utils;
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
@@ -151,8 +151,8 @@ function AliasesPage() {
                 ...deleteErrors,
                 {
                   alias: String(alias),
-                  error: e.error,
-                  status: e.status,
+                  error: e.hoprdErrorPayload?.error,
+                  status: e.hoprdErrorPayload?.status,
                 },
               ]);
             }}
@@ -242,7 +242,7 @@ function DeleteAliasButton({
   disabled,
 }: {
   alias: string;
-  onError: (e: typeof APIError.prototype) => void;
+  onError: (e: typeof sdkApiError.prototype) => void;
   onSuccess: () => void;
   disabled?: boolean;
 }) {
