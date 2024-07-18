@@ -110,8 +110,9 @@ export const PingModal = (props: PingModalProps) => {
             node
           </span>
         }
-        onClick={handleOpenModal}
+        onClick={peerId ? handlePing : handleOpenModal}
         disabled={props.disabled}
+        pending={disableButton}
       />
       <SDialog
         open={openModal}

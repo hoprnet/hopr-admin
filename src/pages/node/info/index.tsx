@@ -53,8 +53,12 @@ function InfoPage() {
   const nodeStartedEpoch = useAppSelector((store) => store.node.metricsParsed.nodeStartEpoch);
   const nodeStartedTime = nodeStartedEpoch && typeof(nodeStartedEpoch) === 'number'? new Date(nodeStartedEpoch*1000).toJSON().replace('T', ' ').replace('Z', ' UTC') : '-';
   const nodeSync = useAppSelector((store) => store.node.metricsParsed.nodeSync);
-  const blockNumber = useAppSelector((store) => store.node.metricsParsed.blockNumber);
-  const blockNumberCheckSum = useAppSelector((store) => store.node.metricsParsed.checksum);
+  const blockNumberFromMetrics = useAppSelector((store) => store.node.metricsParsed.blockNumber); // <2.1.2
+  const blockNumberCheckSumFromMetrics = useAppSelector((store) => store.node.metricsParsed.checksum); // <2.1.2
+  const blockNumberFromInfo = useAppSelector((store) => store.node.info.data?.indexerBlock); // >=2.1.3
+  const blockNumberCheckSumFromInfo = useAppSelector((store) => store.node.info.data?.indexerChecksum); // >=2.1.3
+  const blockNumber = blockNumberFromMetrics ?? blockNumberFromInfo;
+  const blockNumberCheckSum = blockNumberCheckSumFromMetrics ?? blockNumberCheckSumFromInfo;
 
   useEffect(() => {
     fetchInfoData();

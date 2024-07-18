@@ -30,6 +30,8 @@ export const OpenChannelModal = ({
 }: OpenChannelModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((store) => store.auth.loginData);
+  const outgoingOpening = useAppSelector((store) => store.node.channels.parsed.outgoingOpening);
+  const channelIsBeingOpened = props.peerAddress ? !!outgoingOpening[props.peerAddress] : false;
   const [openChannelModal, set_openChannelModal] = useState(false);
   const [amount, set_amount] = useState('');
   const [peerAddress, set_peerAddress] = useState(props.peerAddress ? props.peerAddress : '');
@@ -94,6 +96,7 @@ export const OpenChannelModal = ({
       <IconButton
         iconComponent={<AddChannelIcon />}
         disabled={props.disabled}
+        pending={channelIsBeingOpened}
         tooltipText={
           props.tooltip ?
           props.tooltip

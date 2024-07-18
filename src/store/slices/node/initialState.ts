@@ -103,8 +103,11 @@ type InitialState = {
   channels: {
     data: GetChannelsResponseType | null;
     parsed: {
-      outgoing:  ChannelsOutgoingType;
       incoming: ChannelsIncomingType;
+      outgoing:  ChannelsOutgoingType;
+      outgoingOpening: {
+        [peerAddress: string]: boolean
+      }
     },
     isFetching: boolean;
     alreadyFetched: boolean;
@@ -142,22 +145,6 @@ type InitialState = {
   signedMessages: { timestamp: number; body: string }[];
   peers: {
     data: GetPeersResponseType | null;
-    // parsed: {
-    //   [peerAddress: string]: {
-    //     peerId: string;
-    //     quality: number;
-    //     multiaddr: string | null;
-    //     heartbeats: {
-    //       sent: number;
-    //       success: number;
-    //     };
-    //     lastSeen: number;
-    //     lastSeenLatency: number;
-    //     backoff: number;
-    //     isNew: boolean;
-    //     reportedVersion: string;
-    //   }
-    // }
     isFetching: boolean;
     alreadyFetched: boolean;
   };
@@ -272,8 +259,9 @@ export const initialState: InitialState = {
   channels: {
     data: null,
     parsed: {
+      incoming: {},
       outgoing: {},
-      incoming: {}
+      outgoingOpening: {},
     },
     isFetching: false,
     alreadyFetched: false,

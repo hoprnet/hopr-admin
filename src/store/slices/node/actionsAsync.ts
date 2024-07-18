@@ -1174,6 +1174,21 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(getChannelsThunk.rejected, (state) => {
     state.channels.isFetching = false;
   });
+  //openChannel
+  builder.addCase(openChannelThunk.pending, (state, action) => {
+    const peerAddress = action.meta.arg.peerAddress;
+    state.channels.parsed.outgoingOpening[peerAddress] = true;
+  });
+  builder.addCase(openChannelThunk.fulfilled, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
+    const peerAddress = action.meta.arg.peerAddress;
+    state.channels.parsed.outgoingOpening[peerAddress] = false;
+  });
+  builder.addCase(openChannelThunk.rejected, (state, action) => {
+    if(action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
+    const peerAddress = action.meta.arg.peerAddress;
+    state.channels.parsed.outgoingOpening[peerAddress] = false;
+  });
   //closeChannel
   builder.addCase(closeChannelThunk.pending, (state, action) => {
     const channelId = action.meta.arg.channelId;
