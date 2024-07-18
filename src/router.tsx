@@ -322,8 +322,7 @@ const LayoutEnhanced = () => {
   }, [apiEndpoint, apiToken]);
 
   const showInfoBar = () => {
-    if (nodeConnected) return true;
-    return false;
+    return nodeConnected;
   };
 
   return (
