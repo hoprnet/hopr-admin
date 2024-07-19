@@ -26,7 +26,6 @@ import LaunchIcon from '@mui/icons-material/Launch';
 //Info Components
 import NodeUptime from './node-uptime';
 
-
 const TdActionIcons = styled.td`
   display: flex;
   gap: 8px;
@@ -35,7 +34,10 @@ const TdActionIcons = styled.td`
 
 function InfoPage() {
   const dispatch = useAppDispatch();
-  const { apiEndpoint, apiToken } = useAppSelector((store) => store.auth.loginData);
+  const {
+    apiEndpoint,
+    apiToken,
+  } = useAppSelector((store) => store.auth.loginData);
   const balances = useAppSelector((store) => store.node.balances.data);
   const balancesFetching = useAppSelector((store) => store.node.balances.isFetching);
   const addresses = useAppSelector((store) => store.node.addresses.data);
@@ -51,7 +53,10 @@ function InfoPage() {
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
   const nodeStartedEpoch = useAppSelector((store) => store.node.metricsParsed.nodeStartEpoch);
-  const nodeStartedTime = nodeStartedEpoch && typeof(nodeStartedEpoch) === 'number'? new Date(nodeStartedEpoch*1000).toJSON().replace('T', ' ').replace('Z', ' UTC') : '-';
+  const nodeStartedTime =
+    nodeStartedEpoch && typeof nodeStartedEpoch === 'number'
+      ? new Date(nodeStartedEpoch * 1000).toJSON().replace('T', ' ').replace('Z', ' UTC')
+      : '-';
   const nodeSync = useAppSelector((store) => store.node.metricsParsed.nodeSync);
   const blockNumberFromMetrics = useAppSelector((store) => store.node.metricsParsed.blockNumber); // <2.1.2
   const blockNumberCheckSumFromMetrics = useAppSelector((store) => store.node.metricsParsed.checksum); // <2.1.2
@@ -65,7 +70,6 @@ function InfoPage() {
   }, [apiEndpoint, apiToken]);
 
   useEffect(() => {
-
     const watchSync = setInterval(() => {
       if (!apiEndpoint || (nodeSync && nodeSync === 1)) return;
       return dispatch(
@@ -79,7 +83,6 @@ function InfoPage() {
     return () => {
       clearInterval(watchSync);
     };
-
   }, [nodeSync, apiEndpoint, apiToken]);
 
   const fetchInfoData = () => {
@@ -89,55 +92,55 @@ function InfoPage() {
       nodeActionsAsync.getBalancesThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getChannelsThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getAddressesThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getVersionThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getInfoThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getPeersThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getAliasesThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getTicketStatisticsThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getPrometheusMetricsThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
   };
 
@@ -152,7 +155,11 @@ function InfoPage() {
     aliasesFetching,
   ].includes(true);
 
-  const noCopyPaste = !(window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  const noCopyPaste = !(
+    window.location.protocol === 'https:' ||
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1'
+  );
 
   // check if user is logged in
   if (!apiEndpoint) {
@@ -212,16 +219,7 @@ function InfoPage() {
                   <span>Sync process</span>
                 </Tooltip>
               </th>
-              <td>
-                {
-               nodeSync && typeof(nodeSync)==='number'?
-                  <ProgressBar
-                    value={nodeSync}
-                  />
-                :
-                '-'
-                }
-              </td>
+              <td>{nodeSync && typeof nodeSync === 'number' ? <ProgressBar value={nodeSync} /> : '-'}</td>
             </tr>
             <tr>
               <th>
@@ -266,7 +264,9 @@ function InfoPage() {
                   <span>Connectivity status</span>
                 </Tooltip>
               </th>
-              <td><ColorStatus className={`status-${info?.connectivityStatus}`}>{info?.connectivityStatus}</ColorStatus></td>
+              <td>
+                <ColorStatus className={`status-${info?.connectivityStatus}`}>{info?.connectivityStatus}</ColorStatus>
+              </td>
             </tr>
             <tr>
               <th>
@@ -385,11 +385,10 @@ function InfoPage() {
                 </Tooltip>
               </th>
               <td>
-                {
-                  balances.channels?.value &&
-                  balances.safeHopr?.value ?
-                  formatEther(BigInt(balances.channels?.value) + BigInt(balances.safeHopr?.value)) : '-'
-                } wxHOPR
+                {balances.channels?.value && balances.safeHopr?.value
+                  ? formatEther(BigInt(balances.channels?.value) + BigInt(balances.safeHopr?.value))
+                  : '-'}{' '}
+                wxHOPR
               </td>
             </tr>
           </tbody>
@@ -411,16 +410,15 @@ function InfoPage() {
               </th>
               <TdActionIcons>
                 {addresses?.hopr}
-                {
-                  addresses?.hopr &&
+                {addresses?.hopr && (
                   <SmallActionButton
                     onClick={() => navigator.clipboard.writeText(addresses?.hopr as string)}
                     disabled={noCopyPaste}
-                    tooltip={noCopyPaste ? 'Clipboard not supported on HTTP': 'Copy'}
+                    tooltip={noCopyPaste ? 'Clipboard not supported on HTTP' : 'Copy'}
                   >
                     <CopyIcon />
                   </SmallActionButton>
-                }
+                )}
               </TdActionIcons>
             </tr>
             <tr>
@@ -434,25 +432,25 @@ function InfoPage() {
               </th>
               <TdActionIcons>
                 {addresses?.native}
-                {
-                  addresses?.native &&
+                {addresses?.native && (
                   <>
                     <SmallActionButton
                       onClick={() => navigator.clipboard.writeText(addresses?.native as string)}
                       disabled={noCopyPaste}
-                      tooltip={noCopyPaste ? 'Clipboard not supported on HTTP': 'Copy'}
+                      tooltip={noCopyPaste ? 'Clipboard not supported on HTTP' : 'Copy'}
                     >
                       <CopyIcon />
                     </SmallActionButton>
-                    <SmallActionButton
-                      tooltip={'Open in gnosisscan.io'}
-                    >
-                      <Link to={`https://gnosisscan.io/address/${addresses?.native}`} target='_blank'>
+                    <SmallActionButton tooltip={'Open in gnosisscan.io'}>
+                      <Link
+                        to={`https://gnosisscan.io/address/${addresses?.native}`}
+                        target="_blank"
+                      >
                         <LaunchIcon />
                       </Link>
                     </SmallActionButton>
                   </>
-                }
+                )}
               </TdActionIcons>
             </tr>
             <tr>
@@ -466,25 +464,25 @@ function InfoPage() {
               </th>
               <TdActionIcons>
                 {info?.hoprNodeSafe}
-                {
-                  info?.hoprNodeSafe &&
+                {info?.hoprNodeSafe && (
                   <>
                     <SmallActionButton
                       onClick={() => navigator.clipboard.writeText(info.hoprNodeSafe as string)}
                       disabled={noCopyPaste}
-                      tooltip={noCopyPaste ? 'Clipboard not supported on HTTP': 'Copy'}
+                      tooltip={noCopyPaste ? 'Clipboard not supported on HTTP' : 'Copy'}
                     >
                       <CopyIcon />
                     </SmallActionButton>
-                    <SmallActionButton
-                      tooltip={'Open in gnosisscan.io'}
-                    >
-                      <Link to={`https://gnosisscan.io/address/${info.hoprNodeSafe}`} target='_blank'>
+                    <SmallActionButton tooltip={'Open in gnosisscan.io'}>
+                      <Link
+                        to={`https://gnosisscan.io/address/${info.hoprNodeSafe}`}
+                        target="_blank"
+                      >
                         <LaunchIcon />
                       </Link>
                     </SmallActionButton>
                   </>
-                }
+                )}
               </TdActionIcons>
             </tr>
             <tr>
@@ -498,25 +496,25 @@ function InfoPage() {
               </th>
               <TdActionIcons>
                 {info?.hoprToken}
-                {
-                  info?.hoprToken &&
+                {info?.hoprToken && (
                   <>
                     <SmallActionButton
                       onClick={() => navigator.clipboard.writeText(info?.hoprToken as string)}
                       disabled={noCopyPaste}
-                      tooltip={noCopyPaste ? 'Clipboard not supported on HTTP': 'Copy'}
+                      tooltip={noCopyPaste ? 'Clipboard not supported on HTTP' : 'Copy'}
                     >
                       <CopyIcon />
                     </SmallActionButton>
-                    <SmallActionButton
-                      tooltip={'Open in gnosisscan.io'}
-                    >
-                      <Link to={`https://gnosisscan.io/address/${info?.hoprToken}`} target='_blank'>
+                    <SmallActionButton tooltip={'Open in gnosisscan.io'}>
+                      <Link
+                        to={`https://gnosisscan.io/address/${info?.hoprToken}`}
+                        target="_blank"
+                      >
                         <LaunchIcon />
                       </Link>
                     </SmallActionButton>
                   </>
-                }
+                )}
               </TdActionIcons>
             </tr>
             <tr>
@@ -530,25 +528,25 @@ function InfoPage() {
               </th>
               <TdActionIcons>
                 {info?.hoprManagementModule}
-                {
-                  info?.hoprManagementModule &&
+                {info?.hoprManagementModule && (
                   <>
                     <SmallActionButton
                       onClick={() => navigator.clipboard.writeText(info.hoprManagementModule as string)}
                       disabled={noCopyPaste}
-                      tooltip={noCopyPaste ? 'Clipboard not supported on HTTP': 'Copy'}
+                      tooltip={noCopyPaste ? 'Clipboard not supported on HTTP' : 'Copy'}
                     >
                       <CopyIcon />
                     </SmallActionButton>
-                    <SmallActionButton
-                      tooltip={'Open on gnosisscan.io'}
-                    >
-                      <Link to={`https://gnosisscan.io/address/${info.hoprManagementModule}`} target='_blank'>
+                    <SmallActionButton tooltip={'Open on gnosisscan.io'}>
+                      <Link
+                        to={`https://gnosisscan.io/address/${info.hoprManagementModule}`}
+                        target="_blank"
+                      >
                         <LaunchIcon />
                       </Link>
                     </SmallActionButton>
                   </>
-                }
+                )}
               </TdActionIcons>
             </tr>
             <tr>
@@ -562,25 +560,25 @@ function InfoPage() {
               </th>
               <TdActionIcons>
                 {info?.hoprChannels}
-                {
-                  info?.hoprChannels &&
+                {info?.hoprChannels && (
                   <>
                     <SmallActionButton
                       onClick={() => navigator.clipboard.writeText(info?.hoprChannels as string)}
                       disabled={noCopyPaste}
-                      tooltip={noCopyPaste ? 'Clipboard not supported on HTTP': 'Copy'}
+                      tooltip={noCopyPaste ? 'Clipboard not supported on HTTP' : 'Copy'}
                     >
                       <CopyIcon />
                     </SmallActionButton>
-                    <SmallActionButton
-                      tooltip={'Open in gnosisscan.io'}
-                    >
-                      <Link to={`https://gnosisscan.io/address/${info?.hoprChannels}`} target='_blank'>
+                    <SmallActionButton tooltip={'Open in gnosisscan.io'}>
+                      <Link
+                        to={`https://gnosisscan.io/address/${info?.hoprChannels}`}
+                        target="_blank"
+                      >
                         <LaunchIcon />
                       </Link>
                     </SmallActionButton>
                   </>
-                }
+                )}
               </TdActionIcons>
             </tr>
           </tbody>
@@ -602,9 +600,7 @@ function InfoPage() {
               </th>
               <td>{version?.replaceAll('"', '')}</td>
             </tr>
-            <tr
-              key='node-startdate'
-            >
+            <tr key="node-startdate">
               <th>
                 <Tooltip
                   title="Date when you node was started"

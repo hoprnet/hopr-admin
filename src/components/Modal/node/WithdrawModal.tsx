@@ -2,7 +2,14 @@ import styled from '@emotion/styled';
 import { HOPR_TOKEN_USED } from '../../../../config';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../store';
-import { CircularProgress, DialogTitle, InputAdornment, MenuItem, Button as MuiButton, TextField } from '@mui/material';
+import {
+  CircularProgress,
+  DialogTitle,
+  InputAdornment,
+  MenuItem,
+  Button as MuiButton,
+  TextField
+} from '@mui/material'
 import Button from '../../../future-hopr-lib-components/Button';
 import { SDialog, SDialogContent, SIconButton, TopBar } from '../../../future-hopr-lib-components/Modal/styled';
 import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
@@ -77,7 +84,10 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
   const hoprBalance = useAppSelector((state) => state.node.balances.data.hopr);
   const nativeBalance = useAppSelector((state) => state.node.balances.data.native);
   const loginData = useAppSelector((store) => store.auth.loginData);
-  const { apiEndpoint, apiToken } = useAppSelector((state) => state.auth.loginData);
+  const {
+    apiEndpoint,
+    apiToken,
+  } = useAppSelector((state) => state.auth.loginData);
   // local states
   const [openModal, set_openModal] = useState(false);
   const [currency, set_currency] = useState<'HOPR' | 'NATIVE'>(initialCurrency ?? 'NATIVE');
@@ -116,19 +126,23 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
           ethereumAddress: recipient,
           apiEndpoint,
           apiToken: apiToken ? apiToken : '',
-        })
+        }),
       )
         .unwrap()
         .then((hash) => {
           set_transactionHash(hash ?? '');
         })
         .catch(async (e) => {
-          const isCurrentApiEndpointTheSame = await dispatch(actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)).unwrap();
+          const isCurrentApiEndpointTheSame = await dispatch(
+            actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!),
+          ).unwrap();
           if (!isCurrentApiEndpointTheSame) return;
 
           let errMsg = `Withdrawing ${currency === 'NATIVE' ? 'xDai' : 'HOPR'} failed`;
-          if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
-          if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.status)
+            errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.error)
+            errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
           console.error(errMsg, e);
           sendNotification({
             notificationPayload: {
@@ -140,7 +154,6 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
             toastPayload: { message: errMsg },
             dispatch,
           });
-
         })
         .finally(() => {
           set_isLoading(false);

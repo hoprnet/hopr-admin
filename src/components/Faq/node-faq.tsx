@@ -57,28 +57,36 @@ const nodeFaq: FaqData = {
             here
           </a>
           .
-          <br /><br />
-          If you've already applied to join the network, please wait for approval. Approvals currently occur on a tri-weekly basis.
-          <br /><br />
-          If your node was approved, but your are still seeing your node is not eligible, please report this on the {' '}
+          <br />
+          <br />
+          If you've already applied to join the network, please wait for approval. Approvals currently occur on a
+          tri-weekly basis.
+          <br />
+          <br />
+          If your node was approved, but your are still seeing your node is not eligible, please report this on the{' '}
           <a
             href="https://t.me/hoprnet"
             target="_blank"
             rel="noreferrer"
-          >HOPR Telegram channel</a>
-          {' '}or{' '}
+          >
+            HOPR Telegram channel
+          </a>{' '}
+          or{' '}
           <a
             href="https://discord.gg/dEAWC4G"
             target="_blank"
             rel="noreferrer"
-          >Discord server</a>.
+          >
+            Discord server
+          </a>
+          .
         </span>
       ),
     },
     {
       id: 4,
       title: 'How is node health calculated?',
-      content: 'It is calculated using the network`s heartbeat mechanism.'
+      content: 'It is calculated using the network`s heartbeat mechanism.',
     },
     {
       id: 5,
@@ -116,54 +124,67 @@ const nodeFaq: FaqData = {
     {
       id: 2,
       title: 'What are unredeemed tickets?',
-      content:
-        'The tickets earned by your node that have yet to be redeemed.',
+      content: 'The tickets earned by your node that have yet to be redeemed.',
     },
     {
       id: 3,
       title: 'When should my node redeem tickets?',
-      content:
+      content: (
         <span>
-          Tickets are automatically redeemed. If you`ve set a custom aggregation threshold, tickets are aggregated accordingly before redemption; otherwise, it defaults to aggregating 100 tickets per channel.
-
-          Please check the incoming channels page for the number of unredeemed tickets per channel.
-          <br /><br />
-          <b>IMPORTANT:</b> If the unredeemed ticket value per channel exceeds your custom aggregation threshold or the default aggregation value of 100, there may be an issue with your node. Please report this on the {' '} 
+          Tickets are automatically redeemed. If you`ve set a custom aggregation threshold, tickets are aggregated
+          accordingly before redemption; otherwise, it defaults to aggregating 100 tickets per channel. Please check the
+          incoming channels page for the number of unredeemed tickets per channel.
+          <br />
+          <br />
+          <b>IMPORTANT:</b> If the unredeemed ticket value per channel exceeds your custom aggregation threshold or the
+          default aggregation value of 100, there may be an issue with your node. Please report this on the{' '}
           <a
             href="https://t.me/hoprnet"
             target="_blank"
             rel="noreferrer"
-          >HOPR Telegram channel</a>
-          {' '}or{' '}
+          >
+            HOPR Telegram channel
+          </a>{' '}
+          or{' '}
           <a
             href="https://discord.gg/dEAWC4G"
             target="_blank"
             rel="noreferrer"
-          >Discord server</a>.
+          >
+            Discord server
+          </a>
+          .
         </span>
+      ),
     },
     {
       id: 4,
       title: 'Why do I have rejected tickets?',
-      content:
+      content: (
         <span>
-          These are tickets that failed network validation and were deemed suspicious. This issue likely happens when your node didn`t sync properly. Please make sure you are using our recommended RPC providers {' '}
+          These are tickets that failed network validation and were deemed suspicious. This issue likely happens when
+          your node didn`t sync properly. Please make sure you are using our recommended RPC providers{' '}
           <a
             href="https://docs.hoprnet.org/node/start-here#understanding-rpc-importance-and-setting-up-your-own-custom-rpc-provider"
             target="_blank"
             rel="noreferrer"
           >
             here
-          </a>.
+          </a>
+          .
         </span>
+      ),
     },
     {
       id: 5,
       title: 'How do I redeem neglected tickets?',
-      content: 
-      <span>
-      Neglected tickets cannot be redeemed. This may occur when closing a payment channel with your node, if your strategy`s <b>on_close_redeem_single_tickets_value_min</b> value was higher than your ticket value on the closing channel.
-      </span>
+      content: (
+        <span>
+          Neglected tickets cannot be redeemed. This may occur when closing a payment channel with your node, if your
+          strategy`s <b>on_close_redeem_single_tickets_value_min</b> value was higher than your ticket value on the
+          closing channel.
+        </span>
+      ),
     },
     // {
     //   id: 3,
@@ -277,7 +298,8 @@ const nodeFaq: FaqData = {
     {
       id: 2,
       title: 'Tickets values are different?',
-      content: 'The table of the Incomming Channels shows the value of tickets counted from last reset of your node, and the Tickets subpage shows the ticket number from the last reset of the node databse.',
+      content:
+        'The table of the Incomming Channels shows the value of tickets counted from last reset of your node, and the Tickets subpage shows the ticket number from the last reset of the node databse.',
     },
   ],
   '/networking/channels': [

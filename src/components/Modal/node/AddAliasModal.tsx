@@ -30,7 +30,6 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
   const [duplicateAlias, set_duplicateAlias] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
-
   const setPropPeerId = () => {
     if (props.peerId) set_peerId(props.peerId);
   };
@@ -68,7 +67,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
           peerId: peerId,
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken ? loginData.apiToken : '',
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -86,8 +85,10 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
         })
         .catch((e) => {
           let errMsg = `Alias ${alias} failed to add`;
-          if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
-          if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.status)
+            errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.error)
+            errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
           console.error(errMsg, e);
           sendNotification({
             notificationPayload: {
@@ -96,7 +97,9 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
               url: null,
               timeout: null,
             },
-            toastPayload: { message: errMsg, type: 'error' },
+            toastPayload: {
+              message: errMsg, type: 'error', 
+            },
             dispatch,
           });
         })
@@ -111,14 +114,15 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
       <IconButton
         iconComponent={<AddAliasIcon />}
         tooltipText={
-          props.tooltip ?
-          props.tooltip
-          :
-          <span>
-            ADD
-            <br />
-            new alias
-          </span>
+          props.tooltip ? (
+            props.tooltip
+          ) : (
+            <span>
+              ADD
+              <br />
+              new alias
+            </span>
+          )
         }
         onClick={handleOpenModal}
         disabled={props.disabled}

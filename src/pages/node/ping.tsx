@@ -32,7 +32,6 @@ function PingPage() {
         apiToken: apiToken ? apiToken : '',
       }),
     );
-
   }, []);
 
   const isAlias = (alias: string) => {

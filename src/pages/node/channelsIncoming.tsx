@@ -27,13 +27,12 @@ import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 // Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
 
-
 function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((store) => store.node.channels.data);
   const channelsIncomingObject = useAppSelector((store) => store.node.channels.parsed.incoming);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
-  const aliases = useAppSelector((store) => store.node.aliases.data)
+  const aliases = useAppSelector((store) => store.node.aliases.data);
   const currentApiEndpoint = useAppSelector((store) => store.node.apiEndpoint);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const nodeAddressToPeerIdLink = useAppSelector((store) => store.node.links.nodeAddressToPeerId);
@@ -44,44 +43,44 @@ function ChannelsPage() {
   const channelsData = channels?.incoming;
 
   const handleRefresh = () => {
-    if(!loginData.apiEndpoint) return;
+    if (!loginData.apiEndpoint) return;
 
     dispatch(
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      })
+      }),
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      })
+      }),
     );
     dispatch(
       actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      })
+      }),
     );
     dispatch(
       actionsAsync.getPrometheusMetricsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      })
+      }),
     );
   };
 
   const getPeerIdFromPeerAddress = (nodeAddress: string): string => {
     const peerId = nodeAddressToPeerIdLink[nodeAddress];
     return peerId!;
-  }
+  };
 
   const getAliasByPeerAddress = (nodeAddress: string): string => {
     const peerId = getPeerIdFromPeerAddress(nodeAddress);
-    if(aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${nodeAddress})`
+    if (aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${nodeAddress})`;
     return nodeAddress;
-  }
+  };
 
   const handleExport = () => {
     if (channelsData) {
@@ -127,7 +126,14 @@ function ChannelsPage() {
       key: 'tickets',
       name: 'Unredeemed',
       maxWidth: '140px',
-      tooltipHeader: <>Unredeemed value of tickets per channel in wxHOPR.<br/><br/>Value is reset on node restart.</>
+      tooltipHeader: (
+        <>
+          Unredeemed value of tickets per channel in wxHOPR.
+          <br />
+          <br />
+          Value is reset on node restart.
+        </>
+      ),
     },
     {
       key: 'actions',
@@ -140,24 +146,27 @@ function ChannelsPage() {
 
   const handleCloseChannel = (channelId: string) => {
     const usedApiEndpoint = loginData.apiEndpoint;
-    console.log('handleCloseChannel', channelId)
+    console.log('handleCloseChannel', channelId);
     dispatch(
       actionsAsync.closeChannelThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
         channelId: channelId,
-      })
+      }),
     )
       .unwrap()
       .then(() => {
         handleRefresh();
       })
       .catch(async (e) => {
-        const isCurrentApiEndpointTheSame = await dispatch(actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)).unwrap();
+        const isCurrentApiEndpointTheSame = await dispatch(
+          actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!),
+        ).unwrap();
         if (!isCurrentApiEndpointTheSame) return;
 
         let errMsg = `Closing of incoming channel ${channelId} failed`;
-        if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+        if (e instanceof sdkApiError && e.hoprdErrorPayload?.status)
+          errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
         if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
         console.error(errMsg, e);
         sendNotification({
@@ -173,71 +182,108 @@ function ChannelsPage() {
       });
   };
 
-  const parsedTableData = Object.keys(channelsIncomingObject).map((id, index) => {
-    if(!channelsIncomingObject[id].peerAddress || !channelsIncomingObject[id].balance || !channelsIncomingObject[id].status) return;
-    // @ts-ignore: check was done in line above
-    const outgoingChannelOpened = !!(channelsIncomingObject[id].peerAddress && !!nodeAddressToOutgoingChannelLink[channelsIncomingObject[id].peerAddress]);
-    const peerId = getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string);
+  const parsedTableData = Object.keys(channelsIncomingObject)
+    .map((id, index) => {
+      if (
+        !channelsIncomingObject[id].peerAddress ||
+        !channelsIncomingObject[id].balance ||
+        !channelsIncomingObject[id].status
+      )
+        return;
+      // @ts-ignore: check was done in line above
+      const outgoingChannelOpened = !!(
+        channelsIncomingObject[id].peerAddress &&
+        !!nodeAddressToOutgoingChannelLink[channelsIncomingObject[id].peerAddress]
+      );
+      const peerId = getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string);
 
-    const totalTicketsPerChannel = `${formatEther( BigInt(tickets?.redeemed[id]?.value || '0') + BigInt(tickets?.unredeemed[id]?.value || '0') )}`;
-    const unredeemedTicketsPerChannel = `${formatEther( BigInt(tickets?.unredeemed[id]?.value || '0') )}`;
-    const ticketsPerChannel = `${formatEther( BigInt(tickets?.redeemed[id]?.value || '0'))}/${totalTicketsPerChannel}`;
+      const totalTicketsPerChannel = `${formatEther(
+        BigInt(tickets?.redeemed[id]?.value || '0') + BigInt(tickets?.unredeemed[id]?.value || '0'),
+      )}`;
+      const unredeemedTicketsPerChannel = `${formatEther(BigInt(tickets?.unredeemed[id]?.value || '0'))}`;
+      const ticketsPerChannel = `${formatEther(BigInt(tickets?.redeemed[id]?.value || '0'))}/${totalTicketsPerChannel}`;
 
-    return {
-      id: (index+1).toString(),
-      key: id,
-      peerAddress: getAliasByPeerAddress(channelsIncomingObject[id].peerAddress as string),
-      status: channelsIncomingObject[id].status,
-      funds: `${utils.formatEther(channelsIncomingObject[id].balance as string)} ${HOPR_TOKEN_USED}`,
-      tickets: unredeemedTicketsPerChannel,
-      actions: (
-        <>
-          <PingModal
-            peerId={peerId}
-            disabled={!peerId}
-            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
-          />
-          <CreateAliasModal
-            handleRefresh={handleRefresh}
-            peerId={peerId}
-            disabled={!peerId}
-            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
-          />
-          {
-            outgoingChannelOpened ?
-            <FundChannelModal
-              channelId={id}
+      return {
+        id: (index + 1).toString(),
+        key: id,
+        peerAddress: getAliasByPeerAddress(channelsIncomingObject[id].peerAddress as string),
+        status: channelsIncomingObject[id].status,
+        funds: `${utils.formatEther(channelsIncomingObject[id].balance as string)} ${HOPR_TOKEN_USED}`,
+        tickets: unredeemedTicketsPerChannel,
+        actions: (
+          <>
+            <PingModal
+              peerId={peerId}
+              disabled={!peerId}
+              tooltip={
+                !peerId ? (
+                  <span>
+                    DISABLED
+                    <br />
+                    Unable to find
+                    <br />
+                    peerId
+                  </span>
+                ) : undefined
+              }
             />
-            :
-            <OpenChannelModal
-              peerAddress={channelsIncomingObject[id].peerAddress}
+            <CreateAliasModal
+              handleRefresh={handleRefresh}
+              peerId={peerId}
+              disabled={!peerId}
+              tooltip={
+                !peerId ? (
+                  <span>
+                    DISABLED
+                    <br />
+                    Unable to find
+                    <br />
+                    peerId
+                  </span>
+                ) : undefined
+              }
             />
-          }
-          <IconButton
-            iconComponent={<CloseChannelIcon />}
-            pending={channelsIncomingObject[id]?.isClosing}
-            tooltipText={
-              <span>
-                CLOSE
-                <br />
-                incoming channel
-              </span>
-            }
-            onClick={() => handleCloseChannel(id)}
-          />
-          <SendMessageModal
-            peerId={peerId}
-            disabled={!peerId}
-            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
-          />
-        </>
-      ),
-    };
-  }).filter(elem => elem !== undefined) as {
+            {outgoingChannelOpened ? (
+              <FundChannelModal channelId={id} />
+            ) : (
+              <OpenChannelModal peerAddress={channelsIncomingObject[id].peerAddress} />
+            )}
+            <IconButton
+              iconComponent={<CloseChannelIcon />}
+              pending={channelsIncomingObject[id]?.isClosing}
+              tooltipText={
+                <span>
+                  CLOSE
+                  <br />
+                  incoming channel
+                </span>
+              }
+              onClick={() => handleCloseChannel(id)}
+            />
+            <SendMessageModal
+              peerId={peerId}
+              disabled={!peerId}
+              tooltip={
+                !peerId ? (
+                  <span>
+                    DISABLED
+                    <br />
+                    Unable to find
+                    <br />
+                    peerId
+                  </span>
+                ) : undefined
+              }
+            />
+          </>
+        ),
+      };
+    })
+    .filter((elem) => elem !== undefined) as {
     id: string;
     key: string;
     peerAddress: string;
-    status: "Open" | "PendingToClose" | "Closed" ;
+    status: 'Open' | 'PendingToClose' | 'Closed';
     tickets: string;
     funds: string;
     actions: JSX.Element;

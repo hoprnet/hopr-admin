@@ -6,26 +6,26 @@ import Button from '../Button';
 import Tooltip from '@mui/material/Tooltip';
 
 export type GrayCardProps = {
-    id: string;
-    title?: string;
-    value?: string;
-    valueTooltip?: string;
-    currency?: string | ReactNode;
-    chip?: {
-      label: string;
-      color: 'success' | 'error';
-    };
-    buttons?: {
-      text: string;
-      link?: string;
-      disabled?: boolean;
-      onClick?: () => void;
-      pending?: boolean;
-    }[];
-    children?: ReactNode;
+  id: string;
+  title?: string;
+  value?: string;
+  valueTooltip?: string;
+  currency?: string | ReactNode;
+  chip?: {
+    label: string;
+    color: 'success' | 'error';
   };
+  buttons?: {
+    text: string;
+    link?: string;
+    disabled?: boolean;
+    onClick?: () => void;
+    pending?: boolean;
+  }[];
+  children?: ReactNode;
+};
 
-  const StyledGrayCard = styled(Card)`
+const StyledGrayCard = styled(Card)`
   background-color: #edf2f7;
   display: flex;
   justify-content: space-between;
@@ -73,7 +73,7 @@ const ButtonGroup = styled.div`
   gap: 0.5rem;
 `;
 
-const StyledChip = styled(Chip) <{ color: string }>`
+const StyledChip = styled(Chip)<{ color: string }>`
   align-self: flex-start;
   background-color: ${(props) => props.color === 'error' && '#ffcbcb'};
   background-color: ${(props) => props.color === 'success' && '#cbffd0'};
@@ -83,67 +83,55 @@ const StyledChip = styled(Chip) <{ color: string }>`
 `;
 
 export const GrayCard = ({
-    id,
-    title,
-    value,
-    valueTooltip,
-    currency,
-    chip,
-    buttons,
-    children,
-  }: GrayCardProps) => {
-    return (
-      <StyledGrayCard id={id}>
-        {(title || value || children) && (
-          <CardContent>
-            {title && <CardTitle>{title}</CardTitle>}
-            {
-              (currency || value) &&
-                <ValueAndCurrency>
-                  {value &&
-                    valueTooltip ?
-                    <Tooltip
-                      title={valueTooltip}
-                    >
-                      <CardValue>
-                        {value}
-                      </CardValue>
-                    </Tooltip> :
-                    <CardValue>
-                      {value}
-                    </CardValue>
-                  }
-                  {currency && <CardCurrency>{currency}</CardCurrency>}
-                </ValueAndCurrency>
-            }
-            {chip && (
-              <StyledChip
-                label={chip.label}
-                color={chip.color}
-              />
-            )}
-            {
-              children &&
-              <div className="content">
-                {children}
-              </div>
-            }
-          </CardContent>
-        )}
-        {buttons && (
-          <ButtonGroup>
-            {buttons.map((button) => (
-              <Button
-                key={button.text}
-                disabled={button.disabled}
-                onClick={button.onClick}
-                pending={button.pending}
-              >
-                {button.link ? <Link to={button.link}>{button.text}</Link> : <p>{button.text}</p>}
-              </Button>
-            ))}
-          </ButtonGroup>
-        )}
-      </StyledGrayCard>
-    );
-  };
+  id,
+  title,
+  value,
+  valueTooltip,
+  currency,
+  chip,
+  buttons,
+  children,
+}: GrayCardProps) => {
+  return (
+    <StyledGrayCard id={id}>
+      {(title || value || children) && (
+        <CardContent>
+          {title && <CardTitle>{title}</CardTitle>}
+          {(currency || value) && (
+            <ValueAndCurrency>
+              {value && valueTooltip ? (
+                <Tooltip title={valueTooltip}>
+                  <CardValue>{value}</CardValue>
+                </Tooltip>
+              ) : (
+                <CardValue>{value}</CardValue>
+              )}
+              {currency && <CardCurrency>{currency}</CardCurrency>}
+            </ValueAndCurrency>
+          )}
+          {chip && (
+            <StyledChip
+              label={chip.label}
+              color={chip.color}
+            />
+          )}
+          {children && <div className="content">{children}</div>}
+        </CardContent>
+      )}
+      {buttons && (
+        <ButtonGroup>
+          {buttons.map((button) => (
+            <Button
+              key={button.text}
+              disabled={button.disabled}
+              onClick={button.onClick}
+              pending={button.pending}
+            >
+              {button.link ? <Link to={button.link}>{button.text}</Link> : <p>{button.text}</p>}
+            </Button>
+          ))}
+        </ButtonGroup>
+      )}
+    </StyledGrayCard>
+  );
+};

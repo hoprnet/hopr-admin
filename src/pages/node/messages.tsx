@@ -14,7 +14,6 @@ import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import RemoveMessages from '../../future-hopr-lib-components/Icons/RemoveMessages';
 
-
 const messages = () => {
   const messages = useAppSelector((store) => store.node.messages.data);
   const {
@@ -92,7 +91,7 @@ const messages = () => {
                 </span>
               }
               onClick={() => {
-                if(!apiEndpoint) return;
+                if (!apiEndpoint) return;
                 dispatch(
                   actionsAsync.deleteMessagesThunk({
                     apiEndpoint,

@@ -51,19 +51,17 @@ const css = `
       width: calc( 100% - 56px - 32px);
     }
   }
-`
+`;
 
-export default function LoadingOverlay(props: {loading: boolean}) {
+export default function LoadingOverlay(props: { loading: boolean }) {
   return (
     <>
-      { props.loading &&
-        <Overlay
-          className={'Overlay'}
-        >
+      {props.loading && (
+        <Overlay className={'Overlay'}>
           <style>{css}</style>
-          <CircularProgress/>
+          <CircularProgress />
         </Overlay>
-      }
+      )}
     </>
-  )
+  );
 }

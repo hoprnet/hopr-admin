@@ -17,8 +17,8 @@ import {
   SelectChangeEvent,
   Select,
   MenuItem,
-  Autocomplete,
-} from '@mui/material'
+  Autocomplete
+} from '@mui/material';
 
 import { SendMessagePayloadType } from '@hoprnet/hopr-sdk';
 import CloseIcon from '@mui/icons-material/Close';
@@ -28,13 +28,8 @@ import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox';
 import { useAppDispatch, useAppSelector } from '../../../store';
 import { actionsAsync } from '../../../store/slices/node/actionsAsync';
 
-import type {
-  GetPeersResponseType,
-  GetAliasesResponseType
-} from '@hoprnet/hopr-sdk';
-import type {
-  AddressesType
-} from '../../../store/slices/node/initialState';
+import type { GetPeersResponseType, GetAliasesResponseType } from '@hoprnet/hopr-sdk';
+import type { AddressesType } from '../../../store/slices/node/initialState';
 
 const PathOrHops = styled.div`
   display: flex;
@@ -43,11 +38,11 @@ const PathOrHops = styled.div`
   align-items: center;
   width: 100%;
 
-  .numerOfHopsSelected{
+  .numerOfHopsSelected {
     justify-content: center;
   }
 
-  .noNumberOfHopsSelected{
+  .noNumberOfHopsSelected {
     justify-content: flex-start;
   }
 
@@ -58,13 +53,12 @@ const PathOrHops = styled.div`
   .noNumberOfHops {
     flex: 0.5;
   }
-
 `;
 
 const StatusContainer = styled.div`
   position: absolute;
-  height: calc( 100% - 32px );
-  width: calc( 100% - 32px );
+  height: calc(100% - 32px);
+  width: calc(100% - 32px);
   height: 100%;
   width: 100%;
   background: rgba(255, 255, 255, 0.9);
@@ -82,16 +76,21 @@ function sortAddresses(
   peers: GetPeersResponseType | null,
   me: AddressesType,
   peerIdToAliasLink: {
-    [peerId: string]: string
-  }
-) : string[] {
-  if(!peers || !me) return [];
+    [peerId: string]: string;
+  },
+): string[] {
+  if (!peers || !me) return [];
   const connectedPeers = peers.connected;
   const myAddress = me.hopr as string;
-  const peerIdsWithAliases = Object.keys(peerIdToAliasLink).sort((a, b) => peerIdToAliasLink[a] < peerIdToAliasLink[b] ? -1 : 1 );
-  if(peerIdsWithAliases.length === 0) return [myAddress, ...connectedPeers.map(peer => peer.peerId).sort()];
-  const peerIdsWithAliasesWithoutMyAddress = peerIdsWithAliases.filter(peerId => peerId !== myAddress);
-  const connectedPeersWithoutAliases = connectedPeers.filter(peer => !peerIdToAliasLink[peer.peerId]).map(peer => peer.peerId).sort();
+  const peerIdsWithAliases = Object.keys(peerIdToAliasLink).sort((a, b) =>
+    peerIdToAliasLink[a] < peerIdToAliasLink[b] ? -1 : 1,
+  );
+  if (peerIdsWithAliases.length === 0) return [myAddress, ...connectedPeers.map((peer) => peer.peerId).sort()];
+  const peerIdsWithAliasesWithoutMyAddress = peerIdsWithAliases.filter((peerId) => peerId !== myAddress);
+  const connectedPeersWithoutAliases = connectedPeers
+    .filter((peer) => !peerIdToAliasLink[peer.peerId])
+    .map((peer) => peer.peerId)
+    .sort();
   return [myAddress, ...peerIdsWithAliasesWithoutMyAddress, ...connectedPeersWithoutAliases];
 }
 
@@ -101,7 +100,9 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const [loader, set_loader] = useState<boolean>(false);
   const [error, set_error] = useState<string | null>(null);
   const [numberOfHops, set_numberOfHops] = useState<number>(0);
-  const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops' | 'directMessage'>('directMessage');
+  const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops' | 'directMessage'>(
+    'directMessage',
+  );
   const [message, set_message] = useState<string>('');
   const [openModal, set_openModal] = useState<boolean>(false);
   const loginData = useAppSelector((store) => store.auth.loginData);
@@ -122,24 +123,23 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
 
   useEffect(() => {
     switch (sendMode) {
-      case 'automaticPath':
-        set_numberOfHops(1);
-        break;
-      case 'path':
-        set_numberOfHops(0);
-        break;
-      case 'numberOfHops':
-        set_path('');
-        break;
-      default: //anything that is not a custom route
-        set_numberOfHops(0);
-        set_path('');
+    case 'automaticPath':
+      set_numberOfHops(1);
+      break;
+    case 'path':
+      set_numberOfHops(0);
+      break;
+    case 'numberOfHops':
+      set_path('');
+      break;
+    default: //anything that is not a custom route
+      set_numberOfHops(0);
+      set_path('');
     }
-
   }, [sendMode]);
 
   const handleSendMessage = () => {
-    if (!(loginData.apiEndpoint) || !selectedReceiver) return;
+    if (!loginData.apiEndpoint || !selectedReceiver) return;
     set_error(null);
     set_loader(true);
     //const validatedReceiver = validatePeerId(selectedReceiver);
@@ -166,12 +166,14 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
     }
     if (sendMode == 'path') {
       const pathElements: string[] = [];
-      const lines = path.split('\n')
+      const lines = path.split('\n');
       for (const line of lines) {
-        const elements = line.split(',').map((element) => element.trim()).filter((element) => element !== '');
+        const elements = line
+          .split(',')
+          .map((element) => element.trim())
+          .filter((element) => element !== '');
         pathElements.push(...elements);
       }
-
 
       const validatedPath = pathElements.map((element) => validatePeerId(element));
       messagePayload.path = validatedPath;
@@ -186,7 +188,8 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       .catch((e) => {
         console.log('@message err:', e);
         let errMsg = `Sending message failed failed`;
-        if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+        if (e instanceof sdkApiError && e.hoprdErrorPayload?.status)
+          errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
         if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
         set_error(errMsg);
       })
@@ -196,8 +199,8 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   };
 
   const handleSendModeChange = (event: SelectChangeEvent) => {
-    set_sendMode(event.target.value as "path" | "numberOfHops" | "automaticPath" | "directMessage");
-  }
+    set_sendMode(event.target.value as 'path' | 'numberOfHops' | 'automaticPath' | 'directMessage');
+  };
 
   const handlePath = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_sendMode('path');
@@ -235,8 +238,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       setTimeout(() => {
         input.setSelectionRange(start + 1, start + 1);
       }, 0);
-    }
-    else if (e.key === ',') {
+    } else if (e.key === ',') {
       e.preventDefault(); // Prevent space key from inserting a space
       const input = e.target as HTMLInputElement;
       const start = input.selectionStart!;
@@ -263,9 +265,9 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
 
   const hasAlias = (peerId: string) => {
     if (aliases) {
-      return Object.values(aliases).includes(peerId)
+      return Object.values(aliases).includes(peerId);
     }
-  }
+  };
 
   const findAlias = (peerId: string) => {
     if (aliases) {
@@ -278,20 +280,20 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
     return null;
   };
 
-
   return (
     <>
       <IconButton
         iconComponent={<ForwardToInboxIcon />}
         tooltipText={
-          props.tooltip ?
+          props.tooltip ? (
             props.tooltip
-            :
+          ) : (
             <span>
               SEND
               <br />
               message
             </span>
+          )
         }
         onClick={handleOpenModal}
         disabled={props.disabled}
@@ -312,19 +314,14 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
             <CloseIcon />
           </SIconButton>
         </TopBar>
-        <SDialogContent
-        >
+        <SDialogContent>
           <Autocomplete
             value={selectedReceiver}
             onChange={(event, newValue) => {
               set_selectedReceiver(newValue);
             }}
             options={sendMessageAddressBook}
-            getOptionLabel={(peerId) =>
-              hasAlias(peerId)
-                ? `${findAlias(peerId)} (${peerId})`
-                : peerId
-            }
+            getOptionLabel={(peerId) => (hasAlias(peerId) ? `${findAlias(peerId)} (${peerId})` : peerId)}
             autoSelect
             renderInput={(params) => (
               <TextField
@@ -349,15 +346,15 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
             fullWidth
           />
           <span style={{ margin: '0px 0px -2px' }}>Send mode:</span>
-          <PathOrHops className={sendMode === "numberOfHops" ? "numerOfHopsSelected" : "noNumberOfHopsSelected"}>
+          <PathOrHops className={sendMode === 'numberOfHops' ? 'numerOfHopsSelected' : 'noNumberOfHopsSelected'}>
             <Select
               value={sendMode}
               onChange={handleSendModeChange}
-              className={sendMode === "numberOfHops" ? "numerOfHops" : "noNumberOfHops"}
+              className={sendMode === 'numberOfHops' ? 'numerOfHops' : 'noNumberOfHops'}
             >
               <MenuItem value="directMessage">Direct Message</MenuItem>
-              <MenuItem value='automaticPath'>Automatic Path</MenuItem>
-              <MenuItem value='numberOfHops'>Number of Hops</MenuItem>
+              <MenuItem value="automaticPath">Automatic Path</MenuItem>
+              <MenuItem value="numberOfHops">Number of Hops</MenuItem>
               <MenuItem value="path">Path (PeerIds or Aliases)</MenuItem>
             </Select>
             {sendMode === 'numberOfHops' && (
@@ -380,7 +377,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
           {sendMode === 'path' && (
             <TextField
               label="Path (PeerIds or Aliases)"
-              placeholder={"12D3Ko...Z3rz5F,\n12D3Ko...wxd4zv,\nAlan,\n12D3Ko...zF8c7u"}
+              placeholder={'12D3Ko...Z3rz5F,\n12D3Ko...wxd4zv,\nAlan,\n12D3Ko...zF8c7u'}
               value={path}
               onChange={handlePath}
               onKeyDown={handlePathKeyDown}
@@ -395,7 +392,9 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
             onClick={handleSendMessage}
             pending={loader}
             disabled={
-              selectedReceiver === null || sendMode !== 'directMessage' && (sendMode !== 'automaticPath' && numberOfHops < 0 && path === '') || message.length === 0
+              selectedReceiver === null ||
+              (sendMode !== 'directMessage' && sendMode !== 'automaticPath' && numberOfHops < 0 && path === '') ||
+              message.length === 0
             }
             style={{
               width: '100%',
@@ -406,26 +405,23 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
             Send
           </Button>
         </DialogActions>
-        {
-          error &&
+        {error && (
           <StatusContainer>
             <TopBar>
               <DialogTitle>ERROR</DialogTitle>
               <SIconButton
                 aria-label="hide error"
-                onClick={()=>{set_error(null)}}
+                onClick={() => {
+                  set_error(null);
+                }}
               >
                 <CloseIcon />
               </SIconButton>
             </TopBar>
-            <SDialogContent
-              className='error-message'
-            >
-              {error}
-            </SDialogContent>
+            <SDialogContent className="error-message">{error}</SDialogContent>
           </StatusContainer>
-        }
-      </SDialog >
+        )}
+      </SDialog>
     </>
   );
 };

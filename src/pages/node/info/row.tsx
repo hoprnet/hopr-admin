@@ -23,25 +23,20 @@ import ProgressBar from '../../../future-hopr-lib-components/Progressbar';
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
 
-
-function Row(props: {
-  tooltip: any,
-  title: any,
-  value: any,
-}) {
-  return(
+function Row(props: { tooltip: any; title: any; value: any }) {
+  return (
     <tr>
       <th>
         <Tooltip
           title={props.tooltip}
           notWide
         >
-        <span>{props.title}</span>
-      </Tooltip>
+          <span>{props.title}</span>
+        </Tooltip>
       </th>
       <td>{props.value}</td>
     </tr>
-  )
+  );
 }
 
 export default Row;

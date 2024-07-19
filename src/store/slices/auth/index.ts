@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { bubbleSortObject } from '../../../utils/functions';
-import { loadStateFromLocalStorage } from "../../../utils/localStorage";
+import { loadStateFromLocalStorage } from '../../../utils/localStorage';
 import { actionsAsync, createAsyncReducer } from './actionsAsync';
 import { initialState } from './initialState';
 
