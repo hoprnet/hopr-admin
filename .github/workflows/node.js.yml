@@ -39,9 +39,6 @@ jobs:
       - name: Formatting and Linting
         run: yarn format-lint
 
-      - name: Build docker
-        run: docker build --platform linux/amd64 -t europe-west3-docker.pkg.dev/hoprassociation/docker-images/hopr-admin -f ./scripts/NodeAdmin.Dockerfile .
-
   # Build docker
   docker_testing:
     name: Test docker build
