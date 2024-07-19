@@ -42,3 +42,13 @@ jobs:
       - name: Build docker
         run: docker build --platform linux/amd64 -t europe-west3-docker.pkg.dev/hoprassociation/docker-images/hopr-admin -f ./scripts/NodeAdmin.Dockerfile .
 
+  # Build docker
+  e2e_testing:
+    name: Test docker build
+    needs: general
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build docker
+        run: docker build --platform linux/amd64 -t europe-west3-docker.pkg.dev/hoprassociation/docker-images/hopr-admin -f ./scripts/NodeAdmin.Dockerfile .
