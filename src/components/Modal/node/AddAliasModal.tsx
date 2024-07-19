@@ -98,7 +98,8 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
               timeout: null,
             },
             toastPayload: {
-              message: errMsg, type: 'error', 
+              message: errMsg,
+              type: 'error',
             },
             dispatch,
           });

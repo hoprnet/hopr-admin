@@ -254,9 +254,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           force,
         }),
       ).unwrap();
-      dispatch(
-        nodeActions.setApiEndpoint({ apiEndpoint: formattedApiEndpoint }),
-      );
+      dispatch(nodeActions.setApiEndpoint({ apiEndpoint: formattedApiEndpoint }));
       if (loginInfo) {
         dispatch(
           authActions.useNodeData({
