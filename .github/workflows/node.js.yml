@@ -42,7 +42,6 @@ jobs:
   # Build docker
   docker_testing:
     name: Test docker build
-    needs: general
     timeout-minutes: 30
     runs-on: ubuntu-latest
 
