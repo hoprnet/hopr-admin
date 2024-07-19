@@ -190,9 +190,9 @@ function ChannelsPage() {
         !channelsIncomingObject[id].status
       )
         return;
-      // @ts-ignore: check was done in line above
       const outgoingChannelOpened = !!(
         channelsIncomingObject[id].peerAddress &&
+        // @ts-ignore: check was done in line above
         !!nodeAddressToOutgoingChannelLink[channelsIncomingObject[id].peerAddress]
       );
       const peerId = getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string);
