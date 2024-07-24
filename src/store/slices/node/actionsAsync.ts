@@ -1474,11 +1474,11 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
         const data = jsonMetrics?.hopr_tickets_incoming_statistics?.data;
         for (let i = 0; i < categories.length; i++) {
           const channel = categories[i]
-            .match(/channel=\"0x[a-f0-9]+"/gi)[0]
+            .match(/channel="0x[a-f0-9]+"/gi)[0]
             .replace(`channel="`, ``)
             .replace(`"`, ``);
           const statistic = categories[i]
-            .match(/statistic=\"[a-z_]+\"/g)[0]
+            .match(/statistic="[a-z_]+"/g)[0]
             .replace(`statistic="`, ``)
             .replace(`"`, ``);
           const value = data[i];

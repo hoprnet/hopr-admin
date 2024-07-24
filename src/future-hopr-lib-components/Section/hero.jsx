@@ -66,7 +66,7 @@ function Section1(props) {
         animationData: props.animation,
       });
     }
-    //eslint-disable-next-line react-hooks/exhaustive-deps
+    //eslint-disable-next-line
     animationLoaded.current = true;
   }, []);
 
@@ -109,7 +109,7 @@ function Section1(props) {
       </div>
       {props.theGraphBadge && <Badge src="../assets/icons/Badge_PoweredByTheGraph_white.svg" />}
 
-      {/* 
+      {/*
             <Subtext center>
                 Add the DERP RPC endpoint to your crypto wallet to see exactly what information is being leaked about you every time you connect to a crypto service.
             </Subtext>

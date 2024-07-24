@@ -17,6 +17,12 @@
     "linebreak-style": ["error", "unix"],
     "react/react-in-jsx-scope": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".ts", ".tsx"] }],
+    "react/prop-types": "off",
+    "react/no-unescaped-entities": "off",
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/ban-ts-comment": "warn",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/ban-types": "warn",
     "indent": ["error", 2],
     "object-curly-newline": [
       "error",
@@ -41,7 +47,7 @@
     "import-newlines/enforce": "warn",
     "newline-destructuring/newline": ["warn", { "items": 1 }],
     "no-duplicate-imports": "warn",
-    "no-console": "warn",
+    "no-console": "off",
     "prefer-const": "warn",
     "no-var": "off"
   },
