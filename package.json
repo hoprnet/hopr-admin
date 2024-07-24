@@ -52,7 +52,7 @@
     "build-hub": "node ./scripts/prepare-build-hub.js && tsc && vite build && node ./scripts/post-build.js",
     "build-node": "node ./scripts/prepare-build-node.js && tsc && vite build && node ./scripts/post-build.js",
     "serve": "vite preview --port 3000",
-    "format": "prettier \"src/**/*.{js,jsx,ts,tsx}\"",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "format:ci": "prettier --check \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint:ci": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",

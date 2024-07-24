@@ -5,23 +5,14 @@ import { RootState, useAppSelector } from '../..';
 import { nodeActionsAsync } from '../node';
 import { initialState } from './initialState';
 const { sdkApiError } = utils;
-const {
-  getInfo,
-  getAddresses,
-} = api;
+const { getInfo, getAddresses } = api;
 
 export const loginThunk = createAsyncThunk<
   GetInfoResponseType | { force: boolean } | undefined,
   { apiToken: string; apiEndpoint: string; force?: boolean },
   { state: RootState; rejectValue: { data: string; type: 'API_ERROR' | 'NOT_ELIGIBLE_ERROR' | 'FETCH_ERROR' } }
->('auth/login', async (payload, {
-  rejectWithValue,
-  dispatch,
-}) => {
-  const {
-    apiEndpoint,
-    apiToken,
-  } = payload;
+>('auth/login', async (payload, { rejectWithValue, dispatch }) => {
+  const { apiEndpoint, apiToken } = payload;
   try {
     const info = await getInfo({
       apiEndpoint: apiEndpoint,
@@ -65,7 +56,7 @@ export const loginThunk = createAsyncThunk<
           apiToken,
           apiEndpoint,
           force: true,
-        }),
+        })
       ).unwrap();
 
       if (e instanceof sdkApiError && e.hoprdErrorPayload?.error?.includes('get_peer_multiaddresses')) {
@@ -81,7 +72,7 @@ export const loginThunk = createAsyncThunk<
           apiEndpoint,
           apiToken,
           force: true,
-        }),
+        })
       ).unwrap();
 
       const minimumNodeBalance = parseEther('0.001');

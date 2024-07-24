@@ -47,19 +47,19 @@ function ChannelsPage() {
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      }),
+      })
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      }),
+      })
     );
     dispatch(
       actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      }),
+      })
     );
   };
 
@@ -83,7 +83,7 @@ function ChannelsPage() {
           status: channel.status,
           dedicatedFunds: channel.balance,
         })),
-        `${tabLabel}-channels.csv`,
+        `${tabLabel}-channels.csv`
       );
     }
   };
@@ -95,7 +95,7 @@ function ChannelsPage() {
         apiToken: loginData.apiToken ? loginData.apiToken : '',
         channelId: channelId,
         timeout: 5 * 60_000,
-      }),
+      })
     )
       .unwrap()
       .then(() => {
@@ -103,7 +103,7 @@ function ChannelsPage() {
       })
       .catch(async (e) => {
         const isCurrentApiEndpointTheSame = await dispatch(
-          actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!),
+          actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)
         ).unwrap();
         if (!isCurrentApiEndpointTheSame) return;
 

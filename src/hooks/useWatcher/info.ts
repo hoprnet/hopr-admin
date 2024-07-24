@@ -36,7 +36,7 @@ export const observeNodeInfo = ({
         nodeActionsAsync.getInfoThunk({
           apiEndpoint,
           apiToken: apiToken ? apiToken : '',
-        }),
+        })
       ).unwrap();
     },
     previousData: previousState,
@@ -50,7 +50,9 @@ export const observeNodeInfo = ({
           url: null,
           timeout: null,
         },
-        toastPayload: { message: `Node connectivity status updated from ${previousState?.connectivityStatus} to ${newNodeInfo?.connectivityStatus}` },
+        toastPayload: {
+          message: `Node connectivity status updated from ${previousState?.connectivityStatus} to ${newNodeInfo?.connectivityStatus}`,
+        },
         dispatch,
       });
     },

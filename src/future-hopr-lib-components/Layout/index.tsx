@@ -99,11 +99,11 @@ const Layout: React.FC<{
     initialDrawerState !== null
       ? Boolean(initialDrawerState)
       : environment === 'web3' || environment === 'dev'
-        ? true
-        : false,
+      ? true
+      : false
   );
   const [openedNavigationDrawerMobile, set_openedNavigationDrawerMobile] = useState(
-    initialDrawerState !== null ? Boolean(initialDrawerState) : false,
+    initialDrawerState !== null ? Boolean(initialDrawerState) : false
   );
 
   const handleOpenedNavigationDrawer = (bool: boolean) => {

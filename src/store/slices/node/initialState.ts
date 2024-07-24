@@ -7,7 +7,7 @@ import type {
   GetTokenResponseType,
   GetEntryNodesResponseType,
   PingPeerResponseType,
-  GetConfigurationResponseType
+  GetConfigurationResponseType,
 } from '@hoprnet/hopr-sdk';
 
 export type Message = {
@@ -325,10 +325,12 @@ export const initialState: InitialState = {
   },
   metricsParsed: {
     nodeSync: null,
-    tickets: { incoming: {
-      redeemed: {},
-      unredeemed: {},
-    } },
+    tickets: {
+      incoming: {
+        redeemed: {},
+        unredeemed: {},
+      },
+    },
     nodeStartEpoch: null,
     checksum: null,
     blockNumber: null,

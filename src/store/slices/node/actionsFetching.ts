@@ -43,43 +43,43 @@ export const createFetchingReducer = (builder: ActionReducerMapBuilder<typeof in
   builder.addCase(setAliasesFetching, (state, action) => {
     state.aliases.isFetching = action.payload;
   }),
-  builder.addCase(setInfoFetching, (state, action) => {
-    state.info.isFetching = action.payload;
-  }),
-  builder.addCase(setMetricsFetching, (state, action) => {
-    state.metrics.isFetching = action.payload;
-  }),
-  builder.addCase(setAddressesFetching, (state, action) => {
-    state.addresses.isFetching = action.payload;
-  }),
-  builder.addCase(setBalancesFetching, (state, action) => {
-    state.balances.isFetching = action.payload;
-  }),
-  builder.addCase(setChannelsFetching, (state, action) => {
-    state.channels.isFetching = action.payload;
-  }),
-  builder.addCase(setPeersFetching, (state, action) => {
-    state.peers.isFetching = action.payload;
-  }),
-  builder.addCase(setPeerInfoFetching, (state, action) => {
-    state.peerInfo.isFetching = action.payload;
-  }),
-  builder.addCase(setEntryNodesFetching, (state, action) => {
-    state.entryNodes.isFetching = action.payload;
-  }),
-  builder.addCase(setTicketStatisticsFetching, (state, action) => {
-    state.statistics.isFetching = action.payload;
-  }),
-  builder.addCase(setTokensFetching, (state, action) => {
-    state.tokens.isFetching = action.payload;
-  }),
-  builder.addCase(setVersionFetching, (state, action) => {
-    state.version.isFetching = action.payload;
-  }),
-  builder.addCase(setTransactionsFetching, (state, action) => {
-    state.transactions.isFetching = action.payload;
-  }),
-  builder.addCase(setRedeemTicketsFetching, (state, action) => {
-    state.redeemTickets.isFetching = action.payload;
-  });
+    builder.addCase(setInfoFetching, (state, action) => {
+      state.info.isFetching = action.payload;
+    }),
+    builder.addCase(setMetricsFetching, (state, action) => {
+      state.metrics.isFetching = action.payload;
+    }),
+    builder.addCase(setAddressesFetching, (state, action) => {
+      state.addresses.isFetching = action.payload;
+    }),
+    builder.addCase(setBalancesFetching, (state, action) => {
+      state.balances.isFetching = action.payload;
+    }),
+    builder.addCase(setChannelsFetching, (state, action) => {
+      state.channels.isFetching = action.payload;
+    }),
+    builder.addCase(setPeersFetching, (state, action) => {
+      state.peers.isFetching = action.payload;
+    }),
+    builder.addCase(setPeerInfoFetching, (state, action) => {
+      state.peerInfo.isFetching = action.payload;
+    }),
+    builder.addCase(setEntryNodesFetching, (state, action) => {
+      state.entryNodes.isFetching = action.payload;
+    }),
+    builder.addCase(setTicketStatisticsFetching, (state, action) => {
+      state.statistics.isFetching = action.payload;
+    }),
+    builder.addCase(setTokensFetching, (state, action) => {
+      state.tokens.isFetching = action.payload;
+    }),
+    builder.addCase(setVersionFetching, (state, action) => {
+      state.version.isFetching = action.payload;
+    }),
+    builder.addCase(setTransactionsFetching, (state, action) => {
+      state.transactions.isFetching = action.payload;
+    }),
+    builder.addCase(setRedeemTicketsFetching, (state, action) => {
+      state.redeemTickets.isFetching = action.payload;
+    });
 };

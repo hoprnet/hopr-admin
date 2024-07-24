@@ -53,7 +53,7 @@ export const PingModal = (props: PingModalProps) => {
           peerId,
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken ? loginData.apiToken : '',
-        }),
+        })
       )
         .unwrap()
         .then((resp: any) => {
@@ -72,7 +72,7 @@ export const PingModal = (props: PingModalProps) => {
         })
         .catch(async (e) => {
           const isCurrentApiEndpointTheSame = await dispatch(
-            actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!),
+            actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)
           ).unwrap();
           if (!isCurrentApiEndpointTheSame) return;
 

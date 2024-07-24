@@ -114,18 +114,18 @@ function unround(value: string) {
     if (value?.length > 1 && ['k', 'm', 'b', 't'].includes(value.slice(-1))) {
       const multiplierLetter = value.slice(-1);
       switch (multiplierLetter) {
-      case 'k':
-        multiplier = 10e3;
-        break;
-      case 'm':
-        multiplier = 10e6;
-        break;
-      case 'b':
-        multiplier = 10e9;
-        break;
-      case 't':
-        multiplier = 10e12;
-        break;
+        case 'k':
+          multiplier = 10e3;
+          break;
+        case 'm':
+          multiplier = 10e6;
+          break;
+        case 'b':
+          multiplier = 10e9;
+          break;
+        case 't':
+          multiplier = 10e12;
+          break;
       }
       rez = (parseFloat(value.slice(0, value.length - 2)) * multiplier).toString();
     }

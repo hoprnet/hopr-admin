@@ -3,7 +3,7 @@ import {
   EthereumTxWithTransfersResponse,
   SafeInfoResponse,
   SafeModuleTransactionWithTransfersResponse,
-  SafeMultisigTransactionWithTransfersResponse
+  SafeMultisigTransactionWithTransfersResponse,
 } from '@safe-global/api-kit';
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types';
 import { Address, decodeFunctionData, formatEther, formatUnits } from 'viem';
@@ -54,7 +54,7 @@ export const getSourceOfPendingTransaction = (transaction: SafeMultisigTransacti
 
 export const getUserActionForPendingTransaction = (
   transaction: SafeMultisigTransactionResponse,
-  ownerAddress: string,
+  ownerAddress: string
 ): 'EXECUTE' | 'SIGN' | null => {
   if (!ownerAddress) return null;
   const transactionHasEnoughSignatures = (transaction.confirmations?.length ?? 0) >= transaction.confirmationsRequired;
@@ -66,7 +66,7 @@ export const getUserActionForPendingTransaction = (
   // console.log('getUserActionForPendingTransaction', transaction)
 
   const ownerHasSignedTransaction = transaction?.confirmations?.find(
-    (confirmation) => confirmation.owner === ownerAddress,
+    (confirmation) => confirmation.owner === ownerAddress
   );
 
   if (ownerHasSignedTransaction) {

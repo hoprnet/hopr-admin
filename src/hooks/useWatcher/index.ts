@@ -10,10 +10,7 @@ import { checkHowChannelsHaveChanged } from './channels';
 
 export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: number }) => {
   const dispatch = useAppDispatch();
-  const {
-    apiEndpoint,
-    apiToken,
-  } = useAppSelector((store) => store.auth.loginData);
+  const { apiEndpoint, apiToken } = useAppSelector((store) => store.auth.loginData);
   const isNodeReady = useAppSelector((store) => store.node.nodeIsReady.data);
   const messages = useAppSelector((store) => store.node.messages.data);
   const channelsParsed = useAppSelector((store) => store.node.channels.parsed);
@@ -42,7 +39,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
         nodeActionsAsync.isNodeReadyThunk({
           apiEndpoint,
           apiToken: apiToken ? apiToken : '',
-        }),
+        })
       );
     }, intervalDuration);
 
@@ -52,7 +49,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
         nodeActionsAsync.getChannelsThunk({
           apiEndpoint,
           apiToken: apiToken ? apiToken : '',
-        }),
+        })
       );
     }, intervalDuration);
 
@@ -75,7 +72,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
         nodeActionsAsync.getPrometheusMetricsThunk({
           apiEndpoint,
           apiToken: apiToken ? apiToken : '',
-        }),
+        })
       );
     }, intervalDuration);
 
@@ -85,7 +82,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
         nodeActionsAsync.getMessagesThunk({
           apiEndpoint,
           apiToken: apiToken ? apiToken : '',
-        }),
+        })
       );
     }, 5_000);
 

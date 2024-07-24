@@ -49,25 +49,25 @@ function ChannelsPage() {
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      }),
+      })
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      }),
+      })
     );
     dispatch(
       actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      }),
+      })
     );
     dispatch(
       actionsAsync.getPrometheusMetricsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      }),
+      })
     );
   };
 
@@ -91,7 +91,7 @@ function ChannelsPage() {
           status: channel.status,
           dedicatedFunds: channel.balance,
         })),
-        `${tabLabel}-channels.csv`,
+        `${tabLabel}-channels.csv`
       );
     }
   };
@@ -152,7 +152,7 @@ function ChannelsPage() {
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
         channelId: channelId,
-      }),
+      })
     )
       .unwrap()
       .then(() => {
@@ -160,7 +160,7 @@ function ChannelsPage() {
       })
       .catch(async (e) => {
         const isCurrentApiEndpointTheSame = await dispatch(
-          actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!),
+          actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)
         ).unwrap();
         if (!isCurrentApiEndpointTheSame) return;
 
@@ -198,7 +198,7 @@ function ChannelsPage() {
       const peerId = getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string);
 
       const totalTicketsPerChannel = `${formatEther(
-        BigInt(tickets?.redeemed[id]?.value || '0') + BigInt(tickets?.unredeemed[id]?.value || '0'),
+        BigInt(tickets?.redeemed[id]?.value || '0') + BigInt(tickets?.unredeemed[id]?.value || '0')
       )}`;
       const unredeemedTicketsPerChannel = `${formatEther(BigInt(tickets?.unredeemed[id]?.value || '0'))}`;
       const ticketsPerChannel = `${formatEther(BigInt(tickets?.redeemed[id]?.value || '0'))}/${totalTicketsPerChannel}`;

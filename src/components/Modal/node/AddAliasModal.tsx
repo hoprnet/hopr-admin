@@ -67,7 +67,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
           peerId: peerId,
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken ? loginData.apiToken : '',
-        }),
+        })
       )
         .unwrap()
         .then(() => {

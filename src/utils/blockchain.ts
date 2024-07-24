@@ -70,7 +70,7 @@ export const encodeDefaultPermissions = (nodeAddress: string) => {
       'uint8',
       'uint8',
     ],
-    [nodeAddress as Address, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [nodeAddress as Address, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
   );
 
   return encodedPermissions;

@@ -99,7 +99,7 @@ export const observeNodeBalances = ({
         nodeActionsAsync.getBalancesThunk({
           apiEndpoint,
           apiToken: apiToken ? apiToken : '',
-        }),
+        })
       ).unwrap();
     },
     isDataDifferent: (newNodeBalances) => JSON.stringify(previousState) !== JSON.stringify(newNodeBalances),
@@ -128,9 +128,11 @@ export const observeNodeBalances = ({
               url: null,
               timeout: null,
             },
-            toastPayload: { message: `Node xDai level is low, node has ${formatEther(
-              BigInt(newNativeBalance),
-            )} and should have ${formatEther(BigInt(minimumNodeBalances.native))}` },
+            toastPayload: {
+              message: `Node xDai level is low, node has ${formatEther(
+                BigInt(newNativeBalance)
+              )} and should have ${formatEther(BigInt(minimumNodeBalances.native))}`,
+            },
             dispatch,
           });
         },

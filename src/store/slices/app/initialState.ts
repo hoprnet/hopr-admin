@@ -34,15 +34,17 @@ type InitialState = {
 
 export const initialState: InitialState = {
   notifications: [],
-  configuration: { notifications: (loadStateFromLocalStorage(
-    'app/configuration/notifications',
-  ) as InitialState['configuration']['notifications']) ?? {
-    channels: true,
-    message: true,
-    nodeBalances: true,
-    nodeInfo: true,
-    pendingSafeTransaction: true,
-  } },
+  configuration: {
+    notifications: (loadStateFromLocalStorage(
+      'app/configuration/notifications'
+    ) as InitialState['configuration']['notifications']) ?? {
+      channels: true,
+      message: true,
+      nodeBalances: true,
+      nodeInfo: true,
+      pendingSafeTransaction: true,
+    },
+  },
   // previous states used to compare for notifications
   previousStates: {
     prevOutgoingChannels: null,

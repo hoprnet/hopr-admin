@@ -41,13 +41,13 @@ function PeersPage() {
       actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      }),
+      })
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      }),
+      })
     );
   };
 
@@ -69,7 +69,7 @@ function PeersPage() {
           backoff: peer.backoff,
           isNew: peer.isNew,
         })),
-        'peers.csv',
+        'peers.csv'
       );
     }
   };
@@ -125,13 +125,13 @@ function PeersPage() {
       lastSeen:
         peer.lastSeen > 0
           ? new Date(peer.lastSeen).toLocaleString('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            timeZoneName: 'short',
-          })
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              timeZoneName: 'short',
+            })
           : 'Not seen',
       actions: (
         <>

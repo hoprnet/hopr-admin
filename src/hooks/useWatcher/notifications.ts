@@ -33,6 +33,6 @@ export const sendNotification = ({
     appActions.addNotification({
       ...notificationPayload,
       id: notificationId,
-    }),
+    })
   );
 };
