@@ -36,11 +36,11 @@ jobs:
       - name: Building
         run: yarn build-node
 
-      - name: Formatting
-        run: yarn format:ci
-
       - name: Linting
         run: yarn lint:ci
+
+      - name: Formatting
+        run: yarn format:ci
 
   # Build docker
   docker_testing:
