@@ -52,12 +52,12 @@ export const OpenChannelModal = ({ ...props }: OpenChannelModalProps) => {
           amount: weiValue,
           peerAddress: peerAddress,
           timeout: 2 * 60_000,
-        })
+        }),
       )
         .unwrap()
         .catch(async (e) => {
           const isCurrentApiEndpointTheSame = await dispatch(
-            nodeActionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)
+            nodeActionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!),
           ).unwrap();
           if (!isCurrentApiEndpointTheSame) return;
 
@@ -88,7 +88,7 @@ export const OpenChannelModal = ({ ...props }: OpenChannelModalProps) => {
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      })
+      }),
     );
   };
 

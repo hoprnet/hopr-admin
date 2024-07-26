@@ -33,7 +33,7 @@ export const OpenMultipleChannelsModal = () => {
         actionsAsync.getChannelsThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken ? loginData.apiToken : '',
-        })
+        }),
       );
     }
   };
@@ -52,12 +52,12 @@ export const OpenMultipleChannelsModal = () => {
         amount: weiValue,
         peerAddress: peerId,
         timeout: 60e3,
-      })
+      }),
     )
       .unwrap()
       .catch(async (e) => {
         const isCurrentApiEndpointTheSame = await dispatch(
-          actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)
+          actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!),
         ).unwrap();
         if (!isCurrentApiEndpointTheSame) return;
 
@@ -140,7 +140,7 @@ export const OpenMultipleChannelsModal = () => {
 
     // find the index of the "nodeAddress" header
     let peerIdIndex = expectedObjectKeys.findIndex(
-      (key) => key === 'node' || key === 'peer' || key === 'nodeAddress' || key === 'peerAddress'
+      (key) => key === 'node' || key === 'peer' || key === 'nodeAddress' || key === 'peerAddress',
     );
 
     if (peerIdIndex === -1) {

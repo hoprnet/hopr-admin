@@ -116,7 +116,7 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
           ethereumAddress: recipient,
           apiEndpoint,
           apiToken: apiToken ? apiToken : '',
-        })
+        }),
       )
         .unwrap()
         .then((hash) => {
@@ -124,7 +124,7 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
         })
         .catch(async (e) => {
           const isCurrentApiEndpointTheSame = await dispatch(
-            actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)
+            actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!),
           ).unwrap();
           if (!isCurrentApiEndpointTheSame) return;
 

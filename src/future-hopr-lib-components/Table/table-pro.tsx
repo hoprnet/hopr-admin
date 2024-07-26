@@ -154,7 +154,7 @@ export default function CustomPaginationActionsTable(props: Props) {
   const rowsPerPageFromLocalStorage = loadStateFromLocalStorage(`pro-table_rows-per-page_${props.id}`) as number | null;
   const [page, set_Page] = React.useState(0);
   const [rowsPerPage, set_RowsPerPage] = React.useState(
-    props.id && rowsPerPageFromLocalStorage ? rowsPerPageFromLocalStorage : 10
+    props.id && rowsPerPageFromLocalStorage ? rowsPerPageFromLocalStorage : 10,
   );
   const [searchPhrase, set_searchPhrase] = React.useState('');
   const [filteredData, set_filteredData] = React.useState<typeof props.data>([]);
@@ -267,7 +267,7 @@ export default function CustomPaginationActionsTable(props: Props) {
                       <span>{headElem.name}</span>
                     </Tooltip>
                   </STableCell>
-                )
+                ),
             )}
           </TableRow>
         </thead>
@@ -357,7 +357,7 @@ const CustomTableRow = ({
                 row[headElem.key]
               )}
             </STableCell>
-          )
+          ),
       )}
     </TableRow>
   );

@@ -56,7 +56,7 @@ export const loginThunk = createAsyncThunk<
           apiToken,
           apiEndpoint,
           force: true,
-        })
+        }),
       ).unwrap();
 
       if (e instanceof sdkApiError && e.hoprdErrorPayload?.error?.includes('get_peer_multiaddresses')) {
@@ -72,7 +72,7 @@ export const loginThunk = createAsyncThunk<
           apiEndpoint,
           apiToken,
           force: true,
-        })
+        }),
       ).unwrap();
 
       const minimumNodeBalance = parseEther('0.001');

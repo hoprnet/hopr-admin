@@ -27,7 +27,7 @@ function PingPage() {
       nodeActionsAsync.getAliasesThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
   }, []);
 
@@ -55,7 +55,7 @@ function PingPage() {
           apiEndpoint,
           apiToken,
           peerId: validatedPeerId,
-        })
+        }),
       )
         .unwrap()
         .then(() => {

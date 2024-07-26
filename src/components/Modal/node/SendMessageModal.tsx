@@ -77,13 +77,13 @@ function sortAddresses(
   me: AddressesType,
   peerIdToAliasLink: {
     [peerId: string]: string;
-  }
+  },
 ): string[] {
   if (!peers || !me) return [];
   const connectedPeers = peers.connected;
   const myAddress = me.hopr as string;
   const peerIdsWithAliases = Object.keys(peerIdToAliasLink).sort((a, b) =>
-    peerIdToAliasLink[a] < peerIdToAliasLink[b] ? -1 : 1
+    peerIdToAliasLink[a] < peerIdToAliasLink[b] ? -1 : 1,
   );
   if (peerIdsWithAliases.length === 0) return [myAddress, ...connectedPeers.map((peer) => peer.peerId).sort()];
   const peerIdsWithAliasesWithoutMyAddress = peerIdsWithAliases.filter((peerId) => peerId !== myAddress);
@@ -101,7 +101,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const [error, set_error] = useState<string | null>(null);
   const [numberOfHops, set_numberOfHops] = useState<number>(0);
   const [sendMode, set_sendMode] = useState<'path' | 'automaticPath' | 'numberOfHops' | 'directMessage'>(
-    'directMessage'
+    'directMessage',
   );
   const [message, set_message] = useState<string>('');
   const [openModal, set_openModal] = useState<boolean>(false);
@@ -209,7 +209,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
 
   const handleNumberOfHops = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_numberOfHops(
-      parseInt(event.target.value) || parseInt(event.target.value) === 0 ? parseInt(event.target.value) : 0
+      parseInt(event.target.value) || parseInt(event.target.value) === 0 ? parseInt(event.target.value) : 0,
     );
   };
 

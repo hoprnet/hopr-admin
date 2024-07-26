@@ -171,7 +171,7 @@ function MetricsPage() {
       actionsAsync.getPrometheusMetricsThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
   };
 
@@ -201,7 +201,7 @@ function MetricsPage() {
               value.data[0]}
             {value.data.length !== 1 && typeof value.data === 'object' && JSON.stringify(value.data)}
           </td>
-        </tr>
+        </tr>,
       );
     }
     return <tbody>{render}</tbody>;

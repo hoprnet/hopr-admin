@@ -257,11 +257,11 @@ const Drawer = ({
                             )}
                         </StyledListItemButton>
                       </Tooltip>
-                    )
+                    ),
                 )}
               </List>
             </div>
-          )
+          ),
       )}
       {drawerVariant === 'temporary' && <Details style={{ margin: '0 auto 16px' }} />}
     </StyledDrawer>

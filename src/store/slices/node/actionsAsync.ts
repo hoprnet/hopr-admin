@@ -101,7 +101,7 @@ const isNodeReadyThunk = createAsyncThunk<IsNodeReadyResponseType | undefined, B
         return false;
       }
     },
-  }
+  },
 );
 
 const getInfoThunk = createAsyncThunk<GetInfoResponseType | undefined, BasePayloadType, { state: RootState }>(
@@ -125,7 +125,7 @@ const getInfoThunk = createAsyncThunk<GetInfoResponseType | undefined, BasePaylo
         return false;
       }
     },
-  }
+  },
 );
 
 const getAddressesThunk = createAsyncThunk<
@@ -161,7 +161,7 @@ const getAddressesThunk = createAsyncThunk<
         return false;
       }
     },
-  }
+  },
 );
 
 const getAliasesThunk = createAsyncThunk<GetAliasesResponseType | undefined, BasePayloadType, { state: RootState }>(
@@ -184,7 +184,7 @@ const getAliasesThunk = createAsyncThunk<GetAliasesResponseType | undefined, Bas
         return false;
       }
     },
-  }
+  },
 );
 
 const getBalancesThunk = createAsyncThunk<
@@ -216,7 +216,7 @@ const getBalancesThunk = createAsyncThunk<
         return false;
       }
     },
-  }
+  },
 );
 
 const getBalanceInAllSafeChannelsThunk = createAsyncThunk<
@@ -243,7 +243,7 @@ const getBalanceInAllSafeChannelsThunk = createAsyncThunk<
         return false;
       }
     },
-  }
+  },
 );
 
 const getChannelsThunk = createAsyncThunk<GetChannelsResponseType | undefined, BasePayloadType, { state: RootState }>(
@@ -266,7 +266,7 @@ const getChannelsThunk = createAsyncThunk<GetChannelsResponseType | undefined, B
         return false;
       }
     },
-  }
+  },
 );
 
 const getConfigurationThunk = createAsyncThunk<
@@ -295,7 +295,7 @@ const getConfigurationThunk = createAsyncThunk<
         return false;
       }
     },
-  }
+  },
 );
 
 const getPeersThunk = createAsyncThunk<GetPeersResponseType | undefined, GetPeersPayloadType, { state: RootState }>(
@@ -320,7 +320,7 @@ const getPeersThunk = createAsyncThunk<GetPeersResponseType | undefined, GetPeer
         return false;
       }
     },
-  }
+  },
 );
 
 const getPeerInfoThunk = createAsyncThunk<GetPeerResponseType | undefined, GetPeerPayloadType, { state: RootState }>(
@@ -344,7 +344,7 @@ const getPeerInfoThunk = createAsyncThunk<GetPeerResponseType | undefined, GetPe
         return false;
       }
     },
-  }
+  },
 );
 
 const getTicketStatisticsThunk = createAsyncThunk<
@@ -372,7 +372,7 @@ const getTicketStatisticsThunk = createAsyncThunk<
         return false;
       }
     },
-  }
+  },
 );
 
 const getTokenThunk = createAsyncThunk<GetTokenResponseType | undefined, BasePayloadType, { state: RootState }>(
@@ -396,7 +396,7 @@ const getTokenThunk = createAsyncThunk<GetTokenResponseType | undefined, BasePay
         return false;
       }
     },
-  }
+  },
 );
 
 const getEntryNodesThunk = createAsyncThunk<
@@ -424,7 +424,7 @@ const getEntryNodesThunk = createAsyncThunk<
         return false;
       }
     },
-  }
+  },
 );
 
 const getVersionThunk = createAsyncThunk<string | undefined, BasePayloadType, { state: RootState }>(
@@ -448,7 +448,7 @@ const getVersionThunk = createAsyncThunk<string | undefined, BasePayloadType, { 
         return false;
       }
     },
-  }
+  },
 );
 
 const withdrawThunk = createAsyncThunk<string | undefined, WithdrawPayloadType, { state: RootState }>(
@@ -472,7 +472,7 @@ const withdrawThunk = createAsyncThunk<string | undefined, WithdrawPayloadType, 
         return false;
       }
     },
-  }
+  },
 );
 
 const getAliasThunk = createAsyncThunk<
@@ -507,7 +507,7 @@ const getAliasThunk = createAsyncThunk<
         return false;
       }
     },
-  }
+  },
 );
 
 const setAliasThunk = createAsyncThunk<
@@ -539,7 +539,7 @@ const setAliasThunk = createAsyncThunk<
         return false;
       }
     },
-  }
+  },
 );
 
 const removeAliasThunk = createAsyncThunk<{ alias: string } | undefined, AliasPayloadType, { state: RootState }>(
@@ -565,7 +565,7 @@ const removeAliasThunk = createAsyncThunk<{ alias: string } | undefined, AliasPa
         return false;
       }
     },
-  }
+  },
 );
 
 const closeChannelThunk = createAsyncThunk<
@@ -603,7 +603,7 @@ const closeChannelThunk = createAsyncThunk<
         return false;
       }
     },
-  }
+  },
 );
 
 const openChannelThunk = createAsyncThunk<
@@ -649,7 +649,7 @@ const openMultipleChannelsThunk = createAsyncThunk(
       amount: string;
       timeout?: number;
     },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const res = await openMultipleChannels({
@@ -671,7 +671,7 @@ const openMultipleChannelsThunk = createAsyncThunk(
       }
       return rejectWithValue({ status: JSON.stringify(e) });
     }
-  }
+  },
 );
 
 const redeemChannelTicketsThunk = createAsyncThunk<
@@ -699,7 +699,7 @@ const redeemChannelTicketsThunk = createAsyncThunk<
         return false;
       }
     },
-  }
+  },
 );
 
 interface GetMessagesThunk extends PeekAllMessagesPayloadType {
@@ -718,7 +718,7 @@ const getMessagesThunk = createAsyncThunk(
       }
       return rejectWithValue({ status: JSON.stringify(e) });
     }
-  }
+  },
 );
 
 const sendMessageThunk = createAsyncThunk(
@@ -736,7 +736,7 @@ const sendMessageThunk = createAsyncThunk(
       }
       return rejectWithValue({ status: JSON.stringify(e) });
     }
-  }
+  },
 );
 
 const deleteMessagesThunk = createAsyncThunk(
@@ -751,7 +751,7 @@ const deleteMessagesThunk = createAsyncThunk(
       }
       return rejectWithValue({ status: JSON.stringify(e) });
     }
-  }
+  },
 );
 
 //
@@ -805,7 +805,7 @@ const redeemTicketsThunk = createAsyncThunk<boolean | undefined, BasePayloadType
         return false;
       }
     },
-  }
+  },
 );
 
 const createTokenThunk = createAsyncThunk<
@@ -833,7 +833,7 @@ const createTokenThunk = createAsyncThunk<
         return false;
       }
     },
-  }
+  },
 );
 
 const deleteTokenThunk = createAsyncThunk<
@@ -864,7 +864,7 @@ const deleteTokenThunk = createAsyncThunk<
         return false;
       }
     },
-  }
+  },
 );
 
 const getPrometheusMetricsThunk = createAsyncThunk<string | undefined, BasePayloadType, { state: RootState }>(
@@ -888,7 +888,7 @@ const getPrometheusMetricsThunk = createAsyncThunk<string | undefined, BasePaylo
         return false;
       }
     },
-  }
+  },
 );
 
 const isCurrentApiEndpointTheSame = createAsyncThunk<boolean, string, { state: RootState }>(
@@ -897,7 +897,7 @@ const isCurrentApiEndpointTheSame = createAsyncThunk<boolean, string, { state: R
     const apiEndpoint = getState().node.apiEndpoint;
     console.log('node/isCurrentApiEndpointTheSame', apiEndpoint, payload);
     return payload === apiEndpoint;
-  }
+  },
 );
 
 export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initialState>) => {
@@ -1329,7 +1329,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
             (msgSaved) =>
               msgSaved.tag === msgReceived.tag &&
               msgSaved.receivedAt === msgReceived.receivedAt &&
-              msgSaved.body === msgReceived.body
+              msgSaved.body === msgReceived.body,
           ) === -1;
         if (addMessage) {
           state.messages.data.unshift({

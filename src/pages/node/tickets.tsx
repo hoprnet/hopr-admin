@@ -34,7 +34,7 @@ function TicketsPage() {
         actionsAsync.getTicketStatisticsThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken ? loginData.apiToken : '',
-        })
+        }),
       );
     }
   };
@@ -44,7 +44,7 @@ function TicketsPage() {
       actionsAsync.redeemTicketsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      })
+      }),
     )
       .unwrap()
       .then(() => {

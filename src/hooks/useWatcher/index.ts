@@ -39,7 +39,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
         nodeActionsAsync.isNodeReadyThunk({
           apiEndpoint,
           apiToken: apiToken ? apiToken : '',
-        })
+        }),
       );
     }, intervalDuration);
 
@@ -49,7 +49,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
         nodeActionsAsync.getChannelsThunk({
           apiEndpoint,
           apiToken: apiToken ? apiToken : '',
-        })
+        }),
       );
     }, intervalDuration);
 
@@ -72,7 +72,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
         nodeActionsAsync.getPrometheusMetricsThunk({
           apiEndpoint,
           apiToken: apiToken ? apiToken : '',
-        })
+        }),
       );
     }, intervalDuration);
 
@@ -82,7 +82,7 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
         nodeActionsAsync.getMessagesThunk({
           apiEndpoint,
           apiToken: apiToken ? apiToken : '',
-        })
+        }),
       );
     }, 5_000);
 

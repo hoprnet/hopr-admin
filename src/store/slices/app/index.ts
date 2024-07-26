@@ -42,7 +42,7 @@ const appSlice = createSlice({
         source: string;
         timeout: number | null;
         url: string | null;
-      }>
+      }>,
     ) => {
       const now = Date.now();
       const defaultTimeout = 5000;
@@ -62,7 +62,7 @@ const appSlice = createSlice({
               ...notification,
               seen: true,
             }
-          : notification
+          : notification,
       );
     },
     interactedWithNotification: (state, action: PayloadAction<string>) => {
@@ -73,7 +73,7 @@ const appSlice = createSlice({
               seen: true,
               interacted: true,
             }
-          : notification
+          : notification,
       );
     },
     clearExpiredNotifications: (state) => {
@@ -85,7 +85,7 @@ const appSlice = createSlice({
               seen: true,
               read: true,
             }
-          : notification
+          : notification,
       );
     },
     clearNotifications: (state) => {

@@ -73,7 +73,7 @@ function InfoPage() {
         nodeActionsAsync.getPrometheusMetricsThunk({
           apiEndpoint,
           apiToken: apiToken ? apiToken : '',
-        })
+        }),
       );
     }, 5_000);
 
@@ -89,55 +89,55 @@ function InfoPage() {
       nodeActionsAsync.getBalancesThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getChannelsThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getAddressesThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getVersionThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getInfoThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getPeersThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getAliasesThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getTicketStatisticsThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     dispatch(
       nodeActionsAsync.getPrometheusMetricsThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
   };
 

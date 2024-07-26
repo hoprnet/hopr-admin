@@ -36,7 +36,7 @@ export const observeNodeInfo = ({
         nodeActionsAsync.getInfoThunk({
           apiEndpoint,
           apiToken: apiToken ? apiToken : '',
-        })
+        }),
       ).unwrap();
     },
     previousData: previousState,

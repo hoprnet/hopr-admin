@@ -48,7 +48,7 @@ function AliasesPage() {
         actionsAsync.getAliasesThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken ? loginData.apiToken : '',
-        })
+        }),
       );
     }
   }, [loginData]);
@@ -59,7 +59,7 @@ function AliasesPage() {
         actionsAsync.getAliasesThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken ? loginData.apiToken : '',
-        })
+        }),
       );
     }
   };
@@ -76,7 +76,7 @@ function AliasesPage() {
           alias: alias,
           peerId: aliases[alias],
         })),
-        'aliases.csv'
+        'aliases.csv',
       );
     }
   };
@@ -92,7 +92,7 @@ function AliasesPage() {
             peerId: String(data.peerId),
             apiEndpoint: loginData.apiEndpoint,
             apiToken: loginData.apiToken ? loginData.apiToken : '',
-          })
+          }),
         )
           .unwrap()
           .then(() => {
@@ -116,7 +116,7 @@ function AliasesPage() {
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      })
+      }),
     );
   };
 
@@ -271,7 +271,7 @@ function DeleteAliasButton({
               alias,
               apiEndpoint: loginData.apiEndpoint,
               apiToken: loginData.apiToken ? loginData.apiToken : '',
-            })
+            }),
           )
             .unwrap()
             .then(() => {
@@ -332,7 +332,7 @@ function CreateAliasForm() {
                 peerId: form.peerId,
                 apiEndpoint: loginData.apiEndpoint,
                 apiToken: loginData.apiToken ? loginData.apiToken : '',
-              })
+              }),
             )
               .unwrap()
               .then(() => {

@@ -26,7 +26,7 @@ const messages = () => {
       actionsAsync.getAliasesThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
   }, []);
 
@@ -93,7 +93,7 @@ const messages = () => {
                   actionsAsync.deleteMessagesThunk({
                     apiEndpoint,
                     apiToken: apiToken ? apiToken : '',
-                  })
+                  }),
                 );
               }}
             />

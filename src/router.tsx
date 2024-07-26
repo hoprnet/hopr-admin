@@ -211,7 +211,7 @@ const LayoutEnhanced = () => {
 
   const numberOfPeers = useAppSelector((store) => store.node.peers.data?.connected.length);
   const numberOfAliases = useAppSelector(
-    (store) => store.node.aliases?.data && Object.keys(store.node.aliases?.data).length
+    (store) => store.node.aliases?.data && Object.keys(store.node.aliases?.data).length,
   );
   const numberOfMessagesReceived = useAppSelector((store) => store.node.messages.data.length);
   const numberOfChannelsIn = useAppSelector((store) => store.node.channels.data?.incoming.length);
@@ -234,7 +234,7 @@ const LayoutEnhanced = () => {
       authActions.useNodeData({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
     dispatch(nodeActions.setApiEndpoint({ apiEndpoint: formattedApiEndpoint }));
     const useNode = async () => {
@@ -244,7 +244,7 @@ const LayoutEnhanced = () => {
           authActionsAsync.loginThunk({
             apiEndpoint,
             apiToken: apiToken ? apiToken : '',
-          })
+          }),
         ).unwrap();
         if (loginInfo) {
           // We do this after the loginInfo to make sure the login from url was successful
@@ -253,68 +253,68 @@ const LayoutEnhanced = () => {
             nodeActionsAsync.isNodeReadyThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getInfoThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getAddressesThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getAliasesThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getPeersThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getBalancesThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getMessagesThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
               firstLoad: true,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getChannelsThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getTicketStatisticsThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getPrometheusMetricsThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getConfigurationThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
         }
       } catch (e) {

@@ -48,7 +48,7 @@ export const FundChannelModal = ({ ...props }: FundChannelModalModalProps) => {
           amount: weiValue,
           channelId: channelId,
           timeout: 60e3,
-        })
+        }),
       )
         .unwrap()
         .then(() => {
@@ -66,7 +66,7 @@ export const FundChannelModal = ({ ...props }: FundChannelModalModalProps) => {
         })
         .catch(async (e) => {
           const isCurrentApiEndpointTheSame = await dispatch(
-            actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)
+            actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!),
           ).unwrap();
           if (!isCurrentApiEndpointTheSame) return;
 
@@ -97,7 +97,7 @@ export const FundChannelModal = ({ ...props }: FundChannelModalModalProps) => {
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      })
+      }),
     );
   };
 

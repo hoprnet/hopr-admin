@@ -36,7 +36,7 @@ export const initialState: InitialState = {
   notifications: [],
   configuration: {
     notifications: (loadStateFromLocalStorage(
-      'app/configuration/notifications'
+      'app/configuration/notifications',
     ) as InitialState['configuration']['notifications']) ?? {
       channels: true,
       message: true,
