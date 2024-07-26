@@ -20,14 +20,11 @@ Builds the Node Admin.
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-
 ### `yarn build-hub`
 
 Builds the Staking Hub.
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
-
-
 
 ### `docker build --platform linux/amd64 -t europe-west3-docker.pkg.dev/hoprassociation/docker-images/hopr-admin -f ./scripts/NodeAdmin.Dockerfile .`
 
