@@ -10,10 +10,7 @@ import { checkHowChannelsHaveChanged } from './channels';
 
 export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: number }) => {
   const dispatch = useAppDispatch();
-  const {
-    apiEndpoint,
-    apiToken,
-  } = useAppSelector((store) => store.auth.loginData);
+  const { apiEndpoint, apiToken } = useAppSelector((store) => store.auth.loginData);
   const isNodeReady = useAppSelector((store) => store.node.nodeIsReady.data);
   const messages = useAppSelector((store) => store.node.messages.data);
   const channelsParsed = useAppSelector((store) => store.node.channels.parsed);
@@ -21,16 +18,15 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
   const connected = useAppSelector((store) => store.auth.status.connected);
 
   // flags to activate notifications
-  const activeChannels = useAppSelector(store => store.app.configuration.notifications.channels)
-  const activeMessage = useAppSelector(store => store.app.configuration.notifications.message)
-  const activeNodeBalances = useAppSelector(store => store.app.configuration.notifications.nodeBalances)
-  const activeNodeInfo = useAppSelector(store => store.app.configuration.notifications.nodeInfo)
+  const activeChannels = useAppSelector((store) => store.app.configuration.notifications.channels);
+  const activeMessage = useAppSelector((store) => store.app.configuration.notifications.message);
+  const activeNodeBalances = useAppSelector((store) => store.app.configuration.notifications.nodeBalances);
+  const activeNodeInfo = useAppSelector((store) => store.app.configuration.notifications.nodeInfo);
   // redux previous states, this can be updated from anywhere in the app
   const prevOutgoingChannels = useAppSelector((store) => store.app.previousStates.prevOutgoingChannels);
   const prevIncomingChannels = useAppSelector((store) => store.app.previousStates.prevIncomingChannels);
   const prevNodeBalances = useAppSelector((store) => store.app.previousStates.prevNodeBalances);
   const prevNodeInfo = useAppSelector((store) => store.app.previousStates.prevNodeInfo);
-
 
   // ==================================================================================
   // node watchers
@@ -122,41 +118,41 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
 
   // Messages
   useEffect(() => {
-    if(!connected) return;
-    if(messages && messages.length > 0) {
-        messages.forEach((msgReceived, index) => {
-          let hasToNotify = !msgReceived.notified;
-          if(hasToNotify){
-            if(activeMessage){
-              const notification = `Message received: ${msgReceived.body}`;
-              sendNotification({
-                notificationPayload: {
-                  source: 'node',
-                  name: notification,
-                  url: null,
-                  timeout: null,
-                },
-                toastPayload: { message: notification },
-                dispatch,
-              });
-            }
-            dispatch(nodeActions.setMessageNotified(index));
+    if (!connected) return;
+    if (messages && messages.length > 0) {
+      messages.forEach((msgReceived, index) => {
+        const hasToNotify = !msgReceived.notified;
+        if (hasToNotify) {
+          if (activeMessage) {
+            const notification = `Message received: ${msgReceived.body}`;
+            sendNotification({
+              notificationPayload: {
+                source: 'node',
+                name: notification,
+                url: null,
+                timeout: null,
+              },
+              toastPayload: { message: notification },
+              dispatch,
+            });
           }
-        })
+          dispatch(nodeActions.setMessageNotified(index));
+        }
+      });
     }
   }, [connected, activeMessage, messages]);
 
   // Channels
   useEffect(() => {
-    if(!connected) return;
-    if(!isNodeReady) return;
-    if(!activeChannels) return;
-    if(!firstChannelsCallWasSuccesfull) return;
+    if (!connected) return;
+    if (!isNodeReady) return;
+    if (!activeChannels) return;
+    if (!firstChannelsCallWasSuccesfull) return;
 
-    if(prevOutgoingChannels === null && prevIncomingChannels === null) {
+    if (prevOutgoingChannels === null && prevIncomingChannels === null) {
       const channelsOutgoingIds = Object.keys(channelsParsed.outgoing);
-      if(
-        channelsOutgoingIds.length !==0 && //true
+      if (
+        channelsOutgoingIds.length !== 0 && //true
         Object.keys(channelsParsed.outgoing[channelsOutgoingIds[0]]).includes('status') // If the channels are populated more than with tickets data
       ) {
         dispatch(appActions.setPrevOutgoingChannels(channelsParsed.outgoing));
@@ -165,28 +161,28 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
       }
 
       const channelsIncomingIds = Object.keys(channelsParsed.incoming);
-      if(channelsIncomingIds.length !==0) {
+      if (channelsIncomingIds.length !== 0) {
         dispatch(appActions.setPrevIncomingChannels(channelsParsed.incoming));
       } else {
         dispatch(appActions.setPrevIncomingChannels({}));
       }
 
       return;
-    };
+    }
 
-    if(!prevOutgoingChannels || !prevIncomingChannels) return;
+    if (!prevOutgoingChannels || !prevIncomingChannels) return;
 
     const changesOutgoing = checkHowChannelsHaveChanged(prevOutgoingChannels, channelsParsed.outgoing);
-    if(changesOutgoing.length !== 0) {
-      console.log('changes channels outgoing', changesOutgoing)
-      for(let i = 0; i < changesOutgoing.length; i++){
+    if (changesOutgoing.length !== 0) {
+      console.log('changes channels outgoing', changesOutgoing);
+      for (let i = 0; i < changesOutgoing.length; i++) {
         let notificationText: null | string = null;
-        if(changesOutgoing[i].status === "Open") {
-          notificationText = `Channel to ${changesOutgoing[i].peerAddress} opened.`
-        } else if(changesOutgoing[i].status === "PendingToClose") {
-          notificationText = `Channel to ${changesOutgoing[i].peerAddress} is pending to close.`
-        } else if(changesOutgoing[i].status === "Closed") {
-          notificationText = `Channel to ${changesOutgoing[i].peerAddress} closed.`
+        if (changesOutgoing[i].status === 'Open') {
+          notificationText = `Channel to ${changesOutgoing[i].peerAddress} opened.`;
+        } else if (changesOutgoing[i].status === 'PendingToClose') {
+          notificationText = `Channel to ${changesOutgoing[i].peerAddress} is pending to close.`;
+        } else if (changesOutgoing[i].status === 'Closed') {
+          notificationText = `Channel to ${changesOutgoing[i].peerAddress} closed.`;
         }
         if (notificationText) {
           sendNotification({
@@ -205,16 +201,16 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
     }
 
     const changesIncoming = checkHowChannelsHaveChanged(prevIncomingChannels, channelsParsed.incoming);
-    if(changesIncoming.length !== 0) {
-      console.log('changes channels incoming', changesIncoming)
-      for(let i = 0; i < changesIncoming.length; i++){
+    if (changesIncoming.length !== 0) {
+      console.log('changes channels incoming', changesIncoming);
+      for (let i = 0; i < changesIncoming.length; i++) {
         let notificationText: null | string = null;
-        if(changesIncoming[i].status === "Open") {
-          notificationText = `Channel from ${changesIncoming[i].peerAddress} opened.`
-        } else if(changesIncoming[i].status === "PendingToClose") {
-          notificationText = `Channel from ${changesIncoming[i].peerAddress} is pending to close.`
-        } else if(changesIncoming[i].status === "Closed") {
-          notificationText = `Channel from ${changesIncoming[i].peerAddress} closed.`
+        if (changesIncoming[i].status === 'Open') {
+          notificationText = `Channel from ${changesIncoming[i].peerAddress} opened.`;
+        } else if (changesIncoming[i].status === 'PendingToClose') {
+          notificationText = `Channel from ${changesIncoming[i].peerAddress} is pending to close.`;
+        } else if (changesIncoming[i].status === 'Closed') {
+          notificationText = `Channel from ${changesIncoming[i].peerAddress} closed.`;
         }
         if (notificationText) {
           sendNotification({
@@ -231,7 +227,13 @@ export const useWatcher = ({ intervalDuration = 60_000 }: { intervalDuration?: n
       }
       dispatch(appActions.setPrevIncomingChannels(channelsParsed.incoming));
     }
-
-  }, [connected, isNodeReady, activeChannels, firstChannelsCallWasSuccesfull, channelsParsed, prevOutgoingChannels, prevIncomingChannels]);
-
+  }, [
+    connected,
+    isNodeReady,
+    activeChannels,
+    firstChannelsCallWasSuccesfull,
+    channelsParsed,
+    prevOutgoingChannels,
+    prevIncomingChannels,
+  ]);
 };

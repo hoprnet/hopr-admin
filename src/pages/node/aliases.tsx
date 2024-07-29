@@ -26,10 +26,10 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 function AliasesPage() {
   const dispatch = useAppDispatch();
   const aliases = useAppSelector((store) => store.node.aliases.data);
-  const peers = useAppSelector(store => store.node.peers.data)
+  const peers = useAppSelector((store) => store.node.peers.data);
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
-  const hoprAddress = useAppSelector((store) => store.node.addresses.data.hopr)
-  const myNodeAddress = useAppSelector((store) => store.node.addresses.data.native)
+  const hoprAddress = useAppSelector((store) => store.node.addresses.data.hopr);
+  const myNodeAddress = useAppSelector((store) => store.node.addresses.data.native);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const peerIdToNodeAddressLink = useAppSelector((store) => store.node.links.peerIdToNodeAddress);
   const nodeAddressToOutgoingChannelLink = useAppSelector((store) => store.node.links.nodeAddressToOutgoingChannel);
@@ -48,7 +48,7 @@ function AliasesPage() {
         actionsAsync.getAliasesThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken ? loginData.apiToken : '',
-        })
+        }),
       );
     }
   }, [loginData]);
@@ -59,15 +59,15 @@ function AliasesPage() {
         actionsAsync.getAliasesThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken ? loginData.apiToken : '',
-        })
+        }),
       );
     }
   };
 
   const getNodeAddressByPeerId = (peerId: string): string | undefined => {
-    if(peerId === hoprAddress && typeof(myNodeAddress) === 'string' ) return myNodeAddress;
+    if (peerId === hoprAddress && typeof myNodeAddress === 'string') return myNodeAddress;
     return peerIdToNodeAddressLink[peerId];
-  }
+  };
 
   const handleExport = () => {
     if (aliases) {
@@ -76,7 +76,7 @@ function AliasesPage() {
           alias: alias,
           peerId: aliases[alias],
         })),
-        'aliases.csv'
+        'aliases.csv',
       );
     }
   };
@@ -92,7 +92,7 @@ function AliasesPage() {
             peerId: String(data.peerId),
             apiEndpoint: loginData.apiEndpoint,
             apiToken: loginData.apiToken ? loginData.apiToken : '',
-          })
+          }),
         )
           .unwrap()
           .then(() => {
@@ -116,8 +116,8 @@ function AliasesPage() {
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      })
-    )
+      }),
+    );
   };
 
   const parsedTableData = Object.entries(aliases ?? {}).map(([alias, peerId], key) => {
@@ -133,23 +133,18 @@ function AliasesPage() {
           <PingModal
             peerId={peerId}
             disabled={peerId === hoprAddress}
-            tooltip={peerId === hoprAddress ? `You can't ping yourself` : undefined }
+            tooltip={peerId === hoprAddress ? `You can't ping yourself` : undefined}
           />
-          {
-            peerAddress && nodeAddressToOutgoingChannelLink[peerAddress] ?
-            <FundChannelModal
-              channelId={nodeAddressToOutgoingChannelLink[peerAddress]}
-            />
-            :
+          {peerAddress && nodeAddressToOutgoingChannelLink[peerAddress] ? (
+            <FundChannelModal channelId={nodeAddressToOutgoingChannelLink[peerAddress]} />
+          ) : (
             <OpenChannelModal
               peerAddress={peerAddress}
               disabled={peerId === hoprAddress}
-              tooltip={peerId === hoprAddress ? `You can't open a channel to yourself` : undefined }
+              tooltip={peerId === hoprAddress ? `You can't open a channel to yourself` : undefined}
             />
-          }
-          <SendMessageModal
-            peerId={peerId}
-          />
+          )}
+          <SendMessageModal peerId={peerId} />
           <DeleteAliasButton
             onSuccess={() => {
               set_deleteSuccess(true);
@@ -276,7 +271,7 @@ function DeleteAliasButton({
               alias,
               apiEndpoint: loginData.apiEndpoint,
               apiToken: loginData.apiToken ? loginData.apiToken : '',
-            })
+            }),
           )
             .unwrap()
             .then(() => {
@@ -337,7 +332,7 @@ function CreateAliasForm() {
                 peerId: form.peerId,
                 apiEndpoint: loginData.apiEndpoint,
                 apiToken: loginData.apiToken ? loginData.apiToken : '',
-              })
+              }),
             )
               .unwrap()
               .then(() => {

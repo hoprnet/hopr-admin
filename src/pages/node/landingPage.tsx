@@ -5,7 +5,6 @@ import Button from '../../future-hopr-lib-components/Button';
 import Section from '../../future-hopr-lib-components/Section';
 import { Link } from 'react-router-dom';
 
-
 const StyledContainer = styled.div`
   align-items: center;
   text-align: center;
@@ -20,7 +19,7 @@ const ImageContainer = styled.div`
   min-height: 256px;
   min-width: 512px;
   padding: 1rem;
-  @media screen and (max-height: 1025px){
+  @media screen and (max-height: 1025px) {
     height: 128px;
     width: 256;
   }
@@ -86,8 +85,7 @@ function LandingPage() {
           HOPR Node Admin allows at-a-glance access to the crucial information of a HOPR Node. It provides users with a
           comprehensive overview of the key data, metrics, settings, and messages if required.
         </Description>
-        {
-          !nodeConnected &&
+        {!nodeConnected && (
           <StyledButton
             onClick={() => {
               dispatch(authActions.setOpenLoginModalToNode(true));
@@ -98,7 +96,7 @@ function LandingPage() {
           >
             Connect to Node
           </StyledButton>
-        }
+        )}
         <Links>
           <StyledLink to="https://docs.hoprnet.org">Docs</StyledLink>
           <StyledLink to="https://t.me/hoprnet">Telegram</StyledLink>

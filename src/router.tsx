@@ -1,5 +1,12 @@
 import { useEffect } from 'react';
-import { createBrowserRouter, RouteObject, useSearchParams, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  RouteObject,
+  useSearchParams,
+  Navigate,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import { environment } from '../config';
 import { parseAndFormatUrl } from './utils/parseAndFormatUrl';
 
@@ -115,7 +122,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <LanIcon />,
         element: <PeersPage />,
         loginNeeded: 'node',
-        numberKey: 'numberOfPeers'
+        numberKey: 'numberOfPeers',
       },
       {
         name: 'ALIASES',
@@ -123,7 +130,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <ContactPhone />,
         element: <AliasesPage />,
         loginNeeded: 'node',
-        numberKey: 'numberOfAliases'
+        numberKey: 'numberOfAliases',
       },
       {
         name: 'MESSAGES',
@@ -131,7 +138,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <MailIcon />,
         element: <MessagesPage />,
         loginNeeded: 'node',
-        numberKey: 'numberOfMessagesReceived'
+        numberKey: 'numberOfMessagesReceived',
       },
       {
         name: 'CHANNELS: IN',
@@ -139,7 +146,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <IncomingChannelsIcon />,
         element: <ChannelsPageIncoming />,
         loginNeeded: 'node',
-        numberKey: 'numberOfChannelsIn'
+        numberKey: 'numberOfChannelsIn',
       },
       {
         name: 'CHANNELS: OUT',
@@ -147,7 +154,7 @@ export const applicationMapNode: ApplicationMapType = [
         icon: <OutgoingChannelsIcon />,
         element: <ChannelsPageOutgoing />,
         loginNeeded: 'node',
-        numberKey: 'numberOfChannelsOut'
+        numberKey: 'numberOfChannelsOut',
       },
     ],
   },
@@ -203,7 +210,9 @@ const LayoutEnhanced = () => {
   const apiToken = searchParams.get('apiToken');
 
   const numberOfPeers = useAppSelector((store) => store.node.peers.data?.connected.length);
-  const numberOfAliases = useAppSelector((store) => store.node.aliases?.data && Object.keys(store.node.aliases?.data).length);
+  const numberOfAliases = useAppSelector(
+    (store) => store.node.aliases?.data && Object.keys(store.node.aliases?.data).length,
+  );
   const numberOfMessagesReceived = useAppSelector((store) => store.node.messages.data.length);
   const numberOfChannelsIn = useAppSelector((store) => store.node.channels.data?.incoming.length);
   const numberOfChannelsOut = useAppSelector((store) => store.node.channels.data?.outgoing.length);
@@ -213,11 +222,11 @@ const LayoutEnhanced = () => {
     numberOfAliases,
     numberOfMessagesReceived,
     numberOfChannelsIn,
-    numberOfChannelsOut
+    numberOfChannelsOut,
   };
 
   useEffect(() => {
-    console.log('useEffect(()', apiEndpoint, apiToken)
+    console.log('useEffect(()', apiEndpoint, apiToken);
     if (!apiEndpoint) return;
     if (loginData.apiEndpoint === apiEndpoint && loginData.apiToken === apiToken) return;
     const formattedApiEndpoint = parseAndFormatUrl(apiEndpoint);
@@ -225,13 +234,9 @@ const LayoutEnhanced = () => {
       authActions.useNodeData({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
-    );
-    dispatch(
-      nodeActions.setApiEndpoint({
-        apiEndpoint: formattedApiEndpoint,
       }),
     );
+    dispatch(nodeActions.setApiEndpoint({ apiEndpoint: formattedApiEndpoint }));
     const useNode = async () => {
       try {
         console.log('Node Admin login from router');
@@ -239,11 +244,11 @@ const LayoutEnhanced = () => {
           authActionsAsync.loginThunk({
             apiEndpoint,
             apiToken: apiToken ? apiToken : '',
-          })
+          }),
         ).unwrap();
         if (loginInfo) {
           // We do this after the loginInfo to make sure the login from url was successful
-          trackGoal('Y641EPNA', 1) // LOGIN_TO_NODE_BY_URL
+          trackGoal('Y641EPNA', 1); // LOGIN_TO_NODE_BY_URL
           dispatch(
             nodeActionsAsync.isNodeReadyThunk({
               apiEndpoint,
@@ -254,71 +259,70 @@ const LayoutEnhanced = () => {
             nodeActionsAsync.getInfoThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getAddressesThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getAliasesThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getPeersThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getBalancesThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getMessagesThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
               firstLoad: true,
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getChannelsThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getTicketStatisticsThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getPrometheusMetricsThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
           dispatch(
             nodeActionsAsync.getConfigurationThunk({
               apiEndpoint,
               apiToken: apiToken ? apiToken : '',
-            })
+            }),
           );
         }
       } catch (e) {
-        trackGoal('ZUIBL4M8', 1) // FAILED_CONNECT_TO_NODE_BY_URL
+        trackGoal('ZUIBL4M8', 1); // FAILED_CONNECT_TO_NODE_BY_URL
         // error is handled on redux
       }
     };
     useNode();
-
   }, [apiEndpoint, apiToken]);
 
   const showInfoBar = () => {
@@ -332,9 +336,7 @@ const LayoutEnhanced = () => {
       drawerItems={applicationMap}
       drawerFunctionItems={undefined}
       drawerNumbers={numberForDrawer}
-      drawerLoginState={{
-        node: nodeConnected,
-      }}
+      drawerLoginState={{ node: nodeConnected }}
       className={environment}
       drawerType={undefined}
       itemsNavbarRight={

@@ -29,12 +29,12 @@ function TicketsPage() {
   }, [loginData, dispatch]);
 
   const handleRefresh = () => {
-    if(loginData.apiEndpoint) {
+    if (loginData.apiEndpoint) {
       dispatch(
         actionsAsync.getTicketStatisticsThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken ? loginData.apiToken : '',
-        })
+        }),
       );
     }
   };
@@ -44,7 +44,7 @@ function TicketsPage() {
       actionsAsync.redeemTicketsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      })
+      }),
     )
       .unwrap()
       .then(() => {
@@ -100,7 +100,9 @@ function TicketsPage() {
                   <span>Unredeemed value</span>
                 </Tooltip>
               </th>
-              <td>{statistics?.unredeemedValue ? formatEther(BigInt(statistics?.unredeemedValue as string)) : '-'} wxHOPR</td>
+              <td>
+                {statistics?.unredeemedValue ? formatEther(BigInt(statistics?.unredeemedValue as string)) : '-'} wxHOPR
+              </td>
             </tr>
             <tr>
               <th>
@@ -111,7 +113,9 @@ function TicketsPage() {
                   <span>Neglected value</span>
                 </Tooltip>
               </th>
-              <td>{statistics?.neglectedValue ? formatEther(BigInt(statistics?.neglectedValue as string)) : '-'} wxHOPR</td>
+              <td>
+                {statistics?.neglectedValue ? formatEther(BigInt(statistics?.neglectedValue as string)) : '-'} wxHOPR
+              </td>
             </tr>
             <tr>
               <th>
@@ -122,7 +126,9 @@ function TicketsPage() {
                   <span>Rejected value</span>
                 </Tooltip>
               </th>
-              <td>{statistics?.rejectedValue ? formatEther(BigInt(statistics?.rejectedValue as string)) : '-'} wxHOPR</td>
+              <td>
+                {statistics?.rejectedValue ? formatEther(BigInt(statistics?.rejectedValue as string)) : '-'} wxHOPR
+              </td>
             </tr>
             <tr>
               <th>
@@ -133,7 +139,9 @@ function TicketsPage() {
                   <span>Redeemed value</span>
                 </Tooltip>
               </th>
-              <td>{statistics?.redeemedValue ? formatEther(BigInt(statistics?.redeemedValue as string)) : '-'} wxHOPR</td>
+              <td>
+                {statistics?.redeemedValue ? formatEther(BigInt(statistics?.redeemedValue as string)) : '-'} wxHOPR
+              </td>
             </tr>
           </tbody>
         </TableExtended>

@@ -136,7 +136,7 @@ function App() {
     unsetConnectionStatus();
     setRpcUrl();
     join();
-    //eslint-disable-next-line react-hooks/exhaustive-deps
+    //eslint-disable-next-line
   }, []);
 
   const Location = styled.div`

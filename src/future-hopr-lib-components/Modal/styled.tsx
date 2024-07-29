@@ -1,14 +1,12 @@
 import styled from '@emotion/styled';
 import { Dialog, DialogContent, IconButton } from '@mui/material';
 
-export const SDialog = styled(({
-  maxWidth,
-  ...rest
-}: any) => <Dialog {...rest} />)`
+export const SDialog = styled(({ maxWidth, ...rest }: any) => <Dialog {...rest} />)`
   .MuiPaper-root {
     width: 100%;
     ${(props) =>
-      props.maxWidth && `
+      props.maxWidth &&
+      `
       max-width: ${props.maxWidth};
     `}
   }
@@ -25,7 +23,7 @@ export const SDialogContent = styled(DialogContent)`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  &.error-message{
+  &.error-message {
     white-space: break-spaces;
     line-height: 2;
   }

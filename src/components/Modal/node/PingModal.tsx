@@ -53,7 +53,7 @@ export const PingModal = (props: PingModalProps) => {
           peerId,
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken ? loginData.apiToken : '',
-        })
+        }),
       )
         .unwrap()
         .then((resp: any) => {
@@ -71,12 +71,16 @@ export const PingModal = (props: PingModalProps) => {
           });
         })
         .catch(async (e) => {
-          const isCurrentApiEndpointTheSame = await dispatch(actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)).unwrap();
+          const isCurrentApiEndpointTheSame = await dispatch(
+            actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!),
+          ).unwrap();
           if (!isCurrentApiEndpointTheSame) return;
 
           let errMsg = `Ping of ${peerId} failed`;
-          if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
-          if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.status)
+            errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.error)
+            errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
           console.warn(errMsg, e);
           sendNotification({
             notificationPayload: {
@@ -101,14 +105,15 @@ export const PingModal = (props: PingModalProps) => {
       <IconButton
         iconComponent={<RssFeedIcon />}
         tooltipText={
-          props.tooltip ?
-          props.tooltip
-          :
-          <span>
-            PING
-            <br />
-            node
-          </span>
+          props.tooltip ? (
+            props.tooltip
+          ) : (
+            <span>
+              PING
+              <br />
+              node
+            </span>
+          )
         }
         onClick={peerId ? handlePing : handleOpenModal}
         disabled={props.disabled}

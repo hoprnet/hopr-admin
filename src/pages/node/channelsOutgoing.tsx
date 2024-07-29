@@ -33,7 +33,7 @@ function ChannelsPage() {
   const channels = useAppSelector((store) => store.node.channels.data);
   const channelsOutgoingObject = useAppSelector((store) => store.node.channels.parsed.outgoing);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
-  const aliases = useAppSelector((store) => store.node.aliases.data)
+  const aliases = useAppSelector((store) => store.node.aliases.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const currentApiEndpoint = useAppSelector((store) => store.node.apiEndpoint);
   const nodeAddressToPeerIdLink = useAppSelector((store) => store.node.links.nodeAddressToPeerId);
@@ -42,37 +42,37 @@ function ChannelsPage() {
   const channelsData = channels?.outgoing;
 
   const handleRefresh = () => {
-    if(!loginData.apiEndpoint) return;
+    if (!loginData.apiEndpoint) return;
     dispatch(
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      })
+      }),
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      })
+      }),
     );
     dispatch(
       actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      })
-    )
+      }),
+    );
   };
 
   const getPeerIdFromPeerAddress = (nodeAddress: string): string => {
     const peerId = nodeAddressToPeerIdLink[nodeAddress];
     return peerId!;
-  }
+  };
 
   const getAliasByPeerAddress = (nodeAddress: string): string => {
     const peerId = getPeerIdFromPeerAddress(nodeAddress);
-    if(aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${nodeAddress})`
+    if (aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${nodeAddress})`;
     return nodeAddress;
-  }
+  };
 
   const handleExport = () => {
     if (channelsData) {
@@ -83,7 +83,7 @@ function ChannelsPage() {
           status: channel.status,
           dedicatedFunds: channel.balance,
         })),
-        `${tabLabel}-channels.csv`
+        `${tabLabel}-channels.csv`,
       );
     }
   };
@@ -94,19 +94,22 @@ function ChannelsPage() {
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
         channelId: channelId,
-        timeout: 5*60_000,
-      })
+        timeout: 5 * 60_000,
+      }),
     )
       .unwrap()
       .then(() => {
         handleRefresh();
       })
       .catch(async (e) => {
-        const isCurrentApiEndpointTheSame = await dispatch(actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)).unwrap();
+        const isCurrentApiEndpointTheSame = await dispatch(
+          actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!),
+        ).unwrap();
         if (!isCurrentApiEndpointTheSame) return;
 
         let errMsg = `Closing of outgoing channel ${channelId} failed`;
-        if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+        if (e instanceof sdkApiError && e.hoprdErrorPayload?.status)
+          errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
         if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
         console.error(errMsg, e);
         sendNotification({
@@ -119,7 +122,6 @@ function ChannelsPage() {
           toastPayload: { message: errMsg },
           dispatch,
         });
-
       });
   };
 
@@ -158,57 +160,92 @@ function ChannelsPage() {
     },
   ];
 
-  const parsedTableData = Object.keys(channelsOutgoingObject).map((id, index) => {
-    if(!channelsOutgoingObject[id].peerAddress || !channelsOutgoingObject[id].balance || !channelsOutgoingObject[id].status) return;
-    const peerId = getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string);
+  const parsedTableData = Object.keys(channelsOutgoingObject)
+    .map((id, index) => {
+      if (
+        !channelsOutgoingObject[id].peerAddress ||
+        !channelsOutgoingObject[id].balance ||
+        !channelsOutgoingObject[id].status
+      )
+        return;
+      const peerId = getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string);
 
-    return {
-      id: index.toString(),
-      key: id,
-      peerAddress: getAliasByPeerAddress(channelsOutgoingObject[id].peerAddress as string),
-      status: channelsOutgoingObject[id].status as string,
-      funds: `${utils.formatEther(channelsOutgoingObject[id].balance as string)} ${HOPR_TOKEN_USED}`,
-      actions: (
-        <>
-          <PingModal
-            peerId={peerId}
-            disabled={!peerId}
-            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
-          />
-          <CreateAliasModal
-            handleRefresh={handleRefresh}
-            peerId={peerId}
-            disabled={!peerId}
-            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
-          />
-          <FundChannelModal
-            channelId={id}
-          />
-          <IconButton
-            iconComponent={<CloseChannelIcon />}
-            pending={channelsOutgoingObject[id]?.isClosing}
-            tooltipText={
-              <span>
-                CLOSE
-                <br />
-                outgoing channel
-              </span>
-            }
-            onClick={() => handleCloseChannels(id)}
-          />
-          <SendMessageModal
-            peerId={peerId}
-            disabled={!peerId}
-            tooltip={!peerId ? <span>DISABLED<br/>Unable to find<br/>peerId</span> : undefined }
-          />
-        </>
-      ),
-    };
-  }).filter(elem => elem !== undefined) as {
+      return {
+        id: index.toString(),
+        key: id,
+        peerAddress: getAliasByPeerAddress(channelsOutgoingObject[id].peerAddress as string),
+        status: channelsOutgoingObject[id].status as string,
+        funds: `${utils.formatEther(channelsOutgoingObject[id].balance as string)} ${HOPR_TOKEN_USED}`,
+        actions: (
+          <>
+            <PingModal
+              peerId={peerId}
+              disabled={!peerId}
+              tooltip={
+                !peerId ? (
+                  <span>
+                    DISABLED
+                    <br />
+                    Unable to find
+                    <br />
+                    peerId
+                  </span>
+                ) : undefined
+              }
+            />
+            <CreateAliasModal
+              handleRefresh={handleRefresh}
+              peerId={peerId}
+              disabled={!peerId}
+              tooltip={
+                !peerId ? (
+                  <span>
+                    DISABLED
+                    <br />
+                    Unable to find
+                    <br />
+                    peerId
+                  </span>
+                ) : undefined
+              }
+            />
+            <FundChannelModal channelId={id} />
+            <IconButton
+              iconComponent={<CloseChannelIcon />}
+              pending={channelsOutgoingObject[id]?.isClosing}
+              tooltipText={
+                <span>
+                  CLOSE
+                  <br />
+                  outgoing channel
+                </span>
+              }
+              onClick={() => handleCloseChannels(id)}
+            />
+            <SendMessageModal
+              peerId={peerId}
+              disabled={!peerId}
+              tooltip={
+                !peerId ? (
+                  <span>
+                    DISABLED
+                    <br />
+                    Unable to find
+                    <br />
+                    peerId
+                  </span>
+                ) : undefined
+              }
+            />
+          </>
+        ),
+      };
+    })
+    .filter((elem) => elem !== undefined) as {
     id: string;
     key: string;
     peerAddress: string;
-    status: "Open" | "PendingToClose" | "Closed" ;
+    status: 'Open' | 'PendingToClose' | 'Closed';
     funds: string;
     actions: JSX.Element;
   }[];

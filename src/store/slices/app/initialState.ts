@@ -3,7 +3,6 @@ import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk
 import { loadStateFromLocalStorage } from '../../../utils/localStorage';
 import { ChannelsOutgoingType, ChannelsIncomingType } from '../node/initialState';
 
-
 type InitialState = {
   notifications: {
     id: string;
@@ -16,12 +15,12 @@ type InitialState = {
   }[];
   configuration: {
     notifications: {
-      channels: boolean,
-      nodeInfo: boolean,
-      nodeBalances: boolean,
-      message: boolean,
-      pendingSafeTransaction: boolean
-    }
+      channels: boolean;
+      nodeInfo: boolean;
+      nodeBalances: boolean;
+      message: boolean;
+      pendingSafeTransaction: boolean;
+    };
   };
   previousStates: {
     prevOutgoingChannels: ChannelsOutgoingType | null;
@@ -35,14 +34,17 @@ type InitialState = {
 
 export const initialState: InitialState = {
   notifications: [],
-  configuration: { notifications: loadStateFromLocalStorage('app/configuration/notifications') as InitialState['configuration']['notifications']
-      ?? {
-        channels: true,
-        message: true,
-        nodeBalances: true,
-        nodeInfo: true,
-        pendingSafeTransaction: true,
-      } },
+  configuration: {
+    notifications: (loadStateFromLocalStorage(
+      'app/configuration/notifications',
+    ) as InitialState['configuration']['notifications']) ?? {
+      channels: true,
+      message: true,
+      nodeBalances: true,
+      nodeInfo: true,
+      pendingSafeTransaction: true,
+    },
+  },
   // previous states used to compare for notifications
   previousStates: {
     prevOutgoingChannels: null,

@@ -58,10 +58,9 @@ export const handleBalanceNotification = ({
 
   const hoprSafeBalanceIsLarger = balanceHasIncreased(prevNodeBalances.safeHopr, newNodeBalances.safeHopr);
   if (hoprSafeBalanceIsLarger) {
-    const hoprSafeBalanceDifference = BigInt(newNodeBalances.safeHopr) - BigInt(prevNodeBalances.safeHopr)
+    const hoprSafeBalanceDifference = BigInt(newNodeBalances.safeHopr) - BigInt(prevNodeBalances.safeHopr);
     sendNewHoprSafeBalanceNotification(hoprSafeBalanceDifference);
   }
-
 };
 
 /**
@@ -129,9 +128,11 @@ export const observeNodeBalances = ({
               url: null,
               timeout: null,
             },
-            toastPayload: { message: `Node xDai level is low, node has ${formatEther(
-              BigInt(newNativeBalance),
-            )} and should have ${formatEther(BigInt(minimumNodeBalances.native))}` },
+            toastPayload: {
+              message: `Node xDai level is low, node has ${formatEther(
+                BigInt(newNativeBalance),
+              )} and should have ${formatEther(BigInt(minimumNodeBalances.native))}`,
+            },
             dispatch,
           });
         },

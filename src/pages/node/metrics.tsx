@@ -171,9 +171,8 @@ function MetricsPage() {
       actionsAsync.getPrometheusMetricsThunk({
         apiEndpoint,
         apiToken: apiToken ? apiToken : '',
-      })
+      }),
     );
-
   };
 
   const isTooltipTextString = (tooltipText: string | JSX.Element): boolean => {
@@ -197,14 +196,12 @@ function MetricsPage() {
           </th>
 
           <td>
-              {
-                value.data.length === 1 && (typeof(value.data[0]) === 'string' ||  typeof(value.data[0]) === 'number') && value.data[0]
-              }
-              {
-                value.data.length !== 1 && typeof(value.data) === 'object' && JSON.stringify(value.data)
-              }
+            {value.data.length === 1 &&
+              (typeof value.data[0] === 'string' || typeof value.data[0] === 'number') &&
+              value.data[0]}
+            {value.data.length !== 1 && typeof value.data === 'object' && JSON.stringify(value.data)}
           </td>
-        </tr>
+        </tr>,
       );
     }
     return <tbody>{render}</tbody>;
@@ -252,8 +249,7 @@ function MetricsPage() {
         <br />
         <br /> */}
 
-
-        {/* TODO: bring back some tables in future versions */ }
+        {/* TODO: bring back some tables in future versions */}
 
         {/* <TableTitle>
           <Tooltip

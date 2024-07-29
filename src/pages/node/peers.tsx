@@ -20,7 +20,6 @@ import { PingModal } from '../../components/Modal/node/PingModal';
 //Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
 
-
 function PeersPage() {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((store) => store.auth.loginData);
@@ -36,26 +35,26 @@ function PeersPage() {
   }, [loginData, dispatch]);
 
   const handleRefresh = () => {
-    if(!loginData.apiEndpoint) return;
+    if (!loginData.apiEndpoint) return;
 
     dispatch(
       actionsAsync.getPeersThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      })
+      }),
     );
     dispatch(
       actionsAsync.getAliasesThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      })
+      }),
     );
   };
 
   const getAliasByPeerId = (peerId: string): string => {
-    if(aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${peerId})`
+    if (aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${peerId})`;
     return peerId;
-  }
+  };
 
   const handleExport = () => {
     if (peers?.connected) {
@@ -70,7 +69,7 @@ function PeersPage() {
           backoff: peer.backoff,
           isNew: peer.isNew,
         })),
-        'peers.csv'
+        'peers.csv',
       );
     }
   };
@@ -122,19 +121,18 @@ function PeersPage() {
       number: id,
       peerId: getAliasByPeerId(peer.peerId),
       peerAddress: peer.peerAddress,
-      quality: <ProgressBar
-        value={peer.quality}
-      />,
-      lastSeen: peer.lastSeen > 0 ? new Date(peer.lastSeen).toLocaleString('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZoneName: 'short',
-      })
-      :
-      'Not seen',
+      quality: <ProgressBar value={peer.quality} />,
+      lastSeen:
+        peer.lastSeen > 0
+          ? new Date(peer.lastSeen).toLocaleString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              timeZoneName: 'short',
+            })
+          : 'Not seen',
       actions: (
         <>
           <PingModal peerId={peer.peerId} />
@@ -142,16 +140,11 @@ function PeersPage() {
             handleRefresh={handleRefresh}
             peerId={peer.peerId}
           />
-          {
-            nodeAddressToOutgoingChannelLink[peer.peerAddress] ?
-            <FundChannelModal
-              channelId={nodeAddressToOutgoingChannelLink[peer.peerAddress]}
-            />
-            :
-            <OpenChannelModal
-              peerAddress={peer.peerAddress}
-            />
-          }
+          {nodeAddressToOutgoingChannelLink[peer.peerAddress] ? (
+            <FundChannelModal channelId={nodeAddressToOutgoingChannelLink[peer.peerAddress]} />
+          ) : (
+            <OpenChannelModal peerAddress={peer.peerAddress} />
+          )}
 
           <SendMessageModal peerId={peer.peerId} />
         </>

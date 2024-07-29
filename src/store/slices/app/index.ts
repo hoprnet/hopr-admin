@@ -30,8 +30,8 @@ const appSlice = createSlice({
     }),
     setNotificationSettings: (state, action: PayloadAction<typeof initialState.configuration.notifications>) => {
       if (action.payload) {
-        state.configuration.notifications = action.payload
-        saveStateToLocalStorage('app/configuration/notifications', action.payload)
+        state.configuration.notifications = action.payload;
+        saveStateToLocalStorage('app/configuration/notifications', action.payload);
       }
     },
     addNotification: (
@@ -59,9 +59,9 @@ const appSlice = createSlice({
       state.notifications = state.notifications.map((notification) =>
         notification.id === action.payload
           ? {
-            ...notification,
-            seen: true,
-          }
+              ...notification,
+              seen: true,
+            }
           : notification,
       );
     },
@@ -69,10 +69,10 @@ const appSlice = createSlice({
       state.notifications = state.notifications.map((notification) =>
         notification.id === action.payload
           ? {
-            ...notification,
-            seen: true,
-            interacted: true,
-          }
+              ...notification,
+              seen: true,
+              interacted: true,
+            }
           : notification,
       );
     },
@@ -81,10 +81,10 @@ const appSlice = createSlice({
       state.notifications = state.notifications.map((notification) =>
         notification.timeout < now
           ? {
-            ...notification,
-            seen: true,
-            read: true,
-          }
+              ...notification,
+              seen: true,
+              read: true,
+            }
           : notification,
       );
     },

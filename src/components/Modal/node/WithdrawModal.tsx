@@ -116,19 +116,23 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
           ethereumAddress: recipient,
           apiEndpoint,
           apiToken: apiToken ? apiToken : '',
-        })
+        }),
       )
         .unwrap()
         .then((hash) => {
           set_transactionHash(hash ?? '');
         })
         .catch(async (e) => {
-          const isCurrentApiEndpointTheSame = await dispatch(actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)).unwrap();
+          const isCurrentApiEndpointTheSame = await dispatch(
+            actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!),
+          ).unwrap();
           if (!isCurrentApiEndpointTheSame) return;
 
           let errMsg = `Withdrawing ${currency === 'NATIVE' ? 'xDai' : 'HOPR'} failed`;
-          if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
-          if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.status)
+            errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.error)
+            errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
           console.error(errMsg, e);
           sendNotification({
             notificationPayload: {
@@ -140,7 +144,6 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
             toastPayload: { message: errMsg },
             dispatch,
           });
-
         })
         .finally(() => {
           set_isLoading(false);

@@ -20,7 +20,11 @@ const VersionComponent = styled.div`
 
 function App() {
   useEffect(() => {
-    Fathom.load('MJISRYNH', { url: 'https://cdn-eu.usefathom.com/script.js', spa: 'auto', excludedDomains: ['localhost:5173'] });
+    Fathom.load('MJISRYNH', {
+      url: 'https://cdn-eu.usefathom.com/script.js',
+      spa: 'auto',
+      excludedDomains: ['localhost:5173'],
+    });
   }, []);
 
   return (

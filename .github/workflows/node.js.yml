@@ -1,0 +1,55 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  general:
+    name: CI run (node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 21.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+          cache-dependency-path: ./yarn.lock
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Building
+        run: yarn build-node
+
+      - name: Linting
+        run: yarn lint:ci
+
+      - name: Formatting
+        run: yarn format:ci
+
+  # Build docker
+  docker_testing:
+    name: Test docker build
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build docker
+        run: docker build --platform linux/amd64 -t europe-west3-docker.pkg.dev/hoprassociation/docker-images/hopr-admin -f ./scripts/NodeAdmin.Dockerfile .

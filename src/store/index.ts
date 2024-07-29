@@ -12,7 +12,7 @@ const store = configureStore({
     node: nodeSlice,
     app: appSlice,
   },
-//  middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(websocketMiddleware),
+  //  middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(websocketMiddleware),
   devTools: process.env.NODE_ENV === 'production' ? false : { maxAge: 5000 },
 });
 

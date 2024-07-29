@@ -33,7 +33,7 @@ export const OpenMultipleChannelsModal = () => {
         actionsAsync.getChannelsThunk({
           apiEndpoint: loginData.apiEndpoint,
           apiToken: loginData.apiToken ? loginData.apiToken : '',
-        })
+        }),
       );
     }
   };
@@ -52,15 +52,18 @@ export const OpenMultipleChannelsModal = () => {
         amount: weiValue,
         peerAddress: peerId,
         timeout: 60e3,
-      })
+      }),
     )
       .unwrap()
       .catch(async (e) => {
-        const isCurrentApiEndpointTheSame = await dispatch(actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)).unwrap();
+        const isCurrentApiEndpointTheSame = await dispatch(
+          actionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!),
+        ).unwrap();
         if (!isCurrentApiEndpointTheSame) return;
 
         let errMsg = `Channel to ${peerId} failed to be opened`;
-        if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+        if (e instanceof sdkApiError && e.hoprdErrorPayload?.status)
+          errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
         if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
         console.error(errMsg, e);
         sendNotification({
@@ -136,7 +139,9 @@ export const OpenMultipleChannelsModal = () => {
     const expectedObjectKeys = header.map((key) => key.trim());
 
     // find the index of the "nodeAddress" header
-    let peerIdIndex = expectedObjectKeys.findIndex((key) => key === 'node' || key === 'peer' || key === 'nodeAddress' || key === 'peerAddress' );
+    let peerIdIndex = expectedObjectKeys.findIndex(
+      (key) => key === 'node' || key === 'peer' || key === 'nodeAddress' || key === 'peerAddress',
+    );
 
     if (peerIdIndex === -1) {
       peerIdIndex = expectedObjectKeys.findIndex((key) => key.length === 53 && key.substr(0, 2) === '0x');

@@ -9,7 +9,6 @@ import { HOPR_TOKEN_USED } from '../../../../config';
 import { utils } from '@hoprnet/hopr-sdk';
 const { sdkApiError } = utils;
 
-
 // HOPR Components
 import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
 import AddChannelIcon from '../../../future-hopr-lib-components/Icons/AddChannel';
@@ -25,9 +24,7 @@ type OpenChannelModalProps = {
   tooltip?: JSX.Element | string;
 };
 
-export const OpenChannelModal = ({
-  ...props
-}: OpenChannelModalProps) => {
+export const OpenChannelModal = ({ ...props }: OpenChannelModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((store) => store.auth.loginData);
   const outgoingOpening = useAppSelector((store) => store.node.channels.parsed.outgoingOpening);
@@ -54,17 +51,21 @@ export const OpenChannelModal = ({
           apiToken: loginData.apiToken ? loginData.apiToken : '',
           amount: weiValue,
           peerAddress: peerAddress,
-          timeout: 2*60_000,
-        })
+          timeout: 2 * 60_000,
+        }),
       )
         .unwrap()
         .catch(async (e) => {
-          const isCurrentApiEndpointTheSame = await dispatch(nodeActionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!)).unwrap();
+          const isCurrentApiEndpointTheSame = await dispatch(
+            nodeActionsAsync.isCurrentApiEndpointTheSame(loginData.apiEndpoint!),
+          ).unwrap();
           if (!isCurrentApiEndpointTheSame) return;
 
           let errMsg = `Channel to ${peerAddress} failed to be opened`;
-          if (e instanceof sdkApiError && e.hoprdErrorPayload?.status) errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
-          if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.status)
+            errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
+          if (e instanceof sdkApiError && e.hoprdErrorPayload?.error)
+            errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
           console.error(errMsg, e);
           sendNotification({
             notificationPayload: {
@@ -82,12 +83,12 @@ export const OpenChannelModal = ({
     handleCloseModal();
     const parsedOutgoing = parseFloat(amount ?? '0') >= 0 ? amount ?? '0' : '0';
     const weiValue = ethers.utils.parseEther(parsedOutgoing).toString();
-    await handleOpenChannel(weiValue, peerAddress)
+    await handleOpenChannel(weiValue, peerAddress);
     dispatch(
       actionsAsync.getChannelsThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
-      })
+      }),
     );
   };
 
@@ -98,14 +99,15 @@ export const OpenChannelModal = ({
         disabled={props.disabled}
         pending={channelIsBeingOpened}
         tooltipText={
-          props.tooltip ?
-          props.tooltip
-          :
-          <span>
-            OPEN
-            <br />
-            outgoing channel
-          </span>
+          props.tooltip ? (
+            props.tooltip
+          ) : (
+            <span>
+              OPEN
+              <br />
+              outgoing channel
+            </span>
+          )
         }
         onClick={handleOpenChannelDialog}
       />

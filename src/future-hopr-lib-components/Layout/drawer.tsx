@@ -10,7 +10,7 @@ import {
   ListSubheader,
   Drawer as MuiDrawer,
   Tooltip,
-  useMediaQuery
+  useMediaQuery,
 } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import { ApplicationMapType } from '../../router';
@@ -34,7 +34,7 @@ const StyledDrawer = styled(MuiDrawer)`
     width: ${(props) => (props.open ? `${drawerWidth}px` : `${minDrawerWidth}px`)};
 
     ${(props) =>
-    props.variant === 'temporary' &&
+      props.variant === 'temporary' &&
       css`
         width: ${drawerWidth}px;
       `}
@@ -92,7 +92,7 @@ const StyledListItemButton = styled(ListItemButton)`
   fill: rgba(0, 0, 0, 0.54);
   width: 100%;
   padding-right: 10px;
-  .MuiListItemIcon-root{
+  .MuiListItemIcon-root {
     min-width: 48px;
     svg {
       width: 24px;
@@ -139,8 +139,8 @@ type DrawerProps = {
     safe?: boolean;
   };
   drawerNumbers?: {
-    [key: string]: number | string | undefined | null
-  }
+    [key: string]: number | string | undefined | null;
+  };
   openedNavigationDrawer: boolean;
   drawerType?: 'blue' | 'white' | false;
   set_openedNavigationDrawer: (openedNavigationDrawer: boolean) => void;
@@ -186,8 +186,6 @@ const Drawer = ({
   const preare = drawerFunctionItems ? drawerFunctionItems : [];
   const allItems = [...preare, ...drawerItems];
 
-
-
   return (
     <StyledDrawer
       variant={drawerVariant}
@@ -228,14 +226,13 @@ const Drawer = ({
                         <StyledListItemButton
                           component={item.onClick ? 'button' : Link}
                           to={
-                            item.path !== 'function'?
-                              item.path.includes('http')
-                              ? item.path
-                              : item.overwritePath
+                            item.path !== 'function'
+                              ? item.path.includes('http')
+                                ? item.path
+                                : item.overwritePath
                                 ? item.overwritePath
                                 : `${group.path}/${item.path}${searchParams ?? ''}`
-                              :
-                              undefined
+                              : undefined
                           }
                           target={item.path.includes('http') ? '_blank' : undefined}
                           rel={item.path.includes('http') ? 'noopener noreferrer' : undefined}
@@ -251,15 +248,13 @@ const Drawer = ({
                         >
                           <SListItemIcon className="SListItemIcon">{item.icon}</SListItemIcon>
                           <ListItemText className="ListItemText">{item.name}</ListItemText>
-                          {
-                            item.numberKey &&
+                          {item.numberKey &&
                             drawerNumbers &&
                             openedNavigationDrawer &&
-                            (item.loginNeeded && drawerLoginState?.[item.loginNeeded]) &&
-                            <Numbers>
-                              {rounder2(drawerNumbers[item.numberKey])}
-                            </Numbers>
-                          }
+                            item.loginNeeded &&
+                            drawerLoginState?.[item.loginNeeded] && (
+                              <Numbers>{rounder2(drawerNumbers[item.numberKey])}</Numbers>
+                            )}
                         </StyledListItemButton>
                       </Tooltip>
                     ),

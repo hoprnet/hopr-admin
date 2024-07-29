@@ -17,23 +17,20 @@
     "linebreak-style": ["error", "unix"],
     "react/react-in-jsx-scope": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".ts", ".tsx"] }],
-    "indent": ["error", 2],
-    "object-curly-newline": [
-      "error",
-      {
-        "ObjectExpression": { "minProperties": 2 },
-        "ObjectPattern": { "minProperties": 2 },
-        "ImportDeclaration": { "minProperties": 5 },
-        "ExportDeclaration": { "minProperties": 2 }
-      }
-    ],
+    "react/prop-types": "off",
+    "react/no-unescaped-entities": "off",
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/ban-ts-comment": "warn",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/ban-types": "warn",
+    "indent": ["off"],
     "object-curly-spacing": ["warn", "always"],
     "comma-dangle": [
       2,
       {
         "arrays": "always-multiline",
         "objects": "always-multiline",
-        "imports": "never",
+        "imports": "always-multiline",
         "exports": "always-multiline",
         "functions": "always-multiline"
       }
@@ -41,7 +38,7 @@
     "import-newlines/enforce": "warn",
     "newline-destructuring/newline": ["warn", { "items": 1 }],
     "no-duplicate-imports": "warn",
-    "no-console": "warn",
+    "no-console": "off",
     "prefer-const": "warn",
     "no-var": "off"
   },
