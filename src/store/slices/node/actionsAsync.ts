@@ -1462,7 +1462,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
             .replace(`"`, ``);
           const value = data[i];
 
-          if(value) {
+          if (value) {
             if (statistic === 'unredeemed') {
               state.metricsParsed.tickets.incoming.unredeemed[channel] = {
                 value: `${value}`,
