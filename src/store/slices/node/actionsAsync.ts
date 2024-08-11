@@ -1462,16 +1462,18 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
             .replace(`"`, ``);
           const value = data[i];
 
-          if (statistic === 'unredeemed') {
-            state.metricsParsed.tickets.incoming.unredeemed[channel] = {
-              value: `${value}`,
-              formatted: formatEther(BigInt(`${value}`)),
-            };
-          } else if (statistic === 'redeemed') {
-            state.metricsParsed.tickets.incoming.redeemed[channel] = {
-              value: `${value}`,
-              formatted: formatEther(BigInt(`${value}`)),
-            };
+          if(value) {
+            if (statistic === 'unredeemed') {
+              state.metricsParsed.tickets.incoming.unredeemed[channel] = {
+                value: `${value}`,
+                formatted: formatEther(BigInt(`${value}`)),
+              };
+            } else if (statistic === 'redeemed') {
+              state.metricsParsed.tickets.incoming.redeemed[channel] = {
+                value: `${value}`,
+                formatted: formatEther(BigInt(`${value}`)),
+              };
+            }
           }
         }
       }

@@ -35,7 +35,7 @@ function App() {
           limit={10}
         />
         <RouterProvider router={router} />
-        <VersionComponent>Version: {packageJson.version}</VersionComponent>
+        <VersionComponent>UI version: {packageJson.version}</VersionComponent>
       </ThemeProvider>
     </Provider>
   );
