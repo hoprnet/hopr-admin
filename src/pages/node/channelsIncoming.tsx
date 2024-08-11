@@ -134,6 +134,7 @@ function ChannelsPage() {
           Value is reset on node restart.
         </>
       ),
+      tooltip: true,
     },
     {
       key: 'actions',
