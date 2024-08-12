@@ -26,7 +26,7 @@ export const parseMetrics = (data: string) => {
       parsed[key].type = type;
     } else {
       const parsedData = parseFloat(string[1]);
-      if (parsedData) parsed[lastKey].data.push(parsedData);
+      if (parsedData || parsedData === 0) parsed[lastKey].data.push(parsedData);
       const category = string[0].replace(lastKey, '');
       if (category[0] === '_') category.replace('_', '');
       parsed[lastKey].categories.push(category);
@@ -34,6 +34,6 @@ export const parseMetrics = (data: string) => {
     }
   }
 
-  console.log(parsed);
+  console.log('Metrics:', parsed);
   return parsed;
 };
