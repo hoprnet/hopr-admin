@@ -146,13 +146,13 @@ function ChannelsPage() {
   ];
 
   const handleCloseChannel = (channelId: string) => {
-    const usedApiEndpoint = loginData.apiEndpoint;
     console.log('handleCloseChannel', channelId);
     dispatch(
       actionsAsync.closeChannelThunk({
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
         channelId: channelId,
+        timeout: 120_000  //TODO: put those values as default to HOPRd SDK, average is 50s
       }),
     )
       .unwrap()
