@@ -59,6 +59,7 @@ function InfoPage() {
   const blockNumberCheckSumFromMetrics = useAppSelector((store) => store.node.metricsParsed.checksum); // <2.1.2
   const blockNumberFromInfo = useAppSelector((store) => store.node.info.data?.indexerBlock); // >=2.1.3
   const blockNumberCheckSumFromInfo = useAppSelector((store) => store.node.info.data?.indexerChecksum); // >=2.1.3
+  const blockNumberIndexedWithHOPRdata = useAppSelector((store) => store.node.info.data?.indexBlockPrevChecksum); // >=2.1.4
   const blockNumber = blockNumberFromMetrics ?? blockNumberFromInfo;
   const blockNumberCheckSum = blockNumberCheckSumFromMetrics ?? blockNumberCheckSumFromInfo;
 
@@ -290,10 +291,10 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title=""
+                  title="Last block that the node got from the RPC"
                   notWide
                 >
-                  <span>Block number</span>
+                  <span>Current block</span>
                 </Tooltip>
               </th>
               <td>{blockNumber ? blockNumber : '-'}</td>
@@ -301,7 +302,18 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title=""
+                  title="Last indexed block from the chain which contains HOPR data"
+                  notWide
+                >
+                  <span>Last indexed block</span>
+                </Tooltip>
+              </th>
+              <td>{blockNumberIndexedWithHOPRdata ? blockNumberIndexedWithHOPRdata : '-'}</td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The latest hash of the node database"
                   notWide
                 >
                   <span>Block checksum</span>
