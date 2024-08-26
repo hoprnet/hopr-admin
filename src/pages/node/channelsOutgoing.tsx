@@ -107,6 +107,24 @@ function ChannelsPage() {
         ).unwrap();
         if (!isCurrentApiEndpointTheSame) return;
 
+        if (
+          e instanceof sdkApiError &&
+          e.hoprdErrorPayload?.error?.includes('channel closure time has not elapsed yet, remaining')
+        ) {
+          let errMsg = `Closing of outgoing channel ${channelId} halted. C${e.hoprdErrorPayload?.error.substring(1)}`;
+          sendNotification({
+            notificationPayload: {
+              source: 'node',
+              name: errMsg,
+              url: null,
+              timeout: null,
+            },
+            toastPayload: { message: errMsg },
+            dispatch,
+          });
+          return;
+        }
+
         let errMsg = `Closing of outgoing channel ${channelId} failed`;
         if (e instanceof sdkApiError && e.hoprdErrorPayload?.status)
           errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
