@@ -152,7 +152,7 @@ function ChannelsPage() {
         apiEndpoint: loginData.apiEndpoint!,
         apiToken: loginData.apiToken ? loginData.apiToken : '',
         channelId: channelId,
-        timeout: 120_000  //TODO: put those values as default to HOPRd SDK, average is 50s
+        timeout: 120_000, //TODO: put those values as default to HOPRd SDK, average is 50s
       }),
     )
       .unwrap()
