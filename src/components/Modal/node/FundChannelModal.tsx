@@ -47,7 +47,7 @@ export const FundChannelModal = ({ ...props }: FundChannelModalModalProps) => {
           apiToken: loginData.apiToken ? loginData.apiToken : '',
           amount: weiValue,
           channelId: channelId,
-          timeout: 240_000, //TODO: put those values as default to HOPRd SDK, average is 50s
+          timeout: 120_000, //TODO: put those values as default to HOPRd SDK, average is 50s
         }),
       )
         .unwrap()
