@@ -60,7 +60,9 @@ function InfoPage() {
   const blockNumberFromInfo = useAppSelector((store) => store.node.info.data?.indexerBlock); // >=2.1.3
   const blockNumberCheckSumFromInfo = useAppSelector((store) => store.node.info.data?.indexerChecksum); // >=2.1.3
   const blockNumberPrevIndexedWithHOPRdata = useAppSelector((store) => store.node.info.data?.indexBlockPrevChecksum); // >=2.1.4
-  const blockNumberIndexedWithHOPRdata = blockNumberPrevIndexedWithHOPRdata ? blockNumberPrevIndexedWithHOPRdata + 1 : null;
+  const blockNumberIndexedWithHOPRdata = blockNumberPrevIndexedWithHOPRdata
+    ? blockNumberPrevIndexedWithHOPRdata + 1
+    : null;
   const blockNumber = blockNumberFromMetrics ?? blockNumberFromInfo;
   const blockNumberCheckSum = blockNumberCheckSumFromMetrics ?? blockNumberCheckSumFromInfo;
 
