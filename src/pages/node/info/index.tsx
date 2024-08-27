@@ -59,7 +59,8 @@ function InfoPage() {
   const blockNumberCheckSumFromMetrics = useAppSelector((store) => store.node.metricsParsed.checksum); // <2.1.2
   const blockNumberFromInfo = useAppSelector((store) => store.node.info.data?.indexerBlock); // >=2.1.3
   const blockNumberCheckSumFromInfo = useAppSelector((store) => store.node.info.data?.indexerChecksum); // >=2.1.3
-  const blockNumberIndexedWithHOPRdata = useAppSelector((store) => store.node.info.data?.indexBlockPrevChecksum); // >=2.1.4
+  const blockNumberPrevIndexedWithHOPRdata = useAppSelector((store) => store.node.info.data?.indexBlockPrevChecksum); // >=2.1.4
+  const blockNumberIndexedWithHOPRdata = blockNumberPrevIndexedWithHOPRdata ? blockNumberPrevIndexedWithHOPRdata + 1 : null;
   const blockNumber = blockNumberFromMetrics ?? blockNumberFromInfo;
   const blockNumberCheckSum = blockNumberCheckSumFromMetrics ?? blockNumberCheckSumFromInfo;
 
