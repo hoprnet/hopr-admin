@@ -302,17 +302,6 @@ function InfoPage() {
             <tr>
               <th>
                 <Tooltip
-                  title="Last indexed block from the chain which contains HOPR data"
-                  notWide
-                >
-                  <span>Last indexed block</span>
-                </Tooltip>
-              </th>
-              <td>{blockNumberIndexedWithHOPRdata ? blockNumberIndexedWithHOPRdata : '-'}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
                   title="The latest hash of the node database"
                   notWide
                 >
