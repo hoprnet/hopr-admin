@@ -4,9 +4,8 @@ This document describes the GitHub workflows used in this project.
 
 ## Build
 
- - Builds, Lint, Test
- - Publishes the docker images with version `x.y.z-pr.<PR_NUMBER>`
-
+- Builds, Lint, Test
+- Publishes the docker images with version `x.y.z-pr.<PR_NUMBER>`
 
 ## Merge PR
 
