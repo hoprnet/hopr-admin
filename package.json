@@ -48,9 +48,10 @@
   "scripts": {
     "dev": "vite",
     "dev:clean": "npm run dev -- --force",
-    "build": "tsc && vite build",
+    "build-vite": "tsc && vite build",
     "build-hub": "node ./scripts/prepare-build-hub.js && tsc && vite build && node ./scripts/post-build.js",
-    "build-node": "node ./scripts/prepare-build-node.js && tsc && vite build && node ./scripts/post-build.js",
+    "build": "node ./scripts/prepare-build-node.js && tsc && vite build && node ./scripts/post-build.js",
+    "test": "echo \"Error: no test specified\" && exit 0",
     "serve": "vite preview --port 3000",
     "format": "prettier --write src/ .github/ *.ts *.json *.md",
     "format:ci": "prettier --check src/ .github/ *.ts *.json *.md",

@@ -1,0 +1,107 @@
+name: Close release
+
+on:
+    workflow_dispatch:
+        inputs:
+            release_type:
+                description: 'Next version type'
+                required: true
+                type: choice
+                default: 'patch'
+                options:
+                    - patch
+                    - minor
+                    - major
+
+concurrency:
+    group: release
+    cancel-in-progress: false
+
+jobs:
+    release:
+        name: Close release
+        runs-on: self-hosted-hoprnet-small
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: hoprnet/hopr-workflows/actions/setup-node-js@master
+              with:
+                  node-version: ${{ var.NODE_VERSION }}
+
+            - name: Setup GCP
+              id: gcp
+              uses: hoprnet/hopr-workflows/actions/setup-gcp@master
+              with:
+                  google-credentials: ${{ secrets.GOOGLE_HOPRASSOCIATION_CREDENTIALS_REGISTRY }}
+                  login-artifact-registry: 'true'
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+              with:
+                  driver: kubernetes
+
+            - name: Building
+              run: yarn build
+
+            - name: Linting
+              run: yarn lint:ci
+
+            - name: Formatting
+              run: yarn format:ci
+
+            - name: Testing
+              run: yarn test
+
+            - name: Setup environment variables
+              id: environment
+              run: |
+                  PACKAGE_VERSION=$(node -p "require('./package.json').version")
+                  echo "release_version=${PACKAGE_VERSION}" >> $GITHUB_OUTPUT
+
+            - name: Create Release
+              uses: softprops/action-gh-release@v2
+              with:
+                  name: '${{ vars.DOCKER_IMAGE_NAME }} - v${{ steps.environment.outputs.release_version }}'
+                  tag_name: v${{ steps.environment.outputs.release_version }}
+
+            - name: Build and push docker image
+              uses: docker/build-push-action@v6
+              with:
+                  push: true
+                  tags: ${{ vars.DOCKER_IMAGE_REGISTRY }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ steps.environment.outputs.release_version }}
+
+            - name: Bump Version
+              id: bump
+              run: |
+                  npm version ${{ inputs.release_type }} --no-git-tag-version
+                  BUMP_VERSION=$(node -p "require('./package.json').version")
+                  echo "bump_version=${BUMP_VERSION}" >> $GITHUB_OUTPUT
+
+            - name: Create Pull Request
+              uses: peter-evans/create-pull-request@v6
+              with:
+                  token: ${{ secrets.GH_RUNNER_TOKEN }}
+                  commit-message: 'Bump to version ${{ steps.bump.outputs.bump_version }}'
+                  base: main
+                  title: 'Open release ${{ steps.bump.outputs.bump_version }}'
+                  body: 'The scope of this PR is to bump the new release ${{ steps.bump.outputs.bump_version }}'
+                  branch: bot/open-${{ inputs.release_type }}-${{ steps.bump.outputs.bump_version }}
+                  delete-branch: true
+                  assignees: ${{ github.actor }}
+                  reviewers: 'mjadach-iv'
+                  team-reviewers: '@hoprnet/hopr-products-team'
+
+            - name: Notify new release
+              uses: zulip/github-actions-zulip/send-message@v1
+              with:
+                  api-key: ${{ secrets.ZULIP_API_KEY }}
+                  email: ${{ secrets.ZULIP_EMAIL }}
+                  organization-url: 'https://hopr.zulipchat.com'
+                  type: 'stream'
+                  to: 'Releases'
+                  topic: 'main'
+                  content: |
+                      I'm thrilled to inform the new **${{ vars.DOCKER_IMAGE_NAME }}** version **${{ steps.environment.outputs.release_version }}** has been released.
