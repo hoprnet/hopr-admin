@@ -4,3 +4,6 @@ build/
 public/
 *.min.js
 src/index.tsx
+
+# Created by github pipeline
+gha-creds-*.json
