@@ -58,7 +58,7 @@ jobs:
       - name: Setup environment variables
         id: environment
         run: |
-          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          PACKAGE_VERSION="$(jq -r '.version' ./package.json)"
           echo "release_version=${PACKAGE_VERSION}" >> $GITHUB_OUTPUT
 
       - name: Create Release
@@ -77,7 +77,7 @@ jobs:
         id: bump
         run: |
           npm version ${{ inputs.release_type }} --no-git-tag-version
-          BUMP_VERSION=$(node -p "require('./package.json').version")
+          BUMP_VERSION="$(jq -r '.version' ./package.json)"
           echo "bump_version=${BUMP_VERSION}" >> $GITHUB_OUTPUT
 
       - name: Create Pull Request
