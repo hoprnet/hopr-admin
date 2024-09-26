@@ -202,6 +202,12 @@ type InitialState = {
     isFetching: boolean;
     error: string | undefined;
   };
+  network: {
+    price: {
+      isFetching: boolean;
+      value: number | null;
+    }
+  },
   apiEndpoint: string | null;
   nodeIsReady: {
     data: boolean | null;
@@ -347,6 +353,12 @@ export const initialState: InitialState = {
     nodeAddressToPeerId: {},
     peerIdToNodeAddress: {},
     peerIdToAlias: {},
+  },
+  network: {
+    price: {
+      isFetching: false,
+      value: null,
+    },
   },
   apiEndpoint: null,
   nodeIsReady: {

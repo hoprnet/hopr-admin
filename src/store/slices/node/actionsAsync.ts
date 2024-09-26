@@ -67,6 +67,7 @@ const {
   getToken,
   fundChannel,
   getVersion,
+  getNetworkPrice,
   openChannel,
   pingPeer,
   getPeer, // old getPeerInfo
@@ -78,7 +79,7 @@ const {
   sendMessage,
   setAlias,
   withdraw,
-  isNodeReady,
+  isNodeReady
 } = api;
 const { openMultipleChannels } = flows;
 
@@ -800,6 +801,30 @@ const redeemTicketsThunk = createAsyncThunk<boolean | undefined, BasePayloadType
   {
     condition: (_payload, { getState }) => {
       const isFetching = getState().node.redeemTickets.isFetching;
+      if (isFetching) {
+        return false;
+      }
+    },
+  },
+);
+
+const getTicketPriceThunk = createAsyncThunk<boolean | undefined, BasePayloadType, { state: RootState }>(
+  'node/getTicketPrice',
+  async (payload, { rejectWithValue, dispatch }) => {
+    dispatch(nodeActionsFetching.setRedeemTicketsFetching(true));
+    try {
+      const res = await getNetworkPrice(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
+      }
+      return rejectWithValue({ status: JSON.stringify(e) });
+    }
+  },
+  {
+    condition: (_payload, { getState }) => {
+      const isFetching = getState().node.network.price.isFetching;
       if (isFetching) {
         return false;
       }
