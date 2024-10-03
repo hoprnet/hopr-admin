@@ -25,6 +25,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: main # if you want to use a different branch keep in mind that the bump version step will be affected
+          token: '${{ secrets.GH_RUNNER_TOKEN }}'
 
       - name: Setup Node.js
         uses: hoprnet/hopr-workflows/actions/setup-node-js@master
@@ -76,23 +79,16 @@ jobs:
       - name: Bump Version
         id: bump
         run: |
-          npm version ${{ inputs.release_type }} --no-git-tag-version
-          BUMP_VERSION="$(jq -r '.version' ./package.json)"
+          npm version "${{ inputs.release_type }}" --no-git-tag-version
+          BUMP_VERSION=$(jq -r '.version' package.json)
           echo "bump_version=${BUMP_VERSION}" >> $GITHUB_OUTPUT
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
+      - uses: EndBug/add-and-commit@v9
         with:
-          token: ${{ secrets.GH_RUNNER_TOKEN }}
-          commit-message: 'Bump to version ${{ steps.bump.outputs.bump_version }}'
-          base: main
-          title: 'Open release ${{ steps.bump.outputs.bump_version }}'
-          body: 'The scope of this PR is to bump the new release ${{ steps.bump.outputs.bump_version }}'
-          branch: bot/open-${{ inputs.release_type }}-${{ steps.bump.outputs.bump_version }}
-          delete-branch: true
-          assignees: ${{ github.actor }}
-          reviewers: 'mjadach-iv'
-          team-reviewers: '@hoprnet/hopr-products-team'
+          add: 'package.json'
+          new_branch: main
+          message: 'Bump to version ${{ steps.bump.outputs.bump_version }}'
+          pathspec_error_handling: exitImmediately
 
       - name: Notify new release
         uses: zulip/github-actions-zulip/send-message@v1
