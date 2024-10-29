@@ -75,20 +75,21 @@ type SendMessageModalProps = {
 function sortAddresses(
   peers: GetPeersResponseType | null,
   me: AddressesType,
-  peerIdToAliasLink: {
+  aliases: {
     [peerId: string]: string;
-  },
+  } | null,
 ): string[] {
   if (!peers || !me) return [];
   const connectedPeers = peers.connected;
   const myAddress = me.hopr as string;
-  const peerIdsWithAliases = Object.keys(peerIdToAliasLink).sort((a, b) =>
-    peerIdToAliasLink[a] < peerIdToAliasLink[b] ? -1 : 1,
+  if (!aliases) return [myAddress, ...connectedPeers.map((peer) => peer.peerId).sort()];
+  const peerIdsWithAliases = Object.keys(aliases).sort((a, b) =>
+    aliases[a] < aliases[b] ? -1 : 1,
   );
-  if (peerIdsWithAliases.length === 0) return [myAddress, ...connectedPeers.map((peer) => peer.peerId).sort()];
   const peerIdsWithAliasesWithoutMyAddress = peerIdsWithAliases.filter((peerId) => peerId !== myAddress);
+  console.log('peerIdsWithAliases',peerIdsWithAliases)
   const connectedPeersWithoutAliases = connectedPeers
-    .filter((peer) => !peerIdToAliasLink[peer.peerId])
+    .filter((peer) => !peerIdsWithAliases.includes(peer.peerId))
     .map((peer) => peer.peerId)
     .sort();
   return [myAddress, ...peerIdsWithAliasesWithoutMyAddress, ...connectedPeersWithoutAliases];
@@ -107,10 +108,9 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const [openModal, set_openModal] = useState<boolean>(false);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const aliases = useAppSelector((store) => store.node.aliases.data);
-  const peerIdToAliasLink = useAppSelector((store) => store.node.links.peerIdToAlias);
   const peers = useAppSelector((store) => store.node.peers.data);
   const addresses = useAppSelector((store) => store.node.addresses.data);
-  const sendMessageAddressBook = sortAddresses(peers, addresses, peerIdToAliasLink);
+  const sendMessageAddressBook = sortAddresses(peers, addresses, aliases);
   const [selectedReceiver, set_selectedReceiver] = useState<string | null>(props.peerId ? props.peerId : null);
 
   const maxLength = 500;
@@ -187,7 +187,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       })
       .catch((e) => {
         console.log('@message err:', e);
-        let errMsg = `Sending message failed failed`;
+        let errMsg = `Sending message failed`;
         if (e instanceof sdkApiError && e.hoprdErrorPayload?.status)
           errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
         if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
@@ -265,16 +265,14 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
 
   const hasAlias = (peerId: string) => {
     if (aliases) {
-      return Object.values(aliases).includes(peerId);
+      return Object.keys(aliases).includes(peerId);
     }
   };
 
   const findAlias = (peerId: string) => {
     if (aliases) {
-      for (const alias in aliases) {
-        if (aliases[alias] === peerId) {
-          return alias;
-        }
+      if (aliases[peerId]) {
+        return aliases[peerId];
       }
     }
     return null;

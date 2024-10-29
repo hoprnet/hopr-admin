@@ -131,8 +131,8 @@ type InitialState = {
     peerIdToNodeAddress: {
       [peerId: string]: string;
     };
-    peerIdToAlias: {
-      [peerId: string]: string;
+    aliasToPeerId: {
+      [alias: string]: string;
     };
   };
   messages: {
@@ -201,6 +201,10 @@ type InitialState = {
   redeemTickets: {
     isFetching: boolean;
     error: string | undefined;
+  };
+  ticketPrice: {
+    data: string | null;
+    isFetching: boolean;
   };
   apiEndpoint: string | null;
   nodeIsReady: {
@@ -340,13 +344,17 @@ export const initialState: InitialState = {
     isFetching: false,
     error: undefined,
   },
+  ticketPrice: {
+    data: null,
+    isFetching: false,
+  },
   links: {
     nodeAddressToOutgoingChannel: {},
     nodeAddressToIncomingChannel: {},
     incomingChannelToNodeAddress: {},
     nodeAddressToPeerId: {},
     peerIdToNodeAddress: {},
-    peerIdToAlias: {},
+    aliasToPeerId: {},
   },
   apiEndpoint: null,
   nodeIsReady: {

@@ -39,6 +39,8 @@ import {
   type CreateTokenResponseType,
   type GetPeerResponseType,
   type GetBalancesResponseType,
+  type GetTicketPricePayloadType,
+  type GetTicketPriceResponseType,
 } from '@hoprnet/hopr-sdk';
 import { parseMetrics } from '../../../utils/metrics';
 import { RootState } from '../..';
@@ -65,6 +67,7 @@ const {
   getPeers,
   getTicketStatistics,
   getToken,
+  getTicketPrice,
   fundChannel,
   getVersion,
   openChannel,
@@ -890,6 +893,30 @@ const getPrometheusMetricsThunk = createAsyncThunk<string | undefined, BasePaylo
   },
 );
 
+const getTicketPriceThunk = createAsyncThunk<GetTicketPriceResponseType | undefined, BasePayloadType, { state: RootState }>(
+  'node/getTicketPrice',
+  async (payload, { rejectWithValue, dispatch }) => {
+    dispatch(nodeActionsFetching.setTicketPriceFetching(true));
+    try {
+      const res = await getTicketPrice(payload);
+      return res;
+    } catch (e) {
+      if (e instanceof sdkApiError) {
+        return rejectWithValue(e);
+      }
+      return rejectWithValue({ status: JSON.stringify(e) });
+    }
+  },
+  {
+    condition: (_payload, { getState }) => {
+      const isFetching = getState().node.ticketPrice.isFetching;
+      if (isFetching) {
+        return false;
+      }
+    },
+  },
+);
+
 const isCurrentApiEndpointTheSame = createAsyncThunk<boolean, string, { state: RootState }>(
   'node/isCurrentApiEndpointTheSame',
   async (payload, { getState }) => {
@@ -947,7 +974,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
 
       const aliases = Object.keys(action.payload);
       for (let i = 0; i < aliases.length; i++) {
-        state.links.peerIdToAlias[action.payload[aliases[i]]] = aliases[i];
+        state.links.aliasToPeerId[action.payload[aliases[i]]] = aliases[i];
       }
     }
     state.aliases.isFetching = false;
@@ -1513,6 +1540,16 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(redeemChannelTicketsThunk.rejected, (state) => {
     state.redeemTickets.isFetching = false;
   });
+  // getTicketPrice
+  builder.addCase(getTicketPriceThunk.fulfilled, (state, action) => {
+    if (action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
+    state.ticketPrice.data = action.payload?.price || null;
+    state.ticketPrice.isFetching = false;
+  });
+  builder.addCase(getTicketPriceThunk.rejected, (state) => {
+    state.ticketPrice.isFetching = false;
+  });
+
 };
 
 export const actionsAsync = {
@@ -1543,6 +1580,7 @@ export const actionsAsync = {
   sendMessageThunk,
   pingNodeThunk,
   redeemTicketsThunk,
+  getTicketPriceThunk,
   createTokenThunk,
   deleteTokenThunk,
   getPrometheusMetricsThunk,

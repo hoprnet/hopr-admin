@@ -28,7 +28,6 @@ function PeersPage() {
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
   const nodeAddressToOutgoingChannelLink = useAppSelector((store) => store.node.links.nodeAddressToOutgoingChannel);
-  const peerIdToAliasLink = useAppSelector((store) => store.node.links.peerIdToAlias);
 
   useEffect(() => {
     handleRefresh();
@@ -52,7 +51,7 @@ function PeersPage() {
   };
 
   const getAliasByPeerId = (peerId: string): string => {
-    if (aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${peerId})`;
+    if (aliases && peerId && aliases[peerId]) return `${aliases[peerId]} (${peerId})`;
     return peerId;
   };
 

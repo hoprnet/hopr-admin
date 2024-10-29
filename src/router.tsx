@@ -316,6 +316,12 @@ const LayoutEnhanced = () => {
               apiToken: apiToken ? apiToken : '',
             }),
           );
+          dispatch(
+            nodeActionsAsync.getTicketPriceThunk({
+              apiEndpoint,
+              apiToken: apiToken ? apiToken : '',
+            }),
+          );
         }
       } catch (e) {
         trackGoal('ZUIBL4M8', 1); // FAILED_CONNECT_TO_NODE_BY_URL
