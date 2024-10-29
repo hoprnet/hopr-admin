@@ -109,13 +109,15 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
   const handleWithdraw = async () => {
     if (recipient && amount && apiEndpoint) {
       set_isLoading(true);
+      set_transactionHash('')
       await dispatch(
         nodeActionsAsync.withdrawThunk({
           amount: parseEther(amount).toString(),
           currency,
-          ethereumAddress: recipient,
+          address: recipient,
           apiEndpoint,
           apiToken: apiToken ? apiToken : '',
+          timeout: 240_000
         }),
       )
         .unwrap()
@@ -216,8 +218,12 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
               value={recipient}
               onChange={(e) => set_recipient(e.target.value)}
             />
-            <Button onClick={handleWithdraw}>Withdraw</Button>
-            {isLoading && <CircularProgress />}
+            <Button
+              onClick={handleWithdraw}
+              pending={isLoading}
+            >
+              Withdraw
+            </Button>
             {transactionHash && (
               <p>
                 Check your transaction{' '}
