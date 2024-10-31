@@ -893,7 +893,11 @@ const getPrometheusMetricsThunk = createAsyncThunk<string | undefined, BasePaylo
   },
 );
 
-const getTicketPriceThunk = createAsyncThunk<GetTicketPriceResponseType | undefined, BasePayloadType, { state: RootState }>(
+const getTicketPriceThunk = createAsyncThunk<
+  GetTicketPriceResponseType | undefined,
+  BasePayloadType,
+  { state: RootState }
+>(
   'node/getTicketPrice',
   async (payload, { rejectWithValue, dispatch }) => {
     dispatch(nodeActionsFetching.setTicketPriceFetching(true));
@@ -1549,7 +1553,6 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   builder.addCase(getTicketPriceThunk.rejected, (state) => {
     state.ticketPrice.isFetching = false;
   });
-
 };
 
 export const actionsAsync = {

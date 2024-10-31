@@ -25,7 +25,6 @@ function TicketsPage() {
   const ticketPrice = useAppSelector((store) => store.node.ticketPrice.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
 
-
   useEffect(() => {
     handleRefresh();
   }, [loginData, dispatch]);
@@ -102,9 +101,7 @@ function TicketsPage() {
                   <span>Ticket price</span>
                 </Tooltip>
               </th>
-              <td>
-                {ticketPrice ? formatEther(BigInt(ticketPrice as string)) : '-'} wxHOPR
-              </td>
+              <td>{ticketPrice ? formatEther(BigInt(ticketPrice as string)) : '-'} wxHOPR</td>
             </tr>
             <tr>
               <th>

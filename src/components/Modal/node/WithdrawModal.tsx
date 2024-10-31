@@ -109,7 +109,7 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
   const handleWithdraw = async () => {
     if (recipient && amount && apiEndpoint) {
       set_isLoading(true);
-      set_transactionHash('')
+      set_transactionHash('');
       await dispatch(
         nodeActionsAsync.withdrawThunk({
           amount: parseEther(amount).toString(),
@@ -117,7 +117,7 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
           address: recipient,
           apiEndpoint,
           apiToken: apiToken ? apiToken : '',
-          timeout: 240_000
+          timeout: 240_000,
         }),
       )
         .unwrap()

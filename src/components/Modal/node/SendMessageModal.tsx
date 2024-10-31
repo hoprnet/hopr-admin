@@ -304,7 +304,9 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
               set_selectedReceiver(newValue);
             }}
             options={sendMessageAddressBook}
-            getOptionLabel={(peerId) => (peerIdToAliasLink[peerId] ? `${peerIdToAliasLink[peerId]} (${peerId})` : peerId)}
+            getOptionLabel={(peerId) =>
+              peerIdToAliasLink[peerId] ? `${peerIdToAliasLink[peerId]} (${peerId})` : peerId
+            }
             autoSelect
             renderInput={(params) => (
               <TextField

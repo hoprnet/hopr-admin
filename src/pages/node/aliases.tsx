@@ -262,15 +262,15 @@ function DeleteAliasButton({
       iconComponent={<RemoveAliasIcon />}
       aria-label="delete alias"
       tooltipText={
-        tooltip
-        ?
-        tooltip
-        :
-        <span>
-          DELETE
-          <br />
-          alias
-        </span>
+        tooltip ? (
+          tooltip
+        ) : (
+          <span>
+            DELETE
+            <br />
+            alias
+          </span>
+        )
       }
       onClick={() => {
         if (loginData.apiEndpoint) {
