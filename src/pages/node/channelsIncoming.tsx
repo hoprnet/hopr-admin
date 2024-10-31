@@ -38,6 +38,7 @@ function ChannelsPage() {
   const nodeAddressToPeerIdLink = useAppSelector((store) => store.node.links.nodeAddressToPeerId);
   const nodeAddressToOutgoingChannelLink = useAppSelector((store) => store.node.links.nodeAddressToOutgoingChannel);
   const tickets = useAppSelector((store) => store.node.metricsParsed.tickets.incoming);
+  const peerIdToAliasLink = useAppSelector((store) => store.node.links.peerIdToAlias);
   const tabLabel = 'incoming';
   const channelsData = channels?.incoming;
 
@@ -77,7 +78,7 @@ function ChannelsPage() {
 
   const getAliasByPeerAddress = (nodeAddress: string): string => {
     const peerId = getPeerIdFromPeerAddress(nodeAddress);
-    if (aliases && peerId && aliases[peerId]) return `${aliases[peerId]} (${nodeAddress})`;
+    if (aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${nodeAddress})`;
     return nodeAddress;
   };
 

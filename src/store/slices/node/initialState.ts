@@ -131,8 +131,8 @@ type InitialState = {
     peerIdToNodeAddress: {
       [peerId: string]: string;
     };
-    aliasToPeerId: {
-      [alias: string]: string;
+    peerIdToAlias: {
+      [peerId: string]: string;
     };
   };
   messages: {
@@ -354,7 +354,7 @@ export const initialState: InitialState = {
     incomingChannelToNodeAddress: {},
     nodeAddressToPeerId: {},
     peerIdToNodeAddress: {},
-    aliasToPeerId: {},
+    peerIdToAlias: {},
   },
   apiEndpoint: null,
   nodeIsReady: {
