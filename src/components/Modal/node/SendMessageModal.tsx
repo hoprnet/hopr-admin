@@ -263,23 +263,6 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
     return receiver;
   };
 
-  const hasAlias = (peerId: string) => {
-    if (aliases) {
-      return Object.values(aliases).includes(peerId);
-    }
-  };
-
-  const findAlias = (peerId: string) => {
-    if (aliases) {
-      for (const alias in aliases) {
-        if (aliases[alias] === peerId) {
-          return alias;
-        }
-      }
-    }
-    return null;
-  };
-
   return (
     <>
       <IconButton
@@ -321,7 +304,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
               set_selectedReceiver(newValue);
             }}
             options={sendMessageAddressBook}
-            getOptionLabel={(peerId) => (hasAlias(peerId) ? `${findAlias(peerId)} (${peerId})` : peerId)}
+            getOptionLabel={(peerId) => (peerIdToAliasLink[peerId] ? `${peerIdToAliasLink[peerId]} (${peerId})` : peerId)}
             autoSelect
             renderInput={(params) => (
               <TextField

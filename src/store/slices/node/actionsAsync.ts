@@ -935,7 +935,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     state.nodeIsReady.isFetching = false;
   });
   builder.addCase(isNodeReadyThunk.fulfilled, (state, action) => {
-    console.log('isNodeReadyThunk', action.payload);
+    // console.log('isNodeReadyThunk', action.payload);
     if (action.payload) {
       state.nodeIsReady.data = action.payload;
     }
@@ -1157,7 +1157,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
   });
   builder.addCase(getConfigurationThunk.fulfilled, (state, action) => {
     if (action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
-    console.log('getConfigurationThunk', action);
+    // console.log('getConfigurationThunk', action);
     if (action.payload) {
       state.configuration.data = action.payload;
     }

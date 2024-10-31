@@ -226,7 +226,7 @@ const LayoutEnhanced = () => {
   };
 
   useEffect(() => {
-    console.log('useEffect(()', apiEndpoint, apiToken);
+    // console.log('useEffect(()', apiEndpoint, apiToken);
     if (!apiEndpoint) return;
     if (loginData.apiEndpoint === apiEndpoint && loginData.apiToken === apiToken) return;
     const formattedApiEndpoint = parseAndFormatUrl(apiEndpoint);
@@ -239,7 +239,7 @@ const LayoutEnhanced = () => {
     dispatch(nodeActions.setApiEndpoint({ apiEndpoint: formattedApiEndpoint }));
     const useNode = async () => {
       try {
-        console.log('Node Admin login from router');
+        //  console.log('Node Admin login from router');
         const loginInfo = await dispatch(
           authActionsAsync.loginThunk({
             apiEndpoint,
