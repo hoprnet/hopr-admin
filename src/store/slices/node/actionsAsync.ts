@@ -974,7 +974,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
 
       const aliases = Object.keys(action.payload);
       for (let i = 0; i < aliases.length; i++) {
-        state.links.aliasToPeerId[action.payload[aliases[i]]] = aliases[i];
+        state.links.peerIdToAlias[action.payload[aliases[i]]] = aliases[i];
       }
     }
     state.aliases.isFetching = false;
