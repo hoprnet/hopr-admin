@@ -300,6 +300,12 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
             apiEndpoint,
           }),
         );
+        dispatch(
+          nodeActionsAsync.getTicketPriceThunk({
+            apiToken,
+            apiEndpoint,
+          }),
+        );
         dispatch(nodeActions.setInfo(loginInfo));
         if (!apiToken || apiToken === '') {
           navigate(`/node/info?apiEndpoint=${formattedApiEndpoint}`);

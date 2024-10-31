@@ -202,6 +202,10 @@ type InitialState = {
     isFetching: boolean;
     error: string | undefined;
   };
+  ticketPrice: {
+    data: string | null;
+    isFetching: boolean;
+  };
   apiEndpoint: string | null;
   nodeIsReady: {
     data: boolean | null;
@@ -339,6 +343,10 @@ export const initialState: InitialState = {
   redeemTickets: {
     isFetching: false,
     error: undefined,
+  },
+  ticketPrice: {
+    data: null,
+    isFetching: false,
   },
   links: {
     nodeAddressToOutgoingChannel: {},

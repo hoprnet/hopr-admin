@@ -161,6 +161,8 @@ function AliasesPage() {
               ]);
             }}
             alias={alias}
+            disabled={peerId === hoprAddress}
+            tooltip={peerId === hoprAddress ? `You can't remove this alias` : undefined}
           />
         </>
       ),
@@ -244,11 +246,13 @@ function DeleteAliasButton({
   onError,
   onSuccess,
   disabled,
+  tooltip,
 }: {
   alias: string;
   onError: (e: typeof sdkApiError.prototype) => void;
   onSuccess: () => void;
   disabled?: boolean;
+  tooltip?: string;
 }) {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((store) => store.auth.loginData);
@@ -258,11 +262,15 @@ function DeleteAliasButton({
       iconComponent={<RemoveAliasIcon />}
       aria-label="delete alias"
       tooltipText={
-        <span>
-          DELETE
-          <br />
-          alias
-        </span>
+        tooltip ? (
+          tooltip
+        ) : (
+          <span>
+            DELETE
+            <br />
+            alias
+          </span>
+        )
       }
       onClick={() => {
         if (loginData.apiEndpoint) {

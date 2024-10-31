@@ -187,7 +187,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
       })
       .catch((e) => {
         console.log('@message err:', e);
-        let errMsg = `Sending message failed failed`;
+        let errMsg = `Sending message failed`;
         if (e instanceof sdkApiError && e.hoprdErrorPayload?.status)
           errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
         if (e instanceof sdkApiError && e.hoprdErrorPayload?.error) errMsg = errMsg + `.\n${e.hoprdErrorPayload.error}`;
@@ -263,23 +263,6 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
     return receiver;
   };
 
-  const hasAlias = (peerId: string) => {
-    if (aliases) {
-      return Object.values(aliases).includes(peerId);
-    }
-  };
-
-  const findAlias = (peerId: string) => {
-    if (aliases) {
-      for (const alias in aliases) {
-        if (aliases[alias] === peerId) {
-          return alias;
-        }
-      }
-    }
-    return null;
-  };
-
   return (
     <>
       <IconButton
@@ -321,7 +304,9 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
               set_selectedReceiver(newValue);
             }}
             options={sendMessageAddressBook}
-            getOptionLabel={(peerId) => (hasAlias(peerId) ? `${findAlias(peerId)} (${peerId})` : peerId)}
+            getOptionLabel={(peerId) =>
+              peerIdToAliasLink[peerId] ? `${peerIdToAliasLink[peerId]} (${peerId})` : peerId
+            }
             autoSelect
             renderInput={(params) => (
               <TextField

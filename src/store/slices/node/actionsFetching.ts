@@ -17,6 +17,7 @@ const setTicketsFetching = createAction<boolean>('node/setTicketsFetching');
 const setTokensFetching = createAction<boolean>('node/setTokensFetching');
 const setVersionFetching = createAction<boolean>('node/setVersionFetching');
 const setTransactionsFetching = createAction<boolean>('node/setTransactionsFetching');
+const setTicketPriceFetching = createAction<boolean>('node/setTicketPriceFetching');
 const setRedeemTicketsFetching = createAction<boolean>('node/setRedeemTicketsFetching');
 
 export const nodeActionsFetching = {
@@ -35,6 +36,7 @@ export const nodeActionsFetching = {
   setTokensFetching,
   setVersionFetching,
   setTransactionsFetching,
+  setTicketPriceFetching,
   setRedeemTicketsFetching,
 };
 
@@ -78,6 +80,9 @@ export const createFetchingReducer = (builder: ActionReducerMapBuilder<typeof in
     }),
     builder.addCase(setTransactionsFetching, (state, action) => {
       state.transactions.isFetching = action.payload;
+    }),
+    builder.addCase(setTicketPriceFetching, (state, action) => {
+      state.ticketPrice.isFetching = action.payload;
     }),
     builder.addCase(setRedeemTicketsFetching, (state, action) => {
       state.redeemTickets.isFetching = action.payload;

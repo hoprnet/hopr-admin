@@ -22,6 +22,7 @@ function TicketsPage() {
   const statisticsFetching = useAppSelector((store) => store.node.statistics.isFetching);
   const redeemTicketsFetching = useAppSelector((store) => store.node.redeemTickets.isFetching);
   const redeemTicketsErrors = useAppSelector((store) => store.node.redeemTickets.error);
+  const ticketPrice = useAppSelector((store) => store.node.ticketPrice.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
 
   useEffect(() => {
@@ -91,6 +92,17 @@ function TicketsPage() {
           style={{ marginBottom: '32px' }}
         >
           <tbody>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The price of a single ticket."
+                  notWide
+                >
+                  <span>Ticket price</span>
+                </Tooltip>
+              </th>
+              <td>{ticketPrice ? formatEther(BigInt(ticketPrice as string)) : '-'} wxHOPR</td>
+            </tr>
             <tr>
               <th>
                 <Tooltip
