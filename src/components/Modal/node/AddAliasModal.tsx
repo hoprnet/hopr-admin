@@ -33,7 +33,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
 
   const aliasesArr = aliases ? Object.keys(aliases) : [];
   const aliasPeerIdsArr = aliases ? Object.values(aliases) : [];
-  const aliasIncludesASpace = alias.includes(" ");
+  const aliasIncludesASpace = alias.includes(' ');
 
   const setPropPeerId = () => {
     if (props.peerId) set_peerId(props.peerId);
@@ -172,14 +172,22 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
             placeholder="Alias"
             onChange={handleChangeAlias}
             value={alias}
-            error={duplicateAlias || alias.includes(" ")}
-            helperText={duplicateAlias ? 'This is a duplicate alias!' : aliasIncludesASpace ? 'An alias can\'t include a space' : ''}
+            error={duplicateAlias || alias.includes(' ')}
+            helperText={
+              duplicateAlias
+                ? 'This is a duplicate alias!'
+                : aliasIncludesASpace
+                ? "An alias can't include a space"
+                : ''
+            }
             style={{ minHeight: '79px' }}
           />
         </SDialogContent>
         <DialogActions>
           <Button
-            disabled={alias.length === 0 || peerId.length === 0 || duplicateAlias || duplicatePeerId || aliasIncludesASpace}
+            disabled={
+              alias.length === 0 || peerId.length === 0 || duplicateAlias || duplicatePeerId || aliasIncludesASpace
+            }
             onClick={handleAddAlias}
             style={{
               marginRight: '16px',
