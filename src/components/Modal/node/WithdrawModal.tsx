@@ -76,15 +76,20 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
   const dispatch = useAppDispatch();
   const hoprBalance = useAppSelector((state) => state.node.balances.data.hopr);
   const nativeBalance = useAppSelector((state) => state.node.balances.data.native);
+  const safeAddress = useAppSelector((state) => state.node.info.data?.hoprNodeSafe);
   const loginData = useAppSelector((store) => store.auth.loginData);
   const { apiEndpoint, apiToken } = useAppSelector((state) => state.auth.loginData);
   // local states
   const [openModal, set_openModal] = useState(false);
   const [currency, set_currency] = useState<'HOPR' | 'NATIVE'>(initialCurrency ?? 'NATIVE');
   const [amount, set_amount] = useState<string>('');
+  const [maxAmount, set_maxAmount] = useState<string>('');
   const [recipient, set_recipient] = useState<string>('');
   const [isLoading, set_isLoading] = useState(false);
   const [transactionHash, set_transactionHash] = useState('');
+
+  const withdrawingZeroOrLess = amount ? parseEther(amount) <= parseEther('0') : false;
+  const withdrawingMoreThanTheWallet = amount ? parseEther(amount) > parseEther(maxAmount) : false;
 
   useEffect(() => {
     setMaxAmount();
@@ -101,8 +106,10 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
   const setMaxAmount = () => {
     if (currency === 'HOPR' && hoprBalance.formatted) {
       set_amount(hoprBalance.formatted);
+      set_maxAmount(hoprBalance.formatted);
     } else if (currency === 'NATIVE' && nativeBalance.formatted) {
       set_amount(nativeBalance.formatted);
+      set_maxAmount(nativeBalance.formatted);
     }
   };
 
@@ -193,8 +200,18 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
               }}
               select
             >
-              <MenuItem value={'HOPR'}>{HOPR_TOKEN_USED}</MenuItem>
-              <MenuItem value={'NATIVE'}>xDai</MenuItem>
+              <MenuItem
+                value={'NATIVE'}
+                disabled={!nativeBalance.value || nativeBalance.value === '0'}
+              >
+                xDai
+              </MenuItem>
+              <MenuItem
+                value={'HOPR'}
+                disabled={!hoprBalance.value || hoprBalance.value === '0'}
+              >
+                {HOPR_TOKEN_USED}
+              </MenuItem>
             </TextField>
             <TextFieldWithoutArrows
               type="number"
@@ -208,19 +225,22 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
                     <MaxButton onClick={setMaxAmount}>Max</MaxButton>
                   </InputAdornment>
                 ),
-                inputProps: { min: 0 },
+                inputProps: { min: 0, step: 'any' },
               }}
             />
             <TextField
               type="text"
               label="Recipient"
-              placeholder="0x4f5a...1728"
+              placeholder={
+                safeAddress ? `${safeAddress.substring(0, 6)}...${safeAddress.substring(38)}` : '0x4f5a...1728'
+              }
               value={recipient}
               onChange={(e) => set_recipient(e.target.value)}
             />
             <Button
               onClick={handleWithdraw}
               pending={isLoading}
+              disabled={!recipient || !amount || withdrawingZeroOrLess || withdrawingMoreThanTheWallet}
             >
               Withdraw
             </Button>
