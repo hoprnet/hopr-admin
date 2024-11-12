@@ -88,8 +88,7 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
   const [isLoading, set_isLoading] = useState(false);
   const [transactionHash, set_transactionHash] = useState('');
 
-
-  const withdrawingZeroOrLess = amount ? parseEther(amount) <= parseEther('0') : false
+  const withdrawingZeroOrLess = amount ? parseEther(amount) <= parseEther('0') : false;
   const withdrawingMoreThanTheWallet = amount ? parseEther(amount) > parseEther(maxAmount) : false;
 
   useEffect(() => {
@@ -203,13 +202,13 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
             >
               <MenuItem
                 value={'NATIVE'}
-                disabled={!nativeBalance.value || nativeBalance.value === "0"}
+                disabled={!nativeBalance.value || nativeBalance.value === '0'}
               >
                 xDai
               </MenuItem>
               <MenuItem
                 value={'HOPR'}
-                disabled={!hoprBalance.value || hoprBalance.value === "0"}
+                disabled={!hoprBalance.value || hoprBalance.value === '0'}
               >
                 {HOPR_TOKEN_USED}
               </MenuItem>
@@ -226,25 +225,22 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
                     <MaxButton onClick={setMaxAmount}>Max</MaxButton>
                   </InputAdornment>
                 ),
-                inputProps: { min: 0, step: "any" },
+                inputProps: { min: 0, step: 'any' },
               }}
             />
             <TextField
               type="text"
               label="Recipient"
-              placeholder={ safeAddress ? `${safeAddress.substring(0,6)}...${safeAddress.substring(38)}` : "0x4f5a...1728" }
+              placeholder={
+                safeAddress ? `${safeAddress.substring(0, 6)}...${safeAddress.substring(38)}` : '0x4f5a...1728'
+              }
               value={recipient}
               onChange={(e) => set_recipient(e.target.value)}
             />
             <Button
               onClick={handleWithdraw}
               pending={isLoading}
-              disabled={
-                !recipient ||
-                !amount ||
-                withdrawingZeroOrLess ||
-                withdrawingMoreThanTheWallet
-              }
+              disabled={!recipient || !amount || withdrawingZeroOrLess || withdrawingMoreThanTheWallet}
             >
               Withdraw
             </Button>
