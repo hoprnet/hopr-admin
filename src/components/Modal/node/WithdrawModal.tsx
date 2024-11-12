@@ -83,9 +83,14 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
   const [openModal, set_openModal] = useState(false);
   const [currency, set_currency] = useState<'HOPR' | 'NATIVE'>(initialCurrency ?? 'NATIVE');
   const [amount, set_amount] = useState<string>('');
+  const [maxAmount, set_maxAmount] = useState<string>('');
   const [recipient, set_recipient] = useState<string>('');
   const [isLoading, set_isLoading] = useState(false);
   const [transactionHash, set_transactionHash] = useState('');
+
+
+  const withdrawingZeroOrLess = amount ? parseEther(amount) <= parseEther('0') : false
+  const withdrawingMoreThanTheWallet = amount ? parseEther(amount) > parseEther(maxAmount) : false;
 
   useEffect(() => {
     setMaxAmount();
@@ -102,8 +107,10 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
   const setMaxAmount = () => {
     if (currency === 'HOPR' && hoprBalance.formatted) {
       set_amount(hoprBalance.formatted);
+      set_maxAmount(hoprBalance.formatted);
     } else if (currency === 'NATIVE' && nativeBalance.formatted) {
       set_amount(nativeBalance.formatted);
+      set_maxAmount(nativeBalance.formatted);
     }
   };
 
@@ -232,7 +239,12 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
             <Button
               onClick={handleWithdraw}
               pending={isLoading}
-              disabled={!recipient || !amount || (amount ? parseEther(amount).toString() === "0" : false)}
+              disabled={
+                !recipient ||
+                !amount ||
+                withdrawingZeroOrLess ||
+                withdrawingMoreThanTheWallet
+              }
             >
               Withdraw
             </Button>
