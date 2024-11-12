@@ -28,7 +28,11 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
   const [alias, set_alias] = useState<string>('');
   const [peerId, set_peerId] = useState<string>(props.peerId ? props.peerId : '');
   const [duplicateAlias, set_duplicateAlias] = useState(false);
+  const [duplicatePeerId, set_duplicatePeerId] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+
+  const aliasesArr = aliases ? Object.keys(aliases) : [];
+  const aliasPeerIdsArr = aliases ? Object.values(aliases) : [];
 
   const setPropPeerId = () => {
     if (props.peerId) set_peerId(props.peerId);
@@ -36,11 +40,16 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
   useEffect(setPropPeerId, [props.peerId]);
 
   const handleChangePeerId = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (aliasPeerIdsArr.includes(event.target.value)) {
+      set_duplicatePeerId(true);
+    } else {
+      set_duplicatePeerId(false);
+    }
     set_peerId(event.target.value);
   };
 
   const handleChangeAlias = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (aliases && Object.keys(aliases).includes(event.target.value)) {
+    if (aliasesArr.includes(event.target.value)) {
       set_duplicateAlias(true);
     } else {
       set_duplicateAlias(false);
@@ -54,6 +63,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
 
   const handleCloseModal = () => {
     set_duplicateAlias(false);
+    set_duplicatePeerId(false);
     setOpenModal(false);
     set_peerId(props.peerId ? props.peerId : '');
     set_alias('');
@@ -150,6 +160,9 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
             placeholder="12D3Ko...Z3rz5F"
             onChange={handleChangePeerId}
             value={peerId}
+            error={duplicatePeerId}
+            helperText={duplicatePeerId ? 'This Peer Id already has an alias!' : ''}
+            style={{ minHeight: '79px' }}
           />
           <TextField
             type="text"
@@ -165,7 +178,7 @@ export const CreateAliasModal = (props: CreateAliasModalProps) => {
         </SDialogContent>
         <DialogActions>
           <Button
-            disabled={alias.length === 0 || peerId.length === 0 || duplicateAlias}
+            disabled={alias.length === 0 || peerId.length === 0 || duplicateAlias || duplicatePeerId}
             onClick={handleAddAlias}
             style={{
               marginRight: '16px',
