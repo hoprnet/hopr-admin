@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { nodeActionsAsync } from '../../store/slices/node';
-import { parseEther } from 'viem';
 
 // HOPR Components
 import { SubpageTitle } from '../../components/SubpageTitle';

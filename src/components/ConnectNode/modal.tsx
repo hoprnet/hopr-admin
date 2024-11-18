@@ -4,7 +4,6 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import styled from '@emotion/styled';
 import { trackGoal } from 'fathom-client';
 import { parseAndFormatUrl } from '../../utils/parseAndFormatUrl';
-import { generateBase64Jazz } from '../../utils/functions';
 
 // Stores
 import { authActions, authActionsAsync } from '../../store/slices/auth';
@@ -352,12 +351,6 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     set_saveApiToken(chosenNode.apiToken?.length > 0);
     set_localName(chosenNode.localName);
   };
-
-  // useEffect(() => {
-  //   if(!apiEndpoint) return;
-  //   const b64 = generateBase64Jazz(apiEndpoint);
-  //   if(b64) set_nodeAddressIcon(b64);
-  // }, [apiEndpoint]);
 
   return (
     <>

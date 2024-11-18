@@ -93,7 +93,6 @@ const Overlay = styled.div`
 export default function ConnectNode() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const ref = useRef(null);
   const [modalVisible, set_modalVisible] = useState(false);
   const connected = useAppSelector((store) => store.auth.status.connected);
   const connecting = useAppSelector((store) => store.auth.status.connecting);
@@ -183,7 +182,7 @@ export default function ConnectNode() {
         onClick={handleContainerClick}
         ref={containerRef}
       >
-        <div className="image-container" id="jazz-icon-node" ref={ref}>
+        <div className="image-container" id="jazz-icon-node">
           <img
             src={nodeAddressIcon ?? "/assets/hopr_logo.svg"}
           />
