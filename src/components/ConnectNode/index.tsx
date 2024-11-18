@@ -65,6 +65,10 @@ const NodeButton = styled.div`
     color: #414141;
     line-height: 12px;
   }
+  .node-info-localname{
+    font-weight: 700;
+    color: #000050;
+  }
 `;
 
 const DropdownArrow = styled.img`
@@ -98,6 +102,10 @@ export default function ConnectNode() {
   const openLoginModalToNode = useAppSelector((store) => store.auth.helper.openLoginModalToNode);
   const peerId = useAppSelector((store) => store.node.addresses.data.hopr);
   const localName = useAppSelector((store) => store.auth.loginData.localName);
+  const localNameToDisplay = localName && localName.length > 17 ?
+    `${localName?.substring(0,5)}…${localName?.substring(localName.length-11,localName.length)}`
+    :
+    localName;
   const nodeAddress = useAppSelector((store)=> store.node.addresses.data.native);
   const [nodeAddressIcon, set_nodeAddressIcon] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
@@ -192,9 +200,17 @@ export default function ConnectNode() {
         {connected ? (
           <>
             <NodeButton>
-              <p className="node-info">
-                {peerId && `${peerId.substring(0, 6)}...${peerId.substring(peerId.length - 8, peerId.length)}`}
-              </p>
+              <span>
+                {
+                  localNameToDisplay &&
+                  <p className="node-info node-info-localname">
+                    {localNameToDisplay}
+                  </p>
+                }
+                <p className="node-info">
+                  {peerId && `${peerId.substring(0, 6)}...${peerId.substring(peerId.length - 8, peerId.length)}`}
+                </p>
+              </span>
               <div className="dropdown-icon">
                 <DropdownArrow src="/assets/dropdown-arrow.svg" />
               </div>
