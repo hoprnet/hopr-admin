@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import styled from '@emotion/styled';
 import { trackGoal } from 'fathom-client';
 import { parseAndFormatUrl } from '../../utils/parseAndFormatUrl';
+import { generateBase64Jazz } from '../../utils/functions';
 
 // Stores
 import { authActions, authActionsAsync } from '../../store/slices/auth';
@@ -352,6 +353,12 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     set_localName(chosenNode.localName);
   };
 
+  // useEffect(() => {
+  //   if(!apiEndpoint) return;
+  //   const b64 = generateBase64Jazz(apiEndpoint);
+  //   if(b64) set_nodeAddressIcon(b64);
+  // }, [apiEndpoint]);
+
   return (
     <>
       <SModal
@@ -371,6 +378,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
             style={{ width: '100%' }}
             removeValue={clearSingleLocal}
             removeValueTooltip={'Remove node from local storage'}
+            showJazzIcon
           />
           <Tooltip title={'Clear all node credentials from the browser local storage'}>
             <span>

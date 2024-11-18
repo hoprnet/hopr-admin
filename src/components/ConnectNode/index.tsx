@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { Link, useNavigate } from 'react-router-dom';
-// @ts-ignore
-import jazzicon, {  } from "@metamask/jazzicon";
+import { generateBase64Jazz } from '../../utils/functions';
 
 // Components
 import Modal from './modal';
@@ -106,7 +105,7 @@ export default function ConnectNode() {
     `${localName?.substring(0,5)}…${localName?.substring(localName.length-11,localName.length)}`
     :
     localName;
-  const nodeAddress = useAppSelector((store)=> store.node.addresses.data.native);
+  const apiEndpoint = useAppSelector((store) => store.auth.loginData.apiEndpoint);
   const [nodeAddressIcon, set_nodeAddressIcon] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
 
@@ -127,18 +126,10 @@ export default function ConnectNode() {
   }, []);
 
   useEffect(() => {
-    if(!nodeAddress) return;
-    try{
-      const jazzSvg = jazzicon(16, parseInt(nodeAddress.slice(2, 10), 16));
-      const html = jazzSvg.children[0].outerHTML.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"' );
-      const b64 = 'data:image/svg+xml;base64,' + btoa(html);
-      if(html){
-        set_nodeAddressIcon(b64);
-      }
-    } catch(e) {
-      console.log("Did not manage to create a jazzicon out of the node address.")
-    }
-  }, [nodeAddress]);
+    if(!apiEndpoint) return;
+    const b64 = generateBase64Jazz(apiEndpoint);
+    if(b64) set_nodeAddressIcon(b64);
+  }, [apiEndpoint]);
 
   useEffect(() => {
     if (error) set_modalVisible(true);
