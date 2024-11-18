@@ -7,3 +7,5 @@ src/index.tsx
 
 # Created by github pipeline
 gha-creds-*.json
+
+src/utils/functions.ts
