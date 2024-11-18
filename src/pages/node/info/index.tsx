@@ -63,8 +63,8 @@ function InfoPage() {
   const blockNumberIndexedWithHOPRdata = blockNumberPrevIndexedWithHOPRdata
     ? blockNumberPrevIndexedWithHOPRdata + 1
     : null;
-  const blockNumber = blockNumberFromMetrics ?? blockNumberFromInfo;
-  const blockNumberCheckSum = blockNumberCheckSumFromMetrics ?? blockNumberCheckSumFromInfo;
+  const blockNumber = blockNumberFromInfo ?? blockNumberFromMetrics;
+  const blockNumberCheckSum = blockNumberCheckSumFromInfo ?? blockNumberCheckSumFromMetrics;
   const ticketPrice = useAppSelector((store) => store.node.ticketPrice.data);
 
   useEffect(() => {
@@ -325,17 +325,6 @@ function InfoPage() {
               </th>
               <td>{blockNumberCheckSum ? blockNumberCheckSum : '-'}</td>
             </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The current price of a single ticket"
-                  notWide
-                >
-                  <span>Current ticket price</span>
-                </Tooltip>
-              </th>
-              <td>{ticketPrice ? formatEther(BigInt(ticketPrice as string)) : '-'} wxHOPR</td>
-            </tr>
           </tbody>
         </TableExtended>
 
@@ -414,6 +403,17 @@ function InfoPage() {
                   : '-'}{' '}
                 wxHOPR
               </td>
+            </tr>
+            <tr>
+              <th>
+                <Tooltip
+                  title="The current price of a single ticket"
+                  notWide
+                >
+                  <span>Current ticket price</span>
+                </Tooltip>
+              </th>
+              <td>{ticketPrice ? formatEther(BigInt(ticketPrice as string)) : '-'} wxHOPR</td>
             </tr>
           </tbody>
         </TableExtended>

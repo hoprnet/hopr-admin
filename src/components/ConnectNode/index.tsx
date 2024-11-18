@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { Link, useNavigate } from 'react-router-dom';
+// @ts-ignore
+import jazzicon, {  } from "@metamask/jazzicon";
 
 // Components
 import Modal from './modal';
@@ -38,8 +40,10 @@ const Container = styled(Button)`
     margin-left: 8px;
     width: 50px;
     img {
-      height: 100%;
-      width: 100%;
+      height: 38px;
+      width: 38px;
+      border-radius: 50px;
+      background: rgb(3, 94, 91);
     }
   }
 `;
@@ -86,6 +90,7 @@ const Overlay = styled.div`
 export default function ConnectNode() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const ref = useRef(null);
   const [modalVisible, set_modalVisible] = useState(false);
   const connected = useAppSelector((store) => store.auth.status.connected);
   const connecting = useAppSelector((store) => store.auth.status.connecting);
@@ -93,6 +98,8 @@ export default function ConnectNode() {
   const openLoginModalToNode = useAppSelector((store) => store.auth.helper.openLoginModalToNode);
   const peerId = useAppSelector((store) => store.node.addresses.data.hopr);
   const localName = useAppSelector((store) => store.auth.loginData.localName);
+  const nodeAddress = useAppSelector((store)=> store.node.addresses.data.native);
+  const [nodeAddressIcon, set_nodeAddressIcon] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
 
   const containerRef = useRef<HTMLButtonElement>(null);
@@ -110,6 +117,20 @@ export default function ConnectNode() {
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if(!nodeAddress) return;
+    try{
+      const jazzSvg = jazzicon(16, parseInt(nodeAddress.slice(2, 10), 16));
+      const html = jazzSvg.children[0].outerHTML.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"' );
+      const b64 = 'data:image/svg+xml;base64,' + btoa(html);
+      if(html){
+        set_nodeAddressIcon(b64);
+      }
+    } catch(e) {
+      console.log("Did not manage to create a jazzicon out of the node address.")
+    }
+  }, [nodeAddress]);
 
   useEffect(() => {
     if (error) set_modalVisible(true);
@@ -163,8 +184,10 @@ export default function ConnectNode() {
         onClick={handleContainerClick}
         ref={containerRef}
       >
-        <div className="image-container">
-          <img src="/assets/hopr_logo.svg" />
+        <div className="image-container" id="jazz-icon-node" ref={ref}>
+          <img
+            src={nodeAddressIcon ?? "/assets/hopr_logo.svg"}
+          />
         </div>
         {connected ? (
           <>
