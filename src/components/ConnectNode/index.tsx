@@ -64,7 +64,7 @@ const NodeButton = styled.div`
     color: #414141;
     line-height: 12px;
   }
-  .node-info-localname{
+  .node-info-localname {
     font-weight: 700;
     color: #000050;
   }
@@ -100,10 +100,10 @@ export default function ConnectNode() {
   const openLoginModalToNode = useAppSelector((store) => store.auth.helper.openLoginModalToNode);
   const peerId = useAppSelector((store) => store.node.addresses.data.hopr);
   const localName = useAppSelector((store) => store.auth.loginData.localName);
-  const localNameToDisplay = localName && localName.length > 17 ?
-    `${localName?.substring(0,5)}…${localName?.substring(localName.length-11,localName.length)}`
-    :
-    localName;
+  const localNameToDisplay =
+    localName && localName.length > 17
+      ? `${localName?.substring(0, 5)}…${localName?.substring(localName.length - 11, localName.length)}`
+      : localName;
   const apiEndpoint = useAppSelector((store) => store.auth.loginData.apiEndpoint);
   const [nodeAddressIcon, set_nodeAddressIcon] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
@@ -125,9 +125,9 @@ export default function ConnectNode() {
   }, []);
 
   useEffect(() => {
-    if(!apiEndpoint) return;
+    if (!apiEndpoint) return;
     const b64 = generateBase64Jazz(apiEndpoint);
-    if(b64) set_nodeAddressIcon(b64);
+    if (b64) set_nodeAddressIcon(b64);
   }, [apiEndpoint]);
 
   useEffect(() => {
@@ -182,21 +182,17 @@ export default function ConnectNode() {
         onClick={handleContainerClick}
         ref={containerRef}
       >
-        <div className="image-container" id="jazz-icon-node">
-          <img
-            src={nodeAddressIcon ?? "/assets/hopr_logo.svg"}
-          />
+        <div
+          className="image-container"
+          id="jazz-icon-node"
+        >
+          <img src={nodeAddressIcon ?? '/assets/hopr_logo.svg'} />
         </div>
         {connected ? (
           <>
             <NodeButton>
               <span>
-                {
-                  localNameToDisplay &&
-                  <p className="node-info node-info-localname">
-                    {localNameToDisplay}
-                  </p>
-                }
+                {localNameToDisplay && <p className="node-info node-info-localname">{localNameToDisplay}</p>}
                 <p className="node-info">
                   {peerId && `${peerId.substring(0, 6)}...${peerId.substring(peerId.length - 8, peerId.length)}`}
                 </p>

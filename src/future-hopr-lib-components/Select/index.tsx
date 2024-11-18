@@ -28,16 +28,15 @@ const SFormControl = styled(FormControl)`
     }
   }
 
-  &.showJazzIcon{
+  &.showJazzIcon {
     .select-menu-item-text {
-    margin-left: 30px;
-  }
+      margin-left: 30px;
+    }
 
-    img.node-jazz-icon{
+    img.node-jazz-icon {
       position: fixed;
     }
   }
-
 `;
 
 interface Props extends SelectMuiProps {
@@ -74,37 +73,38 @@ const Select: React.FC<Props> = (props) => {
         {props.values &&
           props.values.map((elem, index) => {
             const icon = elem.apiEndpoint && generateBase64Jazz(elem.apiEndpoint);
-            return (<MenuItem
-              value={elem.value}
-              disabled={elem.disabled}
-              key={`${elem.value}_${elem.name}_${index}`}
-              id={`${elem.value}_${elem.name}_${index}`}
-              style={props.removeValue && { justifyContent: 'space-between' }}
-            >
-              {
-                props.showJazzIcon &&
-                <img
-                  className="node-jazz-icon"
-                  src={icon ?? "/assets/hopr_logo.svg" }
-                />
-              }
-              <span className="select-menu-item-text">{elem.name}</span>
-              {props.removeValue && (
-                <Tooltip title={props.removeValueTooltip}>
-                  <IconButton
-                    aria-label="delete"
-                    className="removeValue"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      props?.removeValue?.(Number(elem.value));
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Tooltip>
-              )}
-            </MenuItem>
-          )})}
+            return (
+              <MenuItem
+                value={elem.value}
+                disabled={elem.disabled}
+                key={`${elem.value}_${elem.name}_${index}`}
+                id={`${elem.value}_${elem.name}_${index}`}
+                style={props.removeValue && { justifyContent: 'space-between' }}
+              >
+                {props.showJazzIcon && (
+                  <img
+                    className="node-jazz-icon"
+                    src={icon ?? '/assets/hopr_logo.svg'}
+                  />
+                )}
+                <span className="select-menu-item-text">{elem.name}</span>
+                {props.removeValue && (
+                  <Tooltip title={props.removeValueTooltip}>
+                    <IconButton
+                      aria-label="delete"
+                      className="removeValue"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        props?.removeValue?.(Number(elem.value));
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </MenuItem>
+            );
+          })}
       </SelectMui>
     </SFormControl>
   );

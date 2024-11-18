@@ -37,98 +37,103 @@ function SettingsPage() {
     if (strategies) {
       let tmp = JSON.stringify(strategies, null, 2);
 
-      try{
-        if(ticketPrice) {
+      try {
+        if (ticketPrice) {
           // min_stake_threshold
-          if(strategies?.strategies?.AutoFunding?.min_stake_threshold){
+          if (strategies?.strategies?.AutoFunding?.min_stake_threshold) {
             const key = 'min_stake_threshold';
-            const min_stake_threshold = strategies.strategies.AutoFunding.min_stake_threshold.replace(' HOPR','');
-            const min_stake_thresholdBigInt = BigInt(min_stake_threshold)*BigInt(1e18);
+            const min_stake_threshold = strategies.strategies.AutoFunding.min_stake_threshold.replace(' HOPR', '');
+            const min_stake_thresholdBigInt = BigInt(min_stake_threshold) * BigInt(1e18);
             const ticketBigInt = BigInt(ticketPrice);
             const ticketsBigInt = min_stake_thresholdBigInt / ticketBigInt;
             const ticketsString = ticketsBigInt.toString();
             const stringToReplace = `"${key}": "${strategies.strategies.AutoFunding.min_stake_threshold}"`;
-            if(tmp.includes(stringToReplace+',')) {
+            if (tmp.includes(stringToReplace + ',')) {
               tmp = tmp.replace(
-                stringToReplace+',',
-                `"${key}": "${strategies.strategies.AutoFunding.min_stake_threshold}", // tickets: ${ticketsString}`
+                stringToReplace + ',',
+                `"${key}": "${strategies.strategies.AutoFunding.min_stake_threshold}", // tickets: ${ticketsString}`,
               );
             } else {
               tmp = tmp.replace(
                 stringToReplace,
-                `"${key}": "${strategies.strategies.AutoFunding.min_stake_threshold}" // tickets: ${ticketsString}`
+                `"${key}": "${strategies.strategies.AutoFunding.min_stake_threshold}" // tickets: ${ticketsString}`,
               );
             }
           }
 
           // funding_amount
-          if(strategies?.strategies?.AutoFunding?.funding_amount){
+          if (strategies?.strategies?.AutoFunding?.funding_amount) {
             const key = 'funding_amount';
-            const funding_amount = strategies.strategies.AutoFunding.funding_amount.replace(' HOPR','');
-            const funding_amountBigInt = BigInt(funding_amount)*BigInt(1e18);
+            const funding_amount = strategies.strategies.AutoFunding.funding_amount.replace(' HOPR', '');
+            const funding_amountBigInt = BigInt(funding_amount) * BigInt(1e18);
             const ticketBigInt = BigInt(ticketPrice);
             const ticketsBigInt = funding_amountBigInt / ticketBigInt;
             const ticketsString = ticketsBigInt.toString();
             const stringToReplace = `"${key}": "${strategies.strategies.AutoFunding.funding_amount}"`;
-            if(tmp.includes(stringToReplace+',')) {
+            if (tmp.includes(stringToReplace + ',')) {
               tmp = tmp.replace(
-                stringToReplace+',',
-                `"${key}": "${strategies.strategies.AutoFunding.min_stake_threshold}", // tickets: ${ticketsString}`
+                stringToReplace + ',',
+                `"${key}": "${strategies.strategies.AutoFunding.min_stake_threshold}", // tickets: ${ticketsString}`,
               );
             } else {
               tmp = tmp.replace(
                 stringToReplace,
-                `"${key}": "${strategies.strategies.AutoFunding.min_stake_threshold}" // tickets: ${ticketsString}`
+                `"${key}": "${strategies.strategies.AutoFunding.min_stake_threshold}" // tickets: ${ticketsString}`,
               );
             }
           }
 
           // minimum_redeem_ticket_value
-          if(strategies?.strategies?.AutoRedeeming?.minimum_redeem_ticket_value){
+          if (strategies?.strategies?.AutoRedeeming?.minimum_redeem_ticket_value) {
             const key = 'minimum_redeem_ticket_value';
-            const minimum_redeem_ticket_value = strategies.strategies.AutoRedeeming.minimum_redeem_ticket_value.replace(' HOPR','');
-            const minimum_redeem_ticket_valueBigInt = BigInt(minimum_redeem_ticket_value)*BigInt(1e18);
+            const minimum_redeem_ticket_value = strategies.strategies.AutoRedeeming.minimum_redeem_ticket_value.replace(
+              ' HOPR',
+              '',
+            );
+            const minimum_redeem_ticket_valueBigInt = BigInt(minimum_redeem_ticket_value) * BigInt(1e18);
             const ticketBigInt = BigInt(ticketPrice);
             const ticketsBigInt = minimum_redeem_ticket_valueBigInt / ticketBigInt;
             const ticketsString = ticketsBigInt.toString();
             const stringToReplace = `"${key}": "${strategies.strategies.AutoRedeeming.minimum_redeem_ticket_value}"`;
-            if(tmp.includes(stringToReplace+',')) {
+            if (tmp.includes(stringToReplace + ',')) {
               tmp = tmp.replace(
-                stringToReplace+',',
-                `"${key}": "${strategies.strategies.AutoRedeeming.minimum_redeem_ticket_value}", // tickets: ${ticketsString}`
+                stringToReplace + ',',
+                `"${key}": "${strategies.strategies.AutoRedeeming.minimum_redeem_ticket_value}", // tickets: ${ticketsString}`,
               );
             } else {
               tmp = tmp.replace(
                 stringToReplace,
-                `"${key}": "${strategies.strategies.AutoRedeeming.minimum_redeem_ticket_value}" // tickets: ${ticketsString}`
+                `"${key}": "${strategies.strategies.AutoRedeeming.minimum_redeem_ticket_value}" // tickets: ${ticketsString}`,
               );
             }
           }
 
           // on_close_redeem_single_tickets_value_min
-          if(strategies?.strategies?.AutoRedeeming?.on_close_redeem_single_tickets_value_min){
+          if (strategies?.strategies?.AutoRedeeming?.on_close_redeem_single_tickets_value_min) {
             const key = 'on_close_redeem_single_tickets_value_min';
-            const on_close_redeem_single_tickets_value_min = strategies.strategies.AutoRedeeming.on_close_redeem_single_tickets_value_min.replace(' HOPR','');
-            const on_close_redeem_single_tickets_value_minBigInt = BigInt(on_close_redeem_single_tickets_value_min)*BigInt(1e18);
+            const on_close_redeem_single_tickets_value_min =
+              strategies.strategies.AutoRedeeming.on_close_redeem_single_tickets_value_min.replace(' HOPR', '');
+            const on_close_redeem_single_tickets_value_minBigInt =
+              BigInt(on_close_redeem_single_tickets_value_min) * BigInt(1e18);
             const ticketBigInt = BigInt(ticketPrice);
             const ticketsBigInt = on_close_redeem_single_tickets_value_minBigInt / ticketBigInt;
             const ticketsString = ticketsBigInt.toString();
             const stringToReplace = `"${key}": "${strategies.strategies.AutoRedeeming.on_close_redeem_single_tickets_value_min}"`;
-            if(tmp.includes(stringToReplace+',')) {
+            if (tmp.includes(stringToReplace + ',')) {
               tmp = tmp.replace(
-                stringToReplace+',',
-                `"${key}": "${strategies.strategies.AutoRedeeming.on_close_redeem_single_tickets_value_min}", // tickets: ${ticketsString}`
+                stringToReplace + ',',
+                `"${key}": "${strategies.strategies.AutoRedeeming.on_close_redeem_single_tickets_value_min}", // tickets: ${ticketsString}`,
               );
             } else {
               tmp = tmp.replace(
                 stringToReplace,
-                `"${key}": "${strategies.strategies.AutoRedeeming.on_close_redeem_single_tickets_value_min}" // tickets: ${ticketsString}`
+                `"${key}": "${strategies.strategies.AutoRedeeming.on_close_redeem_single_tickets_value_min}" // tickets: ${ticketsString}`,
               );
             }
           }
         }
-      } catch(e) {
-        console.warn('Error while counting strategies against current ticket price.', e)
+      } catch (e) {
+        console.warn('Error while counting strategies against current ticket price.', e);
       }
 
       set_strategiesString(tmp);
