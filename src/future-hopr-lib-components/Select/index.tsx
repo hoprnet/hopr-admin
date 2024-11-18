@@ -28,12 +28,14 @@ const SFormControl = styled(FormControl)`
     }
   }
 
-  .select-menu-item-text {
+  &.showJazzIcon{
+    .select-menu-item-text {
     margin-left: 30px;
   }
 
-  img.node-jazz-icon{
-    position: fixed;
+    img.node-jazz-icon{
+      position: fixed;
+    }
   }
 
 `;
@@ -53,7 +55,10 @@ interface Props extends SelectMuiProps {
 
 const Select: React.FC<Props> = (props) => {
   return (
-    <SFormControl style={props.style}>
+    <SFormControl
+      style={props.style}
+      className={`${props.showJazzIcon ? 'showJazzIcon' : ''}`}
+    >
       <InputLabel id="select-small">{props.label}</InputLabel>
       <SelectMui
         labelId="select-small"
