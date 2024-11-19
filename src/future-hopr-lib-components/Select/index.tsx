@@ -30,11 +30,14 @@ const SFormControl = styled(FormControl)`
 
   &.showJazzIcon {
     .select-menu-item-text {
-      margin-left: 30px;
+      margin-left: 27px;
     }
 
     img.node-jazz-icon {
-      position: fixed;
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 `;
@@ -83,7 +86,7 @@ const Select: React.FC<Props> = (props) => {
               >
                 {props.showJazzIcon && (
                   <img
-                    className="node-jazz-icon"
+                    className={`node-jazz-icon ${icon && 'node-jazz-icon-present'}`}
                     src={icon ?? '/assets/hopr_logo.svg'}
                   />
                 )}

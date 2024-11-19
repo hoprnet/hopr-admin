@@ -114,9 +114,12 @@ li.selected-safe {
 img.node-jazz-icon {
   margin-right: 10px;
   border-radius: 30px;
-  background: rgb(3, 94, 91);
   height: 22px;
   width: 22px;
+}
+
+img.node-jazz-icon-present {
+  background: rgb(3, 94, 91);
 }
 
 span.select-menu-item-text {

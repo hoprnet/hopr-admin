@@ -42,7 +42,6 @@ const Container = styled(Button)`
       height: 38px;
       width: 38px;
       border-radius: 50px;
-      background: rgb(3, 94, 91);
     }
   }
 `;
@@ -186,7 +185,10 @@ export default function ConnectNode() {
           className="image-container"
           id="jazz-icon-node"
         >
-          <img src={nodeAddressIcon ?? '/assets/hopr_logo.svg'} />
+          <img
+            className={`${nodeAddressIcon && 'node-jazz-icon-present'}`}
+            src={nodeAddressIcon ?? '/assets/hopr_logo.svg'}
+          />
         </div>
         {connected ? (
           <>
