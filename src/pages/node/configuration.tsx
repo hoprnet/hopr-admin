@@ -86,10 +86,7 @@ function SettingsPage() {
           // minimum_redeem_ticket_value
           if (strategies?.strategies?.AutoRedeeming?.minimum_redeem_ticket_value) {
             const key = 'minimum_redeem_ticket_value';
-            const minimum_redeem_ticket_value = strategies.strategies.AutoRedeeming[key].replace(
-              ' HOPR',
-              '',
-            );
+            const minimum_redeem_ticket_value = strategies.strategies.AutoRedeeming[key].replace(' HOPR', '');
             const minimum_redeem_ticket_valueBigInt = BigInt(minimum_redeem_ticket_value) * BigInt(1e18);
             const ticketBigInt = BigInt(ticketPrice);
             const ticketsBigInt = minimum_redeem_ticket_valueBigInt / ticketBigInt;
@@ -111,8 +108,10 @@ function SettingsPage() {
           // on_close_redeem_single_tickets_value_min
           if (strategies?.strategies?.AutoRedeeming?.on_close_redeem_single_tickets_value_min) {
             const key = 'on_close_redeem_single_tickets_value_min';
-            const on_close_redeem_single_tickets_value_min =
-              strategies.strategies.AutoRedeeming[key].replace(' HOPR', '');
+            const on_close_redeem_single_tickets_value_min = strategies.strategies.AutoRedeeming[key].replace(
+              ' HOPR',
+              '',
+            );
             const on_close_redeem_single_tickets_value_minBigInt =
               BigInt(on_close_redeem_single_tickets_value_min) * BigInt(1e18);
             const ticketBigInt = BigInt(ticketPrice);
