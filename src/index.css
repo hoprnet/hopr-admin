@@ -110,3 +110,18 @@ li.selected-safe {
 .inline {
   display: inline;
 }
+
+img.node-jazz-icon {
+  margin-right: 10px;
+  border-radius: 30px;
+  height: 22px;
+  width: 22px;
+}
+
+img.node-jazz-icon-present {
+  background: rgb(3, 94, 91);
+}
+
+span.select-menu-item-text {
+  flex-grow: 1;
+}

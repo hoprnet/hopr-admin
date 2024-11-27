@@ -1,3 +1,7 @@
+// @ts-ignore
+import jazzicon from '@metamask/jazzicon';
+import { createHash } from 'crypto';
+
 export function bubbleSortObject(arr: any[], key: string | number) {
   for (let i = 0; i < arr.length; i++) {
     // Last i elements are already in place
@@ -133,5 +137,30 @@ function unround(value: string) {
     return rez;
   } catch (e) {
     return '';
+  }
+}
+
+export function toHex(str: string) {
+  var result = '';
+  for (var i = 0; i < str.length; i++) {
+    result += str.charCodeAt(i).toString(16);
+  }
+  return result;
+}
+
+export function toHexMD5(d: string) {
+  return createHash('md5').update(d).digest('hex');
+}
+
+export function generateBase64Jazz(string: string) {
+  try {
+    const md5 = toHexMD5(string);
+    const jazzSvg = jazzicon(16, parseInt(md5.slice(2, 10), 16));
+    const html = jazzSvg.children[0].outerHTML.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+    const b64 = 'data:image/svg+xml;base64,' + btoa(html);
+    return b64;
+  } catch (e) {
+    console.log('Did not manage to create a jazzicon/', e);
+    return null;
   }
 }

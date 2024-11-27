@@ -371,6 +371,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
             style={{ width: '100%' }}
             removeValue={clearSingleLocal}
             removeValueTooltip={'Remove node from local storage'}
+            showJazzIcon
           />
           <Tooltip title={'Clear all node credentials from the browser local storage'}>
             <span>

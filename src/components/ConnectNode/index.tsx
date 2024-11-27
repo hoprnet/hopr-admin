@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { Link, useNavigate } from 'react-router-dom';
+import { generateBase64Jazz } from '../../utils/functions';
 
 // Components
 import Modal from './modal';
@@ -38,8 +39,9 @@ const Container = styled(Button)`
     margin-left: 8px;
     width: 50px;
     img {
-      height: 100%;
-      width: 100%;
+      height: 38px;
+      width: 38px;
+      border-radius: 50px;
     }
   }
 `;
@@ -60,6 +62,10 @@ const NodeButton = styled.div`
   .node-info {
     color: #414141;
     line-height: 12px;
+  }
+  .node-info-localname {
+    font-weight: 700;
+    color: #000050;
   }
 `;
 
@@ -93,6 +99,12 @@ export default function ConnectNode() {
   const openLoginModalToNode = useAppSelector((store) => store.auth.helper.openLoginModalToNode);
   const peerId = useAppSelector((store) => store.node.addresses.data.hopr);
   const localName = useAppSelector((store) => store.auth.loginData.localName);
+  const localNameToDisplay =
+    localName && localName.length > 17
+      ? `${localName?.substring(0, 5)}…${localName?.substring(localName.length - 11, localName.length)}`
+      : localName;
+  const apiEndpoint = useAppSelector((store) => store.auth.loginData.apiEndpoint);
+  const [nodeAddressIcon, set_nodeAddressIcon] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // State variable to hold the anchor element for the menu
 
   const containerRef = useRef<HTMLButtonElement>(null);
@@ -110,6 +122,12 @@ export default function ConnectNode() {
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (!apiEndpoint) return;
+    const b64 = generateBase64Jazz(apiEndpoint);
+    if (b64) set_nodeAddressIcon(b64);
+  }, [apiEndpoint]);
 
   useEffect(() => {
     if (error) set_modalVisible(true);
@@ -163,15 +181,24 @@ export default function ConnectNode() {
         onClick={handleContainerClick}
         ref={containerRef}
       >
-        <div className="image-container">
-          <img src="/assets/hopr_logo.svg" />
+        <div
+          className="image-container"
+          id="jazz-icon-node"
+        >
+          <img
+            className={`${nodeAddressIcon && 'node-jazz-icon-present'}`}
+            src={nodeAddressIcon ?? '/assets/hopr_logo.svg'}
+          />
         </div>
         {connected ? (
           <>
             <NodeButton>
-              <p className="node-info">
-                {peerId && `${peerId.substring(0, 6)}...${peerId.substring(peerId.length - 8, peerId.length)}`}
-              </p>
+              <span>
+                {localNameToDisplay && <p className="node-info node-info-localname">{localNameToDisplay}</p>}
+                <p className="node-info">
+                  {peerId && `${peerId.substring(0, 6)}...${peerId.substring(peerId.length - 8, peerId.length)}`}
+                </p>
+              </span>
               <div className="dropdown-icon">
                 <DropdownArrow src="/assets/dropdown-arrow.svg" />
               </div>
