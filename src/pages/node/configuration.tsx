@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
+import { formatEther } from 'viem';
 
 // HOPR Components
 import { SubpageTitle } from '../../components/SubpageTitle';
@@ -45,6 +46,7 @@ function SettingsPage() {
           if (strategies?.strategies?.AutoFunding?.min_stake_threshold) {
             const key = 'min_stake_threshold';
             const min_stake_threshold = strategies.strategies.AutoFunding[key].replace(' HOPR', '');
+            const formattedEther = formatEther(min_stake_threshold);
             const min_stake_thresholdBigInt = BigInt(min_stake_threshold) * BigInt(1e18);
             const ticketBigInt = BigInt(ticketPrice);
             const ticketsBigInt = min_stake_thresholdBigInt / ticketBigInt;
@@ -53,12 +55,12 @@ function SettingsPage() {
             if (tmp.includes(stringToReplace + ',')) {
               tmp = tmp.replace(
                 stringToReplace + ',',
-                `"${key}": "${strategies.strategies.AutoFunding[key]}", // tickets: ${ticketsString}`,
+                `"${key}": "${strategies.strategies.AutoFunding[key]}", // ${formattedEther} HOPR, tickets: ${ticketsString}`,
               );
             } else {
               tmp = tmp.replace(
                 stringToReplace,
-                `"${key}": "${strategies.strategies.AutoFunding[key]}" // tickets: ${ticketsString}`,
+                `"${key}": "${strategies.strategies.AutoFunding[key]}" // ${formattedEther} HOPR, tickets: ${ticketsString}`,
               );
             }
           }
@@ -67,6 +69,7 @@ function SettingsPage() {
           if (strategies?.strategies?.AutoFunding?.funding_amount) {
             const key = 'funding_amount';
             const funding_amount = strategies.strategies.AutoFunding[key].replace(' HOPR', '');
+            const formattedEther = formatEther(funding_amount);
             const funding_amountBigInt = BigInt(funding_amount) * BigInt(1e18);
             const ticketBigInt = BigInt(ticketPrice);
             const ticketsBigInt = funding_amountBigInt / ticketBigInt;
@@ -75,12 +78,12 @@ function SettingsPage() {
             if (tmp.includes(stringToReplace + ',')) {
               tmp = tmp.replace(
                 stringToReplace + ',',
-                `"${key}": "${strategies.strategies.AutoFunding[key]}", // tickets: ${ticketsString}`,
+                `"${key}": "${strategies.strategies.AutoFunding[key]}", // ${formattedEther} HOPR, tickets: ${ticketsString}`,
               );
             } else {
               tmp = tmp.replace(
                 stringToReplace,
-                `"${key}": "${strategies.strategies.AutoFunding[key]}" // tickets: ${ticketsString}`,
+                `"${key}": "${strategies.strategies.AutoFunding[key]}" // ${formattedEther} HOPR, tickets: ${ticketsString}`,
               );
             }
           }
@@ -89,6 +92,7 @@ function SettingsPage() {
           if (strategies?.strategies?.AutoRedeeming?.minimum_redeem_ticket_value) {
             const key = 'minimum_redeem_ticket_value';
             const minimum_redeem_ticket_value = strategies.strategies.AutoRedeeming[key].replace(' HOPR', '');
+            const formattedEther = formatEther(minimum_redeem_ticket_value);
             const minimum_redeem_ticket_valueBigInt = BigInt(minimum_redeem_ticket_value) * BigInt(1e18);
             const ticketBigInt = BigInt(ticketPrice);
             const ticketsBigInt = minimum_redeem_ticket_valueBigInt / ticketBigInt;
@@ -97,12 +101,12 @@ function SettingsPage() {
             if (tmp.includes(stringToReplace + ',')) {
               tmp = tmp.replace(
                 stringToReplace + ',',
-                `"${key}": "${strategies.strategies.AutoRedeeming[key]}", // tickets: ${ticketsString}`,
+                `"${key}": "${strategies.strategies.AutoRedeeming[key]}", // ${formattedEther} HOPR, tickets: ${ticketsString}`,
               );
             } else {
               tmp = tmp.replace(
                 stringToReplace,
-                `"${key}": "${strategies.strategies.AutoRedeeming[key]}" // tickets: ${ticketsString}`,
+                `"${key}": "${strategies.strategies.AutoRedeeming[key]}" // ${formattedEther} HOPR, tickets: ${ticketsString}`,
               );
             }
           }
@@ -114,6 +118,7 @@ function SettingsPage() {
               ' HOPR',
               '',
             );
+            const formattedEther = formatEther(on_close_redeem_single_tickets_value_min);
             const on_close_redeem_single_tickets_value_minBigInt =
               BigInt(on_close_redeem_single_tickets_value_min) * BigInt(1e18);
             const ticketBigInt = BigInt(ticketPrice);
@@ -123,12 +128,12 @@ function SettingsPage() {
             if (tmp.includes(stringToReplace + ',')) {
               tmp = tmp.replace(
                 stringToReplace + ',',
-                `"${key}": "${strategies.strategies.AutoRedeeming[key]}", // tickets: ${ticketsString}`,
+                `"${key}": "${strategies.strategies.AutoRedeeming[key]}", // ${formattedEther} HOPR, tickets: ${ticketsString}`,
               );
             } else {
               tmp = tmp.replace(
                 stringToReplace,
-                `"${key}": "${strategies.strategies.AutoRedeeming[key]}" // tickets: ${ticketsString}`,
+                `"${key}": "${strategies.strategies.AutoRedeeming[key]}" // ${formattedEther} HOPR, tickets: ${ticketsString}`,
               );
             }
           }
