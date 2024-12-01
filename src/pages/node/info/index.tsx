@@ -18,10 +18,12 @@ import WithdrawModal from '../../../components/Modal/node/WithdrawModal';
 import SmallActionButton from '../../../future-hopr-lib-components/Button/SmallActionButton';
 import { ColorStatus } from '../../../components/InfoBar/details';
 import ProgressBar from '../../../future-hopr-lib-components/Progressbar';
+import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
 
 //Icons
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
+import DataObjectIcon from '@mui/icons-material/DataObject';
 
 //Info Components
 import NodeUptime from './node-uptime';
@@ -188,7 +190,33 @@ function InfoPage() {
         title="INFO"
         refreshFunction={fetchInfoData}
         reloading={isFetchingAnyData}
-        actions={<WithdrawModal />}
+        actions={<>
+          <WithdrawModal />
+          <IconButton
+            iconComponent={<DataObjectIcon />}
+            tooltipText={
+              <span>
+                OPEN
+                <br />
+                Swagger UI
+              </span>
+            }
+            //@ts-ignore
+            onClick={()=>{window.open(apiEndpoint + '/swagger-ui/index.html#/', '_blank').focus();}}
+          />
+          <IconButton
+            iconComponent={<img style={{maxWidth: '24px'}}src='/assets/scalar-removebg-preview.png' />}
+            tooltipText={
+              <span>
+                OPEN
+                <br />
+                Scalar UI
+              </span>
+            }
+            //@ts-ignore
+            onClick={()=>{window.open(apiEndpoint + '/scalar', '_blank').focus();}}
+          />
+        </>}
       />
       <Paper
         style={{

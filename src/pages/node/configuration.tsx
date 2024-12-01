@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { formatEther } from 'viem';
+import { rounder } from '../../utils/functions';
 
 // HOPR Components
 import { SubpageTitle } from '../../components/SubpageTitle';
@@ -20,6 +21,38 @@ const NotificationsContainer = styled.div`
   gap: 1rem;
 `;
 
+const DECIMALS_MULTIPLIER = BigInt(1e18); // For HOPR token's 18 decimals
+
+interface StrategyConfig {
+  path: ['AutoFunding' | 'AutoRedeeming', string];
+  value: string;
+}
+
+const calculateTickets = (
+  value: string,
+  ticketPrice: string,
+) => {
+  const valueBigInt = BigInt(value) * DECIMALS_MULTIPLIER;
+  const ticketBigInt = BigInt(ticketPrice);
+  return valueBigInt / ticketBigInt;
+};
+
+const updateStrategyString = (
+  originalString: string,
+  key: string,
+  value: string,
+  tickets: bigint
+): string => {
+  const stringToReplace = `"${key}": "${value} HOPR"`;
+  const formattedEther = formatEther(BigInt(value));
+  const replacement = `"${key}": "${value}" // ${formattedEther} HOPR, tickets: ${rounder(Number(tickets))}`;
+
+  return originalString.includes(stringToReplace + ',')
+    ? originalString.replace(stringToReplace + ',', replacement + ',')
+    : originalString.replace(stringToReplace, replacement);
+};
+
+
 function SettingsPage() {
   const dispatch = useAppDispatch();
   const prevNotificationSettings = useAppSelector((store) => store.app.configuration.notifications);
@@ -36,113 +69,32 @@ function SettingsPage() {
     }
   }, [prevNotificationSettings]);
 
+  // Usage in useEffect
   useEffect(() => {
-    if (strategies) {
-      let tmp = JSON.stringify(strategies, null, 2);
+    if (!strategies || !ticketPrice) return;
 
-      try {
-        if (ticketPrice) {
-          // min_stake_threshold
-          if (strategies?.strategies?.AutoFunding?.min_stake_threshold) {
-            const key = 'min_stake_threshold';
-            const min_stake_threshold = strategies.strategies.AutoFunding[key].replace(' HOPR', '');
-            const formattedEther = formatEther(min_stake_threshold);
-            const min_stake_thresholdBigInt = BigInt(min_stake_threshold) * BigInt(1e18);
-            const ticketBigInt = BigInt(ticketPrice);
-            const ticketsBigInt = min_stake_thresholdBigInt / ticketBigInt;
-            const ticketsString = ticketsBigInt.toString();
-            const stringToReplace = `"${key}": "${strategies.strategies.AutoFunding[key]}"`;
-            if (tmp.includes(stringToReplace + ',')) {
-              tmp = tmp.replace(
-                stringToReplace + ',',
-                `"${key}": "${strategies.strategies.AutoFunding[key]}", // ${formattedEther} HOPR, tickets: ${ticketsString}`,
-              );
-            } else {
-              tmp = tmp.replace(
-                stringToReplace,
-                `"${key}": "${strategies.strategies.AutoFunding[key]}" // ${formattedEther} HOPR, tickets: ${ticketsString}`,
-              );
-            }
-          }
+    try {
+      const configs: StrategyConfig[] = [
+        { path: ['AutoFunding', 'min_stake_threshold'], value: strategies.strategies?.AutoFunding?.min_stake_threshold?.replace(' HOPR', '') },
+        { path: ['AutoFunding', 'funding_amount'], value: strategies.strategies?.AutoFunding?.funding_amount?.replace(' HOPR', '') },
+        { path: ['AutoRedeeming', 'minimum_redeem_ticket_value'], value: strategies.strategies?.AutoRedeeming?.minimum_redeem_ticket_value?.replace(' HOPR', '') },
+        { path: ['AutoRedeeming', 'on_close_redeem_single_tickets_value_min'], value: strategies.strategies?.AutoRedeeming?.on_close_redeem_single_tickets_value_min?.replace(' HOPR', '') },
+      ];
 
-          // funding_amount
-          if (strategies?.strategies?.AutoFunding?.funding_amount) {
-            const key = 'funding_amount';
-            const funding_amount = strategies.strategies.AutoFunding[key].replace(' HOPR', '');
-            const formattedEther = formatEther(funding_amount);
-            const funding_amountBigInt = BigInt(funding_amount) * BigInt(1e18);
-            const ticketBigInt = BigInt(ticketPrice);
-            const ticketsBigInt = funding_amountBigInt / ticketBigInt;
-            const ticketsString = ticketsBigInt.toString();
-            const stringToReplace = `"${key}": "${strategies.strategies.AutoFunding[key]}"`;
-            if (tmp.includes(stringToReplace + ',')) {
-              tmp = tmp.replace(
-                stringToReplace + ',',
-                `"${key}": "${strategies.strategies.AutoFunding[key]}", // ${formattedEther} HOPR, tickets: ${ticketsString}`,
-              );
-            } else {
-              tmp = tmp.replace(
-                stringToReplace,
-                `"${key}": "${strategies.strategies.AutoFunding[key]}" // ${formattedEther} HOPR, tickets: ${ticketsString}`,
-              );
-            }
-          }
+      console.log('configs', configs)
 
-          // minimum_redeem_ticket_value
-          if (strategies?.strategies?.AutoRedeeming?.minimum_redeem_ticket_value) {
-            const key = 'minimum_redeem_ticket_value';
-            const minimum_redeem_ticket_value = strategies.strategies.AutoRedeeming[key].replace(' HOPR', '');
-            const formattedEther = formatEther(minimum_redeem_ticket_value);
-            const minimum_redeem_ticket_valueBigInt = BigInt(minimum_redeem_ticket_value) * BigInt(1e18);
-            const ticketBigInt = BigInt(ticketPrice);
-            const ticketsBigInt = minimum_redeem_ticket_valueBigInt / ticketBigInt;
-            const ticketsString = ticketsBigInt.toString();
-            const stringToReplace = `"${key}": "${strategies.strategies.AutoRedeeming[key]}"`;
-            if (tmp.includes(stringToReplace + ',')) {
-              tmp = tmp.replace(
-                stringToReplace + ',',
-                `"${key}": "${strategies.strategies.AutoRedeeming[key]}", // ${formattedEther} HOPR, tickets: ${ticketsString}`,
-              );
-            } else {
-              tmp = tmp.replace(
-                stringToReplace,
-                `"${key}": "${strategies.strategies.AutoRedeeming[key]}" // ${formattedEther} HOPR, tickets: ${ticketsString}`,
-              );
-            }
-          }
+      let result = JSON.stringify(strategies, null, 2);
 
-          // on_close_redeem_single_tickets_value_min
-          if (strategies?.strategies?.AutoRedeeming?.on_close_redeem_single_tickets_value_min) {
-            const key = 'on_close_redeem_single_tickets_value_min';
-            const on_close_redeem_single_tickets_value_min = strategies.strategies.AutoRedeeming[key].replace(
-              ' HOPR',
-              '',
-            );
-            const formattedEther = formatEther(on_close_redeem_single_tickets_value_min);
-            const on_close_redeem_single_tickets_value_minBigInt =
-              BigInt(on_close_redeem_single_tickets_value_min) * BigInt(1e18);
-            const ticketBigInt = BigInt(ticketPrice);
-            const ticketsBigInt = on_close_redeem_single_tickets_value_minBigInt / ticketBigInt;
-            const ticketsString = ticketsBigInt.toString();
-            const stringToReplace = `"${key}": "${strategies.strategies.AutoRedeeming[key]}"`;
-            if (tmp.includes(stringToReplace + ',')) {
-              tmp = tmp.replace(
-                stringToReplace + ',',
-                `"${key}": "${strategies.strategies.AutoRedeeming[key]}", // ${formattedEther} HOPR, tickets: ${ticketsString}`,
-              );
-            } else {
-              tmp = tmp.replace(
-                stringToReplace,
-                `"${key}": "${strategies.strategies.AutoRedeeming[key]}" // ${formattedEther} HOPR, tickets: ${ticketsString}`,
-              );
-            }
-          }
+      for (const config of configs) {
+        if (config.value) {
+          const tickets = calculateTickets(config.value, ticketPrice);
+          result = updateStrategyString(result, config.path[1], config.value, tickets);
         }
-      } catch (e) {
-        console.warn('Error while counting strategies against current ticket price.', e);
       }
 
-      set_strategiesString(tmp);
+      set_strategiesString(result);
+    } catch (e) {
+      console.warn('Error while counting strategies against current ticket price.', e);
     }
   }, [strategies, ticketPrice]);
 
