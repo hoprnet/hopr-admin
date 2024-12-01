@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { exportToCsv } from '../../utils/helpers';
+import { Link } from 'react-router-dom';
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
@@ -13,12 +14,16 @@ import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 import ProgressBar from '../../future-hopr-lib-components/Progressbar';
+import SmallActionButton from '../../future-hopr-lib-components/Button/SmallActionButton';
+import PeersInfo from '../../future-hopr-lib-components/PeerInfo';
 
 //  Modals
 import { PingModal } from '../../components/Modal/node/PingModal';
 
 //Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
+import CopyIcon from '@mui/icons-material/ContentCopy';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 function PeersPage() {
   const dispatch = useAppDispatch();
@@ -80,20 +85,27 @@ function PeersPage() {
       name: '#',
     },
     {
+      key: 'node',
+      name: 'Node',
+      maxWidth: '350px',
+    },
+    {
       key: 'peerId',
       name: 'Peer Id',
       search: true,
       tooltip: true,
-      copy: true,
+    //  copy: true,
       maxWidth: '160px',
+      hidden: true,
     },
     {
       key: 'peerAddress',
       name: 'Node Address',
       search: true,
       tooltip: true,
-      copy: true,
+    //  copy: true,
       maxWidth: '160px',
+      hidden: true,
     },
     {
       key: 'lastSeen',
@@ -104,7 +116,7 @@ function PeersPage() {
     {
       key: 'quality',
       name: 'Quality',
-      maxWidth: '20px',
+      maxWidth: '15px',
     },
     {
       key: 'actions',
@@ -114,11 +126,23 @@ function PeersPage() {
       maxWidth: '168px',
     },
   ];
+  
+
+  const noCopyPaste = !(
+    window.location.protocol === 'https:' ||
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1'
+  );
+
 
   const parsedTableData = Object.entries(peers?.connected ?? {}).map(([id, peer]) => {
     return {
       id: id,
       number: id,
+      node: <PeersInfo
+        peerId={peer.peerId}
+        nodeAddress={peer.peerAddress}
+      />,
       peerId: getAliasByPeerId(peer.peerId),
       peerAddress: peer.peerAddress,
       quality: <ProgressBar value={peer.quality} />,
