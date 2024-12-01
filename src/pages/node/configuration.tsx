@@ -250,8 +250,18 @@ function SettingsPage() {
                     True
                   </div>
                 </NotificationsContainer>
+                <Button
+                  style={{
+                    marginTop: '1rem',
+                    float: 'right',
+                  }}
+                  onClick={handleSaveSettings}
+                >
+                  Save
+                </Button>
               </td>
             </tr>
+
             <tr>
               <th>Strategies</th>
               <td>
@@ -276,15 +286,6 @@ function SettingsPage() {
             </tr>
           </tbody>
         </TableExtended>
-        <Button
-          style={{
-            marginTop: '1rem',
-            float: 'right',
-          }}
-          onClick={handleSaveSettings}
-        >
-          Save
-        </Button>
       </Paper>
     </Section>
   );
