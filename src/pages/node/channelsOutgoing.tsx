@@ -15,6 +15,7 @@ import { SubpageTitle } from '../../components/SubpageTitle';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import CloseChannelIcon from '../../future-hopr-lib-components/Icons/CloseChannel';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
+import PeersInfo from '../../future-hopr-lib-components/PeerInfo';
 
 // Modals
 import { OpenMultipleChannelsModal } from '../../components/Modal/node/OpenMultipleChannelsModal';
@@ -149,12 +150,21 @@ function ChannelsPage() {
       name: '#',
     },
     {
+      key: 'node',
+      name: 'Node',
+      maxWidth: '350px',
+    },
+    {
       key: 'peerAddress',
       name: 'Node Address',
       search: true,
-      tooltip: true,
-      copy: true,
-      maxWidth: '168px',
+      hidden: true,
+    },
+    {
+      key: 'peerId',
+      name: 'Peer Id',
+      search: true,
+      hidden: true,
     },
     {
       key: 'status',
@@ -186,12 +196,20 @@ function ChannelsPage() {
         !channelsOutgoingObject[id].status
       )
         return;
-      const peerId = getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string);
+
+      const peerAddress = channelsOutgoingObject[id].peerAddress;
+      const peerId = getPeerIdFromPeerAddress(peerAddress as string);
+
 
       return {
         id: index.toString(),
         key: id,
-        peerAddress: getAliasByPeerAddress(channelsOutgoingObject[id].peerAddress as string),
+        node: <PeersInfo
+          peerId={peerId}
+          nodeAddress={peerAddress}
+        />,
+        peerAddress: getAliasByPeerAddress(peerAddress as string),
+        peerId: peerId,
         status: channelsOutgoingObject[id].status as string,
         funds: `${utils.formatEther(channelsOutgoingObject[id].balance as string)} ${HOPR_TOKEN_USED}`,
         actions: (

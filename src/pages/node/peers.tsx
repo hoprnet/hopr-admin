@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { actionsAsync } from '../../store/slices/node/actionsAsync';
 import { exportToCsv } from '../../utils/helpers';
-import { Link } from 'react-router-dom';
 
 // HOPR Components
 import Section from '../../future-hopr-lib-components/Section';
@@ -14,7 +13,6 @@ import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 import ProgressBar from '../../future-hopr-lib-components/Progressbar';
-import SmallActionButton from '../../future-hopr-lib-components/Button/SmallActionButton';
 import PeersInfo from '../../future-hopr-lib-components/PeerInfo';
 
 //  Modals
@@ -22,8 +20,6 @@ import { PingModal } from '../../components/Modal/node/PingModal';
 
 //Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
-import CopyIcon from '@mui/icons-material/ContentCopy';
-import LaunchIcon from '@mui/icons-material/Launch';
 
 function PeersPage() {
   const dispatch = useAppDispatch();
@@ -93,18 +89,12 @@ function PeersPage() {
       key: 'peerId',
       name: 'Peer Id',
       search: true,
-      tooltip: true,
-    //  copy: true,
-      maxWidth: '160px',
       hidden: true,
     },
     {
       key: 'peerAddress',
       name: 'Node Address',
       search: true,
-      tooltip: true,
-    //  copy: true,
-      maxWidth: '160px',
       hidden: true,
     },
     {
@@ -126,7 +116,7 @@ function PeersPage() {
       maxWidth: '168px',
     },
   ];
-  
+
 
   const noCopyPaste = !(
     window.location.protocol === 'https:' ||

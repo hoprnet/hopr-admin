@@ -16,6 +16,7 @@ import { SubpageTitle } from '../../components/SubpageTitle';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 import CloseChannelIcon from '../../future-hopr-lib-components/Icons/CloseChannel';
+import PeersInfo from '../../future-hopr-lib-components/PeerInfo';
 
 // Modals
 import { PingModal } from '../../components/Modal/node/PingModal';
@@ -26,6 +27,7 @@ import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 
 // Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
+import { truncateEthereumAddress } from '../../utils/blockchain';
 
 function ChannelsPage() {
   const dispatch = useAppDispatch();
@@ -102,12 +104,22 @@ function ChannelsPage() {
       name: '#',
     },
     {
+      key: 'node',
+      name: 'Node',
+      maxWidth: '568px',
+    },
+    {
       key: 'peerAddress',
       name: 'Node Address',
       search: true,
       copy: true,
-      maxWidth: '568px',
-      tooltip: true,
+      hidden: true,
+    },
+    {
+      key: 'peerId',
+      name: 'Peer Id',
+      search: true,
+      hidden: true,
     },
     {
       key: 'status',
@@ -197,6 +209,7 @@ function ChannelsPage() {
         !!nodeAddressToOutgoingChannelLink[channelsIncomingObject[id].peerAddress]
       );
       const peerId = getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string);
+      const peerAddress = channelsIncomingObject[id].peerAddress;
 
       const totalTicketsPerChannel = `${formatEther(
         BigInt(tickets?.redeemed[id]?.value || '0') + BigInt(tickets?.unredeemed[id]?.value || '0'),
@@ -207,7 +220,12 @@ function ChannelsPage() {
       return {
         id: (index + 1).toString(),
         key: id,
-        peerAddress: getAliasByPeerAddress(channelsIncomingObject[id].peerAddress as string),
+        node: <PeersInfo
+          peerId={peerId}
+          nodeAddress={peerAddress}
+        />,
+        peerAddress: getAliasByPeerAddress(peerAddress as string),
+        peerId: peerId,
         status: channelsIncomingObject[id].status,
         funds: `${utils.formatEther(channelsIncomingObject[id].balance as string)} ${HOPR_TOKEN_USED}`,
         tickets: unredeemedTicketsPerChannel,

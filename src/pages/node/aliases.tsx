@@ -12,6 +12,7 @@ import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 import RemoveAliasIcon from '../../future-hopr-lib-components/Icons/RemoveAlias';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
+import PeersInfo from '../../future-hopr-lib-components/PeerInfo';
 
 // Modals
 import { PingModal } from '../../components/Modal/node/PingModal';
@@ -126,6 +127,10 @@ function AliasesPage() {
       id: peerId,
       key: key.toString(),
       alias,
+      node: <PeersInfo
+        peerId={peerId}
+        nodeAddress={peerAddress ?? ''}
+      />,
       peerId,
       peerAddress: peerAddress ?? '',
       actions: (
@@ -212,20 +217,22 @@ function AliasesPage() {
             maxWidth: '0px',
           },
           {
+            key: 'node',
+            name: 'Node',
+            maxWidth: '350px',
+          },
+          {
             key: 'peerId',
             name: 'Peer Id',
             search: true,
-            tooltip: true,
-            copy: true,
-            maxWidth: '60px',
+            hidden: true,
           },
           {
             key: 'peerAddress',
             name: 'Node Address',
             search: true,
-            tooltip: true,
-            copy: true,
             maxWidth: '60px',
+            hidden: true,
           },
           {
             key: 'actions',
