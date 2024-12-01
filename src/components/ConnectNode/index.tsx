@@ -134,7 +134,7 @@ export default function ConnectNode() {
     if (!apiEndpoint) return;
 
     const md5 = toHexMD5(apiEndpoint);
-    const b64 = generateBase64Jazz(md5);
+    const b64 = generateBase64Jazz(nodeAddress ? nodeAddress : md5);
     if (connected && b64) set_nodeAddressIcon(b64);
   }, [connected, apiEndpoint, nodeAddress]);
 
