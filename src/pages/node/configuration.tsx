@@ -23,8 +23,10 @@ function SettingsPage() {
   const dispatch = useAppDispatch();
   const prevNotificationSettings = useAppSelector((store) => store.app.configuration.notifications);
   const strategies = useAppSelector((store) => store.node.configuration.data?.hopr?.strategy);
+  const configuration = useAppSelector((store) => store.node.configuration.data);
   const ticketPrice = useAppSelector((store) => store.node.ticketPrice.data);
   const [strategiesString, set_strategiesString] = useState<string | null>(null);
+  const [configurationString, set_configurationString] = useState<string | null>(null);
   const [localNotificationSettings, set_localNotificationSettings] = useState<typeof prevNotificationSettings>();
 
   useEffect(() => {
@@ -139,6 +141,16 @@ function SettingsPage() {
     }
   }, [strategies, ticketPrice]);
 
+  useEffect(() => {
+    if (configuration) {
+      let tmp = JSON.parse(JSON.stringify(configuration));
+      tmp.hopr['strategy'] && delete tmp.hopr['strategy'];
+      tmp = JSON.stringify(tmp, null, 2);
+      set_configurationString(tmp);
+    }
+  }, [configuration]);
+
+
   const handleSaveSettings = async () => {
     if (localNotificationSettings) {
       dispatch(appActions.setNotificationSettings(localNotificationSettings));
@@ -241,6 +253,17 @@ function SettingsPage() {
                 {strategiesString && (
                   <CodeCopyBox
                     code={strategiesString}
+                    breakSpaces
+                  />
+                )}
+              </td>
+            </tr>
+            <tr>
+              <th>Configuration</th>
+              <td>
+                {configurationString && (
+                  <CodeCopyBox
+                    code={configurationString}
                     breakSpaces
                   />
                 )}

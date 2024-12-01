@@ -139,6 +139,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   const [nodesSavedLocallyParsed, set_nodesSavedLocallyParsed] = useState([] as ParsedNode[]);
   const errorMessage = useAppSelector((store) => store.auth.status.error?.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
+  const loginPending = useAppSelector((store) => store.auth.status.connecting);
   const [searchParams, set_searchParams] = useSearchParams();
   const [localName, set_localName] = useState(loginData.localName ? loginData.localName : '');
   const [jazzIcon, set_jazzIcon] = useState(loginData.jazzIcon ? loginData.jazzIcon : null);
@@ -439,6 +440,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           <Button
             onClick={() => useNode({})}
             disabled={apiEndpoint.length === 0}
+            pending={loginPending}
           >
             Connect to the node
           </Button>
