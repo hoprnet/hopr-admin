@@ -152,10 +152,9 @@ export function toHexMD5(d: string) {
   return createHash('md5').update(d).digest('hex');
 }
 
-export function generateBase64Jazz(string: string) {
+export function generateBase64Jazz(input: string) {
   try {
-    const md5 = toHexMD5(string);
-    const jazzSvg = jazzicon(16, parseInt(md5.slice(2, 10), 16));
+    const jazzSvg = jazzicon(16, parseInt(input.slice(2, 10), 16));
     const html = jazzSvg.children[0].outerHTML.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
     const b64 = 'data:image/svg+xml;base64,' + btoa(html);
     return b64;

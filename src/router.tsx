@@ -230,10 +230,11 @@ const LayoutEnhanced = () => {
     if (!apiEndpoint) return;
     if (loginData.apiEndpoint === apiEndpoint && loginData.apiToken === apiToken) return;
     const formattedApiEndpoint = parseAndFormatUrl(apiEndpoint);
+    console.log('Node Admin login from url', formattedApiEndpoint);
     dispatch(
       authActions.useNodeData({
         apiEndpoint,
-        apiToken: apiToken ? apiToken : '',
+        apiToken: apiToken ? apiToken : ''
       }),
     );
     dispatch(nodeActions.setApiEndpoint({ apiEndpoint: formattedApiEndpoint }));

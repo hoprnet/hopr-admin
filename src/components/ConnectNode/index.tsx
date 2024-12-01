@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { Link, useNavigate } from 'react-router-dom';
-import { generateBase64Jazz } from '../../utils/functions';
+import { toHexMD5, generateBase64Jazz } from '../../utils/functions';
 
 // Components
 import Modal from './modal';
@@ -62,10 +62,15 @@ const NodeButton = styled.div`
   .node-info {
     color: #414141;
     line-height: 12px;
+    height: 12px;
+    white-space: nowrap;
   }
   .node-info-localname {
     font-weight: 700;
     color: #000050;
+    height: 12px;
+    line-height: 12px;
+    white-space: nowrap;
   }
 `;
 
@@ -99,6 +104,7 @@ export default function ConnectNode() {
   const openLoginModalToNode = useAppSelector((store) => store.auth.helper.openLoginModalToNode);
   const peerId = useAppSelector((store) => store.node.addresses.data.hopr);
   const localName = useAppSelector((store) => store.auth.loginData.localName);
+  const nodeAddress =  useAppSelector((store) => store.node.addresses.data.native);
   const localNameToDisplay =
     localName && localName.length > 17
       ? `${localName?.substring(0, 5)}…${localName?.substring(localName.length - 11, localName.length)}`
@@ -124,10 +130,13 @@ export default function ConnectNode() {
   }, []);
 
   useEffect(() => {
+    if (!connected) set_nodeAddressIcon(null);
     if (!apiEndpoint) return;
-    const b64 = generateBase64Jazz(apiEndpoint);
-    if (b64) set_nodeAddressIcon(b64);
-  }, [apiEndpoint]);
+
+    const md5 = toHexMD5(apiEndpoint);
+    const b64 = generateBase64Jazz(md5);
+    if (connected && b64) set_nodeAddressIcon(b64);
+  }, [connected, apiEndpoint, nodeAddress]);
 
   useEffect(() => {
     if (error) set_modalVisible(true);
@@ -186,7 +195,7 @@ export default function ConnectNode() {
           id="jazz-icon-node"
         >
           <img
-            className={`${nodeAddressIcon && 'node-jazz-icon-present'}`}
+            className={`${ nodeAddressIcon && 'node-jazz-icon-present'}`}
             src={nodeAddressIcon ?? '/assets/hopr_logo.svg'}
           />
         </div>
