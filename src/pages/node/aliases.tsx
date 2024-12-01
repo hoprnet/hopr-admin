@@ -174,6 +174,41 @@ function AliasesPage() {
     };
   });
 
+  const header = [
+    {
+      key: 'alias',
+      name: 'Alias',
+      search: true,
+      tooltip: true,
+      maxWidth: '0px',
+    },
+    {
+      key: 'node',
+      name: 'Node',
+      maxWidth: '350px',
+    },
+    {
+      key: 'peerId',
+      name: 'Peer Id',
+      search: true,
+      hidden: true,
+    },
+    {
+      key: 'peerAddress',
+      name: 'Node Address',
+      search: true,
+      maxWidth: '60px',
+      hidden: true,
+    },
+    {
+      key: 'actions',
+      name: 'Actions',
+      search: false,
+      width: '168px',
+      maxWidth: '168px',
+    },
+  ]
+
   return (
     <Section
       className="Section--aliases"
@@ -208,40 +243,7 @@ function AliasesPage() {
         data={parsedTableData}
         search={true}
         id={'node-aliases-table'}
-        header={[
-          {
-            key: 'alias',
-            name: 'Alias',
-            search: true,
-            tooltip: true,
-            maxWidth: '0px',
-          },
-          {
-            key: 'node',
-            name: 'Node',
-            maxWidth: '350px',
-          },
-          {
-            key: 'peerId',
-            name: 'Peer Id',
-            search: true,
-            hidden: true,
-          },
-          {
-            key: 'peerAddress',
-            name: 'Node Address',
-            search: true,
-            maxWidth: '60px',
-            hidden: true,
-          },
-          {
-            key: 'actions',
-            name: 'Actions',
-            search: false,
-            width: '168px',
-            maxWidth: '168px',
-          },
-        ]}
+        header={header}
         loading={parsedTableData.length === 0 && aliasesFetching}
       />
     </Section>
