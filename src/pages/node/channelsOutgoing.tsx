@@ -33,6 +33,7 @@ function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((store) => store.node.channels.data);
   const channelsOutgoingObject = useAppSelector((store) => store.node.channels.parsed.outgoing);
+  const channelsOutgoing = useAppSelector((store) => store.node.channels.data?.outgoing);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
@@ -188,8 +189,31 @@ function ChannelsPage() {
     },
   ];
 
-  const parsedTableData = Object.keys(channelsOutgoingObject)
-    .map((id, index) => {
+  const peersWithAliases = (channelsOutgoing || []).filter(peer => aliases && peer.peerAddress && getAliasByPeerAddress(peer.peerAddress) !== peer.peerAddress) ;
+  const peersWithAliasesSorted = peersWithAliases.sort((a, b) => {
+    if (getAliasByPeerAddress(b.peerAddress).toLowerCase() > getAliasByPeerAddress(a.peerAddress).toLowerCase()) {
+      return -1;
+    }
+    if (getAliasByPeerAddress(b.peerAddress).toLowerCase() < getAliasByPeerAddress(a.peerAddress).toLowerCase()) {
+      return 1;
+    }
+    return 0
+  });
+  const peersWithoutAliases = (channelsOutgoing || []).filter(peer => aliases && peer.peerAddress && getAliasByPeerAddress(peer.peerAddress) === peer.peerAddress) ;
+  const peersWithoutAliasesSorted = peersWithoutAliases.sort((a, b) => {
+    if (b.peerAddress > a.peerAddress) {
+      return -1;
+    }
+    if (b.peerAddress < a.peerAddress) {
+      return 1;
+    }
+    return 0
+  });
+
+  const peersSorted = [...peersWithAliasesSorted, ...peersWithoutAliasesSorted]
+
+  const parsedTableData = peersSorted.map((channel, index) => {
+      const id = channel.id;
       if (
         !channelsOutgoingObject[id].peerAddress ||
         !channelsOutgoingObject[id].balance ||

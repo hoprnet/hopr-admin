@@ -32,6 +32,7 @@ import { truncateEthereumAddress } from '../../utils/blockchain';
 function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((store) => store.node.channels.data);
+  const channelsIncoming = useAppSelector((store) => store.node.channels.data?.incoming);
   const channelsIncomingObject = useAppSelector((store) => store.node.channels.parsed.incoming);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
   const aliases = useAppSelector((store) => store.node.aliases.data);
@@ -195,8 +196,31 @@ function ChannelsPage() {
       });
   };
 
-  const parsedTableData = Object.keys(channelsIncomingObject)
-    .map((id, index) => {
+  const peersWithAliases = (channelsIncoming || []).filter(peer => aliases && peer.peerAddress && getAliasByPeerAddress(peer.peerAddress) !== peer.peerAddress) ;
+  const peersWithAliasesSorted = peersWithAliases.sort((a, b) => {
+    if (getAliasByPeerAddress(b.peerAddress).toLowerCase() > getAliasByPeerAddress(a.peerAddress).toLowerCase()) {
+      return -1;
+    }
+    if (getAliasByPeerAddress(b.peerAddress).toLowerCase() < getAliasByPeerAddress(a.peerAddress).toLowerCase()) {
+      return 1;
+    }
+    return 0
+  });
+  const peersWithoutAliases = (channelsIncoming || []).filter(peer => aliases && peer.peerAddress && getAliasByPeerAddress(peer.peerAddress) === peer.peerAddress) ;
+  const peersWithoutAliasesSorted = peersWithoutAliases.sort((a, b) => {
+    if (b.peerAddress > a.peerAddress) {
+      return -1;
+    }
+    if (b.peerAddress < a.peerAddress) {
+      return 1;
+    }
+    return 0
+  });
+
+  const peersSorted = [...peersWithAliasesSorted, ...peersWithoutAliasesSorted]
+
+  const parsedTableData = peersSorted.map((channel, index) => {
+      const id = channel.id;
       if (
         !channelsIncomingObject[id].peerAddress ||
         !channelsIncomingObject[id].balance ||
