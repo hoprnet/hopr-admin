@@ -11,7 +11,6 @@ import { generateBase64Jazz } from '../../utils/functions';
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
 
-
 interface Props {
   peerId?: string;
   nodeAddress?: string;

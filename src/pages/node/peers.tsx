@@ -117,7 +117,9 @@ function PeersPage() {
     },
   ];
 
-  const peersWithAliases = (peers?.connected || []).filter(peer => aliases && peer.peerId && peerIdToAliasLink[peer.peerId]) ;
+  const peersWithAliases = (peers?.connected || []).filter(
+    (peer) => aliases && peer.peerId && peerIdToAliasLink[peer.peerId],
+  );
   const peersWithAliasesSorted = peersWithAliases.sort((a, b) => {
     if (getAliasByPeerId(b.peerId).toLowerCase() > getAliasByPeerId(a.peerId).toLowerCase()) {
       return -1;
@@ -125,9 +127,11 @@ function PeersPage() {
     if (getAliasByPeerId(b.peerId).toLowerCase() < getAliasByPeerId(a.peerId).toLowerCase()) {
       return 1;
     }
-    return 0
+    return 0;
   });
-  const peersWithoutAliases = (peers?.connected || []).filter(peer => aliases && peer.peerId && !peerIdToAliasLink[peer.peerId]) ;
+  const peersWithoutAliases = (peers?.connected || []).filter(
+    (peer) => aliases && peer.peerId && !peerIdToAliasLink[peer.peerId],
+  );
   const peersWithoutAliasesSorted = peersWithoutAliases.sort((a, b) => {
     if (b.peerId > a.peerId) {
       return -1;
@@ -135,14 +139,14 @@ function PeersPage() {
     if (b.peerId < a.peerId) {
       return 1;
     }
-    return 0
+    return 0;
   });
 
-  const peersSorted = [...peersWithAliasesSorted, ...peersWithoutAliasesSorted]
+  const peersSorted = [...peersWithAliasesSorted, ...peersWithoutAliasesSorted];
 
-  const parsedTableData = peersSorted.map((peer, index)=>{
+  const parsedTableData = peersSorted.map((peer, index) => {
     return {
-      id: index+1,
+      id: index + 1,
       node: (
         <PeersInfo
           peerId={peer.peerId}
@@ -180,8 +184,8 @@ function PeersPage() {
           <SendMessageModal peerId={peer.peerId} />
         </>
       ),
-    }
-  })
+    };
+  });
 
   return (
     <Section

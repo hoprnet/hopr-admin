@@ -189,7 +189,9 @@ function ChannelsPage() {
     },
   ];
 
-  const peersWithAliases = (channelsOutgoing || []).filter(peer => aliases && peer.peerAddress && getAliasByPeerAddress(peer.peerAddress) !== peer.peerAddress) ;
+  const peersWithAliases = (channelsOutgoing || []).filter(
+    (peer) => aliases && peer.peerAddress && getAliasByPeerAddress(peer.peerAddress) !== peer.peerAddress,
+  );
   const peersWithAliasesSorted = peersWithAliases.sort((a, b) => {
     if (getAliasByPeerAddress(b.peerAddress).toLowerCase() > getAliasByPeerAddress(a.peerAddress).toLowerCase()) {
       return -1;
@@ -197,9 +199,11 @@ function ChannelsPage() {
     if (getAliasByPeerAddress(b.peerAddress).toLowerCase() < getAliasByPeerAddress(a.peerAddress).toLowerCase()) {
       return 1;
     }
-    return 0
+    return 0;
   });
-  const peersWithoutAliases = (channelsOutgoing || []).filter(peer => aliases && peer.peerAddress && getAliasByPeerAddress(peer.peerAddress) === peer.peerAddress) ;
+  const peersWithoutAliases = (channelsOutgoing || []).filter(
+    (peer) => aliases && peer.peerAddress && getAliasByPeerAddress(peer.peerAddress) === peer.peerAddress,
+  );
   const peersWithoutAliasesSorted = peersWithoutAliases.sort((a, b) => {
     if (b.peerAddress > a.peerAddress) {
       return -1;
@@ -207,12 +211,13 @@ function ChannelsPage() {
     if (b.peerAddress < a.peerAddress) {
       return 1;
     }
-    return 0
+    return 0;
   });
 
-  const peersSorted = [...peersWithAliasesSorted, ...peersWithoutAliasesSorted]
+  const peersSorted = [...peersWithAliasesSorted, ...peersWithoutAliasesSorted];
 
-  const parsedTableData = peersSorted.map((channel, index) => {
+  const parsedTableData = peersSorted
+    .map((channel, index) => {
       const id = channel.id;
       if (
         !channelsOutgoingObject[id].peerAddress ||
@@ -225,7 +230,7 @@ function ChannelsPage() {
       const peerId = getPeerIdFromPeerAddress(peerAddress as string);
 
       return {
-        id: (index+1).toString(),
+        id: (index + 1).toString(),
         key: id,
         node: (
           <PeersInfo

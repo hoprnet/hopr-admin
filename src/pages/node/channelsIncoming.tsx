@@ -196,7 +196,9 @@ function ChannelsPage() {
       });
   };
 
-  const peersWithAliases = (channelsIncoming || []).filter(peer => aliases && peer.peerAddress && getAliasByPeerAddress(peer.peerAddress) !== peer.peerAddress) ;
+  const peersWithAliases = (channelsIncoming || []).filter(
+    (peer) => aliases && peer.peerAddress && getAliasByPeerAddress(peer.peerAddress) !== peer.peerAddress,
+  );
   const peersWithAliasesSorted = peersWithAliases.sort((a, b) => {
     if (getAliasByPeerAddress(b.peerAddress).toLowerCase() > getAliasByPeerAddress(a.peerAddress).toLowerCase()) {
       return -1;
@@ -204,9 +206,11 @@ function ChannelsPage() {
     if (getAliasByPeerAddress(b.peerAddress).toLowerCase() < getAliasByPeerAddress(a.peerAddress).toLowerCase()) {
       return 1;
     }
-    return 0
+    return 0;
   });
-  const peersWithoutAliases = (channelsIncoming || []).filter(peer => aliases && peer.peerAddress && getAliasByPeerAddress(peer.peerAddress) === peer.peerAddress) ;
+  const peersWithoutAliases = (channelsIncoming || []).filter(
+    (peer) => aliases && peer.peerAddress && getAliasByPeerAddress(peer.peerAddress) === peer.peerAddress,
+  );
   const peersWithoutAliasesSorted = peersWithoutAliases.sort((a, b) => {
     if (b.peerAddress > a.peerAddress) {
       return -1;
@@ -214,12 +218,13 @@ function ChannelsPage() {
     if (b.peerAddress < a.peerAddress) {
       return 1;
     }
-    return 0
+    return 0;
   });
 
-  const peersSorted = [...peersWithAliasesSorted, ...peersWithoutAliasesSorted]
+  const peersSorted = [...peersWithAliasesSorted, ...peersWithoutAliasesSorted];
 
-  const parsedTableData = peersSorted.map((channel, index) => {
+  const parsedTableData = peersSorted
+    .map((channel, index) => {
       const id = channel.id;
       if (
         !channelsIncomingObject[id].peerAddress ||
