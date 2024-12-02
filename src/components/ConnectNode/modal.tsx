@@ -265,7 +265,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
             apiEndpoint: formattedApiEndpoint,
             apiToken,
             localName,
-            jazzIcon
+            jazzIcon,
           }),
         );
         dispatch(

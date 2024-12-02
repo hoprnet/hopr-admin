@@ -105,10 +105,13 @@ export default function ConnectNode() {
   const peerId = useAppSelector((store) => store.node.addresses.data.hopr);
   const localNameFromLocalStorage = useAppSelector((store) => store.auth.loginData.localName);
   const jazzIconFromLocalStorage = useAppSelector((store) => store.auth.loginData.jazzIcon);
-  const nodeAddress =  useAppSelector((store) => store.node.addresses.data.native);
+  const nodeAddress = useAppSelector((store) => store.node.addresses.data.native);
   const localNameToDisplay =
     localNameFromLocalStorage && localNameFromLocalStorage.length > 17
-      ? `${localNameFromLocalStorage?.substring(0, 5)}…${localNameFromLocalStorage?.substring(localNameFromLocalStorage.length - 11, localNameFromLocalStorage.length)}`
+      ? `${localNameFromLocalStorage?.substring(0, 5)}…${localNameFromLocalStorage?.substring(
+          localNameFromLocalStorage.length - 11,
+          localNameFromLocalStorage.length,
+        )}`
       : localNameFromLocalStorage;
   const apiEndpoint = useAppSelector((store) => store.auth.loginData.apiEndpoint);
   const [nodeAddressIcon, set_nodeAddressIcon] = useState<string | null>(null);
@@ -133,9 +136,11 @@ export default function ConnectNode() {
   useEffect(() => {
     if (!connected) set_nodeAddressIcon(null);
     if (!apiEndpoint) return;
-    console.log(jazzIconFromLocalStorage)
+    console.log(jazzIconFromLocalStorage);
     const md5 = toHexMD5(apiEndpoint);
-    const b64 = generateBase64Jazz(nodeAddress ? nodeAddress : jazzIconFromLocalStorage ? jazzIconFromLocalStorage : md5);
+    const b64 = generateBase64Jazz(
+      nodeAddress ? nodeAddress : jazzIconFromLocalStorage ? jazzIconFromLocalStorage : md5,
+    );
     if (connected && b64) set_nodeAddressIcon(b64);
   }, [connected, apiEndpoint, nodeAddress, jazzIconFromLocalStorage]);
 
@@ -196,7 +201,7 @@ export default function ConnectNode() {
           id="jazz-icon-node"
         >
           <img
-            className={`${ nodeAddressIcon && 'node-jazz-icon-present'}`}
+            className={`${nodeAddressIcon && 'node-jazz-icon-present'}`}
             src={nodeAddressIcon ?? '/assets/hopr_logo.svg'}
           />
         </div>

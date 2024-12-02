@@ -57,7 +57,7 @@ interface Props extends SelectMuiProps {
 }
 
 const Select: React.FC<Props> = (props) => {
-  console.log('props.values', props.values)
+  console.log('props.values', props.values);
   return (
     <SFormControl
       style={props.style}
@@ -78,7 +78,9 @@ const Select: React.FC<Props> = (props) => {
         {props.values &&
           props.values.map((elem, index) => {
             const jazzMd5apiEndpoint = elem.apiEndpoint && toHexMD5(elem.apiEndpoint);
-            const icon = elem.jazzIcon ? generateBase64Jazz(elem.jazzIcon) : jazzMd5apiEndpoint && generateBase64Jazz(jazzMd5apiEndpoint);
+            const icon = elem.jazzIcon
+              ? generateBase64Jazz(elem.jazzIcon)
+              : jazzMd5apiEndpoint && generateBase64Jazz(jazzMd5apiEndpoint);
             return (
               <MenuItem
                 value={elem.value}
@@ -91,7 +93,7 @@ const Select: React.FC<Props> = (props) => {
                   <img
                     className={`node-jazz-icon ${icon && 'node-jazz-icon-present'}`}
                     src={icon ?? '/assets/hopr_logo.svg'}
-                    attr-src={elem.jazzIcon ? elem.jazzIcon : jazzMd5apiEndpoint}
+                    data-src={elem.jazzIcon ? elem.jazzIcon : jazzMd5apiEndpoint}
                   />
                 )}
                 <span className="select-menu-item-text">{elem.name}</span>

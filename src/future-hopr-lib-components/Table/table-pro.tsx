@@ -155,10 +155,14 @@ type Order = 'asc' | 'desc';
 
 const isString = (value: any) => typeof value === 'string' || value instanceof String;
 
-function descendingComparator<T>(a: { [key in string]: number | string }, b: { [key in string]: number | string }, orderBy: string) {
+function descendingComparator<T>(
+  a: { [key in string]: number | string },
+  b: { [key in string]: number | string },
+  orderBy: string,
+) {
   console.log(a, b, orderBy);
 
-  if(isString(b[orderBy]) && isString(a[orderBy])){
+  if (isString(b[orderBy]) && isString(a[orderBy])) {
     if (b[orderBy].toLowerCase() < a[orderBy].toLowerCase()) {
       return -1;
     }
@@ -180,10 +184,7 @@ function descendingComparator<T>(a: { [key in string]: number | string }, b: { [
 function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: string,
-): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string },
-) => number {
+): (a: { [key in Key]: number | string }, b: { [key in Key]: number | string }) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -252,7 +253,6 @@ export default function CustomPaginationActionsTable(props: Props) {
     set_filteredData(filtered);
     return;
   }
-
 
   const visibleRows = React.useMemo(
     () =>

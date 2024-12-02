@@ -28,21 +28,13 @@ interface StrategyConfig {
   value: string;
 }
 
-const calculateTickets = (
-  value: string,
-  ticketPrice: string,
-) => {
+const calculateTickets = (value: string, ticketPrice: string) => {
   const valueBigInt = BigInt(value) * DECIMALS_MULTIPLIER;
   const ticketBigInt = BigInt(ticketPrice);
   return valueBigInt / ticketBigInt;
 };
 
-const updateStrategyString = (
-  originalString: string,
-  key: string,
-  value: string,
-  tickets: bigint
-): string => {
+const updateStrategyString = (originalString: string, key: string, value: string, tickets: bigint): string => {
   const stringToReplace = `"${key}": "${value} HOPR"`;
   const formattedEther = formatEther(BigInt(value));
   const replacement = `"${key}": "${value}" // ${formattedEther} HOPR, tickets: ${rounder(Number(tickets))}`;
@@ -51,7 +43,6 @@ const updateStrategyString = (
     ? originalString.replace(stringToReplace + ',', replacement + ',')
     : originalString.replace(stringToReplace, replacement);
 };
-
 
 function SettingsPage() {
   const dispatch = useAppDispatch();
@@ -75,13 +66,25 @@ function SettingsPage() {
 
     try {
       const configs: StrategyConfig[] = [
-        { path: ['AutoFunding', 'min_stake_threshold'], value: strategies.strategies?.AutoFunding?.min_stake_threshold?.replace(' HOPR', '') },
-        { path: ['AutoFunding', 'funding_amount'], value: strategies.strategies?.AutoFunding?.funding_amount?.replace(' HOPR', '') },
-        { path: ['AutoRedeeming', 'minimum_redeem_ticket_value'], value: strategies.strategies?.AutoRedeeming?.minimum_redeem_ticket_value?.replace(' HOPR', '') },
-        { path: ['AutoRedeeming', 'on_close_redeem_single_tickets_value_min'], value: strategies.strategies?.AutoRedeeming?.on_close_redeem_single_tickets_value_min?.replace(' HOPR', '') },
+        {
+          path: ['AutoFunding', 'min_stake_threshold'],
+          value: strategies.strategies?.AutoFunding?.min_stake_threshold?.replace(' HOPR', ''),
+        },
+        {
+          path: ['AutoFunding', 'funding_amount'],
+          value: strategies.strategies?.AutoFunding?.funding_amount?.replace(' HOPR', ''),
+        },
+        {
+          path: ['AutoRedeeming', 'minimum_redeem_ticket_value'],
+          value: strategies.strategies?.AutoRedeeming?.minimum_redeem_ticket_value?.replace(' HOPR', ''),
+        },
+        {
+          path: ['AutoRedeeming', 'on_close_redeem_single_tickets_value_min'],
+          value: strategies.strategies?.AutoRedeeming?.on_close_redeem_single_tickets_value_min?.replace(' HOPR', ''),
+        },
       ];
 
-      console.log('configs', configs)
+      console.log('configs', configs);
 
       let result = JSON.stringify(strategies, null, 2);
 
@@ -106,7 +109,6 @@ function SettingsPage() {
       set_configurationString(tmp);
     }
   }, [configuration]);
-
 
   const handleSaveSettings = async () => {
     if (localNotificationSettings) {

@@ -234,7 +234,7 @@ const LayoutEnhanced = () => {
     dispatch(
       authActions.useNodeData({
         apiEndpoint,
-        apiToken: apiToken ? apiToken : ''
+        apiToken: apiToken ? apiToken : '',
       }),
     );
     dispatch(nodeActions.setApiEndpoint({ apiEndpoint: formattedApiEndpoint }));

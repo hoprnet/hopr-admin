@@ -37,7 +37,7 @@ const authSlice = createSlice({
       if (!jazzIcon) {
         const existingItem = state.nodes.findIndex((item) => item.apiEndpoint === action.payload.apiEndpoint);
         if (existingItem !== -1)
-          jazzIcon = state.nodes[existingItem].jazzIcon ? state.nodes[existingItem].jazzIcon as string : null;
+          jazzIcon = state.nodes[existingItem].jazzIcon ? (state.nodes[existingItem].jazzIcon as string) : null;
       }
 
       state.loginData.apiEndpoint = action.payload.apiEndpoint;
@@ -85,7 +85,7 @@ const authSlice = createSlice({
     ) {
       const existingItem = state.nodes.findIndex((item) => item.apiEndpoint === action.payload.apiEndpoint);
       if (existingItem === -1) return;
-      if(isAddress(action.payload.jazzIcon)) {
+      if (isAddress(action.payload.jazzIcon)) {
         state.nodes[existingItem].jazzIcon = action.payload.jazzIcon;
       } else {
         state.nodes[existingItem].jazzIcon = action.payload.jazzIcon;

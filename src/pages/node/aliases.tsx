@@ -127,10 +127,12 @@ function AliasesPage() {
       id: peerId,
       key: key.toString(),
       alias,
-      node: <PeersInfo
-        peerId={peerId}
-        nodeAddress={peerAddress ?? ''}
-      />,
+      node: (
+        <PeersInfo
+          peerId={peerId}
+          nodeAddress={peerAddress ?? ''}
+        />
+      ),
       peerId,
       peerAddress: peerAddress ?? '',
       actions: (
@@ -207,7 +209,7 @@ function AliasesPage() {
       width: '168px',
       maxWidth: '168px',
     },
-  ]
+  ];
 
   return (
     <Section
@@ -245,7 +247,7 @@ function AliasesPage() {
         id={'node-aliases-table'}
         header={header}
         loading={parsedTableData.length === 0 && aliasesFetching}
-        orderByDefault='alias'
+        orderByDefault="alias"
       />
     </Section>
   );

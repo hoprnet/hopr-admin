@@ -117,22 +117,22 @@ function PeersPage() {
     },
   ];
 
-
   const noCopyPaste = !(
     window.location.protocol === 'https:' ||
     window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1'
   );
 
-
   const parsedTableData = Object.entries(peers?.connected ?? {}).map(([id, peer]) => {
     return {
       id: id,
       number: parseInt(id),
-      node: <PeersInfo
-        peerId={peer.peerId}
-        nodeAddress={peer.peerAddress}
-      />,
+      node: (
+        <PeersInfo
+          peerId={peer.peerId}
+          nodeAddress={peer.peerAddress}
+        />
+      ),
       peerId: getAliasByPeerId(peer.peerId),
       peerAddress: peer.peerAddress,
       quality: <ProgressBar value={peer.quality} />,

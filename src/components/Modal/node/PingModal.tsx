@@ -30,7 +30,7 @@ export const PingModal = (props: PingModalProps) => {
 
   const getAliasByPeerId = (peerId: string): string => {
     if (aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${peerId})`;
-    return peerId
+    return peerId;
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

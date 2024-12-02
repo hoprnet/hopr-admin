@@ -200,15 +200,16 @@ function ChannelsPage() {
       const peerAddress = channelsOutgoingObject[id].peerAddress;
       const peerId = getPeerIdFromPeerAddress(peerAddress as string);
 
-
       return {
         id: index.toString(),
         key: id,
         number: parseInt(id),
-        node: <PeersInfo
-          peerId={peerId}
-          nodeAddress={peerAddress}
-        />,
+        node: (
+          <PeersInfo
+            peerId={peerId}
+            nodeAddress={peerAddress}
+          />
+        ),
         peerAddress: getAliasByPeerAddress(peerAddress as string),
         peerId: peerId,
         status: channelsOutgoingObject[id].status as string,
@@ -279,13 +280,13 @@ function ChannelsPage() {
       };
     })
     .filter((elem) => elem !== undefined) as {
-      id: string;
-      key: string;
-      peerAddress: string;
-      status: 'Open' | 'PendingToClose' | 'Closed';
-      funds: string;
-      actions: JSX.Element;
-    }[];
+    id: string;
+    key: string;
+    peerAddress: string;
+    status: 'Open' | 'PendingToClose' | 'Closed';
+    funds: string;
+    actions: JSX.Element;
+  }[];
 
   return (
     <Section
@@ -324,7 +325,7 @@ function ChannelsPage() {
         header={header}
         search
         loading={parsedTableData.length === 0 && channelsFetching}
-        orderByDefault='number'
+        orderByDefault="number"
       />
     </Section>
   );

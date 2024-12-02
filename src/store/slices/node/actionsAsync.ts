@@ -147,11 +147,13 @@ const getAddressesThunk = createAsyncThunk<
     dispatch(nodeActionsFetching.setAddressesFetching(true));
     try {
       const addresses = await getAddresses(payload);
-      if(addresses?.native){
-        dispatch(authActions.addNodeJazzIcon({
-          apiEndpoint: payload.apiEndpoint as string,
-          jazzIcon: addresses.native
-        }));
+      if (addresses?.native) {
+        dispatch(
+          authActions.addNodeJazzIcon({
+            apiEndpoint: payload.apiEndpoint as string,
+            jazzIcon: addresses.native,
+          }),
+        );
       }
       return addresses;
     } catch (e) {

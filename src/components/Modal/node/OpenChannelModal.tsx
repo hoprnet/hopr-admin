@@ -37,7 +37,7 @@ export const OpenChannelModal = ({ ...props }: OpenChannelModalProps) => {
 
   const getAliasByPeerId = (peerId: string): string => {
     if (aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${peerId})`;
-    return peerId
+    return peerId;
   };
 
   const handleOpenChannelDialog = () => {

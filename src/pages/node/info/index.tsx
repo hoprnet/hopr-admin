@@ -62,9 +62,10 @@ function InfoPage() {
   const blockNumberFromInfo = useAppSelector((store) => store.node.info.data?.indexerBlock); // >=2.1.3
   const blockNumberCheckSumFromInfo = useAppSelector((store) => store.node.info.data?.indexerChecksum); // >=2.1.3
   const blockNumberPrevIndexedWithHOPRdata = useAppSelector((store) => store.node.info.data?.indexBlockPrevChecksum); // >=2.1.4
-  const blockNumberIndexedWithHOPRdata = blockNumberPrevIndexedWithHOPRdata
-    ? blockNumberPrevIndexedWithHOPRdata + 1
-    : null;
+  const blockNumberIndexedWithHOPRdata =
+    blockNumberPrevIndexedWithHOPRdata && blockNumberFromInfo !== blockNumberPrevIndexedWithHOPRdata
+      ? blockNumberPrevIndexedWithHOPRdata + 1
+      : null;
   const blockNumber = blockNumberFromInfo ?? blockNumberFromMetrics;
   const blockNumberCheckSum = blockNumberCheckSumFromInfo ?? blockNumberCheckSumFromMetrics;
   const ticketPrice = useAppSelector((store) => store.node.ticketPrice.data);
@@ -190,33 +191,44 @@ function InfoPage() {
         title="INFO"
         refreshFunction={fetchInfoData}
         reloading={isFetchingAnyData}
-        actions={<>
-          <WithdrawModal />
-          <IconButton
-            iconComponent={<DataObjectIcon />}
-            tooltipText={
-              <span>
-                OPEN
-                <br />
-                Swagger UI
-              </span>
-            }
-            //@ts-ignore
-            onClick={()=>{window.open(apiEndpoint + '/swagger-ui/index.html#/', '_blank').focus();}}
-          />
-          <IconButton
-            iconComponent={<img style={{maxWidth: '20px'}}src='/assets/scalar-removebg-preview.png' />}
-            tooltipText={
-              <span>
-                OPEN
-                <br />
-                Scalar UI
-              </span>
-            }
-            //@ts-ignore
-            onClick={()=>{window.open(apiEndpoint + '/scalar', '_blank').focus();}}
-          />
-        </>}
+        actions={
+          <>
+            <WithdrawModal />
+            <IconButton
+              iconComponent={<DataObjectIcon />}
+              tooltipText={
+                <span>
+                  OPEN
+                  <br />
+                  Swagger UI
+                </span>
+              }
+              //@ts-ignore
+              onClick={() => {
+                window.open(apiEndpoint + '/swagger-ui/index.html#/', '_blank').focus();
+              }}
+            />
+            <IconButton
+              iconComponent={
+                <img
+                  style={{ maxWidth: '20px' }}
+                  src="/assets/scalar-removebg-preview.png"
+                />
+              }
+              tooltipText={
+                <span>
+                  OPEN
+                  <br />
+                  Scalar UI
+                </span>
+              }
+              //@ts-ignore
+              onClick={() => {
+                window.open(apiEndpoint + '/scalar', '_blank').focus();
+              }}
+            />
+          </>
+        }
       />
       <Paper
         style={{
