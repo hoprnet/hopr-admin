@@ -219,12 +219,12 @@ function ChannelsPage() {
 
       return {
         id: (index + 1).toString(),
-        number: parseInt(id),
         key: id,
         node: (
           <PeersInfo
             peerId={peerId}
             nodeAddress={peerAddress}
+            shortenPeerId
           />
         ),
         peerAddress: getAliasByPeerAddress(peerAddress as string),

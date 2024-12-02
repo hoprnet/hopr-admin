@@ -77,7 +77,7 @@ function PeersPage() {
 
   const header = [
     {
-      key: 'number',
+      key: 'id',
       name: '#',
     },
     {
@@ -117,20 +117,37 @@ function PeersPage() {
     },
   ];
 
-  const noCopyPaste = !(
-    window.location.protocol === 'https:' ||
-    window.location.hostname === 'localhost' ||
-    window.location.hostname === '127.0.0.1'
-  );
+  const peersWithAliases = (peers?.connected || []).filter(peer => aliases && peer.peerId && peerIdToAliasLink[peer.peerId]) ;
+  const peersWithAliasesSorted = peersWithAliases.sort((a, b) => {
+    if (getAliasByPeerId(b.peerId).toLowerCase() > getAliasByPeerId(a.peerId).toLowerCase()) {
+      return -1;
+    }
+    if (getAliasByPeerId(b.peerId).toLowerCase() < getAliasByPeerId(a.peerId).toLowerCase()) {
+      return 1;
+    }
+    return 0
+  });
+  const peersWithoutAliases = (peers?.connected || []).filter(peer => aliases && peer.peerId && !peerIdToAliasLink[peer.peerId]) ;
+  const peersWithoutAliasesSorted = peersWithoutAliases.sort((a, b) => {
+    if (b.peerId > a.peerId) {
+      return -1;
+    }
+    if (b.peerId < a.peerId) {
+      return 1;
+    }
+    return 0
+  });
 
-  const parsedTableData = Object.entries(peers?.connected ?? {}).map(([id, peer]) => {
+  const peersSorted = [...peersWithAliasesSorted, ...peersWithoutAliasesSorted]
+
+  const parsedTableData = peersSorted.map((peer, index)=>{
     return {
-      id: id,
-      number: parseInt(id),
+      id: index+1,
       node: (
         <PeersInfo
           peerId={peer.peerId}
           nodeAddress={peer.peerAddress}
+          shortenPeerId
         />
       ),
       peerId: getAliasByPeerId(peer.peerId),
@@ -163,8 +180,8 @@ function PeersPage() {
           <SendMessageModal peerId={peer.peerId} />
         </>
       ),
-    };
-  });
+    }
+  })
 
   return (
     <Section

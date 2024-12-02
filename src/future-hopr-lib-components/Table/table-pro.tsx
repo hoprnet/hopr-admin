@@ -129,7 +129,7 @@ const STextField = styled(TextField)`
 interface Props {
   data: {
     [key: string]: string | number | JSX.Element;
-    id: string;
+    id: string | number;
     actions: JSX.Element;
   }[];
   id?: string;
@@ -325,7 +325,8 @@ export default function CustomPaginationActionsTable(props: Props) {
             <CustomTableRow
               row={row}
               header={props.header}
-              key={row.id}
+              id={`${props.id}_row_${row.id}`}
+              key={`${props.id}_row_${row.id}`}
               onRowClick={props.onRowClick}
             />
           ))}
@@ -352,10 +353,12 @@ export default function CustomPaginationActionsTable(props: Props) {
 }
 
 const CustomTableRow = ({
+  id,
   row,
   header,
   onRowClick,
 }: {
+  id: string;
   row: Props['data'][0];
   header: Props['header'];
   onRowClick?: Function;
@@ -376,6 +379,7 @@ const CustomTableRow = ({
   return (
     <TableRow
       key={row.id}
+      id={id}
       onClick={() => {
         onRowClick && onRowClick(row);
       }}

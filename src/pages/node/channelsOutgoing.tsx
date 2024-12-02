@@ -201,13 +201,13 @@ function ChannelsPage() {
       const peerId = getPeerIdFromPeerAddress(peerAddress as string);
 
       return {
-        id: index.toString(),
+        id: (index+1).toString(),
         key: id,
-        number: parseInt(id),
         node: (
           <PeersInfo
             peerId={peerId}
             nodeAddress={peerAddress}
+            shortenPeerId
           />
         ),
         peerAddress: getAliasByPeerAddress(peerAddress as string),

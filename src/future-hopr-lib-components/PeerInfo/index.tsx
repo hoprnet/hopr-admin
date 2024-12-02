@@ -11,9 +11,11 @@ import { generateBase64Jazz } from '../../utils/functions';
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
 
+
 interface Props {
   peerId?: string;
   nodeAddress?: string;
+  shortenPeerId?: boolean;
 }
 
 const Container = styled.div`
@@ -32,8 +34,9 @@ const PeersInfo: React.FC<Props> = (props) => {
 
   const getAliasByPeerId = (peerId: string): string => {
     const shortPeerId = peerId && `${peerId.substring(0, 6)}...${peerId.substring(peerId.length - 8, peerId.length)}`;
-    if (aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${shortPeerId})`;
-    return shortPeerId;
+    const displayPeerId = props.shortenPeerId ? shortPeerId : peerId;
+    if (aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${displayPeerId})`;
+    return displayPeerId;
   };
 
   const noCopyPaste = !(
