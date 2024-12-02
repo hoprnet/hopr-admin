@@ -203,9 +203,10 @@ function InfoPage() {
                   Swagger UI
                 </span>
               }
-              //@ts-ignore
               onClick={() => {
-                window.open(apiEndpoint + '/swagger-ui/index.html#/', '_blank').focus();
+                const externalUrl = apiEndpoint + '/swagger-ui/index.html#/';
+                const w = window.open(externalUrl, '_blank');
+                w && w.focus();
               }}
             />
             <IconButton
@@ -222,9 +223,10 @@ function InfoPage() {
                   Scalar UI
                 </span>
               }
-              //@ts-ignore
               onClick={() => {
-                window.open(apiEndpoint + '/scalar', '_blank').focus();
+                const externalUrl = apiEndpoint + '/scalar';
+                const w = window.open(externalUrl, '_blank');
+                w && w.focus();
               }}
             />
           </>

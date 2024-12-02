@@ -128,7 +128,7 @@ const STextField = styled(TextField)`
 
 interface Props {
   data: {
-    [key: string]: string | JSX.Element;
+    [key: string]: string | number | JSX.Element;
     id: string;
     actions: JSX.Element;
   }[];
@@ -160,13 +160,11 @@ function descendingComparator<T>(
   b: { [key in string]: number | string },
   orderBy: string,
 ) {
-  console.log(a, b, orderBy);
-
   if (isString(b[orderBy]) && isString(a[orderBy])) {
-    if (b[orderBy].toLowerCase() < a[orderBy].toLowerCase()) {
+    if ((b[orderBy] as string).toLowerCase() < (a[orderBy] as string).toLowerCase()) {
       return -1;
     }
-    if (b[orderBy].toLowerCase() > a[orderBy].toLowerCase()) {
+    if ((b[orderBy] as string).toLowerCase() > (a[orderBy] as string).toLowerCase()) {
       return 1;
     }
   }
