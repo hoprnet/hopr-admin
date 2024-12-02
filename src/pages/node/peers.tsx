@@ -128,7 +128,7 @@ function PeersPage() {
   const parsedTableData = Object.entries(peers?.connected ?? {}).map(([id, peer]) => {
     return {
       id: id,
-      number: id,
+      number: parseInt(id),
       node: <PeersInfo
         peerId={peer.peerId}
         nodeAddress={peer.peerAddress}

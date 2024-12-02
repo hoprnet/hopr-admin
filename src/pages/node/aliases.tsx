@@ -245,6 +245,7 @@ function AliasesPage() {
         id={'node-aliases-table'}
         header={header}
         loading={parsedTableData.length === 0 && aliasesFetching}
+        orderByDefault='alias'
       />
     </Section>
   );

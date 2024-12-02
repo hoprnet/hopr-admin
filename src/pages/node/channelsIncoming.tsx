@@ -219,6 +219,7 @@ function ChannelsPage() {
 
       return {
         id: (index + 1).toString(),
+        number: parseInt(id),
         key: id,
         node: <PeersInfo
           peerId={peerId}
@@ -342,6 +343,7 @@ function ChannelsPage() {
         header={headerIncoming}
         search
         loading={parsedTableData.length === 0 && channelsFetching}
+        orderByDefault='number'
       />
     </Section>
   );

@@ -289,7 +289,6 @@ const getConfigurationThunk = createAsyncThunk<
   async (payload, { rejectWithValue, dispatch }) => {
     try {
       const configuration = await getConfiguration(payload);
-      console.log('Configuration:\n', configuration);
       return configuration;
     } catch (e) {
       if (e instanceof sdkApiError) {

@@ -148,6 +148,45 @@ interface Props {
   search?: boolean;
   loading?: boolean;
   onRowClick?: Function;
+  orderByDefault?: string;
+}
+
+type Order = 'asc' | 'desc';
+
+const isString = (value: any) => typeof value === 'string' || value instanceof String;
+
+function descendingComparator<T>(a: { [key in string]: number | string }, b: { [key in string]: number | string }, orderBy: string) {
+  console.log(a, b, orderBy);
+
+  if(isString(b[orderBy]) && isString(a[orderBy])){
+    if (b[orderBy].toLowerCase() < a[orderBy].toLowerCase()) {
+      return -1;
+    }
+    if (b[orderBy].toLowerCase() > a[orderBy].toLowerCase()) {
+      return 1;
+    }
+  }
+
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+
+  return 0;
+}
+
+function getComparator<Key extends keyof any>(
+  order: Order,
+  orderBy: string,
+): (
+  a: { [key in Key]: number | string },
+  b: { [key in Key]: number | string },
+) => number {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
 export default function CustomPaginationActionsTable(props: Props) {
@@ -156,6 +195,8 @@ export default function CustomPaginationActionsTable(props: Props) {
   const [rowsPerPage, set_RowsPerPage] = React.useState(
     props.id && rowsPerPageFromLocalStorage ? rowsPerPageFromLocalStorage : 10,
   );
+  const [order, setOrder] = React.useState<Order>('asc');
+  const [orderBy, setOrderBy] = React.useState<string>(props.orderByDefault || props.header[0].key || 'id');
   const [searchPhrase, set_searchPhrase] = React.useState('');
   const [filteredData, set_filteredData] = React.useState<typeof props.data>([]);
 
@@ -211,6 +252,16 @@ export default function CustomPaginationActionsTable(props: Props) {
     set_filteredData(filtered);
     return;
   }
+
+
+  const visibleRows = React.useMemo(
+    () =>
+      [...filteredData]
+        //@ts-ignore as we can input JSX into the data, but we will not sort by it
+        .sort(getComparator(order, orderBy))
+        .slice(page * rowsPerPage, rowsPerPage !== -1 ? page * rowsPerPage + rowsPerPage : filteredData.length),
+    [rowsPerPage, filteredData, order, orderBy, page, rowsPerPage],
+  );
 
   return (
     <TableContainer
@@ -272,10 +323,7 @@ export default function CustomPaginationActionsTable(props: Props) {
           </TableRow>
         </thead>
         <TableBody>
-          {(rowsPerPage > 0
-            ? filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : filteredData
-          ).map((row) => (
+          {visibleRows.map((row) => (
             <CustomTableRow
               row={row}
               header={props.header}
