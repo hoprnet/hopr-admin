@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { Link } from 'react-router-dom';
+import styled from '@emotion/styled';
 
 // HOPR Components
 import SmallActionButton from '../../future-hopr-lib-components/Button/SmallActionButton';
+import { generateBase64Jazz } from '../../utils/functions';
 
 //Mui
 import CopyIcon from '@mui/icons-material/ContentCopy';
@@ -13,6 +15,15 @@ interface Props {
     peerId?: string;
     nodeAddress?: string;
 }
+
+const Container = styled.div`
+    display: flex;
+    align-items: center;
+    .node-jazz-icon{
+        height: 30px;
+        width: 30px;
+    }
+`
 
 const PeersInfo: React.FC<Props> = (props) => {
     const { peerId, nodeAddress, ...rest } = props;
@@ -31,8 +42,15 @@ const PeersInfo: React.FC<Props> = (props) => {
         window.location.hostname === '127.0.0.1'
     );
 
+    const icon = nodeAddress && generateBase64Jazz(nodeAddress);
+
     return (
-        <div>
+        <Container>
+            <img
+                className={`node-jazz-icon node-jazz-icon-present`}
+                src={icon}
+                attr-src={nodeAddress}
+            />
             <div>
                 <span>{peerId}</span>                  <SmallActionButton
                     onClick={() => navigator.clipboard.writeText(peerId as string)}
@@ -57,7 +75,7 @@ const PeersInfo: React.FC<Props> = (props) => {
                     </Link>
                 </SmallActionButton>
             </div>
-        </div >
+        </Container >
 
     );
 }
