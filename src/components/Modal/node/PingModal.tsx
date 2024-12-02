@@ -22,9 +22,16 @@ type PingModalProps = {
 export const PingModal = (props: PingModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
+  const aliases = useAppSelector((store) => store.node.aliases.data);
+  const peerIdToAliasLink = useAppSelector((store) => store.node.links.peerIdToAlias);
   const [peerId, set_peerId] = useState<string>(props.peerId ? props.peerId : '');
   const [openModal, set_OpenModal] = useState(false);
   const [disableButton, set_disableButton] = useState(false);
+
+  const getAliasByPeerId = (peerId: string): string => {
+    if (aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${peerId})`;
+    return peerId
+  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     set_peerId(event.target.value);
@@ -57,7 +64,7 @@ export const PingModal = (props: PingModalProps) => {
       )
         .unwrap()
         .then((resp: any) => {
-          const msg = `Ping of ${peerId} succeded with latency of ${resp.latency}ms`;
+          const msg = `Ping of ${getAliasByPeerId(peerId)} succeeded with latency of ${resp.latency}ms`;
           console.log(msg, resp);
           sendNotification({
             notificationPayload: {
@@ -76,7 +83,7 @@ export const PingModal = (props: PingModalProps) => {
           ).unwrap();
           if (!isCurrentApiEndpointTheSame) return;
 
-          let errMsg = `Ping of ${peerId} failed`;
+          let errMsg = `Ping of ${getAliasByPeerId(peerId)} failed`;
           if (e instanceof sdkApiError && e.hoprdErrorPayload?.status)
             errMsg = errMsg + `.\n${e.hoprdErrorPayload.status}`;
           if (e instanceof sdkApiError && e.hoprdErrorPayload?.error)

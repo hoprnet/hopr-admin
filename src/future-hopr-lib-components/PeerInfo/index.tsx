@@ -32,8 +32,9 @@ const PeersInfo: React.FC<Props> = (props) => {
 
 
     const getAliasByPeerId = (peerId: string): string => {
-        if (aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${peerId})`;
-        return peerId;
+        const shortPeerId = peerId && `${peerId.substring(0, 6)}...${peerId.substring(peerId.length - 8, peerId.length)}`;
+        if (aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${shortPeerId})`;
+        return shortPeerId
     };
 
     const noCopyPaste = !(
@@ -48,21 +49,22 @@ const PeersInfo: React.FC<Props> = (props) => {
         <Container>
             <img
                 className={`node-jazz-icon node-jazz-icon-present`}
-                src={icon}
+                src={icon || ''}
                 attr-src={nodeAddress}
             />
             <div>
-                <span>{peerId}</span>                  <SmallActionButton
+
+                <span>{peerId && getAliasByPeerId(peerId)}</span>                  <SmallActionButton
                     onClick={() => navigator.clipboard.writeText(peerId as string)}
                     disabled={noCopyPaste}
-                    tooltip={noCopyPaste ? 'Clipboard not supported on HTTP' : 'Copy'}
+                    tooltip={noCopyPaste ? 'Clipboard not supported on HTTP' : 'Copy Peer Id'}
                 >
                     <CopyIcon />
                 </SmallActionButton><br />
                 <span>{nodeAddress}</span>                  <SmallActionButton
                     onClick={() => navigator.clipboard.writeText(nodeAddress as string)}
                     disabled={noCopyPaste}
-                    tooltip={noCopyPaste ? 'Clipboard not supported on HTTP' : 'Copy'}
+                    tooltip={noCopyPaste ? 'Clipboard not supported on HTTP' : 'Copy Node Address'}
                 >
                     <CopyIcon />
                 </SmallActionButton>

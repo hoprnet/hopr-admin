@@ -205,7 +205,7 @@ function InfoPage() {
             onClick={()=>{window.open(apiEndpoint + '/swagger-ui/index.html#/', '_blank').focus();}}
           />
           <IconButton
-            iconComponent={<img style={{maxWidth: '24px'}}src='/assets/scalar-removebg-preview.png' />}
+            iconComponent={<img style={{maxWidth: '20px'}}src='/assets/scalar-removebg-preview.png' />}
             tooltipText={
               <span>
                 OPEN
