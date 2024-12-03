@@ -23,6 +23,7 @@ export const PingModal = (props: PingModalProps) => {
   const dispatch = useAppDispatch();
   const loginData = useAppSelector((selector) => selector.auth.loginData);
   const aliases = useAppSelector((store) => store.node.aliases.data);
+  const pinging = useAppSelector((store) => store.node.pinging);
   const peerIdToAliasLink = useAppSelector((store) => store.node.links.peerIdToAlias);
   const [peerId, set_peerId] = useState<string>(props.peerId ? props.peerId : '');
   const [openModal, set_OpenModal] = useState(false);
@@ -123,8 +124,8 @@ export const PingModal = (props: PingModalProps) => {
           )
         }
         onClick={peerId ? handlePing : handleOpenModal}
-        disabled={props.disabled}
-        pending={disableButton}
+        disabled={props.disabled || pinging[peerId]}
+        pending={disableButton || pinging[peerId] }
       />
       <SDialog
         open={openModal}
