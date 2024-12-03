@@ -17,6 +17,8 @@ import { ApplicationMapType } from '../../router';
 import { useAppSelector } from '../../store';
 import { loadStateFromLocalStorage, saveStateToLocalStorage } from '../../utils/localStorage';
 
+import { drawerWidth, minDrawerWidth } from './drawer';
+
 const SLayout = styled.div`
   &.webapp {
     .Section.full-height-min {
@@ -32,12 +34,12 @@ type ContentType = {
 };
 
 const Content = styled.div<ContentType>`
-  margin-top: 60px;
+  margin-top: 55px;
   margin-left: 0;
 
   transition: margin-left 0.4s ease-out;
   @media (min-width: 500px) {
-    margin-left: ${(props) => (props.openedNavigationDrawer ? '240px' : '56px')};
+    margin-left: ${(props) => (props.openedNavigationDrawer ? `${drawerWidth}px` : `${minDrawerWidth}px`)};
   }
 
   ${(props) =>

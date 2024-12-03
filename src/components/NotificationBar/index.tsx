@@ -19,8 +19,8 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { appActions } from '../../store/slices/app';
 
 const Container = styled.div`
-  height: 59px;
-  width: 59px;
+  height: 54px;
+  width: 54px;
   border-left: 1px lightgray solid;
   border-right: 1px lightgray solid;
 `;
