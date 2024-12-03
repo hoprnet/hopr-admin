@@ -79,11 +79,12 @@ function PeersPage() {
     {
       key: 'id',
       name: '#',
+      maxWidth: '5px',
     },
     {
       key: 'node',
       name: 'Node',
-      maxWidth: '350px',
+      maxWidth: '300px',
     },
     {
       key: 'peerId',
@@ -101,12 +102,12 @@ function PeersPage() {
       key: 'lastSeen',
       name: 'Last seen',
       tooltip: true,
-      maxWidth: '60px',
+      maxWidth: '10px',
     },
     {
       key: 'quality',
       name: 'Quality',
-      maxWidth: '15px',
+      maxWidth: '10px',
     },
     {
       key: 'actions',
@@ -145,6 +146,15 @@ function PeersPage() {
   const peersSorted = [...peersWithAliasesSorted, ...peersWithoutAliasesSorted];
 
   const parsedTableData = peersSorted.map((peer, index) => {
+    const lastSeen = peer.lastSeen as number > 0 ? new Date(peer.lastSeen).toLocaleString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZoneName: 'short',
+    }).replace(', ', '\n') : 'Not seen';
+
     return {
       id: index + 1,
       node: (
@@ -157,17 +167,7 @@ function PeersPage() {
       peerId: getAliasByPeerId(peer.peerId),
       peerAddress: peer.peerAddress,
       quality: <ProgressBar value={peer.quality} />,
-      lastSeen:
-        peer.lastSeen > 0
-          ? new Date(peer.lastSeen).toLocaleString('en-US', {
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-              hour: '2-digit',
-              minute: '2-digit',
-              timeZoneName: 'short',
-            })
-          : 'Not seen',
+      lastSeen: <span style={{ whiteSpace: 'break-spaces' }}>{lastSeen}</span>,
       actions: (
         <>
           <PingModal peerId={peer.peerId} />

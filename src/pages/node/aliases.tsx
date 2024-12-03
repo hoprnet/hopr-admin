@@ -27,7 +27,7 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 function AliasesPage() {
   const dispatch = useAppDispatch();
   const aliases = useAppSelector((store) => store.node.aliases.data);
-  const peers = useAppSelector((store) => store.node.peers.data);
+  const peersObject = useAppSelector((store) => store.node.peers.parsed.connected);
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
   const hoprAddress = useAppSelector((store) => store.node.addresses.data.hopr);
   const myNodeAddress = useAppSelector((store) => store.node.addresses.data.native);
@@ -123,6 +123,16 @@ function AliasesPage() {
 
   const parsedTableData = Object.entries(aliases ?? {}).map(([alias, peerId], key) => {
     const peerAddress = getNodeAddressByPeerId(peerId);
+    const lastSeenNumeric = peerId && peersObject[peerId]?.lastSeen;
+    const lastSeen = lastSeenNumeric as number > 0 ? new Date(lastSeenNumeric).toLocaleString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZoneName: 'short',
+    }).replace(', ', '\n') : 'Not seen';
+
     return {
       id: peerId,
       key: key.toString(),
@@ -133,6 +143,7 @@ function AliasesPage() {
           nodeAddress={peerAddress ?? ''}
         />
       ),
+      lastSeen: <span style={{whiteSpace: 'break-spaces'}}>{peerId === hoprAddress ? '-' : lastSeen}</span>,
       peerId,
       peerAddress: peerAddress ?? '',
       actions: (
@@ -181,13 +192,17 @@ function AliasesPage() {
       key: 'alias',
       name: 'Alias',
       search: true,
-      tooltip: true,
-      maxWidth: '0px',
+      hidden: true,
     },
     {
       key: 'node',
       name: 'Node',
       maxWidth: '350px',
+    },
+    {
+      key: 'lastSeen',
+      name: 'Last Seen',
+      maxWidth: '20px',
     },
     {
       key: 'peerId',

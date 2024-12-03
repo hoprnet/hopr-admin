@@ -144,6 +144,26 @@ type InitialState = {
   signedMessages: { timestamp: number; body: string }[];
   peers: {
     data: GetPeersResponseType | null;
+    parsed: {
+      connected: {
+        //TODO: add ConnectedPeerType to SDK
+        [peerId: string]: {
+          peerId: string;
+          peerAddress: string;
+          quality: number;
+          multiaddr: string | null;
+          heartbeats: {
+              sent: number;
+              success: number;
+          };
+          lastSeen: number;
+          lastSeenLatency: number;
+          backoff: number;
+          isNew: boolean;
+          reportedVersion: string;
+        };
+      }
+    }
     isFetching: boolean;
     alreadyFetched: boolean;
   };
@@ -288,6 +308,9 @@ export const initialState: InitialState = {
     data: {
       connected: [],
       announced: [],
+    },
+    parsed: {
+      connected: {},
     },
     isFetching: false,
     alreadyFetched: false,

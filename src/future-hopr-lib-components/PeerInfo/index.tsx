@@ -31,10 +31,10 @@ const PeersInfo: React.FC<Props> = (props) => {
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const peerIdToAliasLink = useAppSelector((store) => store.node.links.peerIdToAlias);
 
-  const getAliasByPeerId = (peerId: string): string => {
+  const getAliasByPeerId = (peerId: string): string | JSX.Element => {
     const shortPeerId = peerId && `${peerId.substring(0, 6)}...${peerId.substring(peerId.length - 8, peerId.length)}`;
     const displayPeerId = props.shortenPeerId ? shortPeerId : peerId;
-    if (aliases && peerId && peerIdToAliasLink[peerId]) return `${peerIdToAliasLink[peerId]} (${displayPeerId})`;
+    if (aliases && peerId && peerIdToAliasLink[peerId]) return <><strong>{peerIdToAliasLink[peerId]}</strong> ({displayPeerId})</>;
     return displayPeerId;
   };
 
