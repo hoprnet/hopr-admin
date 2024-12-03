@@ -146,14 +146,19 @@ function PeersPage() {
   const peersSorted = [...peersWithAliasesSorted, ...peersWithoutAliasesSorted];
 
   const parsedTableData = peersSorted.map((peer, index) => {
-    const lastSeen = peer.lastSeen as number > 0 ? new Date(peer.lastSeen).toLocaleString('en-US', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      timeZoneName: 'short',
-    }).replace(', ', '\n') : 'Not seen';
+    const lastSeen =
+      (peer.lastSeen as number) > 0
+        ? new Date(peer.lastSeen)
+            .toLocaleString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              timeZoneName: 'short',
+            })
+            .replace(', ', '\n')
+        : 'Not seen';
 
     return {
       id: index + 1,

@@ -1193,7 +1193,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       // Generate links
       for (let i = 0; i < action.payload.connected.length; i++) {
         const node = action.payload.connected[i];
-        if(node.peerId && node.peerAddress){
+        if (node.peerId && node.peerAddress) {
           state.links.nodeAddressToPeerId[node.peerAddress] = node.peerId;
           state.links.peerIdToNodeAddress[node.peerId] = node.peerAddress;
         }
@@ -1201,7 +1201,7 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       }
       for (let i = 0; i < action.payload.announced.length; i++) {
         const node = action.payload.announced[i];
-        if(node.peerId && node.peerAddress){
+        if (node.peerId && node.peerAddress) {
           state.links.nodeAddressToPeerId[node.peerAddress] = node.peerId;
           state.links.peerIdToNodeAddress[node.peerId] = node.peerAddress;
         }

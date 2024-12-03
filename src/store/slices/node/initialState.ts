@@ -153,8 +153,8 @@ type InitialState = {
           quality: number;
           multiaddr: string | null;
           heartbeats: {
-              sent: number;
-              success: number;
+            sent: number;
+            success: number;
           };
           lastSeen: number;
           lastSeenLatency: number;
@@ -162,8 +162,8 @@ type InitialState = {
           isNew: boolean;
           reportedVersion: string;
         };
-      }
-    }
+      };
+    };
     isFetching: boolean;
     alreadyFetched: boolean;
   };

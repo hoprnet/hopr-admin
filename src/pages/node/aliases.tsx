@@ -124,14 +124,19 @@ function AliasesPage() {
   const parsedTableData = Object.entries(aliases ?? {}).map(([alias, peerId], key) => {
     const peerAddress = getNodeAddressByPeerId(peerId);
     const lastSeenNumeric = peerId && peersObject[peerId]?.lastSeen;
-    const lastSeen = lastSeenNumeric as number > 0 ? new Date(lastSeenNumeric).toLocaleString('en-US', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      timeZoneName: 'short',
-    }).replace(', ', '\n') : 'Not seen';
+    const lastSeen =
+      (lastSeenNumeric as number) > 0
+        ? new Date(lastSeenNumeric)
+            .toLocaleString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              timeZoneName: 'short',
+            })
+            .replace(', ', '\n')
+        : 'Not seen';
 
     return {
       id: peerId,
@@ -143,7 +148,7 @@ function AliasesPage() {
           nodeAddress={peerAddress ?? ''}
         />
       ),
-      lastSeen: <span style={{whiteSpace: 'break-spaces'}}>{peerId === hoprAddress ? '-' : lastSeen}</span>,
+      lastSeen: <span style={{ whiteSpace: 'break-spaces' }}>{peerId === hoprAddress ? '-' : lastSeen}</span>,
       peerId,
       peerAddress: peerAddress ?? '',
       actions: (
