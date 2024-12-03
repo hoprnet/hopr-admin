@@ -1444,24 +1444,29 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
     state.messages.isDeleting = false;
   });
   // pingNode
+  builder.addCase(pingNodeThunk.pending, (state, action) => {
+    if (action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
+    const peerId = action.meta.arg.peerId
+    if(peerId && !state.pinging[peerId]){
+      state.pinging[peerId] = true;
+    }
+  });
   builder.addCase(pingNodeThunk.fulfilled, (state, action) => {
     if (action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
-    if (action.payload) {
-      const pingExists = state.pings.findIndex((ping) => ping.peerId === action.payload?.peerId);
-
-      if (pingExists) {
-        state.pings[pingExists] = {
-          latency: action.payload.latency,
-          peerId: action.payload.peerId,
-          reportedVersion: action.payload.reportedVersion,
-        };
-      } else {
-        state.pings.push({
-          latency: action.payload.latency,
-          peerId: action.payload.peerId,
-          reportedVersion: action.payload.reportedVersion,
-        });
-      }
+    const peerId = action.meta.arg.peerId;
+    if(peerId && state.pinging[peerId]){
+      const next = {...state.pinging}
+      delete next[peerId]
+      state.pinging = next;
+    }
+  });
+  builder.addCase(pingNodeThunk.rejected, (state, action) => {
+    if (action.meta.arg.apiEndpoint !== state.apiEndpoint) return;
+    const peerId = action.meta.arg.peerId;
+    if(peerId && state.pinging[peerId]){
+      const next = {...state.pinging}
+      delete next[peerId]
+      state.pinging = next;
     }
   });
   // deleteToken

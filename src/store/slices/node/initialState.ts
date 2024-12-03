@@ -179,7 +179,9 @@ type InitialState = {
   tokens: { data: GetTokenResponseType[]; isFetching: boolean };
   version: { data: string | null; isFetching: boolean };
   transactions: { data: string[]; isFetching: boolean };
-  pings: (PingPeerResponseType & { peerId: string })[];
+  pinging: {
+    [peerId: string]: true
+  };
   metrics: {
     data: {
       raw: string | null;
@@ -342,7 +344,7 @@ export const initialState: InitialState = {
     data: [],
     isFetching: false,
   },
-  pings: [],
+  pinging: {},
   metrics: {
     data: {
       raw: null,

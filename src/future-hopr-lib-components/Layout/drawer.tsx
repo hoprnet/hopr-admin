@@ -17,13 +17,13 @@ import { ApplicationMapType } from '../../router';
 import Details from '../../components/InfoBar/details';
 import { rounder2 } from '../../utils/functions';
 
-const drawerWidth = 240;
-const minDrawerWidth = 56;
+export const drawerWidth = 190;
+export const minDrawerWidth = 46;
 
 const StyledDrawer = styled(MuiDrawer)`
   .MuiDrawer-paper {
     box-sizing: border-box;
-    padding-top: 59px;
+    padding-top: 54px;
     transition: width 0.4s ease-out;
     overflow-x: hidden;
     scrollbar-width: none;
@@ -81,23 +81,37 @@ const StyledDrawer = styled(MuiDrawer)`
 const StyledListSubheader = styled(ListSubheader)`
   align-items: center;
   display: flex;
-  height: 64px;
+  height: 42px;
   letter-spacing: 0.2px;
+  font-size: 13px;
   user-select: none;
   color: #777;
+  justify-content: center;
+  .MuiListItemIcon-root {
+    min-width: 34px;
+    &.NavigationDrawerClosed{
+      padding-left: 10px;
+    }
+  }
+
 `;
 
 const StyledListItemButton = styled(ListItemButton)`
-  height: 48px;
+  height: 38px;
   fill: rgba(0, 0, 0, 0.54);
   width: 100%;
   padding-right: 10px;
+  padding-left: 12px;
   .MuiListItemIcon-root {
-    min-width: 48px;
+    min-width: 40px;
     svg {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
     }
+  }
+  .MuiTypography-root {
+    font-size: 12.5px;
+    white-space: nowrap;
   }
   &.Mui-selected {
     color: #0000b4;
@@ -125,7 +139,7 @@ const SListItemIcon = styled(ListItemIcon)`
 `;
 
 const Numbers = styled.div`
-  font-size: 11px;
+  font-size: 10px;
   background-color: #ddeaff;
   padding: 3px;
 `;
@@ -201,14 +215,17 @@ const Drawer = ({
               <List
                 subheader={
                   openedNavigationDrawer ? (
-                    <StyledListSubheader className="StyledListSubheader">{group.groupName}</StyledListSubheader>
+                    <StyledListSubheader className="StyledListSubheader">
+                      <SListItemIcon className="SListItemIcon GroupIcon">{group.icon}</SListItemIcon>
+                      {group.groupName}
+                      </StyledListSubheader>
                   ) : (
                     <Tooltip
                       title={`Group: ${group.groupName.toLowerCase()}`}
                       placement="right"
                     >
                       <StyledListSubheader className="StyledListSubheader">
-                        <SListItemIcon className="SListItemIcon GroupIcon">{group.icon}</SListItemIcon>
+                        <SListItemIcon className={`SListItemIcon GroupIcon NavigationDrawerClosed`}>{group.icon}</SListItemIcon>
                       </StyledListSubheader>
                     </Tooltip>
                   )

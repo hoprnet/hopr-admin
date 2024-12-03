@@ -23,7 +23,7 @@ const Container = styled(Button)`
   display: flex;
   flex-direction: row;
   gap: 10px;
-  height: 59px;
+  height: 54px;
   width: 240px;
   border-radius: 0;
   div {

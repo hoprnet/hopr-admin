@@ -42,7 +42,7 @@ const css = `
 
   @media screen and (min-width: 500px) {
     .drawerOpen .Overlay {
-      margin-left: 240px;
+      margin-left: 220px;
       width: calc( 100% - 240px - 32px);
     }
 

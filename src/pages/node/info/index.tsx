@@ -228,6 +228,7 @@ function InfoPage() {
                 const w = window.open(externalUrl, '_blank');
                 w && w.focus();
               }}
+              style={{paddingTop: '2px'}}
             />
           </>
         }
