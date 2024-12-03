@@ -48,6 +48,8 @@ import { formatEther } from 'viem';
 import { nodeActionsFetching } from './actionsFetching';
 import { sendNotification } from '../../../hooks/useWatcher/notifications';
 import { useAppDispatch } from '../../../store';
+import { authActions } from '../auth';
+
 const { sdkApiError } = utils;
 const {
   closeChannel,
@@ -145,6 +147,14 @@ const getAddressesThunk = createAsyncThunk<
     dispatch(nodeActionsFetching.setAddressesFetching(true));
     try {
       const addresses = await getAddresses(payload);
+      if (addresses?.native) {
+        dispatch(
+          authActions.addNodeJazzIcon({
+            apiEndpoint: payload.apiEndpoint as string,
+            jazzIcon: addresses.native,
+          }),
+        );
+      }
       return addresses;
     } catch (e) {
       if (e instanceof sdkApiError) {
@@ -281,7 +291,6 @@ const getConfigurationThunk = createAsyncThunk<
   async (payload, { rejectWithValue, dispatch }) => {
     try {
       const configuration = await getConfiguration(payload);
-      console.log('Configuration:\n', configuration);
       return configuration;
     } catch (e) {
       if (e instanceof sdkApiError) {
@@ -1184,13 +1193,18 @@ export const createAsyncReducer = (builder: ActionReducerMapBuilder<typeof initi
       // Generate links
       for (let i = 0; i < action.payload.connected.length; i++) {
         const node = action.payload.connected[i];
-        state.links.nodeAddressToPeerId[node.peerAddress] = node.peerId;
-        state.links.peerIdToNodeAddress[node.peerId] = node.peerAddress;
+        if (node.peerId && node.peerAddress) {
+          state.links.nodeAddressToPeerId[node.peerAddress] = node.peerId;
+          state.links.peerIdToNodeAddress[node.peerId] = node.peerAddress;
+        }
+        state.peers.parsed.connected[node.peerId] = node;
       }
       for (let i = 0; i < action.payload.announced.length; i++) {
         const node = action.payload.announced[i];
-        state.links.nodeAddressToPeerId[node.peerAddress] = node.peerId;
-        state.links.peerIdToNodeAddress[node.peerId] = node.peerAddress;
+        if (node.peerId && node.peerAddress) {
+          state.links.nodeAddressToPeerId[node.peerAddress] = node.peerId;
+          state.links.peerIdToNodeAddress[node.peerId] = node.peerAddress;
+        }
       }
     }
 

@@ -8,7 +8,7 @@ import FormControl from '@mui/material/FormControl';
 import SelectMui, { SelectProps as SelectMuiProps } from '@mui/material/Select';
 import { Tooltip, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { generateBase64Jazz } from '../../utils/functions';
+import { toHexMD5, generateBase64Jazz } from '../../utils/functions';
 
 const SFormControl = styled(FormControl)`
   margin-bottom: 16px;
@@ -50,12 +50,14 @@ interface Props extends SelectMuiProps {
     value: string | number;
     name: string | number | null;
     apiEndpoint: string | null;
+    jazzIcon?: string | null;
     disabled?: boolean;
   }[];
   native?: boolean;
 }
 
 const Select: React.FC<Props> = (props) => {
+  console.log('props.values', props.values);
   return (
     <SFormControl
       style={props.style}
@@ -75,7 +77,10 @@ const Select: React.FC<Props> = (props) => {
       >
         {props.values &&
           props.values.map((elem, index) => {
-            const icon = elem.apiEndpoint && generateBase64Jazz(elem.apiEndpoint);
+            const jazzMd5apiEndpoint = elem.apiEndpoint && toHexMD5(elem.apiEndpoint);
+            const icon = elem.jazzIcon
+              ? generateBase64Jazz(elem.jazzIcon)
+              : jazzMd5apiEndpoint && generateBase64Jazz(jazzMd5apiEndpoint);
             return (
               <MenuItem
                 value={elem.value}
@@ -88,6 +93,7 @@ const Select: React.FC<Props> = (props) => {
                   <img
                     className={`node-jazz-icon ${icon && 'node-jazz-icon-present'}`}
                     src={icon ?? '/assets/hopr_logo.svg'}
+                    data-src={elem.jazzIcon ? elem.jazzIcon : jazzMd5apiEndpoint}
                   />
                 )}
                 <span className="select-menu-item-text">{elem.name}</span>

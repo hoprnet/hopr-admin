@@ -30,6 +30,7 @@ type ParsedNode = {
   value: string;
   apiEndpoint: string;
   apiToken: string;
+  jazzIcon?: string;
 };
 
 type ConnectNodeModalProps = {
@@ -138,8 +139,10 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
   const [nodesSavedLocallyParsed, set_nodesSavedLocallyParsed] = useState([] as ParsedNode[]);
   const errorMessage = useAppSelector((store) => store.auth.status.error?.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
+  const loginPending = useAppSelector((store) => store.auth.status.connecting);
   const [searchParams, set_searchParams] = useSearchParams();
   const [localName, set_localName] = useState(loginData.localName ? loginData.localName : '');
+  const [jazzIcon, set_jazzIcon] = useState(loginData.jazzIcon ? loginData.jazzIcon : null);
   const [apiEndpoint, set_apiEndpoint] = useState(loginData.apiEndpoint ? loginData.apiEndpoint : '');
   const [apiToken, set_apiToken] = useState(loginData.apiToken ? loginData.apiToken : '');
   const [saveApiToken, set_saveApiToken] = useState(false);
@@ -156,6 +159,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
         value: index.toString(),
         apiEndpoint: node.apiEndpoint,
         apiToken: node.apiToken,
+        jazzIcon: node.jazzIcon,
       };
     }) as ParsedNode[];
     set_nodesSavedLocallyParsed(parsed);
@@ -261,6 +265,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
             apiEndpoint: formattedApiEndpoint,
             apiToken,
             localName,
+            jazzIcon,
           }),
         );
         dispatch(
@@ -350,6 +355,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
     set_apiToken(chosenNode.apiToken);
     set_saveApiToken(chosenNode.apiToken?.length > 0);
     set_localName(chosenNode.localName);
+    chosenNode.jazzIcon && set_jazzIcon(chosenNode.jazzIcon);
   };
 
   return (
@@ -434,6 +440,7 @@ function ConnectNodeModal(props: ConnectNodeModalProps) {
           <Button
             onClick={() => useNode({})}
             disabled={apiEndpoint.length === 0}
+            pending={loginPending}
           >
             Connect to the node
           </Button>

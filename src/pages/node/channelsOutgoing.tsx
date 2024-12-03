@@ -15,6 +15,7 @@ import { SubpageTitle } from '../../components/SubpageTitle';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import CloseChannelIcon from '../../future-hopr-lib-components/Icons/CloseChannel';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
+import PeersInfo from '../../future-hopr-lib-components/PeerInfo';
 
 // Modals
 import { OpenMultipleChannelsModal } from '../../components/Modal/node/OpenMultipleChannelsModal';
@@ -32,6 +33,7 @@ function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((store) => store.node.channels.data);
   const channelsOutgoingObject = useAppSelector((store) => store.node.channels.parsed.outgoing);
+  const channelsOutgoing = useAppSelector((store) => store.node.channels.data?.outgoing);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const loginData = useAppSelector((store) => store.auth.loginData);
@@ -149,12 +151,21 @@ function ChannelsPage() {
       name: '#',
     },
     {
+      key: 'node',
+      name: 'Node',
+      maxWidth: '350px',
+    },
+    {
       key: 'peerAddress',
       name: 'Node Address',
       search: true,
-      tooltip: true,
-      copy: true,
-      maxWidth: '168px',
+      hidden: true,
+    },
+    {
+      key: 'peerId',
+      name: 'Peer Id',
+      search: true,
+      hidden: true,
     },
     {
       key: 'status',
@@ -178,20 +189,58 @@ function ChannelsPage() {
     },
   ];
 
-  const parsedTableData = Object.keys(channelsOutgoingObject)
-    .map((id, index) => {
+  const peersWithAliases = (channelsOutgoing || []).filter(
+    (peer) => aliases && peer.peerAddress && getAliasByPeerAddress(peer.peerAddress) !== peer.peerAddress,
+  );
+  const peersWithAliasesSorted = peersWithAliases.sort((a, b) => {
+    if (getAliasByPeerAddress(b.peerAddress).toLowerCase() > getAliasByPeerAddress(a.peerAddress).toLowerCase()) {
+      return -1;
+    }
+    if (getAliasByPeerAddress(b.peerAddress).toLowerCase() < getAliasByPeerAddress(a.peerAddress).toLowerCase()) {
+      return 1;
+    }
+    return 0;
+  });
+  const peersWithoutAliases = (channelsOutgoing || []).filter(
+    (peer) => aliases && peer.peerAddress && getAliasByPeerAddress(peer.peerAddress) === peer.peerAddress,
+  );
+  const peersWithoutAliasesSorted = peersWithoutAliases.sort((a, b) => {
+    if (b.peerAddress > a.peerAddress) {
+      return -1;
+    }
+    if (b.peerAddress < a.peerAddress) {
+      return 1;
+    }
+    return 0;
+  });
+
+  const peersSorted = [...peersWithAliasesSorted, ...peersWithoutAliasesSorted];
+
+  const parsedTableData = peersSorted
+    .map((channel, index) => {
+      const id = channel.id;
       if (
         !channelsOutgoingObject[id].peerAddress ||
         !channelsOutgoingObject[id].balance ||
         !channelsOutgoingObject[id].status
       )
         return;
-      const peerId = getPeerIdFromPeerAddress(channelsOutgoingObject[id].peerAddress as string);
+
+      const peerAddress = channelsOutgoingObject[id].peerAddress;
+      const peerId = getPeerIdFromPeerAddress(peerAddress as string);
 
       return {
-        id: index.toString(),
+        id: (index + 1).toString(),
         key: id,
-        peerAddress: getAliasByPeerAddress(channelsOutgoingObject[id].peerAddress as string),
+        node: (
+          <PeersInfo
+            peerId={peerId}
+            nodeAddress={peerAddress}
+            shortenPeerId
+          />
+        ),
+        peerAddress: getAliasByPeerAddress(peerAddress as string),
+        peerId: peerId,
         status: channelsOutgoingObject[id].status as string,
         funds: `${utils.formatEther(channelsOutgoingObject[id].balance as string)} ${HOPR_TOKEN_USED}`,
         actions: (
@@ -305,6 +354,7 @@ function ChannelsPage() {
         header={header}
         search
         loading={parsedTableData.length === 0 && channelsFetching}
+        orderByDefault="number"
       />
     </Section>
   );

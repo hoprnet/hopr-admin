@@ -3,6 +3,7 @@ import { bubbleSortObject } from '../../../utils/functions';
 import { loadStateFromLocalStorage } from '../../../utils/localStorage';
 import { actionsAsync, createAsyncReducer } from './actionsAsync';
 import { initialState } from './initialState';
+import { isAddress } from 'viem';
 
 const authSlice = createSlice({
   name: 'auth',
@@ -20,9 +21,10 @@ const authSlice = createSlice({
         apiToken: string;
         apiEndpoint: string;
         localName?: string;
+        jazzIcon?: string | null;
       }>,
     ) {
-      // Check if we have name saved locally
+      // Check if we have a name saved locally
       let localName: string | null = action.payload.localName ? action.payload.localName : '';
       if (!localName) {
         const existingItem = state.nodes.findIndex((item) => item.apiEndpoint === action.payload.apiEndpoint);
@@ -30,9 +32,18 @@ const authSlice = createSlice({
           localName = state.nodes[existingItem].localName ? state.nodes[existingItem].localName : '';
       }
 
+      // Check if we have a jazzIcon saved locally
+      let jazzIcon: string | null = action.payload.jazzIcon ? action.payload.jazzIcon : null;
+      if (!jazzIcon) {
+        const existingItem = state.nodes.findIndex((item) => item.apiEndpoint === action.payload.apiEndpoint);
+        if (existingItem !== -1)
+          jazzIcon = state.nodes[existingItem].jazzIcon ? (state.nodes[existingItem].jazzIcon as string) : null;
+      }
+
       state.loginData.apiEndpoint = action.payload.apiEndpoint;
       state.loginData.apiToken = action.payload.apiToken ? action.payload.apiToken : '';
       state.loginData.localName = localName;
+      state.loginData.jazzIcon = jazzIcon;
     },
     setConnected(state) {
       state.status.connecting = false;
@@ -61,6 +72,23 @@ const authSlice = createSlice({
       } else {
         state.nodes[existingItem].apiToken = action.payload.apiToken;
         state.nodes[existingItem].localName = action.payload.localName;
+      }
+
+      localStorage.setItem('admin-ui-node-list', JSON.stringify(state.nodes));
+    },
+    addNodeJazzIcon(
+      state,
+      action: PayloadAction<{
+        apiEndpoint: string;
+        jazzIcon: string;
+      }>,
+    ) {
+      const existingItem = state.nodes.findIndex((item) => item.apiEndpoint === action.payload.apiEndpoint);
+      if (existingItem === -1) return;
+      if (isAddress(action.payload.jazzIcon)) {
+        state.nodes[existingItem].jazzIcon = action.payload.jazzIcon;
+      } else {
+        state.nodes[existingItem].jazzIcon = action.payload.jazzIcon;
       }
 
       localStorage.setItem('admin-ui-node-list', JSON.stringify(state.nodes));

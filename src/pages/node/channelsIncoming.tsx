@@ -16,6 +16,7 @@ import { SubpageTitle } from '../../components/SubpageTitle';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 import CloseChannelIcon from '../../future-hopr-lib-components/Icons/CloseChannel';
+import PeersInfo from '../../future-hopr-lib-components/PeerInfo';
 
 // Modals
 import { PingModal } from '../../components/Modal/node/PingModal';
@@ -26,10 +27,12 @@ import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 
 // Mui
 import GetAppIcon from '@mui/icons-material/GetApp';
+import { truncateEthereumAddress } from '../../utils/blockchain';
 
 function ChannelsPage() {
   const dispatch = useAppDispatch();
   const channels = useAppSelector((store) => store.node.channels.data);
+  const channelsIncoming = useAppSelector((store) => store.node.channels.data?.incoming);
   const channelsIncomingObject = useAppSelector((store) => store.node.channels.parsed.incoming);
   const channelsFetching = useAppSelector((store) => store.node.channels.isFetching);
   const aliases = useAppSelector((store) => store.node.aliases.data);
@@ -102,12 +105,22 @@ function ChannelsPage() {
       name: '#',
     },
     {
+      key: 'node',
+      name: 'Node',
+      maxWidth: '568px',
+    },
+    {
       key: 'peerAddress',
       name: 'Node Address',
       search: true,
       copy: true,
-      maxWidth: '568px',
-      tooltip: true,
+      hidden: true,
+    },
+    {
+      key: 'peerId',
+      name: 'Peer Id',
+      search: true,
+      hidden: true,
     },
     {
       key: 'status',
@@ -183,8 +196,36 @@ function ChannelsPage() {
       });
   };
 
-  const parsedTableData = Object.keys(channelsIncomingObject)
-    .map((id, index) => {
+  const peersWithAliases = (channelsIncoming || []).filter(
+    (peer) => aliases && peer.peerAddress && getAliasByPeerAddress(peer.peerAddress) !== peer.peerAddress,
+  );
+  const peersWithAliasesSorted = peersWithAliases.sort((a, b) => {
+    if (getAliasByPeerAddress(b.peerAddress).toLowerCase() > getAliasByPeerAddress(a.peerAddress).toLowerCase()) {
+      return -1;
+    }
+    if (getAliasByPeerAddress(b.peerAddress).toLowerCase() < getAliasByPeerAddress(a.peerAddress).toLowerCase()) {
+      return 1;
+    }
+    return 0;
+  });
+  const peersWithoutAliases = (channelsIncoming || []).filter(
+    (peer) => aliases && peer.peerAddress && getAliasByPeerAddress(peer.peerAddress) === peer.peerAddress,
+  );
+  const peersWithoutAliasesSorted = peersWithoutAliases.sort((a, b) => {
+    if (b.peerAddress > a.peerAddress) {
+      return -1;
+    }
+    if (b.peerAddress < a.peerAddress) {
+      return 1;
+    }
+    return 0;
+  });
+
+  const peersSorted = [...peersWithAliasesSorted, ...peersWithoutAliasesSorted];
+
+  const parsedTableData = peersSorted
+    .map((channel, index) => {
+      const id = channel.id;
       if (
         !channelsIncomingObject[id].peerAddress ||
         !channelsIncomingObject[id].balance ||
@@ -197,6 +238,7 @@ function ChannelsPage() {
         !!nodeAddressToOutgoingChannelLink[channelsIncomingObject[id].peerAddress]
       );
       const peerId = getPeerIdFromPeerAddress(channelsIncomingObject[id].peerAddress as string);
+      const peerAddress = channelsIncomingObject[id].peerAddress;
 
       const totalTicketsPerChannel = `${formatEther(
         BigInt(tickets?.redeemed[id]?.value || '0') + BigInt(tickets?.unredeemed[id]?.value || '0'),
@@ -207,7 +249,15 @@ function ChannelsPage() {
       return {
         id: (index + 1).toString(),
         key: id,
-        peerAddress: getAliasByPeerAddress(channelsIncomingObject[id].peerAddress as string),
+        node: (
+          <PeersInfo
+            peerId={peerId}
+            nodeAddress={peerAddress}
+            shortenPeerId
+          />
+        ),
+        peerAddress: getAliasByPeerAddress(peerAddress as string),
+        peerId: peerId,
         status: channelsIncomingObject[id].status,
         funds: `${utils.formatEther(channelsIncomingObject[id].balance as string)} ${HOPR_TOKEN_USED}`,
         tickets: unredeemedTicketsPerChannel,
@@ -324,6 +374,7 @@ function ChannelsPage() {
         header={headerIncoming}
         search
         loading={parsedTableData.length === 0 && channelsFetching}
+        orderByDefault="number"
       />
     </Section>
   );

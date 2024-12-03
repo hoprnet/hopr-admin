@@ -18,10 +18,12 @@ import WithdrawModal from '../../../components/Modal/node/WithdrawModal';
 import SmallActionButton from '../../../future-hopr-lib-components/Button/SmallActionButton';
 import { ColorStatus } from '../../../components/InfoBar/details';
 import ProgressBar from '../../../future-hopr-lib-components/Progressbar';
+import IconButton from '../../../future-hopr-lib-components/Button/IconButton';
 
 //Icons
 import CopyIcon from '@mui/icons-material/ContentCopy';
 import LaunchIcon from '@mui/icons-material/Launch';
+import DataObjectIcon from '@mui/icons-material/DataObject';
 
 //Info Components
 import NodeUptime from './node-uptime';
@@ -60,9 +62,10 @@ function InfoPage() {
   const blockNumberFromInfo = useAppSelector((store) => store.node.info.data?.indexerBlock); // >=2.1.3
   const blockNumberCheckSumFromInfo = useAppSelector((store) => store.node.info.data?.indexerChecksum); // >=2.1.3
   const blockNumberPrevIndexedWithHOPRdata = useAppSelector((store) => store.node.info.data?.indexBlockPrevChecksum); // >=2.1.4
-  const blockNumberIndexedWithHOPRdata = blockNumberPrevIndexedWithHOPRdata
-    ? blockNumberPrevIndexedWithHOPRdata + 1
-    : null;
+  const blockNumberIndexedWithHOPRdata =
+    blockNumberPrevIndexedWithHOPRdata && blockNumberFromInfo !== blockNumberPrevIndexedWithHOPRdata
+      ? blockNumberPrevIndexedWithHOPRdata + 1
+      : null;
   const blockNumber = blockNumberFromInfo ?? blockNumberFromMetrics;
   const blockNumberCheckSum = blockNumberCheckSumFromInfo ?? blockNumberCheckSumFromMetrics;
   const ticketPrice = useAppSelector((store) => store.node.ticketPrice.data);
@@ -188,7 +191,46 @@ function InfoPage() {
         title="INFO"
         refreshFunction={fetchInfoData}
         reloading={isFetchingAnyData}
-        actions={<WithdrawModal />}
+        actions={
+          <>
+            <WithdrawModal />
+            <IconButton
+              iconComponent={<DataObjectIcon />}
+              tooltipText={
+                <span>
+                  OPEN
+                  <br />
+                  Swagger UI
+                </span>
+              }
+              onClick={() => {
+                const externalUrl = apiEndpoint + '/swagger-ui/index.html#/';
+                const w = window.open(externalUrl, '_blank');
+                w && w.focus();
+              }}
+            />
+            <IconButton
+              iconComponent={
+                <img
+                  style={{ maxWidth: '20px' }}
+                  src="/assets/scalar-removebg-preview.png"
+                />
+              }
+              tooltipText={
+                <span>
+                  OPEN
+                  <br />
+                  Scalar UI
+                </span>
+              }
+              onClick={() => {
+                const externalUrl = apiEndpoint + '/scalar';
+                const w = window.open(externalUrl, '_blank');
+                w && w.focus();
+              }}
+            />
+          </>
+        }
       />
       <Paper
         style={{

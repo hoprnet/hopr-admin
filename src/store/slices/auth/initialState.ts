@@ -1,7 +1,7 @@
 import { loadStateFromLocalStorage } from '../../../utils/localStorage';
 
 const ADMIN_UI_NODE_LIST = loadStateFromLocalStorage('admin-ui-node-list') as
-  | { apiEndpoint: string | null; apiToken: string | null; localName: string | null }[]
+  | { apiEndpoint: string | null; apiToken: string | null; localName: string | null; jazzIcon?: string | null }[]
   | null;
 
 type InitialState = {
@@ -18,11 +18,13 @@ type InitialState = {
     apiToken: string | null;
     localName: string | null;
     peerId: string | null;
+    jazzIcon: string | null;
   };
   nodes: {
     apiEndpoint: string | null;
     apiToken: string | null;
     localName: string | null;
+    jazzIcon?: string | null;
   }[];
   helper: {
     openLoginModalToNode: boolean;
@@ -40,6 +42,7 @@ export const initialState: InitialState = {
     apiToken: null,
     localName: null,
     peerId: null,
+    jazzIcon: null,
   },
   nodes: ADMIN_UI_NODE_LIST ? ADMIN_UI_NODE_LIST : [],
   helper: { openLoginModalToNode: false },

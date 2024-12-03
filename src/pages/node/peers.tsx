@@ -13,6 +13,7 @@ import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
 import ProgressBar from '../../future-hopr-lib-components/Progressbar';
+import PeersInfo from '../../future-hopr-lib-components/PeerInfo';
 
 //  Modals
 import { PingModal } from '../../components/Modal/node/PingModal';
@@ -76,35 +77,37 @@ function PeersPage() {
 
   const header = [
     {
-      key: 'number',
+      key: 'id',
       name: '#',
+      maxWidth: '5px',
+    },
+    {
+      key: 'node',
+      name: 'Node',
+      maxWidth: '300px',
     },
     {
       key: 'peerId',
       name: 'Peer Id',
       search: true,
-      tooltip: true,
-      copy: true,
-      maxWidth: '160px',
+      hidden: true,
     },
     {
       key: 'peerAddress',
       name: 'Node Address',
       search: true,
-      tooltip: true,
-      copy: true,
-      maxWidth: '160px',
+      hidden: true,
     },
     {
       key: 'lastSeen',
       name: 'Last seen',
       tooltip: true,
-      maxWidth: '60px',
+      maxWidth: '10px',
     },
     {
       key: 'quality',
       name: 'Quality',
-      maxWidth: '20px',
+      maxWidth: '10px',
     },
     {
       key: 'actions',
@@ -115,16 +118,38 @@ function PeersPage() {
     },
   ];
 
-  const parsedTableData = Object.entries(peers?.connected ?? {}).map(([id, peer]) => {
-    return {
-      id: id,
-      number: id,
-      peerId: getAliasByPeerId(peer.peerId),
-      peerAddress: peer.peerAddress,
-      quality: <ProgressBar value={peer.quality} />,
-      lastSeen:
-        peer.lastSeen > 0
-          ? new Date(peer.lastSeen).toLocaleString('en-US', {
+  const peersWithAliases = (peers?.connected || []).filter(
+    (peer) => aliases && peer.peerId && peerIdToAliasLink[peer.peerId],
+  );
+  const peersWithAliasesSorted = peersWithAliases.sort((a, b) => {
+    if (getAliasByPeerId(b.peerId).toLowerCase() > getAliasByPeerId(a.peerId).toLowerCase()) {
+      return -1;
+    }
+    if (getAliasByPeerId(b.peerId).toLowerCase() < getAliasByPeerId(a.peerId).toLowerCase()) {
+      return 1;
+    }
+    return 0;
+  });
+  const peersWithoutAliases = (peers?.connected || []).filter(
+    (peer) => aliases && peer.peerId && !peerIdToAliasLink[peer.peerId],
+  );
+  const peersWithoutAliasesSorted = peersWithoutAliases.sort((a, b) => {
+    if (b.peerId > a.peerId) {
+      return -1;
+    }
+    if (b.peerId < a.peerId) {
+      return 1;
+    }
+    return 0;
+  });
+
+  const peersSorted = [...peersWithAliasesSorted, ...peersWithoutAliasesSorted];
+
+  const parsedTableData = peersSorted.map((peer, index) => {
+    const lastSeen =
+      (peer.lastSeen as number) > 0
+        ? new Date(peer.lastSeen)
+            .toLocaleString('en-US', {
               year: 'numeric',
               month: '2-digit',
               day: '2-digit',
@@ -132,7 +157,22 @@ function PeersPage() {
               minute: '2-digit',
               timeZoneName: 'short',
             })
-          : 'Not seen',
+            .replace(', ', '\n')
+        : 'Not seen';
+
+    return {
+      id: index + 1,
+      node: (
+        <PeersInfo
+          peerId={peer.peerId}
+          nodeAddress={peer.peerAddress}
+          shortenPeerId
+        />
+      ),
+      peerId: getAliasByPeerId(peer.peerId),
+      peerAddress: peer.peerAddress,
+      quality: <ProgressBar value={peer.quality} />,
+      lastSeen: <span style={{ whiteSpace: 'break-spaces' }}>{lastSeen}</span>,
       actions: (
         <>
           <PingModal peerId={peer.peerId} />

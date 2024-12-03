@@ -12,6 +12,7 @@ import IconButton from '../../future-hopr-lib-components/Button/IconButton';
 import { SendMessageModal } from '../../components/Modal/node/SendMessageModal';
 import RemoveAliasIcon from '../../future-hopr-lib-components/Icons/RemoveAlias';
 import TablePro from '../../future-hopr-lib-components/Table/table-pro';
+import PeersInfo from '../../future-hopr-lib-components/PeerInfo';
 
 // Modals
 import { PingModal } from '../../components/Modal/node/PingModal';
@@ -26,7 +27,7 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 function AliasesPage() {
   const dispatch = useAppDispatch();
   const aliases = useAppSelector((store) => store.node.aliases.data);
-  const peers = useAppSelector((store) => store.node.peers.data);
+  const peersObject = useAppSelector((store) => store.node.peers.parsed.connected);
   const aliasesFetching = useAppSelector((store) => store.node.aliases.isFetching);
   const hoprAddress = useAppSelector((store) => store.node.addresses.data.hopr);
   const myNodeAddress = useAppSelector((store) => store.node.addresses.data.native);
@@ -122,10 +123,32 @@ function AliasesPage() {
 
   const parsedTableData = Object.entries(aliases ?? {}).map(([alias, peerId], key) => {
     const peerAddress = getNodeAddressByPeerId(peerId);
+    const lastSeenNumeric = peerId && peersObject[peerId]?.lastSeen;
+    const lastSeen =
+      (lastSeenNumeric as number) > 0
+        ? new Date(lastSeenNumeric)
+            .toLocaleString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              timeZoneName: 'short',
+            })
+            .replace(', ', '\n')
+        : 'Not seen';
+
     return {
       id: peerId,
       key: key.toString(),
       alias,
+      node: (
+        <PeersInfo
+          peerId={peerId}
+          nodeAddress={peerAddress ?? ''}
+        />
+      ),
+      lastSeen: <span style={{ whiteSpace: 'break-spaces' }}>{peerId === hoprAddress ? '-' : lastSeen}</span>,
       peerId,
       peerAddress: peerAddress ?? '',
       actions: (
@@ -169,6 +192,45 @@ function AliasesPage() {
     };
   });
 
+  const header = [
+    {
+      key: 'alias',
+      name: 'Alias',
+      search: true,
+      hidden: true,
+    },
+    {
+      key: 'node',
+      name: 'Node',
+      maxWidth: '350px',
+    },
+    {
+      key: 'lastSeen',
+      name: 'Last Seen',
+      maxWidth: '20px',
+    },
+    {
+      key: 'peerId',
+      name: 'Peer Id',
+      search: true,
+      hidden: true,
+    },
+    {
+      key: 'peerAddress',
+      name: 'Node Address',
+      search: true,
+      maxWidth: '60px',
+      hidden: true,
+    },
+    {
+      key: 'actions',
+      name: 'Actions',
+      search: false,
+      width: '168px',
+      maxWidth: '168px',
+    },
+  ];
+
   return (
     <Section
       className="Section--aliases"
@@ -203,39 +265,9 @@ function AliasesPage() {
         data={parsedTableData}
         search={true}
         id={'node-aliases-table'}
-        header={[
-          {
-            key: 'alias',
-            name: 'Alias',
-            search: true,
-            tooltip: true,
-            maxWidth: '0px',
-          },
-          {
-            key: 'peerId',
-            name: 'Peer Id',
-            search: true,
-            tooltip: true,
-            copy: true,
-            maxWidth: '60px',
-          },
-          {
-            key: 'peerAddress',
-            name: 'Node Address',
-            search: true,
-            tooltip: true,
-            copy: true,
-            maxWidth: '60px',
-          },
-          {
-            key: 'actions',
-            name: 'Actions',
-            search: false,
-            width: '168px',
-            maxWidth: '168px',
-          },
-        ]}
+        header={header}
         loading={parsedTableData.length === 0 && aliasesFetching}
+        orderByDefault="alias"
       />
     </Section>
   );
