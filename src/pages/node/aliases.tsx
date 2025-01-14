@@ -461,7 +461,7 @@ function CSVUploader<T extends ParsedData>({ onParse }: CSVUploaderProps<T>) {
 
         for (let j = 0; j < header.length; j++) {
           const key = expectedObjectKeys[j];
-          const value = values[j]?.trim();
+          const value = values[j]?.trim().replaceAll(' ', '_');
           if (expectedObjectKeys.includes(key)) {
             dataObject[key as keyof T] = value as T[keyof T];
           }
