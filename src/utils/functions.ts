@@ -40,6 +40,7 @@ export function rounder(value: number | string | null | undefined, charLength: n
   if (!value) return '-';
   if (value == 0) return '0';
   let splitted = ['', ''];
+  console.log('value', value)
   if (typeof value === 'string') {
     if (value.includes('.')) {
       splitted = value.split('.');
@@ -52,6 +53,7 @@ export function rounder(value: number | string | null | undefined, charLength: n
   } else {
     splitted = [`${value}`, '0'];
   }
+  console.log('splitted', splitted)
   const wholes = splitted[0];
   const decimas = splitted[1];
   let rez: string | null = null;

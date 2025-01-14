@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { formatEther } from 'viem';
-import { rounder } from '../../utils/functions';
+import { rounder, rounder2 } from '../../utils/functions';
 
 // HOPR Components
 import { SubpageTitle } from '../../components/SubpageTitle';
@@ -29,7 +29,8 @@ interface StrategyConfig {
 }
 
 const calculateTickets = (value: string, ticketPrice: string) => {
-  const valueBigInt = BigInt(value) * DECIMALS_MULTIPLIER;
+  console.log({value, ticketPrice})
+  const valueBigInt = BigInt(value);
   const ticketBigInt = BigInt(ticketPrice);
   return valueBigInt / ticketBigInt;
 };
@@ -37,7 +38,7 @@ const calculateTickets = (value: string, ticketPrice: string) => {
 const updateStrategyString = (originalString: string, key: string, value: string, tickets: bigint): string => {
   const stringToReplace = `"${key}": "${value} HOPR"`;
   const formattedEther = formatEther(BigInt(value));
-  const replacement = `"${key}": "${value}" // ${formattedEther} HOPR, tickets: ${rounder(Number(tickets))}`;
+  const replacement = `"${key}": "${value}" // = ${formattedEther} HOPR (${rounder(Number(tickets))} tickets)`;
 
   return originalString.includes(stringToReplace + ',')
     ? originalString.replace(stringToReplace + ',', replacement + ',')
