@@ -153,7 +153,7 @@ function ChannelsPage() {
     {
       key: 'node',
       name: 'Node',
-      maxWidth: '350px',
+      maxWidth: '500px',
     },
     {
       key: 'peerAddress',
@@ -178,7 +178,7 @@ function ChannelsPage() {
       key: 'funds',
       name: 'Dedicated Funds',
       tooltip: true,
-      maxWidth: '80px',
+      maxWidth: '45px',
     },
     {
       key: 'actions',
@@ -236,7 +236,7 @@ function ChannelsPage() {
           <PeersInfo
             peerId={peerId}
             nodeAddress={peerAddress}
-            shortenPeerId
+            shortenPeerIdIfAliasPresent
           />
         ),
         peerAddress: getAliasByPeerAddress(peerAddress as string),

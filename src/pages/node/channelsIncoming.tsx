@@ -253,7 +253,7 @@ function ChannelsPage() {
           <PeersInfo
             peerId={peerId}
             nodeAddress={peerAddress}
-            shortenPeerId
+            shortenPeerIdIfAliasPresent
           />
         ),
         peerAddress: getAliasByPeerAddress(peerAddress as string),
