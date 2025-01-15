@@ -349,28 +349,33 @@ function InfoPage() {
               </th>
               <td>{blockNumber ? blockNumber : '-'}</td>
             </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="Last indexed block from the chain which contains HOPR data"
-                  notWide
-                >
-                  <span>Last indexed block</span>
-                </Tooltip>
-              </th>
-              <td>{blockNumberIndexedWithHOPRdata ? blockNumberIndexedWithHOPRdata : '-'}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The latest hash of the node database"
-                  notWide
-                >
-                  <span>Block checksum</span>
-                </Tooltip>
-              </th>
-              <td>{blockNumberCheckSum ? blockNumberCheckSum : '-'}</td>
-            </tr>
+            {(blockNumberIndexedWithHOPRdata || blockNumberCheckSum) && (
+              <>
+                <tr>
+                  <th>
+                    <Tooltip
+                      title="Last indexed block from the chain which contains HOPR data"
+                      notWide
+                    >
+                      <span>Last indexed block</span>
+                    </Tooltip>
+                  </th>
+                  <td>{blockNumberIndexedWithHOPRdata ? blockNumberIndexedWithHOPRdata : '-'}</td>
+                </tr>
+
+                <tr>
+                  <th>
+                    <Tooltip
+                      title="The latest hash of the node database"
+                      notWide
+                    >
+                      <span>Block checksum</span>
+                    </Tooltip>
+                  </th>
+                  <td>{blockNumberCheckSum ? blockNumberCheckSum : '-'}</td>
+                </tr>
+              </>
+            )}
           </tbody>
         </TableExtended>
 
