@@ -104,19 +104,6 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
     set_openModal(false);
   };
 
-  // Testing:
-  useEffect(() => {
-    console.log({
-      recipient,
-      amount,
-      withdrawingZeroOrLess,
-      withdrawingMoreThanTheWallet,
-      ' parseEther(amount)': parseEther(amount),
-      'parseEther(maxAmount)': parseEther(maxAmount),
-      native: nativeBalance,
-    });
-  }, [recipient, amount, withdrawingZeroOrLess, withdrawingMoreThanTheWallet, maxAmount, nativeBalance]);
-
   const setAmount = () => {
     setMaxAmount();
     if (currency === 'HOPR' && hoprBalance.formatted) {
