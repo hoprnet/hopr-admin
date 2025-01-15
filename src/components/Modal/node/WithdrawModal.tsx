@@ -11,7 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import WithdrawIcon from '../../../future-hopr-lib-components/Icons/Withdraw';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { nodeActionsAsync } from '../../../store/slices/node';
-import { parseEther } from 'viem';
+import { parseEther, isAddress } from 'viem';
 import { utils as hoprdUtils } from '@hoprnet/hopr-sdk';
 const { sdkApiError } = hoprdUtils;
 
@@ -83,17 +83,18 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
   const [openModal, set_openModal] = useState(false);
   const [currency, set_currency] = useState<'HOPR' | 'NATIVE'>(initialCurrency ?? 'NATIVE');
   const [amount, set_amount] = useState<string>('');
-  const [maxAmount, set_maxAmount] = useState<string>('');
+  const [maxAmount, set_maxAmount] = useState<string>(nativeBalance.value ?? '');
   const [recipient, set_recipient] = useState<string>('');
   const [isLoading, set_isLoading] = useState(false);
   const [transactionHash, set_transactionHash] = useState('');
 
   const withdrawingZeroOrLess = amount ? parseEther(amount) <= parseEther('0') : false;
   const withdrawingMoreThanTheWallet = amount ? parseEther(amount) > parseEther(maxAmount) : false;
+  const validatedEthAddress = isAddress(recipient);
 
   useEffect(() => {
     setMaxAmount();
-  }, [currency]);
+  }, [currency, nativeBalance.value]);
 
   const handleOpenModal = () => {
     set_openModal(true);
@@ -103,12 +104,24 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
     set_openModal(false);
   };
 
-  const setMaxAmount = () => {
+  // Testing:
+  useEffect(() => {
+    console.log({recipient, amount, withdrawingZeroOrLess, withdrawingMoreThanTheWallet,  ' parseEther(amount)': parseEther(amount), 'parseEther(maxAmount)': parseEther(maxAmount), native: nativeBalance});
+  }, [recipient, amount, withdrawingZeroOrLess, withdrawingMoreThanTheWallet,maxAmount, nativeBalance]);
+
+  const setAmount = () => {
+    setMaxAmount();
     if (currency === 'HOPR' && hoprBalance.formatted) {
       set_amount(hoprBalance.formatted);
-      set_maxAmount(hoprBalance.formatted);
     } else if (currency === 'NATIVE' && nativeBalance.formatted) {
       set_amount(nativeBalance.formatted);
+    }
+  };
+
+  const setMaxAmount = () => {
+    if (currency === 'HOPR' && hoprBalance.formatted) {
+      set_maxAmount(hoprBalance.formatted);
+    } else if (currency === 'NATIVE' && nativeBalance.formatted) {
       set_maxAmount(nativeBalance.formatted);
     }
   };
@@ -222,7 +235,7 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <MaxButton onClick={setMaxAmount}>Max</MaxButton>
+                    <MaxButton onClick={setAmount}>Max</MaxButton>
                   </InputAdornment>
                 ),
                 inputProps: { min: 0, step: 'any' },
@@ -235,12 +248,15 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
                 safeAddress ? `${safeAddress.substring(0, 6)}...${safeAddress.substring(38)}` : '0x4f5a...1728'
               }
               value={recipient}
-              onChange={(e) => set_recipient(e.target.value)}
+              onChange={(e) => {
+                console.log('rec', e.target.value)
+                set_recipient(e.target.value)
+              }}
             />
             <Button
               onClick={handleWithdraw}
               pending={isLoading}
-              disabled={!recipient || !amount || withdrawingZeroOrLess || withdrawingMoreThanTheWallet}
+              disabled={!recipient || !amount || withdrawingZeroOrLess || withdrawingMoreThanTheWallet || !validatedEthAddress}
             >
               Withdraw
             </Button>
