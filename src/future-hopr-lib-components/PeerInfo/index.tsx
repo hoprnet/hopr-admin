@@ -15,6 +15,7 @@ interface Props {
   peerId?: string;
   nodeAddress?: string;
   shortenPeerId?: boolean;
+  shortenPeerIdIfAliasPresent?: boolean;
 }
 
 const Container = styled.div`
@@ -32,12 +33,14 @@ const PeersInfo: React.FC<Props> = (props) => {
   const peerIdToAliasLink = useAppSelector((store) => store.node.links.peerIdToAlias);
 
   const getAliasByPeerId = (peerId: string): string | JSX.Element => {
+    const aliasPresent = aliases && peerId && peerIdToAliasLink[peerId];
     const shortPeerId = peerId && `${peerId.substring(0, 6)}...${peerId.substring(peerId.length - 8, peerId.length)}`;
-    const displayPeerId = props.shortenPeerId ? shortPeerId : peerId;
-    if (aliases && peerId && peerIdToAliasLink[peerId])
+    const displayPeerId =
+      props.shortenPeerId || (props.shortenPeerIdIfAliasPresent && aliasPresent) ? shortPeerId : peerId;
+    if (aliasPresent)
       return (
         <>
-          <strong>{peerIdToAliasLink[peerId]}</strong> ({displayPeerId})
+          <strong>{aliasPresent}</strong> ({displayPeerId})
         </>
       );
     return displayPeerId;

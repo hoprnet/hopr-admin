@@ -67,7 +67,11 @@ function InfoPage() {
       ? blockNumberPrevIndexedWithHOPRdata + 1
       : null;
   const blockNumber = blockNumberFromInfo ?? blockNumberFromMetrics;
-  const blockNumberCheckSum = blockNumberCheckSumFromInfo ?? blockNumberCheckSumFromMetrics;
+  const blockNumberCheckSum =
+    (blockNumberCheckSumFromInfo ?? blockNumberCheckSumFromMetrics) !==
+    '0x0000000000000000000000000000000000000000000000000000000000000000'
+      ? blockNumberCheckSumFromInfo ?? blockNumberCheckSumFromMetrics
+      : null;
   const ticketPrice = useAppSelector((store) => store.node.ticketPrice.data);
 
   useEffect(() => {
@@ -345,28 +349,33 @@ function InfoPage() {
               </th>
               <td>{blockNumber ? blockNumber : '-'}</td>
             </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="Last indexed block from the chain which contains HOPR data"
-                  notWide
-                >
-                  <span>Last indexed block</span>
-                </Tooltip>
-              </th>
-              <td>{blockNumberIndexedWithHOPRdata ? blockNumberIndexedWithHOPRdata : '-'}</td>
-            </tr>
-            <tr>
-              <th>
-                <Tooltip
-                  title="The latest hash of the node database"
-                  notWide
-                >
-                  <span>Block checksum</span>
-                </Tooltip>
-              </th>
-              <td>{blockNumberCheckSum ? blockNumberCheckSum : '-'}</td>
-            </tr>
+            {(blockNumberIndexedWithHOPRdata || blockNumberCheckSum) && (
+              <>
+                <tr>
+                  <th>
+                    <Tooltip
+                      title="Last indexed block from the chain which contains HOPR data"
+                      notWide
+                    >
+                      <span>Last indexed block</span>
+                    </Tooltip>
+                  </th>
+                  <td>{blockNumberIndexedWithHOPRdata ? blockNumberIndexedWithHOPRdata : '-'}</td>
+                </tr>
+
+                <tr>
+                  <th>
+                    <Tooltip
+                      title="The latest hash of the node database"
+                      notWide
+                    >
+                      <span>Block checksum</span>
+                    </Tooltip>
+                  </th>
+                  <td>{blockNumberCheckSum ? blockNumberCheckSum : '-'}</td>
+                </tr>
+              </>
+            )}
           </tbody>
         </TableExtended>
 

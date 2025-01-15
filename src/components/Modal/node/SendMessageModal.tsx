@@ -106,6 +106,7 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
   const [message, set_message] = useState<string>('');
   const [openModal, set_openModal] = useState<boolean>(false);
   const loginData = useAppSelector((store) => store.auth.loginData);
+  const hoprAddress = useAppSelector((store) => store.node.addresses.data.hopr);
   const aliases = useAppSelector((store) => store.node.aliases.data);
   const peerIdToAliasLink = useAppSelector((store) => store.node.links.peerIdToAlias);
   const peers = useAppSelector((store) => store.node.peers.data);
@@ -379,7 +380,8 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
             disabled={
               selectedReceiver === null ||
               (sendMode !== 'directMessage' && sendMode !== 'automaticPath' && numberOfHops < 0 && path === '') ||
-              message.length === 0
+              message.length === 0 ||
+              ((sendMode === 'directMessage' || numberOfHops < 1) && selectedReceiver === hoprAddress)
             }
             style={{
               width: '100%',

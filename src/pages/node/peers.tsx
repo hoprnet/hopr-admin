@@ -166,7 +166,7 @@ function PeersPage() {
         <PeersInfo
           peerId={peer.peerId}
           nodeAddress={peer.peerAddress}
-          shortenPeerId
+          shortenPeerIdIfAliasPresent
         />
       ),
       peerId: getAliasByPeerId(peer.peerId),
