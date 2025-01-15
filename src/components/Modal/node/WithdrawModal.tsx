@@ -106,8 +106,16 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
 
   // Testing:
   useEffect(() => {
-    console.log({recipient, amount, withdrawingZeroOrLess, withdrawingMoreThanTheWallet,  ' parseEther(amount)': parseEther(amount), 'parseEther(maxAmount)': parseEther(maxAmount), native: nativeBalance});
-  }, [recipient, amount, withdrawingZeroOrLess, withdrawingMoreThanTheWallet,maxAmount, nativeBalance]);
+    console.log({
+      recipient,
+      amount,
+      withdrawingZeroOrLess,
+      withdrawingMoreThanTheWallet,
+      ' parseEther(amount)': parseEther(amount),
+      'parseEther(maxAmount)': parseEther(maxAmount),
+      native: nativeBalance,
+    });
+  }, [recipient, amount, withdrawingZeroOrLess, withdrawingMoreThanTheWallet, maxAmount, nativeBalance]);
 
   const setAmount = () => {
     setMaxAmount();
@@ -249,14 +257,16 @@ const WithdrawModal = ({ initialCurrency }: WithdrawModalProps) => {
               }
               value={recipient}
               onChange={(e) => {
-                console.log('rec', e.target.value)
-                set_recipient(e.target.value)
+                console.log('rec', e.target.value);
+                set_recipient(e.target.value);
               }}
             />
             <Button
               onClick={handleWithdraw}
               pending={isLoading}
-              disabled={!recipient || !amount || withdrawingZeroOrLess || withdrawingMoreThanTheWallet || !validatedEthAddress}
+              disabled={
+                !recipient || !amount || withdrawingZeroOrLess || withdrawingMoreThanTheWallet || !validatedEthAddress
+              }
             >
               Withdraw
             </Button>

@@ -35,7 +35,8 @@ const PeersInfo: React.FC<Props> = (props) => {
   const getAliasByPeerId = (peerId: string): string | JSX.Element => {
     const aliasPresent = aliases && peerId && peerIdToAliasLink[peerId];
     const shortPeerId = peerId && `${peerId.substring(0, 6)}...${peerId.substring(peerId.length - 8, peerId.length)}`;
-    const displayPeerId = props.shortenPeerId || (props.shortenPeerIdIfAliasPresent && aliasPresent) ? shortPeerId : peerId;
+    const displayPeerId =
+      props.shortenPeerId || (props.shortenPeerIdIfAliasPresent && aliasPresent) ? shortPeerId : peerId;
     if (aliasPresent)
       return (
         <>

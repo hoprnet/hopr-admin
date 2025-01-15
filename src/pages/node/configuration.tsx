@@ -29,7 +29,7 @@ interface StrategyConfig {
 }
 
 const calculateTickets = (value: string, ticketPrice: string) => {
-  console.log({value, ticketPrice})
+  console.log({ value, ticketPrice });
   const valueBigInt = BigInt(value);
   const ticketBigInt = BigInt(ticketPrice);
   return valueBigInt / ticketBigInt;

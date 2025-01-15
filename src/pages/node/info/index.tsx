@@ -67,7 +67,11 @@ function InfoPage() {
       ? blockNumberPrevIndexedWithHOPRdata + 1
       : null;
   const blockNumber = blockNumberFromInfo ?? blockNumberFromMetrics;
-  const blockNumberCheckSum = (blockNumberCheckSumFromInfo ?? blockNumberCheckSumFromMetrics) !== '0x0000000000000000000000000000000000000000000000000000000000000000' ? blockNumberCheckSumFromInfo ?? blockNumberCheckSumFromMetrics : null;
+  const blockNumberCheckSum =
+    (blockNumberCheckSumFromInfo ?? blockNumberCheckSumFromMetrics) !==
+    '0x0000000000000000000000000000000000000000000000000000000000000000'
+      ? blockNumberCheckSumFromInfo ?? blockNumberCheckSumFromMetrics
+      : null;
   const ticketPrice = useAppSelector((store) => store.node.ticketPrice.data);
 
   useEffect(() => {
