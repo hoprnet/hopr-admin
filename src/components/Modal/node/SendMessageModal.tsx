@@ -381,7 +381,8 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
               selectedReceiver === null ||
               (sendMode !== 'directMessage' && sendMode !== 'automaticPath' && numberOfHops < 0 && path === '') ||
               message.length === 0 ||
-              ((sendMode === 'directMessage' || numberOfHops < 1) && selectedReceiver === hoprAddress)
+              ((sendMode === 'directMessage' || (sendMode !== 'path' && numberOfHops < 1)) && selectedReceiver === hoprAddress) ||
+              (sendMode === 'path' && path.length === 0)
             }
             style={{
               width: '100%',
