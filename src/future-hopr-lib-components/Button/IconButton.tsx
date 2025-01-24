@@ -13,6 +13,7 @@ type SubpageTitleProps = {
   className?: string;
   style?: Object;
   pending?: boolean;
+  id?: string;
 };
 
 const SIconButton = styled(MuiIconButton)`
@@ -61,6 +62,7 @@ export const IconButton = ({
   iconComponent,
   disabled,
   pending,
+  id
 }: SubpageTitleProps) => {
   return (
     <Tooltip
@@ -73,6 +75,7 @@ export const IconButton = ({
           disabled={disabled || pending}
           className={`${reloading ? 'reloading' : ''}`}
           onClick={onClick}
+          id={id}
         >
           {iconComponent}
           {pending && <SCircularProgress className={'pending'} />}

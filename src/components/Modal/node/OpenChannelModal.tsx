@@ -117,6 +117,8 @@ export const OpenChannelModal = ({ ...props }: OpenChannelModalProps) => {
           )
         }
         onClick={handleOpenChannelDialog}
+        id={props.peerAddress ? `open-channel-btn-${props.peerAddress}` : undefined}
+        key={props.peerAddress ? `ping-${props.peerAddress}` : undefined}
       />
       <SDialog
         open={openChannelModal}

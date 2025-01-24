@@ -281,6 +281,8 @@ export const SendMessageModal = (props: SendMessageModalProps) => {
         }
         onClick={handleOpenModal}
         disabled={props.disabled}
+        id={`send-msg-btn-${props.peerId}`}
+        key={`send-msg-btn-${props.peerId}`}
       />
 
       <SDialog

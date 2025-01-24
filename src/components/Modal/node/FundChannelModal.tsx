@@ -114,6 +114,8 @@ export const FundChannelModal = ({ ...props }: FundChannelModalModalProps) => {
           </span>
         }
         onClick={handleOpenChannelDialog}
+        id={props.channelId ? `open-channel-btn-${props.channelId}` : undefined}
+        key={props.channelId ? `ping-${props.channelId}` : undefined}
       />
       <SDialog
         open={openChannelModal}

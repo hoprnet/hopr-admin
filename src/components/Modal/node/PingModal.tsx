@@ -123,6 +123,8 @@ export const PingModal = (props: PingModalProps) => {
           )
         }
         onClick={peerId ? handlePing : handleOpenModal}
+        id={props.peerId ? `ping-${props.peerId}` : undefined}
+        key={props.peerId ? `ping-${props.peerId}` : undefined}
         disabled={props.disabled}
         pending={disableButton}
       />

@@ -218,20 +218,20 @@ function ChannelsPage() {
 
   const parsedTableData = peersSorted
     .map((channel, index) => {
-      const id = channel.id;
+      const channelId = channel.id;
       if (
-        !channelsOutgoingObject[id].peerAddress ||
-        !channelsOutgoingObject[id].balance ||
-        !channelsOutgoingObject[id].status
+        !channelsOutgoingObject[channelId].peerAddress ||
+        !channelsOutgoingObject[channelId].balance ||
+        !channelsOutgoingObject[channelId].status
       )
         return;
 
-      const peerAddress = channelsOutgoingObject[id].peerAddress;
+      const peerAddress = channelsOutgoingObject[channelId].peerAddress;
       const peerId = getPeerIdFromPeerAddress(peerAddress as string);
 
       return {
         id: (index + 1).toString(),
-        key: id,
+        key: channelId,
         node: (
           <PeersInfo
             peerId={peerId}
@@ -241,8 +241,8 @@ function ChannelsPage() {
         ),
         peerAddress: getAliasByPeerAddress(peerAddress as string),
         peerId: peerId,
-        status: channelsOutgoingObject[id].status as string,
-        funds: `${utils.formatEther(channelsOutgoingObject[id].balance as string)} ${HOPR_TOKEN_USED}`,
+        status: channelsOutgoingObject[channelId].status as string,
+        funds: `${utils.formatEther(channelsOutgoingObject[channelId].balance as string)} ${HOPR_TOKEN_USED}`,
         actions: (
           <>
             <PingModal
@@ -276,10 +276,12 @@ function ChannelsPage() {
                 ) : undefined
               }
             />
-            <FundChannelModal channelId={id} />
+            <FundChannelModal
+              channelId={channelId}
+            />
             <IconButton
               iconComponent={<CloseChannelIcon />}
-              pending={channelsOutgoingObject[id]?.isClosing}
+              pending={channelsOutgoingObject[channelId]?.isClosing}
               tooltipText={
                 <span>
                   CLOSE
@@ -287,7 +289,9 @@ function ChannelsPage() {
                   outgoing channel
                 </span>
               }
-              onClick={() => handleCloseChannels(id)}
+              onClick={() => handleCloseChannels(channelId)}
+              id={`close-channel-btn-${channelId}`}
+              key={`close-${channelId}`}
             />
             <SendMessageModal
               peerId={peerId}
